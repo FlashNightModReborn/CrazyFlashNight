@@ -1,0 +1,72 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/图标-明矾" itemID="66ea5c99-00000d15" linkageExportForAS="true" linkageIdentifier="图标-明矾" lastModified="1726635169" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="图标-明矾" currentFrame="1">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#05F390">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/材料灰框" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#BCAAE0" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/明矾图标" centerPoint3DX="0.05" centerPoint3DY="-1.25">
+                  <matrix>
+                    <Matrix a="0.13018798828125" d="0.13018798828125" tx="-10.3" ty="-9.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="79.5" y="76.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/明矾图标" centerPoint3DX="0.05" centerPoint3DY="-1.25">
+                  <matrix>
+                    <Matrix a="0.13018798828125" d="0.13018798828125" tx="-10.3" ty="-9.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="79.5" y="76.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#63D255">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/材料黑底" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

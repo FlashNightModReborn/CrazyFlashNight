@@ -1,0 +1,68 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/王水瓶塞" itemID="66eab11e-00000138" lastModified="1726656798">
+  <timeline>
+    <DOMTimeline name="王水瓶塞">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.00286865234375" b="0.0106048583984375" c="-0.964279174804688" d="0.26177978515625" tx="300.15" ty="-60.05"/>
+                        </matrix>
+                        <GradientEntry color="#487A8C" ratio="0"/>
+                        <GradientEntry color="#38596A" ratio="0.580392156862745"/>
+                        <GradientEntry color="#3D677C" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.003570556640625" b="-0.01336669921875" c="0.965927124023438" d="0.258819580078125" tx="-244.6" ty="-46.95"/>
+                        </matrix>
+                        <GradientEntry color="#92B2BD" ratio="0"/>
+                        <GradientEntry color="#638090" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.021026611328125" b="0.0056304931640625" c="-0.258819580078125" d="0.965927124023438" tx="115.8" ty="-251.95"/>
+                        </matrix>
+                        <GradientEntry color="#92B2BD" ratio="0"/>
+                        <GradientEntry color="#638090" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0223846435546875" tx="45.4" ty="-301.15"/>
+                        </matrix>
+                        <GradientEntry color="#92B2BD" ratio="0"/>
+                        <GradientEntry color="#638090" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="2" edges="!1314 502S2|1548 502!1548 502[1721 683 1512 759"/>
+                    <Edge fillStyle0="4" fillStyle1="2" edges="!1512 759S3|189 759"/>
+                    <Edge fillStyle1="2" edges="!189 759S2[-20 683 153 502!153 502|387 502"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!387 502S3|1314 502"/>
+                    <Edge fillStyle1="3" edges="!1314 395S2|1314 502"/>
+                    <Edge fillStyle1="1" edges="!387 395S2|134 395!134 395[-134 160 134 0!134 0|1567 0!1567 0[1835 160 1567 395!1567 395|1314 395"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="!1314 395S3|387 395"/>
+                    <Edge fillStyle0="3" edges="!387 395S1|387 502"/>
+                    <Edge fillStyle1="4" edges="!1512 759S2|1455 1558!1455 1558|246 1558!246 1558|189 759"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

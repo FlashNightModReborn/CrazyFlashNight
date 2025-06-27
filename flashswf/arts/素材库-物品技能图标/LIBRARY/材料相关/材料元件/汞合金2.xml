@@ -1,0 +1,71 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/汞合金2" itemID="66ea7e08-00000083" lastModified="1726643720">
+  <timeline>
+    <DOMTimeline name="汞合金2">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#5A492B"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#C1B671"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#867842"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0115814208984375" b="0.003082275390625" c="-0.258819580078125" d="0.965927124023438" tx="148.75" ty="-439.75"/>
+                        </matrix>
+                        <GradientEntry color="#281D06" ratio="0"/>
+                        <GradientEntry color="#6F6136" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="5">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0110626220703125" d="0.0110626220703125" tx="20.25" ty="9.65"/>
+                        </matrix>
+                        <GradientEntry color="#B4AC5C" ratio="0"/>
+                        <GradientEntry color="#978E4A" ratio="0.533333333333333"/>
+                        <GradientEntry color="#706629" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!488 51S6|657 154!657 154[649 198 628 238"/>
+                    <Edge fillStyle0="4" fillStyle1="1" strokeStyle="1" edges="!628 238S7[609 273 581 305"/>
+                    <Edge fillStyle0="4" fillStyle1="2" edges="!581 305S3[583 307 584 310!584 310[585 314 583 318!583 318[580 321 576 322!576 322[572 323 569 321!569 321|403 209"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!403 209S3[404 208 405 207!405 207[408 204 408 200!408 200[408 196 405 193!405 193[403 191 402 191"/>
+                    <Edge fillStyle0="5" fillStyle1="2" edges="!402 191S3|469 44"/>
+                    <Edge fillStyle1="2" edges="!469 44S2|470 42!470 42[472 38 476 37!476 37[479 35 483 37!483 37[487 39 489 43!489 43[490 46 488 50!488 50|488 51"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!581 305S3|580 304!580 304|421 197!421 197|488 51"/>
+                    <Edge fillStyle0="4" fillStyle1="3" edges="!403 209S3[401 210 398 210!398 210[194 205 18 274"/>
+                    <Edge fillStyle1="3" edges="!18 274S2[16 275 14 276!14 276[10 277 6 275!6 275[2 273 1 270!1 270[-1 266 1 262!1 262[3 258 7 257!7 257[17 252 28 249"/>
+                    <Edge fillStyle0="5" fillStyle1="3" edges="!28 249S3[200 185 398 190!398 190[400 190 402 191"/>
+                    <Edge fillStyle1="4" strokeStyle="1" edges="!628 238S6[657 393 525 519!525 519|188 444!188 444|18 274"/>
+                    <Edge fillStyle1="5" strokeStyle="1" edges="!28 249S6|276 0!276 0|469 44"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

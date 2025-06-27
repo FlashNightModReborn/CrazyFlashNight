@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/汞合金图标" itemID="66ea7d36-0000007d" lastModified="1726644943">
+  <timeline>
+    <DOMTimeline name="汞合金图标">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/汞齐">
+                  <matrix>
+                    <Matrix a="1.1488037109375" d="1.1488037109375" tx="26.25" ty="84.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="36.8" y="20.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/汞合金2">
+                  <matrix>
+                    <Matrix a="1.34092712402344" d="1.34092712402344" ty="113.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.65" y="13.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/汞合金符号图标">
+                  <matrix>
+                    <Matrix tx="58.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.7" y="42.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

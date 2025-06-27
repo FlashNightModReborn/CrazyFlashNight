@@ -1,0 +1,64 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/图标-秘钥A" itemID="66adbade-00001816" linkageExportForAS="true" linkageIdentifier="图标-秘钥A" lastModified="1722661598">
+  <timeline>
+    <DOMTimeline name="图标-秘钥A">
+      <layers>
+        <DOMLayer name="Layer 1" color="#CD91B1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFCC00"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!0 -55[-11 -76 -12 -101!-12 -101[-11 -142 17 -170!17 -170[46 -199 86 -199!86 -199[126 -199 155 -170!155 -170[183 -142 183 -102!183 -102[183 -62 154 -33!154 -33[126 -5 85 -4!85 -4[62 -5 42 -15"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="2" edges="!42 -15[28 -21 17 -32!17 -32|0 -55"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!85 -154[107 -154 122 -139!122 -139[137 -124 137 -102!137 -102[137 -80 122 -65!122 -65[107 -50 85 -50!85 -50[63 -50 48 -65!48 -65[33 -80 33 -102!33 -102[33 -124 48 -139!48 -139[63 -154 85 -154"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!42 -15|-21 48!-21 48|37 106!37 106|6 137!6 137|-52 79!-52 79|-83 110!-83 110|-32 161!-32 161|-70 199!-70 199|-162 107!-162 107|0 -55"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#7725F8" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 16" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.163818359375" d="1.163818359375"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="255" blueOffset="255"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

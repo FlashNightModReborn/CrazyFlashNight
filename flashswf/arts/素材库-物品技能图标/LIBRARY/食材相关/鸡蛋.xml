@@ -1,0 +1,36 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="食材相关/鸡蛋" itemID="67d57080-00000ef2" symbolType="graphic" lastModified="1742041216">
+  <timeline>
+    <DOMTimeline name="鸡蛋">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0046844482421875" b="-0.0174713134765625" c="0.0129547119140625" d="0.00347900390625" tx="6.75" ty="12.6"/>
+                        </matrix>
+                        <GradientEntry color="#C5A580" ratio="0.541176470588235"/>
+                        <GradientEntry color="#E8D8BF" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!316 208S3[316 290 270 348!270 348[226 406 163 406!163 406[100 406 55 348!55 348[10 290 10 208!10 208[10 126 55 67!55 67[100 10 163 10!163 10[226 10 270 67!270 67[316 126 316 208"/>
+                    <Edge fillStyle0="1" edges="!278 61S1[230 0 163 0!163 0[96 0 47 61!47 61[0 122 0 208!0 208[0 294 47 354!47 354[96 416 163 416!163 416[230 416 278 354!278 354[326 294 326 208!326 208[326 122 278 61"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

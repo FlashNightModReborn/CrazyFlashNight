@@ -1,0 +1,72 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="食材相关/图标-辣椒" itemID="681425a4-000008a2" linkageExportForAS="true" linkageIdentifier="图标-辣椒" lastModified="1746182272" lastUniqueIdentifier="13">
+  <timeline>
+    <DOMTimeline name="图标-辣椒" currentFrame="1">
+      <layers>
+        <DOMLayer name="图层_3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_1" color="#05F390">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/材料红框" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_2" color="#BCAAE0" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="食材相关/辣椒" centerPoint3DX="1.4" centerPoint3DY="0.7">
+                  <matrix>
+                    <Matrix a="0.749984741210938" b="1.52587890625e-005" c="-1.52587890625e-005" d="0.749984741210938" tx="-10.45" ty="-6.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="食材相关/辣椒" centerPoint3DX="1.4" centerPoint3DY="0.7">
+                  <matrix>
+                    <Matrix a="1.33807373046875" b="3.0517578125e-005" c="-3.0517578125e-005" d="1.33807373046875" tx="-19.75" ty="-12.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_3" color="#63D255">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/材料黑底" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

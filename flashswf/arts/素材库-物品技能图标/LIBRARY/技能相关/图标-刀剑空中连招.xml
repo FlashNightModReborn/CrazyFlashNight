@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能相关/图标-刀剑空中连招" itemID="663fa438-00000e9d" linkageExportForAS="true" linkageIdentifier="图标-刀剑空中连招" lastModified="1715447043" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="图标-刀剑空中连招">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="技能相关/图标素材/技能背景" centerPoint3DX="0.25" centerPoint3DY="0.15">
+                  <matrix>
+                    <Matrix a="0.124298095703125" d="0.121612548828125" tx="-12.95" ty="-13.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="104.6" y="109.75"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.63" tintColor="#4CDDFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#3C7DFD" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="技能相关/图标素材/位图 108">
+                  <matrix>
+                    <Matrix a="-0.164718627929688" d="0.164718627929688" tx="12.35" ty="-12.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="75" y="75"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -325,11 +325,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文本" color="#87CEB8" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="文本" color="#87CEB8" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMDynamicText selected="true" fontRenderingMode="device" width="573" height="72.65" isSelectable="false" variableName="打字内容" renderAsHTML="true" lineType="multiline">
+                <DOMDynamicText fontRenderingMode="device" width="573" height="72.65" isSelectable="false" variableName="打字内容" renderAsHTML="true" lineType="multiline">
                   <matrix>
                     <Matrix a="1.36569213867188" d="1.62921142578125" tx="-30.3" ty="78.3"/>
                   </matrix>
@@ -416,11 +416,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头像" color="#6589A2" autoNamed="false">
+        <DOMLayer name="头像" color="#6589A2" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="对话框肖像" name="肖像" centerPoint3DX="249.75" centerPoint3DY="301.2">
+                <DOMSymbolInstance libraryItemName="对话框肖像" name="肖像" selected="true" centerPoint3DX="249.75" centerPoint3DY="301.2">
                   <matrix>
                     <Matrix tx="33" ty="-66.75"/>
                   </matrix>

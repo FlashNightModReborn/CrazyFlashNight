@@ -1,0 +1,146 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="项链相关/图标-空手小加成项链" itemID="668436ec-00003a44" linkageExportForAS="true" linkageIdentifier="图标-空手小加成项链" lastModified="1719944139" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="图标-空手小加成项链">
+      <layers>
+        <DOMLayer name="代码层" color="#DDE4EE" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="遮罩层" color="#B1BCEE" locked="true" outline="true" useOutlineView="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!240 -240|240 240!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="武器图标" color="#B88FDA" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="1.25" d="1.25" tx="-20.25" ty="-0.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.1" y="0.2"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="-0.0041961669921875" b="0.001129150390625" c="-0.0018463134765625" d="-0.00689697265625" tx="15.8" ty="-0.95"/>
+                        </matrix>
+                        <GradientEntry color="#FFCB7F" ratio="0"/>
+                        <GradientEntry color="#A37151" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.00433349609375" d="0.0030517578125" tx="20.3" ty="4.75"/>
+                        </matrix>
+                        <GradientEntry color="#FFCB7F" ratio="0"/>
+                        <GradientEntry color="#A37151" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <LinearGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="-0.0041351318359375" b="0.0023956298828125" c="-0.0045928955078125" d="-0.0079498291015625" tx="16.1" ty="-1.1"/>
+                            </matrix>
+                            <GradientEntry color="#CC9548" ratio="0"/>
+                            <GradientEntry color="#6B5344" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!170 -31[170 -37 170 -40!170 -40[173 -73 188 -91!188 -91[195 -98 207 -95!207 -95[227 -91 238 -102!238 -102[247 -110 256 -118!256 -118[265 -124 277 -120!277 -120[289 -115 300 -120!300 -120[312 -124 322 -131!322 -131[336 -141 352 -132!352
+ -132[361 -127 369 -122!369 -122[373 -119 378 -118!378 -118[390 -116 402 -118!402 -118[438 -124 446 -95!446 -95[457 -52 456 2!456 2[456 15 456 28!456 28[457 57 446 72!446 72[434 88 405 85!405 85[394 83 390 74!390 74[385 62 385 45!385
+ 45[385 5 386 -36!386 -36[386 -50 380 -58!380 -58[376 -53 376 -45!376 -45[374 -11 374 26!374 26[374 54 378 76!378 76[370 94 349 97!349 97[308 104 307 68!307 68[305 15 308 -37!308 -37[309 -52 303 -59!303 -59[300 -56 299 -50!299 -50[297
+ -24 296 3!296 3[294 44 298 81!298 81[297 81 296 82!296 82[291 88 284 92!284 92[268 101 250 93!250 93[242 89 240 80!240 80[233 46 234 5!234 5[234 -9 236 -22!236 -22[238 -36 231 -44!231 -44[227 -40 226 -33!226 -33[223 -1 224 35!224 35
+[225 62 229 83!229 83[225 86 220 88!220 88[200 94 187 83!187 83[185 81 184 78!184 78[172 41 170 -4!170 -4|170 -5!170 -5[170 -16 170 -26!170 -26[171 -28 170 -31"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!476 94[474 120 461 133!461 133[458 135 455 136!455 136[434 141 410 143!410 143[385 144 359 145!359 145[333 145 335 116!335 116[337 113 338 109!338 109[371 108 384 86!384 86[400 99 426 94!426 94[463 87 465 45!465 45[472 55 476 69!476
+ 69|477 69!477 69[477 76 477 82!477 82|477 83!477 83[476 88 476 94"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix tx="-19.7" ty="2.05"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0016937255859375" b="0.0029296875" c="-0.008514404296875" d="0.004913330078125" tx="19.7" ty="-4.3"/>
+                        </matrix>
+                        <GradientEntry color="#FFE4BF" ratio="0"/>
+                        <GradientEntry color="#A37F68" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1" joints="miter">
+                        <fill>
+                          <LinearGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0.010345458984375" d="0.00982666015625" tx="19.65" ty="-4.35"/>
+                            </matrix>
+                            <GradientEntry color="#CC9548" ratio="0"/>
+                            <GradientEntry color="#6B2900" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!436 -128|563 -125!563 -125|462 -47!462 -47|498 74!498 74|394 2!394 2|289 74!289 74|325 -47!325 -47|224 -125!224 -125|351 -128!351 -128|394 -248!394 -248|436 -128"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="阴影" color="#93CA45" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图标阴影" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

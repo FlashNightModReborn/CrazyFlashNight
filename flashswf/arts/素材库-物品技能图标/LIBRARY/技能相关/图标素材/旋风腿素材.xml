@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能相关/图标素材/旋风腿素材" itemID="66354a48-000020bb" lastModified="1714771039" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="旋风腿素材">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="技能相关/图标素材/技能背景" centerPoint3DX="2.15" centerPoint3DY="2.15">
+                  <matrix>
+                    <Matrix a="1.39453125" d="1.36001586914063" tx="-145.4" ty="-149.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="104.4" y="109.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.44" tintColor="#FF6600"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#F9359A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="技能相关/图标素材/3ddc6fb12ce9f6da240981c1e02e85e7.png">
+                  <matrix>
+                    <Matrix a="0.558197021484375" d="0.578414916992188" tx="-136.45" ty="-139.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="251.1" y="239.95"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

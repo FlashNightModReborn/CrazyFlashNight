@@ -1,0 +1,36 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="强化石底光" itemID="682eb51a-00000a28" lastModified="1747891562">
+  <timeline>
+    <DOMTimeline name="强化石底光">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0191802978515625" d="0.0115509033203125" tx="0.45" ty="2.6"/>
+                        </matrix>
+                        <GradientEntry color="#00A3FF" ratio="0.137254901960784"/>
+                        <GradientEntry color="#F1FAFF" alpha="0" ratio="0.894117647058824"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-392 -253|390 -253!390 -253|390 273!390 273|-392 273!-392 273|-392 -253"/>
+                    <Edge cubics="!390 -253(;390,-253 390,273 390,273q390 -253 390 273);"/>
+                    <Edge cubics="!-392 273(;-392,273 -392,-253 -392,-253q-392 273 -392 -253);"/>
+                    <Edge cubics="!390 273(;390,273 -392,273 -392,273q390 273 -392 273);"/>
+                    <Edge cubics="!-392 -253(;-392,-253 390,-253 390,-253q-392 -253 390 -253);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

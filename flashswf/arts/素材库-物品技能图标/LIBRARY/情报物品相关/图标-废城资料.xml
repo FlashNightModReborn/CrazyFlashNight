@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="情报物品相关/图标-废城资料" itemID="67b9b138-00000e9b" linkageExportForAS="true" linkageIdentifier="图标-废城资料" lastModified="1740222833" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="图标-废城资料">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="情报物品相关/纸张" centerPoint3DX="-2.05" centerPoint3DY="-2.15">
+                  <matrix>
+                    <Matrix a="0.872283935546875" d="1.15377807617188" tx="-11.35" ty="-9.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.65" y="6.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="情报物品相关/纸张" centerPoint3DX="0.6">
+                  <matrix>
+                    <Matrix a="0.872283935546875" c="0.240432739257813" d="1.10906982421875" tx="-10.25" ty="-7.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.65" y="6.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="情报物品相关/纸张" centerPoint3DX="-0.3" centerPoint3DY="6.2">
+                  <matrix>
+                    <Matrix a="0.838485717773438" b="-0.318283081054688" c="0.548568725585938" d="0.896697998046875" tx="-12.75" ty="3.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.65" y="6.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/玻璃片" itemID="66eab490-00000168" lastModified="1726657882">
+  <timeline>
+    <DOMTimeline name="玻璃片">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#57AFB1"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#36908A"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#55BCB1"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="2" edges="!2164 2686|3881 1150!3881 1150|3867 1045"/>
+                    <Edge fillStyle0="1" edges="!3867 1045|1750 0!1750 0|0 1392"/>
+                    <Edge fillStyle0="3" edges="!0 1392|0 1501!0 1501|2164 2686"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!2164 2686|2165 2577"/>
+                    <Edge fillStyle1="2" edges="!2165 2577|2167 2576"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!2167 2576|3867 1045"/>
+                    <Edge fillStyle1="3" edges="!2165 2575|2165 2577"/>
+                    <Edge fillStyle0="1" edges="!2165 2575|2167 2576"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!0 1392|2165 2575"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

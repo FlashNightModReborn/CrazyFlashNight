@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="情报物品相关/图标-黑铁会档案图标" itemID="67b9aedd-00000e8e" linkageExportForAS="true" linkageIdentifier="图标-黑铁会档案图标" lastModified="1740242195" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="图标-黑铁会档案图标">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="情报物品相关/档案" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.1766357421875" d="0.203384399414063" tx="-12.9" ty="-12.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="66.5" y="57.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="情报物品相关/黑铁会文字" centerPoint3DX="2.6" centerPoint3DY="8.75">
+                  <matrix>
+                    <Matrix a="0.717926025390625" d="0.704986572265625" tx="-8.95" ty="4.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="6.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,53 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能相关/图标-径庭拳-黑闪" itemID="6668432b-00001053" linkageExportForAS="true" linkageIdentifier="图标-径庭拳/黑闪" lastModified="1721466149" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="图标-径庭拳-黑闪">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="技能相关/图标素材/技能背景" centerPoint3DX="2.25" centerPoint3DY="1.55">
+                  <matrix>
+                    <Matrix a="0.121185302734375" d="0.118194580078125" tx="-12.65" ty="-12.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="104.4" y="110"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.77" tintColor="#170F62"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#3C7DFD" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FF0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!23 23|-23 23!-23 23|-23 -23!-23 -23|23 -23!23 -23|23 23"/>
+                  </edges>
+                </DOMShape>
+                <DOMBitmapInstance libraryItemName="技能相关/图标素材/3ddc6fb12ce9f6da240981c1e02e85e7 - 副本 (1).png">
+                  <matrix>
+                    <Matrix a="0.164093017578125" d="0.164093017578125" tx="-12.25" ty="-11.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="74.95" y="75.55"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

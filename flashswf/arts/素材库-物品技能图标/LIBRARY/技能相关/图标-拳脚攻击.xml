@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能相关/图标-拳脚攻击" itemID="669b7ffe-000004ff" linkageExportForAS="true" linkageIdentifier="图标-拳脚攻击" lastModified="1721467372" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="图标-拳脚攻击">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="技能相关/图标素材/技能背景" centerPoint3DX="0.25" centerPoint3DY="0.15">
+                  <matrix>
+                    <Matrix a="0.124298095703125" d="0.121612548828125" tx="-12.95" ty="-13.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="104.6" y="109.75"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.63" tintColor="#006666"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#3C7DFD" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="技能相关/图标素材/3ddc6fb12ce9f6da240981c1e02e85e72 (1) (2).png">
+                  <matrix>
+                    <Matrix a="0.235336303710938" d="0.235336303710938" tx="-12.7" ty="-12.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.2" y="52.05"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

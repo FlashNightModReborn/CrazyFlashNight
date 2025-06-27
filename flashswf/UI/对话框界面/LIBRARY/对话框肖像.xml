@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1749173775" lastUniqueIdentifier="227">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1751010653" lastUniqueIdentifier="227">
   <timeline>
-    <DOMTimeline name="对话框肖像" currentFrame="515">
+    <DOMTimeline name="对话框肖像" currentFrame="405">
       <layers>
         <DOMLayer name="Labels Layer" color="#FC2986" current="true" isSelected="true">
           <frames>
@@ -188,7 +188,16 @@
               <elements/>
             </DOMFrame>
             <DOMFrame index="405" duration="5" name="黑铁" labelType="name" keyMode="9728">
-              <elements/>
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.447021484375" d="0.447021484375" tx="-48" ty="-222.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="334.55" y="369.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
             <DOMFrame index="410" duration="5" name="杰克霜精" labelType="name" keyMode="9728">
               <elements/>
@@ -1101,16 +1110,7 @@ onClipEvent (enterFrame) {
               </elements>
             </DOMFrame>
             <DOMFrame index="405" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="对话框UI/新增头像（黑铁会）/黑铁头像/Symbol 803" symbolType="graphic" loop="single frame">
-                  <matrix>
-                    <Matrix a="3.314697265625" d="3.314697265625" tx="-5.5" ty="243.9"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="410" duration="5" keyMode="9728">
               <elements>

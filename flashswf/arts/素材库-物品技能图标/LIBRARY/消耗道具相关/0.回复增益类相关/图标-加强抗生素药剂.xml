@@ -1,0 +1,77 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="消耗道具相关/0.回复增益类相关/图标-加强抗生素药剂" itemID="66a5e918-0000177c" linkageExportForAS="true" linkageIdentifier="图标-加强抗生素药剂" lastModified="1747888889">
+  <timeline>
+    <DOMTimeline name="图标-加强抗生素药剂">
+      <layers>
+        <DOMLayer name="Layer 1" color="#E1F8AA">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!42 -292|190 -208!190 -208|177 -185!177 -185|28 -269!28 -269|42 -292!6 -172|52 -252!52 -252|158 -191!158 -191|112 -112!112 -112|6 -172!171 -40|-83 -185!-83 -185|-67 -211!-67 -211|187 -65!187 -65|171 -40"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!30 -10|52 -47"/>
+                    <Edge fillStyle1="1" edges="!81 19|73 14"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!73 14|30 -10"/>
+                    <Edge strokeStyle="1" edges="!30 -10|-44 118"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!-77 -71|-29 -151!-29 -151|128 -61!128 -61|81 19"/>
+                    <Edge strokeStyle="1" edges="!81 19|-30 209!-30 209|-80 181"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!-80 181|-147 293!-147 293|-190 268!-190 268|-123 156"/>
+                    <Edge strokeStyle="1" edges="!-123 156|-188 119!-188 119|-77 -71"/>
+                    <Edge fillStyle0="1" edges="!-77 -71|-73 -68"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!-73 -68|30 -10!-80 181|-80 177!-80 177|-122 153!-122 153|-123 156"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#77E725" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4450" centerPoint3DX="1.95" centerPoint3DY="8.9">
+                  <matrix>
+                    <Matrix a="0.868698120117188" b="0.492477416992188" c="-0.492477416992188" d="0.868698120117188" tx="-2.65" ty="3.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="12" blurY="12" color="#FFFF00"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#DF1BF8">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

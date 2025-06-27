@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="情报物品相关/图标-军阀档案图标" itemID="67b9abcc-00000304" linkageExportForAS="true" linkageIdentifier="图标-军阀档案图标" lastModified="1740221598" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="图标-军阀档案图标">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="情报物品相关/档案" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.17657470703125" d="0.203445434570313" tx="-12.9" ty="-12.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="66.55" y="57.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="情报物品相关/军阀纹章" centerPoint3DX="5.95" centerPoint3DY="5.4">
+                  <matrix>
+                    <Matrix a="0.0990447998046875" d="0.114120483398438" tx="-0.05" ty="-1.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.6" y="61.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

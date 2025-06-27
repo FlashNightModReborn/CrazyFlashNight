@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/铝粉图标" itemID="66e97c97-00000112" lastModified="1726577843">
+  <timeline>
+    <DOMTimeline name="铝粉图标">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/铝粉">
+                  <matrix>
+                    <Matrix a="0.624130249023438" d="0.624130249023438" ty="58.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="131.6" y="58.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/铝粉符号图标">
+                  <matrix>
+                    <Matrix a="1.49925231933594" d="1.49925231933594" tx="17.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.05" y="25.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

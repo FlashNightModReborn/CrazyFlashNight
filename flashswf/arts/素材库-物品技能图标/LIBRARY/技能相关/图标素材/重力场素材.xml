@@ -1,0 +1,53 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能相关/图标素材/重力场素材" itemID="65a3b043-000004e5" lastModified="1706551369" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="重力场素材">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="技能相关/图标素材/技能背景" centerPoint3DX="2.15" centerPoint3DY="2.15">
+                  <matrix>
+                    <Matrix a="1.36001586914063" d="1.36001586914063" tx="-141.8" ty="-149.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="104.4" y="109.9"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.59" tintColor="#007FFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#F9359A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FF0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!260 260|-260 260!-260 260|-260 -260!-260 -260|260 -260!260 -260|260 260"/>
+                  </edges>
+                </DOMShape>
+                <DOMBitmapInstance libraryItemName="技能相关/图标素材/位图 90">
+                  <matrix>
+                    <Matrix a="1.84375" d="1.84375" tx="-139.25" ty="-139.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="75.6" y="75.7"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
