@@ -159,6 +159,7 @@
           <DOMSoundItem name="sound/sound18.wav" itemID="6597607a-00000205" sourceExternalFilepath="../对话框界面/LIBRARY/sound/sound18.wav" sourceLastImported="1704419450" href="sound/sound18.wav" soundDataHRef="M 1 1716708655.dat" format="22kHz 16bit Mono" sampleCount="1893" exportFormat="10"/>
           <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="../对话框界面/LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" href="sound/sound19.wav" soundDataHRef="M 2 1716708655.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
           <DOMBitmapItem name="king2.psd 资源 4/资源/悲伤" itemID="678f68fb-00000a6a" sourceExternalFilepath="../对话框界面/LIBRARY/king2.psd 资源 4/资源/悲伤" sourceLastImported="1737451771" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="90" href="king2.psd 资源 4/资源/悲伤" bitmapDataHRef="M 6 1737562615.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="黑铁背景.jpg" itemID="685e5970-0000244f" sourceExternalFilepath="./LIBRARY/黑铁背景.jpg" sourceLastImported="1751013469" externalFileSize="2043359" quality="50" href="黑铁背景.jpg" bitmapDataHRef="M 15 1751013638.dat" frameRight="109580" frameBottom="115200" isJPEG="true"/>
           <DOMBitmapItem name="king2.psd 资源 2/资源/坏笑" itemID="678f5ff1-00000a54" sourceExternalFilepath="../对话框界面/LIBRARY/king2.psd 资源 2/资源/坏笑" sourceLastImported="1737449457" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="90" href="king2.psd 资源 2/资源/坏笑" bitmapDataHRef="M 4 1737562615.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="king2.psd 资源 2/资源/怒" itemID="678f5ff1-00000a59" sourceExternalFilepath="../对话框界面/LIBRARY/king2.psd 资源 2/资源/怒" sourceLastImported="1737449457" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="90" href="king2.psd 资源 2/资源/怒" bitmapDataHRef="M 5 1737562615.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="Pig2.psd 资源/怒" itemID="67b178a6-00002177" sourceLastImported="1739684006" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="90" href="Pig2.psd 资源/怒" bitmapDataHRef="M 12 1739684006.dat" frameRight="12300" frameBottom="16580"/>
@@ -1806,7 +1807,7 @@
           <Include href="歌留多/歌留多左大腿.xml" loadImmediate="false" itemID="67096491-00000038" lastModified="1728704308"/>
           <Include href="歌留多/歌留多左小臂.xml" loadImmediate="false" itemID="67096488-00000035" lastModified="1728668808"/>
           <Include href="歌留多/髅髅宫歌留多.xml" loadImmediate="false" itemID="6709f658-00000196" lastModified="1728706670"/>
-          <Include href="黑铁.xml" itemIcon="1" loadImmediate="false" itemID="685e4d2a-00001aa6" lastModified="1751010603"/>
+          <Include href="黑铁.xml" itemIcon="1" loadImmediate="false" itemID="685e4d2a-00001aa6" lastModified="1751013710"/>
           <Include href="黑铁1.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="685e4d37-00001b7c" lastModified="1751010615"/>
           <Include href="黑铁1.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="685e4d37-00001b7d" lastModified="1751010615"/>
           <Include href="黑铁1.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="685e4d37-00001b7e" lastModified="1751010615"/>
@@ -4783,6 +4784,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="5351402" publishTime="1751013797"/>
           <PublishItem publishSize="3523653" publishTime="1751010699"/>
           <PublishItem publishSize="3353064" publishTime="1749173425"/>
           <PublishItem publishSize="3317333" publishTime="1749084698"/>
@@ -4802,6 +4804,5 @@
           <PublishItem publishSize="1407376" publishTime="1740115337"/>
           <PublishItem publishSize="1407375" publishTime="1740115294"/>
           <PublishItem publishSize="1407337" publishTime="1740115073"/>
-          <PublishItem publishSize="2220473" publishTime="1739526309"/>
      </publishHistory>
 </DOMDocument>
