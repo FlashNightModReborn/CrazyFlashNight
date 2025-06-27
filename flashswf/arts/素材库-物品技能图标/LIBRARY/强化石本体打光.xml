@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="强化石本体打光" itemID="682eb145-00000a12" lastModified="1747890501">
+  <timeline>
+    <DOMTimeline name="强化石本体打光">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0181121826171875" b="0.00152587890625" c="-0.002838134765625" d="0.034454345703125" tx="1.1" ty="-11.9"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0.501960784313725" ratio="0.250980392156863"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!3 -309S1|-143 -169!-143 -169|-196 -5!-196 -5|-225 -5!-225 -5|-227 -4!-227 -4|-234 14!-234 14|-233 12!-233 12|-206 36!-206 36|-227 53!-227 53|-190 94!-190 94|-192 133!-192 133|1 309!1 309|191 135!191 135|189 96!189 96|227 55!227 55|205
+ 38!205 38|211 34!211 34|233 14!233 14|226 -2!226 -2|234 3!234 3|231 -4!231 -4|229 -5!229 -5|200 -5!200 -5|182 -65!182 -65|182 -68!182 -68|150 -174!150 -174|3 -309"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

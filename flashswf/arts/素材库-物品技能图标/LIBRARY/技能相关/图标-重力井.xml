@@ -1,0 +1,34 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能相关/图标-重力井" itemID="660e6ad2-000019dc" linkageExportForAS="true" linkageIdentifier="图标-重力井" lastModified="1712220882" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="图标-重力井">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#3C7DFD" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="技能相关/图标素材/强震地(代码空缺)/Symbol 5365" selected="true" centerPoint3DX="1.65" centerPoint3DY="1.65">
+                  <matrix>
+                    <Matrix a="0.125274658203125" d="0.125274658203125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18" color="#990099"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

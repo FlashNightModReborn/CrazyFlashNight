@@ -1,0 +1,35 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="壳体打光" itemID="682eb0d1-00000a0e" lastModified="1747892860">
+  <timeline>
+    <DOMTimeline name="壳体打光">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0216064453125" d="0.0216064453125" tx="-0.3" ty="-5"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.250980392156863"/>
+                        <GradientEntry color="#0084FA" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!196 -73|2 104!2 104|-192 -73!-192 -73|-190 -112!-190 -112|-227 -153!-227 -153|-206 -170!-206 -170|-233 -194!-233 -194|-234 -192!-234 -192|-227 -210!-227 -210|-289 -172!-289 -172|-289 -68!-289 -68|-281 -49!-281 -49|-292 -44!-292 -44|-292
+ 34!-292 34|-277 62!-277 62|-244 86!-244 86|-244 107!-244 107|-145 184!-145 184|-118 184!-118 184|-99 191!-99 191|-73 191!-73 191|-53 209!-53 209|-4 210!-4 210|-4 211!-4 211|2 211!2 211|2 210!2 210|51 209!51 209|71 191!71 191|98 191!98
+ 191|117 184!117 184|144 184!144 184|243 107!243 107|243 86!243 86|276 62!276 62|290 34!290 34|290 -44!290 -44|285 -46!285 -46|293 -68!293 -68|293 -172!293 -172|231 -210!231 -210|238 -194!238 -194|216 -174!216 -174|210 -170!210 -170|232
+ -153!232 -153|194 -112!194 -112|196 -73"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

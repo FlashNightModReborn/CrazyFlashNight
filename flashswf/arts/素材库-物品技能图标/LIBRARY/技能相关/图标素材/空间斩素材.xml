@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能相关/图标素材/空间斩素材" itemID="66355160-0000226e" lastModified="1714771016" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="空间斩素材">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="技能相关/图标素材/技能背景" selected="true" centerPoint3DX="2.7" centerPoint3DY="2.35">
+                  <matrix>
+                    <Matrix a="1.49676513671875" d="1.459716796875" tx="-155.7" ty="-159.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="104.4" y="109.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.77" tintColor="#170F62"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#F9359A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="技能相关/图标素材/3ddc6fb12ce9f6da240981c1e02e85e7 (1).png">
+                  <matrix>
+                    <Matrix a="0.6341552734375" d="0.6341552734375" tx="-151.2" ty="-150.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="240" y="240"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

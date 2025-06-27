@@ -1,0 +1,76 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="食材相关/香料" itemID="6814666f-00000711" lastModified="1746167407">
+  <timeline>
+    <DOMTimeline name="香料">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#623737"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#A15A5A"/>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <SolidColor color="#D2D2D2"/>
+                        </FillStyle>
+                        <FillStyle index="4">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0179443359375" d="0.009124755859375" tx="14.4" ty="19.95"/>
+                            </matrix>
+                            <GradientEntry color="#727272" ratio="0.00392156862745098"/>
+                            <GradientEntry color="#919191" ratio="0.0862745098039216"/>
+                            <GradientEntry color="#4F4F4F" ratio="0.286274509803922"/>
+                            <GradientEntry color="#8A8A8A" ratio="0.486274509803922"/>
+                            <GradientEntry color="#5F5F5F" ratio="0.717647058823529"/>
+                            <GradientEntry color="#7B7B7B" ratio="0.780392156862745"/>
+                            <GradientEntry color="#747474" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="5">
+                          <SolidColor color="#6D3D3D"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!515 40S6|515 95"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!515 95S6|515 225!515 225|455 250"/>
+                        <Edge fillStyle1="4" strokeStyle="1" edges="!455 250S6|489 521"/>
+                        <Edge fillStyle1="3" strokeStyle="1" edges="!489 521S6|519 756"/>
+                        <Edge fillStyle1="4" strokeStyle="1" edges="!519 756S6|565 1125!565 1125[292 1270 0 1130!0 1130|53 756"/>
+                        <Edge fillStyle1="3" strokeStyle="1" edges="!53 756S6|87 521"/>
+                        <Edge fillStyle1="4" strokeStyle="1" edges="!87 521S6|125 250"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!125 250S6|70 215!70 215|70 95"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!70 95S6|70 40"/>
+                        <Edge fillStyle1="5" strokeStyle="1" edges="!70 40S6[293 -40 515 40"/>
+                        <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="!53 756S7[258 831 519 756"/>
+                        <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!515 95S7[270 179 70 95"/>
+                        <Edge fillStyle0="5" fillStyle1="1" strokeStyle="1" edges="!70 40S7[293 126 515 40"/>
+                        <Edge fillStyle0="4" fillStyle1="3" strokeStyle="1" edges="!87 521S7[280 578 489 521"/>
+                        <Edge fillStyle0="4" fillStyle1="2" strokeStyle="1" edges="!455 250S7[290 316 125 250"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

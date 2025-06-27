@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="情报物品相关/图标-诺亚档案图标" itemID="67b9ad3b-00000e83" linkageExportForAS="true" linkageIdentifier="图标-诺亚档案图标" lastModified="1740242185">
+  <timeline>
+    <DOMTimeline name="图标-诺亚档案图标">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="情报物品相关/档案" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.176544189453125" d="0.203323364257813" tx="-12.9" ty="-12.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="66.25" y="57.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/Symbol 34" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0186614990234375" b="-0.094970703125" c="0.0919036865234375" d="0.0192718505859375" tx="8.45" ty="5.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

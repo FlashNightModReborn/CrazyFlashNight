@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/玻璃图标" itemID="66eab51c-0000018c" lastModified="1726657828">
+  <timeline>
+    <DOMTimeline name="玻璃图标">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/玻璃">
+                  <matrix>
+                    <Matrix a="0.787353515625" d="0.787353515625" ty="47.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="102.05" y="75.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/玻璃符号图标">
+                  <matrix>
+                    <Matrix a="1.09906005859375" d="1.09906005859375" tx="69.3" ty="8.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="48.5" y="18.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

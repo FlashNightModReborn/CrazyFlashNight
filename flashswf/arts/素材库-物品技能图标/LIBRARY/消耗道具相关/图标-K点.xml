@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="消耗道具相关/图标-K点" itemID="66a5ea6a-000017d7" linkageExportForAS="true" linkageIdentifier="图标-K点" lastModified="1747882535" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="图标-K点">
+      <layers>
+        <DOMLayer name="Layer 1" color="#F38038" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="新K点" selected="true" centerPoint3DX="-0.05" centerPoint3DY="0.2">
+                  <matrix>
+                    <Matrix a="0.471771240234375" d="0.471771240234375" tx="-0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="背景光" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

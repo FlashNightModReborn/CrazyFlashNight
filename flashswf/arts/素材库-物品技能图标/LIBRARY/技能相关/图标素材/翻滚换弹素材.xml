@@ -1,0 +1,53 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能相关/图标素材/翻滚换弹素材" itemID="65b7e849-00002144" lastModified="1726425807" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="翻滚换弹素材">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="技能相关/图标素材/技能背景" selected="true" centerPoint3DX="2.15" centerPoint3DY="2.15">
+                  <matrix>
+                    <Matrix a="1.38998413085938" d="1.36001586914063" tx="-144.95" ty="-149.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="104.4" y="109.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.63" tintColor="#000066"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#F9359A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FF0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!260 260S2|-260 260!-260 260|-260 -260!-260 -260|260 -260!260 -260|260 260"/>
+                  </edges>
+                </DOMShape>
+                <DOMBitmapInstance selected="true" libraryItemName="技能相关/图标素材/QQ截图20240130020129.png">
+                  <matrix>
+                    <Matrix a="0.37713623046875" d="0.38433837890625" tx="-133.15" ty="-136.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="579.5" y="551.85"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

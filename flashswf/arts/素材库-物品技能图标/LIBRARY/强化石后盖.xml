@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="强化石后盖" itemID="682ec433-00000a63" lastModified="1747895347">
+  <timeline>
+    <DOMTimeline name="强化石后盖">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0232696533203125" d="0.0232696533203125" tx="-2.45" ty="-11.15"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.250980392156863"/>
+                        <GradientEntry color="#0084FA" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!243 -121S2|203 -85!203 -85|206 -51!206 -51|-1 139!-1 139|-206 -51!-206 -51|-204 -85!-204 -85|-243 -121!-243 -121|-221 -136!-221 -136|-225 -139!-225 -139|226 -139!226 -139|221 -136!221 -136|243 -121"/>
+                    <Edge cubics="!-225 -139(;-225,-139 226,-139 226,-139q-225 -139 226 -139);"/>
+                    <Edge cubics="!243 -121(;243,-121 203,-85 203,-85q243 -121 203 -85);"/>
+                    <Edge cubics="!203 -85(203,-85;203,-85 206,-51 206,-51q203 -85 206 -51);"/>
+                    <Edge cubics="!221 -136(;221,-136 243,-121 243,-121q221 -136 243 -121);"/>
+                    <Edge cubics="!-206 -51(-206,-51;-206,-51 -204,-85 -204,-85q-206 -51 -204 -85);"/>
+                    <Edge cubics="!-204 -85(;-204,-85 -243,-121 -243,-121q-204 -85 -243 -121);"/>
+                    <Edge cubics="!-243 -121(-243,-121;-243,-121 -221,-136 -221,-136q-243 -121 -221 -136);"/>
+                    <Edge cubics="!226 -139(;226,-139 221,-136 221,-136q226 -139 221 -136);"/>
+                    <Edge cubics="!-221 -136(;-221,-136 -225,-139 -225,-139q-221 -136 -225 -139);"/>
+                    <Edge cubics="!206 -51(206,-51;206,-51 -1,139 -1,139q206 -51 -1 139);"/>
+                    <Edge cubics="!-1 139(-1,139;-1,139 -206,-51 -206,-51q-1 139 -206 -51);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

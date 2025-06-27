@@ -1,0 +1,53 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能相关/图标-口才" itemID="669b9285-00001238" linkageExportForAS="true" linkageIdentifier="图标-口才" lastModified="1740645683" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="图标-口才">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="技能相关/图标素材/技能背景" centerPoint3DX="0.2" centerPoint3DY="0.2">
+                  <matrix>
+                    <Matrix a="0.121017456054688" d="0.118011474609375" tx="-12.6" ty="-12.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="104.1" y="109.75"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.44" tintColor="#00DBFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#3C7DFD">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FF0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!23 23|-23 23!-23 23|-23 -23!-23 -23|23 -23!23 -23|23 23"/>
+                  </edges>
+                </DOMShape>
+                <DOMBitmapInstance libraryItemName="技能相关/图标素材/image (2).png">
+                  <matrix>
+                    <Matrix a="0.105636596679688" d="0.105636596679688" tx="-11.75" ty="-11.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="114.05" y="114.05"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

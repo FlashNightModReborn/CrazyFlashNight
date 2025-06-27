@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/碱液图标" itemID="66ebc946-000000d4" lastModified="1726728523">
+  <timeline>
+    <DOMTimeline name="碱液图标">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/碱液">
+                  <matrix>
+                    <Matrix a="0.723907470703125" d="0.723907470703125" ty="26.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="59.4" y="94.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/碱液符号图标">
+                  <matrix>
+                    <Matrix tx="60.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="47.45" y="50.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

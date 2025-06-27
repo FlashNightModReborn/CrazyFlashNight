@@ -1,0 +1,74 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/硫酸盐" itemID="66e9aa2a-00000067" lastModified="1726589482">
+  <timeline>
+    <DOMTimeline name="硫酸盐">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0665740966796875" tx="165.05" ty="-237.5"/>
+                        </matrix>
+                        <GradientEntry color="#ADADA8" ratio="0"/>
+                        <GradientEntry color="#ADA9A3" ratio="0.450980392156863"/>
+                        <GradientEntry color="#C8C4BE" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.287094116210938" b="0.287094116210938" c="-0.178024291992188" d="0.178024291992188" tx="138.75" ty="184.15"/>
+                        </matrix>
+                        <GradientEntry color="#8C8C87" ratio="0"/>
+                        <GradientEntry color="#ADA9A3" ratio="0.450980392156863"/>
+                        <GradientEntry color="#C8C4BE" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!330 1247S6[329 719 63 191!63 191|2762 161!2762 161[3918 181 4872 0!4872 0[4884 298 4853 672"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!4853 672S6[4797 1341 4603 2255!4603 2255[4457 3799 4603 5343!4603 5343[4616 6365 4839 7192!4839 7192[2411 7170 0 7250!0 7250[168 6700 244 6185!244 6185[397 4921 406 3923!406 3923[483 2490 330 1247"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!330 1247S3[2737 1089 4853 672"/>
+                    <Edge cubics="!63 191(;240,543 329,895 330,1247q63 191Q329 719q330 1247);"/>
+                    <Edge cubics="!63 191(;63,191 2762,161 2762,161q63 191 2762 161);"/>
+                    <Edge cubics="!2762 161(;3533,174 4236,121 4872,0q2762 161Q3918 181q4872 0);"/>
+                    <Edge cubics="!4872 0(;4880,199 4874,423 4853,672q4872 0Q4884 298q4853 672);"/>
+                    <Edge cubics="!4853 672(;4815,1118 4732,1646 4603,2255q4853 672Q4797 1341q4603 2255);"/>
+                    <Edge cubics="!4603 2255(;4506,3284 4506,4314 4603,5343q4603 2255Q4457 3799q4603 5343);"/>
+                    <Edge cubics="!4603 5343(;4612,6024 4690,6641 4839,7192q4603 5343Q4616 6365q4839 7192);"/>
+                    <Edge cubics="!4839 7192(;3220,7177 1607,7197 0,7250q4839 7192Q2411 7170q0 7250);"/>
+                    <Edge cubics="!0 7250(;112,6883 193,6528 244,6185q0 7250Q168 6700q244 6185);"/>
+                    <Edge cubics="!244 6185(;346,5342 400,4588 406,3923q244 6185Q397 4921q406 3923);"/>
+                    <Edge cubics="!406 3923(;457,2968 432,2076 330,1247q406 3923Q483 2490q330 1247);"/>
+                    <Edge cubics="!330 1247(;1935,1142 3442,950 4853,672q330 1247Q2737 1089q4853 672);"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/硫酸盐文字" selected="true">
+                  <matrix>
+                    <Matrix a="1.44732666015625" d="1.6009521484375" tx="41.5" ty="93.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="57.9" y="12.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

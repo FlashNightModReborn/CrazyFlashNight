@@ -1,0 +1,45 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 2" itemID="682ec4b5-00000a69" symbolType="graphic" lastModified="1747895477">
+  <timeline>
+    <DOMTimeline name="补间 2">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="-0.25" ty="-6.9"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#999999"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!248 -20S2|255 -3!255 -3|231 19!231 19|-220 19!-220 19|-244 -3!-244 -3|-238 -20!-238 -20|-236 -21!-236 -21|246 -21!246 -21|248 -20"/>
+                    <Edge cubics="!246 -21(;246,-21 248,-20 248,-20q246 -21 248 -20);"/>
+                    <Edge cubics="!-238 -20(-238,-20;-238,-20 -236,-21 -236,-21q-238 -20 -236 -21);"/>
+                    <Edge cubics="!-236 -21(;-236,-21 246,-21 246,-21q-236 -21 246 -21);"/>
+                    <Edge cubics="!255 -3(;255,-3 231,19 231,19q255 -3 231 19);"/>
+                    <Edge cubics="!-220 19(;-220,19 -244,-3 -244,-3q-220 19 -244 -3);"/>
+                    <Edge cubics="!-220 19(;-220,19 231,19 231,19q-220 19 231 19);"/>
+                    <Edge cubics="!248 -20(;248,-20 255,-3 255,-3q248 -20 255 -3);"/>
+                    <Edge cubics="!-244 -3(;-244,-3 -238,-20 -238,-20q-244 -3 -238 -20);"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="强化石后盖" selected="true" centerPoint3DY="1">
+                  <matrix>
+                    <Matrix ty="1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,49 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能相关/Symbol 6" itemID="668e7c1e-000005b9" linkageExportForAS="true" linkageIdentifier="图标-觉醒不坏金身" lastModified="1720533000">
+  <timeline>
+    <DOMTimeline name="Symbol 6">
+      <layers>
+        <DOMLayer name="Layer 1" color="#9FE08C">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 5" centerPoint3DX="12" centerPoint3DY="12">
+                  <matrix>
+                    <Matrix a="1.16667175292969" d="1.16667175292969"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18" color="#FFFF00" knockout="true"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#AECB44" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <BitmapFill bitmapPath="3.位图相关/bitmap2.png" bitmapIsClipped="true">
+                        <matrix>
+                          <Matrix a="13.0233764648438" d="13.0233764648438" tx="-14" ty="-14"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!280 280|-280 280!-280 280|-280 -280!-280 -280|280 -280!280 -280|280 280"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

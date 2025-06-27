@@ -1,0 +1,95 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/图标-无人机残骸" itemID="66adb90b-000017e4" linkageExportForAS="true" linkageIdentifier="图标-无人机残骸" lastModified="1722661131">
+  <timeline>
+    <DOMTimeline name="图标-无人机残骸">
+      <layers>
+        <DOMLayer name="Layer 1" color="#58C57B">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#E0E9EE"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#A91D1E"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#4D0200"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#8AA0AB"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!48 -155|44 -155"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!44 -155|35 -157!35 -157|-49 -104"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!-49 -104|-136 -50!-136 -50|-160 51"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!-160 51|-180 141!-180 141|-132 148"/>
+                    <Edge fillStyle0="4" strokeStyle="1" edges="!-132 148|-64 158"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!-64 158|42 132!42 132|47 99!47 99|151 73!151 73|155 62"/>
+                    <Edge fillStyle0="4" strokeStyle="1" edges="!155 62|165 34"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!165 34|177 1!177 1|139 -13"/>
+                    <Edge fillStyle0="4" strokeStyle="1" edges="!139 -13|158 -59"/>
+                    <Edge fillStyle0="4" edges="!158 -59|159 -61"/>
+                    <Edge fillStyle0="3" edges="!159 -61|162 -66"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!162 -66|180 -109!180 -109|148 -140"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!148 -140|51 -154"/>
+                    <Edge fillStyle0="2" edges="!51 -154|48 -155"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!48 -155|56 -120!56 -120|102 -110"/>
+                    <Edge fillStyle0="4" fillStyle1="1" strokeStyle="1" edges="!102 -110|-21 -32"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!-21 -32|-80 -41"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!-80 -41|-81 -41"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!-81 -41|-1 -95!-1 -95|-49 -104"/>
+                    <Edge fillStyle0="4" fillStyle1="4" strokeStyle="1" edges="!-45 74|-32 16!-32 16|56 -36!56 -36|77 -3!77 -3|48 19!48 19|65 46"/>
+                    <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="!65 46|53 49!53 49|-45 74"/>
+                    <Edge fillStyle0="4" fillStyle1="2" strokeStyle="1" edges="!104 -111|102 -110"/>
+                    <Edge fillStyle0="4" fillStyle1="3" edges="!159 -61|104 -111"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!104 -111|148 -140"/>
+                    <Edge fillStyle0="4" fillStyle1="3" strokeStyle="1" edges="!165 34|126 18!126 18|139 -13"/>
+                    <Edge fillStyle0="4" fillStyle1="4" strokeStyle="1" edges="!96 38|118 33!118 33|126 18"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="!53 49|47 99"/>
+                    <Edge fillStyle0="4" fillStyle1="3" strokeStyle="1" edges="!65 46|96 38!96 38|155 62"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!-136 -50|-81 -41"/>
+                    <Edge fillStyle0="4" fillStyle1="4" strokeStyle="1" edges="!-31 12|-32 16"/>
+                    <Edge fillStyle0="4" fillStyle1="1" strokeStyle="1" edges="!-21 -32|-31 12!-31 12|-54 10!-54 10|-79 103!-79 103|-122 99!-122 99|-132 148"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!-80 -41|-94 21!-94 21|-160 51"/>
+                    <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="!-45 74|-64 158"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#F0EBBE" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 16" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.163818359375" d="1.163818359375"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" blueOffset="255" greenOffset="255"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

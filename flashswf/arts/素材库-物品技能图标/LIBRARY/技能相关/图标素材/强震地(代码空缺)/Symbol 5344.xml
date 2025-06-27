@@ -1,0 +1,65 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能相关/图标素材/强震地(代码空缺)/Symbol 5344" itemID="6577bc3f-00001f60" lastModified="1731860310" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="Symbol 5344">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="技能相关/图标素材/技能背景" centerPoint3DX="2.15" centerPoint3DY="2.15">
+                  <matrix>
+                    <Matrix a="0.946197509765625" d="0.946197509765625" tx="-98.65" ty="-103.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="104.4" y="109.9"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.68" tintColor="#DDD800"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="技能相关/图标素材/位图 89">
+                  <matrix>
+                    <Matrix a="0.935409545898438" d="0.935409545898438" tx="-96.55" ty="-97.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="104.5" y="105"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#F9359A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <BitmapFill bitmapPath="技能相关/图标素材/强震地(代码空缺)/bitmap5342.png" bitmapIsClipped="true">
+                        <matrix>
+                          <Matrix a="100.336135864258" d="105.800415039063" tx="-73.65" ty="-66"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1136 1431|-1473 1431!-1473 1431|-1473 -1320!-1473 -1320|1136 -1320!1136 -1320|1136 1431"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

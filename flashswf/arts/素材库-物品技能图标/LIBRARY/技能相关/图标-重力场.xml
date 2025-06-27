@@ -1,0 +1,27 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能相关/图标-重力场" itemID="660e6acf-000019db" linkageExportForAS="true" linkageIdentifier="图标-重力场" lastModified="1712220879" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="图标-重力场">
+      <layers>
+        <DOMLayer name="Layer 1" color="#3C7DFD" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="技能相关/图标素材/重力场素材" selected="true" centerPoint3DX="1.15" centerPoint3DY="1.15">
+                  <matrix>
+                    <Matrix a="0.0867767333984375" d="0.0867767333984375"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18" color="#990099"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
