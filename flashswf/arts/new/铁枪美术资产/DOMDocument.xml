@@ -4,7 +4,8 @@
           <Include href="铁枪初级logo齿轮.xml" loadImmediate="false" itemID="685e0ea5-0000070a" lastModified="1750994605"/>
           <Include href="铁枪初级logo核心.xml" loadImmediate="false" itemID="685e0ec1-0000070f" lastModified="1750996117"/>
           <Include href="铁枪初级logo铁枪.xml" loadImmediate="false" itemID="685e0fd7-00000716" lastModified="1750996111"/>
-          <Include href="铁枪高级logo.xml" loadImmediate="false" itemID="685e4530-0000071f" lastModified="1751008692"/>
+          <Include href="铁枪高级logo图腾.xml" loadImmediate="false" itemID="685e57a7-00000725" lastModified="1751013287"/>
+          <Include href="铁枪高级logo样式.xml" loadImmediate="false" itemID="685e57b6-00000727" lastModified="1751013440"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -103,9 +104,9 @@
                                              </matrix>
                                              <members/>
                                         </DOMGroup>
-                                        <DOMSymbolInstance libraryItemName="铁枪初级logo核心" centerPoint3DX="252" centerPoint3DY="214.1">
+                                        <DOMSymbolInstance libraryItemName="铁枪初级logo核心" centerPoint3DX="298.8" centerPoint3DY="265.45">
                                              <matrix>
-                                                  <Matrix tx="113.05" ty="55"/>
+                                                  <Matrix tx="159.85" ty="106.35"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="138.95" y="159.1"/>
@@ -115,28 +116,21 @@
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="图层 4" color="#FF4FFF" outline="true" useOutlineView="true">
-                         <frames>
-                              <DOMFrame index="0" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                         </frames>
-                    </DOMLayer>
-                    <DOMLayer name="齿轮" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+                    <DOMLayer name="齿轮" color="#9933CC" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="铁枪初级logo齿轮" centerPoint3DX="252.8" centerPoint3DY="223.5">
+                                        <DOMSymbolInstance libraryItemName="铁枪初级logo齿轮" centerPoint3DX="299.6" centerPoint3DY="274.85">
                                              <matrix>
-                                                  <Matrix tx="105.65" ty="90"/>
+                                                  <Matrix tx="152.45" ty="141.35"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="147.15" y="133.5"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="铁枪初级logo铁枪" centerPoint3DX="-48.6" centerPoint3DY="223.2">
+                                        <DOMSymbolInstance libraryItemName="铁枪初级logo铁枪" centerPoint3DX="-1.8" centerPoint3DY="149.1">
                                              <matrix>
-                                                  <Matrix tx="-187.55" ty="64.1"/>
+                                                  <Matrix tx="-140.75" ty="-10"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="138.95" y="159.1"/>
@@ -166,12 +160,28 @@
                                              </matrix>
                                              <members/>
                                         </DOMGroup>
-                                        <DOMSymbolInstance libraryItemName="铁枪高级logo" selected="true" centerPoint3DX="577.35" centerPoint3DY="211.75">
+                                        <DOMSymbolInstance libraryItemName="铁枪高级logo样式" centerPoint3DX="638.05" centerPoint3DY="176.85">
                                              <matrix>
-                                                  <Matrix a="0.360794067382813" d="0.360794067382813" tx="436.1" ty="-6.45"/>
+                                                  <Matrix a="0.278778076171875" d="0.278778076171875" tx="504.15" ty="-6.05"/>
                                              </matrix>
                                              <transformationPoint>
-                                                  <Point x="391.5" y="604.8"/>
+                                                  <Point x="480.3" y="656.1"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="铁枪高级logo图腾" centerPoint3DX="297.9" centerPoint3DY="-298.1">
+                                             <matrix>
+                                                  <Matrix a="0.63653564453125" d="0.63653564453125" tx="48.7" ty="-683.05"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="391.5" y="604.75"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
                                    </elements>
@@ -445,6 +455,8 @@
                     <SolidSwatchItem color="#60695F" hue="76" saturation="13" brightness="94"/>
                     <SolidSwatchItem color="#01080B" hue="129" saturation="196" brightness="6"/>
                     <SolidSwatchItem color="#6666FF" alpha="0.247058823529412" hue="160" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#2A675B" hue="112" saturation="100" brightness="69"/>
+                    <SolidSwatchItem color="#5D5E4F" hue="40" saturation="21" brightness="81"/>
                </swatches>
           </swatchList>
      </swatchLists>
