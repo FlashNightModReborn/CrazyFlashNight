@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="项链相关/图标-枪械中加成项链" itemID="66844225-00003a90" linkageExportForAS="true" linkageIdentifier="图标-枪械中加成项链" lastModified="1751017168" lastUniqueIdentifier="10">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="项链相关/图标-枪械中加成项链" itemID="66844225-00003a90" linkageExportForAS="true" linkageIdentifier="图标-枪械中加成项链" lastModified="1751118678" lastUniqueIdentifier="12">
   <timeline>
     <DOMTimeline name="图标-枪械中加成项链">
       <layers>
@@ -24,30 +24,38 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240"/>
+                    <Edge fillStyle1="1" edges="!240 -240|240 240!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="武器图标" color="#B88FDA" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="武器图标" color="#B88FDA" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪初级logo核心">
+                <DOMSymbolInstance libraryItemName="铁枪初级logo齿轮" centerPoint3DY="1.3">
                   <matrix>
-                    <Matrix a="0.0748291015625" d="0.0748291015625" tx="-10.4" ty="-11.9"/>
+                    <Matrix a="0.074676513671875" d="0.074676513671875" tx="-10.85" ty="-8.75"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="139" y="159.05"/>
+                    <Point x="146.65" y="133.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="铁枪初级logo核心" centerPoint3DX="-0.15" centerPoint3DY="0.6">
+                  <matrix>
+                    <Matrix a="0.074676513671875" d="0.074676513671875" tx="-10.3" ty="-11.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="138.6" y="159.35"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#93CA45" autoNamed="false">
+        <DOMLayer name="阴影" color="#93CA45" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -56,7 +64,7 @@
                     <Point/>
                   </transformationPoint>
                   <color>
-                    <Color tintMultiplier="1" tintColor="#C0C0C0"/>
+                    <Color alphaMultiplier="0.5" redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="192" blueOffset="192" greenOffset="192"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>

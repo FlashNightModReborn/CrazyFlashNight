@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="项链相关/图标-枪械小加成项链" itemID="66844283-00003a9d" linkageExportForAS="true" linkageIdentifier="图标-枪械小加成项链" lastModified="1751017588" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="项链相关/图标-枪械小加成项链" itemID="66844283-00003a9d" linkageExportForAS="true" linkageIdentifier="图标-枪械小加成项链" lastModified="1751118672" lastUniqueIdentifier="8">
   <timeline>
     <DOMTimeline name="图标-枪械小加成项链">
       <layers>
@@ -24,14 +24,14 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240"/>
+                    <Edge fillStyle1="1" edges="!240 -240|240 240!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="武器图标" color="#B88FDA" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="武器图标" color="#B88FDA" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -47,16 +47,16 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#93CA45" autoNamed="false">
+        <DOMLayer name="阴影" color="#93CA45" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="图标阴影" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="图标阴影" selected="true" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                   <color>
-                    <Color tintMultiplier="1" tintColor="#B87333"/>
+                    <Color alphaMultiplier="0.5" redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="192" blueOffset="192" greenOffset="192"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
