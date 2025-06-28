@@ -268,6 +268,7 @@
           <Include href="材料相关/图标-制作图纸默认.xml" itemID="67bde60c-000016b1" lastModified="1740498466"/>
           <Include href="材料相关/图标-猪年碎片.xml" itemID="66adb838-000017b9" lastModified="1722660920"/>
           <Include href="翅虎.xml" loadImmediate="false" itemID="685febd1-00002363" lastModified="1751118217"/>
+          <Include href="火凤.xml" loadImmediate="false" itemID="68601976-0000240b" lastModified="1751128438"/>
           <Include href="技能相关/Symbol 6.xml" itemID="668e7c1e-000005b9" lastModified="1720533000"/>
           <Include href="技能相关/Symbol 4640.xml" itemID="668e7c1e-00001150" lastModified="1720533000"/>
           <Include href="技能相关/Symbol 4643.xml" itemID="668e7c1e-00001151" lastModified="1720533000"/>
@@ -380,7 +381,7 @@
           <Include href="情报物品相关/图标-黑铁会档案图标.xml" itemID="67b9aedd-00000e8e" lastModified="1740242195"/>
           <Include href="情报物品相关/图标-黑铁会的秘密情报书.xml" itemID="66adbb99-0000182d" lastModified="1722661785"/>
           <Include href="情报物品相关/图标-黑铁会信物.xml" itemID="66adbb74-00001822" lastModified="1722661748"/>
-          <Include href="情报物品相关/图标-火凤令.xml" itemID="66adbb7c-00001824" lastModified="1722661756"/>
+          <Include href="情报物品相关/图标-火凤令.xml" itemID="66adbb7c-00001824" lastModified="1751129865"/>
           <Include href="情报物品相关/图标-火凤堂徽章.xml" itemID="66adbb77-00001823" lastModified="1722661751"/>
           <Include href="情报物品相关/图标-军阀档案图标.xml" itemID="67b9abcc-00000304" lastModified="1740221598"/>
           <Include href="情报物品相关/图标-军阀前线基地通关证明.xml" itemID="66adbb38-0000181d" lastModified="1722661688"/>
@@ -505,7 +506,7 @@
           <Include href="食材相关/猪肉.xml" itemIcon="1" loadImmediate="false" itemID="67bdc63d-000000de" lastModified="1740490301"/>
           <Include href="食材相关/竹笋.xml" loadImmediate="false" itemID="6814918b-0000039e" lastModified="1746178443"/>
           <Include href="食材相关/柱侯酱.xml" loadImmediate="false" itemID="6814612e-000005fb" lastModified="1746166062"/>
-          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1751119162"/>
+          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1751129471"/>
           <Include href="铁枪初级logo齿轮.xml" loadImmediate="false" itemID="685e0ea5-0000070a" lastModified="1750994605"/>
           <Include href="铁枪初级logo核心.xml" loadImmediate="false" itemID="685e0ec1-0000070f" lastModified="1751117955"/>
           <Include href="铁枪初级logo铁枪.xml" loadImmediate="false" itemID="685e0fd7-00000716" lastModified="1751016600"/>
@@ -521,8 +522,8 @@
           <Include href="无AS链接/Symbol 4310.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001095" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4325.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000109d" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4360.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000010af" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 4439.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000010c8" lastModified="1751120319"/>
-          <Include href="无AS链接/Symbol 4441.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000010ca" lastModified="1720533000"/>
+          <Include href="无AS链接/Symbol 4439.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000010c8" lastModified="1751129343"/>
+          <Include href="无AS链接/Symbol 4441.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000010ca" lastModified="1751129396"/>
           <Include href="无AS链接/Symbol 4443.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000010cc" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4450.xml" loadImmediate="false" itemID="668e7c1e-000010d0" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4455.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000010d3" lastModified="1720533000"/>
@@ -569,9 +570,9 @@
           <Include href="项链相关/图标-空手中加成项链.xml" itemID="66843a3e-00003a51" lastModified="1719944129"/>
           <Include href="项链相关/图标-冷兵器大加成项链.xml" itemID="66843db2-00003a70" lastModified="1719942800"/>
           <Include href="项链相关/图标-冷兵器大加成项链 副本.xml" loadImmediate="false" itemID="685feba0-0000234b" lastModified="1751116704"/>
-          <Include href="项链相关/图标-冷兵器小加成项链.xml" itemID="66843c4b-00003a60" lastModified="1751119583"/>
+          <Include href="项链相关/图标-冷兵器小加成项链.xml" itemID="66843c4b-00003a60" lastModified="1751128497"/>
           <Include href="项链相关/图标-冷兵器小加成项链 副本.xml" loadImmediate="false" itemID="685feba5-00002352" lastModified="1751116709"/>
-          <Include href="项链相关/图标-冷兵器中加成项链.xml" itemID="66843ccd-00003a69" lastModified="1719942611"/>
+          <Include href="项链相关/图标-冷兵器中加成项链.xml" itemID="66843ccd-00003a69" lastModified="1751129821"/>
           <Include href="项链相关/图标-冷兵器中加成项链 副本.xml" loadImmediate="false" itemID="685febae-00002359" lastModified="1751116718"/>
           <Include href="项链相关/图标-枪械大加成项链.xml" itemID="66843e8e-00003a7d" lastModified="1751118683"/>
           <Include href="项链相关/图标-枪械大加成项链 副本.xml" loadImmediate="false" itemID="685e641c-00001fe4" lastModified="1751016476"/>
@@ -980,6 +981,8 @@
                     <SolidSwatchItem color="#D9BB9B" hue="21" saturation="107" brightness="175"/>
                     <SolidSwatchItem color="#DEAB6E" hue="22" saturation="151" brightness="157"/>
                     <SolidSwatchItem color="#F1BD78" hue="23" saturation="195" brightness="170"/>
+                    <SolidSwatchItem color="#BA445E" hue="231" saturation="111" brightness="120"/>
+                    <SolidSwatchItem color="#EEC2D1" hue="226" saturation="135" brightness="204"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1051,6 +1054,11 @@
                          <GradientEntry color="#FFFFFF" alpha="0.501960784313725" ratio="0.250980392156863"/>
                          <GradientEntry color="#FFFFFF" alpha="0" ratio="1"/>
                     </RadialGradientSwatchItem>
+                    <RadialGradientSwatchItem focalPointRatio="0.00392156862745098">
+                         <GradientEntry color="#EEC2D1" ratio="0"/>
+                         <GradientEntry color="#EBB9C9" ratio="0.580392156862745"/>
+                         <GradientEntry color="#BE435F" ratio="0.83921568627451"/>
+                    </RadialGradientSwatchItem>
                </swatches>
           </swatchList>
      </extendedSwatchLists>
@@ -1059,6 +1067,12 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2159582" publishTime="1751129258"/>
+          <PublishItem publishSize="2159583" publishTime="1751129135"/>
+          <PublishItem publishSize="2159584" publishTime="1751129130"/>
+          <PublishItem publishSize="2159582" publishTime="1751129085"/>
+          <PublishItem publishSize="2159610" publishTime="1751128922"/>
+          <PublishItem publishSize="2156526" publishTime="1751122883"/>
           <PublishItem publishSize="2157324" publishTime="1751121792"/>
           <PublishItem publishSize="2155559" publishTime="1751120326"/>
           <PublishItem publishSize="2155088" publishTime="1751119603"/>
@@ -1073,11 +1087,5 @@
           <PublishItem publishSize="2156137" publishTime="1751117875"/>
           <PublishItem publishSize="2156129" publishTime="1751117706"/>
           <PublishItem publishSize="2154590" publishTime="1751117246"/>
-          <PublishItem publishSize="2154574" publishTime="1751117195"/>
-          <PublishItem publishSize="2154563" publishTime="1751117087"/>
-          <PublishItem publishSize="2158249" publishTime="1751017624"/>
-          <PublishItem publishSize="2095545" publishTime="1748966665"/>
-          <PublishItem publishSize="2094688" publishTime="1748966553"/>
-          <PublishItem publishSize="2077607" publishTime="1747897099"/>
      </publishHistory>
 </DOMDocument>
