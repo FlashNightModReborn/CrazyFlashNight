@@ -1,9 +1,11 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#333333" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" objectsSnapTo="false" previewMode="anti alias" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#999999" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" objectsSnapTo="false" previewMode="anti alias" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <media/>
      <symbols>
+          <Include href="Symbol 649.xml" loadImmediate="false" itemID="6577efbc-00000460" lastModified="1751171071"/>
           <Include href="翅虎.xml" loadImmediate="false" itemID="685febd1-00002363" lastModified="1751116753"/>
           <Include href="翅虎散人徽章.xml" loadImmediate="false" itemID="68600431-000023c1" lastModified="1751122993"/>
           <Include href="翅虎坛主徽章.xml" loadImmediate="false" itemID="68600428-000023bd" lastModified="1751122985"/>
+          <Include href="黑龙logo.xml" loadImmediate="false" itemID="6860bfa7-00002435" lastModified="1751174675"/>
           <Include href="火凤.xml" loadImmediate="false" itemID="68601976-0000240b" lastModified="1751128438"/>
           <Include href="火凤logo.xml" loadImmediate="false" itemID="68600f6e-000023cc" lastModified="1751128451"/>
      </symbols>
@@ -38,12 +40,20 @@
                                                   <Point x="83.2" y="79.5"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="火凤logo" selected="true" centerPoint3DX="-183.5" centerPoint3DY="647.75">
+                                        <DOMSymbolInstance libraryItemName="火凤logo" centerPoint3DX="-183.5" centerPoint3DY="647.75">
                                              <matrix>
                                                   <Matrix a="1.39236450195313" d="1.39236450195313" tx="-392.5" ty="528.45"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="2.7" y="4.5"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="黑龙logo" selected="true" centerPoint3DX="1121.5" centerPoint3DY="224.7">
+                                             <matrix>
+                                                  <Matrix tx="962" ty="2.85"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="159.5" y="221.85"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
                                    </elements>
@@ -321,6 +331,10 @@
                     <SolidSwatchItem color="#B11806" hue="4" saturation="223" brightness="87"/>
                     <SolidSwatchItem color="#EEC2D1" hue="226" saturation="135" brightness="204"/>
                     <SolidSwatchItem color="#BA445E" hue="231" saturation="111" brightness="120"/>
+                    <SolidSwatchItem color="#0B0B17" hue="160" saturation="90" brightness="16"/>
+                    <SolidSwatchItem color="#535353" brightness="78"/>
+                    <SolidSwatchItem color="#53536B" hue="160" saturation="31" brightness="90"/>
+                    <SolidSwatchItem color="#6969B8" hue="160" saturation="85" brightness="136"/>
                </swatches>
           </swatchList>
      </swatchLists>

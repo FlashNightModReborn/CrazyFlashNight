@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="项链相关/图标-冷兵器小加成项链" itemID="66843c4b-00003a60" linkageExportForAS="true" linkageIdentifier="图标-冷兵器小加成项链" lastModified="1751163777" lastUniqueIdentifier="12">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="项链相关/图标-冷兵器小加成项链" itemID="66843c4b-00003a60" linkageExportForAS="true" linkageIdentifier="图标-冷兵器小加成项链" lastModified="1751174524" lastUniqueIdentifier="12">
   <timeline>
     <DOMTimeline name="图标-冷兵器小加成项链">
       <layers>
@@ -434,7 +434,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="翅虎" centerPoint3DX="-0.35" centerPoint3DY="-0.35">
+                <DOMSymbolInstance libraryItemName="项链相关/翅虎" centerPoint3DX="-0.35" centerPoint3DY="-0.35">
                   <matrix>
                     <Matrix a="0.05078125" d="0.05078125" tx="-7.6" ty="-9.55"/>
                   </matrix>
@@ -446,11 +446,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 6" color="#808080" locked="true">
+        <DOMLayer name="图层 6" color="#808080">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="翅虎" centerPoint3DX="-0.35" centerPoint3DY="-0.35">
+                <DOMSymbolInstance libraryItemName="项链相关/翅虎" centerPoint3DX="-0.35" centerPoint3DY="-0.35">
                   <matrix>
                     <Matrix a="0.0560302734375" d="0.0560302734375" tx="-8.8" ty="-10.35"/>
                   </matrix>
@@ -458,7 +458,7 @@
                     <Point x="149.05" y="174.9"/>
                   </transformationPoint>
                   <color>
-                    <Color tintMultiplier="1"/>
+                    <Color tintMultiplier="1" tintColor="#5B0045"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
