@@ -8,6 +8,7 @@
  * 3. 提供事件监听器的启用/禁用功能，增强灵活性。
  * 4. 自动清理非 `onUnload` 事件的监听器，避免内存泄漏。
  * 5. 使用唯一标识符确保与其他库的兼容性，避免命名冲突。
+ * 6. 【新增】事件转移功能，支持Boss多阶段切换时的监听器迁移。
  */
 
 class org.flashNight.aven.Coordinator.EventCoordinator {
@@ -36,7 +37,6 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
             return null;
         }
 
-
         // 获取目标对象的唯一标识符
         var targetKey:String = getTargetKey(target); 
         var localEventHandlers:Object = eventHandlers;
@@ -53,7 +53,6 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
 
             // 保存目标对象原生的事件处理器（如果有的话）
             // 初始化该事件的处理器信息
-
             eventInfo = eventHandler[eventName] = {
                 original: target[eventName], // 原生事件处理器
                 handlers: [],                // 存放自定义事件处理器的数组
@@ -92,7 +91,7 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
                 }
             };
 
-            // 让刚才挂载的这个属性变为“不可枚举”
+            // 让刚才挂载的这个属性变为"不可枚举"
             _global.ASSetPropFlags(target, [eventName], 1, false);
 
             // 如果事件不是 "onUnload"，则设置自动清理逻辑
@@ -214,7 +213,173 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
     }
 
     //======================================================================
-    // 5. 设置 onUnload 自动清理及用户卸载逻辑
+    // 5. 【新增】事件转移功能
+    //======================================================================
+    /**
+     * 将旧目标对象的所有自定义事件监听器迁移到新目标对象。
+     * 适用场景：Boss多阶段切换时，避免重新绑定所有监听器。
+     * 
+     * @param oldTarget 旧目标对象（源）。
+     * @param newTarget 新目标对象（目标）。
+     * @param clearOld 是否清理旧对象的监听器（true=迁移后自动清理，false=保留）。
+     * @return 返回旧ID到新ID的映射表 {oldID1:newID1, oldID2:newID2, ...}，
+     *         用于后续可能的 removeEventListener 调用。若失败则返回 null。
+     */
+    public static function transferEventListeners(oldTarget:Object, newTarget:Object, clearOld:Boolean):Object {
+        // 参数校验
+        if (!oldTarget || !newTarget) {
+            trace("transferEventListeners 错误：目标对象不能为空");
+            return null;
+        }
+        
+        if (oldTarget === newTarget) {
+            trace("transferEventListeners 警告：源对象与目标对象相同，无需转移");
+            return {};
+        }
+
+        // 获取旧对象的事件处理器信息
+        var oldKey:String = getTargetKey(oldTarget);
+        var oldEventHandler:Object = eventHandlers[oldKey];
+        
+        if (!oldEventHandler) {
+            trace("transferEventListeners：旧对象无事件监听器，无需转移");
+            return {};
+        }
+
+        var idMap:Object = {}; // 旧ID → 新ID 的映射表
+        var transferCount:Number = 0;
+
+        // 遍历旧对象的所有事件类型
+        for (var eventName:String in oldEventHandler) {
+            var eventInfo:Object = oldEventHandler[eventName];
+            
+            // 跳过非事件信息（如 __EC_autoCleanup__ 等标记）
+            if (typeof eventInfo != "object" || !eventInfo.handlers) {
+                continue;
+            }
+
+            var oldHandlers:Array = eventInfo.handlers;
+            var wasEnabled:Boolean = eventInfo.isEnabled;
+            var handlersLength:Number = oldHandlers.length;
+
+            // 按原顺序迁移所有自定义处理器
+            for (var i:Number = 0; i < handlersLength; i++) {
+                var handlerRecord:Object = oldHandlers[i];
+                var oldID:String = handlerRecord.id;
+                var handlerFunc:Function = handlerRecord.func;
+
+                // 在新对象上添加相同的处理器
+                var newID:String = addEventListener(newTarget, eventName, handlerFunc);
+                
+                if (newID) {
+                    idMap[oldID] = newID;
+                    transferCount++;
+                } else {
+                    trace("transferEventListeners 警告：无法转移监听器 " + oldID);
+                }
+            }
+
+            // 同步启用/禁用状态到新对象
+            if (!wasEnabled) {
+                // 如果旧对象的该事件类型被禁用，则在新对象上也禁用
+                var newEventHandler:Object = eventHandlers[getTargetKey(newTarget)];
+                if (newEventHandler && newEventHandler[eventName]) {
+                    newEventHandler[eventName].isEnabled = false;
+                }
+            }
+        }
+
+        // 可选：清理旧对象的所有监听器
+        if (clearOld) {
+            clearEventListeners(oldTarget);
+            trace("transferEventListeners：已清理旧对象的监听器");
+        }
+
+        trace("transferEventListeners 完成：已转移 " + transferCount + " 个监听器");
+        return idMap;
+    }
+
+    //======================================================================
+    // 6. 【新增】批量转移指定事件的监听器
+    //======================================================================
+    /**
+     * 将旧目标对象的指定事件监听器迁移到新目标对象。
+     * 提供更精细的控制，只转移特定事件而非全部事件。
+     * 
+     * @param oldTarget 旧目标对象（源）。
+     * @param newTarget 新目标对象（目标）。
+     * @param eventNames 要转移的事件名称数组，如 ["onEnterFrame", "onPress"]。
+     * @param clearOld 是否清理旧对象上这些事件的监听器。
+     * @return 返回旧ID到新ID的映射表。
+     */
+    public static function transferSpecificEventListeners(oldTarget:Object, newTarget:Object, 
+                                                        eventNames:Array, clearOld:Boolean):Object {
+        // 参数校验
+        if (!oldTarget || !newTarget || !eventNames) {
+            trace("transferSpecificEventListeners 错误：参数无效");
+            return null;
+        }
+
+        if (oldTarget === newTarget) {
+            trace("transferSpecificEventListeners 警告：源对象与目标对象相同");
+            return {};
+        }
+
+        var oldEventHandler:Object = eventHandlers[getTargetKey(oldTarget)];
+        if (!oldEventHandler) {
+            return {};
+        }
+
+        var idMap:Object = {};
+        var transferCount:Number = 0;
+        var eventNamesLength:Number = eventNames.length;
+
+        // 遍历指定的事件名称
+        for (var i:Number = 0; i < eventNamesLength; i++) {
+            var eventName:String = eventNames[i];
+            var eventInfo:Object = oldEventHandler[eventName];
+            
+            if (!eventInfo || !eventInfo.handlers) {
+                continue; // 该事件无监听器，跳过
+            }
+
+            var oldHandlers:Array = eventInfo.handlers;
+            var wasEnabled:Boolean = eventInfo.isEnabled;
+            var handlersLength:Number = oldHandlers.length;
+
+            // 转移该事件的所有处理器
+            for (var j:Number = 0; j < handlersLength; j++) {
+                var handlerRecord:Object = oldHandlers[j];
+                var newID:String = addEventListener(newTarget, eventName, handlerRecord.func);
+                
+                if (newID) {
+                    idMap[handlerRecord.id] = newID;
+                    transferCount++;
+                }
+            }
+
+            // 同步启用/禁用状态
+            if (!wasEnabled) {
+                var newEventHandler:Object = eventHandlers[getTargetKey(newTarget)];
+                if (newEventHandler && newEventHandler[eventName]) {
+                    newEventHandler[eventName].isEnabled = false;
+                }
+            }
+
+            // 可选：清理旧对象的该事件监听器
+            if (clearOld) {
+                // 恢复原生处理器
+                oldTarget[eventName] = eventInfo.original;
+                delete oldEventHandler[eventName];
+            }
+        }
+
+        trace("transferSpecificEventListeners 完成：已转移 " + transferCount + " 个监听器");
+        return idMap;
+    }
+
+    //======================================================================
+    // 7. 设置 onUnload 自动清理及用户卸载逻辑
     //======================================================================
     /**
      * 设置目标对象的 onUnload 自动清理逻辑，并兼容用户自定义卸载逻辑。
@@ -289,7 +454,7 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
     }
 
     //======================================================================
-    // 6. 获取目标对象的唯一标识
+    // 8. 获取目标对象的唯一标识
     //======================================================================
     /**
      * 获取或生成目标对象的唯一标识。
@@ -305,22 +470,85 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
             
             // 使用 ASSetPropFlags 防止 __EC_uid__ 被枚举或删除，增强兼容性
             // 当前环境默认不需要考虑超低版本的flashplayer的支持
-
             _global.ASSetPropFlags(target, ["__EC_uid__"], 1, false);
-
-            /*
-
-            if (_global.ASSetPropFlags) {
-                _global.ASSetPropFlags(target, ["__EC_uid__"], 1, false);
-            }
-
-            */
         }
         return key;
     }
 
     //======================================================================
-    // 7. 快捷方法的优化处理
+    // 9. 【新增】调试和统计功能
+    //======================================================================
+    /**
+     * 获取目标对象的事件监听器统计信息。
+     * @param target 目标对象。
+     * @return 包含统计信息的对象。
+     */
+    public static function getEventListenerStats(target:Object):Object {
+        var eventHandler:Object = eventHandlers[getTargetKey(target)];
+        if (!eventHandler) {
+            return { totalEvents: 0, totalHandlers: 0, events: {} };
+        }
+
+        var stats:Object = {
+            totalEvents: 0,
+            totalHandlers: 0,
+            events: {}
+        };
+
+        for (var eventName:String in eventHandler) {
+            var eventInfo:Object = eventHandler[eventName];
+            if (typeof eventInfo == "object" && eventInfo.handlers) {
+                var handlerCount:Number = eventInfo.handlers.length;
+                stats.events[eventName] = {
+                    handlerCount: handlerCount,
+                    isEnabled: eventInfo.isEnabled,
+                    hasOriginal: (eventInfo.original != undefined)
+                };
+                stats.totalEvents++;
+                stats.totalHandlers += handlerCount;
+            }
+        }
+
+        return stats;
+    }
+
+    /**
+     * 列出所有已注册的目标对象及其事件统计。
+     * 用于调试和内存监控。
+     */
+    public static function listAllTargets():Void {
+        trace("=== EventCoordinator 全局统计 ===");
+        var targetCount:Number = 0;
+        var totalHandlers:Number = 0;
+
+        for (var targetKey:String in eventHandlers) {
+            var eventHandler:Object = eventHandlers[targetKey];
+            var stats:Object = {
+                events: 0,
+                handlers: 0
+            };
+
+            for (var eventName:String in eventHandler) {
+                var eventInfo:Object = eventHandler[eventName];
+                if (typeof eventInfo == "object" && eventInfo.handlers) {
+                    stats.events++;
+                    stats.handlers += eventInfo.handlers.length;
+                }
+            }
+
+            if (stats.events > 0) {
+                trace("目标 " + targetKey + ": " + stats.events + " 个事件, " + stats.handlers + " 个处理器");
+                targetCount++;
+                totalHandlers += stats.handlers;
+            }
+        }
+
+        trace("总计: " + targetCount + " 个目标对象, " + totalHandlers + " 个监听器");
+        trace("================================");
+    }
+
+    //======================================================================
+    // 10. 快捷方法的优化处理
     //======================================================================
     
     /**
@@ -357,6 +585,6 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
     public static var addDragOverCallback:Function     = createCallbackMethod("onDragOver");
     public static var addDataCallback:Function         = createCallbackMethod("onData");
     
-    // 以上静态变量满足编译期“能找到这些方法”的要求，
+    // 以上静态变量满足编译期"能找到这些方法"的要求，
     // 运行期的调用只是一层简单转发 -> overhead 非常低
 }
