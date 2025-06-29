@@ -4,7 +4,6 @@ org.flashNight.aven.Coordinator.EventCoordinatorTest.runAllTests();
 
 
 
-
 === Running EventCoordinator Tests ===
 
 -- testCoreFunctions --
@@ -200,12 +199,12 @@ transferEventListeners 完成：已转移 3 个监听器
 
 -- testTransferPerformance --
 自动清理及用户卸载逻辑已设置。
-[Transfer Performance] Registered 1000 handlers in 11 ms
+[Transfer Performance] Registered 1000 handlers in 13 ms
 自动清理及用户卸载逻辑已设置。
 所有事件监听器已清除。
 transferEventListeners：已清理旧对象的监听器
 transferEventListeners 完成：已转移 1000 个监听器
-[Transfer Performance] Transferred 1000 handlers in 9 ms
+[Transfer Performance] Transferred 1000 handlers in 8 ms
 [ASSERTION PASSED]: All transferred handlers should work
 所有事件监听器已清除。
 [Transfer Performance] Cleared 1000 handlers in 0 ms
@@ -236,8 +235,8 @@ transferEventListeners 完成：已转移 1000 个监听器
 
 -- performanceTest --
 自动清理及用户卸载逻辑已设置。
-[Performance] Registered 5000 handlers in 78 ms.
-[Performance] Called onPress 10 times in 91 ms.
+[Performance] Registered 5000 handlers in 71 ms.
+[Performance] Called onPress 10 times in 94 ms.
 [Performance] CallCounter = 50000 (expected 50000)
 所有事件监听器已清除。
 [Performance] Cleared all handlers in 0 ms.

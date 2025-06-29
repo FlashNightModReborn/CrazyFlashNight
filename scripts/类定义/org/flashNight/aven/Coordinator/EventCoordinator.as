@@ -415,18 +415,20 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
             // 获取最新的用户卸载函数（可能已通过 watch() 修改）
             var userUnload:Function = eventHandlers[getTargetKey(this)].__EC_userUnload__ || originalUserUnload;
 
-            // 1. 清理所有事件监听器
-            EventCoordinator.clearEventListeners(this);
-
-            // 2. 还原 onUnload 为用户原始卸载函数
-            this.onUnload = userUnload;
-
-            // 3. 执行用户卸载逻辑
+            // 1. 【修复】先执行用户卸载逻辑
             if (typeof userUnload == "function") {
                 userUnload.apply(this);
             }
+            
+            // 2. 【修复】然后才清理所有事件监听器
+            EventCoordinator.clearEventListeners(this);
 
-            _global.ASSetPropFlags(target, ["onUnload"], 1, false);
+            // 3. 【修复】最后才恢复原生 onUnload (实际上 clearEventListeners 已经处理了，但保留逻辑清晰)
+            // this.onUnload = userUnload; // clearEventListeners 已经将所有事件恢复为 original
+
+            // ASSetPropFlags 可能会在 clearEventListeners 中被重置，这里可以不再需要
+            // _global.ASSetPropFlags(target, ["onUnload"], 1, false); 
+            
             trace("onUnload 已执行并清理所有事件监听器。");
         };
 
