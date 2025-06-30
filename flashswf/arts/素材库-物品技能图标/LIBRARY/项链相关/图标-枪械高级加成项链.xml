@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="项链相关/图标-枪械小加成项链" itemID="66844283-00003a9d" linkageExportForAS="true" linkageIdentifier="图标-枪械小加成项链" lastModified="1751253949" lastUniqueIdentifier="10">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="项链相关/图标-枪械高级加成项链" itemID="6861fe8d-00000b6b" linkageExportForAS="true" linkageIdentifier="图标-枪械高级加成项链" lastModified="1751253931" lastUniqueIdentifier="8">
   <timeline>
-    <DOMTimeline name="图标-枪械小加成项链">
+    <DOMTimeline name="图标-枪械高级加成项链">
       <layers>
         <DOMLayer name="代码层" color="#DDE4EE" autoNamed="false">
           <frames>
@@ -31,23 +31,23 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="武器图标" color="#B88FDA" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="武器图标" color="#B88FDA" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="项链相关/铁枪初级logo核心" centerPoint3DX="-0.15" centerPoint3DY="0.6">
+                <DOMSymbolInstance libraryItemName="项链相关/铁枪初级logo铁枪">
                   <matrix>
-                    <Matrix a="0.074676513671875" d="0.074676513671875" tx="-10.3" ty="-11.4"/>
+                    <Matrix a="0.0748291015625" d="0.0748291015625" tx="-10.4" ty="-11.9"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="138.6" y="159.35"/>
+                    <Point x="139" y="159.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#93CA45" autoNamed="false">
+        <DOMLayer name="阴影" color="#93CA45" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

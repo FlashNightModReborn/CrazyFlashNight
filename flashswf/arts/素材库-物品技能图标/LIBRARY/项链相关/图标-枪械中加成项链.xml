@@ -24,14 +24,14 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!240 -240|240 240!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240"/>
+                    <Edge fillStyle1="1" edges="!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="武器图标" color="#B88FDA" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="武器图标" color="#B88FDA" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -43,7 +43,7 @@
                     <Point x="146.65" y="133.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="项链相关/铁枪初级logo核心" centerPoint3DX="-0.15" centerPoint3DY="0.6">
+                <DOMSymbolInstance libraryItemName="项链相关/铁枪初级logo核心" selected="true" centerPoint3DX="-0.15" centerPoint3DY="0.6">
                   <matrix>
                     <Matrix a="0.074676513671875" d="0.074676513671875" tx="-10.3" ty="-11.4"/>
                   </matrix>
@@ -55,7 +55,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#93CA45" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="阴影" color="#93CA45" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
