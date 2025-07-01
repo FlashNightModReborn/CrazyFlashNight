@@ -24,8 +24,6 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
     private static var FLAG_GRENADE:Number       = 1 << 4; // 手雷子弹
     private static var FLAG_EXPLOSIVE:Number     = 1 << 5; // 爆炸子弹
     private static var FLAG_NORMAL:Number        = 1 << 6; // 普通子弹
-    private static var FLAG_ENERGY:Number        = 1 << 7; // 能量子弹
-    private static var FLAG_REFINED:Number       = 1 << 8; // 精制子弹
 
     /**
      * 缓存对象
@@ -72,9 +70,7 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
             var isPierce:Boolean        = (bulletType.indexOf("穿刺") != -1);         // 是否穿刺子弹
             var isTransparency:Boolean  = (transparency.indexOf("|" + bulletType + "|") != -1); // 是否透明子弹
             var isGrenade:Boolean       = (bulletType.indexOf("手雷") != -1);         // 是否手雷子弹
-            var isExplosive:Boolean     = (bulletType.indexOf("爆炸") != -1);         // 是否爆炸子弹
-            var isEnergy:Boolean        = (bulletType.indexOf("能量子弹") != -1);     // 是否能量子弹
-            var isRefined:Boolean       = (bulletType == "精制子弹");                 // 是否精制子弹
+            var isExplosive:Boolean     = (bulletType.indexOf("爆炸") != -1);         // 是否爆炸子弹\
 
             // 是否普通子弹的逻辑
             var isNormal:Boolean = !isPierce && !isExplosive &&
@@ -87,9 +83,7 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
                               | (isTransparency  ? FLAG_TRANSPARENCY  : 0)
                               | (isGrenade       ? FLAG_GRENADE       : 0)
                               | (isExplosive     ? FLAG_EXPLOSIVE     : 0)
-                              | (isNormal        ? FLAG_NORMAL        : 0)
-                              | (isEnergy        ? FLAG_ENERGY        : 0)
-                              | (isRefined       ? FLAG_REFINED       : 0));
+                              | (isNormal        ? FLAG_NORMAL        : 0));
 
             // 对联弹提取基础素材名（取子弹种类中 "-" 分隔符前的部分）
             var baseAsset:String = isChain ? bulletType.split("-")[0] : bulletType;
@@ -181,8 +175,6 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
         if (flags & FLAG_GRENADE)       parts.push("GRENADE");
         if (flags & FLAG_EXPLOSIVE)     parts.push("EXPLOSIVE");
         if (flags & FLAG_NORMAL)        parts.push("NORMAL");
-        if (flags & FLAG_ENERGY)        parts.push("ENERGY");
-        if (flags & FLAG_REFINED)       parts.push("REFINED");
         return parts.length > 0 ? parts.join(", ") : "NONE";
     }
 
