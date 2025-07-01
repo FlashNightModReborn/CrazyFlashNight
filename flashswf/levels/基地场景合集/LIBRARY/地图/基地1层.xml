@@ -366,11 +366,11 @@ onClipEvent (load) {
           </frames>
         </DOMLayer>
         <DOMLayer name="NPC" color="#FF800A" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="黑铁会外交部长" color="#E352B2" parentLayerIndex="14" autoNamed="false">
+        <DOMLayer name="黑铁会外交部长" color="#E352B2" parentLayerIndex="14" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2716" centerPoint3DX="274.05" centerPoint3DY="613.95">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2716" selected="true" centerPoint3DX="274.05" centerPoint3DY="613.95">
                   <matrix>
                     <Matrix tx="213.45" ty="508"/>
                   </matrix>
@@ -603,7 +603,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="感谢名单按钮" color="#C2D53B" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="感谢名单按钮" color="#C2D53B" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

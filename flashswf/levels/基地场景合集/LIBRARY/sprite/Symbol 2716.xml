@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#BC8344" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#BC8344">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -124,11 +124,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#6FFFDC">
+        <DOMLayer name="Layer 6" color="#6FFFDC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/黑铁会外交部长-待机" centerPoint3DX="7.45" centerPoint3DY="-70.95">
+                <DOMSymbolInstance libraryItemName="NPC/黑铁会外交部长-待机" selected="true" centerPoint3DX="7.45" centerPoint3DY="-70.95">
                   <matrix>
                     <Matrix a="0.279998779296875" d="0.259994506835938" tx="-30.65" ty="-117.5"/>
                   </matrix>
