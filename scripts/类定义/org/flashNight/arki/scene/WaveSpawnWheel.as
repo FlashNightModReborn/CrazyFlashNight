@@ -8,14 +8,16 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
     public static var instance:WaveSpawnWheel; // 单例引用
     private var waveSpawner:WaveSpawner; // WaveSpawner单例
 
-    private var slots:Array; // 时间轮的槽位数组，每个槽位存储一个参数包装对象数组
+    private var slots:Array; // 默认时间轮槽位数组，每个槽位存储一个参数包装对象数组
     private var currentPointer:Number = 0; // 当前指针，指向当前处理的槽位
     private var wheelSize:Number = 60; // 时间轮的大小，固定为60
 
-    private var longDelaySlot:Array; // 延迟大等于6000毫秒的任务
+    private var longDelaySlot:Array; // 长时间任务槽，处理延迟大等于6000毫秒的任务
 
-    private var minHeap:Array; // 延迟小等于100毫秒的任务
+    private var minHeap:Array; // 最小堆，延迟小等于100毫秒的任务
     private var minHeapSpeed:Number = 5; // 最小堆每帧的刷怪尝试次数
+
+    private var eventDict:Object; // 事件字典，处理通过事件驱动的任务
 
     public static function getInstance():WaveSpawnWheel {
         return instance || (instance = new WaveSpawnWheel());
@@ -38,6 +40,8 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
 
         this.longDelaySlot = [];
         this.minHeap = [];
+
+        this.eventDict = {};
     }
     
     public function clear():Void{
@@ -45,6 +49,7 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
         this.longDelaySlot = null;
         this.minHeap = null;
         this.currentPointer = 0;
+        this.eventDict = null;
     }
 
     /**
@@ -251,6 +256,53 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
                 }else{
                     longDelaySlot.splice(i,1);
                 }
+            }
+        }
+    }
+
+
+
+    public function subscribeSpawnEvent(quantity:Number, interval:Number, delay:Number, attribute, index:Number, waveIndex:Number, eventInfo:Object):Void{
+        var eventName:String = eventInfo.EventName;
+        if(eventDict[eventName] == null){
+            eventDict[eventName] = [];
+            _root.gameworld.dispatcher.subscribe(eventName, function(){
+                this.handleEvent(eventName, arguments);
+            }, this);
+        }
+        eventDict[eventName].push({
+            quantity: quantity,
+            interval: interval,
+            delay: delay,
+            attribute:attribute,
+            index: index,
+            waveIndex: waveIndex,
+            parameters: eventInfo.Parameters ? eventInfo.Parameters : null
+        });
+    }
+
+    private function handleEvent(eventName:String, args:FunctionArguments):Void{
+        var eventList = eventDict[eventName];
+        var event:Object;
+        var i:Number;
+        var j:Number;
+        var checkParameter:Boolean;
+        for(i = eventList.length - 1; i > -1; i--){
+            event = eventList[i];
+            // 检查所有参数是否对应
+            checkParameter = true;
+            if(event.parameters.length > 0){
+                for(j = 0; j < event.parameters.length; j++){
+                    if(event.parameters[j] != args[j]) {
+                        checkParameter = false;
+                        break;
+                    }
+                }
+            }
+            if(checkParameter){
+                // 检测通过，执行并销毁事件
+                addTask(event.quantity, event.interval, event.delay, event.attribute, event.index, event.waveIndex);
+                eventList.splice(i,1);
             }
         }
     }

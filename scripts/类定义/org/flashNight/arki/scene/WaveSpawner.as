@@ -177,7 +177,12 @@ class org.flashNight.arki.scene.WaveSpawner {
                 gameworld.地图.僵尸型敌人总个数 += quantity;
             }
             //将刷怪托管到专用时间轮
-            waveSpawnWheel.addTask(quantity, 兵种信息.Interval, 兵种信息.Delay, 兵种信息.Attribute, i, currentWave);
+            if(兵种信息.TriggerEvent.EventName){
+                if(兵种信息.TriggerEvent.Parameters) 兵种信息.TriggerEvent.Parameters = ObjectUtil.toArray(兵种信息.TriggerEvent.Parameters);
+                waveSpawnWheel.subscribeSpawnEvent(quantity, 兵种信息.Interval, 兵种信息.Delay, 兵种信息.Attribute, i, currentWave, 兵种信息.TriggerEvent);
+            }else{
+                waveSpawnWheel.addTask(quantity, 兵种信息.Interval, 兵种信息.Delay, 兵种信息.Attribute, i, currentWave);
+            }
         }
 
         // 发布波次开始事件
