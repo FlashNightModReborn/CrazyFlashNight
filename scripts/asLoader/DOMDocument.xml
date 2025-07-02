@@ -1,6 +1,6 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="500" height="500" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="50.6510299754819" tabOrderMode="relative" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <symbols>
-          <Include href="asLoader.xml" itemID="65982cdb-00001469" lastModified="1750848722"/>
+          <Include href="asLoader.xml" itemID="65982cdb-00001469" lastModified="1751480972"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -8,17 +8,6 @@
                     <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
-                                   <Actionscript>
-                                        <script><![CDATA[/*import org.flashNight.gesh.object.ObjectUtil;
-
-var loader = new org.flashNight.gesh.xml.LoadXml.BaseStageXMLLoader("data/stages/基地门口/超市废墟.xml");
-loader.load(function (data:Object):Void{
-	var info = new org.flashNight.arki.scene.StageInfo(data.SubStage[0]);
-	trace(ObjectUtil.toString(info.basicInfo));
-	trace(ObjectUtil.toString(info.waveInfo));
-},function():Void{onError();}
-);*/]]></script>
-                                   </Actionscript>
                                    <elements/>
                               </DOMFrame>
                          </frames>

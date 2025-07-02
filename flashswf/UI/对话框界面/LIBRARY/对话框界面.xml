@@ -1,20 +1,29 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框界面" itemID="6652e908-000026b6" linkageExportForAS="true" linkageIdentifier="对话框界面" lastModified="1747122337" lastUniqueIdentifier="26">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框界面" itemID="6652e908-000026b6" linkageExportForAS="true" linkageIdentifier="对话框界面" lastModified="1751480703" lastUniqueIdentifier="26">
   <timeline>
-    <DOMTimeline name="对话框界面">
+    <DOMTimeline name="对话框界面" currentFrame="1">
       <layers>
         <DOMLayer name="labels" color="#FF800A" autoNamed="false">
           <frames>
-            <DOMFrame index="0" name="open" labelType="name" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" name="close" labelType="name" keyMode="9728">
+            <DOMFrame index="1" name="open" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" name="close" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#5DA1BB">
+        <DOMLayer name="Script Layer" color="#5DA1BB" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[function 刷新内容()
 {
@@ -131,7 +140,7 @@ i = 0;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
+            <DOMFrame index="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[本轮对话内容 = [];
 对话条数 = 0;
@@ -149,23 +158,13 @@ if (结束对话后是否跳转帧)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="按键控制" color="#BFE31D" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="按钮控制" color="#D1C99B" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="按钮控制" color="#D1C99B" locked="true" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="button/Symbol 1881" symbolType="button">
                   <matrix>
-                    <Matrix a="32.0397644042969" d="5.7252197265625" tx="364.9" ty="145.55"/>
+                    <Matrix a="32.0397644042969" d="5.7252197265625" tx="496.45" ty="510.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="-12.45"/>
@@ -181,18 +180,18 @@ on (release) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
+            <DOMFrame index="2" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="移动" color="#A23CF9" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="button/Symbol 1880" symbolType="button">
                   <matrix>
-                    <Matrix a="1.92239379882813" d="1.92239379882813" tx="-21.55" ty="17.95"/>
+                    <Matrix a="1.92239379882813" d="1.92239379882813" tx="110" ty="382.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -220,18 +219,18 @@ on(rollOut){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
+            <DOMFrame index="2" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="关闭" color="#CABEAC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="button/Symbol 1879" symbolType="button">
                   <matrix>
-                    <Matrix a="1.91667175292969" d="1.91482543945313" tx="747.3" ty="15.45"/>
+                    <Matrix a="1.91667175292969" d="1.91482543945313" tx="878.85" ty="380.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -247,18 +246,18 @@ on(rollOut){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
+            <DOMFrame index="2" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="互动键扳机" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 1883" name="互动键扳机" blendMode="multiply" centerPoint3DX="747.5" centerPoint3DY="17.5">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 1883" name="互动键扳机" blendMode="multiply" centerPoint3DX="879.05" centerPoint3DY="382.5">
                   <matrix>
-                    <Matrix tx="747.75" ty="20.7"/>
+                    <Matrix tx="879.3" ty="385.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.25" y="-3.2"/>
@@ -266,18 +265,18 @@ on(rollOut){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
+            <DOMFrame index="2" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="称号" color="#39C9FD" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
                 <DOMDynamicText fontRenderingMode="device" width="162" height="18.45" isSelectable="false" variableName="人物称号" renderAsHTML="true" lineType="multiline">
                   <matrix>
-                    <Matrix a="1.155029296875" tx="214.85" ty="53.25"/>
+                    <Matrix a="1.155029296875" tx="346.4" ty="418.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="62.45" y="7.75"/>
@@ -293,18 +292,18 @@ on(rollOut){
                 </DOMDynamicText>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
+            <DOMFrame index="2" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="名字" color="#D485DA" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
                 <DOMDynamicText fontRenderingMode="device" width="154.95" height="31.7" isSelectable="false" variableName="人物名字" lineType="multiline">
                   <matrix>
-                    <Matrix a="1.47080993652344" tx="-21.9" ty="41"/>
+                    <Matrix a="1.47080993652344" tx="109.65" ty="406"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="80.9" y="13.5"/>
@@ -320,18 +319,18 @@ on(rollOut){
                 </DOMDynamicText>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
+            <DOMFrame index="2" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文本" color="#87CEB8" autoNamed="false">
+        <DOMLayer name="文本" color="#87CEB8" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
                 <DOMDynamicText fontRenderingMode="device" width="573" height="72.65" isSelectable="false" variableName="打字内容" renderAsHTML="true" lineType="multiline">
                   <matrix>
-                    <Matrix a="1.36569213867188" d="1.62921142578125" tx="-30.3" ty="78.3"/>
+                    <Matrix a="1.36569213867188" d="1.62921142578125" tx="101.25" ty="443.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-2" y="-2"/>
@@ -353,18 +352,18 @@ on(rollOut){
                 </DOMDynamicText>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
+            <DOMFrame index="2" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 9" color="#F36D80" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="82.15" centerPoint3DY="41.45">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="213.7" centerPoint3DY="406.45">
                   <matrix>
-                    <Matrix a="0.65277099609375" tx="-10.8" ty="40.45"/>
+                    <Matrix a="0.65277099609375" tx="120.75" ty="405.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="203"/>
@@ -378,28 +377,18 @@ on(rollOut){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 11" color="#FA67F5">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
+            <DOMFrame index="2" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="对话框背景" color="#95FFE1" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="对话框UI/Symbol 1875" centerPoint3DX="280.95" centerPoint3DY="51.25">
+                <DOMSymbolInstance libraryItemName="对话框UI/Symbol 1875" centerPoint3DX="412.5" centerPoint3DY="416.25">
                   <matrix>
-                    <Matrix a="1.35366821289063" d="1.66497802734375" ty="1.25"/>
+                    <Matrix a="1.35366821289063" d="1.66497802734375" tx="131.55" ty="366.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -411,18 +400,18 @@ on(rollOut){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
+            <DOMFrame index="2" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头像" color="#6589A2" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="头像" color="#6589A2" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="对话框肖像" name="肖像" selected="true" centerPoint3DX="249.75" centerPoint3DY="301.2">
+                <DOMSymbolInstance libraryItemName="对话框肖像" name="肖像" centerPoint3DX="381.3" centerPoint3DY="666.2">
                   <matrix>
-                    <Matrix tx="33" ty="-66.75"/>
+                    <Matrix tx="164.55" ty="298.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -437,7 +426,7 @@ on(rollOut){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
+            <DOMFrame index="2" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>

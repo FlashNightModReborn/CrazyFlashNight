@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框UI/对话-主角模板" itemID="662fd6a4-00000c50" lastModified="1714663186" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框UI/对话-主角模板" itemID="662fd6a4-00000c50" lastModified="1751479769" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="对话-主角模板" currentFrame="2">
+    <DOMTimeline name="对话-主角模板">
       <layers>
         <DOMLayer name="Labels Layer" color="#5D68BC">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -66,13 +66,13 @@ this.man.头.头.基本款.gotoAndStop(_parent._parent.人物表情);]]></script
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#8F66E5">
+        <DOMLayer name="Layer 2" color="#8F66E5" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMStaticText fontRenderingMode="standard" width="80" height="31.7" isSelectable="false">
                   <matrix>
-                    <Matrix tx="-21" ty="-58.4"/>
+                    <Matrix tx="-21" ty="-0.3"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>

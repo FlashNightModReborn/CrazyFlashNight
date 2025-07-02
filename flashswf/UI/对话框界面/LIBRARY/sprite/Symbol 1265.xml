@@ -1,72 +1,27 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1265" itemID="6597607e-000008e4" lastModified="1746207419">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1265" itemID="6597607e-000008e4" lastModified="1751479596">
   <timeline>
     <DOMTimeline name="Symbol 1265">
       <layers>
-        <DOMLayer name="表情" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="表情" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" name="普通" labelType="name" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="表情普通" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="0.821075439453125" d="0.821075439453125" tx="1.45" ty="-281.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="119.5" y="156.8"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="5" duration="5" name="微笑" labelType="name" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="表情微笑" selected="true" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="0.821075439453125" d="0.821075439453125" tx="1.05" ty="-281.25"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="119.65" y="156.7"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="10" duration="5" name="愤怒" labelType="name" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="表情愤怒" selected="true" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="0.821075439453125" d="0.821075439453125" tx="1.15" ty="-280.9"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="119.6" y="156.55"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="15" duration="5" name="悲伤" labelType="name" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="表情悲伤" selected="true" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="0.821075439453125" d="0.821075439453125" tx="1.7" ty="-281.15"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="119.15" y="156.1"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 100" color="#FF800A" autoNamed="false">
+        <DOMLayer name="图层 100" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Boy身体" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="0.821075439453125" d="0.821075439453125" tx="-246.05" ty="-281.3"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="466.15" y="586.05"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>

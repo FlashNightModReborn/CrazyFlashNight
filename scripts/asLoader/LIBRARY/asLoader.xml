@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1750848722">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1751480972">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="4">
+    <DOMTimeline name="asLoader" currentFrame="41">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -62,7 +62,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="文件夹 1" color="#FF800A" layerType="folder"/>
-        <DOMLayer name="load脚本1" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="load脚本1" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -710,7 +710,7 @@ this.removeMovieClip();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="load脚本5" color="#9933CC" autoNamed="false">
+        <DOMLayer name="load脚本5" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -732,6 +732,7 @@ this.removeMovieClip();]]></script>
 #include "../展现/UI交互/UI交互_lsy_商城系统.as"
 #include "../展现/UI交互/UI交互_lsy_物品栏UI.as"
 #include "../展现/UI交互/UI交互_lsy_任务栏UI.as"
+#include "../展现/UI交互/UI交互_lsy_对话框UI.as"
 #include "../展现/UI交互/UI交互_鸡蛋_fs_aka_物品图标注释.as"
 #include "../展现/UI交互/UI交互_无名氏_改造系统.as"
 #include "../展现/UI交互/UI交互_aka_健身房训练.as"

@@ -148,7 +148,7 @@ class org.flashNight.arki.scene.WaveSpawner {
         }
         _root.d_倒计时显示._visible = waveTime > 0;
 
-        // 记录本轮要生成的出生点
+        // 对于本轮要生成的出生点，记录其生成所需时长
         var hideSpawnPoints = {};
         // 遍历刷怪列表
         for (var i = 1; i < subWaveInfo.length; i++){
@@ -166,7 +166,7 @@ class org.flashNight.arki.scene.WaveSpawner {
             if(spawnIndex > -1){
                 var spawnPoint = spawnPoints[spawnIndex];
                 spawnPoint.僵尸型敌人总个数 += quantity;
-                // 若该出生点隐藏则令其生成，并自动为该波次敌人附加延迟
+                // 若该出生点隐藏则令其生成，并根据其生成时长自动为该波次敌人附加延迟
                 if(spawnPoint.Hide){
                     spawnPoint.Hide = false;
                     spawnPoint.gotoAndPlay("生成");
@@ -233,11 +233,6 @@ class org.flashNight.arki.scene.WaveSpawner {
             isFinished = true;
             stageManager.clearStage();
         }
-        // var 本轮对话 = stageInfo.dialogues[currentWave];
-        // if (本轮对话.length > 0){
-        //     _root.暂停 = true;
-        //     _root.SetDialogue(本轮对话);
-        // }
     }
 
 
