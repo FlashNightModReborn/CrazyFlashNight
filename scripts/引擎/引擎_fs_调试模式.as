@@ -218,19 +218,5 @@ _root.获得父节点属性 = function(对象, 层级, 属性)
 	return _root.获得父节点(对象, 层级)[_root.获得属性(对象, 属性)];
 };
 
-_root.traceObject = function(obj:Object, indent:String):Void 
-{
-	for (var key in obj)
-	{
-		if (typeof (obj[key]) == "object")
-		{
-			_root.发布调试消息(indent + key + ":");
-			traceObject(obj[key],indent + "  ");
-		}
-		else
-		{
-			_root.发布调试消息(indent + key + ": " + obj[key]);
-		}
-	}
-};
+
 

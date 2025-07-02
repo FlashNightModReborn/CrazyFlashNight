@@ -24,8 +24,8 @@ class org.flashNight.arki.scene.StageManager {
     public var spawnPoints:Array; // 出生点影片剪辑列表
 
     public var isActive = false;
-    public var isCleared = false;
-    public var isFinished = false;
+    public var isCleared = false; // 当前地图是否通过
+    public var isFinished = false; // 关卡是否完成
     public var isFailed = false; // 关卡是否失败
     
     /**
@@ -199,6 +199,11 @@ class org.flashNight.arki.scene.StageManager {
         gameworld.地图.僵尸型敌人总个数 = 0;
         gameworld.地图.僵尸型敌人场上实际人数 = 0;
 
+        // 侦听玩家位置更新事件
+        if(currentStageInfo.triggerInfo.length > 0){
+            gameworld.dispatcher.subscribe("HeroPositionUpdated", this.handleTriggers, this);
+        }
+
         // 将上述影片剪辑实例设置为不可枚举
         _global.ASSetPropFlags(gameworld, unIterables, 1, false);
         
@@ -314,6 +319,26 @@ class org.flashNight.arki.scene.StageManager {
         isActive = false;
         stageInfoList = null;
         currentStage = -1;
+    }
+
+
+
+    // 执行压力板事件，目前每个压力板只能被踩下一次
+    private function handleTriggers(heroX:Number, heroY:Number){
+        if(currentStageInfo.triggerInfo.length <= 0){
+            return;
+        }
+
+        for(var i = currentStageInfo.triggerInfo.length - 1; i > -1; i--){
+            var trigger = currentStageInfo.triggerInfo[i];
+            if(!isNaN(trigger.Xmin) && heroX <= trigger.Xmin) continue;
+            if(!isNaN(trigger.Xmax) && heroX >= trigger.Xmax) continue;
+            if(!isNaN(trigger.Ymin) && heroY <= trigger.Ymin) continue;
+            if(!isNaN(trigger.Ymax) && heroY >= trigger.Ymax) continue;
+            // 发布压力板事件并移除压力板
+            gameworld.dispatcher.publish("TriggerPressed", trigger.id);
+            currentStageInfo.triggerInfo.splice(i,1);
+        }
     }
 
 }

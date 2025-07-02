@@ -60,6 +60,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
         InformationComponentUpdater.update(target);
         target.buffManager.update(4);
         WatchDogUpdater.update(target);
+        // 发布主角位置事件
+        _root.gameworld.dispatcher.publish("HeroPositionUpdated", target._x, target,_y);
     }
 
     public static function onMapElementUpdate(target:MovieClip):Void {

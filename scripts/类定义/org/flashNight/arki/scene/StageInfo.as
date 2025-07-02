@@ -13,16 +13,18 @@ class org.flashNight.arki.scene.StageInfo {
     public var spawnPointInfo:Array; // 出生点信息
     public var waveInfo:Array; // 波次信息
     public var eventInfo:Array; // 关卡事件
+    public var triggerInfo:Array // 压力板信息
 
     // ————————————————————————
     // 构造函数
     // ————————————————————————
-    public function StageInfo(data) {
+    public function StageInfo(data:Object) {
         basicInfo = parseBasicInfo(data);
         instanceInfo = parseInstanceInfo(data);
         spawnPointInfo = parseSpawnPointInfo(data);
         waveInfo = parseWaveInfo(data);
         eventInfo = parseEventInfo(data);
+        triggerInfo = parseTriggerInfo(data);
     }
 
     public static function parseBasicInfo(data):Object{
@@ -129,8 +131,8 @@ class org.flashNight.arki.scene.StageInfo {
             var attr = ObjectUtil.clone(_root.兵种库[enemyInfo.Type]);
             if(enemyInfo.IsHostile != null) attr.是否为敌人 = enemyInfo.IsHostile;
             return attr;
-        } 
-        // 否则，组装敌人属性       
+        }
+        // 否则，组装敌人属性
         var attr:Object = {
             兵种名: enemyInfo.spritename,
             名字: enemyInfo.Name,
@@ -169,6 +171,10 @@ class org.flashNight.arki.scene.StageInfo {
             info.push(new StageEvent(eventData[i]));
         }
         return info;
+    }
+
+    public function parseTriggerInfo(data):Array{
+        return ObjectUtil.toArray(data.Trigger);
     }
 
 }

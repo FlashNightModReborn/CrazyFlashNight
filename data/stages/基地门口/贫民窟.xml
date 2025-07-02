@@ -382,9 +382,6 @@
             <Background>flashswf/backgrounds/gk9_6_BG.swf</Background>
             <PlayerX>1090</PlayerX>
             <PlayerY>562</PlayerY>
-            <CallbackFunction>
-                <Name>贫民窟_6</Name>
-            </CallbackFunction>
         </BasicInformation>
         <SpawnPoint>
             <Point id="0">
@@ -420,8 +417,11 @@
                 </Parameters>
             </Instance>
         </Instances>
+        <Trigger id="0">
+            <Xmax>200</Xmax>
+        </Trigger>
         <Event>
-            <EventName>WaveFinished</EventName>
+            <EventName>TriggerPressed</EventName>
             <Parameter>0</Parameter>
             <Dialogue id="0">
                 <Name>$PC</Name>
@@ -429,6 +429,7 @@
                 <Char>$PC_CHAR#愤怒</Char>
                 <Text>我靠！太危险了！赶快回去吧！……</Text>
             </Dialogue>
+            <StageProgress>Finish</StageProgress>
         </Event>
         <Wave>
             <SubWave id="0">
