@@ -3,11 +3,20 @@
           <DOMBitmapItem name="位图 1" itemID="68653068-00003e9b" sourceExternalFilepath="C:/Users/ADMINI~1/AppData/Local/Temp/flash0.png" sourceLastImported="1751461992" originalCompressionType="lossless" quality="50" href="位图 1.png" bitmapDataHRef="M 1 1751461992.dat" frameRight="30720" frameBottom="20480"/>
      </media>
      <symbols>
+          <Include href="活塞杆.xml" loadImmediate="false" itemID="68657fab-00003eb3" lastModified="1751482283"/>
+          <Include href="欧米茄.xml" loadImmediate="false" itemID="68657ec3-00003eab" lastModified="1751482051"/>
+          <Include href="铁枪.xml" loadImmediate="false" itemID="6865812f-00003eba" lastModified="1751485829"/>
           <Include href="铁枪初级logo齿轮.xml" loadImmediate="false" itemID="685e0ea5-0000070a" lastModified="1750994605"/>
           <Include href="铁枪初级logo核心.xml" loadImmediate="false" itemID="685e0ec1-0000070f" lastModified="1750996117"/>
           <Include href="铁枪初级logo铁枪.xml" loadImmediate="false" itemID="685e0fd7-00000716" lastModified="1750996111"/>
+          <Include href="铁枪弹舱.xml" loadImmediate="false" itemID="6865857a-00003ee5" lastModified="1751483770"/>
           <Include href="铁枪高级logo图腾.xml" loadImmediate="false" itemID="685e57a7-00000725" lastModified="1751013287"/>
           <Include href="铁枪高级logo样式.xml" loadImmediate="false" itemID="685e57b6-00000727" lastModified="1751013440"/>
+          <Include href="铁枪轮盘.xml" loadImmediate="false" itemID="686582e0-00003ecb" lastModified="1751485840"/>
+          <Include href="铁枪枪管.xml" loadImmediate="false" itemID="6865847d-00003eda" lastModified="1751483517"/>
+          <Include href="铁枪枪身.xml" loadImmediate="false" itemID="686586c3-00003ef8" lastModified="1751484099"/>
+          <Include href="铁枪枪托.xml" loadImmediate="false" itemID="68658669-00003eee" lastModified="1751484009"/>
+          <Include href="铁枪准星.xml" loadImmediate="false" itemID="68657e28-00003ea6" lastModified="1751481896"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -61,9 +70,9 @@
                                         <DOMGroup>
                                              <members/>
                                         </DOMGroup>
-                                        <DOMSymbolInstance libraryItemName="铁枪初级logo核心" centerPoint3DX="298.8" centerPoint3DY="265.45">
+                                        <DOMSymbolInstance libraryItemName="铁枪初级logo核心" centerPoint3DX="-1888.5" centerPoint3DY="2003.5">
                                              <matrix>
-                                                  <Matrix tx="159.85" ty="106.35"/>
+                                                  <Matrix tx="-2027.45" ty="1844.4"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="138.95" y="159.1"/>
@@ -77,17 +86,17 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="铁枪初级logo齿轮" centerPoint3DX="299.6" centerPoint3DY="274.85">
+                                        <DOMSymbolInstance libraryItemName="铁枪初级logo齿轮" centerPoint3DX="-1887.7" centerPoint3DY="2012.9">
                                              <matrix>
-                                                  <Matrix tx="152.45" ty="141.35"/>
+                                                  <Matrix tx="-2034.85" ty="1879.4"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="147.15" y="133.5"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="铁枪初级logo铁枪" centerPoint3DX="-1.8" centerPoint3DY="149.1">
+                                        <DOMSymbolInstance libraryItemName="铁枪初级logo铁枪" centerPoint3DX="-1284.15" centerPoint3DY="1941.6">
                                              <matrix>
-                                                  <Matrix tx="-140.75" ty="-10"/>
+                                                  <Matrix tx="-1423.1" ty="1782.5"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="138.95" y="159.1"/>
@@ -105,9 +114,9 @@
                                         <DOMGroup>
                                              <members/>
                                         </DOMGroup>
-                                        <DOMSymbolInstance libraryItemName="铁枪高级logo样式" centerPoint3DX="638.05" centerPoint3DY="176.85">
+                                        <DOMSymbolInstance libraryItemName="铁枪高级logo样式" centerPoint3DX="-1549.25" centerPoint3DY="1914.9">
                                              <matrix>
-                                                  <Matrix a="0.278778076171875" d="0.278778076171875" tx="504.15" ty="-6.05"/>
+                                                  <Matrix a="0.278778076171875" d="0.278778076171875" tx="-1683.15" ty="1732"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="480.3" y="656.1"/>
@@ -121,9 +130,9 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="铁枪高级logo图腾" centerPoint3DX="282.9" centerPoint3DY="-429.1">
+                                        <DOMSymbolInstance libraryItemName="铁枪高级logo图腾" centerPoint3DX="-1292.55" centerPoint3DY="1320.4">
                                              <matrix>
-                                                  <Matrix a="0.63653564453125" d="0.63653564453125" tx="33.7" ty="-814.05"/>
+                                                  <Matrix a="0.63653564453125" d="0.63653564453125" tx="-1541.75" ty="935.45"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="391.5" y="604.75"/>
@@ -133,13 +142,320 @@
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+                    <DOMLayer name="图层 5" color="#4FFFFF">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="活塞杆" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMShape>
+                                             <fills>
+                                                  <FillStyle index="1">
+                                                       <SolidColor color="#231F18"/>
+                                                  </FillStyle>
+                                             </fills>
+                                             <strokes>
+                                                  <StrokeStyle index="1">
+                                                       <SolidStroke scaleMode="normal">
+                                                            <fill>
+                                                                 <SolidColor color="#FF0000"/>
+                                                            </fill>
+                                                       </SolidStroke>
+                                                  </StrokeStyle>
+                                             </strokes>
+                                             <edges>
+                                                  <Edge fillStyle1="1" edges="!34156 -4586|34156 -6403"/>
+                                                  <Edge fillStyle1="1" strokeStyle="1" edges="!34156 -6403|40494 -6403!40494 -6403|40494 -4586!40494 -4586|34156 -4586"/>
+                                                  <Edge fillStyle1="1" edges="!44126 34163|39333 34163!39333 34163|39333 32602!39333 32602|44126 32602!44126 32602|44126 34163"/>
+                                             </edges>
+                                        </DOMShape>
+                                        <DOMSymbolInstance libraryItemName="铁枪枪管" centerPoint3DX="1941.4" centerPoint3DY="-199.4">
+                                             <matrix>
+                                                  <Matrix tx="1573.55" ty="-366.2"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="367.85" y="166.8"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="活塞杆" centerPoint3DX="1975.3" centerPoint3DY="-277.15">
+                                             <matrix>
+                                                  <Matrix tx="1672.8" ty="-309.25"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="302.5" y="32.1"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪枪托" centerPoint3DX="2312.95" centerPoint3DY="942.2">
+                                             <matrix>
+                                                  <Matrix a="-0.060760498046875" b="-0.998123168945313" c="0.998123168945313" d="-0.060760498046875" tx="2007.5" ty="1178"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="218.8" y="322.45"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪枪管" centerPoint3DX="1928.85" centerPoint3DY="883.85">
+                                             <matrix>
+                                                  <Matrix tx="1561" ty="717.05"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="367.85" y="166.8"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="活塞杆" centerPoint3DX="1716.45" centerPoint3DY="806.1">
+                                             <matrix>
+                                                  <Matrix tx="1413.95" ty="774"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="302.5" y="32.1"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪枪托" centerPoint3DX="2111.1" centerPoint3DY="2035.35">
+                                             <matrix>
+                                                  <Matrix tx="1892.65" ty="1712.8"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="218.85" y="322.5"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪弹舱" centerPoint3DX="2032.95" centerPoint3DY="1049.1">
+                                             <matrix>
+                                                  <Matrix tx="1792.35" ty="761.4"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="240.6" y="287.7"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪枪管" centerPoint3DX="2220.9" centerPoint3DY="1750.85">
+                                             <matrix>
+                                                  <Matrix tx="1853.05" ty="1584.05"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="367.85" y="166.8"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪弹舱" centerPoint3DX="2215.8" centerPoint3DY="1979.05">
+                                             <matrix>
+                                                  <Matrix tx="1975.2" ty="1691.35"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="240.6" y="287.7"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="活塞杆" centerPoint3DX="2208.05" centerPoint3DY="1673.1">
+                                             <matrix>
+                                                  <Matrix tx="1905.55" ty="1641"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="302.5" y="32.1"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪" centerPoint3DX="76.95" centerPoint3DY="-355.5">
+                                             <matrix>
+                                                  <Matrix tx="-670.2" ty="-854.85"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="747.15" y="499.35"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪轮盘" centerPoint3DX="2167.7" centerPoint3DY="1806.15">
+                                             <matrix>
+                                                  <Matrix tx="2025.1" ty="1655.45"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="142.6" y="150.7"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪准星" centerPoint3DX="2233.85" centerPoint3DY="1511.25">
+                                             <matrix>
+                                                  <Matrix tx="2195.65" ty="1430.35"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="38.2" y="80.9"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="欧米茄" centerPoint3DX="2166.7" centerPoint3DY="2036.45">
+                                             <matrix>
+                                                  <Matrix tx="2142.8" ty="2019.85"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="23.9" y="16.6"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪枪身" centerPoint3DX="2419.9" centerPoint3DY="1950">
+                                             <matrix>
+                                                  <Matrix tx="1962.1" ty="1562.55"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="457.8" y="387.45"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪轮盘" centerPoint3DX="2152" centerPoint3DY="-56.25">
+                                             <matrix>
+                                                  <Matrix tx="2009.4" ty="-206.95"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="142.6" y="150.7"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪准星" centerPoint3DX="1954.35" centerPoint3DY="-439">
+                                             <matrix>
+                                                  <Matrix tx="1916.15" ty="-519.9"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="38.2" y="80.9"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="欧米茄" centerPoint3DX="2151" centerPoint3DY="174.05">
+                                             <matrix>
+                                                  <Matrix tx="2127.1" ty="157.45"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="23.9" y="16.6"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪弹舱" centerPoint3DX="1871.4" centerPoint3DY="191.15">
+                                             <matrix>
+                                                  <Matrix tx="1630.8" ty="-96.55"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="240.6" y="287.7"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪枪托" centerPoint3DX="2848.6" centerPoint3DY="-78.05">
+                                             <matrix>
+                                                  <Matrix tx="2630.15" ty="-400.6"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="218.85" y="322.5"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪枪身" centerPoint3DX="2404.2" centerPoint3DY="87.6">
+                                             <matrix>
+                                                  <Matrix tx="1946.4" ty="-299.85"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="457.8" y="387.45"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪轮盘" centerPoint3DX="2489.2" centerPoint3DY="963.1">
+                                             <matrix>
+                                                  <Matrix tx="2346.6" ty="812.4"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="142.6" y="150.7"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪准星" centerPoint3DX="1930.75" centerPoint3DY="644.25">
+                                             <matrix>
+                                                  <Matrix tx="1892.55" ty="563.35"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="38.2" y="80.9"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="欧米茄" centerPoint3DX="2488.2" centerPoint3DY="1193.4">
+                                             <matrix>
+                                                  <Matrix tx="2464.3" ty="1176.8"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="23.9" y="16.6"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪枪身" centerPoint3DX="2741.4" centerPoint3DY="1106.95">
+                                             <matrix>
+                                                  <Matrix tx="2283.6" ty="719.5"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="457.8" y="387.45"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪轮盘" centerPoint3DX="-26.6" centerPoint3DY="759.95">
+                                             <matrix>
+                                                  <Matrix tx="-169.2" ty="609.25"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="142.6" y="150.7"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪准星" centerPoint3DX="345.25" centerPoint3DY="150.6">
+                                             <matrix>
+                                                  <Matrix tx="307.05" ty="69.7"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="38.2" y="80.9"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="欧米茄" centerPoint3DX="295.55" centerPoint3DY="1105.45">
+                                             <matrix>
+                                                  <Matrix tx="271.65" ty="1088.85"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="23.9" y="16.6"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪枪管" centerPoint3DX="299.65" centerPoint3DY="498.7">
+                                             <matrix>
+                                                  <Matrix tx="-68.2" ty="331.9"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="367.85" y="166.8"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪弹舱" centerPoint3DX="-337.95" centerPoint3DY="969.65">
+                                             <matrix>
+                                                  <Matrix tx="-578.55" ty="681.95"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="240.6" y="287.7"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪枪托" centerPoint3DX="1034.95" centerPoint3DY="631.6">
+                                             <matrix>
+                                                  <Matrix tx="816.5" ty="309.05"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="218.85" y="322.5"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="铁枪枪身" centerPoint3DX="512.05" centerPoint3DY="1341.5">
+                                             <matrix>
+                                                  <Matrix tx="54.25" ty="954.05"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="457.8" y="387.45"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="活塞杆" centerPoint3DX="484.2" centerPoint3DY="766.95">
+                                             <matrix>
+                                                  <Matrix tx="181.7" ty="734.85"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="302.5" y="32.1"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="图层 2" color="#9933CC">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="图层 1" color="#4FFF4F" locked="true">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
                                         <DOMBitmapInstance libraryItemName="位图 1">
                                              <matrix>
-                                                  <Matrix tx="-650.05" ty="-871.3"/>
+                                                  <Matrix tx="-651.3" ty="-865.05"/>
                                              </matrix>
                                         </DOMBitmapInstance>
                                    </elements>
@@ -415,6 +731,17 @@
                     <SolidSwatchItem color="#6666FF" alpha="0.247058823529412" hue="160" saturation="239" brightness="168"/>
                     <SolidSwatchItem color="#2A675B" hue="112" saturation="100" brightness="69"/>
                     <SolidSwatchItem color="#5D5E4F" hue="40" saturation="21" brightness="81"/>
+                    <SolidSwatchItem color="#5B7C22" hue="55" saturation="137" brightness="75"/>
+                    <SolidSwatchItem color="#343530" hue="48" saturation="13" brightness="48"/>
+                    <SolidSwatchItem color="#1F1F1A" hue="40" saturation="23" brightness="27"/>
+                    <SolidSwatchItem color="#0A0A07" hue="40" saturation="30" brightness="8"/>
+                    <SolidSwatchItem color="#231F18" hue="24" saturation="43" brightness="28"/>
+                    <SolidSwatchItem color="#1F1E19" hue="32" saturation="23" brightness="27"/>
+                    <SolidSwatchItem color="#121313" hue="120" saturation="7" brightness="18"/>
+                    <SolidSwatchItem color="#090907" hue="40" saturation="16" brightness="8"/>
+                    <SolidSwatchItem color="#1D1D18" hue="40" saturation="19" brightness="25"/>
+                    <SolidSwatchItem color="#2B2A24" hue="40" saturation="19" brightness="37"/>
+                    <SolidSwatchItem color="#0D0C08" hue="30" saturation="48" brightness="10"/>
                </swatches>
           </swatchList>
      </swatchLists>
