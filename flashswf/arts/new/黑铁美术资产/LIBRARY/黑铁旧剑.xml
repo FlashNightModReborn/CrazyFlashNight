@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁旧剑" itemID="68650d1c-00003e5f" lastModified="1751457177" lastUniqueIdentifier="13">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁旧剑" itemID="68650d1c-00003e5f" lastModified="1751457798" lastUniqueIdentifier="13">
   <timeline>
     <DOMTimeline name="黑铁旧剑">
       <layers>
-        <DOMLayer name="黑铁旧剑剑柄" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="黑铁旧剑剑柄" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -22,7 +22,7 @@
                     <Point x="9.4" y="200"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="黑铁旧剑剑柄" selected="true" centerPoint3DX="55.45" centerPoint3DY="-150.05">
+                <DOMSymbolInstance libraryItemName="黑铁旧剑剑柄" centerPoint3DX="55.45" centerPoint3DY="-150.05">
                   <matrix>
                     <Matrix tx="29.65" ty="-219.2"/>
                   </matrix>
@@ -41,21 +41,21 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="黑铁旧剑剑鞘" centerPoint3DX="54.05" centerPoint3DY="138.45">
+                <DOMSymbolInstance libraryItemName="黑铁旧剑剑鞘" centerPoint3DX="55.8" centerPoint3DY="139.15">
                   <matrix>
-                    <Matrix a="1.38294982910156" d="1.38294982910156" tx="32.95" ty="-66.75"/>
+                    <Matrix a="1.38294982910156" d="1.38294982910156" tx="34.7" ty="-66.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="15.25" y="148.3"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="黑铁旧剑剑鞘" centerPoint3DX="-25.15" centerPoint3DY="124.3">
+                <DOMSymbolInstance libraryItemName="黑铁旧剑剑鞘" centerPoint3DX="-23.75" centerPoint3DY="127.1">
                   <matrix>
-                    <Matrix a="1.3829345703125" d="1.3829345703125" tx="-46.25" ty="-80.9"/>
+                    <Matrix a="1.3829345703125" d="1.3829345703125" tx="-44.85" ty="-78.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="15.25" y="148.3"/>
