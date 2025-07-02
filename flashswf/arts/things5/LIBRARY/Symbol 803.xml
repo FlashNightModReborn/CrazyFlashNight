@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 803" itemID="6577efbc-000004cc" lastModified="1751442163" lastUniqueIdentifier="13">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 803" itemID="6577efbc-000004cc" lastModified="1751448932" lastUniqueIdentifier="18">
   <timeline>
-    <DOMTimeline name="Symbol 803" currentFrame="68">
+    <DOMTimeline name="Symbol 803" currentFrame="67">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -32,6 +32,127 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
+        <DOMLayer name="剑鞘" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁剑鞘" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.239730834960938" b="0.138412475585938" c="0.138412475585938" d="-0.239730834960938" tx="-26.8" ty="53.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.95" y="146.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁剑鞘" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.239730834960938" b="0.138412475585938" c="0.138412475585938" d="-0.239730834960938" tx="-25.65" ty="50.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.95" y="146.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁剑鞘" centerPoint3DX="-2.65" centerPoint3DY="18.55">
+                  <matrix>
+                    <Matrix a="0.239730834960938" b="0.138412475585938" c="0.138412475585938" d="-0.239730834960938" tx="-26.35" ty="51.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.95" y="146.75"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.05078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="33" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="黑铁剑1" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 778" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.269332885742188" b="-0.006866455078125" c="-0.006866455078125" d="0.269332885742188" tx="25.65" ty="-17.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Symbol 779" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.269332885742188" b="-0.006866455078125" c="-0.006866455078125" d="0.269332885742188" tx="25.15" ty="0.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 777" centerPoint3DX="90.55" centerPoint3DY="-159.1">
+                  <matrix>
+                    <Matrix a="0.185592651367188" b="0.195297241210938" c="0.195297241210938" d="-0.185592651367188" tx="2.55" ty="7.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="0" blurY="0" color="#FFCC00" strength="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 777" centerPoint3DX="93.75" centerPoint3DY="-159.05">
+                  <matrix>
+                    <Matrix a="0.185592651367188" b="0.195297241210938" c="0.195297241210938" d="-0.185592651367188" tx="5.75" ty="7.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18" color="#FFCC00"/>
+                    <BlurFilter blurX="0" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 777" centerPoint3DX="-41" centerPoint3DY="-216.1">
+                  <matrix>
+                    <Matrix a="0.269332885742188" b="0.006866455078125" c="0.006866455078125" d="-0.269332885742188" tx="14.6" ty="-36.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18" color="#FFCC00"/>
+                    <BlurFilter blurX="169" blurY="169"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="Layer 2" color="#92B5DC">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
@@ -52,7 +173,7 @@
             <DOMFrame index="34" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="46" duration="2" keyMode="9728">
+            <DOMFrame index="46" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 800" symbolType="graphic" loop="loop">
                   <matrix>
@@ -66,59 +187,14 @@
             </DOMFrame>
             <DOMFrame index="48" duration="2" keyMode="9728">
               <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <SolidColor/>
-                    </FillStyle>
-                    <FillStyle index="2">
-                      <SolidColor color="#0F0F0F"/>
-                    </FillStyle>
-                    <FillStyle index="3">
-                      <SolidColor color="#4B1817"/>
-                    </FillStyle>
-                  </fills>
-                  <strokes>
-                    <StrokeStyle index="1">
-                      <SolidStroke scaleMode="normal">
-                        <fill>
-                          <SolidColor/>
-                        </fill>
-                      </SolidStroke>
-                    </StrokeStyle>
-                  </strokes>
-                  <edges>
-                    <Edge fillStyle0="1" strokeStyle="1" edges="!-1459 -1425|-1289.5 -1476.5!-1289.5 -1476.5|-1308 -1508!-1308 -1508[-1298 -1510.5 -1290.5 -1516!-1290.5 -1516[-1279.5 -1524 -1279.5 -1536.5!-1279.5 -1536.5[-1279.5 -1571.5 -1296.5 -1588!-1296.5 -1588|-1330.5 -1622!-1330.5 -1622[-1333
- -1599.5 -1338 -1592!-1338 -1592|-1345 -1576!-1345 -1576[-1353.5 -1553.5 -1382.5 -1553.5!-1382.5 -1553.5|-1419.5 -1555.5!-1419.5 -1555.5[-1433 -1555.5 -1451 -1566!-1451 -1566[-1451.5 -1548.5 -1456 -1542!-1456 -1542[-1486.5 -1499.5 -1504.5
- -1486!-1504.5 -1486[-1552 -1451 -1624.5 -1491!-1624.5 -1491[-1643.5 -1451 -1690.5 -1465!-1690.5 -1465[-1714 -1472.5 -1704 -1496.5!-1704 -1496.5[-1743.5 -1479.5 -1749.5 -1473!-1749.5 -1473|-1761 -1457!-1761 -1457[-1778 -1431 -1804 -1422.5
-!-1804 -1422.5|-1846.5 -1420!-1846.5 -1420|-1883.5 -1422.5!-1883.5 -1422.5[-1893 -1422.5 -1890.5 -1438.5!-1890.5 -1438.5[-1927.5 -1426 -1947.5 -1428!-1947.5 -1428[-1994.5 -1434 -2004 -1459.5!-2004 -1459.5[-1998.5 -1434 -2020.5 -1419.5
-!-2020.5 -1419.5[-2048.5 -1402 -2076 -1388!-2076 -1388[-2087 -1382.5 -2123.5 -1389!-2123.5 -1389[-2172 -1342.5 -2226 -1342.5!-2226 -1342.5|-2246 -1342.5!-2246 -1342.5|-2225 -1299.5"/>
-                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
-!-2225 -1299.5[-1850 -1315.5 -1459 -1425"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="
-!-1459 -1425[-1912.5 -1285 -2206 -905!-2206 -905[-2009 -1070 -1660 -1176!-1660 -1176|-1642 -1180"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="
-!-1642 -1180[-1602.5 -1201.5 -1525 -1223.5!-1525 -1223.5[-1437.5 -1248 -1399.5 -1256.5!-1399.5 -1256.5[-1355.5 -1268.5 -1367.5 -1282!-1367.5 -1282[-1295.5 -1281.5 -1262 -1279.5!-1262 -1279.5[-1226.5 -1277 -1226 -1303!-1226 -1303[-1184.5
- -1294 -1172.5 -1303!-1172.5 -1303[-1149.5 -1319.5 -1144 -1322.5!-1144 -1322.5[-1126.5 -1331 -1128.5 -1354!-1128.5 -1354[-1097.5 -1331 -1063 -1320!-1063 -1320[-1028 -1308.5 -1020 -1308.5!-1020 -1308.5[-983.5 -1308.5 -967.5 -1345.5!-967.5
- -1345.5[-926.5 -1342 -914.5 -1325!-914.5 -1325[-895 -1354 -882.5 -1354!-882.5 -1354[-869.5 -1355.5 -857.5 -1379.5!-857.5 -1379.5[-851.5 -1350.5 -851.5 -1331!-851.5 -1331[-851.5 -1307.5 -844 -1291!-844 -1291[-882.5 -1263 -893.5 -1240.5"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="
-!-893.5 -1240.5[-1517 -1007.5 -1506.5 -805!-1506.5 -805|-1506.5 -800"/>
-                    <Edge fillStyle1="3" strokeStyle="1" edges="
-!-1506.5 -800[#FFFA20.AD #FFFCFD.F3 -1487 -740.5!-1487 -740.5[#FFFA32.B2 #FFFD1E.7E -1483.5 -734.5!-1483.5 -734.5[#FFFAAA.4E -482.0625 -1352.5 -277!-1352.5 -277[#FFFACA.DA #1D.BC -1548 230.5!-1548 230.5[#FFF91B.69 #1B1.2C -1853.5 548
-!-1853.5 548[#FFF888.DC #26E.F9 -1914.5 660.5!-1914.5 660.5|-1929.5 852.5!-1929.5 852.5[#FFF876.43 #358.86 -1930 860.5!-1930 860.5[#FFF872.6C #392.E -1941.5 961"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="
-!-1941.5 961[-2004.5 1198 -2088.5 1248!-2088.5 1248[-2156 1288 -2394 1277.5!-2394 1277.5|-2697 1262.5!-2697 1262.5[-3065.5 1392 -3394.5 1371!-3394.5 1371[-3723.5 1350.5 -3850.5 1228!-3850.5 1228[-3915.5 1094 -3599 981.5!-3599 981.5[-3622.5
- 811 -3498.5 680.5!-3498.5 680.5[-3415 592.5 -3265.5 523.5!-3265.5 523.5[-2909.5 358 -2593 69!-2593 69[-2439.5 -150 -2426 -274.5!-2426 -274.5[-2739.5 -754.5 -2225 -1299.5"/>
-                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
-!-2206 -905[-2282 -841.5 -2335.5 -769"/>
-                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
-!-1941.5 961[-1954 907.5 -1962 857.5!-1962 857.5[#FFF838.1F #2AA.3C -1973 548!-1973 548[#FFF86B.4D #139.D4 -1760.5 204.5!-1760.5 204.5[#FFF9E3.77 #55.7C -1514 -277!-1514 -277[#FFFA30.9C #FFFE29.A4 -1502 -733!-1502 -733|-1506.5 -800"/>
-                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="
-!-893.5 -1240.5[-1527 -1200.5 -1642 -1180"/>
-                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
-!-2199.5 1034[-2323 1164 -2722 1068!-3599 981.5|-3556 967!-2697 1262.5[-3166 1331.5 -3404 1228"/>
-                  </edges>
-                </DOMShape>
+                <DOMSymbolInstance libraryItemName="补间 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-117.6" ty="-6.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="50" duration="32" keyMode="9728">
@@ -146,11 +222,23 @@
             <DOMFrame index="34" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="46" duration="3" keyMode="9728">
+            <DOMFrame index="46" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.252670288085938" b="0.0789794921875" c="0.0789794921875" d="-0.252670288085938" tx="-6.1" ty="-55.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0911865234375" b="0.24853515625" c="0.24853515625" d="0.0911865234375" tx="5.15" ty="-39.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -222,15 +310,14 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle0="2" fillStyle1="1" edges="
-!361 -1770.5|358 -1788"/>
-                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
-!358 -1788|336.5 -1783.5"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="
-!361 -1770.5[282 -1757 192.5 -1725!192.5 -1725[-518 -1471 -705 -1764.5!-705 -1764.5[-420 -2687 755 -2768.5!755 -2768.5[1684.5 -2704 1742.5 -2112!1742.5 -2112[1800.5 -1520 1702.5 -1084.5!1702.5 -1084.5[1609.5 -672.5 834 -252.5!834 -252.5
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!361 -1770.5[282 -1757 192.5 -1725!192.5 -1725[-518 -1471 -705 -1764.5!-705 -1764.5[-420 -2687 755 -2768.5!755 -2768.5[1684.5 -2704 1742.5 -2112!1742.5 -2112[1800.5 -1520 1702.5 -1084.5!1702.5 -1084.5[1609.5 -672.5 834 -252.5!834 -252.5
 [777.5 -390.5 768 -549"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="
 !768 -549[758.5 -707 795.5 -885!795.5 -885[1014.5 -1185.5 842.5 -1540.5!842.5 -1540.5[702.5 -1829 361 -1770.5"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
+!358 -1788|336.5 -1783.5"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!361 -1770.5|358 -1788"/>
                     <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="
 !358 -1788[1053 -1925.5 1415 -1547.5!1415 -1547.5[1709.5 -1182 768 -549"/>
                   </edges>
@@ -325,21 +412,23 @@
                     <Edge strokeStyle="1" edges="
 !983.5 -698.5[982 -704.5 989 -715!989 -715|995 -725.5!995 -725.5|993.5 -726!993.5 -726|996 -736"/>
                     <Edge fillStyle1="3" strokeStyle="1" edges="
-!996 -736[1161 -1525.5 782 -1929.5!995 -725.5[997.5 -731 996 -736"/>
+!996 -736[1161 -1525.5 782 -1929.5"/>
                     <Edge fillStyle1="1" edges="
 !983.5 -698.5|995 -725.5"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="
+!995 -725.5[997.5 -731 996 -736"/>
                     <Edge fillStyle0="3" edges="
 !1370 -336|1374 -335.5"/>
-                    <Edge fillStyle0="3" strokeStyle="1" edges="
-!1347 -387[#54E.2E -363.71875 1369 -339"/>
                     <Edge fillStyle0="1" edges="
 !1298 -362.5|1347 -387"/>
                     <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="
 !1347 -387[#4B8.EB #FFFD62.DE 995 -725.5"/>
-                    <Edge fillStyle1="1" edges="
-!1496.5 -180|1499.5 -178"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="
+!1347 -387[#54E.2E -363.71875 1369 -339"/>
                     <Edge fillStyle1="3" strokeStyle="1" edges="
 !1499.5 -178|1500 -185.5"/>
+                    <Edge fillStyle1="1" edges="
+!1496.5 -180|1499.5 -178"/>
                     <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
 !782 -1929.5[1082 -1701 1292 -1409"/>
                     <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="
@@ -374,23 +463,17 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="
-!1782.5 -979|1788 -997!1788 -997[1788 -1011 1773.5 -1018.5!1773.5 -1018.5[1763.5 -1024.5 1754.5 -1024.5!1754.5 -1024.5[1746 -1024.5 1732.5 -1020!1732.5 -1020[1719 -1015.5 1705 -1015.5!1705 -1015.5[1669.5 -1015.5 1634 -1030.5!1634 -1030.5
-[1603 -1043 1583 -1034.5!1583 -1034.5[1591 -1067 1591 -1075!1591 -1075[1591 -1088.5 1602.5 -1093!1602.5 -1093|1602.5 -1094!1602.5 -1094|1605.5 -1096!1605.5 -1096|1571 -1098.5!1571 -1098.5[1571 -1117 1540 -1169.5!1540 -1169.5|1508.5 -1221
-!1508.5 -1221[1503 -1217.5 1500 -1213!1500 -1213|1496.5 -1207!1496.5 -1207|1495 -1209.5!1495 -1209.5[1457.5 -1277 1376.5 -1313!1376.5 -1313|1323 -1333!1323 -1333[1299.5 -1341 1297.5 -1346.5!1297.5 -1346.5[1293 -1357 1294 -1372!1294 -1372
-|1297.5 -1397.5!1297.5 -1397.5[1301 -1425 1274.5 -1429.5!1274.5 -1429.5|1183.5 -1449!1183.5 -1449[1177 -1449 1162.5 -1440.5!1162.5 -1440.5|1140.5 -1426.5!1140.5 -1426.5|1139.5 -1448!1139.5 -1448[1138 -1455 1129.5 -1455!1129.5 -1455[1118.5
- -1455 1109 -1439!1109 -1439[1099.5 -1423.5 1077.5 -1403.5!1077.5 -1403.5[1080.5 -1432 1080.5 -1455!1080.5 -1455[1080.5 -1477.5 1086.5 -1486!1086.5 -1486|1063.5 -1486!1063.5 -1486[1061 -1494.5 1061 -1510.5!1061 -1510.5[1061 -1531 1062.5
- -1532.5!1062.5 -1532.5|1082 -1541.5"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="
-!1082 -1541.5[960.5 -1739 717 -1875.5"/>
-                    <Edge fillStyle1="3" strokeStyle="1" edges="
-!717 -1875.5|624.5 -1892.5"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="
-!624.5 -1892.5|773 -1721.5"/>
-                    <Edge strokeStyle="1" edges="
-!773 -1721.5|774.5 -1719.5!774.5 -1719.5|773 -1720"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="
-!773 -1720|778.5 -1673!778.5 -1673[778.5 -1658.5 759.5 -1663!759.5 -1663[740.5 -1667 704 -1641.5!704 -1641.5|697.5 -1653.5!697.5 -1653.5[692 -1665.5 686 -1690!686 -1690[679.5 -1710.5 667 -1720.5!667 -1720.5[652 -1732.5 622 -1736.5"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
+!1672.5 -1225.5[#5E5.CC #FFFA8E.A9 1295 -1476!1295 -1476[#50C.CB #FFFA3B.26 1290.5 -1477.5!1290.5 -1477.5[#4A9.CD #FFFA15.8D 1086.5 -1534!1086.5 -1534|1082 -1541.5"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!1082 -1541.5|1062.5 -1532.5!1062.5 -1532.5[1061 -1531 1061 -1510.5!1061 -1510.5[1061 -1494.5 1063.5 -1486!1063.5 -1486|1086.5 -1486!1086.5 -1486[1080.5 -1477.5 1080.5 -1455!1080.5 -1455[1080.5 -1432 1077.5 -1403.5!1077.5 -1403.5[1099.5
+ -1423.5 1109 -1439!1109 -1439[1118.5 -1455 1129.5 -1455!1129.5 -1455[1138 -1455 1139.5 -1448!1139.5 -1448|1140.5 -1426.5!1140.5 -1426.5|1162.5 -1440.5!1162.5 -1440.5[1177 -1449 1183.5 -1449!1183.5 -1449|1274.5 -1429.5!1274.5 -1429.5
+[1301 -1425 1297.5 -1397.5!1297.5 -1397.5|1294 -1372!1294 -1372[1293 -1357 1297.5 -1346.5!1297.5 -1346.5[1299.5 -1341 1323 -1333!1323 -1333|1376.5 -1313!1376.5 -1313[1457.5 -1277 1495 -1209.5!1495 -1209.5|1496.5 -1207!1496.5 -1207|1500
+ -1213!1500 -1213[1503 -1217.5 1508.5 -1221!1508.5 -1221|1540 -1169.5!1540 -1169.5[1571 -1117 1571 -1098.5!1571 -1098.5|1605.5 -1096!1605.5 -1096|1602.5 -1094!1602.5 -1094|1602.5 -1093!1602.5 -1093[1591 -1088.5 1591 -1075!1591 -1075[1591
+ -1067 1583 -1034.5!1583 -1034.5[1603 -1043 1634 -1030.5!1634 -1030.5[1669.5 -1015.5 1705 -1015.5!1705 -1015.5[1719 -1015.5 1732.5 -1020!1732.5 -1020[1746 -1024.5 1754.5 -1024.5!1754.5 -1024.5[1763.5 -1024.5 1773.5 -1018.5!1773.5 -1018.5
+[1788 -1011 1788 -997!1788 -997|1782.5 -979!1782.5 -979[1798 -985.5 1806.5 -1003!1806.5 -1003[1813.5 -1017.5 1813.5 -1031.5!1813.5 -1031.5|1810.5 -1061.5!1810.5 -1061.5|1808 -1061.5!1808 -1061.5|1810.5 -1054!1810.5 -1054|1805.5 -1061.5"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
+!1805.5 -1061.5[#6D4.C3 #FFFB87.02 1683.5 -1214!1683.5 -1214[#68E.0A #FFFB3C.31 1672.5 -1225.5"/>
                     <Edge strokeStyle="1" edges="
 !622 -1736.5|624.5 -1731.5!624.5 -1731.5|621.5 -1735.5!621.5 -1735.5|618 -1737!618 -1737|622 -1736.5"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="
@@ -408,11 +491,15 @@
                     <Edge fillStyle1="2" strokeStyle="1" edges="
 !1717 -1268|1725 -1252"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="
-!1725 -1252|1725.5 -1251!1725.5 -1251[1772 -1154.5 1808 -1061.5!1808 -1061.5|1810.5 -1061.5!1810.5 -1061.5|1813.5 -1031.5!1813.5 -1031.5[1813.5 -1017.5 1806.5 -1003!1806.5 -1003[1798 -985.5 1782.5 -979"/>
+!1725 -1252|1725.5 -1251!1725.5 -1251[1772 -1154.5 1808 -1061.5"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="
+!717 -1875.5|624.5 -1892.5"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!624.5 -1892.5|773 -1721.5"/>
                     <Edge strokeStyle="1" edges="
-!1782.5 -979|1782 -975.5!1782 -975.5|1782 -978.5!1782 -978.5|1782.5 -979"/>
-                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
-!1672.5 -1225.5[#5E5.CC #FFFA8E.A9 1295 -1476!1295 -1476[#50C.CB #FFFA3B.26 1290.5 -1477.5!1290.5 -1477.5[#4A9.CD #FFFA15.8D 1086.5 -1534!1086.5 -1534|1082 -1541.5"/>
+!773 -1721.5|774.5 -1719.5!774.5 -1719.5|773 -1720"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!773 -1720|778.5 -1673!778.5 -1673[778.5 -1658.5 759.5 -1663!759.5 -1663[740.5 -1667 704 -1641.5!704 -1641.5|697.5 -1653.5!697.5 -1653.5[692 -1665.5 686 -1690!686 -1690[679.5 -1710.5 667 -1720.5!667 -1720.5[652 -1732.5 622 -1736.5"/>
                     <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
 !412 -1852.5[#19B.7A #FFF8C3.5C 411 -1853"/>
                     <Edge fillStyle0="2" fillStyle1="1" edges="
@@ -427,18 +514,18 @@
 !-77 -1942.5|-156 -1939"/>
                     <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="
 !717 -1875.5[940.5 -1832.5 1170.5 -1761.5!1170.5 -1761.5[1504.5 -1635.5 1717 -1268"/>
-                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
-!1672.5 -1225.5[#68E.0A #FFFB3C.31 1683.5 -1214!1683.5 -1214[#6D4.C3 #FFFB87.02 1805.5 -1061.5"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!1082 -1541.5[960.5 -1739 717 -1875.5"/>
                     <Edge fillStyle0="1" strokeStyle="1" edges="
 !1805.5 -1061.5|1808 -1061.5"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="
-!1805.5 -1061.5|1810.5 -1054!1810.5 -1054|1808 -1061.5"/>
                     <Edge fillStyle0="1" fillStyle1="2" edges="
 !1725 -1252|1672.5 -1225.5"/>
-                    <Edge fillStyle1="2" edges="
-!-1778 -1327|-1778 -1382.5"/>
+                    <Edge strokeStyle="1" edges="
+!1782.5 -979|1782 -975.5!1782 -975.5|1782 -978.5!1782 -978.5|1782.5 -979"/>
                     <Edge fillStyle1="3" edges="
 !-1778 -1382.5|-1781.5 -1327"/>
+                    <Edge fillStyle1="2" edges="
+!-1778 -1327|-1778 -1382.5"/>
                     <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="
 !-156 -1939|-182.5 -1948"/>
                     <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
@@ -471,8 +558,14 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
+                    <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="
+!497 -2069.5|508 -2060"/>
                     <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="
-!585 -1787.5|621.5 -1762!621.5 -1762[476.5 -1916 564 -2012.5!564 -2012.5|521.5 -2049.5!521.5 -2049.5[#208.6E #FFF7FD.A2 519.5 -2051!519.5 -2051[#201.D9 #FFF7F8.67 508 -2060"/>
+!508 -2060[#201.D9 #FFF7F8.67 519.5 -2051!519.5 -2051[#208.6E #FFF7FD.A2 521.5 -2049.5!521.5 -2049.5|564 -2012.5!564 -2012.5[476.5 -1916 621.5 -1762"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="
+!621.5 -1762[#28E.0E #FFF936.89 676 -1713!676 -1713|676 -1741!676 -1741[681.5 -1741 693 -1730!693 -1730|693 -1735.5!693 -1735.5[678 -1750.5 664 -1777.5!664 -1777.5[651 -1802.5 636 -1844!636 -1844[641.5 -1844 641.5 -1849.5!641.5 -1849.5
+[664 -1845 669 -1854.5!669 -1854.5[670.5 -1857.5 670.5 -1878.5!670.5 -1878.5[670.5 -1896 653 -1918.5!653 -1918.5[636 -1941 636 -1953!636 -1953[636 -1974 648.5 -1981.5!648.5 -1981.5[676 -1997.5 687.5 -2009.5!687.5 -2009.5[675 -2015.5 651
+ -2018.5!651 -2018.5|619 -2021!619 -2021[619 -2026 616 -2037!616 -2037[613 -2048 613 -2055.5!613 -2055.5[613 -2062.5 615 -2065.5!615 -2065.5|621 -2070.5!621 -2070.5[556.5 -2105 497 -2069.5"/>
                     <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="
 !508 -2060|496.5 -2069.5!496.5 -2069.5|497 -2069.5"/>
                     <Edge fillStyle0="3" strokeStyle="1" edges="
@@ -482,17 +575,11 @@
 !-947.5 -1474[-647.5 -1646 -219.5 -1818.5!-219.5 -1818.5[-38.5 -1857 128 -1856.5"/>
                     <Edge fillStyle0="3" strokeStyle="1" edges="
 !128 -1856.5|224 -1853!224 -1853|225 -1853!225 -1853[441 -1837 631 -1752.5!631 -1752.5|621.5 -1762"/>
-                    <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="
-!497 -2069.5|508 -2060"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="
+!621.5 -1762|585 -1787.5"/>
                     <Edge strokeStyle="1" edges="
-!621 -2070.5|636 -2072.5"/>
-                    <Edge fillStyle1="3" strokeStyle="1" edges="
-!621 -2070.5|615 -2065.5!615 -2065.5[613 -2062.5 613 -2055.5!613 -2055.5[613 -2048 616 -2037!616 -2037[619 -2026 619 -2021!619 -2021|651 -2018.5!651 -2018.5[675 -2015.5 687.5 -2009.5!687.5 -2009.5[676 -1997.5 648.5 -1981.5!648.5 -1981.5
-[636 -1974 636 -1953!636 -1953[636 -1941 653 -1918.5!653 -1918.5[670.5 -1896 670.5 -1878.5!670.5 -1878.5[670.5 -1857.5 669 -1854.5!669 -1854.5[664 -1845 641.5 -1849.5!641.5 -1849.5[641.5 -1844 636 -1844!636 -1844[651 -1802.5 664 -1777.5
-!664 -1777.5[678 -1750.5 693 -1735.5!693 -1735.5|693 -1730!693 -1730[681.5 -1741 676 -1741!676 -1741|676 -1713!676 -1713[#28E.0E #FFF936.89 621.5 -1762!497 -2069.5[556.5 -2105 621 -2070.5"/>
-                    <Edge strokeStyle="1" edges="
-!253.5 -1661|250.5 -1667.5!250.5 -1667.5[242.5 -1682 242.5 -1690!242.5 -1690[242.5 -1720 246 -1724!246 -1724[249.5 -1729 276 -1747!276 -1747[268 -1756 255 -1764!255 -1764[248 -1768.5 235 -1776.5!235 -1776.5[214 -1791.5 214 -1821.5!214
- -1821.5[214 -1834 224 -1853"/>
+!621 -2070.5|636 -2072.5!253.5 -1661|250.5 -1667.5!250.5 -1667.5[242.5 -1682 242.5 -1690!242.5 -1690[242.5 -1720 246 -1724!246 -1724[249.5 -1729 276 -1747!276 -1747[268 -1756 255 -1764!255 -1764[248 -1768.5 235 -1776.5!235 -1776.5[214
+ -1791.5 214 -1821.5!214 -1821.5[214 -1834 224 -1853"/>
                     <Edge fillStyle1="2" strokeStyle="1" edges="
 !128 -1856.5[#F.9E #FFF91C.57 182 -1671.5!182 -1671.5[#B9.F9 #FFF97A.DA 190 -1667"/>
                     <Edge strokeStyle="1" edges="
@@ -503,7 +590,7 @@
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="46" duration="3" keyMode="9728">
+            <DOMFrame index="46" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
                   <matrix>
@@ -515,14 +602,385 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.101882934570313" b="0.243865966796875" c="0.243865966796875" d="0.101882934570313" tx="17.25" ty="-34.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
             <DOMFrame index="49" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="50" duration="32" keyMode="9728">
+            <DOMFrame index="50" duration="14" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 802" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.26959228515625" d="0.26959228515625" tx="-10.95" ty="-16.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="64" duration="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 802" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="-10.95" ty="-16.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="81" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 802" centerPoint3DX="-108.35" centerPoint3DY="52.75">
+                  <matrix>
+                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="-10.95" ty="-16.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.05078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#F05BC6" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.268951416015625" b="0.018585205078125" c="0.018585205078125" d="0.268951416015625" tx="7.3" ty="-24"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.235702514648438" b="0.129837036132813" c="0.129837036132813" d="0.235702514648438" tx="13.55" ty="-24.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.159698486328125" b="0.216659545898438" c="0.216659545898438" d="0.159698486328125" tx="20.4" ty="-28.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 785" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.218612670898438" b="0.156265258789063" c="0.156265258789063" d="-0.218597412109375" tx="25.75" ty="-43.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.255020141601563" b="0.086151123046875" c="0.0861663818359375" d="-0.2550048828125" tx="29.95" ty="-47.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.268203735351563" b="-0.0166473388671875" c="-0.0166473388671875" d="-0.268203735351563" tx="32.65" ty="-52.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.2593994140625" b="-0.068634033203125" c="-0.068634033203125" d="-0.2593994140625" tx="35.05" ty="-58.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.263946533203125" b="-0.04791259765625" c="-0.04791259765625" d="-0.263931274414063" tx="34.6" ty="-56.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.2657470703125" b="-0.0363922119140625" c="-0.036376953125" d="-0.265731811523438" tx="34.25" ty="-55.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.157974243164063" b="0.214706420898438" c="-0.214706420898438" d="-0.157974243164063" tx="-21.85" ty="-85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="49" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.162994384765625" b="0.206512451171875" c="0.206512451171875" d="0.162994384765625" tx="6" ty="-34.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.245635986328125" b="0.092498779296875" c="0.092498779296875" d="0.245635986328125" tx="5.2" ty="-30"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" duration="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 785" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2691650390625" b="-0.01434326171875" c="-0.01434326171875" d="0.2691650390625" tx="2.65" ty="-24.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#D99037">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.268951416015625" b="0.018585205078125" c="0.018585205078125" d="0.268951416015625" tx="8.3" ty="-10.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.235702514648438" b="0.129837036132813" c="0.129837036132813" d="0.235702514648438" tx="20" ty="-13.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.159698486328125" b="0.216659545898438" c="0.216659545898438" d="0.159698486328125" tx="31.05" ty="-20.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.218612670898438" b="0.156265258789063" c="0.156265258789063" d="-0.218597412109375" tx="33.3" ty="-53.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.255020141601563" b="0.086151123046875" c="0.0861663818359375" d="-0.2550048828125" tx="34" ty="-59.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.268203735351563" b="-0.0166473388671875" c="-0.0166473388671875" d="-0.268203735351563" tx="31.65" ty="-65.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.2593994140625" b="-0.068634033203125" c="-0.068634033203125" d="-0.2593994140625" tx="31.6" ty="-71.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.263946533203125" b="-0.04791259765625" c="-0.04791259765625" d="-0.263931274414063" tx="32.15" ty="-69.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.2657470703125" b="-0.0363922119140625" c="-0.036376953125" d="-0.265731811523438" tx="32.4" ty="-68.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.157974243164063" b="0.214706420898438" c="-0.214706420898438" d="-0.157974243164063" tx="-31" ty="-90.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="49" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.096282958984375" b="0.244216918945313" c="0.244216918945313" d="0.096282958984375" tx="16.45" ty="-27.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.20806884765625" b="0.159072875976563" c="0.159072875976563" d="0.208053588867188" tx="10.45" ty="-18.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" duration="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2691650390625" b="-0.01434326171875" c="-0.01434326171875" d="0.2691650390625" tx="2.05" ty="-11.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -538,7 +996,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 789" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="8.45" ty="-50.2"/>
+                    <Matrix a="-0.268951416015625" b="0.018585205078125" c="0.018585205078125" d="0.268951416015625" tx="9.2" ty="-50.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -546,7 +1004,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" duration="2" keyMode="9728">
+            <DOMFrame index="10" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 789" symbolType="graphic" loop="loop">
                   <matrix>
@@ -558,7 +1016,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="2" keyMode="9728">
+            <DOMFrame index="12" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 789" symbolType="graphic" loop="loop">
                   <matrix>
@@ -570,7 +1028,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="2" keyMode="9728">
+            <DOMFrame index="14" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 789" symbolType="graphic" loop="loop">
                   <matrix>
@@ -582,7 +1040,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="16" duration="2" keyMode="9728">
+            <DOMFrame index="16" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 789" symbolType="graphic" loop="loop">
                   <matrix>
@@ -594,7 +1052,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="18" duration="2" keyMode="9728">
+            <DOMFrame index="18" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 789" symbolType="graphic" loop="loop">
                   <matrix>
@@ -606,7 +1064,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="20" duration="2" keyMode="9728">
+            <DOMFrame index="20" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 789" symbolType="graphic" loop="loop">
                   <matrix>
@@ -618,7 +1076,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="22" duration="2" keyMode="9728">
+            <DOMFrame index="22" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 789" symbolType="graphic" loop="loop">
                   <matrix>
@@ -642,7 +1100,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="2" keyMode="9728">
+            <DOMFrame index="32" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 789" symbolType="graphic" loop="loop">
                   <matrix>
@@ -666,7 +1124,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="46" duration="3" keyMode="9728">
+            <DOMFrame index="46" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 789" symbolType="graphic" loop="loop">
                   <matrix>
@@ -690,11 +1148,23 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="50" duration="2" keyMode="9728">
+            <DOMFrame index="50" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 789" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.237197875976563" b="0.122589111328125" c="-0.122573852539063" d="0.237197875976563" tx="5.95" ty="-52.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 789" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.2431640625" b="0.110275268554688" c="-0.110260009765625" d="0.2431640625" tx="6.2" ty="-52.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -786,338 +1256,6 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#F05BC6">
-          <frames>
-            <DOMFrame index="0" duration="10" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="4.75" ty="-24.2"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="10" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="-0.235702514648438" b="0.129837036132813" c="0.129837036132813" d="0.235702514648438" tx="13.55" ty="-24.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="12" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="-0.159698486328125" b="0.216659545898438" c="0.216659545898438" d="0.159698486328125" tx="20.4" ty="-28.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="14" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="-0.0260162353515625" b="0.2674560546875" c="0.2674560546875" d="0.0260162353515625" tx="29.7" ty="-34.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="16" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="0.167953491210938" b="0.210342407226563" c="0.210342407226563" d="-0.167938232421875" tx="34.55" ty="-44.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="18" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="0.247085571289063" b="0.105621337890625" c="0.105621337890625" d="-0.247085571289063" tx="36.2" ty="-51.55"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="20" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="0.2593994140625" b="-0.068634033203125" c="-0.068634033203125" d="-0.2593994140625" tx="35.05" ty="-58.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="22" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="0.263946533203125" b="-0.04791259765625" c="-0.04791259765625" d="-0.263931274414063" tx="34.6" ty="-56.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="24" duration="8" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="0.2657470703125" b="-0.0363922119140625" c="-0.036376953125" d="-0.265731811523438" tx="34.25" ty="-55.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="32" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="34" duration="12" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="-0.157974243164063" b="0.214706420898438" c="-0.214706420898438" d="-0.157974243164063" tx="-21.85" ty="-85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="46" duration="3" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="49" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="-0.162994384765625" b="0.206512451171875" c="0.206512451171875" d="0.162994384765625" tx="6" ty="-34.2"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="50" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="-0.245635986328125" b="0.092498779296875" c="0.092498779296875" d="0.245635986328125" tx="5.2" ty="-30"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="52" duration="30" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 785" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="-0.2691650390625" b="-0.01434326171875" c="-0.01434326171875" d="0.2691650390625" tx="2.65" ty="-24.6"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 11" color="#D99037">
-          <frames>
-            <DOMFrame index="0" duration="10" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="-0.26959228515625" d="0.26959228515625" tx="4.85" ty="-11.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="10" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="-0.235702514648438" b="0.129837036132813" c="0.129837036132813" d="0.235702514648438" tx="20" ty="-13.4"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="12" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="-0.159698486328125" b="0.216659545898438" c="0.216659545898438" d="0.159698486328125" tx="31.05" ty="-20.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="14" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="-0.0260162353515625" b="0.2674560546875" c="0.2674560546875" d="0.0260162353515625" tx="42.75" ty="-33.3"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="16" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="0.167953491210938" b="0.210342407226563" c="0.210342407226563" d="-0.167938232421875" tx="44.7" ty="-52.4"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="18" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="0.247085571289063" b="0.105621337890625" c="0.105621337890625" d="-0.247085571289063" tx="41.2" ty="-63.65"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="20" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="0.2593994140625" b="-0.068634033203125" c="-0.068634033203125" d="-0.2593994140625" tx="31.6" ty="-71.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="22" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="0.263946533203125" b="-0.04791259765625" c="-0.04791259765625" d="-0.263931274414063" tx="32.15" ty="-69.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="24" duration="8" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="0.2657470703125" b="-0.0363922119140625" c="-0.036376953125" d="-0.265731811523438" tx="32.4" ty="-68.3"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="32" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="34" duration="12" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="-0.157974243164063" b="0.214706420898438" c="-0.214706420898438" d="-0.157974243164063" tx="-31" ty="-90.7"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="46" duration="3" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="49" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="-0.096282958984375" b="0.244216918945313" c="0.244216918945313" d="0.096282958984375" tx="16.45" ty="-27.15"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="50" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="-0.20806884765625" b="0.159072875976563" c="0.159072875976563" d="0.208053588867188" tx="10.45" ty="-18.6"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="52" duration="30" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 784" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="-0.2691650390625" b="-0.01434326171875" c="-0.01434326171875" d="0.2691650390625" tx="2.05" ty="-11.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
         <DOMLayer name="Layer 12" color="#A9CDF1">
           <frames>
             <DOMFrame index="0" duration="82" keyMode="9728">
@@ -1184,10 +1322,10 @@
         </DOMLayer>
         <DOMLayer name="Layer 16" color="#F6CF26">
           <frames>
-            <DOMFrame index="0" duration="36" keyMode="9728">
+            <DOMFrame index="0" duration="46" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="46" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 779" centerPoint3DX="37.2" centerPoint3DY="-8.9">
                   <matrix>
@@ -1202,7 +1340,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="50" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 779">
                   <matrix>
@@ -1217,11 +1355,11 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="51" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 779">
                   <matrix>
-                    <Matrix a="-0.269332885742188" b="-0.006134033203125" c="-0.006134033203125" d="0.269332885742188" tx="58.05" ty="-41.05"/>
+                    <Matrix a="-0.269332885742188" b="-0.006134033203125" c="-0.006134033203125" d="0.269332885742188" tx="3.75" ty="-55.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1232,7 +1370,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="44" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="54" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 779" centerPoint3DX="8.6" centerPoint3DY="-57.15">
                   <matrix>
@@ -1242,12 +1380,12 @@
                     <Point/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="37" blurY="37"/>
+                    <BlurFilter blurX="255" blurY="255"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="48" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="57" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 779">
                   <matrix>
@@ -1262,9 +1400,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="52" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="61" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 779" selected="true">
+                <DOMSymbolInstance libraryItemName="Symbol 779">
                   <matrix>
                     <Matrix a="-0.269332885742188" b="-0.006866455078125" c="-0.006866455078125" d="0.269332885742188" tx="40.25" ty="9.1"/>
                   </matrix>
@@ -1277,7 +1415,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="55" duration="27" keyMode="9728">
+            <DOMFrame index="64" duration="18" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 779" centerPoint3DX="40.25" centerPoint3DY="27.45">
                   <matrix>
@@ -1296,10 +1434,10 @@
         </DOMLayer>
         <DOMLayer name="Layer 17" color="#F60DB8">
           <frames>
-            <DOMFrame index="0" duration="36" keyMode="9728">
+            <DOMFrame index="0" duration="46" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="46" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 778" centerPoint3DX="37.65" centerPoint3DY="-25.3">
                   <matrix>
@@ -1314,7 +1452,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="50" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 778">
                   <matrix>
@@ -1329,11 +1467,11 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="51" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 778">
                   <matrix>
-                    <Matrix a="-0.269332885742188" b="-0.006134033203125" c="-0.006134033203125" d="0.269332885742188" tx="58.55" ty="-58.85"/>
+                    <Matrix a="-0.269332885742188" b="-0.006134033203125" c="-0.006134033203125" d="0.269332885742188" tx="4.25" ty="-73"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1344,7 +1482,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="44" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="54" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 778" centerPoint3DX="24.35" centerPoint3DY="-54.7">
                   <matrix>
@@ -1354,12 +1492,12 @@
                     <Point/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="37" blurY="37"/>
+                    <BlurFilter blurX="255" blurY="255"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="48" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="57" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 778">
                   <matrix>
@@ -1374,9 +1512,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="52" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="61" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 778" selected="true">
+                <DOMSymbolInstance libraryItemName="Symbol 778">
                   <matrix>
                     <Matrix a="-0.269332885742188" b="-0.006866455078125" c="-0.006866455078125" d="0.269332885742188" tx="40.75" ty="-8.7"/>
                   </matrix>
@@ -1389,7 +1527,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="55" duration="27" keyMode="9728">
+            <DOMFrame index="64" duration="18" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 778" centerPoint3DX="40.7" centerPoint3DY="11.05">
                   <matrix>
@@ -1408,10 +1546,10 @@
         </DOMLayer>
         <DOMLayer name="Layer 18" color="#38D687">
           <frames>
-            <DOMFrame index="0" duration="49" keyMode="9728">
+            <DOMFrame index="0" duration="57" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="49" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="57" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 777" centerPoint3DX="84.9" centerPoint3DY="103.5">
                   <matrix>
@@ -1427,7 +1565,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="52" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="61" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 777" centerPoint3DX="85.4" centerPoint3DY="113.7">
                   <matrix>
@@ -1443,7 +1581,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="55" duration="27" keyMode="9728">
+            <DOMFrame index="64" duration="18" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 777" centerPoint3DX="84.9" centerPoint3DY="129.5">
                   <matrix>
@@ -1529,7 +1667,7 @@
           <frames>
             <DOMFrame index="0" duration="82" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 771" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 771" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.26959228515625" d="0.26959228515625" tx="17.3" ty="-17.65"/>
                   </matrix>
@@ -1543,9 +1681,33 @@
         </DOMLayer>
         <DOMLayer name="Layer 24" color="#ED56F3">
           <frames>
-            <DOMFrame index="0" duration="82" keyMode="9728">
+            <DOMFrame index="0" duration="58" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 770" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 770" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.259841918945313" b="-0.071807861328125" c="-0.071807861328125" d="0.259841918945313" tx="31.45" ty="-30.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 770" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.259841918945313" b="-0.071807861328125" c="-0.071807861328125" d="0.259841918945313" tx="31.45" ty="-30.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 770" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.26959228515625" d="0.26959228515625" tx="33.75" ty="-30.7"/>
                   </matrix>
@@ -1559,9 +1721,33 @@
         </DOMLayer>
         <DOMLayer name="Layer 25" color="#E39744">
           <frames>
-            <DOMFrame index="0" duration="82" keyMode="9728">
+            <DOMFrame index="0" duration="58" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 769" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 769" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.259841918945313" b="-0.071807861328125" c="-0.071807861328125" d="0.259841918945313" tx="30.75" ty="-14.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 769" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.259841918945313" b="-0.071807861328125" c="-0.071807861328125" d="0.259841918945313" tx="30.75" ty="-14.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 769" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.26959228515625" d="0.26959228515625" tx="37.3" ty="-15.4"/>
                   </matrix>
@@ -1573,11 +1759,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 26" color="#21EFE5" current="true" isSelected="true">
+        <DOMLayer name="Layer 26" color="#21EFE5">
           <frames>
             <DOMFrame index="0" duration="82" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 768" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 768" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.26959228515625" d="0.26959228515625" tx="30.8" ty="-52"/>
                   </matrix>
@@ -1647,8 +1833,6 @@
 !170.5 605.5|551.5 -606.5!551.5 -606.5|148 -1060.5!148 -1060.5[75 -836.5 -3 -625!-3 -625[-53 -487 -106 -353.5!-106 -353.5[-236.5 -23 -378.5 276.5!-378.5 276.5[-459 446 -543.5 605.5!-543.5 605.5|-557 630.5!-557 630.5|-553 631"/>
                     <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
 !-553 631|-541.5 631.5!-541.5 631.5[-180 658 170.5 605.5"/>
-                    <Edge fillStyle1="3" edges="
-!170.5 605.5|181 607"/>
                     <Edge fillStyle1="3" strokeStyle="1" edges="
 !181 607[181 620.5 201 651.5!201 651.5[184.5 660 160 651!160 651[189.5 715.5 202 710!202 710[189.5 730 148 720.5!148 720.5[179.5 758 167 771.5!167 771.5[171.5 752.5 103 751.5!103 751.5[98.5 768.5 112 780.5!112 780.5[71.5 783 50 763!50
  763[39 785 25 786.5!25 786.5[35 780.5 -4 760!-4 760[-20.5 774.5 -71.5 787!-71.5 787[-64.5 775 -87 768!-87 768[-122.5 777 -177.5 777.5!-177.5 777.5[-176.5 762.5 -193.5 755!-193.5 755|-300.5 780.5"/>
@@ -1658,6 +1842,8 @@
 !-324 784[-364 784.5 -392 764!-392 764[-424.5 781.5 -440 784.5"/>
                     <Edge strokeStyle="1" edges="
 !-440 784.5[-445 791 -440 797"/>
+                    <Edge fillStyle1="3" edges="
+!170.5 605.5|181 607"/>
                     <Edge fillStyle1="3" strokeStyle="1" edges="
 !807.5 442.5[808.5 446 831.5 478.5!831.5 478.5[815.5 484.5 804.5 481!804.5 481[825.5 536.5 838 522.5!838 522.5[825.5 544.5 783.5 543.5!783.5 543.5|823.5 564.5!823.5 564.5[797 578 746 574.5!746 574.5[769 597.5 769 605!769 605[749.5 613
  691.5 599!691.5 599[673 616.5 649.5 645!649.5 645[632 648 611.5 616.5!611.5 616.5[586 641 560.5 660!560.5 660[541 653.5 531 628!531 628|491 658.5!491 658.5[489 637 484 630.5!484 630.5[454 648.5 436.5 641!436.5 641[458 599 420.5 588.5
@@ -1672,183 +1858,6 @@
               </elements>
             </DOMFrame>
             <DOMFrame index="36" duration="46" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="剑鞘" color="#9933CC" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="31" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="黑铁剑鞘" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="0.239730834960938" b="0.138412475585938" c="0.138412475585938" d="-0.239730834960938" tx="-13.6" ty="41.6"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="13.95" y="146.75"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="31" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="黑铁剑鞘" centerPoint3DX="10.1" centerPoint3DY="8.35">
-                  <matrix>
-                    <Matrix a="0.239730834960938" b="0.138412475585938" c="0.138412475585938" d="-0.239730834960938" tx="-13.6" ty="41.6"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="13.95" y="146.75"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="黑铁剑鞘" centerPoint3DX="10.1" centerPoint3DY="8.35">
-                  <matrix>
-                    <Matrix a="0.239730834960938" b="0.138412475585938" c="0.138412475585938" d="-0.239730834960938" tx="-13.6" ty="41.6"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="13.95" y="146.75"/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0.05078125"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="36" duration="33" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="黑铁剑1" color="#FF800A" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="36" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 777" centerPoint3DX="102.6" centerPoint3DY="-167.9">
-                  <matrix>
-                    <Matrix a="0.185592651367188" b="0.195297241210938" c="0.195297241210938" d="-0.185592651367188" tx="14.6" ty="-1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Symbol 778" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="-0.269332885742188" b="-0.006866455078125" c="-0.006866455078125" d="0.269332885742188" tx="37.7" ty="-26.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Symbol 779" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="-0.269332885742188" b="-0.006866455078125" c="-0.006866455078125" d="0.269332885742188" tx="37.2" ty="-8.25"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="36" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 777" centerPoint3DX="102.6" centerPoint3DY="-167.9">
-                  <matrix>
-                    <Matrix a="0.185592651367188" b="0.195297241210938" c="0.195297241210938" d="-0.185592651367188" tx="14.6" ty="-1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <GlowFilter blurX="0" blurY="0" color="#FFCC00" strength="0"/>
-                    <BlurFilter blurX="0" blurY="0"/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="38" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 777" centerPoint3DX="102.6" centerPoint3DY="-167.9">
-                  <matrix>
-                    <Matrix a="0.185592651367188" b="0.195297241210938" c="0.195297241210938" d="-0.185592651367188" tx="14.6" ty="-1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <GlowFilter blurX="18" blurY="18" color="#FFCC00"/>
-                    <BlurFilter blurX="0" blurY="0"/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="41" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 777" selected="true" centerPoint3DX="102.6" centerPoint3DY="-203.1">
-                  <matrix>
-                    <Matrix a="0.185592651367188" b="0.195297241210938" c="0.195297241210938" d="-0.185592651367188" tx="14.6" ty="-36.2"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <GlowFilter blurX="18" blurY="18" color="#FFCC00"/>
-                    <BlurFilter blurX="82" blurY="82"/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="44" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 777" centerPoint3DX="53.5" centerPoint3DY="94.95">
-                  <matrix>
-                    <Matrix a="-0.262451171875" b="-0.05908203125" c="-0.05908203125" d="0.262466430664063" tx="35.15" ty="-91.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <GlowFilter blurX="18" blurY="18" color="#FFCC00"/>
-                    <BlurFilter blurX="66.25" blurY="66.25"/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="45" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 777" centerPoint3DX="82.6" centerPoint3DY="81.35">
-                  <matrix>
-                    <Matrix a="-0.269332885742188" b="-0.006866455078125" c="-0.006866455078125" d="0.269332885742188" tx="26.85" ty="-98.95"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <GlowFilter blurX="18" blurY="18" color="#FFCC00"/>
-                    <BlurFilter blurX="61" blurY="61"/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="48" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 777" centerPoint3DX="-35.85" centerPoint3DY="-254.2">
-                  <matrix>
-                    <Matrix a="0.269332885742188" b="-0.00701904296875" c="-0.00701904296875" d="-0.269332885742188" tx="29.15" ty="-76.8"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <GlowFilter blurX="18" blurY="18" color="#FFCC00"/>
-                    <BlurFilter blurX="77" blurY="77"/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="49" duration="18" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1882,6 +1891,13 @@
                   </filters>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="82" keyMode="9728">
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>

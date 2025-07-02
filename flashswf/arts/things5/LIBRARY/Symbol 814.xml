@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 814" itemID="6577efbc-000004d7" lastModified="1702098593">
   <timeline>
-    <DOMTimeline name="Symbol 814">
+    <DOMTimeline name="Symbol 814" currentFrame="12">
       <layers>
         <DOMLayer name="Layer 1" color="#A6D33D">
           <frames>
@@ -464,7 +464,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#CD8BCC">
+        <DOMLayer name="Layer 6" color="#CD8BCC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements>
@@ -492,7 +492,7 @@
             </DOMFrame>
             <DOMFrame index="10" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 781" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 781" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.26959228515625" d="0.26959228515625" tx="18.9" ty="-57.1"/>
                   </matrix>
@@ -2188,7 +2188,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 23" color="#E362A8" current="true" isSelected="true">
+        <DOMLayer name="Layer 23" color="#E362A8">
           <frames>
             <DOMFrame index="0" duration="40" keyMode="9728">
               <elements>
