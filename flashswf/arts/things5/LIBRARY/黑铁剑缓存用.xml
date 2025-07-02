@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁剑缓存用" itemID="6864d91d-00001657" lastModified="1751439646">
+  <timeline>
+    <DOMTimeline name="黑铁剑缓存用">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁剑身" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.961410522460938" b="-0.275054931640625" c="0.275054931640625" d="-0.961410522460938" tx="52" ty="276.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.9" y="141.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁剑柄1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.961410522460938" b="-0.275054931640625" c="0.275054931640625" d="-0.961410522460938" tx="36.05" ty="367"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.7" y="48.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

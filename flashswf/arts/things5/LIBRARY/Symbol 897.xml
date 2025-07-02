@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 897" itemID="6577efbc-00000517" lastModified="1732015130">
   <timeline>
-    <DOMTimeline name="Symbol 897" currentFrame="8">
+    <DOMTimeline name="Symbol 897" currentFrame="27">
       <layers>
-        <DOMLayer name="Script Layer" color="#F6FA2F" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#F6FA2F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -267,7 +267,7 @@ _parent.被击硬直度 = _root.根据等级计算值(_parent.被击硬直度_mi
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#2D83E5">
+        <DOMLayer name="Layer 6" color="#2D83E5" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>

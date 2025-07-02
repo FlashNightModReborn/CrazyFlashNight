@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-唐装剑侠" itemID="67e614fb-000008c8" linkageExportForAS="true" linkageIdentifier="敌人-唐装剑侠" lastModified="1747743455" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-唐装剑侠" itemID="67e614fb-000008c8" linkageExportForAS="true" linkageIdentifier="敌人-唐装剑侠" lastModified="1747743455" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="敌人-唐装剑侠" currentFrame="12">
+    <DOMTimeline name="敌人-唐装剑侠" currentFrame="68">
       <layers>
         <DOMLayer name="Labels Layer" color="#52EF6E">
           <frames>
@@ -184,7 +184,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#C4EDDC" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 8" color="#C4EDDC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -412,7 +412,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
             <DOMFrame index="99" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 48" name="area" selected="true" centerPoint3DX="12.5" centerPoint3DY="12.5">
+                <DOMSymbolInstance libraryItemName="Symbol 48" name="area" centerPoint3DX="12.5" centerPoint3DY="12.5">
                   <matrix>
                     <Matrix a="2.11715698242188" d="5.48651123046875"/>
                   </matrix>
@@ -433,11 +433,11 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#4D4FFE">
+        <DOMLayer name="Layer 12" color="#4D4FFE" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 803" name="man" centerPoint3DX="134" centerPoint3DY="61.85">
+                <DOMSymbolInstance libraryItemName="Symbol 803" name="man" selected="true" centerPoint3DX="134" centerPoint3DY="61.85">
                   <matrix>
                     <Matrix tx="-19.05" ty="-57.85"/>
                   </matrix>
