@@ -1,0 +1,200 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁剑" itemID="68648b8d-00001583" lastModified="1751435727">
+  <timeline>
+    <DOMTimeline name="黑铁剑" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-2&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="图层 4" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁剑柄1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-20" ty="-185.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.6" y="48.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁剑柄2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="37.3" ty="-193.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.9" y="48.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3 复制" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁剑鞘" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="44.95" ty="-73.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.9" y="146.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁剑鞘" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-13.85" ty="-95.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.9" y="146.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁剑身" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="86.55" ty="-94.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.95" y="141.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁剑身" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-74.1" ty="-94.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.95" y="141.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁剑柄1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-83.5" ty="-185.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.6" y="48.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 5" color="#4FFFFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁剑身" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-10.6" ty="-94.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.95" y="141.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#95A3FE" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#9393AB"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!94 -1900|88 -1235"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!88 -1235S6|84 -834"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!84 -834|44 3498!44 3498[28 3667 -48 3753"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!-48 3753[-126 3645 -144 3500!-144 3500|-167.5 -834"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!-167.5 -834S6|-169.5 -1235"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!-169.5 -1235|-173 -1901"/>
+                    <Edge strokeStyle="2" edges="!-173 -1901|-178 -1897"/>
+                    <Edge fillStyle1="2" edges="!-72 -1909|-70 -1903!-70 -1903|-66 -1908.5"/>
+                    <Edge strokeStyle="2" edges="!-66 -1908.5|-72 -1909"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="2" edges="!-16 -1906|-45 -1907.5"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!-45 -1907.5|-45.5 -1235"/>
+                    <Edge fillStyle0="1" fillStyle1="1" edges="!-45.5 -1235S2|88 -1235"/>
+                    <Edge fillStyle0="1" edges="!-16 -1906|-45 -1938"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!-45 -1938|-45 -1907.5"/>
+                    <Edge fillStyle1="2" edges="!-66 -1908.5|-45 -1938"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="2" edges="!-45 -1907.5|-66 -1908.5"/>
+                    <Edge fillStyle1="2" strokeStyle="2" edges="!-173 -1901|-157 -1914!-157 -1914|-72 -1909"/>
+                    <Edge strokeStyle="1" edges="!-173 -1901|-173 -1903!-173 -1903|-180 -1903"/>
+                    <Edge fillStyle0="2" fillStyle1="2" edges="!-169.5 -1235S2|-45.5 -1235!-45.5 -834|-167.5 -834"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!-45.5 -1235S3|-45.5 -834"/>
+                    <Edge fillStyle0="1" fillStyle1="1" edges="!-45.5 -834S1|84 -834"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!-45.5 -834|-48 3753"/>
+                    <Edge fillStyle0="1" strokeStyle="2" edges="!94 -1900|-16 -1906"/>
+                    <Edge cubics="!-173 -1903(;-173,-1903 -180,-1903 -180,-1903q-173 -1903 -180 -1903);"/>
+                    <Edge cubics="!-48 3753(;-100,3681 -132,3597 -144,3500q-48 3753Q-126 3645q-144 3500);"/>
+                    <Edge cubics="!44 3498(;33,3611 3,3696 -48,3753q44 3498Q28 3667q-48 3753);"/>
+                    <Edge cubics="!-173 -1901(;-173,-1901 -157,-1914 -157,-1914q-173 -1901 -157 -1914);"/>
+                    <Edge cubics="!-178 -1897(;-178,-1897 -173,-1901 -173,-1901q-178 -1897 -173 -1901);"/>
+                    <Edge cubics="!-173 -1901(;-173,-1901 -173,-1903 -173,-1903q-173 -1901 -173 -1903);"/>
+                    <Edge cubics="!-72 -1909(;-72,-1909 -70,-1903 -70,-1903q-72 -1909 -70 -1903);"/>
+                    <Edge cubics="!-70 -1903(;-70,-1903 -66,-1908 -66,-1908q-70 -1903 -66 -1908);"/>
+                    <Edge cubics="!-66 -1908(;-66,-1908 -72,-1909 -72,-1909q-66 -1908 -72 -1909);"/>
+                    <Edge cubics="!-16 -1906(;-16,-1906 -45,-1907 -45,-1907q-16 -1906 -45 -1907);"/>
+                    <Edge cubics="!-16 -1906(;-16,-1906 -45,-1938 -45,-1938q-16 -1906 -45 -1938);"/>
+                    <Edge cubics="!-66 -1908(;-66,-1908 -45,-1938 -45,-1938q-66 -1908 -45 -1938);"/>
+                    <Edge cubics="!-45 -1907(;-45,-1907 -66,-1908 -66,-1908q-45 -1907 -66 -1908);"/>
+                    <Edge cubics="!-45 -1938(;-45,-1938 -45,-1907 -45,-1907q-45 -1938 -45 -1907);"/>
+                    <Edge cubics="!-72 -1909(;-72,-1909 -157,-1914 -157,-1914q-72 -1909 -157 -1914);"/>
+                    <Edge cubics="!-45 -1907(;-45,-1907 -45,-1235 -45,-1235q-45 -1907 -45 -1235);"/>
+                    <Edge cubics="!-45 -1235(;-45,-1235 -45,-834 -45,-834q-45 -1235 -45 -834);"/>
+                    <Edge cubics="!-45 -834(;-45,-834 -48,3753 -48,3753q-45 -834 -48 3753);"/>
+                    <Edge cubics="!94 -1900(;94,-1900 -16,-1906 -16,-1906q94 -1900 -16 -1906);"/>
+                    <Edge cubics="!94 -1900(;94,-1900 88,-1235 88,-1235q94 -1900 88 -1235);"/>
+                    <Edge cubics="!88 -1235(;88,-1235 84,-834 84,-834q88 -1235 84 -834);"/>
+                    <Edge cubics="!84 -834(;84,-834 44,3498 44,3498q84 -834 44 3498);"/>
+                    <Edge cubics="!-169 -1235(;-169,-1235 -45,-1235 -45,-1235q-169 -1235 -45 -1235);"/>
+                    <Edge cubics="!-169 -1235(;-169,-1235 -173,-1901 -173,-1901q-169 -1235 -173 -1901);"/>
+                    <Edge cubics="!-45 -834(;-45,-834 -167,-834 -167,-834q-45 -834 -167 -834);"/>
+                    <Edge cubics="!-167 -834(;-167,-834 -169,-1235 -169,-1235q-167 -834 -169 -1235);"/>
+                    <Edge cubics="!-144 3500(;-144,3500 -167,-834 -167,-834q-144 3500 -167 -834);"/>
+                    <Edge cubics="!84 -834(;84,-834 -45,-834 -45,-834q84 -834 -45 -834);"/>
+                    <Edge cubics="!-45 -1235(;-45,-1235 88,-1235 88,-1235q-45 -1235 88 -1235);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
