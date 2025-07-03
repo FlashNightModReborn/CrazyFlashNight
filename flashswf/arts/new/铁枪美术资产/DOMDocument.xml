@@ -1,21 +1,21 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" previewMode="anti alias" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <media>
-          <DOMBitmapItem name="位图 1" itemID="68653068-00003e9b" sourceExternalFilepath="C:/Users/ADMINI~1/AppData/Local/Temp/flash0.png" sourceLastImported="1751461992" originalCompressionType="lossless" quality="50" href="位图 1.png" bitmapDataHRef="M 1 1751461992.dat" frameRight="30720" frameBottom="20480"/>
+          <DOMBitmapItem name="位图 1" itemID="68653068-00003e9b" sourceExternalFilepath="../../../../../../../../../../Users/ADMINI~1/AppData/Local/Temp/flash0.png" sourceLastImported="1751461992" originalCompressionType="lossless" quality="50" href="位图 1.png" bitmapDataHRef="M 1 1751461992.dat" frameRight="30720" frameBottom="20480"/>
      </media>
      <symbols>
-          <Include href="活塞杆.xml" loadImmediate="false" itemID="68657fab-00003eb3" lastModified="1751482283"/>
+          <Include href="活塞杆.xml" loadImmediate="false" itemID="68657fab-00003eb3" lastModified="1751505592"/>
           <Include href="欧米茄.xml" loadImmediate="false" itemID="68657ec3-00003eab" lastModified="1751482051"/>
-          <Include href="铁枪.xml" loadImmediate="false" itemID="6865812f-00003eba" lastModified="1751485829"/>
+          <Include href="铁枪.xml" loadImmediate="false" itemID="6865812f-00003eba" lastModified="1751505559"/>
           <Include href="铁枪初级logo齿轮.xml" loadImmediate="false" itemID="685e0ea5-0000070a" lastModified="1750994605"/>
           <Include href="铁枪初级logo核心.xml" loadImmediate="false" itemID="685e0ec1-0000070f" lastModified="1750996117"/>
           <Include href="铁枪初级logo铁枪.xml" loadImmediate="false" itemID="685e0fd7-00000716" lastModified="1750996111"/>
-          <Include href="铁枪弹舱.xml" loadImmediate="false" itemID="6865857a-00003ee5" lastModified="1751483770"/>
+          <Include href="铁枪弹舱.xml" loadImmediate="false" itemID="6865857a-00003ee5" lastModified="1751513744"/>
           <Include href="铁枪高级logo图腾.xml" loadImmediate="false" itemID="685e57a7-00000725" lastModified="1751013287"/>
           <Include href="铁枪高级logo样式.xml" loadImmediate="false" itemID="685e57b6-00000727" lastModified="1751013440"/>
-          <Include href="铁枪轮盘.xml" loadImmediate="false" itemID="686582e0-00003ecb" lastModified="1751485840"/>
-          <Include href="铁枪枪管.xml" loadImmediate="false" itemID="6865847d-00003eda" lastModified="1751483517"/>
-          <Include href="铁枪枪身.xml" loadImmediate="false" itemID="686586c3-00003ef8" lastModified="1751484099"/>
-          <Include href="铁枪枪托.xml" loadImmediate="false" itemID="68658669-00003eee" lastModified="1751484009"/>
+          <Include href="铁枪轮盘.xml" loadImmediate="false" itemID="686582e0-00003ecb" lastModified="1751505283"/>
+          <Include href="铁枪枪管.xml" loadImmediate="false" itemID="6865847d-00003eda" lastModified="1751513191"/>
+          <Include href="铁枪枪身.xml" loadImmediate="false" itemID="686586c3-00003ef8" lastModified="1751512886"/>
+          <Include href="铁枪枪托.xml" loadImmediate="false" itemID="68658669-00003eee" lastModified="1751514258"/>
           <Include href="铁枪准星.xml" loadImmediate="false" itemID="68657e28-00003ea6" lastModified="1751481896"/>
      </symbols>
      <timelines>
@@ -169,9 +169,8 @@
                                                   </StrokeStyle>
                                              </strokes>
                                              <edges>
-                                                  <Edge fillStyle1="1" edges="!34156 -4586|34156 -6403"/>
                                                   <Edge fillStyle1="1" strokeStyle="1" edges="!34156 -6403|40494 -6403!40494 -6403|40494 -4586!40494 -4586|34156 -4586"/>
-                                                  <Edge fillStyle1="1" edges="!44126 34163|39333 34163!39333 34163|39333 32602!39333 32602|44126 32602!44126 32602|44126 34163"/>
+                                                  <Edge fillStyle1="1" edges="!34156 -4586|34156 -6403!44126 34163|39333 34163!39333 34163|39333 32602!39333 32602|44126 32602!44126 32602|44126 34163"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="铁枪枪管" centerPoint3DX="1941.4" centerPoint3DY="-199.4">
@@ -294,7 +293,7 @@
                                                   <Point x="457.8" y="387.45"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="铁枪轮盘" centerPoint3DX="2152" centerPoint3DY="-56.25">
+                                        <DOMSymbolInstance libraryItemName="铁枪轮盘" selected="true" centerPoint3DX="2151.4" centerPoint3DY="-56.45">
                                              <matrix>
                                                   <Matrix tx="2009.4" ty="-206.95"/>
                                              </matrix>
@@ -742,6 +741,15 @@
                     <SolidSwatchItem color="#1D1D18" hue="40" saturation="19" brightness="25"/>
                     <SolidSwatchItem color="#2B2A24" hue="40" saturation="19" brightness="37"/>
                     <SolidSwatchItem color="#0D0C08" hue="30" saturation="48" brightness="10"/>
+                    <SolidSwatchItem color="#275E44" hue="101" saturation="98" brightness="63"/>
+                    <SolidSwatchItem color="#C9FE95" hue="60" saturation="235" brightness="190"/>
+                    <SolidSwatchItem color="#17A932" hue="87" saturation="182" brightness="91"/>
+                    <SolidSwatchItem color="#01380C" hue="88" saturation="231" brightness="27"/>
+                    <SolidSwatchItem color="#012207" hue="88" saturation="225" brightness="17"/>
+                    <SolidSwatchItem color="#0C2217" hue="101" saturation="117" brightness="22"/>
+                    <SolidSwatchItem color="#334A43" hue="107" saturation="45" brightness="59"/>
+                    <SolidSwatchItem color="#90A99C" hue="99" saturation="30" brightness="148"/>
+                    <SolidSwatchItem color="#5C746A" hue="104" saturation="27" brightness="98"/>
                </swatches>
           </swatchList>
      </swatchLists>

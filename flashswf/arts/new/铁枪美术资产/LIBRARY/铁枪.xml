@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="铁枪" itemID="6865812f-00003eba" lastModified="1751485829" lastUniqueIdentifier="19">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="铁枪" itemID="6865812f-00003eba" lastModified="1751505559" lastUniqueIdentifier="19">
   <timeline>
     <DOMTimeline name="铁枪">
       <layers>
-        <DOMLayer name="图层 3" color="#FF800A" layerType="mask">
+        <DOMLayer name="图层 3" color="#FF800A" visible="false" layerType="mask">
           <frames>
             <DOMFrame index="0" duration="59" keyMode="9728">
               <elements>
@@ -22,14 +22,14 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!9023 5812|2005 5812!2005 5812|2005 3995!2005 3995|9023 3995!9023 3995|9023 5812"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!9023 5812S2|2005 5812!2005 5812|2005 3995!2005 3995|9023 3995!9023 3995|9023 5812"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="活塞杆" color="#9933CC" parentLayerIndex="0" autoNamed="false">
+        <DOMLayer name="活塞杆" color="#9933CC" parentLayerIndex="0" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="27" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -165,11 +165,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="铁枪轮盘" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="铁枪轮盘" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="59" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪轮盘" selected="true" centerPoint3DX="578.45" centerPoint3DY="463.65">
+                <DOMSymbolInstance libraryItemName="铁枪轮盘" centerPoint3DX="578.45" centerPoint3DY="463.65">
                   <matrix>
                     <Matrix tx="435.85" ty="312.95"/>
                   </matrix>
