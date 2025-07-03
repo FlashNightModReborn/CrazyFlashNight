@@ -351,3 +351,33 @@ _root.装备生命周期函数.通用拖影周期 = function(reflector, paramObj
         TrailRenderer.getInstance().addTrailData(self._name + self.version + reflector.标签名, trail, reflector.basicStyle);
     }
 };
+
+
+_root.装备生命周期函数.通用特效刀口初始化 = function (reflector:Object, paramObj:Object) {
+    reflector.position = (paramObj.position != undefined) ? paramObj.position : "刀口位置2";
+    var funcString:String = (paramObj.func != undefined) ? paramObj.func : "_root.刀口触发特效.黑铁的剑特效";
+    reflector.func = eval(funcString);                        
+
+    if(paramObj.states) {
+        reflector.states = paramObj.states;
+    } else {
+        reflector.states = {};
+        reflector.states["兵器攻击"] = true;
+    }
+};
+
+_root.装备生命周期函数.通用特效刀口周期 = function (reflector:Object) {
+    _root.装备生命周期函数.移除异常周期函数(reflector);
+
+    var target:MovieClip = reflector.自机;
+    var self:MovieClip   = target.刀_引用[reflector.position];
+    self.自机 = target;
+    var isActive:Boolean = Boolean(reflector.states[target.状态]);
+
+    if (isActive) {
+        if (!self.特效刀口触发) self.特效刀口触发 = reflector.func;
+        if (!target.特效刀口)   target.特效刀口   = self;
+    } else {
+        target.特效刀口 = null;
+    }
+};

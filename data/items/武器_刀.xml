@@ -1309,6 +1309,23 @@
       <mp>100</mp>
       <defence>0</defence>
     </equipped>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>黑铁的剑初始化</initRoutines>
+          <initParam>
+            <position>刀口位置2</position>
+            <func>_root.刀口触发特效.黑铁的剑特效</func>
+            <states>
+              <兵器攻击>true</兵器攻击>
+            </states>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>通用特效刀口周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <id>608</id>
@@ -3090,6 +3107,24 @@
       <mp>60</mp>
       <defence>99</defence>
     </equipped>
+      <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>通用特效刀口初始化</initRoutines>
+          <initParam>
+            <position>刀口位置3</position>
+            <func>_root.刀口触发特效.十文字大剑特效</func>
+            <states>
+              <兵器攻击>true</兵器攻击>
+              <兵器冲击>true</兵器冲击>
+            </states>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>通用特效刀口周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <id>638</id>
