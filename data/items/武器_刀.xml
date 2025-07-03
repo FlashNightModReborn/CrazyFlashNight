@@ -4385,4 +4385,48 @@
       <dressup>刀-工兵铲</dressup>
     </equipped>
   </item>
+    <item>
+    <id>8104</id>
+    <name>光玉的剑</name>
+    <displayname>光玉的剑</displayname>
+    <icon>光玉的剑</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <weight>2</weight>
+    <price>100000</price>
+    <description>&lt;font color="#000000"&gt;黑铁会老大&lt;/font&gt;的剑，寒气逼人，出剑带剑气！</description>
+    <skill>
+      <skillname>黑铁剑意</skillname>
+      <description>手持该武器攻击或冲击时可以使用黑铁剑意，额外释放剑气。不处于攻击或冲击时则可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人，启动时按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
+      <cd>7000</cd>
+      <mp>60</mp>
+    </skill>
+    <level>30</level>
+    <data>
+      <power>300</power>
+    </data>
+    <equipped>
+      <dressup>刀-光玉的剑</dressup>
+      <hp>20</hp>
+      <mp>100</mp>
+      <defence>0</defence>
+    </equipped>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>黑铁的剑初始化</initRoutines>
+          <initParam>
+            <position>刀口位置2</position>
+            <func>_root.刀口触发特效.黑铁的剑特效</func>
+            <states>
+              <兵器攻击>true</兵器攻击>
+            </states>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>通用特效刀口周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
+  </item>
 </root>

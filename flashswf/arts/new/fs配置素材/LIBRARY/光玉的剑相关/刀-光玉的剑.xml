@@ -1,0 +1,171 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="光玉的剑相关/刀-光玉的剑" itemID="68668bb2-000033c5" linkageExportForAS="true" linkageIdentifier="刀-光玉的剑" lastModified="1751550918" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="刀-光玉的剑">
+      <layers>
+        <DOMLayer name="Layer 1" color="#44E9F0" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="刀口位置1" centerPoint3DX="0.45" centerPoint3DY="115.3">
+                  <matrix>
+                    <Matrix d="4.95709228515625" tx="-12.05" ty="53.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="刀口位置2" centerPoint3DX="0.45" centerPoint3DY="252.55">
+                  <matrix>
+                    <Matrix d="4.95709228515625" tx="-12.05" ty="190.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="刀口位置3" centerPoint3DX="0.45" centerPoint3DY="389.65">
+                  <matrix>
+                    <Matrix d="4.95709228515625" tx="-12.05" ty="327.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[/*onClipEvent (load) {
+
+	if (_parent._parent._parent._parent._parent.状态 == "兵器攻击")
+	{
+		if (random(20) == 0)
+		{
+			var range = 4;
+			var xOffset = (Math.random() - 0.5) * 2 * range;
+			var yOffset = (Math.random() - 0.5) * 2 * range;
+			var shooter = _parent._parent._parent._parent._parent;
+			var myPoint = {x:shooter._x + xOffset, y:shooter._y + yOffset};
+			声音 = "";
+			霰弹值 = 1;
+			子弹散射度 = 0;
+			发射效果 = "";
+			子弹种类 = "剑光特效";
+			子弹威力 = 200;
+			子弹速度 = 0;
+			击中地图效果 = "";
+			Z轴攻击范围 = 200;
+			击倒率 = 1;
+			击中后子弹的效果 = "";
+			子弹敌我属性 = true;
+			发射者名 = _parent._parent._parent._parent._parent._name;
+			if (_parent._parent._parent._parent._parent.是否为敌人 == true)
+			{
+				子弹敌我属性值 = false;
+			}
+			else
+			{
+				子弹敌我属性值 = true;
+			}
+			shootX = myPoint.x;
+			Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+			_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+		}
+		if (random(10) == 0)
+		{
+			var range = 4;
+			var xOffset = (Math.random() - 0.5) * 2 * range;
+			var yOffset = (Math.random() - 0.5) * 2 * range;
+			var shooter = _parent._parent._parent._parent._parent;
+			var myPoint = {x:shooter._x + xOffset, y:shooter._y + yOffset};
+			声音 = "";
+			霰弹值 = 1;
+			子弹散射度 = 0;
+			发射效果 = "";
+			子弹种类 = "黑铁集气";
+			子弹威力 = 0;
+			子弹速度 = 0;
+			击中地图效果 = "";
+			Z轴攻击范围 = 200;
+			击倒率 = 1;
+			击中后子弹的效果 = "";
+			子弹敌我属性 = true;
+			发射者名 = _parent._parent._parent._parent._parent._name;
+			if (_parent._parent._parent._parent._parent.是否为敌人 == true)
+			{
+				子弹敌我属性值 = false;
+			}
+			else
+			{
+				子弹敌我属性值 = true;
+			}
+			shootX = myPoint.x;
+			Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+			_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+		}
+	}
+	if (_parent._parent._parent._parent._parent.状态 == "兵器攻击")
+	{
+		if (random(10) == 0)
+		{
+			var range = 4;
+			var xOffset = (Math.random() - 0.5) * 2 * range;
+			var yOffset = (Math.random() - 0.5) * 2 * range;
+			var shooter = _parent._parent._parent._parent._parent;
+			var myPoint = {x:shooter._x + xOffset, y:shooter._y + yOffset};
+			声音 = "";
+			霰弹值 = 1;
+			子弹散射度 = 0;
+			发射效果 = "";
+			子弹种类 = "黑铁集气";
+			子弹威力 = 0;
+			子弹速度 = 0;
+			击中地图效果 = "";
+			Z轴攻击范围 = 200;
+			击倒率 = 1;
+			击中后子弹的效果 = "";
+			子弹敌我属性 = true;
+			发射者名 = _parent._parent._parent._parent._parent._name;
+			if (_parent._parent._parent._parent._parent.是否为敌人 == true)
+			{
+				子弹敌我属性值 = false;
+			}
+			else
+			{
+				子弹敌我属性值 = true;
+			}
+			shootX = myPoint.x;
+			Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+			_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+		}
+	}
+}*/]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#FB5E4D" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="光玉剑身" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.41166687011719" b="-0.0015411376953125" c="0.001556396484375" d="1.41168212890625" tx="-14" ty="52.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.9" y="141.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="光玉剑柄1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.41166687011719" b="-0.0015411376953125" c="0.001556396484375" d="1.41168212890625" tx="-27.45" ty="-75.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.7" y="48.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
