@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="铁枪 副本" itemID="68663ed6-000003a7" lastModified="1751535369" lastUniqueIdentifier="75">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="铁枪 副本" itemID="68663ed6-000003a7" lastModified="1751536601" lastUniqueIdentifier="77">
   <timeline>
-    <DOMTimeline name="铁枪 副本" currentFrame="40">
+    <DOMTimeline name="铁枪 副本" currentFrame="2">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -51,7 +51,7 @@
           <frames>
             <DOMFrame index="0" duration="41" keyMode="15872">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪轮盘" name="轮盘" centerPoint3DX="578.45" centerPoint3DY="463.65">
+                <DOMSymbolInstance libraryItemName="铁枪轮盘" name="轮盘" centerPoint3DX="579.3" centerPoint3DY="463.55">
                   <matrix>
                     <Matrix tx="435.85" ty="312.95"/>
                   </matrix>
@@ -226,7 +226,7 @@
             </DOMFrame>
             <DOMFrame index="40" keyMode="15872">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪枪托" name="枪托" selected="true" centerPoint3DX="415.4" centerPoint3DY="442.3">
+                <DOMSymbolInstance libraryItemName="铁枪枪托" name="枪托" centerPoint3DX="415.4" centerPoint3DY="442.3">
                   <matrix>
                     <Matrix a="-0.0345001220703125" b="-0.9993896484375" c="0.9993896484375" d="-0.0345001220703125" tx="99.55" ty="673.4"/>
                   </matrix>
@@ -238,7 +238,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="铁枪弹舱" color="#FF4F4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="铁枪弹舱" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>
@@ -358,7 +358,7 @@
             </DOMFrame>
             <DOMFrame index="40" keyMode="15872">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪弹舱" name="弹舱" selected="true" centerPoint3DX="123.8" centerPoint3DY="549.65">
+                <DOMSymbolInstance libraryItemName="铁枪弹舱" name="弹舱" centerPoint3DX="123.8" centerPoint3DY="549.65">
                   <matrix>
                     <Matrix tx="-116.8" ty="261.95"/>
                   </matrix>
@@ -370,7 +370,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" locked="true" layerType="mask">
+        <DOMLayer name="图层 3" color="#FF800A" locked="true" current="true" isSelected="true" layerType="mask">
           <frames>
             <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>
@@ -504,7 +504,7 @@
         </DOMLayer>
         <DOMLayer name="活塞杆" color="#9933CC" parentLayerIndex="6" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+            <DOMFrame index="0" duration="11" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>
                 <CustomEase target="all">
                   <Point/>
@@ -520,6 +520,26 @@
                 <DOMSymbolInstance libraryItemName="活塞杆" name="活塞杆" centerPoint3DX="665.05" centerPoint3DY="325.35">
                   <matrix>
                     <Matrix tx="362.55" ty="293.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="302.5" y="32.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="3" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.304881992599471" y="0.639841200030544"/>
+                  <Point x="0.637578620509984" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="活塞杆" name="活塞杆" selected="true" centerPoint3DX="422.15" centerPoint3DY="249.15">
+                  <matrix>
+                    <Matrix tx="119.65" ty="217.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="302.5" y="32.1"/>
