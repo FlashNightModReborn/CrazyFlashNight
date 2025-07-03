@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框界面" itemID="6652e908-000026b6" linkageExportForAS="true" linkageIdentifier="对话框界面" lastModified="1751480703" lastUniqueIdentifier="26">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框界面" itemID="6652e908-000026b6" linkageExportForAS="true" linkageIdentifier="对话框界面" lastModified="1751513327" lastUniqueIdentifier="27">
   <timeline>
     <DOMTimeline name="对话框界面" currentFrame="1">
       <layers>
@@ -15,126 +15,19 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#5DA1BB" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#5DA1BB">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[stop();]]></script>
+                <script><![CDATA[stop();
+_root.对话框UI.初始化对话框界面(this);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 刷新内容()
-{
-	if (本轮对话内容[对话进度][3] != undefined)
-	{
-		this._visible = 1;
-		var 上句人物名字 = 人物名字;
-		if (本轮对话内容[对话进度][0] == "角色名" || 本轮对话内容[对话进度][0] == _root.角色名)
-		{
-			人物名字 = _root.角色名;
-		}
-		else
-		{
-			人物名字 = _root.获得翻译(本轮对话内容[对话进度][0]);
-		}
-		人物称号 = _root.获得翻译(本轮对话内容[对话进度][1]);
-		if (人物称号 == undefined || 人物称号 == null)
-		{
-			人物称号 = "";
-		}
-		头像图标帧名 = 本轮对话内容[对话进度][2];
-		if (!头像图标帧名)
-		{
-			头像图标帧名 = "无头像";
-		}
-		if (头像图标帧名 == "主角模板" && 上句人物名字 != 人物名字)
-		{
-			肖像.肖像.gotoAndStop("刷新");
-		}
-		对话内容 = 本轮对话内容[对话进度][3];
-		人物表情 = 本轮对话内容[对话进度][4];
-		对话对象 = 本轮对话内容[对话进度][5];
-		肖像.gotoAndStop(头像图标帧名);
-		肖像.肖像.stop();
-		if (!人物表情)
-		{
-			人物表情 = "普通";
-		}
-		肖像.肖像.gotoAndStop(人物表情);
-		肖像.肖像.man.头.头.基本款.gotoAndStop(人物表情);
-		//
-		对话图片 = 本轮对话内容[对话进度][6];
-		if (typeof 对话图片 == "string" && 对话图片 != "")
-		{
-			if (对话图片 == "close")
-			{
-				_root.图片容器.卸载图片();
-			}
-			else
-			{
-				_root.图片容器.加载图片(对话图片);
-			}
-		}
-		// 
-		打字内容 = "";
-		this.onEnterFrame = function()
-		{
-			打字(对话内容);
-		};
-	}
-	else
-	{
-		this._visible = 0;
-		gotoAndStop("close");
-	}
-}
-function 打字(fonts)
-{
-	if (this.i < length(fonts))
-	{
-		this.是否打印完毕 = false;
-		打字内容 += fonts.substr(this.i, 1);
-		this.i = this.i + 1;
-	}
-	if (this.i >= length(fonts))
-	{
-		结束打字();
-	}
-}
-function 结束打字()
-{
-	if (!this.是否打印完毕)
-	{
-		打字内容 = 对话内容;
-		delete this.onEnterFrame;
-		对话进度++;
-		this.是否打印完毕 = true;
-		this.i = 0;
-	}
-}
-function 下一句()
-{
-	if (对话进度 < 对话条数)
-	{
-		if (this.是否打印完毕)
-		{
-			刷新内容();
-		}
-		else
-		{
-			结束打字();
-		}
-	}
-	else
-	{
-		gotoAndStop("close");
-	}
-}
-
-stop();
-this._visible = 1;
+                <script><![CDATA[stop();
+this._visible = true;
 刷新内容();
 i = 0;]]></script>
               </Actionscript>
@@ -142,17 +35,7 @@ i = 0;]]></script>
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[本轮对话内容 = [];
-对话条数 = 0;
-_root.暂停 = false;
-if (结束对话后是否跳转帧)
-{
-	_root.淡出动画.淡出跳转帧(结束对话后跳转帧);
-	结束对话后跳转帧 = "";
-	结束对话后是否跳转帧 = false;
-}
-
-图片容器.卸载图片();]]></script>
+                <script><![CDATA[close();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -405,9 +288,43 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
+        <DOMLayer name="mask" color="#9933CC" locked="true" outline="true" useOutlineView="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!600 900S1|600 8100!600 8100|9200 8100!9200 8100|9200 900!9200 900|600 900"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="外部立绘层" color="#FF800A" parentLayerIndex="11" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="外部立绘层" name="外部立绘层">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="头像" color="#6589A2" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="对话框肖像" name="肖像" centerPoint3DX="381.3" centerPoint3DY="666.2">
                   <matrix>

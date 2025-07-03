@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/主角/Symbol 1170" itemID="6597607e-00000895" lastModified="1720546240">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/主角/Symbol 1170" itemID="6597607e-00000895" lastModified="1751512384">
   <timeline>
     <DOMTimeline name="Symbol 1170">
       <layers>
@@ -192,11 +192,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#FE8A68" current="true" isSelected="true">
+        <DOMLayer name="Layer 11" color="#FE8A68">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1144" name="头" selected="true" centerPoint3DX="73.65" centerPoint3DY="-81.65">
+                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1144" name="头" centerPoint3DX="73.65" centerPoint3DY="-81.65">
                   <matrix>
                     <Matrix a="0.66314697265625" b="0.0933837890625" c="-0.0933837890625" d="0.66314697265625" tx="44.4" ty="-119.35"/>
                   </matrix>
@@ -344,7 +344,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 19" color="#6441F8">
+        <DOMLayer name="Layer 19" color="#6441F8" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -355,38 +355,6 @@
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 20" color="#C3A124">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 477" centerPoint3DX="107.05" centerPoint3DY="288.65">
-                  <matrix>
-                    <Matrix a="1.02783203125" d="0.418441772460938" tx="20.4" ty="202"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_root.是否阴影 == true)
-   {
-      this._visible = 1;
-   }
-   else
-   {
-      this._visible = 0;
-   }
-}
-]]></script>
-                  </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
                   </filters>

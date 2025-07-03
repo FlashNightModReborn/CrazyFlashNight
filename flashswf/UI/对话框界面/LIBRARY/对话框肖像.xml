@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1751480713" lastUniqueIdentifier="227">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1751512213" lastUniqueIdentifier="227">
   <timeline>
-    <DOMTimeline name="对话框肖像" currentFrame="358">
+    <DOMTimeline name="对话框肖像" currentFrame="15">
       <layers>
-        <DOMLayer name="Labels Layer" color="#FC2986" current="true" isSelected="true">
+        <DOMLayer name="Labels Layer" color="#FC2986">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -194,7 +194,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#17EED4" outline="true" useOutlineView="true" layerType="mask">
+        <DOMLayer name="Layer 3" color="#17EED4" layerType="mask">
           <frames>
             <DOMFrame index="0" duration="359" keyMode="9728">
               <elements>
@@ -205,18 +205,21 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026!5804 -5026|5804 2159"/>
+                    <Edge fillStyle1="1" edges="!5804 -5026|5804 2159!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 155" color="#21D0E1" parentLayerIndex="2">
+        <DOMLayer name="Layer 155" color="#21D0E1" parentLayerIndex="2" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 1088" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.61102294921875" d="1.61102294921875" tx="23" ty="-64"/>
+                  </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -247,9 +250,9 @@
             </DOMFrame>
             <DOMFrame index="7" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="对话框UI/对话-玩家" name="肖像" centerPoint3DX="238.9" centerPoint3DY="391.95">
+                <DOMSymbolInstance libraryItemName="对话框UI/对话-玩家" name="肖像" selected="true" centerPoint3DX="178.85" centerPoint3DY="373.65">
                   <matrix>
-                    <Matrix a="1.2576904296875" d="1.2576904296875" tx="100.55" ty="92.55"/>
+                    <Matrix a="1.17088317871094" d="1.17088317871094" tx="50.1" ty="94.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -311,9 +314,9 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="12" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="对话框UI/对话-主角模板" name="肖像" centerPoint3DX="238.9" centerPoint3DY="417.5">
+                <DOMSymbolInstance libraryItemName="对话框UI/对话-主角模板" name="肖像" selected="true" centerPoint3DX="178.85" centerPoint3DY="397.65">
                   <matrix>
-                    <Matrix a="1.2576904296875" d="1.2576904296875" tx="100.55" ty="117.7"/>
+                    <Matrix a="1.17088317871094" d="1.17088317871094" tx="50.1" ty="118.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -383,7 +386,7 @@ onClipEvent (enterFrame) {
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 1088" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.61103820800781" d="1.61103820800781" tx="23" ty="-64"/>
+                    <Matrix a="1.61102294921875" d="1.61102294921875" tx="23" ty="-64"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

@@ -6,7 +6,7 @@
 	}
 	_root.对话框界面.对话进度 = 0;
 	_root.对话框界面.对话条数 += 内容数组.length;
-	_root.对话框界面.gotoAndStop(1);
+	_root.对话框界面.gotoAndStop("open");
 }
 
 _root.对话覆盖赋值到对话框 = function(内容数组){
@@ -18,7 +18,7 @@ _root.对话覆盖赋值到对话框 = function(内容数组){
 	}
 	_root.对话框界面.对话进度 = 0;
 	_root.对话框界面.对话条数 = 内容数组.length;
-	_root.对话框界面.gotoAndStop(1);
+	_root.对话框界面.gotoAndStop("open");
 }
 
 _root.getDialogueSpecialString = function(str){
