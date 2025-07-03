@@ -6,7 +6,7 @@
           <DOMFolderItem name="sprite" itemID="667d1fff-00000d61"/>
           <DOMFolderItem name="wa90" itemID="6559d3b1-000002db"/>
           <DOMFolderItem name="wa90/Graphic" itemID="5e86cc75-00001260"/>
-          <DOMFolderItem name="电感切割刃" itemID="655c5883-00000334" isExpanded="true"/>
+          <DOMFolderItem name="电感切割刃" itemID="655c5883-00000334"/>
           <DOMFolderItem name="火药燃气液压打桩机" itemID="655175a5-000006e2"/>
           <DOMFolderItem name="火药燃气液压打桩机/未命名文件夹 1" itemID="6551ede1-000021a3" isExpanded="true"/>
           <DOMFolderItem name="火药燃气液压打桩机/未命名文件夹 1/1" itemID="6551ede1-000021a4" isExpanded="true"/>
@@ -17,7 +17,8 @@
           <DOMFolderItem name="龙破军霜" itemID="65f704ac-00002258"/>
           <DOMFolderItem name="特效素材" itemID="65698b55-000002b7"/>
           <DOMFolderItem name="特效与子弹" itemID="65e41282-000004b3"/>
-          <DOMFolderItem name="未命名文件夹 1" itemID="6551c282-00001fe6"/>
+          <DOMFolderItem name="铁枪" itemID="68663e85-0000038c" isExpanded="true"/>
+          <DOMFolderItem name="未命名文件夹 1" itemID="6551c282-00001fe6" isExpanded="true"/>
           <DOMFolderItem name="未命名文件夹 1/1" itemID="6551edcf-0000218c"/>
           <DOMFolderItem name="未命名文件夹 1/未命名文件夹 1" itemID="6551c2d1-0000201c" isExpanded="true"/>
           <DOMFolderItem name="未命名文件夹 1/未命名文件夹 1/重复项目文件夹" itemID="6551c2d1-00002027"/>
@@ -103,19 +104,17 @@
           <DOMSoundItem name="2.音效文件夹/爆炸/爆炸 大 05.mp3" itemID="656c2960-00001004" sourceExternalFilepath="./LIBRARY/2.音效文件夹/爆炸/爆炸 大 05.mp3" sourceLastImported="1699970393" href="2.音效文件夹/爆炸/爆炸 大 05.mp3" soundDataHRef="M 72 1705567592.dat" format="44kHz 16bit Stereo" sampleCount="338688" exportFormat="1" exportBits="7" dataLength="91523" exportNative="true" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="42336"/>
           <DOMSoundItem name="测试.mp3" itemID="658ac77d-00000d3a" linkageExportForAS="true" linkageIdentifier="测试魔法.mp3" sourceExternalFilepath="./LIBRARY/测试.mp3" sourceLastImported="1703593853" href="测试.mp3" soundDataHRef="M 67 1702286599.dat" format="11kHz 16bit Mono" sampleCount="43776" exportFormat="5" exportBits="7" dataLength="7904" exportNative="true" cachedSampleCount="21888"/>
           <DOMSoundItem name="测试火焰.mp3" itemID="658ac9c8-00000d41" linkageExportForAS="true" linkageIdentifier="测试火焰.mp3" sourceExternalFilepath="./LIBRARY/测试火焰.mp3" sourceLastImported="1702286558" href="测试火焰.mp3" soundDataHRef="M 49 1702286599.dat" format="11kHz 16bit Mono" sampleCount="14400" exportFormat="5" exportBits="7" dataLength="2600" exportNative="true" cachedSampleCount="7200"/>
-          <DOMBitmapItem name="位图 71" itemID="65a88724-000005a0" sourceExternalFilepath="./LIBRARY/位图 71.png" sourceLastImported="1705543457" externalFileCRC32="3938681241" externalFileSize="221195" originalCompressionType="lossless" quality="50" href="位图 71.png" bitmapDataHRef="M 71 1705543460.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
-          <DOMBitmapItem name="位图 73" itemID="663494f5-00000ee3" sourceExternalFilepath="./LIBRARY/位图 73.png" sourceLastImported="1714722033" originalCompressionType="lossless" quality="50" href="位图 73.png" bitmapDataHRef="M 73 1714722037.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
      </media>
      <symbols>
           <Include href="53式步骑枪/53式步骑枪.xml" itemID="659e146e-000007c4" lastModified="1704953208"/>
           <Include href="53式步骑枪/弹仓.xml" loadImmediate="false" itemID="659e932d-00000b3c" lastModified="1704891181"/>
-          <Include href="53式步骑枪/调整层.xml" loadImmediate="false" itemID="659eb6ee-000005a7" lastModified="1704953093"/>
           <Include href="53式步骑枪/枪管.xml" loadImmediate="false" itemID="659ea149-00000b60" lastModified="1704953006"/>
           <Include href="53式步骑枪/枪机.xml" loadImmediate="false" itemID="659e9856-00000b4e" lastModified="1704953025"/>
           <Include href="53式步骑枪/枪身.xml" loadImmediate="false" itemID="659ea159-00000b64" lastModified="1704953133"/>
+          <Include href="53式步骑枪/调整层.xml" loadImmediate="false" itemID="659eb6ee-000005a7" lastModified="1704953093"/>
           <Include href="53式步骑枪/图标-53式步骑枪.xml" itemID="659eadd3-00000327" lastModified="1704901315"/>
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1748405535"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1751531217"/>
           <Include href="sprite/Symbol 35.xml" itemID="6577b699-00000971" lastModified="1718635260"/>
           <Include href="sprite/Symbol 36.xml" loadImmediate="false" itemID="6577b699-00000972" lastModified="1719476235"/>
           <Include href="Symbol 590.xml" loadImmediate="false" itemID="6577faef-00001510" lastModified="1701508661"/>
@@ -167,6 +166,8 @@
           <Include href="补间 3.xml" itemIcon="1" loadImmediate="false" itemID="657ba813-000004c4" lastModified="1702602771"/>
           <Include href="补间 4.xml" itemIcon="1" loadImmediate="false" itemID="657ba813-000004c6" lastModified="1702602771"/>
           <Include href="补间 5.xml" itemIcon="1" loadImmediate="false" itemID="6678cf69-00000597" lastModified="1719193449"/>
+          <Include href="补间 6.xml" itemIcon="1" loadImmediate="false" itemID="6866435a-000003b7" lastModified="1751532378"/>
+          <Include href="补间 7.xml" itemIcon="1" loadImmediate="false" itemID="6866435a-000003b9" lastModified="1751532378"/>
           <Include href="电感切割刃/刀-电感切割刃.xml" itemID="655c55d9-00000308" lastModified="1721580831"/>
           <Include href="电感切割刃/刀脊.xml" loadImmediate="false" itemID="655c4e2f-0000062f" lastModified="1700551159"/>
           <Include href="电感切割刃/刀脊花纹.xml" loadImmediate="false" itemID="655c4e77-00000633" lastModified="1700548288"/>
@@ -184,6 +185,7 @@
           <Include href="电感切割刃/元件 8.xml" loadImmediate="false" itemID="559006ce-00000012" lastModified="1435502417"/>
           <Include href="电感切割刃/元件 10.xml" loadImmediate="false" itemID="55900939-00000014" lastModified="1435503030"/>
           <Include href="电感切割刃/中间刀.xml" loadImmediate="false" itemID="655c4fdd-0000063b" lastModified="1700548573"/>
+          <Include href="活塞杆.xml" loadImmediate="false" itemID="68657fab-00003eb3" lastModified="1751505592"/>
           <Include href="火药燃气液压打桩机/打桩机子弹.xml" itemID="6551eea5-000021cc" lastModified="1702259181"/>
           <Include href="火药燃气液压打桩机/杆体.xml" itemIcon="1" loadImmediate="false" itemID="651ce0aa-00002f3c" lastModified="1696425129"/>
           <Include href="火药燃气液压打桩机/护盾.xml" itemIcon="1" loadImmediate="false" itemID="651d6417-00002ff9" lastModified="1696424983"/>
@@ -280,9 +282,18 @@
           <Include href="龙破军霜/刀-龙破军霜.xml" itemID="65f704da-0000226e" lastModified="1721580528"/>
           <Include href="龙破军霜/龙破军霜.xml" itemIcon="1" loadImmediate="false" itemID="65f704e6-00002270" lastModified="1710690852"/>
           <Include href="龙破军霜/图标-龙破军霜.xml" itemID="65f704b4-00002269" lastModified="1710687412"/>
+          <Include href="欧米茄.xml" loadImmediate="false" itemID="68657ec3-00003eab" lastModified="1751535258"/>
           <Include href="特效素材/打击伤害数字.xml" itemID="656983a5-000002a1" lastModified="1706446521"/>
           <Include href="特效与子弹/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="65e08f36-00001ff1" lastModified="1702237154"/>
           <Include href="特效与子弹/Symbol 13.xml" loadImmediate="false" itemID="65e08f36-00001ff0" lastModified="1702237154"/>
+          <Include href="铁枪 副本.xml" loadImmediate="false" itemID="68663ed6-000003a7" lastModified="1751535369"/>
+          <Include href="铁枪/枪-长枪-铁枪.xml" itemID="68663fad-000003a8" lastModified="1751533934"/>
+          <Include href="铁枪弹舱.xml" loadImmediate="false" itemID="6865857a-00003ee5" lastModified="1751513744"/>
+          <Include href="铁枪轮盘.xml" loadImmediate="false" itemID="686582e0-00003ecb" lastModified="1751505283"/>
+          <Include href="铁枪枪管.xml" loadImmediate="false" itemID="6865847d-00003eda" lastModified="1751535387"/>
+          <Include href="铁枪枪身.xml" loadImmediate="false" itemID="686586c3-00003ef8" lastModified="1751533852"/>
+          <Include href="铁枪枪托.xml" loadImmediate="false" itemID="68658669-00003eee" lastModified="1751514258"/>
+          <Include href="铁枪准星.xml" loadImmediate="false" itemID="68657e28-00003ea6" lastModified="1751481896"/>
           <Include href="未命名文件夹 1/1/shape 9 (Up Over Down Hit).xml" itemIcon="1" loadImmediate="false" itemID="6551edd1-0000219f" lastModified="1443854724"/>
           <Include href="未命名文件夹 1/1/shape 1194.xml" itemIcon="1" loadImmediate="false" itemID="560f79ad-000004ab" lastModified="1443854765"/>
           <Include href="未命名文件夹 1/1/shape 1196.xml" itemIcon="1" loadImmediate="false" itemID="560f79ad-000004ad" lastModified="1443854765"/>
@@ -311,7 +322,7 @@
           <Include href="炎魔斩/炎魔斩 new/烈焰剑剑身.xml" loadImmediate="false" itemID="64fc920c-00000d56" lastModified="1694274060"/>
           <Include href="炎魔斩/炎魔斩 new/图标-炎魔斩new.xml" itemID="6559f07d-00000891" lastModified="1731792469"/>
           <Include href="炎魔斩/炎魔斩 new/炎魔斩 new.xml" itemID="6558c61f-00000344" lastModified="1721580680"/>
-          <Include href="炎魔斩/炎魔斩 new/炎魔斩new动画.xml" loadImmediate="false" itemID="6558c635-00000345" lastModified="1719207780"/>
+          <Include href="炎魔斩/炎魔斩 new/炎魔斩new动画.xml" loadImmediate="false" itemID="6558c635-00000345" lastModified="1751532105"/>
           <Include href="炎魔斩/炎魔斩 new/炎魔斩纹路.xml" loadImmediate="false" itemID="6678cfb1-00000599" lastModified="1719193521"/>
           <Include href="炎魔斩/炎魔斩 new/元件 8.xml" loadImmediate="false" itemID="553f92f6-00000019" lastModified="1694270762"/>
           <Include href="炎魔斩/炎魔斩/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000644" lastModified="1710653981"/>
@@ -665,6 +676,7 @@
                     <SolidSwatchItem color="#070000" saturation="239" brightness="4"/>
                     <SolidSwatchItem color="#1C2E33" hue="129" saturation="71" brightness="37"/>
                     <SolidSwatchItem color="#0F2023" hue="126" saturation="97" brightness="24"/>
+                    <SolidSwatchItem color="#2B2A24" hue="40" saturation="19" brightness="37"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -747,6 +759,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="488091" publishTime="1751534609"/>
+          <PublishItem publishSize="486470" publishTime="1751531440"/>
+          <PublishItem publishSize="486162" publishTime="1751531271"/>
           <PublishItem publishSize="545977" publishTime="1748404357"/>
           <PublishItem publishSize="545970" publishTime="1748404125"/>
           <PublishItem publishSize="545969" publishTime="1748404090"/>
@@ -764,8 +779,5 @@
           <PublishItem publishSize="548044" publishTime="1742983614"/>
           <PublishItem publishSize="548044" publishTime="1742983539"/>
           <PublishItem publishSize="548044" publishTime="1742983517"/>
-          <PublishItem publishSize="548101" publishTime="1742983427"/>
-          <PublishItem publishSize="548017" publishTime="1742983040"/>
-          <PublishItem publishSize="547997" publishTime="1742982730"/>
      </publishHistory>
 </DOMDocument>
