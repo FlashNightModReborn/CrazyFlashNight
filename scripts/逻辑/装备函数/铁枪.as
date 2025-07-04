@@ -1,10 +1,11 @@
 ﻿// =======================================================
-//  铁枪 · 装备生命周期函数 (FSM 改进版，优化细节)
+// 铁枪 · 装备生命周期函数 (FSM 改进版，优化细节)
 // =======================================================
 
 import org.flashNight.neur.StateMachine.*;
 
-_root.装备生命周期函数.铁枪初始化 = function(ref, param) {
+_root.装备生命周期函数.铁枪初始化 = function(ref, param)
+{
     var 自机 = ref.自机;
 
     // 1. 创建状态机
@@ -36,7 +37,8 @@ _root.装备生命周期函数.铁枪初始化 = function(ref, param) {
     var data = ref.fsm.data;
 
     // —— 主角全局形态同步
-    if (data.isPlayer) {
+    if (data.isPlayer)
+    {
         var key = ref.标签名 + ref.初始化函数;
         var gl = _root.装备生命周期函数.全局参数[key] || {};
         data.unmaykr化 = gl.unmaykr化 || false;
@@ -46,12 +48,14 @@ _root.装备生命周期函数.铁枪初始化 = function(ref, param) {
     data.currentFrame = data.unmaykr化 ? CONFIG.FRAMES.UNMAYKR.start : CONFIG.FRAMES.BFG.start;
 
     // 4. 工具方法
-    var Utils = {validateFrame: function(frame, cfg) {
-        var minF = cfg.FRAMES.BFG.start;
-        var maxF = cfg.FRAMES.UNMAYKR.end;
-        return Math.max(minF, Math.min(maxF, frame));
-    },
-            getFrameRegion: function(frame, cfg) {
+    var Utils = {validateFrame: function(frame, cfg)
+        {
+            var minF = cfg.FRAMES.BFG.start;
+            var maxF = cfg.FRAMES.UNMAYKR.end;
+            return Math.max(minF, Math.min(maxF, frame));
+        },
+            getFrameRegion: function(frame, cfg)
+            {
                 var f = cfg.FRAMES;
                 if (frame >= f.BFG.start && frame <= f.BFG.end)
                     return "BFG";
@@ -61,26 +65,36 @@ _root.装备生命周期函数.铁枪初始化 = function(ref, param) {
                     return "UNMAYKR";
                 return "INVALID";
             },
-            getStateHash: function(d) {
+            getStateHash: function(d)
+            {
                 return d.isWeaponActive + "|" + d.unmaykr化 + "|" + d.isTransforming;
-            }};
+            }
+        };
 
     // 5. 动画策略
-    var AnimationStrategies = {handleTransformation: function(d) {
-        var endF = d.config.FRAMES.TRANSFORM.end;
-        if (d.currentFrame < endF) {
-            d.currentFrame++;
-        } else if (d.currentFrame > endF) {
-            d.currentFrame--;
-        } else {
-            // 完成变形
-            this.completeTransformation(d);
-        }
-    },
-            completeTransformation: function(d) {
+    var AnimationStrategies = {handleTransformation: function(d)
+        {
+            var endF = d.config.FRAMES.TRANSFORM.end;
+            if (d.currentFrame < endF)
+            {
+                d.currentFrame++;
+            }
+            else if (d.currentFrame > endF)
+            {
+                d.currentFrame--;
+            }
+            else
+            {
+                // 完成变形
+                this.completeTransformation(d);
+            }
+        },
+            completeTransformation: function(d)
+            {
                 d.isTransforming = false;
                 d.unmaykr化 = d.transformTargetShape;
-                if (d.isPlayer) {
+                if (d.isPlayer)
+                {
                     d.labelObject.unmaykr化 = d.unmaykr化;
                 }
                 var nf = d.unmaykr化 ? d.config.FRAMES.UNMAYKR : d.config.FRAMES.BFG;
@@ -88,9 +102,11 @@ _root.装备生命周期函数.铁枪初始化 = function(ref, param) {
                 d.cachedTargetFrame = null;
                 d.lastStateHash = null;
             },
-            calculateTargetFrame: function(d) {
+            calculateTargetFrame: function(d)
+            {
                 var hash = Utils.getStateHash(d);
-                if (d.lastStateHash === hash && d.cachedTargetFrame !== null) {
+                if (d.lastStateHash === hash && d.cachedTargetFrame !== null)
+                {
                     return d.cachedTargetFrame;
                 }
                 var cf = d.unmaykr化 ? d.config.FRAMES.UNMAYKR : d.config.FRAMES.BFG;
@@ -99,35 +115,44 @@ _root.装备生命周期函数.铁枪初始化 = function(ref, param) {
                 d.lastStateHash = hash;
                 return tf;
             },
-            handleNormalAnimation: function(d) {
+            handleNormalAnimation: function(d)
+            {
                 var tf = this.calculateTargetFrame(d);
                 if (d.currentFrame === tf)
                     return;
                 d.currentFrame += (d.currentFrame < tf) ? 1 : -1;
                 d.currentFrame = Utils.validateFrame(d.currentFrame, d.config);
-            }};
+            }
+        };
 
     // 6. 统一动画推进函数
-    function animateFrame() {
+    function animateFrame()
+    {
         var d = this.data;
-        ref.energyLevel = Math.max(ref.energyLevel - 1, (d.isWeaponActive ? 3 : 1));
 
+        ref.energyLevel = Math.max(ref.energyLevel - 1, (d.isWeaponActive ? 3 : 1));
+        var energyLevel = ref.energyLevel;
         var gun = ref.自机.长枪_引用.动画;
         var gunParts = ["欧米茄", "枪身", "轮盘", "枪托", "弹舱", "活塞杆", "枪管"];
 
-         for(var i:Number = 0; i < gunParts.length; ++i) {
-            gun[gunParts[i]].gotoAndStop(ref.energyLevel);
-         }
+        for (var i:Number = 0; i < gunParts.length; ++i)
+        {
+            gun[gunParts[i]].gotoAndStop(energyLevel);
+        }
 
-         gun["轮盘"]._rotation += 5;
+        gun["轮盘"]._rotation += energyLevel;
 
-        if (d.isTransforming) {
+        if (d.isTransforming)
+        {
             // 异常恢复
-            if (Utils.getFrameRegion(d.currentFrame, d.config) === "INVALID") {
+            if (Utils.getFrameRegion(d.currentFrame, d.config) === "INVALID")
+            {
                 d.currentFrame = d.config.FRAMES.TRANSFORM.start;
             }
             AnimationStrategies.handleTransformation(d);
-        } else {
+        }
+        else
+        {
             AnimationStrategies.handleNormalAnimation(d);
         }
     }
@@ -139,29 +164,37 @@ _root.装备生命周期函数.铁枪初始化 = function(ref, param) {
     ref.fsm.AddStatus("HOLSTERED", holsteredState);
 
     // 8. 状态转换规则
-    ref.fsm.transitions.push("HOLSTERED", "DEPLOYED", function():Boolean {
-        return this.data.isWeaponActive === true;
-    });
-    ref.fsm.transitions.push("DEPLOYED", "HOLSTERED", function():Boolean {
-        return this.data.isWeaponActive === false;
-    });
+    ref.fsm.transitions.push("HOLSTERED", "DEPLOYED", function():Boolean
+        {
+            return this.data.isWeaponActive === true;
+        });
+    ref.fsm.transitions.push("DEPLOYED", "HOLSTERED", function():Boolean
+        {
+            return this.data.isWeaponActive === false;
+        });
 
     // 9. 初始状态
     var init = (自机.攻击模式 === "长枪") ? "DEPLOYED" : "HOLSTERED";
     ref.fsm.setActiveState(ref.fsm.statusDict[init]);
     ref.fsm.setLastState(null);
 
-
     ref.energyLevel = 1;
     // 订阅processShot事件
 
-};
+        // 订阅processShot事件
+    ref.自机.dispatcher.subscribe("processShot", function(target:MovieClip, weaponType:String) {
+        if(weaponType == "长枪") {
+            ref.energyLevel = 10;
+        }
+    });
 
+};
 
 /*--------------------------------------------------------
  * 周期函数
  *------------------------------------------------------*/
-_root.装备生命周期函数.铁枪周期 = function(ref, param) {
+_root.装备生命周期函数.铁枪周期 = function(ref, param)
+{
     _root.装备生命周期函数.移除异常周期函数(ref);
 
     var fsm = ref.fsm;
@@ -172,21 +205,25 @@ _root.装备生命周期函数.铁枪周期 = function(ref, param) {
     // 同步激活状态
     var prev = data.isWeaponActive;
     data.isWeaponActive = (自机.攻击模式 === "长枪");
-    if (prev !== data.isWeaponActive) {
+    if (prev !== data.isWeaponActive)
+    {
         data.cachedTargetFrame = null;
         data.lastStateHash = null;
     }
 
     // 触发变形
-    if (data.isWeaponActive && !data.isTransforming) {
-        if (_root.按键输入检测(自机, _root.武器变形键)) {
-            _root.更新并执行时间间隔动作(ref, data.config.TRANSFORM.label, function(d) {
-                d.isTransforming = true;
-                d.transformTargetShape = !d.unmaykr化;
-                d.currentFrame = d.config.FRAMES.TRANSFORM.start;
-                d.cachedTargetFrame = null;
-                d.lastStateHash = null;
-            }, data.config.TRANSFORM.interval, false, data);
+    if (data.isWeaponActive && !data.isTransforming)
+    {
+        if (_root.按键输入检测(自机, _root.武器变形键))
+        {
+            _root.更新并执行时间间隔动作(ref, data.config.TRANSFORM.label, function(d)
+                {
+                    d.isTransforming = true;
+                    d.transformTargetShape = !d.unmaykr化;
+                    d.currentFrame = d.config.FRAMES.TRANSFORM.start;
+                    d.cachedTargetFrame = null;
+                    d.lastStateHash = null;
+                }, data.config.TRANSFORM.interval, false, data);
         }
     }
 

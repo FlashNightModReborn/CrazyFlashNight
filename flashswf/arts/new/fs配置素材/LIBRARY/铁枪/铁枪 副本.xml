@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="铁枪/铁枪 副本" itemID="68663ed6-000003a7" lastModified="1751622898" lastUniqueIdentifier="78">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="铁枪/铁枪 副本" itemID="68663ed6-000003a7" lastModified="1751628340" lastUniqueIdentifier="79">
   <timeline>
     <DOMTimeline name="铁枪 副本" currentFrame="40">
       <layers>
@@ -57,11 +57,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="铁枪轮盘" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="铁枪轮盘" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪/铁枪轮盘" name="轮盘" selected="true" centerPoint3DX="724.55" centerPoint3DY="614.9">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪轮盘" name="轮盘" centerPoint3DX="724.55" centerPoint3DY="614.9">
                   <matrix>
                     <Matrix tx="581.1" ty="464.3"/>
                   </matrix>
@@ -380,7 +380,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" locked="true" layerType="mask">
+        <DOMLayer name="图层 3" color="#FF800A" locked="true" visible="false" layerType="mask">
           <frames>
             <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>
@@ -512,7 +512,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="活塞杆" color="#9933CC" parentLayerIndex="7" locked="true" autoNamed="false">
+        <DOMLayer name="活塞杆" color="#9933CC" parentLayerIndex="7" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="11" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>
