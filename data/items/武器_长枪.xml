@@ -5928,5 +5928,18 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     <equipped>
       <dressup>枪-长枪-铁枪</dressup>
     </equipped>
+    <lifecycle>
+      <description />
+      <attr_0>
+        <init>
+          <initRoutines>铁枪初始化</initRoutines>
+          <initParam>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>铁枪周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
 </root>

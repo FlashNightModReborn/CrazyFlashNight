@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="铁枪/欧米茄" itemID="68657ec3-00003eab" lastModified="1751597507" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="铁枪/欧米茄" itemID="68657ec3-00003eab" lastModified="1751612072" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="欧米茄">
+    <DOMTimeline name="欧米茄" currentFrame="1">
       <layers>
-        <DOMLayer name="图层 3" color="#FF800A">
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <Actionscript>
@@ -12,11 +12,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪/铁枪欧米茄打光" selected="true" centerPoint3DX="24.55" centerPoint3DY="24.45">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪欧米茄打光" centerPoint3DX="24.55" centerPoint3DY="24.45">
                   <matrix>
                     <Matrix ty="-0.5"/>
                   </matrix>

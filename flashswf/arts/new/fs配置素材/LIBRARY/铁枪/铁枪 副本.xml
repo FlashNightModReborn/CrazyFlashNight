@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="铁枪/铁枪 副本" itemID="68663ed6-000003a7" lastModified="1751597332" lastUniqueIdentifier="77">
   <timeline>
-    <DOMTimeline name="铁枪 副本">
+    <DOMTimeline name="铁枪 副本" currentFrame="40">
       <layers>
         <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
@@ -25,11 +25,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="欧米茄" color="#808080" autoNamed="false">
+        <DOMLayer name="欧米茄" color="#808080" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪/欧米茄" name="欧米伽" centerPoint3DX="577.45" centerPoint3DY="693.95">
+                <DOMSymbolInstance libraryItemName="铁枪/欧米茄" name="欧米伽" selected="true" centerPoint3DX="577.45" centerPoint3DY="693.95">
                   <matrix>
                     <Matrix tx="553.55" ty="677.35"/>
                   </matrix>
@@ -41,11 +41,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="铁枪枪身" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="铁枪枪身" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪/铁枪枪身" name="枪身" selected="true" centerPoint3DX="830.65" centerPoint3DY="607.5">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪枪身" name="枪身" centerPoint3DX="830.65" centerPoint3DY="607.5">
                   <matrix>
                     <Matrix tx="372.85" ty="220.05"/>
                   </matrix>
@@ -333,7 +333,7 @@
             </DOMFrame>
             <DOMFrame index="24" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪/铁枪弹舱" name="弹舱" selected="true" centerPoint3DX="628.85" centerPoint3DY="634.25">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪弹舱" name="弹舱" centerPoint3DX="628.85" centerPoint3DY="634.25">
                   <matrix>
                     <Matrix tx="388.25" ty="346.55"/>
                   </matrix>
