@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="铁枪/铁枪 副本" itemID="68663ed6-000003a7" lastModified="1751597332" lastUniqueIdentifier="77">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="铁枪/铁枪 副本" itemID="68663ed6-000003a7" lastModified="1751622898" lastUniqueIdentifier="78">
   <timeline>
     <DOMTimeline name="铁枪 副本" currentFrame="40">
       <layers>
@@ -25,11 +25,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="欧米茄" color="#808080" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="欧米茄" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪/欧米茄" name="欧米伽" selected="true" centerPoint3DX="577.45" centerPoint3DY="693.95">
+                <DOMSymbolInstance libraryItemName="铁枪/欧米茄" name="欧米伽" centerPoint3DX="577.45" centerPoint3DY="693.95">
                   <matrix>
                     <Matrix tx="553.55" ty="677.35"/>
                   </matrix>
@@ -57,13 +57,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="铁枪轮盘" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="铁枪轮盘" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪/铁枪轮盘" name="轮盘" centerPoint3DX="579.3" centerPoint3DY="463.55">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪轮盘" name="轮盘" selected="true" centerPoint3DX="724.55" centerPoint3DY="614.9">
                   <matrix>
-                    <Matrix tx="435.85" ty="312.95"/>
+                    <Matrix tx="581.1" ty="464.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="142.6" y="150.7"/>
