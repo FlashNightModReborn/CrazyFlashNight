@@ -63,11 +63,9 @@ _root.装备生命周期函数.火药燃气液压打桩机初始化 = function(r
     // 设置初始状态
     reflector.fsm.ChangeState("IDLE");
     
-    // 订阅processShot事件
-    target.dispatcher.subscribe("processShot", function(target:MovieClip, weaponType:String) {
-        if(weaponType == "长枪") {
-            reflector.fsm.data.flag = true;
-        }
+    // 订阅长枪射击事件
+    target.dispatcher.subscribe("长枪射击", function() {
+        reflector.fsm.data.flag = true;
     });
 };
 

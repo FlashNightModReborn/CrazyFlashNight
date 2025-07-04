@@ -55,6 +55,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         var man:Object  = core.man;
         var controlTarget:Object = root.控制目标;
 
+        var dispatcher:EventDispatcher = core.dispatcher;
+        dispatcher.publish(attackMode + "射击");
+
         // 利用 Dictionary.getStaticUID 为 params 建立或获取缓存配置
         var uid:Number = Dictionary.getStaticUID(params);
         var config:Object = _paramsCache[uid];

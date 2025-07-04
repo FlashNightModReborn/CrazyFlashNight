@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="铁枪/铁枪 副本" itemID="68663ed6-000003a7" lastModified="1751628340" lastUniqueIdentifier="79">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="铁枪/铁枪 副本" itemID="68663ed6-000003a7" lastModified="1751640940" lastUniqueIdentifier="79">
   <timeline>
-    <DOMTimeline name="铁枪 副本" currentFrame="40">
+    <DOMTimeline name="铁枪 副本" currentFrame="15">
       <layers>
         <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
@@ -512,7 +512,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="活塞杆" color="#9933CC" parentLayerIndex="7" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="活塞杆" color="#9933CC" parentLayerIndex="7" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="11" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>
@@ -796,7 +796,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="铁枪准星" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="铁枪准星" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>

@@ -130,18 +130,6 @@ _root.装备生命周期函数.铁枪初始化 = function(ref, param)
     {
         var d = this.data;
 
-        ref.energyLevel = Math.max(ref.energyLevel - 1, (d.isWeaponActive ? 3 : 1));
-        var energyLevel = ref.energyLevel;
-        var gun = ref.自机.长枪_引用.动画;
-        var gunParts = ["欧米茄", "枪身", "轮盘", "枪托", "弹舱", "活塞杆", "枪管"];
-
-        for (var i:Number = 0; i < gunParts.length; ++i)
-        {
-            gun[gunParts[i]].gotoAndStop(energyLevel);
-        }
-
-        gun["轮盘"]._rotation += energyLevel;
-
         if (d.isTransforming)
         {
             // 异常恢复
@@ -179,14 +167,18 @@ _root.装备生命周期函数.铁枪初始化 = function(ref, param)
     ref.fsm.setLastState(null);
 
     ref.energyLevel = 1;
-    // 订阅processShot事件
 
-        // 订阅processShot事件
-    ref.自机.dispatcher.subscribe("processShot", function(target:MovieClip, weaponType:String) {
-        if(weaponType == "长枪") {
-            ref.energyLevel = 10;
-        }
+    // 订阅长枪射击事件
+    ref.自机.dispatcher.subscribe("长枪射击", function() {
+        ref.energyLevel = 10;
+        var fsm = ref.fsm;
+        var data = fsm.data;
+        var 自机 = data.target;
+        var 长枪 = 自机.man.枪.枪.装扮;
+        长枪.枪口位置 = 长枪["枪口位置" + (data.unmaykr化 ? "0" : "1")];
     });
+
+    ref.gunParts = ["欧米茄", "枪身", "轮盘", "枪托", "弹舱", "活塞杆", "枪管"];
 
 };
 
@@ -205,6 +197,8 @@ _root.装备生命周期函数.铁枪周期 = function(ref, param)
     // 同步激活状态
     var prev = data.isWeaponActive;
     data.isWeaponActive = (自机.攻击模式 === "长枪");
+
+
     if (prev !== data.isWeaponActive)
     {
         data.cachedTargetFrame = null;
@@ -231,5 +225,18 @@ _root.装备生命周期函数.铁枪周期 = function(ref, param)
     fsm.onAction();
 
     // 更新画面
+
     长枪.动画.gotoAndStop(data.currentFrame);
+
+    ref.energyLevel = Math.max(ref.energyLevel - 1, (data.isWeaponActive ? 3 : 1));
+    var energyLevel = ref.energyLevel;
+    var gun = ref.自机.长枪_引用.动画;
+    var gunParts = ref.gunParts;
+
+    for (var i:Number = 0; i < gunParts.length; ++i)
+    {
+        gun[gunParts[i]].gotoAndStop(energyLevel);
+    }
+
+    gun["轮盘"]._rotation += energyLevel;
 };
