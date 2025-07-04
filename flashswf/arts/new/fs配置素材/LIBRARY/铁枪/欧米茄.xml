@@ -1,12 +1,22 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="欧米茄" itemID="68657ec3-00003eab" lastModified="1751536236" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="铁枪/欧米茄" itemID="68657ec3-00003eab" lastModified="1751597507" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="欧米茄" currentFrame="9">
+    <DOMTimeline name="欧米茄">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪欧米茄打光" centerPoint3DX="24.55" centerPoint3DY="24.45">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪欧米茄打光" selected="true" centerPoint3DX="24.55" centerPoint3DY="24.45">
                   <matrix>
                     <Matrix ty="-0.5"/>
                   </matrix>
@@ -21,7 +31,7 @@
             </DOMFrame>
             <DOMFrame index="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪欧米茄打光" centerPoint3DX="24.55" centerPoint3DY="24.45">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪欧米茄打光" selected="true" centerPoint3DX="24.55" centerPoint3DY="24.45">
                   <matrix>
                     <Matrix ty="-0.5"/>
                   </matrix>
@@ -30,13 +40,6 @@
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
-          <frames>
-            <DOMFrame index="0" duration="10" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -59,13 +62,13 @@
                   <edges>
                     <Edge fillStyle0="1" edges="!744 23[904 13 957 11!957 11[763 -1 480 0!480 0[160 5 1 4!1 4|0 41!0 41|93 32!93 32|109 74!109 74|192 43!192 43[191 84 182 195!182 195[173 290 175 346!175 346|120 342!120 342|111 487!111 487|154 499!154 499[131 549 114 596!114 596|175
  555!175 555|188 658!188 658[279 659 463 663!463 663[623 666 737 653!737 653[826 590 843 481!843 481[861 366 780 292!780 292|819 311!819 311[795 215 783 166!783 166[762 80 744 23"/>
-                    <Edge fillStyle1="1" edges="
-!515 94|516 95!516 95|517 95!517 95[516 94 515 94"/>
-                    <Edge fillStyle0="2" fillStyle1="3" edges="
-!573 175[554 146 513 99!513 99[513 98 512 97!512 97[513 97 515 98"/>
                     <Edge fillStyle0="2" fillStyle1="1" edges="
 !515 98[515 97 517 96!517 96|506 97!506 97[#1FE.3B #60.06 513 95.5!513 95.5[#1A7.82 #6B.27 392 117!392 117[335 137 320 180!320 180[282 262 315 359!315 359[342 440 411 519!411 519|372 535!372 535|249 467!249 467[266 522 274 555!274 555
 |456 572!456 572[455 521 434 459!434 459[423 425 391 350!391 350[365 289 407 213!407 213[422 192 437 174!437 174|492 167!492 167|573 175"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="
+!573 175[554 146 513 99!513 99[513 98 512 97!512 97[513 97 515 98"/>
+                    <Edge fillStyle1="1" edges="
+!515 94|516 95!516 95|517 95!517 95[516 94 515 94"/>
                     <Edge fillStyle0="3" fillStyle1="1" edges="
 !573 175[588 197 595 209!595 209[634 278 624 341!624 341[613 383 575 454!575 454[535 529 523 566!523 566|726 569!726 569|693 461!693 461|694 529!694 529|570 532!570 532[638 449 667 405!667 405[718 328 700 255!700 255[674 192 627 151!627
  151[584 114 515 98"/>

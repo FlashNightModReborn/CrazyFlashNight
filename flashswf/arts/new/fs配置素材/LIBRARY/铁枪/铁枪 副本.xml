@@ -1,7 +1,17 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="铁枪 副本" itemID="68663ed6-000003a7" lastModified="1751536601" lastUniqueIdentifier="77">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="铁枪/铁枪 副本" itemID="68663ed6-000003a7" lastModified="1751597332" lastUniqueIdentifier="77">
   <timeline>
-    <DOMTimeline name="铁枪 副本" currentFrame="2">
+    <DOMTimeline name="铁枪 副本">
       <layers>
+        <DOMLayer name="图层 4" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" duration="41" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="15" name=" bfg" labelType="comment" keyMode="9728">
@@ -19,7 +29,7 @@
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="欧米茄" name="欧米伽" centerPoint3DX="577.45" centerPoint3DY="693.95">
+                <DOMSymbolInstance libraryItemName="铁枪/欧米茄" name="欧米伽" centerPoint3DX="577.45" centerPoint3DY="693.95">
                   <matrix>
                     <Matrix tx="553.55" ty="677.35"/>
                   </matrix>
@@ -31,11 +41,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="铁枪枪身" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="铁枪枪身" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪枪身" name="枪身" centerPoint3DX="830.65" centerPoint3DY="607.5">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪枪身" name="枪身" selected="true" centerPoint3DX="830.65" centerPoint3DY="607.5">
                   <matrix>
                     <Matrix tx="372.85" ty="220.05"/>
                   </matrix>
@@ -51,7 +61,7 @@
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪轮盘" name="轮盘" centerPoint3DX="579.3" centerPoint3DY="463.55">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪轮盘" name="轮盘" centerPoint3DX="579.3" centerPoint3DY="463.55">
                   <matrix>
                     <Matrix tx="435.85" ty="312.95"/>
                   </matrix>
@@ -78,7 +88,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪枪托" name="枪托" centerPoint3DX="524.95" centerPoint3DY="684.8">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪枪托" name="枪托" centerPoint3DX="524.95" centerPoint3DY="684.8">
                   <matrix>
                     <Matrix tx="306.5" ty="362.25"/>
                   </matrix>
@@ -101,7 +111,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪枪托" name="枪托" centerPoint3DX="643.1" centerPoint3DY="646.55">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪枪托" name="枪托" centerPoint3DX="643.1" centerPoint3DY="646.55">
                   <matrix>
                     <Matrix tx="424.65" ty="324"/>
                   </matrix>
@@ -121,7 +131,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪枪托" name="枪托" centerPoint3DX="606.3" centerPoint3DY="395.35">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪枪托" name="枪托" centerPoint3DX="606.3" centerPoint3DY="395.35">
                   <matrix>
                     <Matrix tx="387.85" ty="72.8"/>
                   </matrix>
@@ -133,7 +143,7 @@
             </DOMFrame>
             <DOMFrame index="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪枪托" name="枪托" centerPoint3DX="1275.05" centerPoint3DY="441.85">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪枪托" name="枪托" centerPoint3DX="1275.05" centerPoint3DY="441.85">
                   <matrix>
                     <Matrix tx="1056.6" ty="119.3"/>
                   </matrix>
@@ -156,7 +166,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪枪托" name="枪托" centerPoint3DX="524.95" centerPoint3DY="684.8">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪枪托" name="枪托" centerPoint3DX="524.95" centerPoint3DY="684.8">
                   <matrix>
                     <Matrix tx="306.5" ty="362.25"/>
                   </matrix>
@@ -179,7 +189,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪枪托" name="枪托" centerPoint3DX="493.55" centerPoint3DY="561.6">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪枪托" name="枪托" centerPoint3DX="493.55" centerPoint3DY="561.6">
                   <matrix>
                     <Matrix tx="275.15" ty="239"/>
                   </matrix>
@@ -191,7 +201,7 @@
             </DOMFrame>
             <DOMFrame index="24" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪枪托" name="枪托" centerPoint3DX="524.95" centerPoint3DY="684.8">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪枪托" name="枪托" centerPoint3DX="524.95" centerPoint3DY="684.8">
                   <matrix>
                     <Matrix tx="306.5" ty="362.25"/>
                   </matrix>
@@ -214,7 +224,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪枪托" name="枪托" centerPoint3DX="524.95" centerPoint3DY="684.8">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪枪托" name="枪托" centerPoint3DX="524.95" centerPoint3DY="684.8">
                   <matrix>
                     <Matrix tx="306.5" ty="362.25"/>
                   </matrix>
@@ -226,7 +236,7 @@
             </DOMFrame>
             <DOMFrame index="40" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪枪托" name="枪托" centerPoint3DX="415.4" centerPoint3DY="442.3">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪枪托" name="枪托" centerPoint3DX="415.4" centerPoint3DY="442.3">
                   <matrix>
                     <Matrix a="-0.0345001220703125" b="-0.9993896484375" c="0.9993896484375" d="-0.0345001220703125" tx="99.55" ty="673.4"/>
                   </matrix>
@@ -253,7 +263,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪弹舱" name="弹舱" centerPoint3DX="628.85" centerPoint3DY="634.25">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪弹舱" name="弹舱" centerPoint3DX="628.85" centerPoint3DY="634.25">
                   <matrix>
                     <Matrix tx="388.25" ty="346.55"/>
                   </matrix>
@@ -265,7 +275,7 @@
             </DOMFrame>
             <DOMFrame index="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪弹舱" name="弹舱" centerPoint3DX="297.85" centerPoint3DY="711.05">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪弹舱" name="弹舱" centerPoint3DX="297.85" centerPoint3DY="711.05">
                   <matrix>
                     <Matrix tx="57.25" ty="423.35"/>
                   </matrix>
@@ -288,7 +298,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪弹舱" name="弹舱" centerPoint3DX="628.85" centerPoint3DY="634.25">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪弹舱" name="弹舱" centerPoint3DX="628.85" centerPoint3DY="634.25">
                   <matrix>
                     <Matrix tx="388.25" ty="346.55"/>
                   </matrix>
@@ -311,7 +321,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪弹舱" name="弹舱" centerPoint3DX="569.65" centerPoint3DY="647.1">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪弹舱" name="弹舱" centerPoint3DX="569.65" centerPoint3DY="647.1">
                   <matrix>
                     <Matrix tx="329.05" ty="359.4"/>
                   </matrix>
@@ -323,7 +333,7 @@
             </DOMFrame>
             <DOMFrame index="24" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪弹舱" name="弹舱" selected="true" centerPoint3DX="628.85" centerPoint3DY="634.25">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪弹舱" name="弹舱" selected="true" centerPoint3DX="628.85" centerPoint3DY="634.25">
                   <matrix>
                     <Matrix tx="388.25" ty="346.55"/>
                   </matrix>
@@ -346,7 +356,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪弹舱" name="弹舱" centerPoint3DX="628.85" centerPoint3DY="634.25">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪弹舱" name="弹舱" centerPoint3DX="628.85" centerPoint3DY="634.25">
                   <matrix>
                     <Matrix tx="388.25" ty="346.55"/>
                   </matrix>
@@ -358,7 +368,7 @@
             </DOMFrame>
             <DOMFrame index="40" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪弹舱" name="弹舱" centerPoint3DX="123.8" centerPoint3DY="549.65">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪弹舱" name="弹舱" centerPoint3DX="123.8" centerPoint3DY="549.65">
                   <matrix>
                     <Matrix tx="-116.8" ty="261.95"/>
                   </matrix>
@@ -370,7 +380,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" locked="true" current="true" isSelected="true" layerType="mask">
+        <DOMLayer name="图层 3" color="#FF800A" locked="true" layerType="mask">
           <frames>
             <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>
@@ -502,7 +512,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="活塞杆" color="#9933CC" parentLayerIndex="6" locked="true" autoNamed="false">
+        <DOMLayer name="活塞杆" color="#9933CC" parentLayerIndex="7" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="11" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>
@@ -517,7 +527,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="活塞杆" name="活塞杆" centerPoint3DX="665.05" centerPoint3DY="325.35">
+                <DOMSymbolInstance libraryItemName="铁枪/活塞杆" name="活塞杆" centerPoint3DX="665.05" centerPoint3DY="325.35">
                   <matrix>
                     <Matrix tx="362.55" ty="293.25"/>
                   </matrix>
@@ -537,7 +547,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="活塞杆" name="活塞杆" centerPoint3DX="422.15" centerPoint3DY="249.15">
+                <DOMSymbolInstance libraryItemName="铁枪/活塞杆" name="活塞杆" centerPoint3DX="422.15" centerPoint3DY="249.15">
                   <matrix>
                     <Matrix tx="119.65" ty="217.05"/>
                   </matrix>
@@ -549,7 +559,7 @@
             </DOMFrame>
             <DOMFrame index="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="活塞杆" name="活塞杆" centerPoint3DX="401.75" centerPoint3DY="242.75">
+                <DOMSymbolInstance libraryItemName="铁枪/活塞杆" name="活塞杆" centerPoint3DX="401.75" centerPoint3DY="242.75">
                   <matrix>
                     <Matrix tx="99.25" ty="210.65"/>
                   </matrix>
@@ -572,7 +582,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="活塞杆" name="活塞杆" centerPoint3DX="665.05" centerPoint3DY="325.35">
+                <DOMSymbolInstance libraryItemName="铁枪/活塞杆" name="活塞杆" centerPoint3DX="665.05" centerPoint3DY="325.35">
                   <matrix>
                     <Matrix tx="362.55" ty="293.25"/>
                   </matrix>
@@ -595,7 +605,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="活塞杆" name="活塞杆" centerPoint3DX="713.95" centerPoint3DY="448.45">
+                <DOMSymbolInstance libraryItemName="铁枪/活塞杆" name="活塞杆" centerPoint3DX="713.95" centerPoint3DY="448.45">
                   <matrix>
                     <Matrix tx="411.45" ty="416.35"/>
                   </matrix>
@@ -607,7 +617,7 @@
             </DOMFrame>
             <DOMFrame index="24" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="活塞杆" name="活塞杆" centerPoint3DX="665.05" centerPoint3DY="325.35">
+                <DOMSymbolInstance libraryItemName="铁枪/活塞杆" name="活塞杆" centerPoint3DX="665.05" centerPoint3DY="325.35">
                   <matrix>
                     <Matrix tx="362.55" ty="293.25"/>
                   </matrix>
@@ -630,7 +640,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="活塞杆" name="活塞杆" centerPoint3DX="665.05" centerPoint3DY="325.35">
+                <DOMSymbolInstance libraryItemName="铁枪/活塞杆" name="活塞杆" centerPoint3DX="665.05" centerPoint3DY="325.35">
                   <matrix>
                     <Matrix tx="362.55" ty="293.25"/>
                   </matrix>
@@ -642,7 +652,7 @@
             </DOMFrame>
             <DOMFrame index="40" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="活塞杆" name="活塞杆" centerPoint3DX="-192.7" centerPoint3DY="306.35">
+                <DOMSymbolInstance libraryItemName="铁枪/活塞杆" name="活塞杆" selected="true" centerPoint3DX="-192.7" centerPoint3DY="306.35">
                   <matrix>
                     <Matrix tx="-495.2" ty="274.25"/>
                   </matrix>
@@ -669,7 +679,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪枪管" name="枪管" centerPoint3DX="631.15" centerPoint3DY="403.1">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪枪管" name="枪管" centerPoint3DX="631.15" centerPoint3DY="403.1">
                   <matrix>
                     <Matrix tx="263.3" ty="236.3"/>
                   </matrix>
@@ -681,7 +691,7 @@
             </DOMFrame>
             <DOMFrame index="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪枪管" name="枪管" centerPoint3DX="367.85" centerPoint3DY="320.5">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪枪管" name="枪管" centerPoint3DX="367.85" centerPoint3DY="320.5">
                   <matrix>
                     <Matrix ty="153.7"/>
                   </matrix>
@@ -704,7 +714,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪枪管" name="枪管" centerPoint3DX="631.15" centerPoint3DY="403.1">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪枪管" name="枪管" centerPoint3DX="631.15" centerPoint3DY="403.1">
                   <matrix>
                     <Matrix tx="263.3" ty="236.3"/>
                   </matrix>
@@ -727,7 +737,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪枪管" name="枪管" centerPoint3DX="680.05" centerPoint3DY="526.2">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪枪管" name="枪管" centerPoint3DX="680.05" centerPoint3DY="526.2">
                   <matrix>
                     <Matrix tx="312.2" ty="359.4"/>
                   </matrix>
@@ -739,7 +749,7 @@
             </DOMFrame>
             <DOMFrame index="24" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪枪管" name="枪管" centerPoint3DX="631.15" centerPoint3DY="403.1">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪枪管" name="枪管" centerPoint3DX="631.15" centerPoint3DY="403.1">
                   <matrix>
                     <Matrix tx="263.3" ty="236.3"/>
                   </matrix>
@@ -762,7 +772,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪枪管" name="枪管" centerPoint3DX="631.15" centerPoint3DY="403.1">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪枪管" name="枪管" centerPoint3DX="631.15" centerPoint3DY="403.1">
                   <matrix>
                     <Matrix tx="263.3" ty="236.3"/>
                   </matrix>
@@ -774,7 +784,7 @@
             </DOMFrame>
             <DOMFrame index="40" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪枪管" name="枪管" centerPoint3DX="20.4" centerPoint3DY="383.65">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪枪管" name="枪管" centerPoint3DX="20.4" centerPoint3DY="383.65">
                   <matrix>
                     <Matrix tx="-347.45" ty="216.85"/>
                   </matrix>
@@ -801,7 +811,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪准星" name="准星" centerPoint3DX="594.4" centerPoint3DY="277.2">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪准星" name="准星" centerPoint3DX="594.4" centerPoint3DY="277.2">
                   <matrix>
                     <Matrix a="0" b="-1" c="1" d="0" tx="513.5" ty="315.4"/>
                   </matrix>
@@ -813,7 +823,7 @@
             </DOMFrame>
             <DOMFrame index="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪准星" name="准星" centerPoint3DX="380.8" centerPoint3DY="80.9">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪准星" name="准星" centerPoint3DX="380.8" centerPoint3DY="80.9">
                   <matrix>
                     <Matrix tx="342.6"/>
                   </matrix>
@@ -836,7 +846,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪准星" name="准星" centerPoint3DX="594.4" centerPoint3DY="277.2">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪准星" name="准星" centerPoint3DX="594.4" centerPoint3DY="277.2">
                   <matrix>
                     <Matrix a="0" b="-1" c="1" d="0" tx="513.5" ty="315.4"/>
                   </matrix>
@@ -859,7 +869,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪准星" name="准星" centerPoint3DX="386.65" centerPoint3DY="277.2">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪准星" name="准星" centerPoint3DX="386.65" centerPoint3DY="277.2">
                   <matrix>
                     <Matrix a="0" b="-1" c="1" d="0" tx="305.75" ty="315.4"/>
                   </matrix>
@@ -871,7 +881,7 @@
             </DOMFrame>
             <DOMFrame index="24" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪准星" name="准星" centerPoint3DX="594.4" centerPoint3DY="277.2">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪准星" name="准星" centerPoint3DX="594.4" centerPoint3DY="277.2">
                   <matrix>
                     <Matrix a="0" b="-1" c="1" d="0" tx="513.5" ty="315.4"/>
                   </matrix>
@@ -894,7 +904,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪准星" name="准星" centerPoint3DX="594.4" centerPoint3DY="277.2">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪准星" name="准星" centerPoint3DX="594.4" centerPoint3DY="277.2">
                   <matrix>
                     <Matrix a="0" b="-1" c="1" d="0" tx="513.5" ty="315.4"/>
                   </matrix>
@@ -906,7 +916,7 @@
             </DOMFrame>
             <DOMFrame index="40" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪准星" name="准星" centerPoint3DX="21.6" centerPoint3DY="146.95">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪准星" name="准星" centerPoint3DX="21.6" centerPoint3DY="146.95">
                   <matrix>
                     <Matrix tx="-16.6" ty="66.05"/>
                   </matrix>
