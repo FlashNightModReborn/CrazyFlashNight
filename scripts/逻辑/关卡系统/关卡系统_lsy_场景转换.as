@@ -209,7 +209,7 @@ _root.加载敌方人物 = function(地点X, 地点Y){
 					break;
 				}
 			}
-			var 防具列表 = ["头部装备","上装装备","下装装备","手部装备","脚部装备",null.null];
+			var 防具列表 = ["头部装备","上装装备","下装装备","手部装备","脚部装备",null,null];
 			var 对应防具 = 防具列表[random(7)];
 			if(对应防具 != null){
 				for(var j=0; j<jjcDropItem.length; j++){

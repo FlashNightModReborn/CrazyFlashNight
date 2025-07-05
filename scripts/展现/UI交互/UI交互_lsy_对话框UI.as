@@ -170,7 +170,7 @@ _root.对话框UI.初始化对话框界面 = function(对话框界面:MovieClip)
 }
 
 
-_root.初始化人物立绘 = function(){
-    this.stop();
-    this.gotoAndStop(_parent._parent.人物表情);
+_root.初始化人物立绘 = function(target){
+    target.stop();
+    target.gotoAndStop(target._parent._parent.人物表情);
 }

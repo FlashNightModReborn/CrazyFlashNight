@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="劫掠少女/基础部件/部件2/Symbol 387" itemID="6577faef-00001481" symbolType="graphic" lastModified="1715324193">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="劫掠少女/基础部件/部件2/Symbol 387" itemID="6577faef-00001481" symbolType="graphic" lastModified="1751703927">
   <timeline>
     <DOMTimeline name="Symbol 387">
       <layers>
@@ -6,16 +6,13 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="劫掠少女/基础部件/部件1/元件 40" centerPoint3DX="5.3" centerPoint3DY="14.05">
+                <DOMSymbolInstance libraryItemName="刀狙少女/基础元件/其余部件/部件1/掠夺少女右手" centerPoint3DX="5.3" centerPoint3DY="14.05">
                   <matrix>
                     <Matrix a="-0.819976806640625" d="0.834014892578125" tx="16.15" ty="3.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="21.85" y="24.7"/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter saturation="-100"/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
