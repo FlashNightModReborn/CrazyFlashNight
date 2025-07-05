@@ -162,7 +162,6 @@
       <dressup>枪-长枪-M134暴力版</dressup>
     </equipped>
     <lifecycle>
-      <description />
       <attr_0>
         <init>
           <initRoutines>M134暴力版初始化</initRoutines>
@@ -176,7 +175,15 @@
         <cycle>
           <cycleRoutines>M134暴力版周期</cycleRoutines>
         </cycle>
-      </attr_0>
+      </attr_0>      
+      <attr_1>
+        <init>
+          <initRoutines>M134初始化</initRoutines>
+        </init>
+        <cycle>
+          <cycleRoutines>M134周期</cycleRoutines>
+        </cycle>
+      </attr_1>
     </lifecycle>
   </item>
   <item>
@@ -3513,6 +3520,16 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <power>235</power>
       <impact>2</impact>
     </data>
+    <lifecycle>    
+      <attr_0>
+        <init>
+          <initRoutines>M134初始化</initRoutines>
+        </init>        
+        <cycle>
+          <cycleRoutines>M134周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
     <equipped>
       <dressup>枪-长枪-M134</dressup>
       <evasion>-30</evasion>
@@ -4150,6 +4167,16 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <power>300</power>
       <impact>2</impact>
     </data>
+    <lifecycle>    
+      <attr_0>
+        <init>
+          <initRoutines>M134初始化</initRoutines>
+        </init>        
+        <cycle>
+          <cycleRoutines>M134周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
     <equipped>
       <dressup>枪-长枪-M134暴力版</dressup>
     </equipped>
