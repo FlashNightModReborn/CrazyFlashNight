@@ -8,6 +8,7 @@ import flash.utils.getTimer;
  * EventDispatcherTest 类用于全面测试 EventDispatcher 的功能和性能。
  * 它包含多个测试方法，使用自定义的断言机制验证各个方法的正确性。
  * 通过运行所有测试方法，可以确保 EventDispatcher 的实现符合预期。
+ * 特别增强了对 subscribeSingle 方法的边界情况测试。
  */
 class org.flashNight.neur.Event.EventDispatcherTest {
     private var dispatcher:EventDispatcher; // 待测试的 EventDispatcher 实例
@@ -37,8 +38,27 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         this.testCallbackExceptionHandling();
         this.testMultipleDispatchers();
         this.testSubscribeOnceWithUnsubscribe();
-        this.testSubscribeSingle();            // 新增测试
-        this.testSubscribeSingleGlobal();     // 新增测试
+        this.testSubscribeSingle();            // 原有测试
+        this.testSubscribeSingleGlobal();     // 原有测试
+        
+        // === 新增的 subscribeSingle 边界情况测试 ===
+        this.testSubscribeSingleMultipleCalls();
+        this.testSubscribeSingleAfterNormalSubscribe();
+        this.testNormalSubscribeAfterSubscribeSingle();
+        this.testSubscribeSingleUnsubscribeInteraction();
+        this.testSubscribeSingleSubscribeOnceInteraction();
+        this.testSubscribeSingleMultipleEvents();
+        this.testSubscribeSingleDifferentScopes();
+        this.testSubscribeSingleDuringCallback();
+        this.testSubscribeSingleWithDestroy();
+        this.testSubscribeSingleOnDestroyedDispatcher();
+        this.testSubscribeSingleNullParameters();
+        this.testSubscribeSingleGlobalIsolation();
+        this.testSubscribeSingleMultipleDispatcherIsolation();
+        this.testSubscribeSingleRapidFireEvents();
+        this.testSubscribeSingleWithSameCallback();
+        this.testSubscribeSingleCallbackReuse();
+        
         this.testMemoryLeakDetection();
         this.testPerformance();
         this.reportResults();
@@ -599,6 +619,497 @@ class org.flashNight.neur.Event.EventDispatcherTest {
 
         // 清理
         this.dispatcher.unsubscribeGlobal(eventName, testCallback2);
+        this.cleanupDispatcher();
+    }
+
+    // === 新增的 subscribeSingle 边界情况测试 ===
+
+    /**
+     * 测试连续多次调用 subscribeSingle 的行为
+     */
+    private function testSubscribeSingleMultipleCalls():Void {
+        trace("--- 测试 subscribeSingle 连续多次调用 ---");
+        this.initializeDispatcher();
+
+        var eventName:String = "multipleCallsEvent";
+        var callCounts:Array = [0, 0, 0, 0]; // 4个回调的调用次数
+        var scope:Object = this;
+
+        var callback1:Function = function() { callCounts[0]++; };
+        var callback2:Function = function() { callCounts[1]++; };
+        var callback3:Function = function() { callCounts[2]++; };
+        var callback4:Function = function() { callCounts[3]++; };
+
+        // 连续调用 subscribeSingle
+        this.dispatcher.subscribeSingle(eventName, callback1, scope);
+        this.dispatcher.subscribeSingle(eventName, callback2, scope);
+        this.dispatcher.subscribeSingle(eventName, callback3, scope);
+        this.dispatcher.subscribeSingle(eventName, callback4, scope);
+
+        // 发布事件，只有最后一个回调应该被调用
+        this.dispatcher.publish(eventName);
+
+        this.assert(callCounts[0] === 0, "subscribeSingleMultipleCalls: First callback should not be called.");
+        this.assert(callCounts[1] === 0, "subscribeSingleMultipleCalls: Second callback should not be called.");
+        this.assert(callCounts[2] === 0, "subscribeSingleMultipleCalls: Third callback should not be called.");
+        this.assert(callCounts[3] === 1, "subscribeSingleMultipleCalls: Fourth callback should be called once.");
+
+        this.cleanupDispatcher();
+    }
+
+    /**
+     * 测试在 subscribeSingle 之后调用普通 subscribe 的行为
+     */
+    private function testSubscribeSingleAfterNormalSubscribe():Void {
+        trace("--- 测试 subscribeSingle 之后调用普通 subscribe ---");
+        this.initializeDispatcher();
+
+        var eventName:String = "singleAfterNormalEvent";
+        var callCount1:Number = 0;
+        var callCount2:Number = 0;
+        var scope:Object = this;
+
+        var callback1:Function = function() { callCount1++; };
+        var callback2:Function = function() { callCount2++; };
+
+        // 先用 subscribeSingle
+        this.dispatcher.subscribeSingle(eventName, callback1, scope);
+
+        // 再用普通 subscribe
+        this.dispatcher.subscribe(eventName, callback2, scope);
+
+        // 发布事件，两个回调都应该被调用
+        this.dispatcher.publish(eventName);
+
+        this.assert(callCount1 === 1, "subscribeSingleAfterNormal: Single callback should be called.");
+        this.assert(callCount2 === 1, "subscribeSingleAfterNormal: Normal callback should be called.");
+
+        this.cleanupDispatcher();
+    }
+
+    /**
+     * 测试在普通 subscribe 之后调用 subscribeSingle 的行为
+     */
+    private function testNormalSubscribeAfterSubscribeSingle():Void {
+        trace("--- 测试普通 subscribe 之后调用 subscribeSingle ---");
+        this.initializeDispatcher();
+
+        var eventName:String = "normalAfterSingleEvent";
+        var callCount1:Number = 0;
+        var callCount2:Number = 0;
+        var scope:Object = this;
+
+        var callback1:Function = function() { callCount1++; };
+        var callback2:Function = function() { callCount2++; };
+
+        // 先用普通 subscribe
+        this.dispatcher.subscribe(eventName, callback1, scope);
+
+        // 再用 subscribeSingle，应该替换掉普通订阅
+        this.dispatcher.subscribeSingle(eventName, callback2, scope);
+
+        // 发布事件，只有 subscribeSingle 的回调应该被调用
+        this.dispatcher.publish(eventName);
+
+        this.assert(callCount1 === 0, "normalAfterSubscribeSingle: Normal callback should be replaced.");
+        this.assert(callCount2 === 1, "normalAfterSubscribeSingle: Single callback should be called.");
+
+        this.cleanupDispatcher();
+    }
+
+    /**
+     * 测试 subscribeSingle 与 unsubscribe 的交互
+     */
+    private function testSubscribeSingleUnsubscribeInteraction():Void {
+        trace("--- 测试 subscribeSingle 与 unsubscribe 的交互 ---");
+        this.initializeDispatcher();
+
+        var eventName:String = "singleUnsubscribeEvent";
+        var callCount:Number = 0;
+        var scope:Object = this;
+
+        var callback:Function = function() { callCount++; };
+
+        // 用 subscribeSingle 订阅
+        this.dispatcher.subscribeSingle(eventName, callback, scope);
+
+        // 发布事件确认订阅生效
+        this.dispatcher.publish(eventName);
+        this.assert(callCount === 1, "subscribeSingleUnsubscribe: Callback should be called before unsubscribe.");
+
+        // 取消订阅
+        this.dispatcher.unsubscribe(eventName, callback);
+
+        // 再次发布事件，回调不应该被调用
+        this.dispatcher.publish(eventName);
+        this.assert(callCount === 1, "subscribeSingleUnsubscribe: Callback should not be called after unsubscribe.");
+
+        this.cleanupDispatcher();
+    }
+
+    /**
+     * 测试 subscribeSingle 与 subscribeOnce 的交互
+     */
+    private function testSubscribeSingleSubscribeOnceInteraction():Void {
+        trace("--- 测试 subscribeSingle 与 subscribeOnce 的交互 ---");
+        this.initializeDispatcher();
+
+        var eventName:String = "singleOnceEvent";
+        var callCount1:Number = 0;
+        var callCount2:Number = 0;
+        var scope:Object = this;
+
+        var callback1:Function = function() { callCount1++; };
+        var callback2:Function = function() { callCount2++; };
+
+        // 先用 subscribeOnce
+        this.dispatcher.subscribeOnce(eventName, callback1, scope);
+
+        // 再用 subscribeSingle
+        this.dispatcher.subscribeSingle(eventName, callback2, scope);
+
+        // 发布事件第一次，两个都应该执行，但 subscribeOnce 会自动取消
+        this.dispatcher.publish(eventName);
+        this.assert(callCount1 === 1, "subscribeSingleOnceInteraction: Once callback should be called first time.");
+        this.assert(callCount2 === 1, "subscribeSingleOnceInteraction: Single callback should be called first time.");
+
+        // 发布事件第二次，只有 subscribeSingle 的回调应该执行
+        this.dispatcher.publish(eventName);
+        this.assert(callCount1 === 1, "subscribeSingleOnceInteraction: Once callback should not be called second time.");
+        this.assert(callCount2 === 2, "subscribeSingleOnceInteraction: Single callback should be called second time.");
+
+        this.cleanupDispatcher();
+    }
+
+    /**
+     * 测试 subscribeSingle 对多个不同事件的处理
+     */
+    private function testSubscribeSingleMultipleEvents():Void {
+        trace("--- 测试 subscribeSingle 多个事件处理 ---");
+        this.initializeDispatcher();
+
+        var eventName1:String = "multiEvent1";
+        var eventName2:String = "multiEvent2";
+        var callCount1:Number = 0;
+        var callCount2:Number = 0;
+        var scope:Object = this;
+
+        var callback1:Function = function() { callCount1++; };
+        var callback2:Function = function() { callCount2++; };
+
+        // 对不同事件使用 subscribeSingle
+        this.dispatcher.subscribeSingle(eventName1, callback1, scope);
+        this.dispatcher.subscribeSingle(eventName2, callback2, scope);
+
+        // 发布不同事件，确保不互相影响
+        this.dispatcher.publish(eventName1);
+        this.assert(callCount1 === 1, "subscribeSingleMultipleEvents: First event callback should be called.");
+        this.assert(callCount2 === 0, "subscribeSingleMultipleEvents: Second event callback should not be called.");
+
+        this.dispatcher.publish(eventName2);
+        this.assert(callCount1 === 1, "subscribeSingleMultipleEvents: First event callback should not be called again.");
+        this.assert(callCount2 === 1, "subscribeSingleMultipleEvents: Second event callback should be called.");
+
+        this.cleanupDispatcher();
+    }
+
+    /**
+     * 测试 subscribeSingle 在不同作用域下的行为
+     */
+    private function testSubscribeSingleDifferentScopes():Void {
+        trace("--- 测试 subscribeSingle 不同作用域 ---");
+        this.initializeDispatcher();
+
+        var eventName:String = "singleScopeEvent";
+        var scope1:Object = { value: 0 };
+        var scope2:Object = { value: 0 };
+
+        var callback:Function = function() { this.value++; };
+
+        // 用不同作用域分别调用 subscribeSingle
+        this.dispatcher.subscribeSingle(eventName, callback, scope1);
+        this.dispatcher.subscribeSingle(eventName, callback, scope2);
+
+        // 发布事件，只有最后一个作用域应该接收到事件
+        this.dispatcher.publish(eventName);
+
+        this.assert(scope1.value === 0, "subscribeSingleDifferentScopes: First scope should not receive event.");
+        this.assert(scope2.value === 1, "subscribeSingleDifferentScopes: Second scope should receive event.");
+
+        this.cleanupDispatcher();
+    }
+
+    /**
+     * 测试在回调执行过程中调用 subscribeSingle
+     */
+    private function testSubscribeSingleDuringCallback():Void {
+        trace("--- 测试在回调执行中调用 subscribeSingle ---");
+        this.initializeDispatcher();
+
+        var eventName:String = "singleDuringCallbackEvent";
+        var callCount1:Number = 0;
+        var callCount2:Number = 0;
+        var scope:Object = this;
+
+        var callback2:Function = function() { callCount2++; };
+
+        var callback1:Function = function() {
+            callCount1++;
+            // 在回调执行期间调用 subscribeSingle
+            dispatcher.subscribeSingle(eventName, callback2, scope);
+        };
+
+        this.dispatcher.subscribeSingle(eventName, callback1, scope);
+
+        // 发布事件第一次
+        this.dispatcher.publish(eventName);
+        this.assert(callCount1 === 1, "subscribeSingleDuringCallback: First callback should be called.");
+        this.assert(callCount2 === 0, "subscribeSingleDuringCallback: Second callback should not be called during first publish.");
+
+        // 发布事件第二次
+        this.dispatcher.publish(eventName);
+        this.assert(callCount1 === 1, "subscribeSingleDuringCallback: First callback should not be called again.");
+        this.assert(callCount2 === 1, "subscribeSingleDuringCallback: Second callback should be called on second publish.");
+
+        this.cleanupDispatcher();
+    }
+
+    /**
+     * 测试 subscribeSingle 与 destroy 的交互
+     */
+    private function testSubscribeSingleWithDestroy():Void {
+        trace("--- 测试 subscribeSingle 与 destroy 的交互 ---");
+        this.initializeDispatcher();
+
+        var eventName:String = "singleDestroyEvent";
+        var callCount:Number = 0;
+        var scope:Object = this;
+
+        var callback:Function = function() { callCount++; };
+
+        // 使用 subscribeSingle 订阅
+        this.dispatcher.subscribeSingle(eventName, callback, scope);
+
+        // 发布事件确认订阅生效
+        this.dispatcher.publish(eventName);
+        this.assert(callCount === 1, "subscribeSingleWithDestroy: Callback should be called before destroy.");
+
+        // 销毁 dispatcher
+        this.dispatcher.destroy();
+
+        // 再次发布事件，回调不应该被调用
+        this.dispatcher.publish(eventName);
+        this.assert(callCount === 1, "subscribeSingleWithDestroy: Callback should not be called after destroy.");
+
+        this.cleanupDispatcher();
+    }
+
+    /**
+     * 测试在已销毁的 dispatcher 上调用 subscribeSingle
+     */
+    private function testSubscribeSingleOnDestroyedDispatcher():Void {
+        trace("--- 测试在已销毁的 dispatcher 上调用 subscribeSingle ---");
+        this.initializeDispatcher();
+
+        var eventName:String = "singleDestroyedEvent";
+        var callCount:Number = 0;
+        var scope:Object = this;
+
+        var callback:Function = function() { callCount++; };
+
+        // 先销毁 dispatcher
+        this.dispatcher.destroy();
+
+        // 在已销毁的 dispatcher 上调用 subscribeSingle，应该无效
+        this.dispatcher.subscribeSingle(eventName, callback, scope);
+
+        // 发布事件，回调不应该被调用
+        this.dispatcher.publish(eventName);
+        this.assert(callCount === 0, "subscribeSingleOnDestroyed: Callback should not be called on destroyed dispatcher.");
+
+        this.cleanupDispatcher();
+    }
+
+    /**
+     * 测试 subscribeSingle 传入 null 参数的处理
+     */
+    private function testSubscribeSingleNullParameters():Void {
+        trace("--- 测试 subscribeSingle null 参数处理 ---");
+        this.initializeDispatcher();
+
+        var eventName:String = "singleNullEvent";
+        var callCount:Number = 0;
+
+        var callback:Function = function() { callCount++; };
+
+        // 测试 null scope
+        try {
+            this.dispatcher.subscribeSingle(eventName, callback, null);
+            this.dispatcher.publish(eventName);
+            this.assert(callCount === 1, "subscribeSingleNullParams: Should handle null scope gracefully.");
+        } catch (error:Error) {
+            this.assert(false, "subscribeSingleNullParams: Should not throw error with null scope.");
+        }
+
+        this.cleanupDispatcher();
+    }
+
+    /**
+     * 测试 subscribeSingle 与全局事件的隔离性
+     */
+    private function testSubscribeSingleGlobalIsolation():Void {
+        trace("--- 测试 subscribeSingle 与全局事件的隔离性 ---");
+        this.initializeDispatcher();
+
+        var eventName:String = "isolationEvent";
+        var localCallCount:Number = 0;
+        var globalCallCount:Number = 0;
+        var scope:Object = this;
+
+        var localCallback:Function = function() { localCallCount++; };
+        var globalCallback:Function = function() { globalCallCount++; };
+
+        // 本地 subscribeSingle 和全局 subscribeGlobal 使用相同事件名
+        this.dispatcher.subscribeSingle(eventName, localCallback, scope);
+        this.dispatcher.subscribeGlobal(eventName, globalCallback, scope);
+
+        // 发布本地事件
+        this.dispatcher.publish(eventName);
+        this.assert(localCallCount === 1, "subscribeSingleGlobalIsolation: Local callback should be called.");
+        this.assert(globalCallCount === 0, "subscribeSingleGlobalIsolation: Global callback should not be called by local publish.");
+
+        // 发布全局事件
+        this.dispatcher.publishGlobal(eventName);
+        this.assert(localCallCount === 1, "subscribeSingleGlobalIsolation: Local callback should not be called by global publish.");
+        this.assert(globalCallCount === 1, "subscribeSingleGlobalIsolation: Global callback should be called by global publish.");
+
+        this.cleanupDispatcher();
+    }
+
+    /**
+     * 测试多个 dispatcher 实例之间的 subscribeSingle 隔离性
+     */
+    private function testSubscribeSingleMultipleDispatcherIsolation():Void {
+        trace("--- 测试多个 dispatcher 的 subscribeSingle 隔离性 ---");
+        this.initializeDispatcher();
+        var dispatcher2:EventDispatcher = new EventDispatcher();
+
+        var eventName:String = "multiDispatcherIsolationEvent";
+        var callCount1:Number = 0;
+        var callCount2:Number = 0;
+        var scope:Object = this;
+
+        var callback1:Function = function() { callCount1++; };
+        var callback2:Function = function() { callCount2++; };
+
+        // 在两个不同的 dispatcher 上使用 subscribeSingle
+        this.dispatcher.subscribeSingle(eventName, callback1, scope);
+        dispatcher2.subscribeSingle(eventName, callback2, scope);
+
+        // 各自发布事件，应该不互相影响
+        this.dispatcher.publish(eventName);
+        this.assert(callCount1 === 1, "subscribeSingleMultipleDispatcherIsolation: First dispatcher callback should be called.");
+        this.assert(callCount2 === 0, "subscribeSingleMultipleDispatcherIsolation: Second dispatcher callback should not be called.");
+
+        dispatcher2.publish(eventName);
+        this.assert(callCount1 === 1, "subscribeSingleMultipleDispatcherIsolation: First dispatcher callback should not be called again.");
+        this.assert(callCount2 === 1, "subscribeSingleMultipleDispatcherIsolation: Second dispatcher callback should be called.");
+
+        this.cleanupDispatcher();
+        dispatcher2.destroy();
+    }
+
+    /**
+     * 测试 subscribeSingle 在快速连续事件发布中的表现
+     */
+    private function testSubscribeSingleRapidFireEvents():Void {
+        trace("--- 测试 subscribeSingle 快速连续事件 ---");
+        this.initializeDispatcher();
+
+        var eventName:String = "rapidFireEvent";
+        var callCount:Number = 0;
+        var scope:Object = this;
+
+        var callback:Function = function() { callCount++; };
+
+        this.dispatcher.subscribeSingle(eventName, callback, scope);
+
+        // 快速连续发布事件
+        for (var i:Number = 0; i < 10; i++) {
+            this.dispatcher.publish(eventName);
+        }
+
+        this.assert(callCount === 10, "subscribeSingleRapidFire: Callback should be called for each event publish.");
+
+        this.cleanupDispatcher();
+    }
+
+    /**
+     * 测试 subscribeSingle 使用相同的回调函数
+     */
+    private function testSubscribeSingleWithSameCallback():Void {
+        trace("--- 测试 subscribeSingle 使用相同回调函数 ---");
+        this.initializeDispatcher();
+
+        var eventName1:String = "sameCallbackEvent1";
+        var eventName2:String = "sameCallbackEvent2";
+        var callCount:Number = 0;
+        var scope:Object = this;
+
+        var sharedCallback:Function = function() { callCount++; };
+
+        // 对不同事件使用相同的回调函数
+        this.dispatcher.subscribeSingle(eventName1, sharedCallback, scope);
+        this.dispatcher.subscribeSingle(eventName2, sharedCallback, scope);
+
+        // 分别发布事件
+        this.dispatcher.publish(eventName1);
+        this.assert(callCount === 1, "subscribeSingleSameCallback: First event should trigger callback.");
+
+        this.dispatcher.publish(eventName2);
+        this.assert(callCount === 2, "subscribeSingleSameCallback: Second event should trigger callback.");
+
+        this.cleanupDispatcher();
+    }
+
+    /**
+     * 测试 subscribeSingle 回调函数的重用和替换
+     */
+    private function testSubscribeSingleCallbackReuse():Void {
+        trace("--- 测试 subscribeSingle 回调函数重用和替换 ---");
+        this.initializeDispatcher();
+
+        var eventName:String = "callbackReuseEvent";
+        var callCount1:Number = 0;
+        var callCount2:Number = 0;
+        var scope:Object = this;
+
+        var callback1:Function = function() { callCount1++; };
+        var callback2:Function = function() { callCount2++; };
+
+        // 订阅 callback1
+        this.dispatcher.subscribeSingle(eventName, callback1, scope);
+
+        // 发布事件
+        this.dispatcher.publish(eventName);
+        this.assert(callCount1 === 1, "subscribeSingleCallbackReuse: First callback should be called.");
+
+        // 替换为 callback2
+        this.dispatcher.subscribeSingle(eventName, callback2, scope);
+
+        // 再次发布事件
+        this.dispatcher.publish(eventName);
+        this.assert(callCount1 === 1, "subscribeSingleCallbackReuse: First callback should not be called after replacement.");
+        this.assert(callCount2 === 1, "subscribeSingleCallbackReuse: Second callback should be called after replacement.");
+
+        // 再替换回 callback1
+        this.dispatcher.subscribeSingle(eventName, callback1, scope);
+
+        // 发布事件
+        this.dispatcher.publish(eventName);
+        this.assert(callCount1 === 2, "subscribeSingleCallbackReuse: First callback should be called again after re-subscription.");
+        this.assert(callCount2 === 1, "subscribeSingleCallbackReuse: Second callback should not be called after replacement.");
+
         this.cleanupDispatcher();
     }
 
