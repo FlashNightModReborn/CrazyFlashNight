@@ -220,15 +220,12 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         // 调用持续射击核心逻辑
         if (ShootCore.continuousShoot(core, attackMode, interval, params)) {
             // 添加持续射击任务到帧计时器
-            core[params.taskName] = root.帧计时器.添加生命周期任务(
-                core,
-                "开始射击",
-                ShootCore.continuousShoot, // 直接引用静态方法
-                interval,
-                core,
-                attackMode,
-                interval,
-                params
+            core[params.taskName] = root.帧计时器.taskManager.addLifecycleTask(
+                core, 
+                "开始射击", 
+                ShootCore.continuousShoot, 
+                interval, 
+                [core, attackMode, interval, params]  // 额外参数打包成数组
             );
 
             // 若射击间隔较长，添加后摇解除任务

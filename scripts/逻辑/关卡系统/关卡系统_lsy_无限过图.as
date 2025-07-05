@@ -308,7 +308,14 @@ _root.无限过图进攻 = function(){
 	}
 
 	_root.gameworld.dispatcher.publish("WaveStarted", 当前波次);
-	_root.生存模式OBJ.波次时钟 = _root.帧计时器.添加生命周期任务(游戏世界, "生存模式计时", _root.生存模式计时, 1000);
+
+	_root.生存模式OBJ.波次时钟 = _root.帧计时器.taskManager.addLifecycleTask(
+		游戏世界,
+		"生存模式计时",
+		_root.生存模式计时,
+		1000,
+		[]
+	);
 };
 
 _root.rogue模式进攻 = function(){
@@ -418,7 +425,14 @@ _root.rogue模式进攻 = function(){
 	_root.生存模式OBJ.时钟[当前波次].push(_loc3_);
 
 	_root.gameworld.dispatcher.publish("WaveStarted", 当前波次);
-	_root.生存模式OBJ.波次时钟 = _root.帧计时器.添加生命周期任务(游戏世界, "生存模式计时", _root.生存模式计时, 1000);
+
+	_root.生存模式OBJ.波次时钟 = _root.帧计时器.taskManager.addLifecycleTask(
+		游戏世界,
+		"生存模式计时",
+		_root.生存模式计时,
+		1000,
+		[]
+	);
 };
 
 _root.生存模式计时 = function(){

@@ -306,7 +306,13 @@ _root.敌人函数.击飞浮空 = function(){
 	if(this._y >= this.Z轴坐标) this._y = this.Z轴坐标 - 1;
 	if(this.垂直速度 >= this.起跳速度) this.垂直速度 = this.起跳速度;
 
-	this.flyID = _root.帧计时器.添加生命周期任务(this, "击飞浮空", _root.敌人函数.fly, 1, this);
+	this.flyID = _root.帧计时器.taskManager.addLifecycleTask(
+        this,
+        "击飞浮空",
+        _root.敌人函数.fly,
+        1,
+        [this]
+    );
 }
 
 _root.敌人函数.击飞倒地 = function(){

@@ -117,10 +117,16 @@
                 var cycleFunc = _root.装备生命周期函数[cycle.cycleRoutines];    
                 if(cycleFunc)
                 {
-                    var 任务ID = _root.帧计时器.添加生命周期任务(this, 标签名, cycleFunc, 0, 反射对象, cycle.cycleParam || {});
+                    var 任务ID = _root.帧计时器.taskManager.addLifecycleTask(
+                        this,
+                        标签名,
+                        cycleFunc,
+                        0,
+                        [反射对象, cycle.cycleParam || {}]
+                    );
                     反射对象.生命周期任务ID = 任务ID;
                     var 卸载对象 = {动作:function(额外参数){
-                                         _root.帧计时器.移除任务(额外参数.任务ID);
+                                         _root.帧计时器.taskManager.removeTask(额外参数.任务ID);
                                          //_root.服务器.发布服务器消息("卸载 " + cycle.cycleRoutines);
                                    },
                                    额外参数:{任务ID:任务ID}};

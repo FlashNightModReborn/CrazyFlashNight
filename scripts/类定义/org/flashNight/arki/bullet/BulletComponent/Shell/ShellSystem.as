@@ -167,7 +167,13 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
         弹壳.Z轴坐标 = 弹壳._y + 100;
         弹壳.swapDepths(弹壳.Z轴坐标);
 
-        弹壳.任务ID = _root.帧计时器.添加生命周期任务(弹壳, "运动", shellPhysics, 33, 弹壳);
+        弹壳.任务ID = _root.帧计时器.taskManager.addLifecycleTask(
+            弹壳,
+            "运动",
+            shellPhysics,
+            33,
+            [弹壳]
+        );
     }
 
     /**
