@@ -13,7 +13,7 @@
           <DOMFolderItem name="lochan" itemID="66e1bc59-00000cf1"/>
           <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
           <DOMFolderItem name="sound" itemID="6652e52e-00000bd5"/>
-          <DOMFolderItem name="sprite" itemID="65976153-00000ea6"/>
+          <DOMFolderItem name="sprite" itemID="65976153-00000ea6" isExpanded="true"/>
           <DOMFolderItem name="sprite/悬浮UI" itemID="6652e52e-00000bd7"/>
           <DOMFolderItem name="sprite/主角" itemID="659bba25-000014b4"/>
           <DOMFolderItem name="sprite/主角/shape" itemID="65a6bb2a-00001374"/>
@@ -52,15 +52,6 @@
           <DOMFolderItem name="冷兵/钝器" itemID="67331ffe-00000752"/>
           <DOMFolderItem name="冷兵/钝器/棒球棒" itemID="67331ffe-00000753"/>
           <DOMFolderItem name="无AS链接" itemID="6690f257-00002761"/>
-          <DOMFolderItem name="新地图素材" itemID="65b646ba-00003b1d"/>
-          <DOMFolderItem name="新地图素材/假小子机枪手" itemID="65b640e5-00003329"/>
-          <DOMFolderItem name="新地图素材/居合" itemID="65957bd7-00000748"/>
-          <DOMFolderItem name="新地图素材/女仆白" itemID="6577dc70-000004fb"/>
-          <DOMFolderItem name="新地图素材/女仆黑" itemID="65b649c3-00003bb4"/>
-          <DOMFolderItem name="新地图素材/女仆黑/步枪" itemID="6577c619-00000709"/>
-          <DOMFolderItem name="新地图素材/女仆黑/步枪/狙击步枪" itemID="6577c619-0000070a"/>
-          <DOMFolderItem name="新地图素材/女仆黑/步枪/狙击步枪/Revision 4" itemID="6577c619-0000070b"/>
-          <DOMFolderItem name="新地图素材/女仆黑/弹药" itemID="6577dc9d-00000575"/>
           <DOMFolderItem name="杂项" itemID="665b5cb2-00001fa1"/>
      </folders>
      <media>
@@ -77,7 +68,7 @@
           <Include href="AK74M标尺.xml" loadImmediate="false" itemID="67076aaf-00000407" lastModified="1728539331"/>
           <Include href="AK74M标尺锁定机构.xml" loadImmediate="false" itemID="670765b3-000003c4" lastModified="1728538036"/>
           <Include href="AK74快慢机.xml" loadImmediate="false" itemID="66fe4dbe-00000442" lastModified="1727942141"/>
-          <Include href="artist素材/artist.xml" loadImmediate="false" itemID="67cd7c36-00000ab6" lastModified="1741519926"/>
+          <Include href="artist素材/artist.xml" loadImmediate="false" itemID="67cd7c36-00000ab6" lastModified="1751709370"/>
           <Include href="artist素材/artist头.xml" loadImmediate="false" itemID="67ca7cf3-00000302" lastModified="1741520072"/>
           <Include href="artist素材/Symbol 1112.xml" loadImmediate="false" itemID="66631a4d-0000183d" lastModified="1741519975"/>
           <Include href="artist素材/Symbol 1118.xml" loadImmediate="false" itemID="66631a4d-00001840" lastModified="1741519976"/>
@@ -196,7 +187,7 @@
           <Include href="mask.xml" loadImmediate="false" itemID="6865f50a-00000dda" lastModified="1751512345"/>
           <Include href="NPCAK74M.xml" loadImmediate="false" itemID="6842337c-00001118" lastModified="1749169020"/>
           <Include href="NPC士兵头.xml" loadImmediate="false" itemID="68423429-00001123" lastModified="1749169193"/>
-          <Include href="NPC头像框.xml" itemID="67d3bcf4-000015e7" lastModified="1751479479"/>
+          <Include href="NPC头像框.xml" itemID="67d3bcf4-000015e7" lastModified="1751709387"/>
           <Include href="PROPHETA.xml" loadImmediate="false" itemID="6805674b-00000a0d" lastModified="1745184587"/>
           <Include href="PROPHETB.xml" loadImmediate="false" itemID="68056800-00000a44" lastModified="1745184830"/>
           <Include href="shape/bat脸.xml" itemIcon="1" loadImmediate="false" itemID="67331ff8-0000074a" lastModified="1731403768"/>
@@ -220,7 +211,6 @@
           <Include href="shape/Symbol 1100.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000862" lastModified="1704196122"/>
           <Include href="shape/Symbol 1101.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000863" lastModified="1704196122"/>
           <Include href="shape/Symbol 1102.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000864" lastModified="1704196122"/>
-          <Include href="shape/Symbol 1137.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000087e" lastModified="1704704797"/>
           <Include href="shape/Symbol 1171.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000896" lastModified="1704196122"/>
           <Include href="shape/Symbol 1175.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000089a" lastModified="1704196122"/>
           <Include href="shape/Symbol 1187.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000008a4" lastModified="1704196122"/>
@@ -356,19 +346,15 @@
           <Include href="shape/Symbol 1623.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009a9" lastModified="1706113051"/>
           <Include href="shape/Symbol 1624.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009aa" lastModified="1704196122"/>
           <Include href="shape/Symbol 1625.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ab" lastModified="1704196122"/>
-          <Include href="shape/Symbol 1628.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ae" lastModified="1704196122"/>
           <Include href="shape/Symbol 1629.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009af" lastModified="1704196122"/>
-          <Include href="shape/Symbol 2640.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c49" lastModified="1741282797"/>
           <Include href="shape/Symbol 2677.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c82" lastModified="1704196122"/>
           <Include href="shape/Symbol 2678.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c84" lastModified="1704196122"/>
           <Include href="shape/Symbol 2679.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c86" lastModified="1704196122"/>
           <Include href="shape/Symbol 2714.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cd2" lastModified="1717600492"/>
-          <Include href="shape/Symbol 35471.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cb6" lastModified="1704196122"/>
           <Include href="shape/Symbol 35472.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cb9" lastModified="1704196122"/>
           <Include href="shape/Symbol 35473.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cbb" lastModified="1704196122"/>
           <Include href="shape/Symbol 35475.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cc1" lastModified="1704196122"/>
           <Include href="shape/Symbol 35477.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cc7" lastModified="1704196122"/>
-          <Include href="shape/Symbol 35501.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cf6" lastModified="1704196122"/>
           <Include href="shape/Symbol 35519.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d19" lastModified="1704196122"/>
           <Include href="shape/Symbol 35520.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d1b" lastModified="1704196122"/>
           <Include href="shape/Symbol 35521.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d1d" lastModified="1704196122"/>
@@ -403,18 +389,13 @@
           <Include href="shape/Symbol 35550.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d64" lastModified="1704196122"/>
           <Include href="shape/Symbol 35551.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d66" lastModified="1704196122"/>
           <Include href="shape/爱国青年.xml" itemIcon="1" loadImmediate="false" itemID="65f80264-00000b6d" lastModified="1712045693"/>
+          <Include href="shape/学生妹旧.xml" itemIcon="1" loadImmediate="false" itemID="6868f6bf-00000641" lastModified="1751709375"/>
           <Include href="soldier.xml" loadImmediate="false" itemID="68423840-0000159c" lastModified="1749173472"/>
           <Include href="sprite/Andy立绘原版.xml" loadImmediate="false" itemID="686574a1-000018ae" lastModified="1751479457"/>
           <Include href="sprite/Symbol 1103.xml" loadImmediate="false" itemID="6597607e-00000865" lastModified="1704196122"/>
           <Include href="sprite/Symbol 1232.xml" loadImmediate="false" itemID="6597607e-000008c6" lastModified="1704196122"/>
           <Include href="sprite/Symbol 1255.xml" loadImmediate="false" itemID="6597607e-000008db" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 35474.xml" loadImmediate="false" itemID="6597607e-00000cbe" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 35476.xml" loadImmediate="false" itemID="6597607e-00000cc4" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 35478.xml" loadImmediate="false" itemID="6597607e-00000cca" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 35482.xml" loadImmediate="false" itemID="6597607e-00000cd3" lastModified="1704196122"/>
           <Include href="sprite/Symbol 35498.xml" loadImmediate="false" itemID="6597607e-00000cef" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 35499.xml" loadImmediate="false" itemID="6597607e-00000cf1" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 35500.xml" loadImmediate="false" itemID="6597607e-00000cf4" lastModified="1704196122"/>
           <Include href="sprite/Symbol 51633.xml" loadImmediate="false" itemID="6597607e-00000b75" lastModified="1704196122"/>
           <Include href="sprite/Symbol 51639.xml" loadImmediate="false" itemID="6597607e-00000b7c" lastModified="1704196122"/>
           <Include href="sprite/Symbol 51643.xml" loadImmediate="false" itemID="6597607e-00000b82" lastModified="1704196122"/>
@@ -833,7 +814,7 @@
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
           <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1751513327"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1751702676"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1751709332"/>
           <Include href="发型/Symbol 799.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000814" lastModified="1710653981"/>
           <Include href="歌留多/歌留多胯.xml" loadImmediate="false" itemID="67096725-00000045" lastModified="1728669954"/>
           <Include href="歌留多/歌留多身体.xml" loadImmediate="false" itemID="67095275-0000000f" lastModified="1728665563"/>
@@ -896,7 +877,6 @@
           <Include href="拖拽动画.xml" loadImmediate="false" itemID="67aca330-0000212d" lastModified="1739367829"/>
           <Include href="拖拽动画2.xml" loadImmediate="false" itemID="67aca57c-0000214d" lastModified="1739367882"/>
           <Include href="外部立绘层.xml" loadImmediate="false" itemID="6865f8ba-00000dde" lastModified="1751513278"/>
-          <Include href="文天.xml" itemIcon="1" loadImmediate="false" itemID="65c1c8c7-00000c83" lastModified="1716709924"/>
           <Include href="无AS链接/Symbol 8.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005ba" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 92.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005fd" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 245.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000067c" lastModified="1720533000"/>
@@ -908,57 +888,6 @@
           <Include href="无AS链接/Symbol 1209.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000088f" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 1211.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000891" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 1219.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000896" lastModified="1720533000"/>
-          <Include href="新地图素材/Symbol 199.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-0000041c" lastModified="1704296942"/>
-          <Include href="新地图素材/Symbol 200.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-0000041d" lastModified="1704296942"/>
-          <Include href="新地图素材/Symbol 203.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-00000420" lastModified="1704347212"/>
-          <Include href="新地图素材/Symbol 205.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-00000422" lastModified="1704296942"/>
-          <Include href="新地图素材/Symbol 206.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-00000423" lastModified="1704347548"/>
-          <Include href="新地图素材/Symbol 207.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-00000424" lastModified="1704347564"/>
-          <Include href="新地图素材/Symbol 210.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-00000427" lastModified="1704346604"/>
-          <Include href="新地图素材/Tomboy肖像.xml" loadImmediate="false" itemID="65bbe5ca-00002226" lastModified="1706812874"/>
-          <Include href="新地图素材/白女仆头.xml" loadImmediate="false" itemID="657e6260-000005f5" lastModified="1702781536"/>
-          <Include href="新地图素材/防弹衣.xml" itemIcon="1" loadImmediate="false" itemID="65941827-000001c1" lastModified="1704347090"/>
-          <Include href="新地图素材/假小子机枪手/Symbol 2.xml" loadImmediate="false" itemID="65923d7a-00000a76" lastModified="1704076735"/>
-          <Include href="新地图素材/假小子机枪手/Symbol 1543.xml" loadImmediate="false" itemID="657c7650-00000016" lastModified="1702663645"/>
-          <Include href="新地图素材/假小子机枪手/Symbol 1547.xml" loadImmediate="false" itemID="657c7650-00000018" lastModified="1702726558"/>
-          <Include href="新地图素材/假小子机枪手/Symbol 1559.xml" loadImmediate="false" itemID="657c7650-00000022" lastModified="1702743946"/>
-          <Include href="新地图素材/假小子机枪手/Symbol 1562.xml" loadImmediate="false" itemID="657c7650-00000027" lastModified="1702709161"/>
-          <Include href="新地图素材/假小子机枪手/Symbol 1566.xml" loadImmediate="false" itemID="657c7650-0000002b" lastModified="1751511992"/>
-          <Include href="新地图素材/假小子机枪手/Symbol 1568.xml" loadImmediate="false" itemID="657c7650-0000002d" lastModified="1702781516"/>
-          <Include href="新地图素材/假小子机枪手/假小子头.xml" loadImmediate="false" itemID="657e6224-000005e0" lastModified="1751511981"/>
-          <Include href="新地图素材/假小子机枪手/头.xml" loadImmediate="false" itemID="657c62e3-000001b3" lastModified="1751511985"/>
-          <Include href="新地图素材/假小子机枪手/元件 1.xml" loadImmediate="false" itemID="657c7a33-0000014a" lastModified="1751511989"/>
-          <Include href="新地图素材/狙击女仆黑肖像.xml" loadImmediate="false" itemID="65bbe659-00003493" lastModified="1706813017"/>
-          <Include href="新地图素材/居合/裙子.xml" itemIcon="1" loadImmediate="false" itemID="6593cfcc-00000316" lastModified="1706448986"/>
-          <Include href="新地图素材/居合/上臂.xml" itemIcon="1" loadImmediate="false" itemID="6593cfaa-00000311" lastModified="1706448986"/>
-          <Include href="新地图素材/居合/身体.xml" itemIcon="1" loadImmediate="false" itemID="6593cf9d-00000310" lastModified="1706448986"/>
-          <Include href="新地图素材/居合/头.xml" loadImmediate="false" itemID="6593cf93-00000308" lastModified="1704307041"/>
-          <Include href="新地图素材/居合/下臂.xml" itemIcon="1" loadImmediate="false" itemID="6593cfb5-00000312" lastModified="1706448986"/>
-          <Include href="新地图素材/居合/元件 1.xml" loadImmediate="false" itemID="65b64063-00002d11" lastModified="1706442865"/>
-          <Include href="新地图素材/居合/元件 14.xml" itemIcon="1" loadImmediate="false" itemID="6593a25c-000005ec" lastModified="1704249923"/>
-          <Include href="新地图素材/居合/元件 15.xml" itemIcon="1" loadImmediate="false" itemID="6593a26a-000005f2" lastModified="1742031566"/>
-          <Include href="新地图素材/女仆白/Symbol 199.xml" itemIcon="1" loadImmediate="false" itemID="65b6458c-00003ae0" lastModified="1701920668"/>
-          <Include href="新地图素材/女仆白/Symbol 200.xml" itemIcon="1" loadImmediate="false" itemID="65b6458b-00003ad8" lastModified="1706811975"/>
-          <Include href="新地图素材/女仆白/Symbol 205.xml" itemIcon="1" loadImmediate="false" itemID="65b6458b-00003add" lastModified="1706812024"/>
-          <Include href="新地图素材/女仆白/Symbol 206.xml" itemIcon="1" loadImmediate="false" itemID="65b6458b-00003ade" lastModified="1702781561"/>
-          <Include href="新地图素材/女仆白/Symbol 207.xml" itemIcon="1" loadImmediate="false" itemID="65b6458c-00003adf" lastModified="1701920661"/>
-          <Include href="新地图素材/女仆白/Symbol 210.xml" itemIcon="1" loadImmediate="false" itemID="65b6458c-00003ae5" lastModified="1701921913"/>
-          <Include href="新地图素材/女仆白/元件 1.xml" loadImmediate="false" itemID="656fedb2-00000017" lastModified="1701965774"/>
-          <Include href="新地图素材/女仆黑/Symbol 101.xml" itemIcon="1" loadImmediate="false" itemID="6577c24d-00000023" lastModified="1704089604"/>
-          <Include href="新地图素材/女仆黑/Symbol 106.xml" itemIcon="1" loadImmediate="false" itemID="6577c24d-00000028" lastModified="1706812117"/>
-          <Include href="新地图素材/女仆黑/Symbol 107.xml" itemIcon="1" loadImmediate="false" itemID="6577c24d-00000029" lastModified="1702974368"/>
-          <Include href="新地图素材/女仆黑/Symbol 114.xml" loadImmediate="false" itemID="6577c24d-0000002d" lastModified="1704089574"/>
-          <Include href="新地图素材/女仆黑/Symbol 115.xml" itemIcon="1" loadImmediate="false" itemID="6577c24d-0000002e" lastModified="1702349815"/>
-          <Include href="新地图素材/女仆黑/Timeline 1.xml" loadImmediate="false" itemID="6577c2b6-000004da"/>
-          <Include href="新地图素材/女仆黑/步枪/狙击步枪/Revision 4/Revision 4枪身.xml" loadImmediate="false" itemID="56a19f00-00000121" lastModified="1456228925"/>
-          <Include href="新地图素材/女仆黑/步枪/狙击步枪/Revision 4/Revision 4四联装.50狙击步枪.xml" loadImmediate="false" itemID="56a19f45-00000133" lastModified="1702354793"/>
-          <Include href="新地图素材/女仆黑/步枪/狙击步枪/Revision 4/Revision 4望远式瞄准镜.xml" loadImmediate="false" itemID="56a22483-000003e1" lastModified="1458377066"/>
-          <Include href="新地图素材/女仆黑/步枪/狙击步枪/Revision 4/Revision 4握把.xml" loadImmediate="false" itemID="56a19f05-00000126" lastModified="1453468880"/>
-          <Include href="新地图素材/女仆黑/弹药/12.7×99mm(.50 BMG).xml" loadImmediate="false" itemID="56a21c60-00000083" lastModified="1453464672"/>
-          <Include href="新地图素材/女仆黑/元件 1.xml" loadImmediate="false" itemID="6577c61e-00000717" lastModified="1702353874"/>
-          <Include href="新地图素材/武装jk肖像.xml" loadImmediate="false" itemID="65bbe55d-00001871" lastModified="1706813310"/>
-          <Include href="新地图素材/腰带.xml" itemIcon="1" loadImmediate="false" itemID="6594182f-000001c5" lastModified="1704204501"/>
-          <Include href="新地图素材/医疗女仆白肖像.xml" loadImmediate="false" itemID="65bbe61b-00002b67" lastModified="1706812955"/>
           <Include href="一看就是迪吧手的东西.xml" loadImmediate="false" itemID="67683b09-000001bd" lastModified="1734884105"/>
           <Include href="圆柱.xml" loadImmediate="false" itemID="6780d65b-00000160" lastModified="1736496731"/>
           <Include href="杂项/细铁.xml" loadImmediate="false" itemID="666080e1-000004dc" lastModified="1717237580"/>
