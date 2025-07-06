@@ -50,6 +50,7 @@
           <DOMFolderItem name="Accessories" itemID="67f69611-0000255d"/>
           <DOMFolderItem name="Accessories/Others" itemID="67f69611-0000255e"/>
           <DOMFolderItem name="Accessories/Others/Images" itemID="67f69611-0000255f"/>
+          <DOMFolderItem name="NEGEV" itemID="686a8adf-000023e0"/>
           <DOMFolderItem name="Pins" itemID="67f69611-00002561"/>
           <DOMFolderItem name="shape" itemID="6751eae0-00001373"/>
           <DOMFolderItem name="待整理防具相关汇总" itemID="6690f7ce-000036b2"/>
@@ -86,14 +87,14 @@
           <DOMFolderItem name="主角身体元件副本" itemID="67bc22a2-00001315"/>
      </folders>
      <fonts>
-          <DOMFontItem name="Font 4557" itemID="668e7c19-000001df" font="SimHei" size="0" id="4557" embeddedCharacters="ACEHIMPR"/>
-          <DOMFontItem name="Font 5441" itemID="668e7c19-000001dd" font="ArialMT" size="0" id="5441" embeddedCharacters=" -.01235:ACEGHIMNRSacdeilmnortwxz"/>
-          <DOMFontItem name="Font 5437" itemID="668e7c19-000001db" font="Arial-BoldMT" size="0" id="5437" embeddedCharacters=" ./01348ACDEGIKLMNOPRSTUYi"/>
-          <DOMFontItem name="Font 5407" itemID="668e7c19-000001d9" font="Verdana-Bold" size="0" id="5407" embeddedCharacters="-ACFNRS"/>
-          <DOMFontItem name="Font 621" itemID="668e7c19-000001d7" font="Masque" size="0" id="621" embeddedCharacters=" !ACEGLRST"/>
-          <DOMFontItem name="Font 323" itemID="668e7c19-000001d5" font="SimSun" size="0" id="323" embeddedCharacters="127AMPX上中之书仔令份会伴作信僵公关兵军凤击制剂前剑功加动升厂同命品囊团园图地基堂士声备套子字定密小尘尸层属工弹强彻德徽息情战手技抗报拼控提摇攻效文新无明普最未本果枪标样械气浮液滚火灰炎炸烟焰爆片牛物特生画白的盘知硬碎示秘移空站章箭精素级纸线翅胶能致花药虎血装证过近迹通里金铁铳链镜阀雷雾震项风飙飞黑鼠龙（）"/>
-          <DOMFontItem name="Font 259" itemID="668e7c19-000001d3" font="MicrosoftYaHei" size="0" id="259" embeddedCharacters=",.INabcdefghijklmnoprstuvwy力援支火"/>
           <DOMFontItem name="Font 28" itemID="668e7c19-000001d1" font="MicrosoftYaHei" size="0" id="28" embeddedCharacters=",.INabcdefghijklmnoprstuvwy力援支火"/>
+          <DOMFontItem name="Font 259" itemID="668e7c19-000001d3" font="MicrosoftYaHei" size="0" id="259" embeddedCharacters=",.INabcdefghijklmnoprstuvwy力援支火"/>
+          <DOMFontItem name="Font 323" itemID="668e7c19-000001d5" font="SimSun" size="0" id="323" embeddedCharacters="127AMPX上中之书仔令份会伴作信僵公关兵军凤击制剂前剑功加动升厂同命品囊团园图地基堂士声备套子字定密小尘尸层属工弹强彻德徽息情战手技抗报拼控提摇攻效文新无明普最未本果枪标样械气浮液滚火灰炎炸烟焰爆片牛物特生画白的盘知硬碎示秘移空站章箭精素级纸线翅胶能致花药虎血装证过近迹通里金铁铳链镜阀雷雾震项风飙飞黑鼠龙（）"/>
+          <DOMFontItem name="Font 621" itemID="668e7c19-000001d7" font="Masque" size="0" id="621" embeddedCharacters=" !ACEGLRST"/>
+          <DOMFontItem name="Font 5407" itemID="668e7c19-000001d9" font="Verdana-Bold" size="0" id="5407" embeddedCharacters="-ACFNRS"/>
+          <DOMFontItem name="Font 5437" itemID="668e7c19-000001db" font="Arial-BoldMT" size="0" id="5437" embeddedCharacters=" ./01348ACDEGIKLMNOPRSTUYi"/>
+          <DOMFontItem name="Font 5441" itemID="668e7c19-000001dd" font="ArialMT" size="0" id="5441" embeddedCharacters=" -.01235:ACEGHIMNRSacdeilmnortwxz"/>
+          <DOMFontItem name="Font 4557" itemID="668e7c19-000001df" font="SimHei" size="0" id="4557" embeddedCharacters="ACEHIMPR"/>
      </fonts>
      <media>
           <DOMBitmapItem name="3.位图相关/bitmap2934.png" itemID="678d1911-00000d2f" sourceExternalFilepath="Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap2934.png" sourceLastImported="1737536156" externalFileCRC32="1586711525" externalFileSize="4706" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap2934.png" bitmapDataHRef="M 118 1720533000.dat" frameRight="640" frameBottom="1020"/>
@@ -770,7 +771,7 @@
           <Include href="1.枪械相关/长枪/枪-长枪-M4A1战术版.xml" itemID="66b46759-000011e5" lastModified="1749018648"/>
           <Include href="1.枪械相关/长枪/枪-长枪-M134.xml" itemID="67413d4b-00002941" lastModified="1751794654"/>
           <Include href="1.枪械相关/长枪/枪-长枪-M202火箭发射器.xml" itemID="66b46765-000011eb" lastModified="1723104286"/>
-          <Include href="1.枪械相关/长枪/枪-长枪-M249.xml" itemID="66b46762-000011ea" lastModified="1751795718"/>
+          <Include href="1.枪械相关/长枪/枪-长枪-M249.xml" itemID="66b46762-000011ea" lastModified="1751816106"/>
           <Include href="1.枪械相关/长枪/枪-长枪-MG42.xml" itemID="66b46755-000011e4" lastModified="1751795730"/>
           <Include href="1.枪械相关/长枪/枪-长枪-PKM机枪.xml" itemID="66b46751-000011e3" lastModified="1751796306"/>
           <Include href="1.枪械相关/长枪/枪-长枪-Sniper.xml" itemID="66b4674e-000011e2" lastModified="1723108413"/>
@@ -794,7 +795,7 @@
           <Include href="1.枪械相关/长枪/图标-M4A1改.xml" itemID="66b466dc-000011d0" lastModified="1723098844"/>
           <Include href="1.枪械相关/长枪/图标-M4A1战术版.xml" itemID="66b466d5-000011cf" lastModified="1723098837"/>
           <Include href="1.枪械相关/长枪/图标-M202火箭发射器.xml" itemID="66b466eb-000011d4" lastModified="1723098859"/>
-          <Include href="1.枪械相关/长枪/图标-M249.xml" itemID="66b466e7-000011d3" lastModified="1723098855"/>
+          <Include href="1.枪械相关/长枪/图标-M249.xml" itemID="66b466e7-000011d3" lastModified="1751811807"/>
           <Include href="1.枪械相关/长枪/图标-MG42.xml" itemID="66b466d2-000011ce" lastModified="1723098834"/>
           <Include href="1.枪械相关/长枪/图标-PKM机枪.xml" itemID="66b466ce-000011cd" lastModified="1723098830"/>
           <Include href="1.枪械相关/长枪/图标-Sniper.xml" itemID="66b466cb-000011cc" lastModified="1723098827"/>
@@ -856,6 +857,10 @@
           <Include href="AR消焰器1.xml" loadImmediate="false" itemID="5f004126-00000420" lastModified="1593852198"/>
           <Include href="M4A1 stadard.xml" loadImmediate="false" itemID="5f069aed-00000e0e" lastModified="1594439047"/>
           <Include href="M4A1下部分.xml" loadImmediate="false" itemID="5f01acad-00000e2d" lastModified="1727674596"/>
+          <Include href="NEGEV/M249弹链动画.xml" loadImmediate="false" itemID="686a8b06-000023e7" lastModified="1751812903"/>
+          <Include href="NEGEV/M249子弹1.xml" loadImmediate="false" itemID="686a8b08-000023e9" lastModified="1751812872"/>
+          <Include href="NEGEV/M249子弹2.xml" loadImmediate="false" itemID="686a8b0e-000023ec" lastModified="1751812878"/>
+          <Include href="NEGEV/M249子弹3.xml" loadImmediate="false" itemID="686a8b0c-000023ea" lastModified="1751812876"/>
           <Include href="Pins/Pin3.xml" itemIcon="1" loadImmediate="false" itemID="609349e2-00001546" lastModified="1620265442"/>
           <Include href="real mini uzi2.xml" loadImmediate="false" itemID="67f68ff4-000023ff" lastModified="1744212048"/>
           <Include href="shape/Symbol 860.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000ba4" lastModified="1722444119"/>
@@ -2701,6 +2706,25 @@
                     <SolidSwatchItem color="#342A2B" saturation="24" brightness="45"/>
                     <SolidSwatchItem color="#A88685" hue="1" saturation="40" brightness="142"/>
                     <SolidSwatchItem color="#A88889" hue="239" saturation="37" brightness="143"/>
+                    <SolidSwatchItem color="#A8AFB1" hue="129" saturation="14" brightness="163"/>
+                    <SolidSwatchItem color="#575A5B" hue="130" saturation="6" brightness="84"/>
+                    <SolidSwatchItem color="#2C2C29" hue="40" saturation="6" brightness="40"/>
+                    <SolidSwatchItem color="#393A39" hue="80" saturation="2" brightness="55"/>
+                    <SolidSwatchItem color="#606B64" hue="95" saturation="14" brightness="96"/>
+                    <SolidSwatchItem color="#4B5650" hue="96" saturation="16" brightness="76"/>
+                    <SolidSwatchItem color="#414A46" hue="102" saturation="16" brightness="66"/>
+                    <SolidSwatchItem color="#4F5252" hue="120" saturation="5" brightness="76"/>
+                    <SolidSwatchItem color="#212120" hue="40" saturation="4" brightness="31"/>
+                    <SolidSwatchItem color="#3F4142" hue="133" saturation="6" brightness="61"/>
+                    <SolidSwatchItem color="#3F4243" hue="130" saturation="8" brightness="61"/>
+                    <SolidSwatchItem color="#444645" hue="100" saturation="4" brightness="65"/>
+                    <SolidSwatchItem color="#262524" hue="20" saturation="7" brightness="35"/>
+                    <SolidSwatchItem color="#30302F" hue="40" saturation="3" brightness="45"/>
+                    <SolidSwatchItem color="#666C6C" hue="120" saturation="7" brightness="99"/>
+                    <SolidSwatchItem color="#1B1B19" hue="40" saturation="5" brightness="25"/>
+                    <SolidSwatchItem color="#373A3A" hue="120" saturation="7" brightness="54"/>
+                    <SolidSwatchItem color="#252525" brightness="35"/>
+                    <SolidSwatchItem color="#323435" hue="133" saturation="7" brightness="49"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -2873,6 +2897,11 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2620571" publishTime="1751815702"/>
+          <PublishItem publishSize="2619789" publishTime="1751813723"/>
+          <PublishItem publishSize="2619117" publishTime="1751813068"/>
+          <PublishItem publishSize="2617548" publishTime="1751812567"/>
+          <PublishItem publishSize="2618037" publishTime="1751811828"/>
           <PublishItem publishSize="2610301" publishTime="1751794948"/>
           <PublishItem publishSize="2617843" publishTime="1751681614"/>
           <PublishItem publishSize="2617843" publishTime="1751681370"/>
@@ -2888,10 +2917,5 @@
           <PublishItem publishSize="2283782" publishTime="1743062961"/>
           <PublishItem publishSize="2283918" publishTime="1743062612"/>
           <PublishItem publishSize="2866851" publishTime="1740145232"/>
-          <PublishItem publishSize="2866563" publishTime="1740142429"/>
-          <PublishItem publishSize="2847093" publishTime="1737857309"/>
-          <PublishItem publishSize="2847090" publishTime="1737857184"/>
-          <PublishItem publishSize="2847090" publishTime="1737857067"/>
-          <PublishItem publishSize="2846019" publishTime="1737856463"/>
      </publishHistory>
 </DOMDocument>

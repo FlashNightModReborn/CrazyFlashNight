@@ -3323,7 +3323,17 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <dressup>枪-长枪-M249</dressup>
       <evasion>-10</evasion>
       <accuracy>-5</accuracy>
-    </equipped>
+    </equipped>    
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>M249初始化</initRoutines>
+        </init>
+        <cycle>
+          <cycleRoutines>M249周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <id>256</id>
