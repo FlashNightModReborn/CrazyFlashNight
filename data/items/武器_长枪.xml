@@ -179,6 +179,12 @@
       <attr_1>
         <init>
           <initRoutines>M134初始化</initRoutines>
+          <initParam>
+            <maxSpinCount>29</maxSpinCount>
+            <spinUpAmount>6</spinUpAmount>
+            <spinSpeedFactor>0.1</spinSpeedFactor>
+            <spinDownRate>0.33</spinDownRate>
+          </initParam>
         </init>
         <cycle>
           <cycleRoutines>M134周期</cycleRoutines>
@@ -3524,6 +3530,12 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <attr_0>
         <init>
           <initRoutines>M134初始化</initRoutines>
+          <initParam>
+            <maxSpinCount>29</maxSpinCount>
+            <spinUpAmount>5</spinUpAmount>
+            <spinSpeedFactor>0.1</spinSpeedFactor>
+            <spinDownRate>0.33</spinDownRate>
+          </initParam>
         </init>        
         <cycle>
           <cycleRoutines>M134周期</cycleRoutines>
@@ -4171,6 +4183,12 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <attr_0>
         <init>
           <initRoutines>M134初始化</initRoutines>
+          <initParam>
+            <maxSpinCount>29</maxSpinCount>
+            <spinUpAmount>5</spinUpAmount>
+            <spinSpeedFactor>0.1</spinSpeedFactor>
+            <spinDownRate>0.33</spinDownRate>
+          </initParam>
         </init>        
         <cycle>
           <cycleRoutines>M134周期</cycleRoutines>

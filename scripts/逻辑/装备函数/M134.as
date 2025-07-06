@@ -4,10 +4,10 @@ _root.装备生命周期函数.M134初始化 = function(ref:Object, param:Object
     var target:MovieClip = ref.自机;
 
     // --- 性能参数常量化 ---
-    ref.maxSpinCount = 29;         // 最大连射计数 
-    ref.spinUpAmount = 5;          // 每次射击增加的连射计数 
-    ref.spinSpeedFactor = 0.1;     // 连射计数转换为转速的系数
-    ref.spinDownRate = 0.33;       // 连射计数的自然衰减率
+    ref.maxSpinCount = param.maxSpinCount || 29;            // 最大连射计数 
+    ref.spinUpAmount = param.spinUpAmount || 5;             // 每次射击增加的连射计数 
+    ref.spinSpeedFactor = param.spinSpeedFactor || 0.1;     // 连射计数转换为转速的系数
+    ref.spinDownRate = param.spinDownRate || 0.33;          // 连射计数的自然衰减率
 
     // --- 状态变量 ---
     ref.gunFrame = 1;              // 当前动画帧 (浮点数)
@@ -81,6 +81,9 @@ _root.装备生命周期函数.M134周期 = function(ref:Object, param:Object) {
         }
         
         gunAnim.gotoAndStop(Math.floor(ref.gunFrame));
+    } else if(gunAnim._currentFrame != 1) {
+        // 如果不在射击状态且当前帧不是第一帧，则重置到第一帧
+        gunAnim.gotoAndStop(1);
     }
 
     // 3. 重置射击状态

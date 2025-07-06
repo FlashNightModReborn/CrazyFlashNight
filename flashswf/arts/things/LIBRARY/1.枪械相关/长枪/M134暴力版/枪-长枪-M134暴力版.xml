@@ -1,12 +1,12 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.枪械相关/长枪/M134暴力版/枪-长枪-M134暴力版" itemID="67413bb7-00002711" linkageExportForAS="true" linkageIdentifier="枪-长枪-M134暴力版" lastModified="1746295913">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.枪械相关/长枪/M134暴力版/枪-长枪-M134暴力版" itemID="67413bb7-00002711" linkageExportForAS="true" linkageIdentifier="枪-长枪-M134暴力版" lastModified="1751795001" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="枪-长枪-M134暴力版">
       <layers>
-        <DOMLayer name="Layer 1" color="#66DA84" current="true" isSelected="true">
+        <DOMLayer name="Layer 1" color="#66DA84">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="枪口位置" selected="true" centerPoint3DX="415" centerPoint3DY="38.75">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="枪口位置" centerPoint3DX="415" centerPoint3DY="38.75">
                   <matrix>
                     <Matrix a="0.9769287109375" d="0.9769287109375" tx="402.5" ty="26.25"/>
                   </matrix>
@@ -18,30 +18,17 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#62FF2E">
+        <DOMLayer name="Layer 2" color="#62FF2E" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 3899" selected="true" blendMode="add" centerPoint3DX="476.5" centerPoint3DY="12.25">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 3899" name="激光模组" blendMode="add" centerPoint3DX="476.5" centerPoint3DY="12.25">
                   <matrix>
                     <Matrix tx="107.55" ty="6.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_parent._parent._parent._parent._parent.攻击模式 == "长枪")
-   {
-      this._visible = 1;
-   }
-   else
-   {
-      this._visible = 0;
-   }
-}
-]]></script>
-                  </Actionscript>
                   <filters>
                     <GlowFilter/>
                   </filters>
@@ -57,42 +44,13 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 3898" selected="true" centerPoint3DX="215.35" centerPoint3DY="44.15">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 3838" name="动画" centerPoint3DX="215.35" centerPoint3DY="44.15">
                   <matrix>
                     <Matrix a="1.36782836914063" d="1.36782836914063" tx="96.4" ty="16.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-   //if(_parent._parent._parent._parent._parent.长枪射击ing == true)
-   if(自机.主手射击中 && 自机.攻击模式 == "长枪")
-   {
-      this._visible = 1;
-      play();
-   }
-   else
-   {
-      this._visible = 0;
-      stop();
-   }
-}
-onClipEvent(load){
-   var 自机 = _root.获得父节点(this, 5);
-   if(自机.主手射击中 && 自机.攻击模式 == "长枪")
-   {
-      this._visible = 1;
-      play();
-   }
-   else
-   {
-      this._visible = 0;
-      stop();
-   }
-}
-]]></script>
-                  </Actionscript>
                   <filters>
                     <AdjustColorFilter contrast="39" saturation="100" hue="180"/>
                   </filters>
@@ -105,7 +63,7 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/M134暴力版基地" selected="true" centerPoint3DX="329.35" centerPoint3DY="106.95">
+                <DOMSymbolInstance libraryItemName="无AS链接/M134暴力版基地" centerPoint3DX="329.35" centerPoint3DY="106.95">
                   <matrix>
                     <Matrix tx="107.75" ty="34.7"/>
                   </matrix>

@@ -34,4 +34,9 @@ _root.装备生命周期函数.M134暴力版周期 = function(反射对象, 参�
 		_root.装备生命周期函数.移除异常周期函数(反射对象);
 		_root.更新并执行时间间隔动作(反射对象,反射对象.标签,反射对象.自动抡枪,反射对象.间隔,true,反射对象);
 	}
+
+	var target:MovieClip = 反射对象.自机;
+	var laser:MovieClip = target.长枪_引用.激光模组;
+
+	laser._visible = (反射对象.自机.攻击模式 === "长枪");
 };
