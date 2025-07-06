@@ -8,6 +8,7 @@
 #include "../逻辑/装备函数/主唱光剑.as"
 #include "../逻辑/装备函数/火药燃气液压打桩机.as"
 #include "../逻辑/装备函数/刀口触发特效.as"
+#include "../逻辑/装备函数/NEGEV.as"
 #include "../逻辑/装备函数/M134.as"
 #include "../逻辑/装备函数/M134暴力版.as"
 #include "../逻辑/装备函数/wa90变形款.as"

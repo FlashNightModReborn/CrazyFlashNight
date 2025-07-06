@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1751597235" lastUniqueIdentifier="103">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1751808499" lastUniqueIdentifier="106">
   <timeline>
-    <DOMTimeline name="fs配置素材" currentFrame="21" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;247&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="22" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;247&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
         <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
@@ -222,7 +222,7 @@
                     <Point x="2.8"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="铁枪/枪-长枪-铁枪" selected="true" centerPoint3DX="-65.65" centerPoint3DY="-445.3">
+                <DOMSymbolInstance libraryItemName="铁枪/枪-长枪-铁枪" centerPoint3DX="-65.65" centerPoint3DY="-445.3">
                   <matrix>
                     <Matrix tx="-136.2" ty="-447"/>
                   </matrix>
@@ -236,6 +236,22 @@
                   </matrix>
                   <transformationPoint>
                     <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/Negev" selected="true" centerPoint3DX="175.7" centerPoint3DY="470.25">
+                  <matrix>
+                    <Matrix tx="105.15" ty="468.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="70.55" y="1.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/图标-NEGEV" centerPoint3DX="259.65" centerPoint3DY="546.65">
+                  <matrix>
+                    <Matrix tx="259.65" ty="546.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.25" y="-34.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

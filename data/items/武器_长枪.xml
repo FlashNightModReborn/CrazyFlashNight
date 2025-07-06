@@ -5974,7 +5974,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
       <dressup>枪-长枪-铁枪</dressup>
     </equipped>
     <lifecycle>
-      <description />
       <attr_0>
         <init>
           <initRoutines>铁枪初始化</initRoutines>
@@ -5983,6 +5982,50 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
         </init>
         <cycle>
           <cycleRoutines>铁枪周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
+  </item>  
+  <item>
+    <id>8087</id>
+    <name>NEGEV</name>
+    <displayname>NEGEV</displayname>
+    <icon>NEGEV</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>11</weight>
+    <price>95000</price>
+<description>IWI Negev轻机枪由ISR国军工部门于1997年研发，作为IDF的制式班用机枪投入使用。该枪采用独特的双供弹系统，既可使用弹链也可使用弹匣供弹，在现代轻机枪中独树一帜。
+Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻量化设计和模块化结构使其成为21世纪步兵班火力支援的理想选择。
+在某些知名的战术训练模拟器中，该枪展现出了令人惊讶的精确度表现，连发射击时的弹道分布极为紧密，这一特性也使其在全球反恐精英训练项目中备受青睐。</description>
+    <level>28</level>
+    <data>
+      <capacity>150</capacity>
+      <split>1</split>
+      <diffusion>1</diffusion>
+      <interval>80</interval>
+      <velocity>45</velocity>
+      <bullet>加强普通子弹</bullet>
+      <sound>re_MG_m249.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>机枪通用弹药</clipname>
+      <bulletsize>30</bulletsize>
+      <power>296</power>
+      <impact>15</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-NEGEV</dressup>
+      <evasion>-20</evasion>
+      <accuracy>20</accuracy>
+    </equipped>    
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>NEGEV初始化</initRoutines>
+        </init>
+        <cycle>
+          <cycleRoutines>NEGEV周期</cycleRoutines>
         </cycle>
       </attr_0>
     </lifecycle>

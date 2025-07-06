@@ -2,7 +2,8 @@
      <folders>
           <DOMFolderItem name="2.音效文件夹" itemID="656c28f2-00000fe5"/>
           <DOMFolderItem name="2.音效文件夹/爆炸" itemID="656c296a-0000103c" isExpanded="true"/>
-          <DOMFolderItem name="53式步骑枪" itemID="659ea370-00000ca4"/>
+          <DOMFolderItem name="53式步骑枪" itemID="659ea370-00000ca4" isExpanded="true"/>
+          <DOMFolderItem name="NEGEV" itemID="686a7a3e-0000131c" isExpanded="true"/>
           <DOMFolderItem name="sprite" itemID="667d1fff-00000d61"/>
           <DOMFolderItem name="wa90" itemID="6559d3b1-000002db"/>
           <DOMFolderItem name="wa90/Graphic" itemID="5e86cc75-00001260"/>
@@ -116,7 +117,13 @@
           <Include href="53式步骑枪/调整层.xml" loadImmediate="false" itemID="659eb6ee-000005a7" lastModified="1704953093"/>
           <Include href="53式步骑枪/图标-53式步骑枪.xml" itemID="659eadd3-00000327" lastModified="1704901315"/>
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1751597235"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1751808499"/>
+          <Include href="NEGEV/Negev.xml" itemID="686a4cad-0000364f" lastModified="1751808986"/>
+          <Include href="NEGEV/内格夫弹链动画.xml" loadImmediate="false" itemID="686a67d8-000036bc" lastModified="1751805789"/>
+          <Include href="NEGEV/内格夫子弹1.xml" loadImmediate="false" itemID="686a5e0b-00003660" lastModified="1751809025"/>
+          <Include href="NEGEV/内格夫子弹2.xml" loadImmediate="false" itemID="686a5e48-00003664" lastModified="1751809056"/>
+          <Include href="NEGEV/内格夫子弹3.xml" loadImmediate="false" itemID="686a5e6b-00003668" lastModified="1751809009"/>
+          <Include href="NEGEV/图标-NEGEV.xml" itemID="686a79e8-000011a8" lastModified="1751808604"/>
           <Include href="sprite/Symbol 35.xml" itemID="6577b699-00000971" lastModified="1718635260"/>
           <Include href="sprite/Symbol 36.xml" loadImmediate="false" itemID="6577b699-00000972" lastModified="1719476235"/>
           <Include href="Symbol 590.xml" loadImmediate="false" itemID="6577faef-00001510" lastModified="1701508661"/>
@@ -699,6 +706,27 @@
                     <SolidSwatchItem color="#1C2E33" hue="129" saturation="71" brightness="37"/>
                     <SolidSwatchItem color="#0F2023" hue="126" saturation="97" brightness="24"/>
                     <SolidSwatchItem color="#2B2A24" hue="40" saturation="19" brightness="37"/>
+                    <SolidSwatchItem color="#A27D06" hue="31" saturation="222" brightness="79"/>
+                    <SolidSwatchItem color="#1C1C1A" hue="40" saturation="10" brightness="25"/>
+                    <SolidSwatchItem color="#252423" hue="20" saturation="7" brightness="34"/>
+                    <SolidSwatchItem color="#D4D4D4" brightness="200"/>
+                    <SolidSwatchItem color="#252524" hue="40" saturation="3" brightness="35"/>
+                    <SolidSwatchItem color="#7F6309" hue="30" saturation="210" brightness="64"/>
+                    <SolidSwatchItem color="#876C05" hue="32" saturation="222" brightness="66"/>
+                    <SolidSwatchItem color="#876A06" hue="31" saturation="218" brightness="67"/>
+                    <SolidSwatchItem color="#2F6B78" hue="127" saturation="105" brightness="79"/>
+                    <SolidSwatchItem color="#836304" hue="30" saturation="225" brightness="64"/>
+                    <SolidSwatchItem color="#896903" hue="31" saturation="229" brightness="66"/>
+                    <SolidSwatchItem color="#624F22" hue="28" saturation="116" brightness="62"/>
+                    <SolidSwatchItem color="#624E0B" hue="31" saturation="193" brightness="51"/>
+                    <SolidSwatchItem color="#6C5513" hue="30" saturation="168" brightness="60"/>
+                    <SolidSwatchItem color="#81650C" hue="31" saturation="200" brightness="66"/>
+                    <SolidSwatchItem color="#886C05" hue="32" saturation="222" brightness="67"/>
+                    <SolidSwatchItem color="#A1800A" hue="31" saturation="213" brightness="81"/>
+                    <SolidSwatchItem color="#70570F" hue="30" saturation="184" brightness="60"/>
+                    <SolidSwatchItem color="#8D1B1B" saturation="164" brightness="79"/>
+                    <SolidSwatchItem color="#691414" saturation="163" brightness="59"/>
+                    <SolidSwatchItem color="#611212" saturation="164" brightness="54"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -781,6 +809,13 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="536857" publishTime="1751808636"/>
+          <PublishItem publishSize="536859" publishTime="1751808617"/>
+          <PublishItem publishSize="536770" publishTime="1751808457"/>
+          <PublishItem publishSize="536808" publishTime="1751808299"/>
+          <PublishItem publishSize="536767" publishTime="1751806430"/>
+          <PublishItem publishSize="535392" publishTime="1751803980"/>
+          <PublishItem publishSize="537145" publishTime="1751803877"/>
           <PublishItem publishSize="507951" publishTime="1751628409"/>
           <PublishItem publishSize="502792" publishTime="1751627944"/>
           <PublishItem publishSize="502795" publishTime="1751627759"/>
@@ -794,12 +829,5 @@
           <PublishItem publishSize="502432" publishTime="1751597583"/>
           <PublishItem publishSize="502219" publishTime="1751597363"/>
           <PublishItem publishSize="502206" publishTime="1751597191"/>
-          <PublishItem publishSize="502189" publishTime="1751597084"/>
-          <PublishItem publishSize="489121" publishTime="1751536366"/>
-          <PublishItem publishSize="488199" publishTime="1751535433"/>
-          <PublishItem publishSize="488091" publishTime="1751534609"/>
-          <PublishItem publishSize="486470" publishTime="1751531440"/>
-          <PublishItem publishSize="486162" publishTime="1751531271"/>
-          <PublishItem publishSize="545977" publishTime="1748404357"/>
      </publishHistory>
 </DOMDocument>

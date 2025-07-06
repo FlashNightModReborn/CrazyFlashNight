@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="原版素材库-子弹" itemID="668b9f9e-000001f3" linkageExportForAS="true" linkageIdentifier="原版素材库-子弹" lastModified="1748451139" lastUniqueIdentifier="128">
   <timeline>
-    <DOMTimeline name="原版素材库-子弹" currentFrame="23">
+    <DOMTimeline name="原版素材库-子弹" currentFrame="25">
       <layers>
         <DOMLayer name="as" color="#9933CC" locked="true" autoNamed="false">
           <frames>
@@ -27,7 +27,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文字" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="文字" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -629,7 +629,7 @@
             </DOMFrame>
             <DOMFrame index="14" duration="5" keyMode="9728">
               <elements>
-                <DOMStaticText selected="true" fontRenderingMode="standard" left="-1.6" width="24.2" height="15.55" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" left="-1.6" width="24.2" height="15.55" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="30" ty="33.95"/>
                   </matrix>
@@ -648,7 +648,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" left="-1.6" width="24.2" height="15.55" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" left="-1.6" width="24.2" height="15.55" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="113" ty="33.95"/>
                   </matrix>
@@ -667,7 +667,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" left="-13.6" width="48.2" height="15.55" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" left="-13.6" width="48.2" height="15.55" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="210.95" ty="33.95"/>
                   </matrix>
@@ -686,7 +686,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" left="-1.6" width="24.2" height="15.55" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" left="-1.6" width="24.2" height="15.55" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="306.95" ty="33.95"/>
                   </matrix>
@@ -705,7 +705,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" width="76" height="15.55" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="76" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="4" ty="125.55"/>
                   </matrix>
@@ -724,7 +724,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" left="-25.6" width="72.2" height="15.55" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" left="-25.6" width="72.2" height="15.55" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="425.95" ty="49.95"/>
                   </matrix>
@@ -743,7 +743,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" width="76" height="15.55" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="76" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="90" ty="125.55"/>
                   </matrix>
@@ -762,7 +762,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" width="87" height="15.55" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="87" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="4" ty="211.55"/>
                   </matrix>
@@ -793,7 +793,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" width="87" height="15.55" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="87" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="102" ty="211.55"/>
                   </matrix>
@@ -812,7 +812,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" left="-13.6" width="48.2" height="15.55" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" left="-13.6" width="48.2" height="15.55" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="210.95" ty="127.95"/>
                   </matrix>
@@ -831,7 +831,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" width="88" height="15.55" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="88" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="304.95" ty="135.55"/>
                   </matrix>
@@ -850,7 +850,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" width="99" height="15.55" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="99" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="291.95" ty="199.55"/>
                   </matrix>
@@ -869,7 +869,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" width="72.5" height="15.55" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="72.5" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="16" ty="544"/>
                   </matrix>
@@ -888,7 +888,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" width="95" height="15.55" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="95" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="173.25" ty="558.45"/>
                   </matrix>
@@ -907,7 +907,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" width="95" height="15.55" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="95" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="559.95" ty="161.55"/>
                   </matrix>
@@ -926,7 +926,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" width="95" height="15.55" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="95" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="683.95" ty="161.55"/>
                   </matrix>
@@ -945,7 +945,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" width="95" height="15.55" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="95" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="683.95" ty="314.5"/>
                   </matrix>
@@ -964,7 +964,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" width="95" height="15.55" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="95" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="565.05" ty="314.5"/>
                   </matrix>
@@ -983,7 +983,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" width="120" height="15.55" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="120" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="885.95" ty="288.45"/>
                   </matrix>
@@ -1002,7 +1002,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" width="97" height="15.55" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="97" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="899" ty="123.45"/>
                   </matrix>
@@ -1021,7 +1021,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" width="87" height="15.55" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="87" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="4" ty="297.05"/>
                   </matrix>
@@ -1040,7 +1040,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" width="87" height="15.55" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="87" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="202.45" ty="297.05"/>
                   </matrix>
@@ -1059,7 +1059,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" left="-25.6" width="118" height="33.1" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" left="-25.6" width="118" height="33.1" isSelectable="false">
                   <matrix>
                     <Matrix tx="412.55" ty="171.7"/>
                   </matrix>
@@ -1379,7 +1379,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -1397,7 +1397,7 @@
  131!2361 131|2355 192!2355 192|2424 192!2424 192[2423 242 2421 290!2421 290[2419 344 2374 344!2374 344[2361 344 2330 343!2330 343[2328 329 2324 315!2324 315[2356 318 2369 318!2369 318[2394 318 2395 289!2395 289[2397 250 2398 216!2398
  216|2328 216!2328 216|2338 107!2338 107|2400 107!2272 52|2154 139!2154 139|2154 164!2154 164|2308 164!2308 164|2308 190!2308 190|2154 190!2154 190|2154 301!2154 301[2154 348 2105 348!2105 348[2089 348 2050 347!2050 347[2048 333 2045
  315!2045 315[2071 318 2100 319!2100 319[2125 319 2125 293!2125 293|2125 190!2125 190|1961 190!1961 190|1961 164!1961 164|2125 164!2125 164|2125 125!2125 125|2225 51!2225 51|1998 51!1998 51|1998 25!1998 25|2272 25!2272 25|2272 52!1929
- 183|1929 209!1929 209|1825 209!1825 209|1825 183!1825 183|1929 183!1789 71|1506 71!1506 71|1506 172!1506 172[1506 293 1460 353!1460 353[1451 342 1440 329!1440 329[1478 279 1478 177!1478 177|1478 46!1478 46|1630 46!1630 46[1619 31 1606
+ 209|1825 209!1825 209|1825 183!1825 183|1929 183!1929 183|1929 209!1789 71|1506 71!1506 71|1506 172!1506 172[1506 293 1460 353!1460 353[1451 342 1440 329!1440 329[1478 279 1478 177!1478 177|1478 46!1478 46|1630 46!1630 46[1619 31 1606
  16!1606 16|1627 0!1627 0[1644 16 1658 35!1658 35|1643 46!1643 46|1789 46!1789 46|1789 71!1646 153|1675 153!1675 153|1675 198!1675 198|1771 198!1771 198|1771 223!1771 223|1675 223!1675 223|1675 260!1675 260|1788 260!1788 260|1788 286
 !1788 286|1675 286!1675 286|1675 351!1675 351|1646 351!1646 351|1646 286!1646 286|1513 286!1513 286|1513 260!1513 260|1646 260!1646 260|1646 223!1646 223|1539 223!1539 223|1539 197!1539 197[1558 171 1574 140!1574 140|1522 140!1522 140
 |1522 114!1522 114|1586 114!1586 114[1595 96 1603 75!1603 75|1631 83!1631 83[1624 99 1617 114!1617 114|1771 114!1771 114|1771 140!1771 140|1604 140!1604 140[1588 171 1571 198!1571 198|1646 198!1646 198|1646 153!1433 105|1383 105!1383
@@ -2006,7 +2006,7 @@
             </DOMFrame>
             <DOMFrame index="14" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效-击中效果组/火花" selected="true">
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/火花">
                   <matrix>
                     <Matrix tx="29.5" ty="19.5"/>
                   </matrix>
@@ -2014,7 +2014,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-血液组/飙血" selected="true">
+                <DOMSymbolInstance libraryItemName="特效-血液组/飙血">
                   <matrix>
                     <Matrix tx="113.5" ty="20.5"/>
                   </matrix>
@@ -2022,7 +2022,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-击中效果组/无声火花" selected="true">
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/无声火花">
                   <matrix>
                     <Matrix tx="219.95" ty="22"/>
                   </matrix>
@@ -2030,7 +2030,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-枪火组/枪火" selected="true">
+                <DOMSymbolInstance libraryItemName="特效-枪火组/枪火">
                   <matrix>
                     <Matrix tx="316.5" ty="25"/>
                   </matrix>
@@ -2038,7 +2038,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-击中效果组/光剑特效" selected="true" centerPoint3DX="55.3" centerPoint3DY="509.95">
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/光剑特效" centerPoint3DX="55.3" centerPoint3DY="509.95">
                   <matrix>
                     <Matrix tx="55.15" ty="473.6"/>
                   </matrix>
@@ -2046,7 +2046,7 @@
                     <Point x="0.15" y="29.8"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-击中效果组/骷髅特效" selected="true" centerPoint3DX="231.55" centerPoint3DY="422.4">
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/骷髅特效" centerPoint3DX="231.55" centerPoint3DY="422.4">
                   <matrix>
                     <Matrix tx="231.55" ty="501.35"/>
                   </matrix>
@@ -2054,7 +2054,7 @@
                     <Point y="-78.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-动画与文字组/升级动画" selected="true" centerPoint3DX="603.95" centerPoint3DY="90">
+                <DOMSymbolInstance libraryItemName="特效-动画与文字组/升级动画" centerPoint3DX="603.95" centerPoint3DY="90">
                   <matrix>
                     <Matrix tx="618.85" ty="156.15"/>
                   </matrix>
@@ -2062,7 +2062,7 @@
                     <Point x="-14.9" y="-66.15"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-击中效果组/小烟雾" selected="true">
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/小烟雾">
                   <matrix>
                     <Matrix tx="45" ty="104"/>
                   </matrix>
@@ -2070,7 +2070,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-动画与文字组/药剂动画" selected="true" centerPoint3DX="733.95" centerPoint3DY="84.45">
+                <DOMSymbolInstance libraryItemName="特效-动画与文字组/药剂动画" centerPoint3DX="733.95" centerPoint3DY="84.45">
                   <matrix>
                     <Matrix tx="737.55" ty="150.1"/>
                   </matrix>
@@ -2078,7 +2078,7 @@
                     <Point x="-3.6" y="-65.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-击中效果组/空手攻击火花" selected="true" centerPoint3DX="437.95" centerPoint3DY="20.45">
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/空手攻击火花" centerPoint3DX="437.95" centerPoint3DY="20.45">
                   <matrix>
                     <Matrix tx="438.45" ty="23"/>
                   </matrix>
@@ -2086,7 +2086,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-击中效果组/击中金属" selected="true">
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/击中金属">
                   <matrix>
                     <Matrix tx="137" ty="103"/>
                   </matrix>
@@ -2094,7 +2094,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-血液组/子弹碎片-飞血" selected="true" centerPoint3DX="45.3" centerPoint3DY="190">
+                <DOMSymbolInstance libraryItemName="特效-血液组/子弹碎片-飞血" centerPoint3DX="45.3" centerPoint3DY="190">
                   <matrix>
                     <Matrix tx="45.3" ty="190"/>
                   </matrix>
@@ -2102,7 +2102,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-血液组/血迹" selected="true">
+                <DOMSymbolInstance libraryItemName="特效-血液组/血迹">
                   <matrix>
                     <Matrix tx="147" ty="191"/>
                   </matrix>
@@ -2110,7 +2110,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-击中效果组/拼刀火花" selected="true">
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/拼刀火花">
                   <matrix>
                     <Matrix tx="224.95" ty="101"/>
                   </matrix>
@@ -2118,7 +2118,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-动画与文字组/药剂动画-2" selected="true" centerPoint3DX="739.95" centerPoint3DY="236.95">
+                <DOMSymbolInstance libraryItemName="特效-动画与文字组/药剂动画-2" centerPoint3DX="739.95" centerPoint3DY="236.95">
                   <matrix>
                     <Matrix tx="743.55" ty="302.6"/>
                   </matrix>
@@ -2126,7 +2126,7 @@
                     <Point x="-3.6" y="-65.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-击中效果组/灰尘1" selected="true" centerPoint3DX="350.25" centerPoint3DY="112">
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/灰尘1" centerPoint3DX="350.25" centerPoint3DY="112">
                   <matrix>
                     <Matrix tx="350.25" ty="112"/>
                   </matrix>
@@ -2134,7 +2134,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-动画与文字组/升级动画2" selected="true" centerPoint3DX="614.05" centerPoint3DY="241.95">
+                <DOMSymbolInstance libraryItemName="特效-动画与文字组/升级动画2" centerPoint3DX="614.05" centerPoint3DY="241.95">
                   <matrix>
                     <Matrix tx="628.95" ty="308.1"/>
                   </matrix>
@@ -2142,7 +2142,7 @@
                     <Point x="-14.9" y="-66.15"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="未分类子弹或特效/小地震" selected="true">
+                <DOMSymbolInstance libraryItemName="未分类子弹或特效/小地震">
                   <matrix>
                     <Matrix tx="341.95" ty="186"/>
                   </matrix>
@@ -2150,7 +2150,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-击中效果组/战术巴雷特击中特效" selected="true" centerPoint3DX="957.9" centerPoint3DY="228.3">
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/战术巴雷特击中特效" centerPoint3DX="957.9" centerPoint3DY="228.3">
                   <matrix>
                     <Matrix tx="956.95" ty="228.1"/>
                   </matrix>
@@ -2158,7 +2158,7 @@
                     <Point x="0.95" y="0.2"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-枪火组/巴雷特枪火" selected="true" centerPoint3DX="959.3" centerPoint3DY="68.6">
+                <DOMSymbolInstance libraryItemName="特效-枪火组/巴雷特枪火" centerPoint3DX="959.3" centerPoint3DY="68.6">
                   <matrix>
                     <Matrix tx="959.3" ty="68.65"/>
                   </matrix>
@@ -2166,7 +2166,7 @@
                     <Point y="-0.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-击中效果组/屎花" selected="true">
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/屎花">
                   <matrix>
                     <Matrix tx="35" ty="273.95"/>
                   </matrix>
@@ -2174,7 +2174,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-击中效果组/屎尘" selected="true" centerPoint3DX="248" centerPoint3DY="274.1">
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/屎尘" centerPoint3DX="248" centerPoint3DY="274.1">
                   <matrix>
                     <Matrix tx="248" ty="274.1"/>
                   </matrix>
@@ -2182,7 +2182,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-击中效果组/原版空手攻击火花" selected="true" centerPoint3DX="437.95" centerPoint3DY="134.45">
+                <DOMSymbolInstance libraryItemName="特效-击中效果组/原版空手攻击火花" centerPoint3DX="437.95" centerPoint3DY="134.45">
                   <matrix>
                     <Matrix tx="438.45" ty="137"/>
                   </matrix>
@@ -2277,7 +2277,7 @@
                     <Point x="7.4" y="1.15"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="弹壳/加强重机枪弹壳" centerPoint3DX="506.8" centerPoint3DY="284.05">
+                <DOMSymbolInstance libraryItemName="弹壳/加强重机枪弹壳" selected="true" centerPoint3DX="506.8" centerPoint3DY="284.05">
                   <matrix>
                     <Matrix tx="494.55" ty="282.4"/>
                   </matrix>
