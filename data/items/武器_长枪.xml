@@ -175,7 +175,7 @@
         <cycle>
           <cycleRoutines>M134暴力版周期</cycleRoutines>
         </cycle>
-      </attr_0>      
+      </attr_0>
       <attr_1>
         <init>
           <initRoutines>M134初始化</initRoutines>
@@ -1429,7 +1429,7 @@ PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳�
     </data>
     <equipped>
       <dressup>枪-长枪-PKP</dressup>
-    </equipped>    
+    </equipped>
     <lifecycle>
       <attr_0>
         <init>
@@ -3332,7 +3332,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <dressup>枪-长枪-M249</dressup>
       <evasion>-10</evasion>
       <accuracy>-5</accuracy>
-    </equipped>    
+    </equipped>
     <lifecycle>
       <attr_0>
         <init>
@@ -3518,7 +3518,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     <type>武器</type>
     <use>长枪</use>
     <weight>50</weight>
-    <price>180000</price>
+    <price>230000</price>
     <description>火神机枪。
     最早在VN战时期采用，因此被称作「喷火神龙」，最初装备在直升机上；后来更多军用载具都配备了M134。
     相传在洛圣都，射击技术过硬的银行抢匪可以随身携带并且用这把枪连续发射9999颗子弹。</description>
@@ -3542,10 +3542,10 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <bullethit>火花</bullethit>
       <clipname>机枪通用弹药</clipname>
       <bulletsize>25</bulletsize>
-      <power>235</power>
+      <power>230</power>
       <impact>2</impact>
     </data>
-    <lifecycle>    
+    <lifecycle>
       <attr_0>
         <init>
           <initRoutines>M134初始化</initRoutines>
@@ -3555,7 +3555,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
             <spinSpeedFactor>0.1</spinSpeedFactor>
             <spinDownRate>0.33</spinDownRate>
           </initParam>
-        </init>        
+        </init>
         <cycle>
           <cycleRoutines>M134周期</cycleRoutines>
         </cycle>
@@ -3834,16 +3834,16 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     <type>武器</type>
     <use>长枪</use>
     <weight>7</weight>
-    <price>60000</price>
+    <price>82000</price>
     <description>PK通用机枪是由AK突击步枪的设计者米哈伊尔·季莫费耶维奇·卡拉什尼科夫在1961年设计的通用机枪，PKM则是在1969年的改进款式。
     作为设计最成功的轻机枪，自这把枪诞生之起就参与了随后世界上的几乎每一场战争。
     便是如今的21世纪，也仍能在战争中见到它的身影。</description>
     <level>21</level>
     <data>
-      <capacity>150</capacity>
+      <capacity>100</capacity>
       <split>1</split>
       <diffusion>7</diffusion>
-      <interval>70</interval>
+      <interval>75</interval>
       <velocity>35</velocity>
       <bullet>加强普通子弹</bullet>
       <sound>re_MG_pkm.wav</sound>
@@ -3851,12 +3851,12 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <bullethit>火花</bullethit>
       <clipname>机枪通用弹药</clipname>
       <bulletsize>30</bulletsize>
-      <power>200</power>
+      <power>170</power>
       <impact>5</impact>
     </data>
     <equipped>
       <dressup>枪-长枪-PKM机枪</dressup>
-    </equipped>    
+    </equipped>
     <lifecycle>
       <attr_0>
         <init>
@@ -3906,8 +3906,8 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     <icon>MG42</icon>
     <type>武器</type>
     <use>长枪</use>
-    <weight>23</weight>
-    <price>135000</price>
+    <weight>25</weight>
+    <price>170000</price>
     <description>MG42通用机枪，为Nazi GER研发于1942年服役，由大脚约翰尼斯金属烤漆厂股份公司生产。
     据传这把枪在当时的战争期间有着更为惊悚的威名：「希特勒的电锯」。</description>
     <level>23</level>
@@ -3924,7 +3924,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <bullethit>火花</bullethit>
       <clipname>机枪通用弹药</clipname>
       <bulletsize>35</bulletsize>
-      <power>220</power>
+      <power>200</power>
       <impact>3</impact>
     </data>
     <equipped>
@@ -4208,7 +4208,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <power>300</power>
       <impact>2</impact>
     </data>
-    <lifecycle>    
+    <lifecycle>
       <attr_0>
         <init>
           <initRoutines>M134初始化</initRoutines>
@@ -4218,7 +4218,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
             <spinSpeedFactor>0.1</spinSpeedFactor>
             <spinDownRate>0.33</spinDownRate>
           </initParam>
-        </init>        
+        </init>
         <cycle>
           <cycleRoutines>M134周期</cycleRoutines>
         </cycle>
@@ -5420,7 +5420,7 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     <icon>MK48</icon>
     <type>武器</type>
     <use>长枪</use>
-    <weight>21</weight>
+    <weight>15</weight>
     <price>124800</price>
     <description>MK48机枪是MK46的大口径改型，后者是A国服役已久的M249机枪的轻量化改进型号，前者在这一改进的基础上改用了N协定制式7.62x51mm步枪弹，在保证相同火力的情况下比其他使用同种弹药的机枪更轻，适合机动作战。</description>
     <level>20</level>
@@ -5971,7 +5971,7 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
       <accuracy>5</accuracy>
       <criticalhit>20</criticalhit>
     </equipped>
-  </item>  
+  </item>
   <item>
     <id>8086</id>
     <name>铁枪</name>
@@ -6014,7 +6014,7 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
         </cycle>
       </attr_0>
     </lifecycle>
-  </item>  
+  </item>
   <item>
     <id>8087</id>
     <name>NEGEV</name>
@@ -6024,7 +6024,7 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     <use>长枪</use>
     <weight>11</weight>
     <price>262080</price>
-<description>IWI Negev轻机枪由ISR国军工部门于1997年研发，作为IDF的制式班用机枪投入使用。该枪采用独特的双供弹系统，既可使用弹链也可使用弹匣供弹，在现代轻机枪中独树一帜。
+    <description>IWI Negev轻机枪由ISR国军工部门于1997年研发，作为IDF的制式班用机枪投入使用。该枪采用独特的双供弹系统，既可使用弹链也可使用弹匣供弹，在现代轻机枪中独树一帜。
 Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻量化设计和模块化结构使其成为21世纪步兵班火力支援的理想选择。
 在某些知名的战术训练模拟器中，该枪展现出了令人惊讶的精确度表现，连发射击时的弹道分布极为紧密，这一特性也使其在全球反恐精英训练项目中备受青睐。</description>
     <level>28</level>
@@ -6047,7 +6047,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <dressup>枪-长枪-NEGEV</dressup>
       <evasion>-20</evasion>
       <accuracy>20</accuracy>
-    </equipped>    
+    </equipped>
     <lifecycle>
       <attr_0>
         <init>
