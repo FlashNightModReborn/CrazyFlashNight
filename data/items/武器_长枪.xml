@@ -6058,5 +6058,37 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
         </cycle>
       </attr_0>
     </lifecycle>
+  </item>  
+  <item>
+    <id>8088</id>
+    <name>XM556-Microgun</name>
+    <displayname>XM556-Microgun</displayname>
+    <icon>XM556-Microgun</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>10</weight>
+    <price>134000</price>
+    <description>由美国Empty Shell公司开发的革命性小型化加特林机枪，继承了传奇M134 Minigun的设计精髓。
+    突破性的小型化、极致射速与便携性的完美结合，使XM556成为现代特种部队与高风险作战单位的理想压制武器。尽管体积紧凑，但仍需外置24V供电系统和专用弹链箱。</description>
+    <level>17</level>
+    <data>
+      <capacity>30</capacity>
+      <split>5</split>
+      <diffusion>8</diffusion>
+      <interval>180</interval>
+      <velocity>35</velocity>
+      <bullet>纵向机枪联弹-加强普通子弹</bullet>
+      <bulletrename>加强普通子弹</bulletrename>
+      <sound>re_MG_m134.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>机枪通用弹药</clipname>
+      <bulletsize>30</bulletsize>
+      <power>21</power>
+      <impact>2</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-XM556-Microgun</dressup>
+    </equipped>    
   </item>
 </root>

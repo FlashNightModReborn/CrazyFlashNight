@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1751882044" lastUniqueIdentifier="108">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1751890731" lastUniqueIdentifier="110">
   <timeline>
     <DOMTimeline name="fs配置素材" currentFrame="20" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;247&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -262,12 +262,28 @@
                     <Point x="269.5" y="-17.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="PKP/图标-PKP" selected="true" centerPoint3DX="233.9" centerPoint3DY="683.95">
+                <DOMSymbolInstance libraryItemName="PKP/图标-PKP" centerPoint3DX="233.9" centerPoint3DY="683.95">
                   <matrix>
                     <Matrix tx="233.9" ty="683.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="51.45" y="-31.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="XM556/XM556-Microgun" centerPoint3DX="-222.3" centerPoint3DY="543.55">
+                  <matrix>
+                    <Matrix tx="-587.1" ty="555"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="364.55" y="-11.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="XM556/图标XM556-Microgun" selected="true" centerPoint3DX="-458.05" centerPoint3DY="627.3">
+                  <matrix>
+                    <Matrix tx="-458.05" ty="627.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.45" y="-28.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

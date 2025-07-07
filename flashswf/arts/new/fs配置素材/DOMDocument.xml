@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#B9B8B0" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" nextSceneIdentifier="2" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#B9B8B0" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" objectsSnapTo="false" nextSceneIdentifier="2" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="2.音效文件夹" itemID="656c28f2-00000fe5"/>
           <DOMFolderItem name="2.音效文件夹/爆炸" itemID="656c296a-0000103c" isExpanded="true"/>
@@ -8,7 +8,7 @@
           <DOMFolderItem name="sprite" itemID="667d1fff-00000d61"/>
           <DOMFolderItem name="wa90" itemID="6559d3b1-000002db"/>
           <DOMFolderItem name="wa90/Graphic" itemID="5e86cc75-00001260"/>
-          <DOMFolderItem name="弹壳" itemID="686ba944-00001b2e"/>
+          <DOMFolderItem name="XM556" itemID="686bba3f-000040b0" isExpanded="true"/>
           <DOMFolderItem name="电感切割刃" itemID="655c5883-00000334"/>
           <DOMFolderItem name="光玉的剑相关" itemID="68668bb8-000033c6"/>
           <DOMFolderItem name="火药燃气液压打桩机" itemID="655175a5-000006e2"/>
@@ -119,7 +119,7 @@
           <Include href="53式步骑枪/调整层.xml" loadImmediate="false" itemID="659eb6ee-000005a7" lastModified="1704953093"/>
           <Include href="53式步骑枪/图标-53式步骑枪.xml" itemID="659eadd3-00000327" lastModified="1704901315"/>
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1751882044"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1751890731"/>
           <Include href="NEGEV/Negev.xml" itemID="686a4cad-0000364f" lastModified="1751878281"/>
           <Include href="NEGEV/内格夫弹链动画.xml" loadImmediate="false" itemID="686a67d8-000036bc" lastModified="1751805789"/>
           <Include href="NEGEV/内格夫子弹1.xml" loadImmediate="false" itemID="686a5e0b-00003660" lastModified="1751809025"/>
@@ -180,6 +180,8 @@
           <Include href="wa90/瞄具.xml" itemIcon="1" loadImmediate="false" itemID="60abd43a-00002933" lastModified="1621873722"/>
           <Include href="wa90/图标-wa90.xml" itemID="6559de84-0000042e" lastModified="1700388617"/>
           <Include href="wa90/消音器.xml" itemIcon="1" loadImmediate="false" itemID="60abd2e4-0000291f" lastModified="1621887798"/>
+          <Include href="XM556/XM556-Microgun.xml" itemID="686bd9c0-000044e9" lastModified="1751898560"/>
+          <Include href="XM556/图标XM556-Microgun.xml" itemID="686bd9b1-000044e8" lastModified="1751898607"/>
           <Include href="补间 3.xml" itemIcon="1" loadImmediate="false" itemID="657ba813-000004c4" lastModified="1702602771"/>
           <Include href="补间 4.xml" itemIcon="1" loadImmediate="false" itemID="657ba813-000004c6" lastModified="1702602771"/>
           <Include href="补间 5.xml" itemIcon="1" loadImmediate="false" itemID="6678cf69-00000597" lastModified="1719193449"/>
@@ -187,7 +189,6 @@
           <Include href="补间 7.xml" itemIcon="1" loadImmediate="false" itemID="6866435a-000003b9" lastModified="1751532378"/>
           <Include href="补间 8.xml" itemIcon="1" loadImmediate="false" itemID="6867ba51-0000394b" lastModified="1751628369"/>
           <Include href="补间 9.xml" itemIcon="1" loadImmediate="false" itemID="6867ba51-0000394d" lastModified="1751628369"/>
-          <Include href="弹壳/能量全威力弹壳.xml" itemID="66357e57-00000b8b" lastModified="1714812151"/>
           <Include href="电感切割刃/刀-电感切割刃.xml" itemID="655c55d9-00000308" lastModified="1721580831"/>
           <Include href="电感切割刃/刀脊.xml" loadImmediate="false" itemID="655c4e2f-0000062f" lastModified="1700551159"/>
           <Include href="电感切割刃/刀脊花纹.xml" loadImmediate="false" itemID="655c4e77-00000633" lastModified="1700548288"/>
@@ -750,6 +751,21 @@
                     <SolidSwatchItem color="#12575F" hue="124" saturation="163" brightness="53"/>
                     <SolidSwatchItem color="#0E4349" hue="124" saturation="164" brightness="41"/>
                     <SolidSwatchItem color="#0B3539" hue="124" saturation="165" brightness="32"/>
+                    <SolidSwatchItem color="#2C2C2C" brightness="41"/>
+                    <SolidSwatchItem color="#393C3D" hue="133" saturation="6" brightness="56"/>
+                    <SolidSwatchItem color="#484D4E" hue="128" saturation="9" brightness="71"/>
+                    <SolidSwatchItem color="#171919" hue="120" saturation="10" brightness="23"/>
+                    <SolidSwatchItem color="#020202" brightness="2"/>
+                    <SolidSwatchItem color="#27292C" hue="140" saturation="12" brightness="39"/>
+                    <SolidSwatchItem color="#5A5F60" hue="128" saturation="7" brightness="88"/>
+                    <SolidSwatchItem color="#2A2D2E" hue="133" saturation="9" brightness="42"/>
+                    <SolidSwatchItem color="#121313" hue="120" saturation="7" brightness="18"/>
+                    <SolidSwatchItem color="#090909" brightness="8"/>
+                    <SolidSwatchItem color="#252727" hue="120" saturation="7" brightness="36"/>
+                    <SolidSwatchItem color="#141515" hue="120" saturation="6" brightness="20"/>
+                    <SolidSwatchItem color="#6F302F" hue="1" saturation="97" brightness="74"/>
+                    <SolidSwatchItem color="#230606" saturation="166" brightness="20"/>
+                    <SolidSwatchItem color="#1F0303" saturation="195" brightness="16"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -832,6 +848,15 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="575153" publishTime="1751898630"/>
+          <PublishItem publishSize="575155" publishTime="1751898571"/>
+          <PublishItem publishSize="575155" publishTime="1751898563"/>
+          <PublishItem publishSize="575156" publishTime="1751898444"/>
+          <PublishItem publishSize="575141" publishTime="1751898014"/>
+          <PublishItem publishSize="575159" publishTime="1751896798"/>
+          <PublishItem publishSize="572766" publishTime="1751890784"/>
+          <PublishItem publishSize="573000" publishTime="1751890684"/>
+          <PublishItem publishSize="562395" publishTime="1751887326"/>
           <PublishItem publishSize="562395" publishTime="1751886963"/>
           <PublishItem publishSize="562395" publishTime="1751886946"/>
           <PublishItem publishSize="562397" publishTime="1751886836"/>
@@ -843,14 +868,5 @@
           <PublishItem publishSize="536859" publishTime="1751808617"/>
           <PublishItem publishSize="536770" publishTime="1751808457"/>
           <PublishItem publishSize="536808" publishTime="1751808299"/>
-          <PublishItem publishSize="536767" publishTime="1751806430"/>
-          <PublishItem publishSize="535392" publishTime="1751803980"/>
-          <PublishItem publishSize="537145" publishTime="1751803877"/>
-          <PublishItem publishSize="507951" publishTime="1751628409"/>
-          <PublishItem publishSize="502792" publishTime="1751627944"/>
-          <PublishItem publishSize="502795" publishTime="1751627759"/>
-          <PublishItem publishSize="502503" publishTime="1751622970"/>
-          <PublishItem publishSize="502514" publishTime="1751622906"/>
-          <PublishItem publishSize="502453" publishTime="1751612075"/>
      </publishHistory>
 </DOMDocument>
