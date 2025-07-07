@@ -8,6 +8,7 @@
           <DOMFolderItem name="sprite" itemID="667d1fff-00000d61"/>
           <DOMFolderItem name="wa90" itemID="6559d3b1-000002db"/>
           <DOMFolderItem name="wa90/Graphic" itemID="5e86cc75-00001260"/>
+          <DOMFolderItem name="弹壳" itemID="686ba944-00001b2e"/>
           <DOMFolderItem name="电感切割刃" itemID="655c5883-00000334"/>
           <DOMFolderItem name="光玉的剑相关" itemID="68668bb8-000033c6"/>
           <DOMFolderItem name="火药燃气液压打桩机" itemID="655175a5-000006e2"/>
@@ -124,9 +125,13 @@
           <Include href="NEGEV/内格夫子弹1.xml" loadImmediate="false" itemID="686a5e0b-00003660" lastModified="1751809025"/>
           <Include href="NEGEV/内格夫子弹2.xml" loadImmediate="false" itemID="686a5e48-00003664" lastModified="1751809056"/>
           <Include href="NEGEV/内格夫子弹3.xml" loadImmediate="false" itemID="686a5e6b-00003668" lastModified="1751809009"/>
-          <Include href="NEGEV/图标-NEGEV.xml" itemID="686a79e8-000011a8" lastModified="1751882036"/>
-          <Include href="PKP/PKP.xml" itemID="686b8a62-00000383" lastModified="1751882150"/>
-          <Include href="PKP/图标-PKP.xml" itemID="686b8a7a-000003a0" lastModified="1751881974"/>
+          <Include href="NEGEV/图标-NEGEV.xml" itemID="686a79e8-000011a8" lastModified="1751886826"/>
+          <Include href="PKP/PKP.xml" itemID="686b8a62-00000383" lastModified="1751887268"/>
+          <Include href="PKP/PKP弹链动画.xml" loadImmediate="false" itemID="686ba7f6-00000b49" lastModified="1751886658"/>
+          <Include href="PKP/PKP子弹1.xml" loadImmediate="false" itemID="686ba894-00000cab" lastModified="1751886365"/>
+          <Include href="PKP/pkp子弹2.xml" loadImmediate="false" itemID="686ba89d-00000cb1" lastModified="1751886289"/>
+          <Include href="PKP/pkp子弹3.xml" loadImmediate="false" itemID="686ba8ab-00000cb7" lastModified="1751886231"/>
+          <Include href="PKP/图标-PKP.xml" itemID="686b8a7a-000003a0" lastModified="1751887291"/>
           <Include href="sprite/Symbol 35.xml" itemID="6577b699-00000971" lastModified="1718635260"/>
           <Include href="sprite/Symbol 36.xml" loadImmediate="false" itemID="6577b699-00000972" lastModified="1719476235"/>
           <Include href="Symbol 590.xml" loadImmediate="false" itemID="6577faef-00001510" lastModified="1701508661"/>
@@ -182,6 +187,7 @@
           <Include href="补间 7.xml" itemIcon="1" loadImmediate="false" itemID="6866435a-000003b9" lastModified="1751532378"/>
           <Include href="补间 8.xml" itemIcon="1" loadImmediate="false" itemID="6867ba51-0000394b" lastModified="1751628369"/>
           <Include href="补间 9.xml" itemIcon="1" loadImmediate="false" itemID="6867ba51-0000394d" lastModified="1751628369"/>
+          <Include href="弹壳/能量全威力弹壳.xml" itemID="66357e57-00000b8b" lastModified="1714812151"/>
           <Include href="电感切割刃/刀-电感切割刃.xml" itemID="655c55d9-00000308" lastModified="1721580831"/>
           <Include href="电感切割刃/刀脊.xml" loadImmediate="false" itemID="655c4e2f-0000062f" lastModified="1700551159"/>
           <Include href="电感切割刃/刀脊花纹.xml" loadImmediate="false" itemID="655c4e77-00000633" lastModified="1700548288"/>
@@ -741,6 +747,9 @@
                     <SolidSwatchItem color="#A89E99" hue="14" saturation="19" brightness="151"/>
                     <SolidSwatchItem color="#DBD9D4" hue="27" saturation="19" brightness="203"/>
                     <SolidSwatchItem color="#F9F9F8" hue="40" saturation="18" brightness="234"/>
+                    <SolidSwatchItem color="#12575F" hue="124" saturation="163" brightness="53"/>
+                    <SolidSwatchItem color="#0E4349" hue="124" saturation="164" brightness="41"/>
+                    <SolidSwatchItem color="#0B3539" hue="124" saturation="165" brightness="32"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -823,6 +832,11 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="562395" publishTime="1751886963"/>
+          <PublishItem publishSize="562395" publishTime="1751886946"/>
+          <PublishItem publishSize="562397" publishTime="1751886836"/>
+          <PublishItem publishSize="562433" publishTime="1751886669"/>
+          <PublishItem publishSize="561400" publishTime="1751885495"/>
           <PublishItem publishSize="537114" publishTime="1751809742"/>
           <PublishItem publishSize="537116" publishTime="1751809067"/>
           <PublishItem publishSize="536857" publishTime="1751808636"/>
@@ -838,10 +852,5 @@
           <PublishItem publishSize="502503" publishTime="1751622970"/>
           <PublishItem publishSize="502514" publishTime="1751622906"/>
           <PublishItem publishSize="502453" publishTime="1751612075"/>
-          <PublishItem publishSize="502459" publishTime="1751612062"/>
-          <PublishItem publishSize="502455" publishTime="1751598028"/>
-          <PublishItem publishSize="502457" publishTime="1751597941"/>
-          <PublishItem publishSize="502458" publishTime="1751597744"/>
-          <PublishItem publishSize="502432" publishTime="1751597583"/>
      </publishHistory>
 </DOMDocument>

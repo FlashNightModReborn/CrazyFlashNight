@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NEGEV/图标-NEGEV" itemID="686a79e8-000011a8" linkageExportForAS="true" linkageIdentifier="图标-NEGEV" lastModified="1751882036" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NEGEV/图标-NEGEV" itemID="686a79e8-000011a8" linkageExportForAS="true" linkageIdentifier="图标-NEGEV" lastModified="1751886826" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="图标-NEGEV">
+    <DOMTimeline name="图标-NEGEV" currentFrame="1">
       <layers>
         <DOMLayer name="Action Layer" color="#FFFF00" locked="true">
           <frames>
@@ -26,13 +26,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Masked Layer 3 - 2" color="#FFFF00" parentLayerIndex="1" current="true" isSelected="true">
+        <DOMLayer name="Masked Layer 3 - 2" color="#FFFF00" parentLayerIndex="1" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="NEGEV/Negev" centerPoint3DX="-178" centerPoint3DY="193.5">
+                <DOMSymbolInstance libraryItemName="NEGEV/Negev" centerPoint3DX="-164.7" centerPoint3DY="179.9">
                   <matrix>
-                    <Matrix a="0.197845458984375" b="-0.169052124023438" c="0.169052124023438" d="0.197845458984375" tx="-18.55" ty="28.55"/>
+                    <Matrix a="0.197845458984375" b="-0.169052124023438" c="0.169052124023438" d="0.197845458984375" tx="-5.25" ty="14.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="994" y="72.7"/>
@@ -55,7 +55,7 @@
             </DOMFrame>
             <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="NEGEV/Negev" selected="true" centerPoint3DX="6.9" centerPoint3DY="-89">
+                <DOMSymbolInstance libraryItemName="NEGEV/Negev" centerPoint3DX="6.9" centerPoint3DY="-89">
                   <matrix>
                     <Matrix a="0.212646484375" d="0.212646484375" tx="-8.1" ty="-0.25"/>
                   </matrix>

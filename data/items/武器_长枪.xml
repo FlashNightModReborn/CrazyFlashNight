@@ -1403,15 +1403,14 @@
   <item>
     <id>6033</id>
     <name>PKM战术版</name>
-    <displayname>PKM战术版</displayname>
-    <icon>PKM战术版</icon>
+    <displayname>PKP机枪</displayname>
+    <icon>PKP</icon>
     <type>武器</type>
     <use>长枪</use>
     <weight>10</weight>
     <price>60000</price>
-    <description>PK通用机枪是由AK突击步枪的设计者米哈伊尔·季莫费耶维奇·卡拉什尼科夫在1961年设计的通用机枪，PKM则是在1969年的改进款式。
-    作为设计最成功的轻机枪，自这把枪诞生之起就参与了随后世界上的几乎每一场战争。
-    便是如今的21世纪，也仍能在战争中见到它的身影。</description>
+    <description>PKP佩切涅格机枪（Pecheneg）是由TsNIITochMash在1999年开发的通用机枪，为传奇机枪PKM的现代化升级版本。
+PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳定持续射击，而无需更换枪管。凭借出色的可靠性、精度和持续火力，PKP在21世纪的诸多战场上发挥着重要作用。</description>
     <level>50</level>
     <data>
       <capacity>200</capacity>
@@ -1429,8 +1428,18 @@
       <impact>35</impact>
     </data>
     <equipped>
-      <dressup>枪-长枪-PKM战术版</dressup>
-    </equipped>
+      <dressup>枪-长枪-PKP</dressup>
+    </equipped>    
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>NEGEV初始化</initRoutines>
+        </init>
+        <cycle>
+          <cycleRoutines>NEGEV周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <id>6063</id>

@@ -1,0 +1,505 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="PKP/PKP弹链动画" itemID="686ba7f6-00000b49" lastModified="1751886658" lastUniqueIdentifier="10">
+  <timeline>
+    <DOMTimeline name="PKP弹链动画">
+      <layers>
+        <DOMLayer name="图层 22" color="#808080">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 13" color="#4FFFFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/PKP子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="1.55" ty="50.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/PKP子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="1.55" ty="49.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 14" color="#808080" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹2" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="1.3" ty="46.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.5" ty="45.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="1.3" ty="44.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="1.3" ty="43.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 15" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="1.35" ty="40.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.55" ty="38.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="1.35" ty="38.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="1.35" ty="37"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 16" color="#FF4F4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/PKP子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.85" ty="34.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/PKP子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.05" ty="32.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/PKP子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.85" ty="32.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/PKP子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.85" ty="31.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 17" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.85" ty="28.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.05" ty="26.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.85" ty="25.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.85" ty="24.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 18" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.45" ty="21.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-0.35" ty="19.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.45" ty="18.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.45" ty="17.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 19" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.45" ty="15.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-0.35" ty="13.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.45" ty="12.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.45" ty="11.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 20" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.4" ty="8.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-0.4" ty="6.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.4" ty="6.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.4" ty="5.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 21" color="#4FFFFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/PKP子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix ty="4.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/PKP子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.65" ty="2.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/PKP子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.2" ty="2.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/PKP子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix ty="1.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-0.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PKP/pkp子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-1.15" ty="0.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
