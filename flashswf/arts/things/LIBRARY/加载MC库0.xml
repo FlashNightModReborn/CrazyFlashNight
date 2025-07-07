@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="加载MC库0" itemID="66aca1fb-00000e15" linkageExportForAS="true" linkageIdentifier="加载MC库0" lastModified="1747939170">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="加载MC库0" itemID="66aca1fb-00000e15" linkageExportForAS="true" linkageIdentifier="加载MC库0" lastModified="1747939170" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="加载MC库0">
+    <DOMTimeline name="加载MC库0" currentFrame="29">
       <layers>
         <DOMLayer name="Labels Layer 1" color="#F37820">
           <frames>
@@ -78,7 +78,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Labels Layer 2" color="#AFD007">
+        <DOMLayer name="Labels Layer 2" color="#AFD007" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="101" keyMode="9728">
               <elements/>
@@ -30389,7 +30389,7 @@
             </DOMFrame>
             <DOMFrame index="94" duration="7" keyMode="9728">
               <elements>
-                <DOMShape isFloating="true">
+                <DOMShape>
                   <strokes>
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal">
@@ -30942,7 +30942,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 817" color="#D7FA0A" current="true" isSelected="true">
+        <DOMLayer name="Layer 817" color="#D7FA0A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -30996,7 +30996,7 @@
             </DOMFrame>
             <DOMFrame index="29" duration="3" keyMode="9728">
               <elements>
-                <DOMShape isFloating="true">
+                <DOMShape>
                   <strokes>
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal">
@@ -31040,7 +31040,7 @@
             </DOMFrame>
             <DOMFrame index="40" duration="2" keyMode="9728">
               <elements>
-                <DOMShape isFloating="true">
+                <DOMShape>
                   <fills>
                     <FillStyle index="1">
                       <SolidColor color="#D2D1D7"/>
@@ -31048,8 +31048,8 @@
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!44305 -5055[44267 -5065 44204 -5104!44204 -5104[44125 -5152 44125 -5188!44125 -5188[44125 -5236 44157 -5287!44157 -5287[44188 -5337 44225 -5350!44225 -5350[44208 -5315 44167 -5250!44167 -5250[44145 -5215 44145 -5185!44145 -5185[44145
- -5135 44305 -5055"/>
+!44204 -5104[44125 -5152 44125 -5188!44125 -5188[44125 -5236 44157 -5287!44157 -5287[44188 -5337 44225 -5350!44225 -5350[44208 -5315 44167 -5250!44167 -5250[44145 -5215 44145 -5185!44145 -5185[44145 -5135 44305 -5055!44305 -5055[44267
+ -5065 44204 -5104"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -31069,12 +31069,12 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="
-!52392 20185|52069 20186!52069 20186|52069 20187!52069 20187|52394 20187"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="
-!52394 20187|52392 20185"/>
                     <Edge fillStyle0="2" edges="
 !52394 20187|52428 20187!52428 20187|52428 20185!52428 20185|52392 20185"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!52392 20185|52394 20187"/>
+                    <Edge fillStyle0="1" edges="
+!52392 20185|52069 20186!52069 20186|52069 20187!52069 20187|52394 20187"/>
                   </edges>
                 </DOMShape>
               </elements>

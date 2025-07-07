@@ -1,0 +1,762 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NEGEV/PKM弹链动画" itemID="686b5700-000013d4" lastModified="1751865088" lastUniqueIdentifier="10">
+  <timeline>
+    <DOMTimeline name="PKM弹链动画" currentFrame="1">
+      <layers>
+        <DOMLayer name="图层 22" color="#808080">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 13" color="#4FFFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-7.85" ty="46.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹1" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-9.1" ty="43.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-8.85" ty="38.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-8.1" ty="36.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 14" color="#808080">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-6.55" ty="40.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-8.3" ty="37.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-7.8" ty="32.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-6.55" ty="30.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 15" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-4.85" ty="35.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-6.6" ty="32"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-6.6" ty="27.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-4.35" ty="25.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 16" color="#FF4F4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-3.4" ty="30.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-11.1" ty="66.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-12.05" ty="70.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-5.9" ty="27.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-12.1" ty="63.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-12.8" ty="67.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-13.4" ty="78.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-5.4" ty="23.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-11.1" ty="58.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-12.05" ty="63.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-3.4" ty="21.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-11.1" ty="56.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-12.05" ty="61.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 17" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-2.95" ty="25.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-8.4" ty="50.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-11.6" ty="61.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-5.2" ty="21.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-9.65" ty="47.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-12.35" ty="58.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-4.95" ty="17.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-9.9" ty="43.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-11.6" ty="54.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-2.95" ty="15.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-8.4" ty="41.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-11.6" ty="52.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 18" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-2" ty="19.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-10.2" ty="55.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-3.75" ty="16.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-10.7" ty="52.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-4" ty="11.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-10.2" ty="48.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-12.35" ty="78.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-2" ty="9.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-10.2" ty="46.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 19" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-1.5" ty="14.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-12.6" ty="76.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-3.25" ty="11.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-12.85" ty="73.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-2.25" ty="6.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-12.35" ty="69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-1.5" ty="4.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-12.35" ty="66.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 20" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-0.75" ty="9.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-12.15" ty="80.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-2.5" ty="5.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-0.75" ty="1.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-0.75" ty="-0.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-12.4" ty="77.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 21" color="#4FFFFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.3" ty="4.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-1.95" ty="2.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.3" ty="-1.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.3" ty="-1.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.85" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.65" ty="-0.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-0.35" ty="-0.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-12.05" ty="74.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NEGEV/PKM子弹3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-12.05" ty="72.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
