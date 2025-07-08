@@ -116,11 +116,11 @@ a.runTests();
 [PASS] Successfully recovered from errors
 
 --- Test: Basic Performance ---
-Basic Performance: 10000 transit calls in 59ms
+Basic Performance: 10000 transit calls in 53ms
 [PASS] Basic performance acceptable
 
 --- Test: Many Transitions Performance ---
-Many Transitions Performance: 1000 transitions, 1000 calls in 1839ms
+Many Transitions Performance: 1000 transitions, 1000 calls in 1963ms
 [PASS] Many transitions performance acceptable
 
 --- Test: Complex Conditions Performance ---
@@ -128,15 +128,15 @@ Complex Conditions Performance: 1000 complex calculations in 16ms
 [PASS] Complex conditions performance acceptable
 
 --- Test: Frequent Transit Calls Performance ---
-Frequent Calls Performance: 50000 calls in 287ms
+Frequent Calls Performance: 50000 calls in 294ms
 [PASS] Frequent calls performance acceptable
 
 --- Test: Transition Scalability ---
-Scale 10: 100 calls in 3ms
-Scale 50: 100 calls in 12ms
-Scale 100: 100 calls in 18ms
-Scale 500: 100 calls in 32ms
-Scale 1000: 100 calls in 37ms
+Scale 10: 100 calls in 2ms
+Scale 50: 100 calls in 11ms
+Scale 100: 100 calls in 25ms
+Scale 500: 100 calls in 29ms
+Scale 1000: 100 calls in 32ms
 [PASS] Transition scalability is acceptable
 
 --- Test: Memory Usage Optimization ---
@@ -144,7 +144,7 @@ Scale 1000: 100 calls in 37ms
 
 --- Test: Transition Caching ---
 [PASS] All calculations executed (no caching implemented)
-Caching test: 10 calls took 4ms
+Caching test: 10 calls took 6ms
 [PASS] Caching test completed (baseline established)
 
 --- Test: Conditional Short-Circuiting ---
@@ -178,15 +178,15 @@ Success Rate: 100%
 === TRANSITIONS PERFORMANCE ANALYSIS ===
 Context: Basic Transit Call
   Iterations: 10000
-  Total Time: 59ms
-  Avg per Operation: 0.0059ms
-  Operations per Second: 169492
+  Total Time: 53ms
+  Avg per Operation: 0.0053ms
+  Operations per Second: 188679
 ---
 Context: Many Transitions
   Iterations: 1000
-  Total Time: 1839ms
-  Avg per Operation: 1.839ms
-  Operations per Second: 544
+  Total Time: 1963ms
+  Avg per Operation: 1.963ms
+  Operations per Second: 509
 ---
 Context: Complex Conditions
   Iterations: 1000
@@ -196,47 +196,47 @@ Context: Complex Conditions
 ---
 Context: Frequent Transit Calls
   Iterations: 50000
-  Total Time: 287ms
-  Avg per Operation: 0.00574ms
-  Operations per Second: 174216
+  Total Time: 294ms
+  Avg per Operation: 0.00588ms
+  Operations per Second: 170068
 ---
 Context: Scale 10
   Iterations: 100
-  Total Time: 3ms
-  Avg per Operation: 0.03ms
-  Operations per Second: 33333
+  Total Time: 2ms
+  Avg per Operation: 0.02ms
+  Operations per Second: 50000
 ---
 Context: Scale 50
   Iterations: 100
-  Total Time: 12ms
-  Avg per Operation: 0.12ms
-  Operations per Second: 8333
+  Total Time: 11ms
+  Avg per Operation: 0.11ms
+  Operations per Second: 9091
 ---
 Context: Scale 100
   Iterations: 100
-  Total Time: 18ms
-  Avg per Operation: 0.18ms
-  Operations per Second: 5556
+  Total Time: 25ms
+  Avg per Operation: 0.25ms
+  Operations per Second: 4000
 ---
 Context: Scale 500
+  Iterations: 100
+  Total Time: 29ms
+  Avg per Operation: 0.29ms
+  Operations per Second: 3448
+---
+Context: Scale 1000
   Iterations: 100
   Total Time: 32ms
   Avg per Operation: 0.32ms
   Operations per Second: 3125
 ---
-Context: Scale 1000
-  Iterations: 100
-  Total Time: 37ms
-  Avg per Operation: 0.37ms
-  Operations per Second: 2703
----
 Context: Memory Stress Test
   Iterations: 1000
-  Total Time: 5ms
-  Avg per Operation: 0.005ms
-  Operations per Second: 200000
+  Total Time: 6ms
+  Avg per Operation: 0.006ms
+  Operations per Second: 166667
 ---
 === PERFORMANCE RECOMMENDATIONS ===
-Overall Average: 0.0363464566929134ms per operation
+Overall Average: 0.0382834645669291ms per operation
 ✅ Excellent performance - suitable for real-time applications
 =============================
