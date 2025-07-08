@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1751890731" lastUniqueIdentifier="110">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1751975099" lastUniqueIdentifier="114">
   <timeline>
-    <DOMTimeline name="fs配置素材" currentFrame="20" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;247&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="25" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;247&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
         <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
@@ -278,12 +278,28 @@
                     <Point x="364.55" y="-11.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="XM556/图标XM556-Microgun" selected="true" centerPoint3DX="-458.05" centerPoint3DY="627.3">
+                <DOMSymbolInstance libraryItemName="XM556/图标XM556-Microgun" centerPoint3DX="-458.05" centerPoint3DY="627.3">
                   <matrix>
                     <Matrix tx="-458.05" ty="627.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="44.45" y="-28.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="XM556/XM556-H-Stinger" centerPoint3DX="-459.55" centerPoint3DY="725.75">
+                  <matrix>
+                    <Matrix tx="-585.65" ty="746.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="125.85" y="-21.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="XM556/图标-XM556-H-Stinger" selected="true" centerPoint3DX="-437.35" centerPoint3DY="796.95">
+                  <matrix>
+                    <Matrix tx="-437.35" ty="796.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62.55" y="-38.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

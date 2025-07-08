@@ -119,7 +119,7 @@
           <Include href="53式步骑枪/调整层.xml" loadImmediate="false" itemID="659eb6ee-000005a7" lastModified="1704953093"/>
           <Include href="53式步骑枪/图标-53式步骑枪.xml" itemID="659eadd3-00000327" lastModified="1704901315"/>
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1751890731"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1751975099"/>
           <Include href="NEGEV/Negev.xml" itemID="686a4cad-0000364f" lastModified="1751878281"/>
           <Include href="NEGEV/内格夫弹链动画.xml" loadImmediate="false" itemID="686a67d8-000036bc" lastModified="1751805789"/>
           <Include href="NEGEV/内格夫子弹1.xml" loadImmediate="false" itemID="686a5e0b-00003660" lastModified="1751809025"/>
@@ -180,7 +180,9 @@
           <Include href="wa90/瞄具.xml" itemIcon="1" loadImmediate="false" itemID="60abd43a-00002933" lastModified="1621873722"/>
           <Include href="wa90/图标-wa90.xml" itemID="6559de84-0000042e" lastModified="1700388617"/>
           <Include href="wa90/消音器.xml" itemIcon="1" loadImmediate="false" itemID="60abd2e4-0000291f" lastModified="1621887798"/>
+          <Include href="XM556/XM556-H-Stinger.xml" itemID="686cf53f-0000469e" lastModified="1751975018"/>
           <Include href="XM556/XM556-Microgun.xml" itemID="686bd9c0-000044e9" lastModified="1751898560"/>
+          <Include href="XM556/图标-XM556-H-Stinger.xml" itemID="686d0486-000046e2" lastModified="1751975088"/>
           <Include href="XM556/图标XM556-Microgun.xml" itemID="686bd9b1-000044e8" lastModified="1751898607"/>
           <Include href="补间 3.xml" itemIcon="1" loadImmediate="false" itemID="657ba813-000004c4" lastModified="1702602771"/>
           <Include href="补间 4.xml" itemIcon="1" loadImmediate="false" itemID="657ba813-000004c6" lastModified="1702602771"/>
@@ -766,6 +768,17 @@
                     <SolidSwatchItem color="#6F302F" hue="1" saturation="97" brightness="74"/>
                     <SolidSwatchItem color="#230606" saturation="166" brightness="20"/>
                     <SolidSwatchItem color="#1F0303" saturation="195" brightness="16"/>
+                    <SolidSwatchItem color="#181919" hue="120" saturation="5" brightness="24"/>
+                    <SolidSwatchItem color="#2C3031" hue="128" saturation="14" brightness="44"/>
+                    <SolidSwatchItem color="#1D2020" hue="120" saturation="13" brightness="29"/>
+                    <SolidSwatchItem color="#1E2122" hue="130" saturation="16" brightness="30"/>
+                    <SolidSwatchItem color="#2E2E2E" brightness="43"/>
+                    <SolidSwatchItem color="#050606" hue="120" saturation="22" brightness="6"/>
+                    <SolidSwatchItem color="#191B1A" hue="80" saturation="5" brightness="25"/>
+                    <SolidSwatchItem color="#1E2223" hue="128" saturation="20" brightness="31"/>
+                    <SolidSwatchItem color="#111413" hue="107" saturation="21" brightness="18"/>
+                    <SolidSwatchItem color="#121514" hue="107" saturation="19" brightness="19"/>
+                    <SolidSwatchItem color="#191A1B" hue="160" saturation="5" brightness="25"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -848,6 +861,12 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="598749" publishTime="1751974965"/>
+          <PublishItem publishSize="598748" publishTime="1751974648"/>
+          <PublishItem publishSize="598796" publishTime="1751974589"/>
+          <PublishItem publishSize="598540" publishTime="1751974533"/>
+          <PublishItem publishSize="598598" publishTime="1751974493"/>
+          <PublishItem publishSize="598594" publishTime="1751974381"/>
           <PublishItem publishSize="575153" publishTime="1751898630"/>
           <PublishItem publishSize="575155" publishTime="1751898571"/>
           <PublishItem publishSize="575155" publishTime="1751898563"/>
@@ -862,11 +881,5 @@
           <PublishItem publishSize="562397" publishTime="1751886836"/>
           <PublishItem publishSize="562433" publishTime="1751886669"/>
           <PublishItem publishSize="561400" publishTime="1751885495"/>
-          <PublishItem publishSize="537114" publishTime="1751809742"/>
-          <PublishItem publishSize="537116" publishTime="1751809067"/>
-          <PublishItem publishSize="536857" publishTime="1751808636"/>
-          <PublishItem publishSize="536859" publishTime="1751808617"/>
-          <PublishItem publishSize="536770" publishTime="1751808457"/>
-          <PublishItem publishSize="536808" publishTime="1751808299"/>
      </publishHistory>
 </DOMDocument>

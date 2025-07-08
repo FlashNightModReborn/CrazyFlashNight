@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="XM556/图标XM556-Microgun" itemID="686bd9b1-000044e8" linkageExportForAS="true" linkageIdentifier="图标-XM556-Microgun" lastModified="1751898607" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="XM556/图标-XM556-H-Stinger" itemID="686d0486-000046e2" linkageExportForAS="true" linkageIdentifier="图标-XM556-H-Stinger" lastModified="1751975088" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="图标XM556-Microgun" currentFrame="1">
+    <DOMTimeline name="图标-XM556-H-Stinger">
       <layers>
         <DOMLayer name="Action Layer" color="#FFFF00" locked="true">
           <frames>
@@ -26,13 +26,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Masked Layer 3 - 2" color="#FFFF00" parentLayerIndex="1" locked="true">
+        <DOMLayer name="Masked Layer 3 - 2" color="#FFFF00" parentLayerIndex="1" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="XM556/XM556-Microgun" centerPoint3DX="-215.95" centerPoint3DY="214.75">
+                <DOMSymbolInstance libraryItemName="XM556/XM556-H-Stinger" selected="true" centerPoint3DX="-203.75" centerPoint3DY="190.45">
                   <matrix>
-                    <Matrix a="0.15802001953125" b="-0.135025024414063" c="0.135025024414063" d="0.15802001953125" tx="-14.4" ty="18.85"/>
+                    <Matrix a="0.15802001953125" b="-0.135025024414063" c="0.135025024414063" d="0.15802001953125" tx="-2.2" ty="-5.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="994.1" y="72.65"/>
@@ -42,7 +42,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
+        <DOMLayer name="Layer 1" color="#FFFF00">
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <elements>
@@ -55,7 +55,7 @@
             </DOMFrame>
             <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="XM556/XM556-Microgun" centerPoint3DX="6.9" centerPoint3DY="-89">
+                <DOMSymbolInstance libraryItemName="XM556/XM556-H-Stinger" centerPoint3DX="6.9" centerPoint3DY="-89">
                   <matrix>
                     <Matrix a="0.212646484375" d="0.212646484375" tx="-8.1" ty="-0.25"/>
                   </matrix>
