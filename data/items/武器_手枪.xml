@@ -3639,5 +3639,39 @@
       <dressup>枪-手枪-STI2011</dressup>
       <slay>6</slay>
     </equipped>
+  </item>  
+  <item>
+    <id>5704</id>
+    <name>XM556-H-Stinger</name>
+    <displayname>XM556-H-Stinger</displayname>
+    <icon>XM556-H-Stinger</icon>
+    <type>武器</type>
+    <use>手枪</use>
+    <weight>10</weight>
+    <price>232960</price>
+    <description>铁枪会基于XM556技术开发的革命性单手加特林武器系统。
+    这款被命名为"Stinger"的衍生型号配备了重新设计的紧凑供弹装置与优化动力系统，精准适配快速机动作战需求。 尽管为实现极致便携性而在射速和容量上有所取舍，但Stinger仍能在关键时刻瞬间倾泻致命火力风暴。</description>
+    <level>35</level>
+    <data>
+      <capacity>25</capacity>
+      <split>5</split>
+      <diffusion>8</diffusion>
+      <interval>200</interval>
+      <velocity>35</velocity>
+      <bullet>纵向机枪联弹-加强普通子弹</bullet>
+      <bulletrename>加强普通子弹</bulletrename>
+      <sound>re_MG_m134.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>机枪通用弹药</clipname>
+      <bulletsize>30</bulletsize>
+      <power>40</power>
+      <impact>2</impact>
+    </data>
+    <equipped>
+      <dressup>枪-手枪-XM556-H-Stinger</dressup>      
+      <evasion>-20</evasion>
+      <accuracy>-20</accuracy>
+    </equipped>    
   </item>
 </root>
