@@ -16,6 +16,7 @@ portraitLoader.load(function(data:Object):Void {
 
 _root.对话框UI.清理外部立绘缓存 = function(保留数量){
     if(isNaN(保留数量)) 保留数量 = 3;
+    if(保留数量 < 0) 保留数量 = 0;
     if(this.loadPortraitList.length > 保留数量){
         var cutlen = this.loadPortraitList.length - 保留数量;
         for(var i = cutlen - 1; i > -1; i--){
@@ -24,7 +25,7 @@ _root.对话框UI.清理外部立绘缓存 = function(保留数量){
             portraitInfo.instance = null;
         }
         this.loadPortraitList.splice(0, cutlen);
-        _root.发布消息("清理",cutlen,"个外部立绘缓存");
+        // _root.发布消息("清理",cutlen,"个外部立绘缓存");
     }
 }
 
@@ -56,13 +57,13 @@ _root.对话框UI.刷新内容 = function(){
         人物表情 = dialogueInfo[4];
         if (人物表情 == null) 人物表情 = "普通";
         对话对象 = dialogueInfo[5];
-        //
+        // 直接加载立绘 / 从外部文件导入立绘
         if(_root.对话框UI.loadPortraitDict[头像图标帧名] != null){
             刷新外部导入立绘();
         }else {
             刷新立绘();
         }
-        //
+        // 加载对话图片
         对话图片 = dialogueInfo[6];
         if (typeof 对话图片 == "string" && 对话图片 != ""){
             if (对话图片 == "close"){
@@ -106,14 +107,12 @@ _root.对话框UI.刷新外部导入立绘 = function(){
 }
 
 _root.对话框UI.打字 = function(fonts){
-    if (this.i < length(fonts))
-    {
+    if (this.i < length(fonts)){
         this.是否打印完毕 = false;
         打字内容 += fonts.substr(this.i, 1);
         this.i = this.i + 1;
     }
-    if (this.i >= length(fonts))
-    {
+    if (this.i >= length(fonts)){
         结束打字();
     }
 }

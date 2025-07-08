@@ -11,7 +11,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
      * @param target 目标单位( MovieClip )
      */
     public static function initialize(target:MovieClip):Void {
-
+        if(target.updateEventComponentID != null) {
+            // _root.发布消息("existingUpdate",target._name);
+            return;
+        }
         
         var dispatcher:EventDispatcher = target.dispatcher;
         // 订阅 UpdateEventComponent 事件到 onUpdate 逻辑
@@ -45,6 +48,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
         target.updateEventComponentID = _root.帧计时器.unitUpdateWheel.add(target);
 
         WatchDogUpdater.init(target);
+
+        if(target._name === _root.控制目标) {
+            HeroPositionUpdater.init(target);
+        }
     }
 
     public static function onUpdate(target:MovieClip):Void {
@@ -60,8 +67,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
         InformationComponentUpdater.update(target);
         target.buffManager.update(4);
         WatchDogUpdater.update(target);
-        // 发布主角位置事件
-        _root.gameworld.dispatcher.publish("HeroPositionUpdated", target._x, target,_y);
+        HeroPositionUpdater.update(target);
     }
 
     public static function onMapElementUpdate(target:MovieClip):Void {

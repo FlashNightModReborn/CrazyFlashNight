@@ -199,7 +199,7 @@ class org.flashNight.neur.Event.EventBus {
         var callbacks:Object = listenersForEvent.callbacks;
         var poolRef:Array = this.pool;
         var tempCallbacksCount:Number = 0;
-        var localTempCallbacks:Array = this.tempCallbacks;
+        var localTempCallbacks:Array = this.tempCallbacks.slice(); // 建立tempCallbacks的浅拷贝，防止在递归执行publish函数时引发函数错位或其他未知问题
         var callback:Function;
 
         // 收集回调函数，使用索引方式
@@ -315,7 +315,7 @@ class org.flashNight.neur.Event.EventBus {
         var callbacks:Object = listenersForEvent.callbacks;
         var poolRef:Array = this.pool;
         var tempCallbacksCount:Number = 0;
-        var localTempCallbacks:Array = this.tempCallbacks;
+        var localTempCallbacks:Array = this.tempCallbacks.slice(); // 建立tempCallbacks的浅拷贝，防止在递归执行publish函数时引发函数错位或其他未知问题
         var callback:Function;
         
         // 收集回调函数，使用索引方式遍历回调池

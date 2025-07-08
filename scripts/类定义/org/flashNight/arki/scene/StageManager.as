@@ -201,7 +201,7 @@ class org.flashNight.arki.scene.StageManager {
 
         // 侦听玩家位置更新事件
         if(currentStageInfo.triggerInfo.length > 0){
-            gameworld.dispatcher.subscribe("HeroPositionUpdated", this.handleTriggers, this);
+            gameworld.dispatcher.subscribe("HeroMoved", this.handleTriggers, this);
         }
 
         // 将上述影片剪辑实例设置为不可枚举
@@ -324,7 +324,7 @@ class org.flashNight.arki.scene.StageManager {
 
 
     // 执行压力板事件，目前每个压力板只能被踩下一次
-    private function handleTriggers(heroX:Number, heroY:Number){
+    private function handleTriggers(heroX:Number, heroZ:Number){
         if(currentStageInfo.triggerInfo.length <= 0){
             return;
         }
@@ -333,8 +333,8 @@ class org.flashNight.arki.scene.StageManager {
             var trigger = currentStageInfo.triggerInfo[i];
             if(!isNaN(trigger.Xmin) && heroX <= trigger.Xmin) continue;
             if(!isNaN(trigger.Xmax) && heroX >= trigger.Xmax) continue;
-            if(!isNaN(trigger.Ymin) && heroY <= trigger.Ymin) continue;
-            if(!isNaN(trigger.Ymax) && heroY >= trigger.Ymax) continue;
+            if(!isNaN(trigger.Ymin) && heroZ <= trigger.Ymin) continue;
+            if(!isNaN(trigger.Ymax) && heroZ >= trigger.Ymax) continue;
             // 发布压力板事件并移除压力板
             gameworld.dispatcher.publish("TriggerPressed", trigger.id);
             currentStageInfo.triggerInfo.splice(i,1);
