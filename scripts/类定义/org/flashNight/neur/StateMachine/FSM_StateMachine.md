@@ -129,14 +129,20 @@ a.runTests();
 
 --- Test: Nested StateMachines ---
 [PASS] Parent machine active state is child machine
-[FAIL] Child machine 1 has its own active state
+[PASS] Child machine 1 has its own active state
 [PASS] Parent machine state changed
-[FAIL] Child machine state changed independently
+[PASS] Child machine state changed independently
 
 --- Test: Complex Workflow ---
 Initializing workflow...
 Processing...
-Workflow completed!
+Retrying...
+Processing...
+Retrying...
+Processing...
+Retrying...
+Processing...
+Workflow failed!
 [PASS] Workflow reached final state
 
 --- Test: State Chaining ---
@@ -178,12 +184,12 @@ Workflow completed!
 [PASS] Transition cleanup completed
 
 --- Test: Basic Performance ---
-Basic Performance: Transitions=85ms, Actions=94ms for 10000 operations
+Basic Performance: Transitions=80ms, Actions=93ms for 10000 operations
 [PASS] Transition performance acceptable
 [PASS] Action performance acceptable
 
 --- Test: Many States Performance ---
-Many States Performance: Create 1000 states in 31ms, 100 transitions in 0ms
+Many States Performance: Create 1000 states in 32ms, 100 transitions in 1ms
 [PASS] State creation scalable
 [PASS] State access scalable
 
@@ -192,21 +198,21 @@ Frequent Transitions Performance: 5000 transitions in 81ms
 [PASS] Frequent transitions performance acceptable
 
 --- Test: Complex Transition Performance ---
-Complex Transition Performance: 1000 complex transitions in 35ms
+Complex Transition Performance: 1000 complex transitions in 38ms
 [PASS] Complex transition performance acceptable
 
 --- Test: Scalability Test ---
-Size 10: Create=0ms, Transition=0ms, Operation=2ms
-Size 50: Create=0ms, Transition=1ms, Operation=1ms
+Size 10: Create=1ms, Transition=0ms, Operation=1ms
+Size 50: Create=1ms, Transition=0ms, Operation=1ms
 Size 100: Create=1ms, Transition=1ms, Operation=1ms
-Size 500: Create=7ms, Transition=7ms, Operation=1ms
+Size 500: Create=6ms, Transition=5ms, Operation=1ms
 [PASS] Scalability performance acceptable across different sizes
 
 === FINAL FSM TEST REPORT ===
-Tests Passed: 101
-Tests Failed: 2
-Success Rate: 98%
-⚠️  Some tests failed. Please review the implementation.
+Tests Passed: 103
+Tests Failed: 0
+Success Rate: 100%
+🎉 ALL TESTS PASSED! FSM StateMachine implementation is robust and performant.
 === FSM VERIFICATION SUMMARY ===
 ✓ Basic state machine operations verified
 ✓ State lifecycle management tested
