@@ -29,9 +29,10 @@ class org.flashNight.neur.StateMachine.FSM_Status implements IStatus {
         return !this.superMachine;
     }
 
+    // In FSM_Status.as
     public function OnInit():Void{
-        if (!isRootMachine()) return;
-        this.onEnter();
+        // 此方法逻辑已证明有害，其功能已由 FSM_StateMachine.onEnter 正确实现。
+        // 保留空方法以防现有代码调用，或从 FSM_StateMachine.AddStatus 中移除对此方法的调用。
     }
 
     public function destroy():Void{

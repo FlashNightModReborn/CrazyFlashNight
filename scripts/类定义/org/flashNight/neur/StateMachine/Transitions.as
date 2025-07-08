@@ -37,14 +37,17 @@ class org.flashNight.neur.StateMachine.Transitions {
         });
     }
 
-    public function Transit(current:String):String{
-        var list = this.lists[current];
-        //按顺序依次执行过渡函数
-        for(var i:Number = 0; i < list.length; i++){
-            var transition = list[i];
-            if(transition.active !== true) continue;
-            if(transition.func.call(status) === true){
-                return transition.target;
+    public function Transit(current:String):String {
+        var list:Array = this.lists[current];
+        if (!list) return null;
+
+        // 使用局部变量提高性能
+        var statusRef = this.status;
+        
+        for (var i:Number = 0; i < list.length; i++) {
+            var t = list[i];
+            if (t.active && t.func.call(statusRef) === true) {
+                return t.target;
             }
         }
         return null;
