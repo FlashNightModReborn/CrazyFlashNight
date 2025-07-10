@@ -17,7 +17,7 @@
           <DOMFolderItem name="MovieClip" itemID="68404178-00000b93"/>
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
           <DOMFolderItem name="sound" itemID="65a6bb4b-0000137a"/>
-          <DOMFolderItem name="sprite" itemID="66530518-00000d78"/>
+          <DOMFolderItem name="sprite" itemID="66530518-00000d78" isExpanded="true"/>
           <DOMFolderItem name="爆炸" itemID="67f13734-00000871"/>
           <DOMFolderItem name="各种图素材等" itemID="65e07117-00000783"/>
           <DOMFolderItem name="怪物通用模板" itemID="65b3a368-0000064f"/>
@@ -62,11 +62,11 @@
           <DOMFolderItem name="主角动画层" itemID="66577cd4-00002e52"/>
      </folders>
      <fonts>
-          <DOMFontItem name="Font 633" itemID="6577b697-0000075f" font="MS-PGothic" size="0" id="633" embeddedCharacters="否射是机"/>
-          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
-          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
-          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
           <DOMFontItem name="Font 86" itemID="6577b697-00000757" font="MicrosoftYaHei" size="0" id="86" embeddedCharacters=".Lv"/>
+          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
+          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
+          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
+          <DOMFontItem name="Font 633" itemID="6577b697-0000075f" font="MS-PGothic" size="0" id="633" embeddedCharacters="否射是机"/>
      </fonts>
      <media>
           <DOMSoundItem name="sound/BERSERK ON.wav" itemID="67ee296b-00000733" sourceExternalFilepath="../things0/LIBRARY/sound/BERSERK ON.wav" sourceLastImported="1743616370" externalFileSize="2840844" href="sound/BERSERK ON.wav" soundDataHRef="M 107 1743661368.dat" format="44kHz 16bit Stereo" sampleCount="710010" exportFormat="1" exportBits="13"/>
@@ -659,7 +659,6 @@
           <Include href="shape/Symbol 1283.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000cbb" lastModified="1702343951"/>
           <Include href="shape/Symbol 1284.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000cbc" lastModified="1702343951"/>
           <Include href="smoke17.xml" itemIcon="1" loadImmediate="false" itemID="45df3c4b-0000004f" lastModified="1727711934"/>
-          <Include href="sprite/npc.xml" itemID="668be737-00000661" lastModified="1720445705"/>
           <Include href="sprite/Symbol 3.xml" loadImmediate="false" itemID="6577b699-00000956" lastModified="1702343951"/>
           <Include href="sprite/Symbol 6 副本.xml" loadImmediate="false" itemID="660a1fad-00000af7" lastModified="1702343951"/>
           <Include href="sprite/Symbol 8.xml" loadImmediate="false" itemID="6577b699-0000095b" lastModified="1702343951"/>
@@ -1105,11 +1104,11 @@
           <Include href="sprite/刚体遮罩.xml" loadImmediate="false" itemID="65c9a9f5-0000062e" lastModified="1707753394"/>
           <Include href="sprite/黑红色爆炸.xml" itemID="668be72d-0000065f" lastModified="1721756218"/>
           <Include href="sprite/红色刀光.xml" loadImmediate="false" itemID="65b795a7-00000ba0" lastModified="1706530238"/>
+          <Include href="sprite/觉醒霸体特效.xml" itemID="668be723-0000065d" lastModified="1723967476"/>
+          <Include href="sprite/觉醒霸体特效原先.xml" itemID="66c19f0e-000017fb" lastModified="1723965222"/>
           <Include href="sprite/近战子弹.xml" itemID="65a73b51-000005d4" lastModified="1706607661"/>
           <Include href="sprite/近战子弹 副本.xml" loadImmediate="false" itemID="660a212e-00000b09" lastModified="1711945124"/>
           <Include href="sprite/镜芒一闪.xml" itemID="668be71d-0000065c" lastModified="1720444701"/>
-          <Include href="sprite/觉醒霸体特效.xml" itemID="668be723-0000065d" lastModified="1723967476"/>
-          <Include href="sprite/觉醒霸体特效原先.xml" itemID="66c19f0e-000017fb" lastModified="1723965222"/>
           <Include href="sprite/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1732399183"/>
           <Include href="sprite/落地特效-闪光.xml" loadImmediate="false" itemID="663ba576-00000122" lastModified="1715185258"/>
           <Include href="sprite/木偶-主角-男.xml" itemID="668be718-0000065b" lastModified="1720445240"/>
@@ -1147,8 +1146,8 @@
           <Include href="sprite/韧性条.xml" loadImmediate="false" itemID="65c9a44e-0000061e" lastModified="1707754293"/>
           <Include href="sprite/手雷-普通手雷.xml" itemID="668be6c3-0000063a" lastModified="1720444611"/>
           <Include href="sprite/手雷攻击.xml" loadImmediate="false" itemID="66a5d6cd-00000693" lastModified="1746218452"/>
-          <Include href="sprite/手雷跑.xml" loadImmediate="false" itemID="66a5d6b7-0000068f" lastModified="1722144439"/>
           <Include href="sprite/手雷行走.xml" loadImmediate="false" itemID="66a5d6a9-0000068e" lastModified="1722144425"/>
+          <Include href="sprite/手雷跑.xml" loadImmediate="false" itemID="66a5d6b7-0000068f" lastModified="1722144439"/>
           <Include href="sprite/手雷站立.xml" loadImmediate="false" itemID="66a5d699-0000068d" lastModified="1730475516"/>
           <Include href="sprite/手枪站立.xml" loadImmediate="false" itemID="66576860-000009ef" lastModified="1720908276"/>
           <Include href="sprite/思考标签.xml" loadImmediate="false" itemID="67e68767-000009ec" lastModified="1743161769"/>
@@ -1166,6 +1165,7 @@
           <Include href="sprite/圆柱体特效.xml" loadImmediate="false" itemID="68386174-00000fee" lastModified="1748527452"/>
           <Include href="sprite/战技.xml" loadImmediate="false" itemID="66098aa7-00002911" lastModified="1750180972"/>
           <Include href="sprite/主角-女（弃用）.xml" loadImmediate="false" itemID="67c8031d-00000716" lastModified="1741161249"/>
+          <Include href="sprite/主角模板npc.xml" itemID="686f3f88-000007c6" lastModified="1752121224"/>
           <Include href="补间 1.xml" itemIcon="1" loadImmediate="false" itemID="66e80072-0000289c" lastModified="1726480498"/>
           <Include href="补间 2.xml" itemIcon="1" loadImmediate="false" itemID="66e80072-0000289e" lastModified="1726480498"/>
           <Include href="补间 3.xml" itemIcon="1" loadImmediate="false" itemID="67138899-00000e6a" lastModified="1729333401"/>
@@ -1384,9 +1384,9 @@
           <Include href="主角动画层/手枪攻击.xml" loadImmediate="false" itemID="6657384b-0000061d" lastModified="1720908276"/>
           <Include href="主角动画层/手枪行走.xml" loadImmediate="false" itemID="66573878-00000631" lastModified="1720908276"/>
           <Include href="主角动画层/双枪攻击.xml" loadImmediate="false" itemID="66577cf3-00002e53" lastModified="1720908276"/>
+          <Include href="主角动画层/双枪行走.xml" loadImmediate="false" itemID="66577cfa-00002e54" lastModified="1720908276"/>
           <Include href="主角动画层/双枪跑.xml" loadImmediate="false" itemID="66577d03-00002e56" lastModified="1721546826"/>
           <Include href="主角动画层/双枪跳.xml" loadImmediate="false" itemID="66577d06-00002e57" lastModified="1720908276"/>
-          <Include href="主角动画层/双枪行走.xml" loadImmediate="false" itemID="66577cfa-00002e54" lastModified="1720908276"/>
           <Include href="主角动画层/双枪站立.xml" loadImmediate="false" itemID="66577cfd-00002e55" lastModified="1720908276"/>
           <Include href="主角动画层/长枪攻击.xml" loadImmediate="false" itemID="66560654-000014f8" lastModified="1726418405"/>
           <Include href="主角动画层/长枪行走.xml" loadImmediate="false" itemID="665602cc-0000109b" lastModified="1720908276"/>
@@ -1396,7 +1396,7 @@
           <Include href="组合拳幻影4‘.xml" loadImmediate="false" itemID="674dba4f-00000597" lastModified="1733147216"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="3" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;465&lt;/guideline&gt;&lt;guideline direction="v"&gt;338&lt;/guideline&gt;&lt;guideline direction="v"&gt;220&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;465&lt;/guideline&gt;&lt;guideline direction="v"&gt;338&lt;/guideline&gt;&lt;guideline direction="v"&gt;220&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Layer 1" color="#DEEE3E" current="true" isSelected="true">
                          <frames>
@@ -1405,7 +1405,7 @@
                                         <script><![CDATA[stop();]]></script>
                                    </Actionscript>
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="加载MC库-00" selected="true" centerPoint3DX="1277" centerPoint3DY="546.05">
+                                        <DOMSymbolInstance libraryItemName="加载MC库-00" centerPoint3DX="1277" centerPoint3DY="546.05">
                                              <matrix>
                                                   <Matrix tx="356.3" ty="-65.75"/>
                                              </matrix>
@@ -1465,7 +1465,7 @@
                                                   <Point x="64.35" y="36.45"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/战技" selected="true" centerPoint3DX="493.05" centerPoint3DY="164.9">
+                                        <DOMSymbolInstance libraryItemName="sprite/战技" centerPoint3DX="493.05" centerPoint3DY="164.9">
                                              <matrix>
                                                   <Matrix tx="428.55" ty="147.95"/>
                                              </matrix>
@@ -1877,6 +1877,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2942842" publishTime="1752121526"/>
           <PublishItem publishSize="2942972" publishTime="1750536707"/>
           <PublishItem publishSize="2942967" publishTime="1750536665"/>
           <PublishItem publishSize="2942966" publishTime="1750536226"/>
@@ -1896,6 +1897,5 @@
           <PublishItem publishSize="2946031" publishTime="1750160164"/>
           <PublishItem publishSize="2946039" publishTime="1750098808"/>
           <PublishItem publishSize="2946039" publishTime="1750098717"/>
-          <PublishItem publishSize="2946046" publishTime="1750098489"/>
      </publishHistory>
 </DOMDocument>

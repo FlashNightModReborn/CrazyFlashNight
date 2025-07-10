@@ -68,6 +68,26 @@
             <PlayerX>115</PlayerX>
             <PlayerY>290</PlayerY>
         </BasicInformation>
+        <Instances>
+            <Instance id="0">
+                <x>870</x>
+                <y>280</y>
+                <Identifier>主角模板npc</Identifier>
+                <Parameters>
+                    <名字>The girl</名字>
+                    <方向>左</方向>
+                    <性别>女</性别>
+                    <身高>155</身高>
+                    <发型></发型>
+                    <头部装备>TheGirl头</头部装备>
+                    <上装装备>TheGirl上装</上装装备>
+                    <手部装备>TheGirl手</手部装备>
+                    <下装装备>TheGirl下装</下装装备>
+                    <脚部装备>TheGirl脚</脚部装备>
+                    <刀>破旧的军刀</刀>
+                </Parameters>
+            </Instance>
+        </Instances>
         <Trigger id="0">
             <Xmin>625</Xmin>
         </Trigger>
@@ -130,6 +150,25 @@
             <PlayerX>495</PlayerX>
             <PlayerY>316</PlayerY>
         </BasicInformation>
+        <Instances>
+            <Instance id="0">
+                <x>650</x>
+                <y>323</y>
+                <Identifier>主角模板npc</Identifier>
+                <Parameters>
+                    <名字>The girl</名字>
+                    <方向>左</方向>
+                    <性别>女</性别>
+                    <身高>155</身高>
+                    <发型></发型>
+                    <头部装备>TheGirl头</头部装备>
+                    <上装装备>TheGirl上装</上装装备>
+                    <手部装备>TheGirl手</手部装备>
+                    <下装装备>TheGirl下装</下装装备>
+                    <脚部装备>TheGirl脚</脚部装备>
+                </Parameters>
+            </Instance>
+        </Instances>
         <Event>
             <EventName>Start</EventName>
             <Dialogue id="0">

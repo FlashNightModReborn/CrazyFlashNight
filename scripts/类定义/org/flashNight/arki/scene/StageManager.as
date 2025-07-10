@@ -70,6 +70,7 @@ class org.flashNight.arki.scene.StageManager {
         var spawnPointInfo = currentStageInfo.spawnPointInfo;
         
         gameworld = sceneManager.gameworld;
+        _root.d_倒计时显示._visible = false;
 
         stageEventHandler.init(gameworld);
 

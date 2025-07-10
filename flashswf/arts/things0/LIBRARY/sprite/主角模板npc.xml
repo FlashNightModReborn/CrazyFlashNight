@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/npc" itemID="668be737-00000661" linkageExportForAS="true" linkageIdentifier="npc" lastModified="1720445705">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/主角模板npc" itemID="686f3f88-000007c6" linkageExportForAS="true" linkageIdentifier="主角模板npc" lastModified="1752121224">
   <timeline>
-    <DOMTimeline name="npc" currentFrame="4">
+    <DOMTimeline name="主角模板npc" currentFrame="14">
       <layers>
         <DOMLayer name="Labels Layer" color="#D3ECF2">
           <frames>
@@ -103,11 +103,11 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#6C83FB">
+        <DOMLayer name="Layer 5" color="#6C83FB" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 840" symbolType="button">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 840" selected="true" symbolType="button">
                   <matrix>
                     <Matrix a="2.44000244140625" d="5.72062683105469" tx="-0.65" ty="-59.6"/>
                   </matrix>
@@ -118,6 +118,7 @@ Z轴坐标 = this._y;
                     <script><![CDATA[on(press){
    _root.是否达成任务检测();
 }
+/*
 on(release){
    _root.是否达成任务检测();
    if(_root.点击npc后检测任务(名字) == "路过")
@@ -128,12 +129,12 @@ on(release){
       _root.NPC功能菜单.当前NPC = this._name;
       _root.NPC功能菜单.刷新显示();
    }
-}
+}*/
 on(rollOver){
    gotoAndStop("描边");
 }
 on(rollOut){
-   gotoAndPlay(1);
+   gotoAndPlay(2);
 }
 ]]></script>
                   </Actionscript>
@@ -142,7 +143,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#89CCDC" current="true" isSelected="true">
+        <DOMLayer name="Layer 6" color="#89CCDC">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>

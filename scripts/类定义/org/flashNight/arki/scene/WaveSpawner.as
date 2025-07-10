@@ -73,8 +73,6 @@ class org.flashNight.arki.scene.WaveSpawner {
         isFinished = false;
         tickCount = 0;
 
-        _root.d_倒计时显示._visible = false;
-
         // 确定左右刷怪线
         var environment = stageManager.environment;
         if (environment.左侧出生线) {

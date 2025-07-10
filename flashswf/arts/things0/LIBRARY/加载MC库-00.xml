@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="加载MC库-00" itemID="665305b5-00000da5" linkageExportForAS="true" linkageIdentifier="加载MC库-00" lastModified="1743161763" lastUniqueIdentifier="93">
   <timeline>
-    <DOMTimeline name="加载MC库-00" currentFrame="5">
+    <DOMTimeline name="加载MC库-00" currentFrame="3">
       <layers>
         <DOMLayer name="Script Layer" color="#B395E1">
           <frames>
@@ -213,7 +213,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#21B8FD" current="true" isSelected="true">
+        <DOMLayer name="Layer 8" color="#21B8FD">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -235,14 +235,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#5B9EA8">
+        <DOMLayer name="Layer 10" color="#5B9EA8" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/npc" centerPoint3DX="-260.65" centerPoint3DY="426.7">
+                <DOMSymbolInstance libraryItemName="sprite/主角模板npc" selected="true" centerPoint3DX="-260.65" centerPoint3DY="426.7">
                   <matrix>
                     <Matrix tx="-354.25" ty="311.5"/>
                   </matrix>
