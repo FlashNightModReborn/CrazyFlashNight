@@ -180,7 +180,7 @@
           <Include href="wa90/瞄具.xml" itemIcon="1" loadImmediate="false" itemID="60abd43a-00002933" lastModified="1621873722"/>
           <Include href="wa90/图标-wa90.xml" itemID="6559de84-0000042e" lastModified="1700388617"/>
           <Include href="wa90/消音器.xml" itemIcon="1" loadImmediate="false" itemID="60abd2e4-0000291f" lastModified="1621887798"/>
-          <Include href="XM556-OC-Overlord 动画.xml" loadImmediate="false" itemID="686f22d9-00000552" lastModified="1752138453"/>
+          <Include href="XM556-OC-Overlord 动画.xml" loadImmediate="false" itemID="686f22d9-00000552" lastModified="1752140374"/>
           <Include href="XM556-OC-Overlord枪身.xml" loadImmediate="false" itemID="686f22bf-0000054e" lastModified="1752138311"/>
           <Include href="XM556/XM556-H-Stinger.xml" itemID="686cf53f-0000469e" lastModified="1751975018"/>
           <Include href="XM556/XM556-Microgun.xml" itemID="686bd9c0-000044e9" lastModified="1751898560"/>
@@ -314,7 +314,7 @@
           <Include href="龙破军霜/龙破军霜.xml" itemIcon="1" loadImmediate="false" itemID="65f704e6-00002270" lastModified="1710690852"/>
           <Include href="龙破军霜/图标-龙破军霜.xml" itemID="65f704b4-00002269" lastModified="1710687412"/>
           <Include href="能量光效.xml" loadImmediate="false" itemID="686e3447-00000413" lastModified="1752052807"/>
-          <Include href="能量腔荧光.xml" loadImmediate="false" itemID="686f2283-00000547" lastModified="1752136399"/>
+          <Include href="能量腔荧光.xml" loadImmediate="false" itemID="686f2283-00000547" lastModified="1752140628"/>
           <Include href="能量指示灯.xml" loadImmediate="false" itemID="686e3435-0000040f" lastModified="1752138324"/>
           <Include href="枪管彩光.xml" loadImmediate="false" itemID="686e2ca0-000003bf" lastModified="1752050848"/>
           <Include href="枪口能量.xml" loadImmediate="false" itemID="686f2f28-000005df" lastModified="1752117032"/>
@@ -816,6 +816,25 @@
                     <SolidSwatchItem color="#01526D" hue="130" saturation="235" brightness="52"/>
                     <SolidSwatchItem color="#052D31" hue="124" saturation="193" brightness="26"/>
                     <SolidSwatchItem color="#181A18" hue="80" saturation="5" brightness="24"/>
+                    <SolidSwatchItem color="#3EB9E8" hue="131" saturation="188" brightness="138"/>
+                    <SolidSwatchItem color="#1BB1EB" hue="131" saturation="201" brightness="123"/>
+                    <SolidSwatchItem color="#29ACDE" hue="131" saturation="176" brightness="124"/>
+                    <SolidSwatchItem color="#149DD1" hue="131" saturation="198" brightness="108"/>
+                    <SolidSwatchItem color="#08404C" hue="128" saturation="192" brightness="40"/>
+                    <SolidSwatchItem color="#1395BF" hue="130" saturation="196" brightness="99"/>
+                    <SolidSwatchItem color="#BDFDFD" hue="120" saturation="225" brightness="208"/>
+                    <SolidSwatchItem color="#04E5FC" hue="124" saturation="234" brightness="121"/>
+                    <SolidSwatchItem color="#04DAF4" hue="125" saturation="232" brightness="117"/>
+                    <SolidSwatchItem color="#13D0F2" hue="126" saturation="215" brightness="123"/>
+                    <SolidSwatchItem color="#0188B7" hue="130" saturation="237" brightness="87"/>
+                    <SolidSwatchItem color="#47F5FC" hue="121" saturation="232" brightness="152"/>
+                    <SolidSwatchItem color="#02BFE9" hue="127" saturation="236" brightness="111"/>
+                    <SolidSwatchItem color="#02A9D6" hue="129" saturation="235" brightness="102"/>
+                    <SolidSwatchItem color="#9A560B" hue="21" saturation="209" brightness="78"/>
+                    <SolidSwatchItem color="#C2630A" hue="19" saturation="218" brightness="96"/>
+                    <SolidSwatchItem color="#5F3C0D" hue="23" saturation="183" brightness="51"/>
+                    <SolidSwatchItem color="#231A0E" hue="22" saturation="104" brightness="23"/>
+                    <SolidSwatchItem color="#18150D" hue="29" saturation="75" brightness="18"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -898,6 +917,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="732033" publishTime="1752140939"/>
           <PublishItem publishSize="598749" publishTime="1751974965"/>
           <PublishItem publishSize="598748" publishTime="1751974648"/>
           <PublishItem publishSize="598796" publishTime="1751974589"/>
@@ -917,6 +937,5 @@
           <PublishItem publishSize="562395" publishTime="1751886946"/>
           <PublishItem publishSize="562397" publishTime="1751886836"/>
           <PublishItem publishSize="562433" publishTime="1751886669"/>
-          <PublishItem publishSize="561400" publishTime="1751885495"/>
      </publishHistory>
 </DOMDocument>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="XM556-OC-Overlord 动画" itemID="686f22d9-00000552" lastModified="1752138453" lastUniqueIdentifier="50">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="XM556-OC-Overlord 动画" itemID="686f22d9-00000552" lastModified="1752140374" lastUniqueIdentifier="50">
   <timeline>
-    <DOMTimeline name="XM556-OC-Overlord 动画" currentFrame="14">
+    <DOMTimeline name="XM556-OC-Overlord 动画" currentFrame="21">
       <layers>
         <DOMLayer name="图层 13" color="#4FFFFF">
           <frames>
@@ -118,7 +118,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="21" duration="8" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+            <DOMFrame index="21" duration="3" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>
                 <CustomEase target="all">
                   <Point/>
@@ -140,6 +140,32 @@
                   </transformationPoint>
                   <color>
                     <Color/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="5" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.078676021092201" y="0.105107719591947"/>
+                  <Point x="0.144804049741882" y="0.228542530139351"/>
+                  <Point x="0.21344" y="0.356432100866605"/>
+                  <Point x="0.3904" y="0.686201738359897"/>
+                  <Point x="0.6" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="能量腔荧光" centerPoint3DX="81.2" centerPoint3DY="87.5">
+                  <matrix>
+                    <Matrix tx="59.05" ty="72.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.15" y="14.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.8828125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -281,7 +307,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 9" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 9" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -524,7 +550,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 12" color="#FF4FFF">
+        <DOMLayer name="图层 12" color="#FF4FFF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements/>
