@@ -41,6 +41,9 @@ class org.flashNight.arki.scene.SceneManager {
 
         // 将上述属性设置为不可枚举
         _global.ASSetPropFlags(gameworld, ["效果", "子弹区域", "地图", "dispatcher"], 1, false);
+
+        // 发布场景切换事件
+        _root.帧计时器.eventBus.publish("SceneChanged");
     }
 
     /*
@@ -51,6 +54,7 @@ class org.flashNight.arki.scene.SceneManager {
         gameworld.dispatcher = null;
 
         gameworld.deadbody.layers[0].dispose();
+        gameworld.deadbody.layers[1].dispose();
         gameworld.deadbody.layers[2].dispose();
         gameworld.swapDepths(_root.getNextHighestDepth());
         gameworld.removeMovieClip();

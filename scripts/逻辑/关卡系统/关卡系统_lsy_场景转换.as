@@ -96,12 +96,7 @@ _root.转场景记录数据第一次记录 = false;
 // }
 
 _root.加载我方人物 = function(地点X, 地点Y){
-	if (_root.特殊操作单位){
-		var 当前操作单位 = _root.特殊操作单位;
-	}else{
-		//当前操作单位 = "主角-" + _root.性别;
-		var 当前操作单位 = "主角-男";//主角模型已经统一
-	}
+	var 当前操作单位 = (_root.特殊操作单位 != null && _root.特殊操作单位 != "") ? _root.特殊操作单位 : "主角-男"; //主角模型已经统一
 	_root.加载游戏世界人物(当前操作单位,_root.控制目标,_root.gameworld.getNextHighestDepth(),{
 		_x:地点X, 
 		_y:地点Y, 
@@ -110,8 +105,7 @@ _root.加载我方人物 = function(地点X, 地点Y){
 		身高:_root.身高, 
 		名字:_root.角色名, 
 		等级:_root.等级, 
-		性别:_root.性别, 
-		用户ID:_root.accId
+		性别:_root.性别
 	});
 	_root.玩家信息界面.刷新hp显示();
 	_root.玩家信息界面.刷新mp显示();
@@ -123,12 +117,7 @@ _root.加载我方人物 = function(地点X, 地点Y){
 }
 
 _root.加载主角和战宠 = function(地点X, 地点Y){
-	if (_root.特殊操作单位){
-		var 当前操作单位 = _root.特殊操作单位;
-	}else{
-		//当前操作单位 = "主角-" + _root.性别;
-		var 当前操作单位 = "主角-男";//主角模型已经统一
-	}
+	var 当前操作单位 = (_root.特殊操作单位 != null && _root.特殊操作单位 != "") ? _root.特殊操作单位 : "主角-男"; //主角模型已经统一
 
 	_root.加载游戏世界人物(当前操作单位,_root.控制目标,_root.gameworld.getNextHighestDepth(),{
 		_x:地点X, 
@@ -157,7 +146,31 @@ _root.加载佣兵 = function(地点X, 地点Y){
 				if (同伴信息[17] == "女") 同伴信息[17] = "主角-女";
 				*/
 				//主角模型已经统一
-				var 当前佣兵 = _root.加载游戏世界人物("主角-男","同伴" + i,_root.gameworld.getNextHighestDepth(),{_x:地点X + random(10), _y:地点Y + random(10), 用户ID:同伴信息[2], 是否为敌人:false, 身高:同伴信息[3], 名字:同伴信息[1], 等级:同伴信息[0], 脸型:同伴信息[4], 发型:同伴信息[5], 头部装备:同伴信息[6], 上装装备:同伴信息[7], 手部装备:同伴信息[8], 下装装备:同伴信息[9], 脚部装备:同伴信息[10], 颈部装备:同伴信息[11], 长枪:同伴信息[12], 手枪:同伴信息[13], 手枪2:同伴信息[14], 刀:同伴信息[15], 手雷:同伴信息[16], 性别:同伴信息[17], 是否为佣兵:true, 佣兵是否出战信息id:i});
+				var 当前佣兵 = _root.加载游戏世界人物("主角-男","同伴" + i,_root.gameworld.getNextHighestDepth(),{
+					_x:地点X + random(10), 
+					_y:地点Y + random(10), 
+					用户ID:同伴信息[2], 
+					是否为敌人:false, 
+					身高:同伴信息[3], 
+					名字:同伴信息[1], 
+					等级:同伴信息[0], 
+					脸型:同伴信息[4], 
+					发型:同伴信息[5], 
+					头部装备:同伴信息[6], 
+					上装装备:同伴信息[7], 
+					手部装备:同伴信息[8], 
+					下装装备:同伴信息[9], 
+					脚部装备:同伴信息[10], 
+					颈部装备:同伴信息[11], 
+					长枪:同伴信息[12], 
+					手枪:同伴信息[13], 
+					手枪2:同伴信息[14], 
+					刀:同伴信息[15], 
+					手雷:同伴信息[16], 
+					性别:同伴信息[17], 
+					是否为佣兵:true, 
+					佣兵是否出战信息id:i
+				});
 				// if(同伴信息[19].装备强化度){
 				// 	当前佣兵.装备强化度 = 同伴信息[19].装备强化度;
 				// }
@@ -242,7 +255,7 @@ _root.加载敌方人物 = function(地点X, 地点Y){
 	}
 }
 
-//人物的统一加载函数
+// 单位的统一加载函数
 _root.加载游戏世界人物 = function(id:String, name:String, depth:Number, initObject:Object):MovieClip{
 	if(!initObject) {
 		initObject = {兵种:id};
@@ -323,9 +336,7 @@ _root.场景转换函数.切换场景 = function(对应门名, 目标场景帧, 
 	if (对应方向 && this.hitTest(控制对象.area) && 控制对象.hp > 0){
 		条件满足 = true;
 	}
-	// if (this.hitTest(控制对象.area) and _root.全鼠标控制 == true and this.hitTest(_root.鼠标) == true and 被点击 == true and 控制对象.hp > 0){
-	// 	条件满足 = true;
-	// }
+	
 	if (条件满足 === true){
 		var pt = {x:控制对象._x, y:控制对象.Z轴坐标};
 		游戏世界.localToGlobal(pt);
@@ -345,7 +356,8 @@ _root.场景转换函数.切换场景 = function(对应门名, 目标场景帧, 
 }
 
 // _root.场景转换函数.切换场景 = function(){
-// 	delete this.onEnterFrame;
+// 	_root.发布消息("切换场景");
+// 	this.onEnterFrame = undefined;
 // }
 
 _root.场景转换函数.是否从门加载角色 = function(){
@@ -367,8 +379,8 @@ _root.防止播放跳关 = function(){
 }
 
 _root.跳转地图 = function(跳转帧){
-	var 游戏世界 = _root.gameworld;
-	_root.常用工具函数.释放对象绘图内存(游戏世界);
+	// var 游戏世界 = _root.gameworld;
+	// _root.常用工具函数.释放对象绘图内存(游戏世界);
 	_root.当前为战斗地图 = false;
 	for (var i = 0; i < _root.初期关卡列表.length; i++){
 		if (_root.关卡标志 == _root.初期关卡列表[i]){
@@ -397,8 +409,6 @@ _root.加载共享场景 = function(加载场景名){
 	var gw:MovieClip = _root.attachMovie(加载场景名, "gameworld", _root.getNextHighestDepth());
 	gw.swapDepths(_root.gameworld层级定位器);
 	SceneManager.instance.initGameWorld(gw);
-
-	_root.帧计时器.eventBus.publish("SceneChanged");
 }
 
 

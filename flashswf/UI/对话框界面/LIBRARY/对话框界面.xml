@@ -107,7 +107,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="关闭" color="#CABEAC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="关闭" color="#CABEAC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -319,14 +319,14 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头像" color="#6589A2" autoNamed="false">
+        <DOMLayer name="头像" color="#6589A2" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="对话框肖像" name="肖像" centerPoint3DX="381.3" centerPoint3DY="666.2">
+                <DOMSymbolInstance libraryItemName="对话框肖像" name="肖像" selected="true" centerPoint3DX="381.3" centerPoint3DY="666.2">
                   <matrix>
                     <Matrix tx="164.55" ty="298.25"/>
                   </matrix>
