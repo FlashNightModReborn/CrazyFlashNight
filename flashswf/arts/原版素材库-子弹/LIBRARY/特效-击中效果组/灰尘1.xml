@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效-击中效果组/灰尘1" itemID="669d3463-0000174a" linkageExportForAS="true" linkageIdentifier="灰尘1" lastModified="1723624151">
   <timeline>
-    <DOMTimeline name="灰尘1" currentFrame="8">
+    <DOMTimeline name="灰尘1" currentFrame="16">
       <layers>
         <DOMLayer name="Script Layer" color="#28B2C7">
           <frames>
@@ -164,7 +164,7 @@
             </DOMFrame>
             <DOMFrame index="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 578" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 578" selected="true" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

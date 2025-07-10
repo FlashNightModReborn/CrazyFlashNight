@@ -41,7 +41,7 @@
             var bullet = attributes.bullet;  //自动配置子弹 
             var data = attributes.data;      //自动配置备用武器数据
 
-            var 标签名 = 装备名称 + "_" + cycle.cycleRoutines + each; // 构建标签名，用于周期性任务的唯一标识
+            var 标签名 = 装备名称 + "_" + 装备类型 +  "_" + cycle.cycleRoutines + each; // 构建标签名，用于周期性任务的唯一标识
 
             var 反射对象 = {标签名:标签名,
                            初始化函数:init.initRoutines,

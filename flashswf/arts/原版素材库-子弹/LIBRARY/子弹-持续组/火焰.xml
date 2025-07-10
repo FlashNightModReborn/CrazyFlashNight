@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-持续组/火焰" itemID="669d3404-00001734" linkageExportForAS="true" linkageIdentifier="火焰" lastModified="1722875196">
   <timeline>
-    <DOMTimeline name="火焰" currentFrame="48">
+    <DOMTimeline name="火焰" currentFrame="51">
       <layers>
-        <DOMLayer name="Labels Layer" color="#84FA15">
+        <DOMLayer name="Labels Layer" color="#84FA15" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="48" keyMode="9728">
               <elements/>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#D252AC" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#D252AC">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>

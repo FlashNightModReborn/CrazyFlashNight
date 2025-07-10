@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效-枪火组/枪火" itemID="669d341e-00001739" linkageExportForAS="true" linkageIdentifier="枪火" lastModified="1721578526">
   <timeline>
-    <DOMTimeline name="枪火" currentFrame="20">
+    <DOMTimeline name="枪火">
       <layers>
         <DOMLayer name="Labels Layer" color="#B490BA">
           <frames>
@@ -123,22 +123,7 @@ gotoAndPlay("a" + random(3));
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="29" keyMode="9728">
-              <elements>
-                <DOMShape isFloating="true">
-                  <fills>
-                    <FillStyle index="1">
-                      <BitmapFill bitmapPath="3.位图相关/bitmap4730.png" bitmapIsClipped="false">
-                        <matrix>
-                          <Matrix a="6.04644775390625" d="7.43402099609375" tx="-6.4" ty="-34.95"/>
-                        </matrix>
-                      </BitmapFill>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!-128 -699|1843 -699!1843 -699|1843 675!1843 675|-128 675!-128 675|-128 -699"/>
-                  </edges>
-                </DOMShape>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="30" duration="13" keyMode="9728">
               <elements>
@@ -153,7 +138,7 @@ gotoAndPlay("a" + random(3));
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!1383 -536|-177 -344!-177 -344|-68 540!-68 540|1492 348!1492 348|1383 -536"/>
+                    <Edge fillStyle0="1" edges="!1492 348|1383 -536!1383 -536|-177 -344!-177 -344|-68 540!-68 540|1492 348"/>
                   </edges>
                 </DOMShape>
               </elements>
