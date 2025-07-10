@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#B9B8B0" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" objectsSnapTo="false" nextSceneIdentifier="2" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#B9B8B0" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" objectsSnapTo="false" nextSceneIdentifier="2" playOptionsPlayPages="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="2.音效文件夹" itemID="656c28f2-00000fe5"/>
           <DOMFolderItem name="2.音效文件夹/爆炸" itemID="656c296a-0000103c" isExpanded="true"/>
@@ -180,9 +180,11 @@
           <Include href="wa90/瞄具.xml" itemIcon="1" loadImmediate="false" itemID="60abd43a-00002933" lastModified="1621873722"/>
           <Include href="wa90/图标-wa90.xml" itemID="6559de84-0000042e" lastModified="1700388617"/>
           <Include href="wa90/消音器.xml" itemIcon="1" loadImmediate="false" itemID="60abd2e4-0000291f" lastModified="1621887798"/>
+          <Include href="XM556-OC-Overlord 动画.xml" loadImmediate="false" itemID="686f22d9-00000552" lastModified="1752138453"/>
+          <Include href="XM556-OC-Overlord枪身.xml" loadImmediate="false" itemID="686f22bf-0000054e" lastModified="1752138311"/>
           <Include href="XM556/XM556-H-Stinger.xml" itemID="686cf53f-0000469e" lastModified="1751975018"/>
           <Include href="XM556/XM556-Microgun.xml" itemID="686bd9c0-000044e9" lastModified="1751898560"/>
-          <Include href="XM556/XM556-OC-Overlord.xml" itemID="686ded67-0000038a" lastModified="1752054389"/>
+          <Include href="XM556/XM556-OC-Overlord.xml" itemID="686ded67-0000038a" lastModified="1752113889"/>
           <Include href="XM556/图标-XM556-H-Stinger.xml" itemID="686d0486-000046e2" lastModified="1751975088"/>
           <Include href="XM556/图标XM556-Microgun.xml" itemID="686bd9b1-000044e8" lastModified="1751898607"/>
           <Include href="补间 3.xml" itemIcon="1" loadImmediate="false" itemID="657ba813-000004c4" lastModified="1702602771"/>
@@ -312,8 +314,10 @@
           <Include href="龙破军霜/龙破军霜.xml" itemIcon="1" loadImmediate="false" itemID="65f704e6-00002270" lastModified="1710690852"/>
           <Include href="龙破军霜/图标-龙破军霜.xml" itemID="65f704b4-00002269" lastModified="1710687412"/>
           <Include href="能量光效.xml" loadImmediate="false" itemID="686e3447-00000413" lastModified="1752052807"/>
-          <Include href="能量指示灯.xml" loadImmediate="false" itemID="686e3435-0000040f" lastModified="1752052789"/>
+          <Include href="能量腔荧光.xml" loadImmediate="false" itemID="686f2283-00000547" lastModified="1752136399"/>
+          <Include href="能量指示灯.xml" loadImmediate="false" itemID="686e3435-0000040f" lastModified="1752138324"/>
           <Include href="枪管彩光.xml" loadImmediate="false" itemID="686e2ca0-000003bf" lastModified="1752050848"/>
+          <Include href="枪口能量.xml" loadImmediate="false" itemID="686f2f28-000005df" lastModified="1752117032"/>
           <Include href="特效素材/打击伤害数字.xml" itemID="656983a5-000002a1" lastModified="1706446521"/>
           <Include href="特效与子弹/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="65e08f36-00001ff1" lastModified="1702237154"/>
           <Include href="特效与子弹/Symbol 13.xml" loadImmediate="false" itemID="65e08f36-00001ff0" lastModified="1702237154"/>
@@ -363,6 +367,8 @@
           <Include href="无AS链接/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005c2" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4270.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001073" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4751.xml" loadImmediate="false" itemID="668e7c1e-0000117a" lastModified="1720533000"/>
+          <Include href="线圈前端.xml" loadImmediate="false" itemID="686f1216-00000532" lastModified="1752131345"/>
+          <Include href="线圈中级.xml" loadImmediate="false" itemID="686f1f34-0000053c" lastModified="1752130775"/>
           <Include href="炎魔斩/炎魔斩 new/烈焰剑待机剑身.xml" itemIcon="1" loadImmediate="false" itemID="64fc91fc-00000d54" lastModified="1694274044"/>
           <Include href="炎魔斩/炎魔斩 new/烈焰剑剑身.xml" loadImmediate="false" itemID="64fc920c-00000d56" lastModified="1694274060"/>
           <Include href="炎魔斩/炎魔斩 new/图标-炎魔斩new.xml" itemID="6559f07d-00000891" lastModified="1731792469"/>
@@ -783,6 +789,33 @@
                     <SolidSwatchItem color="#111413" hue="107" saturation="21" brightness="18"/>
                     <SolidSwatchItem color="#121514" hue="107" saturation="19" brightness="19"/>
                     <SolidSwatchItem color="#191A1B" hue="160" saturation="5" brightness="25"/>
+                    <SolidSwatchItem color="#093740" hue="126" saturation="184" brightness="34"/>
+                    <SolidSwatchItem color="#070E07" hue="80" saturation="72" brightness="10"/>
+                    <SolidSwatchItem color="#0A1B17" hue="113" saturation="113" brightness="17"/>
+                    <SolidSwatchItem color="#01232D" hue="129" saturation="229" brightness="22"/>
+                    <SolidSwatchItem color="#0C120B" hue="74" saturation="62" brightness="14"/>
+                    <SolidSwatchItem color="#0F1C16" hue="103" saturation="72" brightness="20"/>
+                    <SolidSwatchItem color="#22372E" hue="102" saturation="57" brightness="42"/>
+                    <SolidSwatchItem color="#0A3033" hue="123" saturation="164" brightness="29"/>
+                    <SolidSwatchItem color="#13150A" hue="47" saturation="91" brightness="15"/>
+                    <SolidSwatchItem color="#1B1F13" hue="55" saturation="56" brightness="24"/>
+                    <SolidSwatchItem color="#282D1F" hue="52" saturation="44" brightness="36"/>
+                    <SolidSwatchItem color="#151A0F" hue="56" saturation="63" brightness="19"/>
+                    <SolidSwatchItem color="#090E06" hue="69" saturation="88" brightness="10"/>
+                    <SolidSwatchItem color="#272312" hue="32" saturation="89" brightness="27"/>
+                    <SolidSwatchItem color="#13140A" hue="44" saturation="86" brightness="14"/>
+                    <SolidSwatchItem color="#080F07" hue="74" saturation="80" brightness="11"/>
+                    <SolidSwatchItem color="#492B0C" hue="20" saturation="174" brightness="40"/>
+                    <SolidSwatchItem color="#1A1D12" hue="52" saturation="55" brightness="22"/>
+                    <SolidSwatchItem color="#70511F" hue="25" saturation="136" brightness="67"/>
+                    <SolidSwatchItem color="#201C0D" hue="31" saturation="103" brightness="21"/>
+                    <SolidSwatchItem color="#442103" hue="18" saturation="219" brightness="34"/>
+                    <SolidSwatchItem color="#0A2122" hue="122" saturation="135" brightness="21"/>
+                    <SolidSwatchItem color="#0C3538" hue="123" saturation="158" brightness="32"/>
+                    <SolidSwatchItem color="#0D1915" hue="107" saturation="80" brightness="18"/>
+                    <SolidSwatchItem color="#01526D" hue="130" saturation="235" brightness="52"/>
+                    <SolidSwatchItem color="#052D31" hue="124" saturation="193" brightness="26"/>
+                    <SolidSwatchItem color="#181A18" hue="80" saturation="5" brightness="24"/>
                </swatches>
           </swatchList>
      </swatchLists>
