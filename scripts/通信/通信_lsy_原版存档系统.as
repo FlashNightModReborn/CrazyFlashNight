@@ -404,7 +404,9 @@ _root.新建角色 = function(){
     _root.基建系统.infrastructure = {};
     //
     _root.soundEffectManager.stopBGM();
-    _root.淡出动画.淡出跳转帧("教学关卡");
+    // _root.淡出动画.淡出跳转帧("教学关卡");
+    _root.载入关卡数据("无限过图", "data/stages/特殊/教学关卡.xml");
+    _root.淡出动画.淡出跳转帧("wuxianguotu_1");
     return true;
 }
 

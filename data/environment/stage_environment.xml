@@ -14,20 +14,8 @@
         <MinIllumination>7</MinIllumination>
     </Environment>
     <Environment>
-        <BackgroundURL>情节1</BackgroundURL>
-        <Alignment>false</Alignment>
-        <Xmin>50</Xmin>
-        <Xmax>1688</Xmax>
-        <Ymin>274</Ymin>
-        <Ymax>640</Ymax>
-        <Width>1688</Width>
-        <Height>640</Height>
-        <MaxIllumination>7</MaxIllumination>
-        <MinIllumination>7</MinIllumination>
-    </Environment>
-    <Environment>
-        <BackgroundURL>情节2</BackgroundURL>
-        <Alignment>false</Alignment>
+        <BackgroundURL>情节2房间_BG.swf</BackgroundURL>
+        <Alignment>true</Alignment>
         <Xmin>50</Xmin>
         <Xmax>575</Xmax>
         <Ymin>223</Ymin>
@@ -473,12 +461,29 @@
     <Environment>
         <BackgroundURL>jdc_2_BG.swf</BackgroundURL>
         <Alignment>false</Alignment>
-        <Xmin>50</Xmin>
-        <Xmax>1688</Xmax>
+        <Xmin>230</Xmin>
+        <Xmax>1560</Xmax>
         <Ymin>242</Ymin>
-        <Ymax>640</Ymax>
+        <Ymax>620</Ymax>
         <Width>1688</Width>
         <Height>640</Height>
+        <Collision>
+            <Point>220,240</Point>
+            <Point>220,440</Point>
+            <Point>360,240</Point>
+        </Collision>
+        <Collision>
+            <Point>1390,240</Point>
+            <Point>1570,440</Point>
+            <Point>1570,240</Point>
+        </Collision>
+        <Instances>
+            <Instance>
+                <url>flashswf/backgrounds/elements/角斗场围栏.swf</url>
+                <x>894</x>
+                <y>650</y>
+            </Instance>
+        </Instances>
     </Environment>
     <!-- 郊区-->
     <Environment>

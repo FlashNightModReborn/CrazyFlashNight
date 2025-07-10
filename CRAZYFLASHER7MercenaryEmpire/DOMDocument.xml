@@ -566,16 +566,9 @@
           <Include href="import/UI组件/修改工具界面.xml" itemID="6749becf-0000094f" lastModified="1732886280"/>
           <Include href="import/UI组件/选关界面.xml" itemID="663b3b17-00000ddd" lastModified="1715157863"/>
           <Include href="import/UI组件/资源箱界面.xml" itemID="684526b9-00000a86" lastModified="1749362422"/>
-          <Include href="import/地图库-废城.xml" loadImmediate="false" itemID="659d4d79-00003b1d" lastModified="1749117086"/>
-          <Include href="import/地图库-荒漠.xml" loadImmediate="false" itemID="659d4da6-00003c33" lastModified="1749615867"/>
-          <Include href="import/地图库-禁区.xml" loadImmediate="false" itemID="659d5b51-000067a5" lastModified="1749117086"/>
+          <Include href="import/地图库-禁区.xml" loadImmediate="false" itemID="659d5b51-000067a5" lastModified="1752118761"/>
           <Include href="import/地图库-外部地图.xml" loadImmediate="false" itemID="65c79a79-00000dc4" lastModified="1746164740"/>
           <Include href="import/关卡地图/wuxianguotu_1.xml" itemID="659b414b-00000b2a" lastModified="1704673709"/>
-          <Include href="import/关卡地图/角斗场-1.xml" itemID="6598fff7-000016d7" lastModified="1704525815"/>
-          <Include href="import/关卡地图/角斗场-2.xml" itemID="65990000-000016d8" lastModified="1704525824"/>
-          <Include href="import/关卡地图/教学关卡.xml" itemID="6598ff36-000016d4" lastModified="1704525622"/>
-          <Include href="import/关卡地图/情节1.xml" itemID="6598ff7a-000016d5" lastModified="1704525690"/>
-          <Include href="import/关卡地图/情节2.xml" itemID="6598ff83-000016d6" lastModified="1704525699"/>
           <Include href="import/加载背景 1024&amp;#042576.xml" itemID="66e5b988-00001027" lastModified="1726331311"/>
           <Include href="import/加载进度条.xml" itemIcon="1" loadImmediate="false" itemID="659d4e6e-00003d5a" lastModified="1750233630"/>
           <Include href="import/库-UI.xml" loadImmediate="false" itemID="66795870-000009ce" lastModified="1749362422"/>
@@ -905,7 +898,7 @@
           <Include href="底部UI/底部UI组.xml" loadImmediate="false" itemID="6636575b-0000211d" lastModified="1746452910"/>
           <Include href="底部UI/平板电脑.xml" loadImmediate="false" itemID="6700c0f0-00000a9f" lastModified="1728102640"/>
           <Include href="底部UI/原版4图标备份.xml" loadImmediate="false" itemID="664df9ac-00004b87" lastModified="1716386220"/>
-          <Include href="角斗场选择界面.xml" loadImmediate="false" itemID="68490695-00000498" lastModified="1749616283"/>
+          <Include href="角斗场选择界面.xml" loadImmediate="false" itemID="68490695-00000498" lastModified="1752118655"/>
           <Include href="全局音量mc.xml" loadImmediate="false" itemID="67ada6a8-00000794" lastModified="1740072967"/>
           <Include href="全屏UI层.xml" loadImmediate="false" itemID="67cea723-000006eb" lastModified="1741596473"/>
           <Include href="鼠标元件/鼠标.xml" loadImmediate="false" itemID="68447b0d-00000b2c" lastModified="1749318532"/>
@@ -917,7 +910,7 @@
           <Include href="无限过图摄像机.xml" loadImmediate="false" itemID="68402519-00001790" lastModified="1749034265"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="156" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;guideline direction="h"&gt;476&lt;/guideline&gt;&lt;guideline direction="h"&gt;516&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" currentFrame="43" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;guideline direction="h"&gt;476&lt;/guideline&gt;&lt;guideline direction="h"&gt;516&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Labels Layer 1" color="#E88C68" autoNamed="false">
                          <frames>
@@ -963,40 +956,31 @@
                               <DOMFrame index="124" duration="4" name="新人物创建中" labelType="comment" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="128" duration="7" name="读盘" labelType="name" keyMode="9728">
+                              <DOMFrame index="128" duration="6" name="读盘" labelType="name" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="135" duration="6" name="test" labelType="comment" keyMode="9728">
+                              <DOMFrame index="134" duration="10" name="基地地图" labelType="name" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="141" duration="7" name="排行榜" labelType="comment" keyMode="9728">
+                              <DOMFrame index="144" duration="2" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="148" keyMode="9728">
+                              <DOMFrame index="146" duration="10" name="外部地图" labelType="name" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="149" duration="10" name="基地地图" labelType="name" keyMode="9728">
+                              <DOMFrame index="156" duration="3" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="2" keyMode="9728">
+                              <DOMFrame index="159" duration="11" name="关卡地图" labelType="name" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="161" duration="10" name="外部地图" labelType="name" keyMode="9728">
+                              <DOMFrame index="170" duration="14" name="角斗场选择挑战者" labelType="name" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="171" duration="3" keyMode="9728">
+                              <DOMFrame index="184" duration="14" name="初期关卡" labelType="name" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="174" duration="11" name="关卡地图" labelType="name" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="185" duration="14" name="角斗场选择挑战者" labelType="name" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="199" duration="14" name="初期关卡" labelType="name" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="213" duration="14" name="wuxianguotu_1" labelType="name" keyMode="9728">
+                              <DOMFrame index="198" duration="12" name="wuxianguotu_1" labelType="name" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -1012,10 +996,10 @@
                               <DOMFrame index="61" duration="21" name="脸型库" labelType="comment" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="82" duration="46" name="重新游戏确认" labelType="name" keyMode="9728">
+                              <DOMFrame index="82" duration="47" name="重新游戏确认" labelType="name" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="128" duration="99" name="多玩家物品键侦听" labelType="comment" keyMode="9728">
+                              <DOMFrame index="129" duration="81" name="正式加载游戏UI" labelType="comment" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -1028,10 +1012,7 @@
                               <DOMFrame index="31" duration="53" name="片头动画" labelType="comment" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="84" duration="45" name="关于作者" labelType="name" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="129" duration="98" name="正式加载游戏UI" labelType="comment" keyMode="9728">
+                              <DOMFrame index="84" duration="126" name="关于作者" labelType="name" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -1044,7 +1025,7 @@
                               <DOMFrame index="1" duration="32" name="外置大脑载入" labelType="comment" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="33" duration="194" name="外置大脑继续加载" labelType="comment" keyMode="9728">
+                              <DOMFrame index="33" duration="177" name="外置大脑继续加载" labelType="comment" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -1714,7 +1695,6 @@ _root.名字输入 = "";
 _root.同伴数据 = [[],[],[]];
 _root.物品栏 = _root.初始化物品栏();
 _root.收集品栏 = _root.初始化收集品栏();
-_root.全部翻译(_root);
 ]]></script>
                                    </Actionscript>
                                    <elements/>
@@ -1722,30 +1702,25 @@ _root.全部翻译(_root);
                               <DOMFrame index="100" duration="9" keyMode="9728">
                                    <Actionscript>
                                         <script><![CDATA[stop();
-_root.全部翻译(_root);
 ]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="109" duration="9" keyMode="9728">
                                    <Actionscript>
-                                        <script><![CDATA[确认按钮是否失效 = false;
-stop();
-_root.全部翻译(_root);
+                                        <script><![CDATA[stop();
 _root.暂停 = true;]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="118" duration="10" keyMode="9728">
                                    <Actionscript>
-                                        <script><![CDATA[确认按钮是否失效 = false;
-stop();
-_root.全部翻译(_root);
+                                        <script><![CDATA[stop();
 _root.暂停 = true;]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="128" duration="21" keyMode="9728">
+                              <DOMFrame index="128" duration="6" keyMode="9728">
                                    <Actionscript>
                                         <script><![CDATA[stop();
 if (_root.是否存过盘() == false)
@@ -1790,43 +1765,43 @@ key_hd.onKeyUp = function()
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="149" duration="10" keyMode="9728">
+                              <DOMFrame index="134" duration="10" keyMode="9728">
                                    <Actionscript>
                                         <script><![CDATA[play();
 ]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" keyMode="9728">
+                              <DOMFrame index="144" keyMode="9728">
                                    <Actionscript>
                                         <script><![CDATA[stop();
 ]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="160" keyMode="9728">
+                              <DOMFrame index="145" keyMode="9728">
                                    <Actionscript>
                                         <script><![CDATA[防止播放跳关();
 ]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="161" duration="10" keyMode="9728">
+                              <DOMFrame index="146" duration="10" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="171" keyMode="9728">
+                              <DOMFrame index="156" keyMode="9728">
                                    <Actionscript>
                                         <script><![CDATA[stop();]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="172" duration="2" keyMode="9728">
+                              <DOMFrame index="157" duration="2" keyMode="9728">
                                    <Actionscript>
                                         <script><![CDATA[防止播放跳关();]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="174" keyMode="9728">
+                              <DOMFrame index="159" keyMode="9728">
                                    <Actionscript>
                                         <script><![CDATA[_root.soundEffectManager.stopBGM();
 stop();
@@ -1834,14 +1809,14 @@ stop();
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="175" duration="10" keyMode="9728">
+                              <DOMFrame index="160" duration="10" keyMode="9728">
                                    <Actionscript>
                                         <script><![CDATA[防止播放跳关();
 ]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="185" keyMode="9728">
+                              <DOMFrame index="170" keyMode="9728">
                                    <Actionscript>
                                         <script><![CDATA[决斗场进入中 = true;
 发布请求 = false;
@@ -1853,34 +1828,34 @@ stop();
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="186" duration="13" keyMode="9728">
+                              <DOMFrame index="171" duration="13" keyMode="9728">
                                    <Actionscript>
                                         <script><![CDATA[防止播放跳关();
 ]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="199" duration="7" keyMode="9728">
+                              <DOMFrame index="184" duration="7" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="206" keyMode="9728">
+                              <DOMFrame index="191" keyMode="9728">
                                    <Actionscript>
                                         <script><![CDATA[stop();
 ]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="207" duration="6" keyMode="9728">
+                              <DOMFrame index="192" duration="6" keyMode="9728">
                                    <Actionscript>
                                         <script><![CDATA[防止播放跳关();
 ]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="213" duration="10" keyMode="9728">
+                              <DOMFrame index="198" duration="10" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="223" keyMode="9728">
+                              <DOMFrame index="208" keyMode="9728">
                                    <Actionscript>
                                         <script><![CDATA[stop();
 _root.无限过图模式 = true;
@@ -1888,7 +1863,7 @@ _root.无限过图模式 = true;
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="224" duration="3" keyMode="9728">
+                              <DOMFrame index="209" keyMode="9728">
                                    <Actionscript>
                                         <script><![CDATA[防止播放跳关();
 无限过图模式关卡计数--;
@@ -1900,7 +1875,7 @@ _root.无限过图模式 = true;
                     </DOMLayer>
                     <DOMLayer name="上层遮罩" color="#EBC19E" locked="true" autoNamed="false" visible="false">
                          <frames>
-                              <DOMFrame index="0" duration="227" keyMode="9728">
+                              <DOMFrame index="0" duration="210" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="shape/Symbol 320" symbolType="graphic" loop="loop">
                                              <transformationPoint>
@@ -1916,7 +1891,7 @@ _root.无限过图模式 = true;
                               <DOMFrame index="0" duration="52" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="52" duration="175" keyMode="9728">
+                              <DOMFrame index="52" duration="158" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/淡出动画" name="淡出动画" centerPoint3DX="400" centerPoint3DY="240">
                                              <transformationPoint>
@@ -1932,7 +1907,7 @@ _root.无限过图模式 = true;
                               <DOMFrame index="0" duration="81" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="81" duration="146" keyMode="9728">
+                              <DOMFrame index="81" duration="129" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/外部动画加载壳mc" name="外部动画加载壳mc" centerPoint3DX="6.1" centerPoint3DY="8">
                                              <transformationPoint>
@@ -1948,7 +1923,7 @@ _root.无限过图模式 = true;
                               <DOMFrame index="0" duration="5" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="5" duration="222" keyMode="9728">
+                              <DOMFrame index="5" duration="205" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/消息窗" name="消息窗" centerPoint3DX="148.85" centerPoint3DY="111.1">
                                              <matrix>
@@ -1986,12 +1961,12 @@ _root.无限过图模式 = true;
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="34" duration="193" keyMode="9728">
+                              <DOMFrame index="34" duration="176" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="import assets" color="#FF800A" parentLayerIndex="9" autoNamed="false">
+                    <DOMLayer name="import assets" color="#FF800A" parentLayerIndex="9" current="true" isSelected="true" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="14" keyMode="9728">
                                    <elements>
@@ -2009,31 +1984,13 @@ _root.无限过图模式 = true;
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="40" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="import/地图库-废城" centerPoint3DX="11.6" centerPoint3DY="611.65">
-                                             <matrix>
-                                                  <Matrix ty="100"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="11.6" y="511.65"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                   </elements>
+                                   <elements/>
                               </DOMFrame>
                               <DOMFrame index="41" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="42" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="import/地图库-荒漠" centerPoint3DX="11.6" centerPoint3DY="611.65">
-                                             <matrix>
-                                                  <Matrix ty="100"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="11.6" y="511.65"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                   </elements>
+                                   <elements/>
                               </DOMFrame>
                               <DOMFrame index="43" keyMode="9728">
                                    <elements>
@@ -2213,7 +2170,7 @@ onClipEvent (mouseMove) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="56" duration="171" keyMode="9728">
+                              <DOMFrame index="56" duration="154" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -2252,7 +2209,7 @@ onClipEvent (mouseMove) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="83" duration="144" keyMode="9728">
+                              <DOMFrame index="83" duration="127" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -2496,7 +2453,7 @@ onClipEvent (mouseMove) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="90" duration="137" keyMode="9728">
+                              <DOMFrame index="90" duration="120" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -2572,7 +2529,7 @@ onClipEvent (mouseMove) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="83" duration="144" keyMode="9728">
+                              <DOMFrame index="83" duration="127" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -5275,15 +5232,15 @@ on(rollOut){
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!8472 4727|8775 4727!8775 4727|9065 4908!9065 4908|9369 4908!9369 4908|9659 5089!9659 5089|9355 5089!9355 5089|9645 5270!9645 5270|9935 5451!9935 5451|10239 5451!10239 5451|9949 5270!9949 5270|9659 5089!9659 5089|9962 5089!9962 5089|10252
- 5270!10252 5270|10542 5451!10542 5451|10845 5451!10845 5451|10555 5270!10555 5270|10252 5270!10252 5270|9949 5270!9949 5270|9645 5270!9645 5270|9342 5270!9342 5270|9052 5089!9052 5089|8762 4908!8762 4908|8472 4727!8472 4727|8182 4546
-!8182 4546|8485 4546!8485 4546|8775 4727!8775 4727|9079 4727!9079 4727|9382 4727!9382 4727|9672 4908!9672 4908|9369 4908!9369 4908|9079 4727!9079 4727|8789 4546!8789 4546|8485 4546!8789 4546|9092 4546!9092 4546|9395 4546!9395 4546|9685
- 4727!9685 4727|9975 4908!9975 4908|9672 4908!9672 4908|9962 5089!9962 5089|10265 5089!10265 5089|9975 4908!9975 4908|10279 4908!10279 4908|9989 4727!9989 4727|9699 4546!9699 4546|9395 4546!10845 5451|11149 5451!11149 5451|10859 5270
-!10859 5270|11162 5270!11162 5270|10872 5089!10872 5089|10582 4908!10582 4908|10292 4727!10292 4727|9989 4727!9989 4727|9685 4727!9685 4727|9382 4727!9382 4727|9092 4546!9342 5270|9633 5451!9633 5451|9935 5451!9052 5089|9355 5089!9355
- 5089|9065 4908!9065 4908|8762 4908!11162 5270|11465 5270!11465 5270|11755 5451!11755 5451|12059 5451!12059 5451|11769 5270!11769 5270|11465 5270!11465 5270|11175 5089!11175 5089|10885 4908!10885 4908|11189 4908!11189 4908|10899 4727
-!10899 4727|10595 4727!10595 4727|10885 4908!10885 4908|10582 4908!10582 4908|10279 4908!10279 4908|10569 5089!10569 5089|10872 5089!10872 5089|11175 5089!11175 5089|11479 5089!11479 5089|11189 4908!11769 5270|11479 5089!11162 5270|11452
- 5451!11452 5451|11755 5451!10899 4727|10609 4546!10609 4546|10305 4546!10305 4546|10595 4727!10595 4727|10292 4727!10292 4727|10002 4546!10002 4546|9699 4546!10305 4546|10002 4546!10555 5270|10859 5270!10859 5270|10569 5089!10569 5089
-|10265 5089!10265 5089|10555 5270!10239 5451|10542 5451!11149 5451|11452 5451"/>
+!9672 4908|9975 4908!9975 4908|9685 4727!9685 4727|9382 4727!9382 4727|9672 4908!9369 4908|9659 5089!9659 5089|9962 5089!9962 5089|9672 4908!9672 4908|9369 4908!9685 4727|9989 4727!9989 4727|9699 4546!9699 4546|9395 4546!9395 4546|9685
+ 4727!9092 4546|8789 4546!8789 4546|9079 4727!9079 4727|9382 4727!9382 4727|9092 4546!9369 4908|9079 4727!9079 4727|8775 4727!8775 4727|9065 4908!9065 4908|9369 4908!9092 4546|9395 4546!8789 4546|8485 4546!8485 4546|8775 4727!9699 4546
+|10002 4546!10002 4546|10305 4546!10305 4546|10609 4546!10609 4546|10899 4727!10899 4727|11189 4908!11189 4908|11479 5089!11479 5089|11769 5270!11769 5270|12059 5451!12059 5451|11755 5451!11755 5451|11452 5451!11452 5451|11149 5451!11149
+ 5451|10845 5451!10845 5451|10542 5451!10542 5451|10239 5451!10239 5451|9935 5451!9935 5451|9633 5451!9633 5451|9342 5270!9342 5270|9052 5089!9052 5089|8762 4908!8762 4908|8472 4727!8472 4727|8182 4546!8182 4546|8485 4546!8472 4727|8775
+ 4727!9052 5089|9355 5089!9355 5089|9065 4908!9065 4908|8762 4908!9935 5451|9645 5270!9645 5270|9342 5270!9645 5270|9949 5270!9949 5270|9659 5089!9659 5089|9355 5089!9355 5089|9645 5270!11769 5270|11465 5270!11465 5270|11755 5451!10582
+ 4908|10872 5089!10872 5089|11175 5089!11175 5089|10885 4908!10885 4908|10582 4908!10899 4727|10595 4727!10595 4727|10885 4908!10885 4908|11189 4908!9989 4727|10292 4727!10292 4727|10002 4546!9975 4908|10279 4908!10279 4908|9989 4727
+!9962 5089|10265 5089!10265 5089|9975 4908!10542 5451|10252 5270!10252 5270|9949 5270!9949 5270|10239 5451!9962 5089|10252 5270!10252 5270|10555 5270!10555 5270|10265 5089!10555 5270|10859 5270!10859 5270|10569 5089!10569 5089|10265 5089
+!10582 4908|10279 4908!10279 4908|10569 5089!10569 5089|10872 5089!10845 5451|10555 5270!11149 5451|10859 5270!10859 5270|11162 5270!11162 5270|10872 5089!10595 4727|10292 4727!10292 4727|10582 4908!10305 4546|10595 4727!11465 5270|11162
+ 5270!11162 5270|11452 5451!11175 5089|11479 5089!11465 5270|11175 5089"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="865.35" centerPoint3DY="164.1">
@@ -5319,7 +5276,7 @@ on(rollOut){
 ]]></script>
                                              </Actionscript>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 1057" name="gameworld" selected="true" centerPoint3DX="121.75" centerPoint3DY="39.45">
+                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 1057" name="gameworld" centerPoint3DX="121.75" centerPoint3DY="39.45">
                                              <matrix>
                                                   <Matrix d="0.999755859375" tx="109.1" ty="24.8"/>
                                              </matrix>
@@ -5337,11 +5294,10 @@ on(rollOut){
                                              <Actionscript>
                                                   <script><![CDATA[onClipEvent (load) {
 	stop();
-	_root.全部翻译(this);
+	this.确认按钮是否失效 = false;
 }
 on (release) {
-	gotoAndStop(338);
-	if (_root.确认按钮是否失效 == false)
+	if (this.确认按钮是否失效 == false)
 	{
 		if (_root.上装装备 != "")
 		{
@@ -5372,8 +5328,7 @@ on (release) {
 			_root.difficultyMode = 0;
 		}
 		_root.新建角色();
-		_root.场景进入位置名 = "出生地";
-		_root.确认按钮是否失效 = true;
+		this.确认按钮是否失效 = true;
 	}
 }
 on (press) {
@@ -5726,15 +5681,15 @@ on (rollOut) {
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!9662 4895|9952 5076!9952 5076|10255 5076!10255 5076|10545 5257!10545 5257|10242 5257!10242 5257|9952 5076!9952 5076|9649 5076!9649 5076|9359 4895!9359 4895|9662 4895!9662 4895|9372 4714!9372 4714|9675 4714!9675 4714|9385 4533!9385 4533
-|9689 4533!9689 4533|9979 4714!9979 4714|9675 4714!9385 4533|9082 4533!9082 4533|8779 4533!8779 4533|8475 4533!8475 4533|8172 4533!8172 4533|8462 4714!8462 4714|8765 4714!8765 4714|9069 4714!9069 4714|9359 4895!9359 4895|9055 4895!9055
- 4895|9345 5076!9345 5076|9042 5076!9042 5076|8752 4895!8752 4895|9055 4895!9082 4533|9372 4714!9372 4714|9069 4714!9069 4714|8779 4533!8462 4714|8752 4895!9055 4895|8765 4714!8765 4714|8475 4533!9345 5076|9635 5257!9635 5257|9332 5257
-!9332 5257|9623 5438!9623 5438|9925 5438!9925 5438|10229 5438!10229 5438|10532 5438!10532 5438|10835 5438!10835 5438|10545 5257!10545 5257|10849 5257!10849 5257|11139 5438!11139 5438|10835 5438!9042 5076|9332 5257!9345 5076|9649 5076
-!9649 5076|9939 5257!9939 5257|10242 5257!10242 5257|10532 5438!11139 5438|11442 5438!11442 5438|11745 5438!11745 5438|12049 5438!12049 5438|11759 5257!11759 5257|11455 5257!11455 5257|11152 5257!11152 5257|10862 5076!10862 5076|11165
- 5076!11165 5076|11455 5257!11455 5257|11745 5438!11759 5257|11469 5076!11469 5076|11179 4895!11179 4895|10889 4714!10889 4714|10585 4714!10585 4714|10282 4714!10282 4714|10572 4895!10572 4895|10269 4895!10269 4895|10559 5076!10559 5076
-|10255 5076!10255 5076|9965 4895!9965 4895|10269 4895!10889 4714|10599 4533!10599 4533|10295 4533!10295 4533|9992 4533!9992 4533|9689 4533!10295 4533|10585 4714!10585 4714|10875 4895!10875 4895|10572 4895!10572 4895|10862 5076!10862 5076
-|10559 5076!10559 5076|10849 5257!11469 5076|11165 5076!11165 5076|10875 4895!10875 4895|11179 4895!10269 4895|9979 4714!9979 4714|10282 4714!10282 4714|9992 4533!9939 5257|10229 5438!10849 5257|11152 5257!11152 5257|11442 5438!9939 5257
-|9635 5257!9635 5257|9925 5438!9675 4714|9965 4895!9965 4895|9662 4895"/>
+!9662 4895|9372 4714!9372 4714|9069 4714!9069 4714|9359 4895!9359 4895|9662 4895!9675 4714|9385 4533!9385 4533|9082 4533!9082 4533|9372 4714!9372 4714|9675 4714!9385 4533|9689 4533!9689 4533|9992 4533!9992 4533|10295 4533!10295 4533|10599
+ 4533!10599 4533|10889 4714!10889 4714|11179 4895!11179 4895|11469 5076!11469 5076|11759 5257!11759 5257|12049 5438!12049 5438|11745 5438!11745 5438|11442 5438!11442 5438|11139 5438!11139 5438|10835 5438!10835 5438|10532 5438!10532 5438
+|10229 5438!10229 5438|9925 5438!9925 5438|9623 5438!9623 5438|9332 5257!9332 5257|9042 5076!9042 5076|8752 4895!8752 4895|8462 4714!8462 4714|8172 4533!8172 4533|8475 4533!8475 4533|8779 4533!8779 4533|9082 4533!9055 4895|9345 5076!9345
+ 5076|9649 5076!9649 5076|9359 4895!9359 4895|9055 4895!8462 4714|8765 4714!8765 4714|8475 4533!9925 5438|9635 5257!9635 5257|9332 5257!9345 5076|9635 5257!9635 5257|9939 5257!9939 5257|9649 5076!9345 5076|9042 5076!8752 4895|9055 4895
+!9055 4895|8765 4714!8765 4714|9069 4714!9069 4714|8779 4533!11759 5257|11455 5257!11455 5257|11745 5438!10889 4714|10585 4714!10585 4714|10875 4895!10875 4895|11179 4895!10572 4895|10862 5076!10862 5076|11165 5076!11165 5076|10875 4895
+!10875 4895|10572 4895!9689 4533|9979 4714!9979 4714|10282 4714!10282 4714|9992 4533!9979 4714|9675 4714!9675 4714|9965 4895!9965 4895|10269 4895!10269 4895|9979 4714!10532 5438|10242 5257!10242 5257|9939 5257!9939 5257|10229 5438!10242
+ 5257|9952 5076!9952 5076|9649 5076!10255 5076|9965 4895!9965 4895|9662 4895!9662 4895|9952 5076!9952 5076|10255 5076!10835 5438|10545 5257!10545 5257|10242 5257!10849 5257|10559 5076!10559 5076|10255 5076!10255 5076|10545 5257!10545
+ 5257|10849 5257!10849 5257|11152 5257!11152 5257|10862 5076!10862 5076|10559 5076!10849 5257|11139 5438!10295 4533|10585 4714!10572 4895|10269 4895!10269 4895|10559 5076!10585 4714|10282 4714!10282 4714|10572 4895!11455 5257|11152 5257
+!11152 5257|11442 5438!11469 5076|11165 5076!11165 5076|11455 5257"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="864.85" centerPoint3DY="163.45">
@@ -5767,11 +5722,10 @@ on (rollOut) {
                                              <Actionscript>
                                                   <script><![CDATA[onClipEvent (load) {
 	stop();
-	_root.全部翻译(this);
+	this.确认按钮是否失效 = false;
 }
 on (release) {
-	gotoAndStop(338);
-	if (_root.确认按钮是否失效 == false)
+	if (this.确认按钮是否失效 == false)
 	{
 		if (_root.上装装备 != "")
 		{
@@ -5802,8 +5756,7 @@ on (release) {
 			_root.difficultyMode = 0;
 		}
 		_root.新建角色();
-		_root.场景进入位置名 = "出生地";
-		_root.确认按钮是否失效 = true;
+		this.确认按钮是否失效 = true;
 	}
 }
 on (press) {
@@ -6195,7 +6148,7 @@ on (rollOut) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="125" duration="102" keyMode="9728">
+                              <DOMFrame index="125" duration="85" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -6249,25 +6202,25 @@ on (rollOut) {
                                              <edges>
                                                   <Edge fillStyle0="2" edges="
 !17466 11519.5|17440 11520!17440 11520|20104 11520!20104 11520[20480 11520 20480 11241!20480 11241|20480 278!20480 278[20480 0 20104 0!20104 0|17571 0"/>
+                                                  <Edge fillStyle0="2" fillStyle1="1" edges="
+!17571 0|17571 11519!17571 11519|17466 11519.5"/>
                                                   <Edge fillStyle0="1" edges="
 !17571 0|376 0!376 0[0 0 0 278!0 278|0 11241!0 11241[0 11520 376 11520!376 11520|17466 11519.5"/>
-                                                  <Edge fillStyle0="1" fillStyle1="2" edges="
-!17466 11519.5|17571 11519!17571 11519|17571 0"/>
                                              </edges>
                                         </DOMShape>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="128" duration="99" keyMode="9728">
+                              <DOMFrame index="128" duration="82" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
                     <DOMLayer name="修改详细菜单" color="#66CD76" autoNamed="false">
                          <frames>
-                              <DOMFrame index="0" duration="148" keyMode="9728">
+                              <DOMFrame index="0" duration="133" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="148" duration="79" keyMode="9728">
+                              <DOMFrame index="133" duration="77" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 2020" name="修改详细菜单" centerPoint3DX="66.5" centerPoint3DY="-44.05">
                                              <matrix>
@@ -6291,10 +6244,10 @@ on (rollOut) {
                     </DOMLayer>
                     <DOMLayer name="查看详细菜单" color="#60F360" autoNamed="false">
                          <frames>
-                              <DOMFrame index="0" duration="148" keyMode="9728">
+                              <DOMFrame index="0" duration="133" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="148" duration="79" keyMode="9728">
+                              <DOMFrame index="133" duration="77" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 2017" name="查看详细菜单" centerPoint3DX="162.45" centerPoint3DY="-42.4">
                                              <matrix>
@@ -6322,10 +6275,10 @@ on (rollOut) {
                     </DOMLayer>
                     <DOMLayer name="NPC功能菜单" color="#72F4E2" autoNamed="false">
                          <frames>
-                              <DOMFrame index="0" duration="148" keyMode="9728">
+                              <DOMFrame index="0" duration="133" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="148" duration="79" keyMode="9728">
+                              <DOMFrame index="133" duration="77" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1770" name="NPC功能菜单" centerPoint3DX="308.45" centerPoint3DY="-62.4">
                                              <matrix>
@@ -6354,10 +6307,10 @@ on (rollOut) {
                     <DOMLayer name="悬浮UI" color="#9933CC" autoNamed="false" visible="false" layerType="folder"/>
                     <DOMLayer name="弹出公告界面" color="#4FFF4F" parentLayerIndex="20" autoNamed="false">
                          <frames>
-                              <DOMFrame index="0" duration="148" keyMode="9728">
+                              <DOMFrame index="0" duration="133" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="148" duration="79" keyMode="9728">
+                              <DOMFrame index="133" duration="77" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="弹出公告UI/弹出公告界面" name="弹出公告界面" centerPoint3DX="1214" centerPoint3DY="122.5">
                                              <matrix>
@@ -6373,10 +6326,10 @@ on (rollOut) {
                     </DOMLayer>
                     <DOMLayer name="新手指引" color="#988AF2" parentLayerIndex="20" autoNamed="false" visible="false">
                          <frames>
-                              <DOMFrame index="0" duration="148" keyMode="9728">
+                              <DOMFrame index="0" duration="133" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="148" duration="79" keyMode="9728">
+                              <DOMFrame index="133" duration="77" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 2119" name="新手引导界面" selected="true" centerPoint3DX="357.65" centerPoint3DY="175.05">
                                              <transformationPoint>
@@ -6395,10 +6348,10 @@ on (rollOut) {
                     </DOMLayer>
                     <DOMLayer name="游戏帮助" color="#BAAA1E" parentLayerIndex="20" outline="true" useOutlineView="true" autoNamed="false" visible="false">
                          <frames>
-                              <DOMFrame index="0" duration="148" keyMode="9728">
+                              <DOMFrame index="0" duration="133" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="148" duration="79" keyMode="9728">
+                              <DOMFrame index="133" duration="77" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="通用透明组件" name="单机版帮助界面" centerPoint3DX="395.45" centerPoint3DY="237.9">
                                              <matrix>
@@ -6422,7 +6375,7 @@ on (rollOut) {
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="98" keyMode="9728">
+                              <DOMFrame index="129" duration="81" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="全屏UI层" name="全屏UI层" centerPoint3DX="-57.9" centerPoint3DY="9.5">
                                              <transformationPoint>
@@ -6433,12 +6386,12 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="对话框界面" color="#A9FD4E" parentLayerIndex="20" current="true" isSelected="true" autoNamed="false">
+                    <DOMLayer name="对话框界面" color="#A9FD4E" parentLayerIndex="20" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="98" keyMode="9728">
+                              <DOMFrame index="129" duration="81" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/UI组件/对话框界面" name="对话框界面" centerPoint3DX="351.4" centerPoint3DY="367.95">
                                              <transformationPoint>
@@ -6454,7 +6407,7 @@ on (rollOut) {
                               <DOMFrame index="0" duration="70" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="70" duration="157" keyMode="9728">
+                              <DOMFrame index="70" duration="140" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 960" name="音乐播放界面" centerPoint3DX="904.5" centerPoint3DY="215.9">
                                              <matrix>
@@ -6478,7 +6431,7 @@ on (rollOut) {
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="98" keyMode="9728">
+                              <DOMFrame index="129" duration="81" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/UI组件/新版物品栏界面" name="物品栏界面" centerPoint3DX="790" centerPoint3DY="265.95">
                                              <matrix>
@@ -6497,7 +6450,7 @@ on (rollOut) {
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="98" keyMode="9728">
+                              <DOMFrame index="129" duration="81" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/UI组件/新版商店界面" name="购买物品界面" centerPoint3DX="454" centerPoint3DY="265.95">
                                              <matrix>
@@ -6516,7 +6469,7 @@ on (rollOut) {
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="45" keyMode="9728">
+                              <DOMFrame index="129" duration="30" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/UI组件/平板电脑界面" name="平板电脑界面" selected="true" centerPoint3DX="735.75" centerPoint3DY="437.15">
                                              <matrix>
@@ -6528,17 +6481,17 @@ on (rollOut) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="174" duration="53" keyMode="9728">
+                              <DOMFrame index="159" duration="51" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
                     <DOMLayer name="修改工具界面" color="#4676EE" parentLayerIndex="20" autoNamed="false" visible="false">
                          <frames>
-                              <DOMFrame index="0" duration="148" keyMode="9728">
+                              <DOMFrame index="0" duration="133" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="148" duration="79" keyMode="9728">
+                              <DOMFrame index="133" duration="77" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/UI组件/修改工具界面" name="修改工具界面" centerPoint3DX="504.95" centerPoint3DY="242.05">
                                              <matrix>
@@ -6566,7 +6519,7 @@ on (rollOut) {
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="98" keyMode="9728">
+                              <DOMFrame index="129" duration="81" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 2082" name="任务奖励提示界面" centerPoint3DX="518" centerPoint3DY="203.75">
                                              <matrix>
@@ -6591,7 +6544,7 @@ on (rollOut) {
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="98" keyMode="9728">
+                              <DOMFrame index="129" duration="81" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 2074" name="奖励物品界面" centerPoint3DX="523.35" centerPoint3DY="167.65">
                                              <matrix>
@@ -6616,7 +6569,7 @@ on (rollOut) {
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="98" keyMode="9728">
+                              <DOMFrame index="129" duration="81" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 2065" name="安全退出界面" centerPoint3DX="504.3" centerPoint3DY="175.95">
                                              <matrix>
@@ -6641,7 +6594,7 @@ on (rollOut) {
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="98" keyMode="9728">
+                              <DOMFrame index="129" duration="81" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/确认confirm" name="确认通用面板" selected="true" centerPoint3DX="512.5" centerPoint3DY="281.4">
                                              <matrix>
@@ -6665,7 +6618,7 @@ on (rollOut) {
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="98" keyMode="9728">
+                              <DOMFrame index="129" duration="81" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 2035" name="佣兵确认面板" selected="true" centerPoint3DX="512.5" centerPoint3DY="281.4">
                                              <matrix>
@@ -6689,7 +6642,7 @@ on (rollOut) {
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="45" keyMode="9728">
+                              <DOMFrame index="129" duration="30" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 1934" name="装备强化界面" centerPoint3DX="512.45" centerPoint3DY="258.4">
                                              <matrix>
@@ -6707,7 +6660,7 @@ on (rollOut) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="174" duration="53" keyMode="9728">
+                              <DOMFrame index="159" duration="51" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -6717,7 +6670,7 @@ on (rollOut) {
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="45" keyMode="9728">
+                              <DOMFrame index="129" duration="30" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="UI重构/物品改装界面" name="物品改装界面" selected="true" centerPoint3DX="520" centerPoint3DY="272.9">
                                              <matrix>
@@ -6734,7 +6687,7 @@ on (rollOut) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="174" duration="53" keyMode="9728">
+                              <DOMFrame index="159" duration="51" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -6744,7 +6697,7 @@ on (rollOut) {
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="98" keyMode="9728">
+                              <DOMFrame index="129" duration="81" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/UI组件/新版仓库界面" name="仓库界面" centerPoint3DX="227.15" centerPoint3DY="170.6">
                                              <matrix>
@@ -6763,7 +6716,7 @@ on (rollOut) {
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="98" keyMode="9728">
+                              <DOMFrame index="129" duration="81" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/UI组件/图片容器" name="图片容器" centerPoint3DX="896" centerPoint3DY="392.5">
                                              <matrix>
@@ -6782,7 +6735,7 @@ on (rollOut) {
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="98" keyMode="9728">
+                              <DOMFrame index="129" duration="81" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 1873" name="委托任务界面" selected="true" centerPoint3DX="328.45" centerPoint3DY="274.95">
                                              <matrix>
@@ -6796,12 +6749,12 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="关卡结束界面" color="#7F9FFA" parentLayerIndex="20" autoNamed="false">
+                    <DOMLayer name="关卡结束界面" color="#7F9FFA" parentLayerIndex="20" locked="true" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="98" keyMode="9728">
+                              <DOMFrame index="129" duration="81" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 1861" name="关卡结束界面" centerPoint3DX="512.3" centerPoint3DY="62.95">
                                              <matrix>
@@ -6820,7 +6773,7 @@ on (rollOut) {
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="98" keyMode="9728">
+                              <DOMFrame index="129" duration="81" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1779" name="学习技能界面" centerPoint3DX="468" centerPoint3DY="285.95">
                                              <matrix>
@@ -6837,12 +6790,12 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="系统设置界面" color="#B4A04D" parentLayerIndex="20" locked="true" autoNamed="false">
+                    <DOMLayer name="系统设置界面" color="#B4A04D" parentLayerIndex="20" locked="true" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="98" keyMode="9728">
+                              <DOMFrame index="129" duration="81" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/系统UI" name="系统设置界面" centerPoint3DX="674.6" centerPoint3DY="256.95">
                                              <matrix>
@@ -6863,10 +6816,10 @@ on (rollOut) {
                     </DOMLayer>
                     <DOMLayer name="佣兵信息界面" color="#FAE77E" parentLayerIndex="20" autoNamed="false" visible="false">
                          <frames>
-                              <DOMFrame index="0" duration="148" keyMode="9728">
+                              <DOMFrame index="0" duration="133" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="148" duration="26" keyMode="9728">
+                              <DOMFrame index="133" duration="26" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 923" name="佣兵信息界面" selected="true" centerPoint3DX="531.9" centerPoint3DY="396.35">
                                              <matrix>
@@ -6887,17 +6840,17 @@ on (rollOut) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="174" duration="53" keyMode="9728">
+                              <DOMFrame index="159" duration="51" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
                     <DOMLayer name="领养宠物界面" color="#8A44D0" parentLayerIndex="20" autoNamed="false" visible="false">
                          <frames>
-                              <DOMFrame index="0" duration="148" keyMode="9728">
+                              <DOMFrame index="0" duration="133" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="148" duration="26" keyMode="9728">
+                              <DOMFrame index="133" duration="26" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/UI组件/领养宠物界面" name="领养宠物界面" centerPoint3DX="510.3" centerPoint3DY="236.2">
                                              <matrix>
@@ -6915,17 +6868,17 @@ on (rollOut) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="174" duration="53" keyMode="9728">
+                              <DOMFrame index="159" duration="51" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
                     <DOMLayer name="宠物信息界面" color="#45F649" parentLayerIndex="20" autoNamed="false" visible="false">
                          <frames>
-                              <DOMFrame index="0" duration="148" keyMode="9728">
+                              <DOMFrame index="0" duration="133" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="148" duration="26" keyMode="9728">
+                              <DOMFrame index="133" duration="26" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/UI组件/宠物信息界面" name="宠物信息界面" centerPoint3DX="391.75" centerPoint3DY="285.25">
                                              <matrix>
@@ -6943,7 +6896,7 @@ on (rollOut) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="174" duration="53" keyMode="9728">
+                              <DOMFrame index="159" duration="51" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -6953,7 +6906,7 @@ on (rollOut) {
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="98" keyMode="9728">
+                              <DOMFrame index="129" duration="81" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="通用UI层" name="通用UI层" centerPoint3DX="284" centerPoint3DY="131.65">
                                              <transformationPoint>
@@ -6966,16 +6919,10 @@ on (rollOut) {
                     </DOMLayer>
                     <DOMLayer name="限定地图UI" color="#F0F70C" parentLayerIndex="20" autoNamed="false">
                          <frames>
-                              <DOMFrame index="0" duration="159" keyMode="9728">
+                              <DOMFrame index="0" duration="170" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="160" duration="25" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="185" keyMode="9728">
+                              <DOMFrame index="170" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="角斗场选择界面" centerPoint3DX="430.85" centerPoint3DY="216.95">
                                              <transformationPoint>
@@ -6984,10 +6931,10 @@ on (rollOut) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="186" duration="37" keyMode="9728">
+                              <DOMFrame index="171" duration="37" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="223" keyMode="9728">
+                              <DOMFrame index="208" keyMode="9728">
                                    <elements>
                                         <DOMDynamicText name="d_波次" fontRenderingMode="device" width="131" height="12.95" isSelectable="false">
                                              <matrix>
@@ -7030,7 +6977,7 @@ on (rollOut) {
                                         </DOMDynamicText>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="224" duration="3" keyMode="9728">
+                              <DOMFrame index="209" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -7041,7 +6988,7 @@ on (rollOut) {
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="98" keyMode="9728">
+                              <DOMFrame index="129" duration="81" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/存盘动画" name="存盘动画" centerPoint3DX="1001.15" centerPoint3DY="528.35">
                                              <matrix>
@@ -7066,7 +7013,7 @@ on (rollOut) {
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="98" keyMode="9728">
+                              <DOMFrame index="129" duration="81" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/任务完成提示" name="任务完成提示" centerPoint3DX="1017.5" centerPoint3DY="511.9">
                                              <matrix>
@@ -7088,7 +7035,7 @@ on (rollOut) {
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="98" keyMode="9728">
+                              <DOMFrame index="129" duration="81" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/UI组件/玩家信息界面" name="玩家信息界面" centerPoint3DX="511.8" centerPoint3DY="559.7">
                                              <matrix>
@@ -7105,10 +7052,10 @@ on (rollOut) {
                     <DOMLayer name="按钮UI" color="#4FFF4F" locked="true" autoNamed="false" layerType="folder"/>
                     <DOMLayer name="场景名称文本" color="#4FFF4F" parentLayerIndex="53" autoNamed="false">
                          <frames>
-                              <DOMFrame index="0" duration="148" keyMode="9728">
+                              <DOMFrame index="0" duration="133" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="148" duration="26" keyMode="9728">
+                              <DOMFrame index="133" duration="26" keyMode="9728">
                                    <elements>
                                         <DOMDynamicText name="场景名称文本" fontRenderingMode="device" width="58" height="12.95" isSelectable="false">
                                              <matrix>
@@ -7125,17 +7072,17 @@ on (rollOut) {
                                         </DOMDynamicText>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="174" duration="53" keyMode="9728">
+                              <DOMFrame index="159" duration="51" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
                     <DOMLayer name="地图界面" color="#4FFF4F" parentLayerIndex="53" autoNamed="false">
                          <frames>
-                              <DOMFrame index="0" duration="148" keyMode="9728">
+                              <DOMFrame index="0" duration="133" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="148" duration="26" keyMode="9728">
+                              <DOMFrame index="133" duration="26" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/UI组件/地图界面" name="地图界面" centerPoint3DX="403.95" centerPoint3DY="214.5">
                                              <transformationPoint>
@@ -7147,17 +7094,17 @@ on (rollOut) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="174" duration="53" keyMode="9728">
+                              <DOMFrame index="159" duration="51" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
                     <DOMLayer name="底部按钮组1" color="#DC8BA2" parentLayerIndex="53" autoNamed="false">
                          <frames>
-                              <DOMFrame index="0" duration="148" keyMode="9728">
+                              <DOMFrame index="0" duration="133" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="148" duration="26" keyMode="9728">
+                              <DOMFrame index="133" duration="26" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="底部UI/底部UI组" centerPoint3DX="52.9" centerPoint3DY="25.4">
                                              <matrix>
@@ -7169,17 +7116,17 @@ on (rollOut) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="174" duration="53" keyMode="9728">
+                              <DOMFrame index="159" duration="51" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
                     <DOMLayer name="顶部UI-2" color="#9933CC" parentLayerIndex="53" locked="true" autoNamed="false">
                          <frames>
-                              <DOMFrame index="0" duration="148" keyMode="9728">
+                              <DOMFrame index="0" duration="133" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="148" duration="79" keyMode="9728">
+                              <DOMFrame index="133" duration="77" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/后勤战备箱按钮" name="后勤战备箱按钮" centerPoint3DX="773.1" centerPoint3DY="31.1">
                                              <matrix>
@@ -7278,10 +7225,10 @@ onClipEvent (load) {
                     </DOMLayer>
                     <DOMLayer name="顶部UI-1" color="#72FB84" parentLayerIndex="53" autoNamed="false">
                          <frames>
-                              <DOMFrame index="0" duration="148" keyMode="9728">
+                              <DOMFrame index="0" duration="133" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="148" duration="79" keyMode="9728">
+                              <DOMFrame index="133" duration="77" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/暂停按钮" name="暂停按钮" centerPoint3DX="895.05" centerPoint3DY="31.3">
                                              <matrix>
@@ -7386,7 +7333,7 @@ onClipEvent (load) {
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="129" duration="98" keyMode="9728">
+                              <DOMFrame index="129" duration="81" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/通用按钮" name="奖励10分钟" centerPoint3DX="970.05" centerPoint3DY="174.95">
                                              <matrix>
@@ -7525,10 +7472,10 @@ on(rollOut){
                     </DOMLayer>
                     <DOMLayer name="gameworld控件" color="#62CB8E" autoNamed="false">
                          <frames>
-                              <DOMFrame index="0" duration="159" keyMode="9728">
+                              <DOMFrame index="0" duration="144" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" keyMode="9728">
+                              <DOMFrame index="144" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 2396" name="门口佣兵刷新器" centerPoint3DX="230.6" centerPoint3DY="-67.8">
                                              <matrix>
@@ -7540,10 +7487,10 @@ on(rollOut){
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="160" duration="46" keyMode="9728">
+                              <DOMFrame index="145" duration="46" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="206" keyMode="9728">
+                              <DOMFrame index="191" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/透明元件" centerPoint3DX="12.5" centerPoint3DY="12.5">
                                              <transformationPoint>
@@ -7560,10 +7507,10 @@ onClipEvent (enterFrame) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="207" duration="16" keyMode="9728">
+                              <DOMFrame index="192" duration="16" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="223" keyMode="9728">
+                              <DOMFrame index="208" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/透明元件" centerPoint3DX="12.5" centerPoint3DY="12.5">
                                              <transformationPoint>
@@ -7571,11 +7518,8 @@ onClipEvent (enterFrame) {
                                              </transformationPoint>
                                              <Actionscript>
                                                   <script><![CDATA[onClipEvent (load) {
-	//本轮敌人 = [];
 	_root.加载共享场景("wuxianguotu_1");
-	_root.无限过图模式关卡计数 += 1;
-	本轮敌人 = _root.无限过图总关卡[_root.无限过图模式关卡计数];
-	_root.开启生存模式(本轮敌人);
+	_root.开启生存模式();
 }
 onClipEvent (enterFrame) {
 	_root.横版卷屏();
@@ -7588,17 +7532,17 @@ onClipEvent (unload) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="224" duration="3" keyMode="9728">
+                              <DOMFrame index="209" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
                     <DOMLayer name="gameworld" color="#F43B90" autoNamed="false">
                          <frames>
-                              <DOMFrame index="0" duration="159" keyMode="9728">
+                              <DOMFrame index="0" duration="144" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" keyMode="9728">
+                              <DOMFrame index="144" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/透明元件" name="gameworld层级定位器" centerPoint3DX="12.5" centerPoint3DY="12.5">
                                              <transformationPoint>
@@ -7615,10 +7559,10 @@ onClipEvent (enterFrame) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="160" duration="11" keyMode="9728">
+                              <DOMFrame index="145" duration="11" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="171" keyMode="9728">
+                              <DOMFrame index="156" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/透明元件" name="gameworld层级定位器" centerPoint3DX="12.5" centerPoint3DY="12.5">
                                              <transformationPoint>
@@ -7635,10 +7579,10 @@ onClipEvent (enterFrame) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="172" duration="2" keyMode="9728">
+                              <DOMFrame index="157" duration="2" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="174" keyMode="9728">
+                              <DOMFrame index="159" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/UI组件/选关界面" name="关卡地图MC" centerPoint3DX="66.95" centerPoint3DY="17.35">
                                              <transformationPoint>
@@ -7647,10 +7591,10 @@ onClipEvent (enterFrame) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="175" duration="31" keyMode="9728">
+                              <DOMFrame index="160" duration="31" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="206" keyMode="9728">
+                              <DOMFrame index="191" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/透明元件" name="gameworld层级定位器" centerPoint3DX="-53.5" centerPoint3DY="25.95">
                                              <matrix>
@@ -7662,10 +7606,10 @@ onClipEvent (enterFrame) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="207" duration="16" keyMode="9728">
+                              <DOMFrame index="192" duration="16" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="223" keyMode="9728">
+                              <DOMFrame index="208" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/透明元件" name="gameworld层级定位器" centerPoint3DX="-53.5" centerPoint3DY="25.95">
                                              <matrix>
@@ -7677,14 +7621,14 @@ onClipEvent (enterFrame) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="224" duration="3" keyMode="9728">
+                              <DOMFrame index="209" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
                     <DOMLayer name="背景" color="#7370F9" autoNamed="false">
                          <frames>
-                              <DOMFrame index="0" duration="227" keyMode="9728">
+                              <DOMFrame index="0" duration="210" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="天空盒" name="天空盒" centerPoint3DX="26.65" centerPoint3DY="5.45">
                                              <transformationPoint>
@@ -8148,6 +8092,8 @@ onClipEvent (enterFrame) {
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="705303" publishTime="1752118695"/>
+          <PublishItem publishSize="705726" publishTime="1752116197"/>
           <PublishItem publishSize="706670" publishTime="1750848009"/>
           <PublishItem publishSize="868092" publishTime="1750694708"/>
           <PublishItem publishSize="867634" publishTime="1750587094"/>
@@ -8166,7 +8112,5 @@ onClipEvent (enterFrame) {
           <PublishItem publishSize="865944" publishTime="1750586249"/>
           <PublishItem publishSize="866974" publishTime="1750585896"/>
           <PublishItem publishSize="866974" publishTime="1750585764"/>
-          <PublishItem publishSize="866974" publishTime="1750585516"/>
-          <PublishItem publishSize="866974" publishTime="1750585456"/>
      </publishHistory>
 </DOMDocument>

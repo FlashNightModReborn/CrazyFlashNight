@@ -22,7 +22,12 @@ class org.flashNight.arki.unit.UnitComponent.Deinitializer.StaticDeinitializer
             TargetCacheUpdater.removeUnit(target);
             // 卸载ai组件
             target.unitAI.destroy();
-            target.死亡检测();
+            if(!target.已加经验值) target.死亡检测();
+
+            // 发布特殊单位移除事件
+            if(target.publishStageEvent === true){
+                _root.gameworld.dispatcher.publish("UnitRemoved", target._name);
+            }
 
             target._deInitialized = true;
         } 

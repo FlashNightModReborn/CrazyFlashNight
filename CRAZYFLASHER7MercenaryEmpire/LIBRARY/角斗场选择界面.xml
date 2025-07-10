@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="角斗场选择界面" itemID="68490695-00000498" lastModified="1749616283" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="角斗场选择界面" itemID="68490695-00000498" lastModified="1752118655" lastUniqueIdentifier="9">
   <timeline>
     <DOMTimeline name="角斗场选择界面">
       <layers>
@@ -6,7 +6,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1025" selected="true" centerPoint3DX="502.15" centerPoint3DY="422.45">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1025" centerPoint3DX="502.15" centerPoint3DY="422.45">
                   <matrix>
                     <Matrix tx="462.85" ty="409.95"/>
                   </matrix>
@@ -14,25 +14,22 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   stop();
-   _root.全部翻译(this);
+                    <script><![CDATA[onClipEvent (load) {
+	stop();
 }
-on(release){
-   _root.发布请求 = false;
-   _root.决斗场进入中 = false;
-   _root.淡出动画.淡出跳转帧("关卡地图");
+on (release) {
+	_root.决斗场关闭();
+	_root.淡出动画.淡出跳转帧("关卡地图");
 }
-on(press){
-   this.gotoAndStop(3);
+on (press) {
+	this.gotoAndStop(3);
 }
-on(rollOver){
-   this.gotoAndStop(2);
+on (rollOver) {
+	this.gotoAndStop(2);
 }
-on(rollOut){
-   this.gotoAndStop(1);
-}
-]]></script>
+on (rollOut) {
+	this.gotoAndStop(1);
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
                 <DOMDynamicText fontRenderingMode="device" width="718.95" height="33" isSelectable="false">

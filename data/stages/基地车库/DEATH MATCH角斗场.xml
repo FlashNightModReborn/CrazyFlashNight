@@ -2,4 +2,34 @@
 <GameStage>
     <Rewards>
     </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/jdc_2_BG.swf</Background>
+            <PlayerX>420</PlayerX>
+            <PlayerY>250</PlayerY>
+            <CallbackFunction>
+                <Name>角斗场加载</Name>
+            </CallbackFunction>
+        </BasicInformation>
+        <Event>
+            <EventName>WaveStarted</EventName>
+            <Callback>
+                <Name>角斗场计算敌人数</Name>
+            </Callback>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Callback>
+                <Name>角斗场获胜</Name>
+            </Callback>
+        </Event>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>-4</FinishRequirement>
+                </WaveInformation>
+            </SubWave>
+        </Wave>
+    </SubStage>
 </GameStage>

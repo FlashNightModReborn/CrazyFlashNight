@@ -17,6 +17,7 @@ class org.flashNight.arki.scene.StageEvent {
     public var camera:Object; // 摄像机控制
     public var dialogue:Array; // 播放对话
     public var enemy:Array; // 生成单位
+    public var followingEvent:Object; // 下个事件
     public var stageprogress:Object; // 关卡状态
     public var performance:Array; // 关卡演出
     public var sound:Array; // 播放声音
@@ -35,6 +36,7 @@ class org.flashNight.arki.scene.StageEvent {
         callback = data.Callback;
         camera = data.Camera;
         enemy = ObjectUtil.toArray(data.Enemy);
+        followingEvent = data.FollowingEvent;
         stageprogress = data.StageProgress;
         // 
         dialogue = ObjectUtil.toArray(data.Dialogue);
@@ -56,16 +58,28 @@ class org.flashNight.arki.scene.StageEvent {
             _root.soundEffectManager.stopBGM();
         }
 
-        // 对话
+        // 对话（目前跟随事件只能由对话触发）
         executeDialogue();
         // 刷怪
         executeEnemy();
 
         // 关卡状态
         if(stageprogress === "Finish"){
-            StageManager.instance.finishStage();
+            _root.gameworld.dispatcher.publish("StageFinished");
         }else if(stageprogress === "Fail"){
-            StageManager.instance.failStage();
+            _root.gameworld.dispatcher.publish("StageFailed");
+        }else if(stageprogress === "NextStage"){
+            _root.gameworld.dispatcher.publish("NextStage");
+        }
+
+        //最后执行回调函数
+        if(callback.Name){
+            if(callback.Parameter){
+                var para = ObjectUtil.toArray(callback.Parameter);
+                _root.关卡回调函数[callback.Name].apply(_root.关卡回调函数, para);
+            }else{
+                _root.关卡回调函数[callback.Name]();
+            }
         }
         
         this.clear();
@@ -75,7 +89,14 @@ class org.flashNight.arki.scene.StageEvent {
        if(dialogue.length > 0){
             _root.暂停 = true;
             _root.SetDialogue(StageInfo.parseSingleDialogue(dialogue));
-        } 
+            // 附加跟随事件
+            if(followingEvent.EventName){
+                _root.对话框界面.followingEvent = {
+                    name: followingEvent.EventName,
+                    args: followingEvent.Parameter ? ObjectUtil.toArray(followingEvent.Parameter).unshift(followingEvent.EventName) : null
+                }
+            }
+        }
     }
 
     private function executeEnemy(){

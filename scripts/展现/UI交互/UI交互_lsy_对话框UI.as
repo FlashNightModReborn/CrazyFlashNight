@@ -146,12 +146,20 @@ _root.对话框UI.close = function(){
     人物名字 = null;
     人物表情 = null;
     _root.暂停 = false;
-    if (结束对话后是否跳转帧){
-        _root.淡出动画.淡出跳转帧(结束对话后跳转帧);
-        结束对话后跳转帧 = "";
-        结束对话后是否跳转帧 = false;
-    }
     图片容器.卸载图片();
+    // if (结束对话后是否跳转帧){
+    //     _root.淡出动画.淡出跳转帧(结束对话后跳转帧);
+    //     结束对话后跳转帧 = "";
+    //     结束对话后是否跳转帧 = false;
+    // }
+    if(this.followingEvent.name){
+        if(this.followingEvent.args){
+           _root.gameworld.dispatcher.publish.apply(_root.gameworld.dispatcher, this.followingEvent.args);
+        }else{
+            _root.gameworld.dispatcher.publish(this.followingEvent.name);
+        }
+        this.followingEvent = null;
+    }
 }
 
 

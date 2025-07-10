@@ -249,6 +249,11 @@ class org.flashNight.arki.scene.StageManager {
         // 加载玩家
         gameworld.出生地.是否从门加载角色();
 
+        // 监听关卡完成，失败，直接进入下一张图事件
+        gameworld.dispatcher.subscribeOnce("StageFinished", this.finishStage, this);
+        gameworld.dispatcher.subscribeOnce("StageFailed", this.failStage, this);
+        gameworld.dispatcher.subscribeOnce("NextStage", this.nextStage, this);
+
         // 发布开始事件
         gameworld.dispatcher.publish("Start");
 
@@ -273,11 +278,11 @@ class org.flashNight.arki.scene.StageManager {
         }
 
         if (currentStage >= stageInfoList.length - 1){
-            finishStage();
+            _root.gameworld.dispatcher.publish("StageFinished");
         }else{
             gameworld.允许通行 = true;
             var hero:MovieClip = TargetCacheManager.findHero();
-            _root.效果("小过关提示动画", hero._x, hero._y,100);
+            _root.效果("小过关提示动画", hero._x, hero._y, 100);
         }
     }
 
@@ -302,6 +307,17 @@ class org.flashNight.arki.scene.StageManager {
         gameworld.dispatcher.publish("StageFailed");
 
         gameworld.通关箭头._visible = false;
+    }
+
+    public function nextStage():Void{
+        if(isFinished || isFailed) return;
+        if(currentStage < stageInfoList.length - 1){
+            _root.场景进入位置名 = "出生地";
+            _root.转场景记录数据();
+            _root.淡出动画.淡出跳转帧("wuxianguotu_1");
+        }else{
+            _root.返回基地();
+        }
     }
 
     public function closeStage():Void{

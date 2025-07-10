@@ -1,6 +1,12 @@
-﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+﻿import org.flashNight.arki.scene.*;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 _root.关卡回调函数 = new Object();
+
+_root.关卡回调函数.教学关卡 = function(){
+	_root.新手引导界面._visible = true;
+	_root.新手引导界面.gotoAndStop("初始操作");
+}
 
 _root.关卡回调函数.新手练习场_1 = function(){
 	_root.新手引导界面.显示指引("拾取",800);
@@ -19,20 +25,27 @@ _root.关卡回调函数.AVP_重设光照 = function(最大光照,最小光照){
 	}
 }
 
+_root.关卡回调函数.角斗场加载 = function(){
+	var playerX = _root.linearEngine.randomIntegerStrict(420,760);
+	var playerY = _root.linearEngine.randomIntegerStrict(250,600);
+	var enemyX = _root.linearEngine.randomIntegerStrict(420,760);
+	var enemyY = _root.linearEngine.randomIntegerStrict(250,600);
+	if(_root.linearEngine.randomCheckHalf()) playerX += 540;
+	else enemyX += 540;
+	_root.gameworld.出生地._x = playerX;
+	_root.gameworld.出生地._y = playerY;
+	_root.加载敌方人物(enemyX, enemyY);
+}
+_root.关卡回调函数.角斗场计算敌人数 = function(){
+	WaveSpawner.instance.finishRequirement = -_root.敌人同伴数;
+}
+_root.关卡回调函数.角斗场获胜 = function(){
+	_root.金钱 += _root.角斗场奖金;
+	_root.最上层发布文字提示("你赢了！获得奖金" + _root.角斗场奖金 + "元！");
+}
+
 _root.关卡回调函数.贫民窟_3 = function(){
 	_root.pickupItemManager.createCollectible("资料",5,1438,400,false);
 }
 
-_root.关卡回调函数.贫民窟_6 = function(){
-	var 事件mc = _root.gameworld.createEmptyMovieClip("事件_贫民窟_6",_root.gameworld.getNextHighestDepth());
-	事件mc.onEnterFrame = function(){
-		var 控制对象 = TargetCacheManager.findHero();
-		if(!控制对象) return;
-		if(控制对象._x < 300){
-			_root.生存模式OBJ.FinishRequirement = 99;
-			delete this.onEnterFrame;
-			this.removeMovieClip();
-		}
-	}
-}
 

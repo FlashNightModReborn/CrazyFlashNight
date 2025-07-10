@@ -511,7 +511,7 @@ _root.进入决斗场 = function()
 		_root.场景进入位置名 = "出生地";
 		_root.敌人同伴数 = _root.出阵人员.length;
 		_root.敌人同伴数据 = _root.出阵人员;
-		_root.淡出动画.淡出跳转帧("角斗场-2");
+		_root.淡出动画.淡出跳转帧("wuxianguotu_1");
 	}
 };
 _root.佣兵不足时进入决斗场 = function(请求表达式)
@@ -555,8 +555,16 @@ _root.佣兵不足时进入决斗场 = function(请求表达式)
 	_root.场景进入位置名 = "出生地";
 	_root.敌人同伴数 = _root.出阵人员.length;
 	_root.敌人同伴数据 = _root.出阵人员;
-	_root.淡出动画.淡出跳转帧("角斗场-2");
+	_root.淡出动画.淡出跳转帧("wuxianguotu_1");
 };
+
+_root.决斗场关闭 = function(){
+	_root.发布请求 = false;
+	_root.决斗场进入中 = false;
+	org.flashNight.arki.scene.StageManager.instance.clear();
+
+}
+
 _root.在数组中 = function(数组, 数字)
 {
 	var 迭代器 = 0;

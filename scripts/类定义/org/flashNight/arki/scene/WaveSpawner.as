@@ -18,7 +18,7 @@ class org.flashNight.arki.scene.WaveSpawner {
     private var stageInfo:StageInfo; // 关卡信息
     private var waveInfo:Array; // 波次信息
 
-    private var finishRequirement:Number;
+    public var finishRequirement:Number;
 
     public var totalWave = 0; // 总波次
     public var currentWave:Number = -1; // 当前波次

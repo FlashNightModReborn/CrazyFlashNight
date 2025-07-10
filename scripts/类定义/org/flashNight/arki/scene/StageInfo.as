@@ -96,7 +96,7 @@ class org.flashNight.arki.scene.StageInfo {
 
     public static function parseWaveInfo(data):Array{
         var subWaveInfo = ObjectUtil.toArray(data.Wave.SubWave);
-        if(subWaveInfo == null) return null;
+        if(subWaveInfo.length <= 0) return null;
         var resultInfo = [];
         for (var i:Number = 0; i < subWaveInfo.length; i++){
             var subwave = subWaveInfo[i];
