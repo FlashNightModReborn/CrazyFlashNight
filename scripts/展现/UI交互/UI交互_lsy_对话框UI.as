@@ -78,7 +78,7 @@ _root.对话框UI.刷新内容 = function(){
             打字(对话内容);
         };
     }else{
-        gotoAndStop("close");
+        关闭();
     }
 }
 
@@ -135,11 +135,15 @@ _root.对话框UI.下一句 = function(){
             结束打字();
         }
     }else{
-        gotoAndStop("close");
+        关闭();
     }
 }
 
-_root.对话框UI.close = function(){
+_root.对话框UI.关闭 = function(){
+    this.gotoAndStop("close");
+}
+
+_root.对话框UI.onClose = function(){
     this._visible = false;
     本轮对话内容 = [];
     对话条数 = 0;
@@ -168,12 +172,13 @@ _root.对话框UI.初始化对话框界面 = function(对话框界面:MovieClip)
     对话框界面.打字 = _root.对话框UI.打字;
     对话框界面.结束打字 = _root.对话框UI.结束打字;
     对话框界面.下一句 = _root.对话框UI.下一句;
-    对话框界面.close = _root.对话框UI.close;
+    对话框界面.关闭 = _root.对话框UI.关闭;
+    对话框界面.onClose = _root.对话框UI.onClose;
 
     对话框界面.刷新立绘 = _root.对话框UI.刷新立绘;
     对话框界面.刷新外部导入立绘 = _root.对话框UI.刷新外部导入立绘;
 
-    对话框界面.gotoAndStop("close");
+    对话框界面.关闭();
 }
 
 

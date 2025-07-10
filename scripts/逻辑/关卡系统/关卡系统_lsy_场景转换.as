@@ -421,7 +421,8 @@ _root.清除游戏世界组件 = function(){
 	_root.卸载外部UI();
 	_root.卸载全屏UI();
 	_root.对话框UI.清理外部立绘缓存(3);
-	_root.对话框界面.gotoAndStop("close");
+	_root.对话框界面.关闭();
+	_root.对话框界面.followingEvent = null;
 	_root.购买物品界面.关闭();
 	_root.仓库界面.关闭();
 	_root.商城主mc = null;

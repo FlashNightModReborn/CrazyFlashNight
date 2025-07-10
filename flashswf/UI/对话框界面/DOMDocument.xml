@@ -813,7 +813,7 @@
           <Include href="对话框UI/袁望surveyor/左上臂.xml" loadImmediate="false" itemID="658e9304-000001cc" lastModified="1703844269"/>
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
-          <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1751513327"/>
+          <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1752129567"/>
           <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1751709332"/>
           <Include href="发型/Symbol 799.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000814" lastModified="1710653981"/>
           <Include href="歌留多/歌留多胯.xml" loadImmediate="false" itemID="67096725-00000045" lastModified="1728669954"/>
@@ -937,23 +937,7 @@
                     <DOMLayer name="图层 2" color="#9933CC" outline="true" useOutlineView="true">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
-                                   <elements>
-                                        <DOMShape>
-                                             <strokes>
-                                                  <StrokeStyle index="1">
-                                                       <SolidStroke scaleMode="normal">
-                                                            <fill>
-                                                                 <SolidColor color="#00FF00" alpha="0"/>
-                                                            </fill>
-                                                       </SolidStroke>
-                                                  </StrokeStyle>
-                                             </strokes>
-                                             <edges>
-                                                  <Edge strokeStyle="1" edges="!18100 11520|18100 8440!18100 8440|16600 8440!16600 8440|16269 8800!16269 8800|1800 8800!1700 11520|1700 8660!1700 8660|2000 8100!2000 8100|600 8100!600 8100|600 900!600 900|9200 900!9200 900|9200 8100!9200 8100|9250 8100!9250 8100|17700
- 8100!17700 8100|18100 8440!15799 8430|9600 8430!9600 8430|9250 8100!2000 8100|9200 8100"/>
-                                             </edges>
-                                        </DOMShape>
-                                   </elements>
+                                   <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
@@ -1282,6 +1266,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="741490" publishTime="1752129363"/>
+          <PublishItem publishSize="741490" publishTime="1752129281"/>
           <PublishItem publishSize="928665" publishTime="1751513314"/>
           <PublishItem publishSize="928688" publishTime="1751512429"/>
           <PublishItem publishSize="928708" publishTime="1751512015"/>
@@ -1300,7 +1286,5 @@
           <PublishItem publishSize="2100890" publishTime="1742032750"/>
           <PublishItem publishSize="2076908" publishTime="1742030739"/>
           <PublishItem publishSize="2076918" publishTime="1742030506"/>
-          <PublishItem publishSize="2078310" publishTime="1741930247"/>
-          <PublishItem publishSize="2059515" publishTime="1741519966"/>
      </publishHistory>
 </DOMDocument>
