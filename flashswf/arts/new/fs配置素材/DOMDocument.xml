@@ -119,7 +119,7 @@
           <Include href="53式步骑枪/调整层.xml" loadImmediate="false" itemID="659eb6ee-000005a7" lastModified="1704953093"/>
           <Include href="53式步骑枪/图标-53式步骑枪.xml" itemID="659eadd3-00000327" lastModified="1704901315"/>
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1752157041"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1752223496"/>
           <Include href="NEGEV/Negev.xml" itemID="686a4cad-0000364f" lastModified="1751878281"/>
           <Include href="NEGEV/内格夫弹链动画.xml" loadImmediate="false" itemID="686a67d8-000036bc" lastModified="1751805789"/>
           <Include href="NEGEV/内格夫子弹1.xml" loadImmediate="false" itemID="686a5e0b-00003660" lastModified="1751809025"/>
@@ -182,20 +182,22 @@
           <Include href="wa90/消音器.xml" itemIcon="1" loadImmediate="false" itemID="60abd2e4-0000291f" lastModified="1621887798"/>
           <Include href="XM556/XM556-H-Stinger.xml" itemID="686cf53f-0000469e" lastModified="1751975018"/>
           <Include href="XM556/XM556-Microgun.xml" itemID="686bd9c0-000044e9" lastModified="1751898560"/>
-          <Include href="XM556/XM556-OC-Overlord.xml" itemID="686ded67-0000038a" lastModified="1752155863"/>
-          <Include href="XM556/XM556-OC-Overlord 动画.xml" loadImmediate="false" itemID="686f22d9-00000552" lastModified="1752157045"/>
+          <Include href="XM556/XM556-OC-Overlord.xml" itemID="686ded67-0000038a" lastModified="1752195948"/>
+          <Include href="XM556/XM556-OC-Overlord 动画.xml" loadImmediate="false" itemID="686f22d9-00000552" lastModified="1752196653"/>
           <Include href="XM556/XM556-OC-Overlord枪身.xml" loadImmediate="false" itemID="686f22bf-0000054e" lastModified="1752149679"/>
-          <Include href="XM556/XM556-OC枪火.xml" itemID="686fc67f-0000186d" lastModified="1752156723"/>
           <Include href="XM556/能量光效.xml" loadImmediate="false" itemID="686e3447-00000413" lastModified="1752052807"/>
           <Include href="XM556/能量腔荧光.xml" loadImmediate="false" itemID="686f2283-00000547" lastModified="1752149704"/>
           <Include href="XM556/能量指示灯.xml" loadImmediate="false" itemID="686e3435-0000040f" lastModified="1752149591"/>
           <Include href="XM556/枪管彩光.xml" loadImmediate="false" itemID="686e2ca0-000003bf" lastModified="1752050848"/>
           <Include href="XM556/枪口能量.xml" loadImmediate="false" itemID="686f2f28-000005df" lastModified="1752149661"/>
+          <Include href="XM556/铁枪能量弹枪火.xml" itemID="6870cf08-00000648" lastModified="1752223496"/>
           <Include href="XM556/图标-XM556-H-Stinger.xml" itemID="686d0486-000046e2" lastModified="1751975088"/>
+          <Include href="XM556/图标-XM556-OC-Overlord.xml" itemID="68706156-000009f8" lastModified="1752195443"/>
           <Include href="XM556/图标XM556-Microgun.xml" itemID="686bd9b1-000044e8" lastModified="1751898607"/>
           <Include href="XM556/线圈前端.xml" loadImmediate="false" itemID="686f1216-00000532" lastModified="1752131345"/>
           <Include href="XM556/线圈中级.xml" loadImmediate="false" itemID="686f1f34-0000053c" lastModified="1752130775"/>
           <Include href="XM556/炎魔斩纹路.xml" loadImmediate="false" itemID="6678d078-000005ae" lastModified="1719193720"/>
+          <Include href="xm556oc激光模组.xml" loadImmediate="false" itemID="68706327-00000e37" lastModified="1752196826"/>
           <Include href="补间 3.xml" itemIcon="1" loadImmediate="false" itemID="657ba813-000004c4" lastModified="1702602771"/>
           <Include href="补间 4.xml" itemIcon="1" loadImmediate="false" itemID="657ba813-000004c6" lastModified="1702602771"/>
           <Include href="补间 5.xml" itemIcon="1" loadImmediate="false" itemID="6678cf69-00000597" lastModified="1719193449"/>
@@ -836,6 +838,7 @@
                     <SolidSwatchItem color="#5F3C0D" hue="23" saturation="183" brightness="51"/>
                     <SolidSwatchItem color="#231A0E" hue="22" saturation="104" brightness="23"/>
                     <SolidSwatchItem color="#18150D" hue="29" saturation="75" brightness="18"/>
+                    <SolidSwatchItem color="#8FE3F2" alpha="0.498039215686275" hue="126" saturation="191" brightness="182"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -918,6 +921,15 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="883281" publishTime="1752223568"/>
+          <PublishItem publishSize="883281" publishTime="1752223500"/>
+          <PublishItem publishSize="883272" publishTime="1752223262"/>
+          <PublishItem publishSize="912484" publishTime="1752196838"/>
+          <PublishItem publishSize="912484" publishTime="1752196833"/>
+          <PublishItem publishSize="912627" publishTime="1752196077"/>
+          <PublishItem publishSize="912451" publishTime="1752195485"/>
+          <PublishItem publishSize="912398" publishTime="1752195267"/>
+          <PublishItem publishSize="907313" publishTime="1752195193"/>
           <PublishItem publishSize="883940" publishTime="1752156729"/>
           <PublishItem publishSize="889133" publishTime="1752156618"/>
           <PublishItem publishSize="888391" publishTime="1752156351"/>
@@ -929,14 +941,5 @@
           <PublishItem publishSize="915823" publishTime="1752155779"/>
           <PublishItem publishSize="859304" publishTime="1752154410"/>
           <PublishItem publishSize="862853" publishTime="1752153376"/>
-          <PublishItem publishSize="732033" publishTime="1752140939"/>
-          <PublishItem publishSize="598749" publishTime="1751974965"/>
-          <PublishItem publishSize="598748" publishTime="1751974648"/>
-          <PublishItem publishSize="598796" publishTime="1751974589"/>
-          <PublishItem publishSize="598540" publishTime="1751974533"/>
-          <PublishItem publishSize="598598" publishTime="1751974493"/>
-          <PublishItem publishSize="598594" publishTime="1751974381"/>
-          <PublishItem publishSize="575153" publishTime="1751898630"/>
-          <PublishItem publishSize="575155" publishTime="1751898571"/>
      </publishHistory>
 </DOMDocument>

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="XM556/XM556-OC-Overlord 动画" itemID="686f22d9-00000552" lastModified="1752157045" lastUniqueIdentifier="55">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="XM556/XM556-OC-Overlord 动画" itemID="686f22d9-00000552" lastModified="1752196653" lastUniqueIdentifier="57">
   <timeline>
-    <DOMTimeline name="XM556-OC-Overlord 动画" currentFrame="21">
+    <DOMTimeline name="XM556-OC-Overlord 动画" currentFrame="17">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="能量腔荧光" color="#9933CC" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="能量腔荧光" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>
@@ -211,7 +211,7 @@
                     <Point x="22.15" y="14.8"/>
                   </transformationPoint>
                   <color>
-                    <Color alphaMultiplier="0.75390625"/>
+                    <Color alphaMultiplier="0.75"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -233,7 +233,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="能量指示灯" color="#FF800A" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="能量指示灯" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>
@@ -376,7 +376,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 9" color="#4FFF4F" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 9" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -495,7 +495,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="XM556/枪口能量" selected="true" centerPoint3DX="205.7" centerPoint3DY="92.25">
+                <DOMSymbolInstance libraryItemName="XM556/枪口能量" centerPoint3DX="205.7" centerPoint3DY="92.25">
                   <matrix>
                     <Matrix tx="201.75" ty="84"/>
                   </matrix>
@@ -525,7 +525,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="线圈前端" color="#808080" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="线圈前端" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -598,7 +598,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="XM556/线圈前端" centerPoint3DX="196.45" centerPoint3DY="92.35">
+                <DOMSymbolInstance libraryItemName="XM556/线圈前端" selected="true" centerPoint3DX="196.45" centerPoint3DY="92.35">
                   <matrix>
                     <Matrix tx="177.7" ty="69.9"/>
                   </matrix>
@@ -645,7 +645,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 12" color="#FF4FFF" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 12" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements/>
@@ -716,7 +716,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 11" color="#FF800A" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 11" color="#FF800A">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
@@ -758,7 +758,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 10" color="#9933CC" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 10" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
@@ -829,7 +829,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="线圈中级" color="#4F80FF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="线圈中级" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>
@@ -902,7 +902,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="XM556/线圈中级" centerPoint3DX="164.15" centerPoint3DY="91.85">
+                <DOMSymbolInstance libraryItemName="XM556/线圈中级" selected="true" centerPoint3DX="164.15" centerPoint3DY="91.85">
                   <matrix>
                     <Matrix tx="155.95" ty="69.6"/>
                   </matrix>
@@ -949,7 +949,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="枪管彩光" color="#4FFFFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="枪管彩光" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -1031,7 +1031,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="XM556-OC-Overlord枪身" color="#FF4F4F" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="XM556-OC-Overlord枪身" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>
@@ -1104,6 +1104,37 @@
                 <DOMSymbolInstance libraryItemName="XM556/XM556-OC-Overlord枪身" centerPoint3DX="85.95" centerPoint3DY="76.1">
                   <transformationPoint>
                     <Point x="85.95" y="75.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="xm556oc激光模组" selected="true" centerPoint3DX="124.05" centerPoint3DY="90">
+                  <matrix>
+                    <Matrix a="0.0680389404296875" tx="104.4" ty="88"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="288.8" y="2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="xm556oc激光模组" centerPoint3DX="469" centerPoint3DY="92.05">
+                  <matrix>
+                    <Matrix tx="180.25" ty="90.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="288.75" y="2"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

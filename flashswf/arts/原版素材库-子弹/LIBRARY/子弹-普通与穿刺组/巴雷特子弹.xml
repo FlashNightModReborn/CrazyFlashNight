@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="巴雷特子弹" currentFrame="16">
       <layers>
-        <DOMLayer name="Labels Layer" color="#D78AD1" current="true" isSelected="true">
+        <DOMLayer name="Labels Layer" color="#D78AD1">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#B0E676">
+        <DOMLayer name="Script Layer" color="#B0E676" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>

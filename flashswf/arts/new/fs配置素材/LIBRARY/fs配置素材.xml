@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1752157041" lastUniqueIdentifier="118">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1752223496" lastUniqueIdentifier="120">
   <timeline>
-    <DOMTimeline name="fs配置素材" currentFrame="21" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;247&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="15" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;247&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
         <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
@@ -302,20 +302,28 @@
                     <Point x="62.55" y="-38.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="XM556/XM556-OC-Overlord" selected="true" centerPoint3DX="-265.25" centerPoint3DY="867.95">
+                <DOMSymbolInstance libraryItemName="XM556/XM556-OC-Overlord" centerPoint3DX="-85.1" centerPoint3DY="963.55">
                   <matrix>
-                    <Matrix tx="-497.6" ty="832.5"/>
+                    <Matrix tx="-317.45" ty="928.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="232.35" y="35.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="XM556/XM556-OC枪火" centerPoint3DX="-67.8" centerPoint3DY="952.5">
+                <DOMSymbolInstance libraryItemName="XM556/铁枪能量弹枪火" selected="true" centerPoint3DX="-67.8" centerPoint3DY="952.5">
                   <matrix>
                     <Matrix tx="-296.95" ty="862.15"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="229.15" y="90.35"/>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="XM556/图标-XM556-OC-Overlord" centerPoint3DX="-361.5" centerPoint3DY="868">
+                  <matrix>
+                    <Matrix tx="-361.5" ty="868"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62.55" y="-38.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

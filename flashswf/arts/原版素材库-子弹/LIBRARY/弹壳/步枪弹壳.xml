@@ -31,14 +31,14 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle0="2" strokeStyle="1" edges="!204 121S5|238 121!238 121|238 89!238 89|204 89"/>
                     <Edge fillStyle0="2" fillStyle1="1" edges="!204 89S3|204 121"/>
-                    <Edge fillStyle0="3" strokeStyle="1" edges="!52 83S5|35 83!35 83|35 127!35 127|52 127"/>
-                    <Edge fillStyle0="3" fillStyle1="4" edges="!52 127S3|52 83"/>
-                    <Edge fillStyle1="4" strokeStyle="1" edges="!52 83S6|185 82"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!185 82S6|204 89"/>
-                    <Edge fillStyle1="4" strokeStyle="1" edges="!185 128S6|52 127"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!204 121S5|238 121!238 121|238 89!238 89|204 89"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!204 89S5|185 82"/>
+                    <Edge fillStyle0="4" strokeStyle="1" edges="!185 82S5|52 83"/>
+                    <Edge fillStyle0="4" fillStyle1="3" edges="!52 83S3|52 127"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!52 127S6|35 127!35 127|35 83!35 83|52 83"/>
                     <Edge fillStyle0="1" fillStyle1="4" edges="!185 82S3|185 128"/>
+                    <Edge fillStyle1="4" strokeStyle="1" edges="!185 128S6|52 127"/>
                     <Edge fillStyle0="1" strokeStyle="1" edges="!185 128S5|204 121"/>
                   </edges>
                 </DOMShape>
