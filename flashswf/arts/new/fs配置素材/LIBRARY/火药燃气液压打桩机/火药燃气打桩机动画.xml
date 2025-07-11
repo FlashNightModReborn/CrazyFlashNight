@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="火药燃气液压打桩机/火药燃气打桩机动画" itemID="65519ab4-00001fd0" lastModified="1719450722" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="火药燃气液压打桩机/火药燃气打桩机动画" itemID="65519ab4-00001fd0" lastModified="1752227727" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="火药燃气打桩机动画" currentFrame="58" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-8&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="火药燃气打桩机动画" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-8&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="控制层" color="#9933CC" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="控制层" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="59" keyMode="9728">
               <Actionscript>
@@ -35,7 +35,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="护盾骨架" color="#FF0000" locked="true" autoNamed="false">
+        <DOMLayer name="护盾骨架" color="#FF0000" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="60" keyMode="9728">
               <elements>
@@ -51,7 +51,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="压力表" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="压力表" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -127,7 +127,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="机体" color="#FF800A" locked="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="机体" color="#FF800A" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="60" keyMode="9728">
               <elements>
@@ -143,7 +143,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="装填杆" color="#00FFFF" locked="true" autoNamed="false">
+        <DOMLayer name="装填杆" color="#00FFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -219,7 +219,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="护筒" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="护筒" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="60" keyMode="9728">
               <elements>
@@ -235,7 +235,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="杆体" color="#FF4F4F" locked="true" autoNamed="false">
+        <DOMLayer name="杆体" color="#FF4F4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
