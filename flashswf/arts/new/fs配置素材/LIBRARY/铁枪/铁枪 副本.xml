@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="铁枪/铁枪 副本" itemID="68663ed6-000003a7" lastModified="1751640940" lastUniqueIdentifier="79">
   <timeline>
-    <DOMTimeline name="铁枪 副本" currentFrame="15">
+    <DOMTimeline name="铁枪 副本" currentFrame="40">
       <layers>
         <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
@@ -25,7 +25,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="欧米茄" color="#808080" autoNamed="false">
+        <DOMLayer name="欧米茄" color="#808080" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
               <elements>
@@ -395,7 +395,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="补间 6" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="铁枪/补间 6" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="541.7" ty="323.7"/>
                   </matrix>
@@ -407,7 +407,7 @@
             </DOMFrame>
             <DOMFrame index="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="补间 7" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="铁枪/补间 7" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="275.7" ty="245.15"/>
                   </matrix>
@@ -430,7 +430,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="补间 6" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="铁枪/补间 6" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="541.7" ty="323.7"/>
                   </matrix>
@@ -453,7 +453,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="补间 6" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="铁枪/补间 6" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="590.6" ty="446.8"/>
                   </matrix>
@@ -465,7 +465,7 @@
             </DOMFrame>
             <DOMFrame index="24" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="补间 6" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="铁枪/补间 6" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="541.7" ty="323.7"/>
                   </matrix>
@@ -488,7 +488,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="补间 6" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="铁枪/补间 6" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="541.7" ty="323.7"/>
                   </matrix>
@@ -500,7 +500,7 @@
             </DOMFrame>
             <DOMFrame index="40" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="补间 6" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="铁枪/补间 6" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="2.05023193359375" tx="-192.35" ty="307.35"/>
                   </matrix>
@@ -652,7 +652,7 @@
             </DOMFrame>
             <DOMFrame index="40" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪/活塞杆" name="活塞杆" selected="true" centerPoint3DX="-192.7" centerPoint3DY="306.35">
+                <DOMSymbolInstance libraryItemName="铁枪/活塞杆" name="活塞杆" centerPoint3DX="-192.7" centerPoint3DY="306.35">
                   <matrix>
                     <Matrix tx="-495.2" ty="274.25"/>
                   </matrix>
@@ -796,7 +796,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="铁枪准星" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="铁枪准星" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>

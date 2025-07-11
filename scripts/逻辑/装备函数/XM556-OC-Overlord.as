@@ -15,7 +15,7 @@ _root.装备生命周期函数.XM556_OC_Overlord初始化 = function (ref:Object
     ref.modeObject = { 双枪:true, 手枪:true, 手枪2:true };
 
     /* --- 动画实例引用 --- */
-    ref.gunString = ref.装备类型 + "_引用";   // target[gunString].动画
+    
 
     /* --- 订阅射击事件 --- */
     target.dispatcher.subscribe(evtType, function ():Void {

@@ -9,6 +9,7 @@
 #include "../逻辑/装备函数/火药燃气液压打桩机.as"
 #include "../逻辑/装备函数/刀口触发特效.as"
 #include "../逻辑/装备函数/XM556-OC-Overlord.as"
+#include "../逻辑/装备函数/XM556_H_Stinger.as"
 #include "../逻辑/装备函数/NEGEV.as"
 #include "../逻辑/装备函数/M249.as"
 #include "../逻辑/装备函数/M134.as"

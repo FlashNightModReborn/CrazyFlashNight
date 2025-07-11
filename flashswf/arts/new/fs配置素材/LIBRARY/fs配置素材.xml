@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1752227474" lastUniqueIdentifier="122">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1752243200" lastUniqueIdentifier="126">
   <timeline>
-    <DOMTimeline name="fs配置素材" currentFrame="19" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;247&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="20" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;247&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
         <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
@@ -9,7 +9,7 @@
             <DOMFrame index="0" duration="56" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="56" keyMode="9728" soundName="sound123.mp3">
+            <DOMFrame index="56" keyMode="9728" soundName="2.音效文件夹/未命名文件夹 2/sound123.mp3">
               <SoundEnvelope>
                 <SoundEnvelopePoint level0="32768" level1="32768"/>
               </SoundEnvelope>
@@ -25,7 +25,7 @@
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="56" keyMode="9728" soundName="测试火焰.mp3">
+            <DOMFrame index="56" keyMode="9728" soundName="2.音效文件夹/未命名文件夹 2/测试火焰.mp3">
               <SoundEnvelope>
                 <SoundEnvelopePoint level0="32768" level1="32768"/>
               </SoundEnvelope>
@@ -142,204 +142,220 @@
             </DOMFrame>
             <DOMFrame index="12" duration="15" name="长枪工作区" labelType="name" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 4226 (￯﾿ﾪ-￩ﾕ﾿￦ﾞﾪ-AK47)" centerPoint3DX="317.85" centerPoint3DY="251.85">
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 4226 (￯﾿ﾪ-￩ﾕ﾿￦ﾞﾪ-AK47)" centerPoint3DX="183.1" centerPoint3DY="-246.5">
                   <matrix>
-                    <Matrix tx="247.3" ty="250.15"/>
+                    <Matrix a="0.999984741210938" b="0.005523681640625" c="-0.005523681640625" d="0.999984741210938" tx="112.55" ty="-248.55"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="70.55" y="1.7"/>
+                    <Point x="70.55" y="1.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/火药燃气打桩机" centerPoint3DX="720.4" centerPoint3DY="-30.35">
+                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/火药燃气打桩机" centerPoint3DX="852.15" centerPoint3DY="476.15">
                   <matrix>
-                    <Matrix tx="644.7" ty="-64.05"/>
+                    <Matrix tx="776.45" ty="442.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="75.7" y="33.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="吉他喷火/吉他喷火器" centerPoint3DX="941.65" centerPoint3DY="336.4">
+                <DOMSymbolInstance libraryItemName="吉他喷火/吉他喷火器" centerPoint3DX="277.1" centerPoint3DY="37.6">
                   <matrix>
-                    <Matrix tx="792.5" ty="265.7"/>
+                    <Matrix tx="127.95" ty="-33.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="146.5" y="-13.2"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="吉他喷火/图标-吉他喷火器" centerPoint3DX="702" centerPoint3DY="404.3">
+                <DOMSymbolInstance libraryItemName="吉他喷火/图标-吉他喷火器" centerPoint3DX="304.9" centerPoint3DY="316.2">
                   <matrix>
-                    <Matrix tx="702" ty="404.3"/>
+                    <Matrix tx="304.9" ty="316.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="2.8"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/图标-火药燃气液压打桩机" centerPoint3DX="485.6" centerPoint3DY="-97.5">
+                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/图标-火药燃气液压打桩机" centerPoint3DX="1078.95" centerPoint3DY="453.2">
                   <matrix>
-                    <Matrix tx="485.6" ty="-97.5"/>
+                    <Matrix tx="1078.95" ty="453.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="4.5" y="0.85"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="wa90/wa90变形款" centerPoint3DX="-410.6" centerPoint3DY="188.3">
+                <DOMSymbolInstance libraryItemName="wa90/wa90变形款" centerPoint3DX="-529.75" centerPoint3DY="-473.65">
                   <matrix>
-                    <Matrix tx="-471.85" ty="176.7"/>
+                    <Matrix tx="-591" ty="-485.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="58.75" y="127.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="wa90/图标-wa90" centerPoint3DX="-288.4" centerPoint3DY="167.05">
+                <DOMSymbolInstance libraryItemName="wa90/图标-wa90" centerPoint3DX="-460.7" centerPoint3DY="-570.9">
                   <matrix>
-                    <Matrix tx="-288.4" ty="167.05"/>
+                    <Matrix tx="-460.7" ty="-570.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="炎魔斩/炎魔斩刀光/炎魔刀光追踪" centerPoint3DX="-227.7" centerPoint3DY="-282.95">
+                <DOMSymbolInstance libraryItemName="炎魔斩/炎魔斩刀光/炎魔刀光追踪" centerPoint3DX="-92.7" centerPoint3DY="-231.4">
                   <matrix>
-                    <Matrix tx="-217.65" ty="-275.2"/>
+                    <Matrix tx="-82.65" ty="-223.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-10.05" y="-7.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="53式步骑枪/53式步骑枪" centerPoint3DX="662.4" centerPoint3DY="411.4">
+                <DOMSymbolInstance libraryItemName="53式步骑枪/53式步骑枪" centerPoint3DX="408" centerPoint3DY="-64.3">
                   <matrix>
-                    <Matrix tx="-275.35" ty="322.3"/>
+                    <Matrix tx="-529.75" ty="-153.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="937.75" y="89.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="53式步骑枪/图标-53式步骑枪" centerPoint3DX="-212.2" centerPoint3DY="383.35">
+                <DOMSymbolInstance libraryItemName="53式步骑枪/图标-53式步骑枪" centerPoint3DX="-466.6" centerPoint3DY="-92.35">
                   <matrix>
-                    <Matrix tx="-212.2" ty="383.35"/>
+                    <Matrix tx="-466.6" ty="-92.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="2.8"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="铁枪/枪-长枪-铁枪" centerPoint3DX="-65.65" centerPoint3DY="-445.3">
+                <DOMSymbolInstance libraryItemName="铁枪/枪-长枪-铁枪" centerPoint3DX="717.75" centerPoint3DY="-344.6">
                   <matrix>
-                    <Matrix tx="-136.2" ty="-447"/>
+                    <Matrix tx="647.2" ty="-346.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="70.55" y="1.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/图标-铁枪" centerPoint3DX="37.8" centerPoint3DY="-426.8">
+                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/图标-铁枪" centerPoint3DX="899.5" centerPoint3DY="-305.35">
                   <matrix>
-                    <Matrix tx="37.8" ty="-426.8"/>
+                    <Matrix tx="899.5" ty="-305.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NEGEV/Negev" centerPoint3DX="175.7" centerPoint3DY="470.25">
+                <DOMSymbolInstance libraryItemName="NEGEV/Negev" centerPoint3DX="-425.25" centerPoint3DY="262.7">
                   <matrix>
-                    <Matrix tx="105.15" ty="468.55"/>
+                    <Matrix tx="-495.8" ty="261"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="70.55" y="1.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NEGEV/图标-NEGEV" centerPoint3DX="259.65" centerPoint3DY="546.65">
+                <DOMSymbolInstance libraryItemName="NEGEV/图标-NEGEV" centerPoint3DX="-341.3" centerPoint3DY="339.1">
                   <matrix>
-                    <Matrix tx="259.65" ty="546.65"/>
+                    <Matrix tx="-341.3" ty="339.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="55.25" y="-34.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="PKP/PKP" centerPoint3DX="286.1" centerPoint3DY="616.15">
+                <DOMSymbolInstance libraryItemName="PKP/PKP" centerPoint3DX="-314.85" centerPoint3DY="408.6">
                   <matrix>
-                    <Matrix tx="16.35" ty="633.8"/>
+                    <Matrix tx="-584.6" ty="426.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="269.5" y="-17.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="PKP/图标-PKP" centerPoint3DX="233.9" centerPoint3DY="683.95">
+                <DOMSymbolInstance libraryItemName="PKP/图标-PKP" centerPoint3DX="-367.05" centerPoint3DY="476.4">
                   <matrix>
-                    <Matrix tx="233.9" ty="683.95"/>
+                    <Matrix tx="-367.05" ty="476.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="51.45" y="-31.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="XM556/XM556-Microgun" centerPoint3DX="-222.3" centerPoint3DY="543.55">
+                <DOMSymbolInstance libraryItemName="XM556/XM556-Microgun" centerPoint3DX="1213.85" centerPoint3DY="-170.7">
                   <matrix>
-                    <Matrix tx="-587.1" ty="555"/>
+                    <Matrix tx="849.05" ty="-159.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="364.55" y="-11.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="XM556/图标XM556-Microgun" centerPoint3DX="-458.05" centerPoint3DY="627.3">
+                <DOMSymbolInstance libraryItemName="XM556/图标XM556-Microgun" centerPoint3DX="978.1" centerPoint3DY="-86.95">
                   <matrix>
-                    <Matrix tx="-458.05" ty="627.3"/>
+                    <Matrix tx="978.1" ty="-86.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="44.45" y="-28.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="XM556/XM556-H-Stinger" centerPoint3DX="-368.55" centerPoint3DY="655.75">
+                <DOMSymbolInstance libraryItemName="XM556/XM556-H-Stinger" selected="true" centerPoint3DX="1067.6" centerPoint3DY="-58.5">
                   <matrix>
-                    <Matrix tx="-494.65" ty="676.8"/>
+                    <Matrix tx="941.5" ty="-37.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="125.85" y="-21.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="XM556/图标-XM556-H-Stinger" centerPoint3DX="-437.35" centerPoint3DY="796.95">
+                <DOMSymbolInstance libraryItemName="XM556/图标-XM556-H-Stinger" centerPoint3DX="998.8" centerPoint3DY="82.7">
                   <matrix>
-                    <Matrix tx="-437.35" ty="796.95"/>
+                    <Matrix tx="998.8" ty="82.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="62.55" y="-38.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="XM556/XM556-OC-Overlord" selected="true" centerPoint3DX="-240.35" centerPoint3DY="928.8">
+                <DOMSymbolInstance libraryItemName="XM556/XM556-OC-Overlord" centerPoint3DX="1195.8" centerPoint3DY="214.55">
                   <matrix>
-                    <Matrix tx="-472.7" ty="893.35"/>
+                    <Matrix tx="963.45" ty="179.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="232.35" y="35.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="XM556/铁枪能量弹枪火" centerPoint3DX="-223.05" centerPoint3DY="917.75">
+                <DOMSymbolInstance libraryItemName="铁枪/铁枪能量弹枪火" centerPoint3DX="1213.1" centerPoint3DY="203.5">
                   <matrix>
-                    <Matrix tx="-452.2" ty="827.4"/>
+                    <Matrix tx="983.95" ty="113.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="XM556/图标-XM556-OC-Overlord" centerPoint3DX="-404.4" centerPoint3DY="831.8">
+                <DOMSymbolInstance libraryItemName="XM556/图标-XM556-OC-Overlord" centerPoint3DX="1031.75" centerPoint3DY="117.55">
                   <matrix>
-                    <Matrix tx="-404.4" ty="831.8"/>
+                    <Matrix tx="1031.75" ty="117.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="62.55" y="-38.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Jackhammer/Jackhammer" centerPoint3DX="79.35" centerPoint3DY="-112.5">
+                <DOMSymbolInstance libraryItemName="Jackhammer/Jackhammer" centerPoint3DX="-386.45" centerPoint3DY="-324.25">
                   <matrix>
-                    <Matrix tx="-46.75" ty="-91.45"/>
+                    <Matrix tx="-512.55" ty="-303.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="125.85" y="-21.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Jackhammer/图标-Jackhammer" centerPoint3DX="184.85" centerPoint3DY="-141.3">
+                <DOMSymbolInstance libraryItemName="Jackhammer/图标-Jackhammer" centerPoint3DX="-241.6" centerPoint3DY="-320.8">
                   <matrix>
-                    <Matrix tx="184.85" ty="-141.3"/>
+                    <Matrix tx="-241.6" ty="-320.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="62.55" y="-38.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Jackhammer/M1918A2" centerPoint3DX="-303.05" centerPoint3DY="47.2">
+                  <matrix>
+                    <Matrix tx="-571.15" ty="72.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="267.85" y="-24.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Jackhammer/图标-M1918A2" centerPoint3DX="-290.05" centerPoint3DY="2.85">
+                  <matrix>
+                    <Matrix tx="-290.05" ty="2.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="76.25" y="-50.4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -550,9 +566,17 @@
                     <Point x="-90.8" y="-110.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="铁枪/图标-铁枪核心" centerPoint3DX="95.25" centerPoint3DY="21.05">
+                  <matrix>
+                    <Matrix tx="95.25" ty="21.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="74.25" y="-42"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="56" name="导入工作区" labelType="name" keyMode="9728" soundName="测试.mp3">
+            <DOMFrame index="56" name="导入工作区" labelType="name" keyMode="9728" soundName="2.音效文件夹/未命名文件夹 2/测试.mp3">
               <SoundEnvelope>
                 <SoundEnvelopePoint level0="32768" level1="32768"/>
               </SoundEnvelope>
