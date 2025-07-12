@@ -52,6 +52,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
             _pending = null;
             ChangeState(tmp);
         }
+        this.actionCount = 0;
     }
 
     public function getDefaultState():FSM_Status{
@@ -151,8 +152,10 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         if (this.activeState) {
             this.activeState.onAction();
         }
+        // 2. 更新状态计数。
+        this.actionCount++;
 
-        // 2. 检查并执行此状态机级别的过渡。
+        // 3. 检查并执行此状态机级别的过渡。
         //    注意：过渡是基于子状态的名称。
         var currentSubStateName:String = this.getActiveStateName();
         if (currentSubStateName != null) {
@@ -162,7 +165,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
             }
         }
         
-        // 3. 最后，执行状态机自身的onAction回调（如果已定义）。
+        // 3. 最后，执行状态机自身的onAction回调（如果已定义）（实际上没有定义）。
         super.onAction();
     }
     // ========== 修正区结束 ==========

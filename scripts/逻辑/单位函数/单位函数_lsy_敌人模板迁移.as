@@ -15,18 +15,18 @@ _root.敌人函数 = new Object();
 _root.敌人函数.根据等级初始数值 = function(等级值){
 	//_root.服务器.发布服务器消息("unit: " + this._name + " at level: " + 等级值)
 	
-	hp满血值 = _root.根据等级计算值(hp_min, hp_max, 等级值) * _root.难度等级;
-	空手攻击力 = _root.根据等级计算值(空手攻击力_min, 空手攻击力_max, 等级值) * _root.难度等级;
-	行走X速度 = _root.根据等级计算值(速度_min, 速度_max, 等级值) / 10;
-	行走Y速度 = 行走X速度 / 2;
-	跑X速度 = 行走X速度 * 奔跑速度倍率;
-	跑Y速度 = 行走Y速度 * 奔跑速度倍率;
+	this.hp满血值 = _root.根据等级计算值(this.hp_min, this.hp_max, 等级值) * _root.难度等级;
+	this.空手攻击力 = _root.根据等级计算值(this.空手攻击力_min, this.空手攻击力_max, 等级值) * _root.难度等级;
+	this.行走X速度 = _root.根据等级计算值(this.速度_min, this.速度_max, 等级值) / 10;
+	this.行走Y速度 = this.行走X速度 / 2;
+	this.跑X速度 = this.行走X速度 * this.奔跑速度倍率;
+	this.跑Y速度 = this.行走Y速度 * this.奔跑速度倍率;
 	// 被击硬直度 = _root.根据等级计算值(被击硬直度_min, 被击硬直度_max, 等级值);
-	起跳速度 = isNaN(起跳速度) ? -10 : 起跳速度;
-	基本防御力 = _root.根据等级计算值(基本防御力_min, 基本防御力_max, 等级值);
-	防御力 = 基本防御力 + 装备防御力;
-	躲闪率 = _root.根据等级计算值(躲闪率_min, 躲闪率_max, 等级值, true, true); // 允许小数，且在60级后不再增长防止出现小于1的躲闪率
-	hp = !isNaN(hp) ? hp : hp满血值;
+	this.起跳速度 = isNaN(this.起跳速度) ? -10 : this.起跳速度;
+	this.基本防御力 = _root.根据等级计算值(this.基本防御力_min, this.基本防御力_max, 等级值);
+	this.防御力 = this.基本防御力 + this.装备防御力;
+	this.躲闪率 = _root.根据等级计算值(this.躲闪率_min, this.躲闪率_max, 等级值, true, true); // 允许小数，且在60级后不再增长防止出现小于1的躲闪率
+	if(isNaN(this.hp)) this.hp = this.hp满血值;
 };
 
 _root.敌人函数.获取线性插值经验值 = function(target, list:Array){
@@ -41,16 +41,16 @@ _root.敌人函数.获取线性插值经验值 = function(target, list:Array){
 	// _root.发布消息(target.最小经验值 + " " + target.最大经验值);
 }
 
-_root.敌人函数.宠物属性初始化 = function(等级值){
-	if(宠物属性){
-		for(var key in 宠物属性){
+_root.敌人函数.宠物属性初始化 = function(){
+	if(this.宠物属性){
+		for(var key in this.宠物属性){
 			if(_root.战宠进阶函数[key] && _root.战宠进阶函数[key].单位进阶执行){
 				this.单位进阶执行 = _root.战宠进阶函数[key].单位进阶执行;
 				this.单位进阶执行();
 			}
 		}
 	}
-	hp = !isNaN(hp) ? hp : hp满血值;
+	if(isNaN(this.hp)) this.hp = this.hp满血值;
 };
 
 _root.敌人函数.行走 = function() {
@@ -71,29 +71,29 @@ _root.敌人函数.行走 = function() {
 
         // 根据当前状态判断使用哪一种策略
         // 如果当前状态为攻击模式+"跑"，则使用跑的参数，否则使用走的参数
-        var 初始目标状态 = 攻击模式 + "跑";
+        var 初始目标状态 = this.攻击模式 + "跑";
         var 最终策略 = (this.状态 === 初始目标状态) ? 移动策略.跑 : 移动策略.走;
-        var 最终状态 = 攻击模式 + 最终策略.状态后缀;
+        var 最终状态 = this.攻击模式 + 最终策略.状态后缀;
 
         // 根据方向选择对应的移动操作
         if (this.右行) {
-            方向改变("右");
-            移动("右", 最终策略.x速度);
+            this.方向改变("右");
+            this.移动("右", 最终策略.x速度);
         } else if (this.左行) {
-            方向改变("左");
-            移动("左", 最终策略.x速度);
+            this.方向改变("左");
+            this.移动("左", 最终策略.x速度);
         }
         if (this.下行) {
-            移动("下", 最终策略.y速度);
+            this.移动("下", 最终策略.y速度);
         } else if (this.上行) {
-            移动("上", 最终策略.y速度);
+            this.移动("上", 最终策略.y速度);
         }
 
         // 改变状态为最终状态
         this.状态改变(最终状态);
     } else {
         // 没有移动操作时，设置为攻击模式+站立状态
-        this.状态改变(攻击模式 + "站立");
+        this.状态改变(this.攻击模式 + "站立");
     }
 };
 
@@ -105,18 +105,18 @@ _root.敌人函数.移动 = function(移动方向, 速度) {
 
 
 _root.敌人函数.被击移动 = function(移动方向, 速度, 摩擦力){
-	if(免疫击退) return;
+	if(this.免疫击退) return;
 	this.移动钝感硬直(_root.钝感硬直时间);
 	this.减速度 = 摩擦力;
 	this.speed = 速度;
 	this.onEnterFrame = function(){
-		if (!硬直中){
-			speed -= 减速度;
-			if (speed <= 0){
+		if (!this.硬直中){
+			this.speed -= 减速度;
+			if (this.speed <= 0){
 				delete this.onEnterFrame;
 				return;
 			}
-			this.移动(移动方向,speed);
+			this.移动(移动方向, this.speed);
 		}
 	};
 };
@@ -125,15 +125,15 @@ _root.敌人函数.强制移动 = _root.主角函数.强制移动;
 
 
 _root.敌人函数.方向改变 = function(新方向){
-	if(锁定方向) return;
+	if(this.锁定方向) return;
 	if (新方向 === "右"){
-		方向 = "右";
+		this.方向 = "右";
 		this._xscale = myxscale;
-		新版人物文字信息._xscale = 100;
+		this.新版人物文字信息._xscale = 100;
 	}else if (新方向 === "左"){
-		方向 = "左";
+		this.方向 = "左";
 		this._xscale = -myxscale;
-		新版人物文字信息._xscale = -100;
+		this.新版人物文字信息._xscale = -100;
 	}
 };
 
@@ -147,7 +147,7 @@ _root.敌人函数.状态改变 = function(新状态名) {
 
 
 _root.敌人函数.动画完毕 = function() {
-	状态改变(hp <= 0 ? "血腥死" : 攻击模式 + "站立"); // 防止没有倒地动画的敌人在击倒动画被扣至0血导致不死
+	this.状态改变(this.hp <= 0 ? "血腥死" : this.攻击模式 + "站立"); // 防止没有倒地动画的敌人在击倒动画被扣至0血导致不死
 	// 考虑到该函数较为低频，一些状态更新顺带在此触发
 	this.倒地 = false;
 	this.aabbCollider.updateFromUnitArea(this); // 起身时更新碰撞箱
@@ -184,8 +184,8 @@ _root.敌人函数.计算经验值 = function(){
 	var 经验时间倍率 = _root.天气系统.经验时间倍率;
 	
 	//_root.发布消息("经验时间倍率" + 经验时间倍率);
-	_root.经验值计算(最小经验值 * 经验时间倍率,最大经验值 * 经验时间倍率,等级,_root.最大等级);
-	_root.主角是否升级(_root.等级,_root.经验值);
+	_root.经验值计算(this.最小经验值 * 经验时间倍率, this.最大经验值 * 经验时间倍率, this.等级, _root.最大等级);
+	_root.主角是否升级(_root.等级, _root.经验值);
 	this.已加经验值 = true;
 };
 
@@ -227,13 +227,13 @@ _parent.死亡检测({remainMovie:true});
 _parent.死亡检测({noCount:true, noCorpse:true});
 */
 _root.敌人函数.死亡检测 = function(para){
-	if (hp <= 0 && !已加经验值){
+	if (this.hp <= 0 && !this.已加经验值){
 		this.man.stop();
-		if (是否为敌人 === true || 是否为敌人 === "null"){
-			if(是否为敌人 === true && para.noCount !== true){
+		if (this.是否为敌人 === true || this.是否为敌人 === "null"){
+			if(this.是否为敌人 === true && para.noCount !== true){
 				_root.敌人死亡计数++;
-				_root.gameworld[产生源].僵尸型敌人场上实际人数--;
-				_root.gameworld[产生源].僵尸型敌人总个数--;
+				_root.gameworld[this.产生源].僵尸型敌人场上实际人数--;
+				_root.gameworld[this.产生源].僵尸型敌人总个数--;
 			}
 			this.计算经验值();
 		}
@@ -250,36 +250,55 @@ _root.敌人函数.死亡检测 = function(para){
 
 
 _root.敌人函数.掉落物判定 = function(){
-	if(!掉落物) return;
-	if(掉落物.length > 0){
-		for(var i = 掉落物.length - 1; i > -1; i--){
-			掉落物品(掉落物[i]);
-			if(掉落物[i].总数 <= 0){
-				掉落物.splice(i,1);
+	if(this.掉落物 == null) return;
+	this.掉落物 = _root.配置数据为数组(this.掉落物);
+	var 玩家逆向等级 = _root.主角被动技能.逆向.启用 ? _root.主角被动技能.逆向.等级 : 0;
+	if(this.掉落物.length > 0){
+		for(var i = this.掉落物.length - 1; i > -1; i--){
+			var item = this.掉落物[i];
+			if(玩家逆向等级 < item.最小逆向等级 || 玩家逆向等级 > item.最大逆向等级){
+				this.掉落物.splice(i,1);
+				continue;
 			}
-		}
-	}else if(掉落物.名字){
-		掉落物品(掉落物);
-		if(掉落物.总数 <= 0){
-			掉落物 = null;
+			this.掉落物品(item);
+			if(item.总数 <= 0){
+				this.掉落物.splice(i,1);
+			}
 		}
 	}
 }
 
 _root.敌人函数.掉落物品 = function(item){
-	if(isNaN(item.概率)) item.概率 = 100;
-	if(item.名字 && _root.成功率(item.概率)){
-		if(isNaN(item.最小数量) || isNaN(item.最大数量)){
-			item.最小数量 = item.最大数量 = 1;
-		}
-		if(isNaN(item.总数)) item.总数 = item.最大数量;
-		var 数量 = item.最小数量 + random(item.最大数量 - item.最小数量 + 1);
-		if(item.总数 < 数量) 数量 = item.总数;
-		item.总数 -= 数量;
-		var yoffset = random(21) - 10;
-		_root.pickupItemManager.createCollectible(item.名字,数量,this._x, this._y + yoffset, true);
+	var itemData = _root.getItemData(item.名字);
+	if(itemData == null) return;
+	if(!isNaN(item.概率)) {
+		if(!_root.成功率(item.概率)) return;
 	}
+
+	if(isNaN(item.最小数量) || isNaN(item.最大数量)){
+		item.最小数量 = item.最大数量 = 1;
+	}
+	if(isNaN(item.总数)) item.总数 = item.最大数量;
+
+	// 检查情报物品是否达到上限
+	if(itemData.use === "情报"){
+		var value = _root.收集品栏.情报.getValue(item.名字);
+		var maxvalue = itemData.maxvalue;
+		if(value >= maxvalue) return;
+		else if(maxvalue - value < item.最大数量){
+			item.最大数量 = maxvalue - value;
+			if(item.最大数量 < item.最小数量){
+				item.最小数量 = item.最大数量;
+			}
+		}
+	}
+	var 数量 = item.最小数量 + random(item.最大数量 - item.最小数量 + 1);
+	if(item.总数 < 数量) 数量 = item.总数;
+	item.总数 -= 数量;
+	var yoffset = random(21) - 10;
+	_root.pickupItemManager.createCollectible(item.名字, 数量, this._x, this._y + yoffset, true);
 }
+
 
 _root.敌人函数.fly = function(target:MovieClip){
 	if(target.硬直中 == false){
@@ -386,88 +405,88 @@ _root.初始化敌人模板 = function(){
 	//敌人属性表涉及的参数，共18项
 	if(!this.兵种) _root.发布消息("警告：敌人未加载兵种信息！")
 	var 敌人属性 = _root.敌人属性表[this.兵种];
-	if(!敌人属性) 敌人属性 = _root.敌人属性表["默认"];
+	if(敌人属性 == null) 敌人属性 = _root.敌人属性表["默认"];
 	//13项基础数值
 	if(敌人属性.线性插值经验值.length > 1){
 		_root.敌人函数.获取线性插值经验值(this,敌人属性.线性插值经验值);
 	}else{
-		if (isNaN(最小经验值)) 最小经验值 = 敌人属性.最小经验值;
-		if (isNaN(最大经验值)) 最大经验值 = 敌人属性.最大经验值;
+		if (isNaN(this.最小经验值)) this.最小经验值 = 敌人属性.最小经验值;
+		if (isNaN(this.最大经验值)) this.最大经验值 = 敌人属性.最大经验值;
 	}
-	if (isNaN(hp_min)) hp_min = 敌人属性.hp_min;
-	if (isNaN(hp_max)) hp_max = 敌人属性.hp_max;
-	if (isNaN(速度_min)) 速度_min = 敌人属性.速度_min;
-	if (isNaN(速度_max)) 速度_max = 敌人属性.速度_max;
-	if (isNaN(空手攻击力_min)) 空手攻击力_min = 敌人属性.空手攻击力_min;
-	if (isNaN(空手攻击力_max)) 空手攻击力_max = 敌人属性.空手攻击力_max;
-	if (isNaN(躲闪率_min)) 躲闪率_min = 敌人属性.躲闪率_min;
-	if (isNaN(躲闪率_max)) 躲闪率_max = 敌人属性.躲闪率_max;
-	if (isNaN(基本防御力_min)) 基本防御力_min = 敌人属性.基本防御力_min;
-	if (isNaN(基本防御力_max)) 基本防御力_max = 敌人属性.基本防御力_max;
-	if (isNaN(装备防御力)) 装备防御力 = 敌人属性.装备防御力;
+	if (isNaN(this.hp_min)) this.hp_min = 敌人属性.hp_min;
+	if (isNaN(this.hp_max)) this.hp_max = 敌人属性.hp_max;
+	if (isNaN(this.速度_min)) this.速度_min = 敌人属性.速度_min;
+	if (isNaN(this.速度_max)) this.速度_max = 敌人属性.速度_max;
+	if (isNaN(this.空手攻击力_min)) this.空手攻击力_min = 敌人属性.空手攻击力_min;
+	if (isNaN(this.空手攻击力_max)) this.空手攻击力_max = 敌人属性.空手攻击力_max;
+	if (isNaN(this.躲闪率_min)) this.躲闪率_min = 敌人属性.躲闪率_min;
+	if (isNaN(this.躲闪率_max)) this.躲闪率_max = 敌人属性.躲闪率_max;
+	if (isNaN(this.基本防御力_min)) this.基本防御力_min = 敌人属性.基本防御力_min;
+	if (isNaN(this.基本防御力_max)) this.基本防御力_max = 敌人属性.基本防御力_max;
+	if (isNaN(this.装备防御力)) this.装备防御力 = 敌人属性.装备防御力;
 	//性别 重量 韧性
-	if (性别 == null) 性别 = 敌人属性.性别;
-	if (isNaN(重量)) 重量 = 敌人属性.重量;
-	if (isNaN(韧性系数)) 韧性系数 = 敌人属性.韧性系数;
+	if (this.性别 == null) this.性别 = 敌人属性.性别;
+	if (isNaN(this.重量)) this.重量 = 敌人属性.重量;
+	if (isNaN(this.韧性系数)) this.韧性系数 = 敌人属性.韧性系数;
 	//label
-	if (!label) label = new Object();
+	if (!this.label) this.label = new Object();
 	for(var key in 敌人属性.label){
 		if(!label[key]) label[key] = 敌人属性.label[key];
 	}
 	//魔法抗性
-	if (!魔法抗性) 魔法抗性 = new Object();
+	if (!this.魔法抗性) this.魔法抗性 = new Object();
 	for(var key in 敌人属性.魔法抗性){
-		if(isNaN(魔法抗性[key])) 魔法抗性[key] = 敌人属性.魔法抗性[key];
+		if(isNaN(魔法抗性[key])) this.魔法抗性[key] = 敌人属性.魔法抗性[key];
 	}
 	//掉落物
-	if(!掉落物 && 敌人属性.掉落物 && 敌人属性.掉落物 != "null") 掉落物 = _root.duplicateOf(敌人属性.掉落物);
+	if(!this.掉落物 && 敌人属性.掉落物 && 敌人属性.掉落物 != "null") this.掉落物 = _root.duplicateOf(敌人属性.掉落物);
 	
 	//被击硬直度是一个原版从未使用过的属性，这里顺理成章地将其弃用
 	// 被击硬直度_min = !isNaN(被击硬直度_min) ? 被击硬直度_min : 1000;
 	// 被击硬直度_max = !isNaN(被击硬直度_max) ? 被击硬直度_max : 1000;
 	
 	//以下是可以自定义的原版参数
-	称号 = 称号 ? 称号 : "";
-	if(isNaN(身高)) 身高 = 175;
-	方向 = 方向 ? 方向 : "右";
-	攻击模式 = 攻击模式 ? 攻击模式 : "空手";
-	状态 = 登场动画 ? "登场" : 攻击模式 + "站立";
-	击中效果 = 击中效果 ? 击中效果 : "飙血";
-	刚体 = 刚体 ? true : false;
-	无敌 = 无敌 === true ? true : false;
+	this.称号 = this.称号 ? this.称号 : "";
+	if(isNaN(this.身高)) this.身高 = 175;
+	this.方向 = this.方向 ? this.方向 : "右";
+	this.攻击模式 = this.攻击模式 ? this.攻击模式 : "空手";
+	this.状态 = this.登场动画 ? "登场" : this.攻击模式 + "站立";
+	this.击中效果 = this.击中效果 ? this.击中效果 : "飙血";
+	this.刚体 = this.刚体 ? true : false;
+	this.无敌 = this.无敌 === true ? true : false;
 	
 	//以下是可自定义的原版ai相关参数，在ai改革后可能被废弃
-	x轴攻击范围 = x轴攻击范围 ? x轴攻击范围 : 100;
-	y轴攻击范围 = y轴攻击范围 ? y轴攻击范围 : 10;
-	x轴保持距离 = !isNaN(x轴保持距离) ? x轴保持距离 : 50;
-	停止机率 = !isNaN(停止机率) ? 停止机率 : 50;
-	随机移动机率 = !isNaN(随机移动机率) ? 随机移动机率 : 50;
-	攻击欲望 = !isNaN(攻击欲望) ? 攻击欲望 : 5;
+	this.x轴攻击范围 = this.x轴攻击范围 ? this.x轴攻击范围 : 100;
+	this.y轴攻击范围 = this.y轴攻击范围 ? this.y轴攻击范围 : 10;
+	this.x轴保持距离 = !isNaN(this.x轴保持距离) ? this.x轴保持距离 : 50;
+	this.停止机率 = !isNaN(this.停止机率) ? this.停止机率 : 50;
+	this.随机移动机率 = !isNaN(this.随机移动机率) ? this.随机移动机率 : 50;
+	this.攻击欲望 = !isNaN(this.攻击欲望) ? this.攻击欲望 : 5;
 	
 	//以下是可以自定义的新增参数
-	命中率 = !isNaN(命中率) ? 命中率 : 10;
-	免疫击退 = 免疫击退 ? true : false;
-	锁定方向 = 锁定方向 ? true : false;
-	奔跑速度倍率 = !isNaN(奔跑速度倍率) ? 奔跑速度倍率 : 2;
-	允许拾取 = 允许拾取 ? true : false;
+	this.命中率 = !isNaN(this.命中率) ? this.命中率 : 10;
+	this.免疫击退 = this.免疫击退 ? true : false;
+	this.锁定方向 = this.锁定方向 ? true : false;
+	this.奔跑速度倍率 = !isNaN(this.奔跑速度倍率) ? this.奔跑速度倍率 : 2;
+	this.允许拾取 = this.允许拾取 ? true : false;
 	
 	//以下是自动初始化的必要参数
-	攻击目标 = "无";
-	攻击模式 = "空手";
-	格斗架势 = false;
-	浮空 = false;
-	倒地 = false;
-	硬直中 = false;
-	垂直速度 = 0;
-	已加经验值 = false;
-	remainingImpactForce = 0;
+	this.攻击目标 = "无";
+	this.攻击模式 = "空手";
+	this.格斗架势 = false;
+	this.浮空 = false;
+	this.倒地 = false;
+	this.硬直中 = false;
+	this.垂直速度 = 0;
+	this.已加经验值 = false;
+	this.remainingImpactForce = 0;
 	
 	//转换身高，调整层级
-	身高转换值 = UnitUtil.getHeightPercentage(this.身高);
+	var 身高转换值 = UnitUtil.getHeightPercentage(this.身高);
 	this._xscale = 身高转换值;
 	this._yscale = 身高转换值;
 	myxscale = this._xscale;
-	Z轴坐标 = this._y;
+	this.Z轴坐标 = this._y;
 	this.swapDepths(this._y + random(10));
 	
 	// 应用新版人物文字信息
@@ -480,16 +499,16 @@ _root.初始化敌人模板 = function(){
 	}
 	
 	// 应用初始器
-	根据等级初始数值(等级);
-	宠物属性初始化();
+	this.根据等级初始数值(等级);
+	this.宠物属性初始化();
 	StaticInitializer.initializeUnit(this);
 
 	// 应用影子色彩
 	_root.敌人函数.应用影子色彩(this);
 	
 	// 初始化完毕
-	方向改变(方向);
-	gotoAndStop(状态);
+	this.方向改变(方向);
+	this.gotoAndStop(状态);
 }
 
 //对初始化单位的函数进行包装

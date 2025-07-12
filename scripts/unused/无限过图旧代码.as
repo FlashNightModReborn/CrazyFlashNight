@@ -685,3 +685,172 @@ _root.无限过图解析额外参数 = function(目标对象:Object, 参数对�
 }
 
 */
+
+
+
+// XML导入旧代码
+
+/*
+_root.解析并设置基本配置 = function(关卡数据:Array)
+{
+	var 基本配置列表 = [];
+	for (var i:Number = 0; i < 关卡数据.length; i++)
+	{
+		var 配置 = 关卡数据[i].BasicInformation;
+		配置.PlayerX = 配置.PlayerX ? Number(配置.PlayerX) : undefined;
+		配置.PlayerY = 配置.PlayerY ? Number(配置.PlayerY) : undefined;
+		var environment = 配置.Environment;
+		if(Boolean(environment.Default)){
+			配置.Environment = _root.天气系统.关卡环境设置.Default;
+		}
+		基本配置列表.push(配置);
+	}
+return 基本配置列表;
+};
+
+// 解析并设置关卡配置
+_root.解析并设置关卡配置 = function(关卡数据:Array)
+{
+	var 总关卡 = [];
+	for (var i:Number = 0; i < 关卡数据.length; i++)
+	{
+		var 关卡波次配置;
+		if(关卡数据[i].BasicInformation.RogueMode){
+			关卡波次配置 = _root.解析rogue关卡波次(关卡数据[i].RogueWave);
+		}else{
+			关卡波次配置 = _root.解析无限过图关卡波次(_root.配置数据为数组(关卡数据[i].Wave.SubWave));
+		}
+		// var 关卡配置数量:Number = isNaN(关卡数据[i].Quantity) ? 1 : 关卡数据[i].Quantity;
+		// for (var j:Number = 0; j < 关卡配置数量; j++){
+		// 	总关卡.push(关卡波次配置);
+		// }
+		总关卡.push(关卡波次配置);
+	}
+	return 总关卡;
+};
+
+_root.解析无限过图关卡波次 = function(关卡波次数据:Array)
+{
+	var 关卡波次 = [];
+	for (var i:Number = 0; i < 关卡波次数据.length; i++)
+	{
+		var 波次 = 关卡波次数据[i];
+		var WaveInformation = _root.解析波次信息(波次.WaveInformation);
+		var 敌人波次配置 = _root.解析敌人波次(_root.配置数据为数组(波次.EnemyGroup.Enemy));
+		var 波次数量:Number = isNaN(波次.Quantity) ? 1 : 波次.Quantity;
+		for (var j:Number = 0; j < 波次数量; j++)
+		{
+			关卡波次.push([WaveInformation].concat(敌人波次配置));
+		}
+	}
+	return 关卡波次;
+};
+
+_root.解析rogue关卡波次 = function(关卡波次数据:Object)
+{
+	var 关卡波次 = new Object();
+	关卡波次.初始时长 = Number(关卡波次数据.StartDuration);
+	关卡波次.最终时长 = Number(关卡波次数据.EndDuration);
+	关卡波次.总波数 = Number(关卡波次数据.TotalWave);
+	关卡波次.初始敌人等级 = Number(关卡波次数据.StartLevel);
+	关卡波次.最终敌人等级 = Number(关卡波次数据.EndLevel);
+	关卡波次.初始权重 = Number(关卡波次数据.StartWeight);
+	关卡波次.最终权重 = Number(关卡波次数据.EndWeight);
+	关卡波次.单波最大生成数 = 关卡波次数据.QuantityMax > 0 ? Number(关卡波次数据.QuantityMax) : 99;
+	关卡波次.敌人分组 = [];
+	var 敌人分组配置 = _root.配置数据为数组(关卡波次数据.RogueGroup.Group);
+	for(var i:Number = 0; i < 敌人分组配置.length; i++){
+		var 敌人分组 = {
+			起始波次: 敌人分组配置[i].StartWave ? Number(敌人分组配置[i].StartWave) : 0,
+			终止波次: 敌人分组配置[i].EndWave ? Number(敌人分组配置[i].EndWave) : 999,
+			权重: 敌人分组配置[i].Weight ? Number(敌人分组配置[i].Weight) : 1,
+			分类索引表: _root.配置数据为数组(敌人分组配置[i].UnionIndex.Index)
+		};
+		关卡波次.敌人分组.push(敌人分组);
+	}
+	var 特殊波次 = _root.配置数据为数组(关卡波次数据.SpecialWave.SubWave);
+	for(var i:Number = 0; i < 特殊波次.length; i++){
+		if(isNaN(特殊波次[i].Index)) continue;
+		var index = 特殊波次[i].Index;
+		var WaveInformation = _root.解析波次信息(特殊波次[i].WaveInformation);
+		var 敌人波次配置 = _root.解析敌人波次(_root.配置数据为数组(特殊波次[i].EnemyGroup.Enemy));
+		关卡波次[index] = [WaveInformation].concat(敌人波次配置);
+	}
+	return 关卡波次;
+}
+
+_root.解析波次信息 = function(WaveInformation:Object)
+{
+	WaveInformation.Duration = Number(WaveInformation.Duration);
+	WaveInformation.MapNoCount = WaveInformation.MapNoCount ? true : false;
+	return WaveInformation;
+}
+
+_root.解析敌人波次 = function(敌人配置:Array)
+{
+	var 敌人波次 = [];
+	for (var i:Number = 0; i < 敌人配置.length; i++)
+	{
+		var 敌人 = 敌人配置[i]
+		var enemy = new Object();
+		if(敌人.RandomType) {
+			enemy.RandomType = _root.配置数据为数组(敌人.RandomType.Type);
+		}else{
+			enemy.Attribute = _root.解析敌人属性(敌人);
+		}
+		enemy.Interval = Number(敌人.Interval);
+		enemy.Quantity = isNaN(敌人.Quantity) ? 1 : Number(敌人.Quantity);
+		enemy.Level = isNaN(敌人.Level) ? 1 : Number(敌人.Level);
+		enemy.SpawnIndex = (敌人.SpawnIndex || 敌人.SpawnIndex == 0) ? 敌人.SpawnIndex : -1;
+		enemy.x = isNaN(敌人.x) ? undefined : Number(敌人.x);
+		enemy.y = isNaN(敌人.y) ? undefined : Number(敌人.y);
+		enemy.Parameters = 敌人.Parameters ? 敌人.Parameters : undefined;
+		enemy.DifficultyMin = 敌人.DifficultyMin ? 敌人.DifficultyMin : undefined;
+		enemy.DifficultyMax = 敌人.DifficultyMax ? 敌人.DifficultyMax : undefined;
+		enemy.InstanceName = 敌人.InstanceName ? 敌人.InstanceName: undefined;
+		敌人波次.push(enemy);
+	}
+	return 敌人波次;
+};
+*/
+
+
+/*
+_root.解析并设置实例配置 = function(关卡数据:Array){
+	var 实例配置 = [];
+	for (var i:Number = 0; i < 关卡数据.length; i++){
+		if(关卡数据[i].Instances == undefined){
+			实例配置.push(null);
+			continue;
+		}
+		var 实例:Object = _root.配置数据为数组(关卡数据[i].Instances.Instance);
+		for (var j:Number = 0; j < 实例.length; j++){
+			实例[j].x = Number(实例[j].x);
+			实例[j].y = Number(实例[j].y);
+		}
+		实例配置.push(实例);
+	}
+	return 实例配置;
+}
+
+_root.解析并设置出生点配置 = function(关卡数据:Array){
+	var 出生点配置 = [];
+	for (var i:Number = 0; i < 关卡数据.length; i++){
+		if(关卡数据[i].SpawnPoint == undefined){
+			出生点配置.push(null);
+			continue;
+		}
+		var 出生点数据:Object = _root.配置数据为数组(关卡数据[i].SpawnPoint.Point);
+		for (var j:Number = 0; j < 出生点数据.length; j++){
+			出生点数据[j].x = Number(出生点数据[j].x);
+			出生点数据[j].y = Number(出生点数据[j].y);
+			出生点数据[j].BiasX = 出生点数据[j].BiasX ? Number(出生点数据[j].BiasX) : null;
+			出生点数据[j].BiasY = 出生点数据[j].BiasY ? Number(出生点数据[j].BiasY) : null;
+			出生点数据[j].QuantityMax = 出生点数据[j].QuantityMax > 0 ? Number(出生点数据[j].QuantityMax) : 0;
+			出生点数据[j].NoCount = 出生点数据[j].NoCount ? true : false;
+		}
+		出生点配置.push(出生点数据);
+	}
+	return 出生点配置;
+}
+*/
