@@ -1,8 +1,119 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!--已用ID：[52, 57, 69, 70, 71, 72, 73, 74, 79, 84, 90, 96, 102, 105, 106, 107, 110, 113, 120, 125, 129, 133, 134, 137, 138, 144, 147, 163, 165, 166, 168, 170, 171, 174, 178, 179, 183, 185, 187, 191, 193, 195, 197, 199, 208, 212, 217, 222, 227, 232, 238, 243, 248, 361, 397, 433, 440, 447, 455, 462, 467, 482, 486, 489, 494, 537, 544, 549, 552, 557, 573, 585, 590, 599, 604, 615, 643, 667, 671, 694, 836, 840, 902, 906, 1527, 1532, 1537, 1547, 2611, 2617, 2622, 5513, 6027, 6040, 6046, 6049, 6054, 6055, 6080, 6086, 6089, 8014, 8020, 9006, 10001, 10006, 10010, 10013, 10014, 10018, 10021, 10024, 10027, 10031, 10034, 10037, 10040, 10043, 10047, 10049, 10052, 10071, 10074, 10076, 10079, 10083, 10084, 10085, 10086, 10087, 10088, 10089, 10094, 10095, 10096, 10097, 10104, 10106, 10108, 10110, 10113, 10501, 10506, 10510, 10513, 10514, 10518, 10521, 10524, 10527, 10531, 10534, 10537, 10540, 10543, 10547, 10549, 10552, 10571, 10574, 10576, 10579, 10583, 10584, 10585, 10586, 10587, 10588, 10589, 10594, 10595, 10596, 10597, 10604, 10606, 10608, 10610, 10613, 11001, 11006, 11010, 11013, 11014, 11018, 11021, 11024, 11027, 11031, 11034, 11037, 11040, 11043, 11047, 11049, 11052, 11071, 11074, 11076, 11079, 11083, 11084, 11085, 11086, 11087, 11088, 11089, 11094, 11095, 11096, 11097, 11104, 11106, 11108, 11110, 11113, 30600]
 ID已倒序排序，在最上方新增新物品即可，使用最新id，同时可修改注释
-预留ID区间：15612-15900-->
+预留ID区间：15617-15900-->
 <root>
+  <item>
+    <id>15616</id>
+    <name>先进防护服手甲</name>
+    <displayname>先进防护服手甲</displayname>
+    <icon>先进防护服手甲</icon>
+    <type>防具</type>
+    <use>手部装备</use>
+    <weight>-5</weight>
+    <price>100000</price>
+    <description>先进防护服，融合了幻影装甲的技术。</description>
+    <level>60</level>
+    <equipped>
+      <dressup>男变装-先进防护服手甲</dressup>
+      <hp>500</hp>
+      <mp>350</mp>
+      <damage>60</damage>
+      <gunpower>125</gunpower>
+      <knifepower>0</knifepower>
+      <punch>0</punch>
+      <defence>700</defence>
+    </equipped>
+  </item>
+  <item>
+    <id>15615</id>
+    <name>先进防护服头甲</name>
+    <displayname>先进防护服头甲</displayname>
+    <icon>先进防护服头甲</icon>
+    <type>防具</type>
+    <use>头部装备</use>
+    <weight>-5</weight>
+    <price>100000</price>
+    <description>先进防护服，融合了幻影装甲的技术。</description>
+    <level>60</level>
+    <helmet>true</helmet>
+    <equipped>
+      <dressup>男变装-先进防护服头甲</dressup>
+      <hp>600</hp>
+      <mp>350</mp>
+      <damage>50</damage>
+      <gunpower>120</gunpower>
+      <knifepower>0</knifepower>
+      <punch>0</punch>
+      <defence>700</defence>
+    </equipped>
+  </item>
+  <item>
+    <id>15614</id>
+    <name>先进防护服鞋</name>
+    <displayname>先进防护服鞋</displayname>
+    <icon>先进防护服鞋</icon>
+    <type>防具</type>
+    <use>脚部装备</use>
+    <weight>-5</weight>
+    <price>100000</price>
+    <description>先进防护服，融合了幻影装甲的技术。</description>
+    <level>60</level>
+    <equipped>
+      <dressup>男变装-先进防护服鞋</dressup>
+      <hp>500</hp>
+      <mp>350</mp>
+      <damage>60</damage>
+      <gunpower>125</gunpower>
+      <knifepower>0</knifepower>
+      <punch>0</punch>
+      <defence>700</defence>
+    </equipped>
+  </item>
+  <item>
+    <id>15613</id>
+    <name>先进防护服腿甲</name>
+    <displayname>先进防护服腿甲</displayname>
+    <icon>先进防护服腿甲</icon>
+    <type>防具</type>
+    <use>下装装备</use>
+    <weight>-5</weight>
+    <price>100000</price>
+    <description>先进防护服，融合了幻影装甲的技术。</description>
+    <level>60</level>
+    <equipped>
+      <dressup>变装-先进防护服下装</dressup>
+      <hp>500</hp>
+      <mp>350</mp>
+      <damage>50</damage>
+      <gunpower>120</gunpower>
+      <knifepower>0</knifepower>
+      <punch>0</punch>
+      <defence>730</defence>
+    </equipped>
+  </item>
+  <item>
+    <id>15612</id>
+    <name>先进防护服胸甲</name>
+    <displayname>先进防护服胸甲</displayname>
+    <icon>先进防护服胸甲</icon>
+    <type>防具</type>
+    <use>上装装备</use>
+    <weight>-5</weight>
+    <price>100000</price>
+    <description>先进防护服，融合了幻影装甲的技术。</description>
+    <level>60</level>
+    <equipped>
+      <dressup>变装-先进防护服上装</dressup>
+      <hp>500</hp>
+      <mp>350</mp>
+      <damage>50</damage>
+      <gunpower>120</gunpower>
+      <knifepower>0</knifepower>
+      <punch>0</punch>
+      <defence>730</defence>
+    </equipped>
+  </item>
   <item>
     <id>15611</id>
     <name>末日铁拳</name>
@@ -37,7 +148,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <toughness>100</toughness>
     </equipped>
   </item>
- <item>
+  <item>
     <id>2003</id>
     <name>约翰威克的头</name>
     <displayname>约翰威克的头</displayname>
@@ -65,7 +176,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <lazymiss>50</lazymiss>
     </equipped>
   </item>
- <item>
+  <item>
     <id>15610</id>
     <name>自由骑士手甲</name>
     <displayname>自由骑士手甲</displayname>
@@ -103,9 +214,9 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <dressup>男变装-自由骑士头甲</dressup>
       <hp>370</hp>
       <mp>500</mp>
-      <damage>75</damage>
+      <damage>95</damage>
       <gunpower>0</gunpower>
-      <knifepower>200</knifepower>
+      <knifepower>180</knifepower>
       <punch>0</punch>
       <defence>700</defence>
     </equipped>
@@ -125,9 +236,9 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <dressup>男变装-自由骑士鞋</dressup>
       <hp>370</hp>
       <mp>500</mp>
-      <damage>75</damage>
+      <damage>95</damage>
       <gunpower>0</gunpower>
-      <knifepower>200</knifepower>
+      <knifepower>180</knifepower>
       <punch>0</punch>
       <defence>700</defence>
     </equipped>
@@ -161,14 +272,14 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>自由骑士胸甲</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>8</weight>
+    <weight>9</weight>
     <price>100000</price>
     <description>自由骑士铠甲。</description>
     <level>60</level>
     <equipped>
       <dressup>变装-自由骑士上装</dressup>
       <hp>370</hp>
-      <mp>360</mp>
+      <mp>350</mp>
       <damage>130</damage>
       <gunpower>0</gunpower>
       <knifepower>250</knifepower>
@@ -760,7 +871,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
         <全属性>81</全属性>
       </magicdefence>
       <toughness>200</toughness>
-</equipped>
+    </equipped>
   </item>
   <item>
     <id>1998</id>
