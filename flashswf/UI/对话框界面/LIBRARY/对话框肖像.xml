@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1752158475" lastUniqueIdentifier="227">
   <timeline>
-    <DOMTimeline name="对话框肖像" currentFrame="71">
+    <DOMTimeline name="对话框肖像">
       <layers>
         <DOMLayer name="Labels Layer" color="#FC2986">
           <frames>
@@ -148,7 +148,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!5804 -5026|5804 2159!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026"/>
+                    <Edge fillStyle1="1" edges="!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026!5804 -5026|5804 2159"/>
                   </edges>
                 </DOMShape>
               </elements>

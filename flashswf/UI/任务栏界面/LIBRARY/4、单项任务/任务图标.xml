@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4、单项任务/任务图标" itemID="67d95954-000002f8" lastModified="1750532541" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="4、单项任务/任务图标" itemID="67d95954-000002f8" lastModified="1752296669" lastUniqueIdentifier="8">
   <timeline>
-    <DOMTimeline name="任务图标" currentFrame="15">
+    <DOMTimeline name="任务图标" currentFrame="29">
       <layers>
         <DOMLayer name="代码层" color="#9933CC" autoNamed="false">
           <frames>
@@ -36,7 +36,7 @@
 			NPC头像框.swapDepths(self.任务图标.NPC头像框位置示意);
 			self.任务图标.NPC头像框位置示意.removeMovieClip();
 		}
-		self.任务图标.NPC头像框.gotoAndStop(self.接取NPC);
+		_root.对话框UI.刷新NPC头像(self.任务图标.NPC头像框, self.接取NPC);
 		self.删除任务按钮._visible = self.允许删除 ? true : false;
 		self.完成标志._visible = self.任务进度 === "达成";
 	}, (refreshDelay + 1) * 200)
@@ -60,14 +60,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="完成标志" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="完成标志" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="9" duration="21" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="4、单项任务/完成标志 大" name="完成标志" selected="true" centerPoint3DX="48.25" centerPoint3DY="47.6">
+                <DOMSymbolInstance libraryItemName="4、单项任务/完成标志 大" name="完成标志" centerPoint3DX="48.25" centerPoint3DY="47.6">
                   <matrix>
                     <Matrix a="5" d="5" tx="68" ty="49.35"/>
                   </matrix>
@@ -150,7 +150,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="任务" color="#00FFFF" autoNamed="false">
+        <DOMLayer name="任务" color="#00FFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -211,7 +211,7 @@ on (rollOut) {
             </DOMFrame>
             <DOMFrame index="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="4、单项任务/单项任务-主线" name="任务图标" centerPoint3DX="125" centerPoint3DY="60">
+                <DOMSymbolInstance libraryItemName="4、单项任务/单项任务-主线" name="任务图标" selected="true" centerPoint3DX="125" centerPoint3DY="60">
                   <matrix>
                     <Matrix tx="5"/>
                   </matrix>

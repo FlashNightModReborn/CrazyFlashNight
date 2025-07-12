@@ -176,8 +176,8 @@ _root.任务栏UI函数.显示任务明细 = function(index){
 	self.提交NPC界面.提交NPC.NPC头像框._visible = false;
 	_root.帧计时器.添加单次任务(function() {
 		self.提交NPC界面.提交NPC.NPC头像框._visible = true;
-		self.提交NPC界面.提交NPC.NPC头像框.gotoAndStop(taskData.finish_npc);
-	}, 200)
+		_root.对话框UI.刷新NPC头像(self.提交NPC界面.提交NPC.NPC头像框, taskData.finish_npc);
+	}, 33)
 	
 }
 

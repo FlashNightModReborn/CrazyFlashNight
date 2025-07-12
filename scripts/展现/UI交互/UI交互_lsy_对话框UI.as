@@ -181,6 +181,16 @@ _root.对话框UI.初始化对话框界面 = function(对话框界面:MovieClip)
     对话框界面.关闭();
 }
 
+_root.对话框UI.刷新NPC头像 = function(NPC头像框:MovieClip, 名字){
+    if(名字 != null){
+        NPC头像框.gotoAndStop(2);
+        NPC头像框.头像.loadMovie("flashswf/portraits/profiles/" + 名字 + ".png");
+    }else{
+        NPC头像框.gotoAndStop(1);
+        NPC头像框.头像.unlooadMovie();
+    }
+}
+
 
 _root.初始化人物立绘 = function(target){
     target.stop();

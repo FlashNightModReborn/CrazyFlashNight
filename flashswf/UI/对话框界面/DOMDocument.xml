@@ -21,7 +21,7 @@
           <DOMFolderItem name="sprite/主角/枪械&amp;女体" itemID="668d6e2a-00003375"/>
           <DOMFolderItem name="ts-npc" itemID="66ad200c-00000fee"/>
           <DOMFolderItem name="待整理防具相关汇总" itemID="67331ffe-00000756"/>
-          <DOMFolderItem name="动画" itemID="65f7e940-00000bc1" isExpanded="true"/>
+          <DOMFolderItem name="动画" itemID="65f7e940-00000bc1"/>
           <DOMFolderItem name="对话框UI" itemID="66346c29-000015d9"/>
           <DOMFolderItem name="对话框UI/Lee" itemID="66bdc806-00000970"/>
           <DOMFolderItem name="对话框UI/黑铁会外交部长-部件" itemID="666080e1-000004d3"/>
@@ -186,7 +186,8 @@
           <Include href="lochan/盘子.xml" loadImmediate="false" itemID="66e1b386-00000068" lastModified="1726067641"/>
           <Include href="NPCAK74M.xml" loadImmediate="false" itemID="6842337c-00001118" lastModified="1749169020"/>
           <Include href="NPC士兵头.xml" loadImmediate="false" itemID="68423429-00001123" lastModified="1749169193"/>
-          <Include href="NPC头像框.xml" itemID="67d3bcf4-000015e7" lastModified="1751709387"/>
+          <Include href="NPC头像空容器.xml" loadImmediate="false" itemID="6871ec97-000008c6" lastModified="1752296601"/>
+          <Include href="NPC头像框.xml" itemID="6871e857-00000618" lastModified="1752296614"/>
           <Include href="PROPHETA.xml" loadImmediate="false" itemID="6805674b-00000a0d" lastModified="1745184587"/>
           <Include href="PROPHETB.xml" loadImmediate="false" itemID="68056800-00000a44" lastModified="1745184830"/>
           <Include href="shape/bat脸.xml" itemIcon="1" loadImmediate="false" itemID="67331ff8-0000074a" lastModified="1731403768"/>
@@ -812,7 +813,7 @@
           <Include href="对话框UI/袁望surveyor/左上臂.xml" loadImmediate="false" itemID="658e9304-000001cc" lastModified="1703844269"/>
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
-          <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1752129567"/>
+          <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1752295529"/>
           <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1752158475"/>
           <Include href="发型/Symbol 799.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000814" lastModified="1710653981"/>
           <Include href="歌留多/歌留多胯.xml" loadImmediate="false" itemID="67096725-00000045" lastModified="1728669954"/>
@@ -1265,6 +1266,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="682842" publishTime="1752295700"/>
           <PublishItem publishSize="741490" publishTime="1752129363"/>
           <PublishItem publishSize="741490" publishTime="1752129281"/>
           <PublishItem publishSize="928665" publishTime="1751513314"/>
@@ -1284,6 +1286,5 @@
           <PublishItem publishSize="2814612" publishTime="1746783214"/>
           <PublishItem publishSize="2100890" publishTime="1742032750"/>
           <PublishItem publishSize="2076908" publishTime="1742030739"/>
-          <PublishItem publishSize="2076918" publishTime="1742030506"/>
      </publishHistory>
 </DOMDocument>

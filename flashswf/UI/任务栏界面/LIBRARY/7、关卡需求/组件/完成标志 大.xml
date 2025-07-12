@@ -87,7 +87,7 @@
         </DOMLayer>
         <DOMLayer name="图层 2 复制" color="#9933CC" parentLayerIndex="2" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="19" keyMode="15872">
+            <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="19" duration="10" keyMode="9728">
@@ -200,7 +200,7 @@
         </DOMLayer>
         <DOMLayer name="图层 2" color="#9933CC" parentLayerIndex="4" locked="true">
           <frames>
-            <DOMFrame index="0" duration="19" tweenType="shape" keyMode="24066">
+            <DOMFrame index="0" duration="19" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
                   <MorphSegment startPointA="#FFFFFF.8D, #0.48" startPointB="#FFFFFF.8D, #0.48" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
@@ -221,7 +221,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!75 120|-27 3.5!-27 3.5[#FFFF9D.07 #2D.36 -115 72!-115 72[#FFFFF7.47 #78.18 72 212!72 212[#FD.8D #40.28 541 -87!541 -87[#11B.BB -0.09375 75 120"/>
+                    <Edge fillStyle0="1" edges="!-115 72[#FFFFF7.47 #78.18 72 212!72 212[#FD.8D #40.28 541 -87!541 -87[#11B.BB -0.09375 75 120!75 120|-27 3.5!-27 3.5[#FFFF9D.07 #2D.36 -115 72"/>
                   </edges>
                 </DOMShape>
               </elements>

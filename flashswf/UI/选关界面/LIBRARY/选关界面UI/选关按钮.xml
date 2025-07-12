@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关按钮" itemID="666ea230-0000056b" lastModified="1747051390">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关按钮" itemID="666ea230-0000056b" lastModified="1752295243">
   <timeline>
     <DOMTimeline name="选关按钮" currentFrame="1">
       <layers>
-        <DOMLayer name="Script Layer" color="#D30EBB" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="Script Layer" color="#D30EBB" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -340,14 +340,14 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图片" color="#7AB979" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="图片" color="#7AB979" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3274" centerPoint3DX="0.5" centerPoint3DY="2">
+                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3274" selected="true" centerPoint3DX="0.5" centerPoint3DY="2">
                   <matrix>
                     <Matrix tx="-80" ty="-32.5"/>
                   </matrix>
@@ -362,13 +362,15 @@ else
 	var loader = new MovieClipLoader();
 	var loadListener:Object = new Object();
 
-	/*loadListener.onLoadComplete = function(target_mc:MovieClip, httpStatus:Number):Void 
+	loadListener.onLoadComplete = function(target_mc:MovieClip, httpStatus:Number):Void 
 	{
-	};*/
+		loader.removeListener(loadListener);
+	};
 	loadListener.onLoadError = function(target_mc:MovieClip):Void 
 	{
 		_this.gotoAndStop(2);
 		_this.gotoAndStop(_parent.当前关卡名);
+		loader.removeListener(loadListener);
 	};
 	var mcLoader:MovieClipLoader = new MovieClipLoader();
 	loader.addListener(loadListener);

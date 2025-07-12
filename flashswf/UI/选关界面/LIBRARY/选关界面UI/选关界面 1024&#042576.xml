@@ -1003,11 +1003,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 120" color="#D8C265">
+        <DOMLayer name="Layer 120" color="#D8C265" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="473.55" centerPoint3DY="505.55">
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="473.55" centerPoint3DY="505.55">
                   <matrix>
                     <Matrix tx="222.55" ty="282.45"/>
                   </matrix>
@@ -3912,11 +3912,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 121" color="#A7D4B7" current="true" isSelected="true">
+        <DOMLayer name="Layer 121" color="#A7D4B7">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMBitmapInstance selected="true" libraryItemName="背景-废城-topaz-enhance-1024w.png"/>
+                <DOMBitmapInstance libraryItemName="背景-废城-topaz-enhance-1024w.png"/>
               </elements>
             </DOMFrame>
             <DOMFrame index="10" duration="8" keyMode="9728">
@@ -3952,7 +3952,7 @@ on(rollOut){
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!20480 -2111|20480 11442!20480 11442|-130 11442!-130 11442|-130 -2111!-130 -2111|20480 -2111"/>
+                    <Edge fillStyle1="1" edges="!20480 11442|-130 11442!-130 11442|-130 -2111!-130 -2111|20480 -2111!20480 -2111|20480 11442"/>
                   </edges>
                 </DOMShape>
               </elements>
