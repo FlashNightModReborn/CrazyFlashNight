@@ -1,10 +1,11 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#B9B8B0" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" objectsSnapTo="false" nextSceneIdentifier="2" playOptionsPlayPages="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#B9B8B0" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" objectsSnapTo="false" nextSceneIdentifier="2" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="2.音效文件夹" itemID="656c28f2-00000fe5"/>
           <DOMFolderItem name="2.音效文件夹/爆炸" itemID="656c296a-0000103c" isExpanded="true"/>
           <DOMFolderItem name="2.音效文件夹/未命名文件夹 2" itemID="687108c8-00002251"/>
           <DOMFolderItem name="53式步骑枪" itemID="659ea370-00000ca4" isExpanded="true"/>
           <DOMFolderItem name="Jackhammer" itemID="6870de51-00000afb" isExpanded="true"/>
+          <DOMFolderItem name="M1918A2" itemID="6872364e-00003591" isExpanded="true"/>
           <DOMFolderItem name="NEGEV" itemID="686a7a3e-0000131c" isExpanded="true"/>
           <DOMFolderItem name="PKP" itemID="686b8a7f-000003a1" isExpanded="true"/>
           <DOMFolderItem name="sprite" itemID="667d1fff-00000d61"/>
@@ -121,11 +122,11 @@
           <Include href="53式步骑枪/调整层.xml" loadImmediate="false" itemID="659eb6ee-000005a7" lastModified="1704953093"/>
           <Include href="53式步骑枪/图标-53式步骑枪.xml" itemID="659eadd3-00000327" lastModified="1704901315"/>
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1752243200"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1752315473"/>
           <Include href="Jackhammer/Jackhammer.xml" itemID="6870d3d5-00000654" lastModified="1752227604"/>
-          <Include href="Jackhammer/M1918A2.xml" itemID="687109e5-00002571" lastModified="1752240876"/>
           <Include href="Jackhammer/图标-Jackhammer.xml" itemID="6870dc6b-000007f4" lastModified="1752226965"/>
-          <Include href="Jackhammer/图标-M1918A2.xml" itemID="68711bfe-0000266b" lastModified="1752243221"/>
+          <Include href="M1918A2/M1918A2.xml" itemID="687109e5-00002571" lastModified="1752240876"/>
+          <Include href="M1918A2/图标-M1918A2.xml" itemID="68711bfe-0000266b" lastModified="1752243221"/>
           <Include href="NEGEV/Negev.xml" itemID="686a4cad-0000364f" lastModified="1751878281"/>
           <Include href="NEGEV/内格夫弹链动画.xml" loadImmediate="false" itemID="686a67d8-000036bc" lastModified="1751805789"/>
           <Include href="NEGEV/内格夫子弹1.xml" loadImmediate="false" itemID="686a5e0b-00003660" lastModified="1751809025"/>
@@ -943,6 +944,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="958246" publishTime="1752243816"/>
           <PublishItem publishSize="958249" publishTime="1752243463"/>
           <PublishItem publishSize="958185" publishTime="1752243097"/>
           <PublishItem publishSize="883281" publishTime="1752223568"/>
@@ -962,6 +964,5 @@
           <PublishItem publishSize="888374" publishTime="1752156133"/>
           <PublishItem publishSize="915945" publishTime="1752155868"/>
           <PublishItem publishSize="915863" publishTime="1752155813"/>
-          <PublishItem publishSize="915823" publishTime="1752155779"/>
      </publishHistory>
 </DOMDocument>
