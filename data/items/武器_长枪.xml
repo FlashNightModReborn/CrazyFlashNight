@@ -6134,5 +6134,36 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
         </cycle>
       </attr_0>
     </lifecycle>
+  </item>  
+  <item>
+    <id>8090</id>
+    <name>M1918A2</name>
+    <displayname>M1918A2</displayname>
+    <icon>M1918A2</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>9.5</weight>
+    <price>146250</price>
+    <description>勃朗宁M1918A2自动步枪（BAR）是美国在一战末期研发并广泛用于二战战场的一款自动步枪兼轻机枪，兼具可靠性与杀伤力。
+    然而，其20发弹匣容量相对较小，重量和后坐力也较大，因此在战争中的评价褒贬不一。尽管如此，M1918A2凭借稳定的射速和精度，在士兵手中依旧能发挥出显著的火力压制效果。</description>
+    <level>25</level>
+    <data>
+      <capacity>20</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>205</interval>
+      <velocity>40</velocity>
+      <bullet>加强普通子弹</bullet>
+      <sound>bar_rifle_3.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>机枪通用弹药</clipname>
+      <bulletsize>32</bulletsize>
+      <power>888</power>
+      <impact>10</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-M1918A2</dressup>
+    </equipped>
   </item>
 </root>
