@@ -6090,5 +6090,49 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     <equipped>
       <dressup>枪-长枪-XM556-Microgun</dressup>
     </equipped>    
+  </item>  
+  <item>
+    <id>8089</id>
+    <name>Jackhammer</name>
+    <displayname>Jackhammer</displayname>
+    <icon>Jackhammer</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>5</weight>
+    <price>374400</price>
+    <description>铁枪会基于1980年代Pancor公司气锤原型机改造的能量武器载体。利用WP巨型企业的先进能量转换技术，彻底摒弃了原版复杂的气动旋转弹鼓系统，改为标准化能量电池驱动的冷冻弹丸发射器。
+新系统保留了无托布局的紧凑优势，同时解决了原版换弹复杂、故障率高的致命缺陷。改造后的武器具备稳定的能量输出和可靠的低温弹丸投送能力。</description>
+    <level>40</level>
+    <data>
+      <capacity>10</capacity>
+      <split>8</split>
+      <diffusion>20</diffusion>
+      <interval>250</interval>
+      <velocity>30</velocity>
+      <bullet>横向联弹-冰冷子弹</bullet>
+      <bulletrename>冰冷子弹</bulletrename>
+      <sound>气锤2.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>冰汽</bullethit>
+      <clipname>能量电池</clipname>
+      <bulletsize>30</bulletsize>
+      <power>245</power>
+      <impact>10</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-Jackhammer</dressup>
+      <damagetype>魔法</damagetype>
+      <magictype>冷</magictype>
+    </equipped>    
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>Jackhammer初始化</initRoutines>
+        </init>
+        <cycle>
+          <cycleRoutines>Jackhammer周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
 </root>

@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/能量子弹" itemID="669d33e2-0000172c" linkageExportForAS="true" linkageIdentifier="能量子弹" lastModified="1721578466">
   <timeline>
-    <DOMTimeline name="能量子弹" currentFrame="1">
+    <DOMTimeline name="能量子弹">
       <layers>
-        <DOMLayer name="Labels Layer" color="#A569B1">
+        <DOMLayer name="Labels Layer" color="#A569B1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#8738F9" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#8738F9">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>

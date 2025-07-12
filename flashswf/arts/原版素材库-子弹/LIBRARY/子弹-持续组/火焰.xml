@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-持续组/火焰" itemID="669d3404-00001734" linkageExportForAS="true" linkageIdentifier="火焰" lastModified="1722875196">
   <timeline>
-    <DOMTimeline name="火焰" currentFrame="51">
+    <DOMTimeline name="火焰" currentFrame="19">
       <layers>
-        <DOMLayer name="Labels Layer" color="#84FA15" current="true" isSelected="true">
+        <DOMLayer name="Labels Layer" color="#84FA15">
           <frames>
             <DOMFrame index="0" duration="48" keyMode="9728">
               <elements/>
@@ -49,7 +49,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#F231A3">
+        <DOMLayer name="Layer 3" color="#F231A3" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -83,7 +83,7 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DY="-27.5">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" selected="true" centerPoint3DY="-27.5">
                   <matrix>
                     <Matrix a="6.53997802734375" d="3.19998168945313" tx="-12.5" ty="-40"/>
                   </matrix>
