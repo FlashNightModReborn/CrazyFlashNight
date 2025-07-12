@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#B9B8B0" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" objectsSnapTo="false" nextSceneIdentifier="2" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#666666" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" objectsSnapTo="false" nextSceneIdentifier="2" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="2.音效文件夹" itemID="656c28f2-00000fe5"/>
           <DOMFolderItem name="2.音效文件夹/爆炸" itemID="656c296a-0000103c" isExpanded="true"/>
@@ -12,6 +12,7 @@
           <DOMFolderItem name="wa90" itemID="6559d3b1-000002db"/>
           <DOMFolderItem name="wa90/Graphic" itemID="5e86cc75-00001260"/>
           <DOMFolderItem name="XM556" itemID="686bba3f-000040b0" isExpanded="true"/>
+          <DOMFolderItem name="ZB-26" itemID="68728189-000006c7" isExpanded="true"/>
           <DOMFolderItem name="电感切割刃" itemID="655c5883-00000334"/>
           <DOMFolderItem name="光玉的剑相关" itemID="68668bb8-000033c6"/>
           <DOMFolderItem name="火药燃气液压打桩机" itemID="655175a5-000006e2"/>
@@ -122,11 +123,11 @@
           <Include href="53式步骑枪/调整层.xml" loadImmediate="false" itemID="659eb6ee-000005a7" lastModified="1704953093"/>
           <Include href="53式步骑枪/图标-53式步骑枪.xml" itemID="659eadd3-00000327" lastModified="1704901315"/>
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1752315473"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1752334730"/>
           <Include href="Jackhammer/Jackhammer.xml" itemID="6870d3d5-00000654" lastModified="1752227604"/>
           <Include href="Jackhammer/图标-Jackhammer.xml" itemID="6870dc6b-000007f4" lastModified="1752226965"/>
           <Include href="M1918A2/M1918A2.xml" itemID="687109e5-00002571" lastModified="1752240876"/>
-          <Include href="M1918A2/图标-M1918A2.xml" itemID="68711bfe-0000266b" lastModified="1752243221"/>
+          <Include href="M1918A2/图标-M1918A2.xml" itemID="68727d9b-000003aa" lastModified="1752333723"/>
           <Include href="NEGEV/Negev.xml" itemID="686a4cad-0000364f" lastModified="1751878281"/>
           <Include href="NEGEV/内格夫弹链动画.xml" loadImmediate="false" itemID="686a67d8-000036bc" lastModified="1751805789"/>
           <Include href="NEGEV/内格夫子弹1.xml" loadImmediate="false" itemID="686a5e0b-00003660" lastModified="1751809025"/>
@@ -176,6 +177,8 @@
           <Include href="XM556/线圈前端.xml" loadImmediate="false" itemID="686f1216-00000532" lastModified="1752131345"/>
           <Include href="XM556/线圈中级.xml" loadImmediate="false" itemID="686f1f34-0000053c" lastModified="1752130775"/>
           <Include href="XM556/炎魔斩纹路.xml" loadImmediate="false" itemID="6678d078-000005ae" lastModified="1719193720"/>
+          <Include href="ZB-26/ZB-26.xml" itemID="68725316-0000359d" lastModified="1752334536"/>
+          <Include href="ZB-26/图标-ZB-26.xml" itemID="68727da4-000003bb" lastModified="1752333778"/>
           <Include href="电感切割刃/刀-电感切割刃.xml" itemID="655c55d9-00000308" lastModified="1721580831"/>
           <Include href="电感切割刃/刀脊.xml" loadImmediate="false" itemID="655c4e2f-0000062f" lastModified="1700551159"/>
           <Include href="电感切割刃/刀脊花纹.xml" loadImmediate="false" itemID="655c4e77-00000633" lastModified="1700548288"/>
@@ -862,6 +865,22 @@
                     <SolidSwatchItem color="#222221" hue="40" saturation="4" brightness="32"/>
                     <SolidSwatchItem color="#595853" hue="33" saturation="9" brightness="81"/>
                     <SolidSwatchItem color="#4B3526" hue="16" saturation="79" brightness="54"/>
+                    <SolidSwatchItem color="#1F1E22" hue="170" saturation="16" brightness="30"/>
+                    <SolidSwatchItem color="#746D76" hue="190" saturation="9" brightness="107"/>
+                    <SolidSwatchItem color="#322E34" hue="187" saturation="16" brightness="46"/>
+                    <SolidSwatchItem color="#141519" hue="152" saturation="28" brightness="22"/>
+                    <SolidSwatchItem color="#29272D" hue="176" saturation="15" brightness="40"/>
+                    <SolidSwatchItem color="#484348" hue="200" saturation="9" brightness="66"/>
+                    <SolidSwatchItem color="#28262D" hue="173" saturation="18" brightness="39"/>
+                    <SolidSwatchItem color="#313035" hue="168" saturation="13" brightness="48"/>
+                    <SolidSwatchItem color="#201F23" hue="170" saturation="15" brightness="31"/>
+                    <SolidSwatchItem color="#19171C" hue="180" saturation="20" brightness="24"/>
+                    <SolidSwatchItem color="#9F9DA1" hue="180" saturation="5" brightness="150"/>
+                    <SolidSwatchItem color="#9F9C9A" hue="16" saturation="6" brightness="148"/>
+                    <SolidSwatchItem color="#505053" hue="160" saturation="5" brightness="77"/>
+                    <SolidSwatchItem color="#858183" hue="220" saturation="4" brightness="123"/>
+                    <SolidSwatchItem color="#C1BEBE" saturation="6" brightness="181"/>
+                    <SolidSwatchItem color="#686566" hue="227" saturation="4" brightness="97"/>
                </swatches>
           </swatchList>
      </swatchLists>

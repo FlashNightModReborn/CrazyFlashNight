@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1752315473" lastUniqueIdentifier="126">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1752334730" lastUniqueIdentifier="128">
   <timeline>
-    <DOMTimeline name="fs配置素材" currentFrame="16" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;247&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="21" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;290&lt;/guideline&gt;&lt;guideline direction="v"&gt;247&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
         <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
@@ -166,9 +166,9 @@
                     <Point x="146.5" y="-13.2"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="吉他喷火/图标-吉他喷火器" centerPoint3DX="304.9" centerPoint3DY="316.2">
+                <DOMSymbolInstance libraryItemName="吉他喷火/图标-吉他喷火器" centerPoint3DX="341.45" centerPoint3DY="74.9">
                   <matrix>
-                    <Matrix tx="304.9" ty="316.2"/>
+                    <Matrix tx="341.45" ty="74.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="2.8"/>
@@ -238,33 +238,33 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NEGEV/Negev" centerPoint3DX="-425.25" centerPoint3DY="262.7">
+                <DOMSymbolInstance libraryItemName="NEGEV/Negev" centerPoint3DX="-447.5" centerPoint3DY="374.3">
                   <matrix>
-                    <Matrix tx="-495.8" ty="261"/>
+                    <Matrix tx="-518.05" ty="372.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="70.55" y="1.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NEGEV/图标-NEGEV" centerPoint3DX="-341.3" centerPoint3DY="339.1">
+                <DOMSymbolInstance libraryItemName="NEGEV/图标-NEGEV" centerPoint3DX="-363.55" centerPoint3DY="450.7">
                   <matrix>
-                    <Matrix tx="-341.3" ty="339.1"/>
+                    <Matrix tx="-363.55" ty="450.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="55.25" y="-34.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="PKP/PKP" centerPoint3DX="-314.85" centerPoint3DY="408.6">
+                <DOMSymbolInstance libraryItemName="PKP/PKP" centerPoint3DX="-337.1" centerPoint3DY="520.2">
                   <matrix>
-                    <Matrix tx="-584.6" ty="426.25"/>
+                    <Matrix tx="-606.85" ty="537.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="269.5" y="-17.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="PKP/图标-PKP" centerPoint3DX="-367.05" centerPoint3DY="476.4">
+                <DOMSymbolInstance libraryItemName="PKP/图标-PKP" centerPoint3DX="-389.3" centerPoint3DY="588">
                   <matrix>
-                    <Matrix tx="-367.05" ty="476.4"/>
+                    <Matrix tx="-389.3" ty="588"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="51.45" y="-31.7"/>
@@ -342,20 +342,36 @@
                     <Point x="62.55" y="-38.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="M1918A2/M1918A2" selected="true" centerPoint3DX="-303.05" centerPoint3DY="47.2">
+                <DOMSymbolInstance libraryItemName="M1918A2/M1918A2" centerPoint3DX="-298.45" centerPoint3DY="-18.6">
                   <matrix>
-                    <Matrix tx="-571.15" ty="72.05"/>
+                    <Matrix tx="-566.55" ty="6.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="267.85" y="-24.85"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="M1918A2/图标-M1918A2" centerPoint3DX="-290.05" centerPoint3DY="2.85">
+                <DOMSymbolInstance libraryItemName="M1918A2/图标-M1918A2" centerPoint3DX="-285.45" centerPoint3DY="-62.95">
                   <matrix>
-                    <Matrix tx="-290.05" ty="2.85"/>
+                    <Matrix tx="-285.45" ty="-62.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="76.25" y="-50.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ZB-26/ZB-26" centerPoint3DX="-443.2" centerPoint3DY="166.65">
+                  <matrix>
+                    <Matrix tx="-581.75" ty="169.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="138.3" y="-2.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ZB-26/图标-ZB-26" centerPoint3DX="-205.75" centerPoint3DY="219.2">
+                  <matrix>
+                    <Matrix tx="-205.75" ty="219.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.7" y="-39.2"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

@@ -6165,5 +6165,37 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     <equipped>
       <dressup>枪-长枪-M1918A2</dressup>
     </equipped>
+  </item>  
+  <item>
+    <id>8091</id>
+    <name>ZB-26</name>
+    <displayname>ZB-26</displayname>
+    <icon>ZB-26</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>8</weight>
+    <price>204750</price>
+    <description>ZB-26是捷克斯洛伐克于1920年代研发的一款经典轻机枪，以可靠耐用和结构简洁著称。
+    该枪采用顶部弹匣供弹，并配备快速更换枪管系统，在恶劣条件下仍能保持卓越的性能与精准度。
+    ZB-26不仅大量装备捷克军队，还出口到20余个国家，其成功的设计直接催生了著名的英国布伦轻机枪。</description>
+    <level>38</level>
+    <data>
+      <capacity>20</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>150</interval>
+      <velocity>40</velocity>
+      <bullet>加强普通子弹</bullet>
+      <sound>ZB26.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>机枪通用弹药</clipname>
+      <bulletsize>32</bulletsize>
+      <power>1111</power>
+      <impact>4</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-ZB-26</dressup>
+    </equipped>
   </item>
 </root>
