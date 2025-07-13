@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1752386810">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1752418419">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="70">
+    <DOMTimeline name="asLoader" currentFrame="76">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -593,7 +593,9 @@ craftinglistloader.loadCraftingList(
 		for(var category in data){
 			var list = data[category];
 			for(var i = 0; i < list.length; i++){
-				carftingDict[list[i].name] = list[i];
+				var item = list[i];
+				carftingDict[item.name] = item;
+				if(isNaN(item.value)) item.value = 1;
 			}
 		}
 		_root.改装清单 = data;
