@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/越野车" itemID="65b71fd0-00000156" lastModified="1746438222" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="越野车">
+    <DOMTimeline name="越野车" currentFrame="1">
       <layers>
-        <DOMLayer name="Script Layer" color="#C29BBA" locked="true">
+        <DOMLayer name="Script Layer" color="#C29BBA" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -77,7 +77,7 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 5" color="#4FFFFF" current="true" isSelected="true">
+        <DOMLayer name="图层 5" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>

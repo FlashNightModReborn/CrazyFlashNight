@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1749711795" lastUniqueIdentifier="28">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1752395462" lastUniqueIdentifier="28">
   <timeline>
     <DOMTimeline name="车库">
       <layers>
@@ -247,7 +247,7 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/自行车" centerPoint3DX="1091.35" centerPoint3DY="689.9">
+                <DOMSymbolInstance libraryItemName="sprite/自行车" selected="true" centerPoint3DX="1091.35" centerPoint3DY="689.9">
                   <matrix>
                     <Matrix a="0.508346557617188" d="0.508346557617188" tx="1013.1" ty="643.2"/>
                   </matrix>
@@ -284,7 +284,11 @@ on(rollOver){
 on(rollOut){
    gotoAndPlay(1);
 }
-]]></script>
+
+onClipEvent (load) {
+	_root.基建系统.初始化基建元件(this,"自行车");
+	this.swapDepths(this._y + 100);
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="sprite/越野摩托车" centerPoint3DX="905.25" centerPoint3DY="735.95">
@@ -333,6 +337,10 @@ on (rollOver) {
 }
 on (rollOut) {
 	gotoAndPlay(1);
+}
+onClipEvent (load) {
+	_root.基建系统.初始化基建元件(this,"摩托车");
+	this.swapDepths(this._y + 100);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -382,6 +390,10 @@ on (rollOver) {
 }
 on (rollOut) {
 	gotoAndPlay(1);
+}
+onClipEvent (load) {
+	_root.基建系统.初始化基建元件(this,"越野车");
+	this.swapDepths(this._y + 100);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

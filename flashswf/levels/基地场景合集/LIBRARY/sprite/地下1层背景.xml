@@ -966,8 +966,8 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!-13007 -5019|-12999 -5029!-12999 -5029|-13007 -5029"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="!-13007 -5029|-13007 -5019"/>
+                    <Edge strokeStyle="1" edges="!-13007 -5019|-12999 -5029!-12999 -5029|-13007 -5029"/>
                     <Edge fillStyle0="2" strokeStyle="1" edges="!-18639 6087|-18631 6087!-18631 6087|-13147 -505!-13147 -505|-13007 -5019"/>
                     <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!-13007 -5019|-18679 1359!-18679 1359|-18639 6087"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="!-18639 6087|-20300 6107!-20300 6107|-20221 -4971!-20221 -4971|-13007 -5029"/>
@@ -1228,7 +1228,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMStaticText fontRenderingMode="standard" width="129.4" height="13.65" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="127.5" height="13.35" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix a="0.172714233398438" b="0.040863037109375" c="-0.040863037109375" d="0.172714233398438" tx="119.95" ty="-86.65"/>
                   </matrix>
@@ -1339,7 +1339,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMStaticText fontRenderingMode="standard" width="129.4" height="13.65" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="127.5" height="13.35" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix a="0.22894287109375" b="-0.0374755859375" c="0.0374755859375" d="0.22894287109375" tx="155.8" ty="-165.8"/>
                   </matrix>
@@ -1463,13 +1463,12 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle0="2" strokeStyle="1" edges="!11870 -5002|11862 -5002!11862 -5002|11870 -4992"/>
                     <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!11870 -4992|11870 -5002"/>
-                    <Edge fillStyle0="2" strokeStyle="1" edges="!11870 -4992|12010 -478!12010 -478|17494 6114"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!11870 -5002|11862 -5002!11862 -5002|11870 -4992!11870 -4992|12010 -478!12010 -478|17494 6114"/>
                     <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!17494 6114|17502 6114"/>
                     <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!17502 6114|17542 1386!17542 1386|11870 -4992"/>
-                    <Edge fillStyle1="2" edges="!17502 6114|17689 6254!17689 6254|17494 6114"/>
                     <Edge strokeStyle="1" edges="!17494 6114|17483 6114"/>
+                    <Edge fillStyle1="2" edges="!17502 6114|17689 6254!17689 6254|17494 6114"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="!11870 -5002|19084 -4944!19084 -4944|19163 6134!19163 6134|17502 6114"/>
                   </edges>
                 </DOMShape>
