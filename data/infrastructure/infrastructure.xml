@@ -16,6 +16,10 @@
         <Level id="0">
             <Description>null</Description>
             <Price>35000</Price>
+            <Skill>
+                <Name>驾驶</Name>
+                <Level>1</Level>
+            </Skill>
         </Level>
         <Level id="1">
             <Description>使用摩托车可以快速到达距离中等的据点。
@@ -27,6 +31,10 @@
         <Level id="0">
             <Description>null</Description>
             <Price>500000</Price>
+            <Skill>
+                <Name>驾驶</Name>
+                <Level>2</Level>
+            </Skill>
         </Level>
         <Level id="1">
             <Description>使用越野车可以快速、安全地抵达尘都各处，尤其是在携带大量物资的情况下。
@@ -64,6 +72,10 @@
                 <Name>传动装置</Name>
                 <Value>1</Value>
             </Material>
+            <Skill>
+                <Name>逆向</Name>
+                <Level>1</Level>
+            </Skill>
         </Level>
         <Level id="2">
             <Description>现在通向基地车库与基地门口的两架梯子可以让停机坪上的人更方便地离开基地。

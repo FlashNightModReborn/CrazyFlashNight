@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="基建内容整体" itemID="68733173-0000068c" lastModified="1752385478" lastUniqueIdentifier="29">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="基建内容整体" itemID="68733173-0000068c" lastModified="1752387220" lastUniqueIdentifier="29">
   <timeline>
     <DOMTimeline name="基建内容整体">
       <layers>
@@ -42,11 +42,26 @@ function 打印基建升级需求(){
 	if(当前等级数据.Material.length > 0){
 		str += "\n" + this.材料需求数组.join("\n");
 	}
+	if(当前等级数据.Skill.length > 0){
+		for(var i=0; i< 当前等级数据.Skill.length; i++){
+			var skill = 当前等级数据.Skill[i];
+			str += "\n技能[" + skill.Name + "]达到 " + skill.Level + " 级";
+		}
+	}
 	return str;
 }
 
 function 基建升级(){
 	if(this.当前等级 >= this.最大等级) return;
+	if(当前等级数据.Skill.length > 0){
+		for(var i=0; i< 当前等级数据.Skill.length; i++){
+			var skill = 当前等级数据.Skill[i];
+			if(_root.根据技能名查找主角技能等级(skill.Name) < skill.Level){
+				_root.发布消息("技能["+skill.Name+"]等级不足！");
+				return;
+			}
+		}
+	}
 	if(当前等级数据.Price > 0 && _root.金钱 < 当前等级数据.Price){
 		_root.发布消息("金币不足！");
 		return;
@@ -165,7 +180,7 @@ function 基建升级(){
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="材料大全详细介绍" centerPoint3DX="210.4" centerPoint3DY="182.9">
                   <matrix>
-                    <Matrix a="1.46766662597656" d="1.20246887207031" tx="116" ty="145.7"/>
+                    <Matrix a="1.4676513671875" d="1.20245361328125" tx="116" ty="145.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

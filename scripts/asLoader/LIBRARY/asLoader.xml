@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1752384192">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1752386810">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="69">
+    <DOMTimeline name="asLoader" currentFrame="70">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -544,6 +544,9 @@ infra_loader.loadInfrastructure(
 					if(isNaN(lvl.Price)) lvl.Price = 0;
 					if(lvl.Material != null){
 						lvl.Material = org.flashNight.gesh.object.ObjectUtil.toArray(lvl.Material);
+					}
+					if(lvl.Skill != null){
+						lvl.Skill = org.flashNight.gesh.object.ObjectUtil.toArray(lvl.Skill);
 					}
 				}
 			}
