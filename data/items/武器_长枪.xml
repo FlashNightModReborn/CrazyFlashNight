@@ -6090,6 +6090,16 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     <equipped>
       <dressup>枪-长枪-XM556-Microgun</dressup>
     </equipped>    
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>XM556初始化</initRoutines>
+        </init>
+        <cycle>
+          <cycleRoutines>XM556周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>    
   </item>  
   <item>
     <id>8089</id>

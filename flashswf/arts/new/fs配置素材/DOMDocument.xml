@@ -160,8 +160,8 @@
           <Include href="wa90/瞄具.xml" itemIcon="1" loadImmediate="false" itemID="60abd43a-00002933" lastModified="1621873722"/>
           <Include href="wa90/图标-wa90.xml" itemID="6559de84-0000042e" lastModified="1700388617"/>
           <Include href="wa90/消音器.xml" itemIcon="1" loadImmediate="false" itemID="60abd2e4-0000291f" lastModified="1621887798"/>
-          <Include href="XM556/XM556-H-Stinger.xml" itemID="686cf53f-0000469e" lastModified="1751975018"/>
-          <Include href="XM556/XM556-Microgun.xml" itemID="686bd9c0-000044e9" lastModified="1751898560"/>
+          <Include href="XM556/XM556-H-Stinger.xml" itemID="686cf53f-0000469e" lastModified="1752399202"/>
+          <Include href="XM556/XM556-Microgun.xml" itemID="686bd9c0-000044e9" lastModified="1752399189"/>
           <Include href="XM556/XM556-OC-Overlord.xml" itemID="686ded67-0000038a" lastModified="1752227805"/>
           <Include href="XM556/XM556-OC-Overlord 动画.xml" loadImmediate="false" itemID="686f22d9-00000552" lastModified="1752243091"/>
           <Include href="XM556/XM556-OC-Overlord枪身.xml" loadImmediate="false" itemID="686f22bf-0000054e" lastModified="1752149679"/>
@@ -177,6 +177,7 @@
           <Include href="XM556/线圈前端.xml" loadImmediate="false" itemID="686f1216-00000532" lastModified="1752131345"/>
           <Include href="XM556/线圈中级.xml" loadImmediate="false" itemID="686f1f34-0000053c" lastModified="1752130775"/>
           <Include href="XM556/炎魔斩纹路.xml" loadImmediate="false" itemID="6678d078-000005ae" lastModified="1719193720"/>
+          <Include href="xm556枪管动画.xml" loadImmediate="false" itemID="6873745e-00000785" lastModified="1752399605"/>
           <Include href="ZB-26/ZB-26.xml" itemID="68725316-0000359d" lastModified="1752334536"/>
           <Include href="ZB-26/图标-ZB-26.xml" itemID="68727da4-000003bb" lastModified="1752333778"/>
           <Include href="电感切割刃/刀-电感切割刃.xml" itemID="655c55d9-00000308" lastModified="1721580831"/>
@@ -881,6 +882,21 @@
                     <SolidSwatchItem color="#858183" hue="220" saturation="4" brightness="123"/>
                     <SolidSwatchItem color="#C1BEBE" saturation="6" brightness="181"/>
                     <SolidSwatchItem color="#686566" hue="227" saturation="4" brightness="97"/>
+                    <SolidSwatchItem color="#5B6266" hue="136" saturation="13" brightness="91"/>
+                    <SolidSwatchItem color="#474A4E" hue="140" saturation="10" brightness="70"/>
+                    <SolidSwatchItem color="#060606" brightness="6"/>
+                    <SolidSwatchItem color="#2D2F31" hue="140" saturation="11" brightness="44"/>
+                    <SolidSwatchItem color="#54575C" hue="145" saturation="12" brightness="83"/>
+                    <SolidSwatchItem color="#3E4344" hue="127" saturation="12" brightness="61"/>
+                    <SolidSwatchItem color="#111112" hue="160" saturation="7" brightness="17"/>
+                    <SolidSwatchItem color="#3D4043" hue="140" saturation="12" brightness="60"/>
+                    <SolidSwatchItem color="#060505" saturation="22" brightness="6"/>
+                    <SolidSwatchItem color="#222526" hue="130" saturation="14" brightness="34"/>
+                    <SolidSwatchItem color="#2D2C2B" hue="20" saturation="6" brightness="41"/>
+                    <SolidSwatchItem color="#4F5457" hue="135" saturation="12" brightness="78"/>
+                    <SolidSwatchItem color="#4A5053" hue="135" saturation="13" brightness="74"/>
+                    <SolidSwatchItem color="#54595A" hue="127" saturation="9" brightness="82"/>
+                    <SolidSwatchItem color="#090A0A" hue="120" saturation="14" brightness="9"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -963,6 +979,10 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="998670" publishTime="1752399608"/>
+          <PublishItem publishSize="998669" publishTime="1752399207"/>
+          <PublishItem publishSize="998667" publishTime="1752398873"/>
+          <PublishItem publishSize="987726" publishTime="1752335041"/>
           <PublishItem publishSize="958246" publishTime="1752243816"/>
           <PublishItem publishSize="958249" publishTime="1752243463"/>
           <PublishItem publishSize="958185" publishTime="1752243097"/>
@@ -979,9 +999,5 @@
           <PublishItem publishSize="889133" publishTime="1752156618"/>
           <PublishItem publishSize="888391" publishTime="1752156351"/>
           <PublishItem publishSize="888390" publishTime="1752156329"/>
-          <PublishItem publishSize="888389" publishTime="1752156305"/>
-          <PublishItem publishSize="888374" publishTime="1752156133"/>
-          <PublishItem publishSize="915945" publishTime="1752155868"/>
-          <PublishItem publishSize="915863" publishTime="1752155813"/>
      </publishHistory>
 </DOMDocument>
