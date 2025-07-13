@@ -83,7 +83,7 @@ _root.改装系统.获取材料个数 = function(itemData, name, val){
     var 持有数量 = 0;
     if(itemData.use == "情报"){
         持有数量 = _root.收集品栏.情报.getValue(name);
-        if(持有数量 >= val) return "<FONT COLOR=\'#66FF66\'>已拥有情报</FONT>";
+        if(持有数量 >= val) return "<FONT COLOR=\'#66FF66\'>已持有</FONT>";
     }else if(itemData.use == "材料"){
         持有数量 = _root.收集品栏.材料.getValue(name);
     }else{
