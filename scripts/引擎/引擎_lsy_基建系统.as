@@ -9,8 +9,8 @@ _root.基建系统.初始化基建元件 = function(target:MovieClip, key:String
     //     return a[0] - b[0]; // Numeric comparison
     // });
 	target.基建项目 = key;
-	target.基建等级列表 = args;
-	if(this.infrastructure[target.基建项目] == null){
+	target.基建等级列表 = args.length > 0 ? args : null;
+	if(this.infrastructure[target.基建项目] == null){ 
 		this.infrastructure[target.基建项目] = 0;
 		// 弹出提示
 		_root.发布消息("发现新的基建项目：" + key);
@@ -19,12 +19,14 @@ _root.基建系统.初始化基建元件 = function(target:MovieClip, key:String
 }
 
 _root.基建系统.更新基建元件 = function(target:MovieClip):Void{
+	if(target.基建等级列表 == null) return;
 	var currentLevel = isNaN(this.infrastructure[target.基建项目]) ? 0 : this.infrastructure[target.基建项目];
 	// 逐个检索基建等级是否高于目标等级
 	var frame = currentLevel < target.基建等级列表.length ? target.基建等级列表[currentLevel] : target.基建等级列表[target.基建等级列表.length - 1];
 	if(frame == null){
 		target._visible = false; // 若不满足则直接隐藏
 	}else{
+		target._visible = true;
 		target.gotoAndStop(frame); // 否则，跳转到指定的帧
 	}
 }

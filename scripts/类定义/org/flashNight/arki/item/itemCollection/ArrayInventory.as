@@ -174,6 +174,19 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         return foundValue != null ? foundValue : -1;
     }
 
+    
+    //返回物品栏中目标物品的总数
+    public function getTotal(targetName:String):Number {
+        var total = 0;
+        for(var key in this.items){
+            var currentItem = this.items[key];
+            if(currentItem.name === targetName){
+                total += isNaN(currentItem.value) ? 1 : currentItem.value;
+            }
+        }
+        return total;
+    }
+
 
     /**
      * 高性能排序重建方法

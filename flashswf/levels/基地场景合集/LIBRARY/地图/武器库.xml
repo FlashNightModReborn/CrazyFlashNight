@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/武器库" itemID="668aa006-0000507c" linkageExportForAS="true" linkageIdentifier="基地场景-武器库" lastModified="1749711670" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/武器库" itemID="668aa006-0000507c" linkageExportForAS="true" linkageIdentifier="基地场景-武器库" lastModified="1752397607" lastUniqueIdentifier="9">
   <timeline>
     <DOMTimeline name="武器库">
       <layers>
@@ -13,7 +13,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="合成按钮" color="#9933CC" autoNamed="false">
+        <DOMLayer name="合成按钮" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -26,34 +26,11 @@ _root.配置场景环境信息();]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	if (_root.物品改装界面._currentframe != 1)
-	{
-		_root.物品改装界面.删除材料块();
-		_root.物品改装界面.改装清单 = _root.改装清单["默认"];
-		_root.改装系统当前页数 = 1;
-		_root.物品改装界面.gotoAndStop(1);
-	}
-	else
-	{
-		_root.物品改装界面.删除奖励块();
-		_root.物品改装界面.改装清单 = _root.改装清单["默认"];
-		_root.改装系统当前页数 = 1;
-		_root.物品改装界面.排列奖励块(_root.改装系统当前页数);
-	}
-	_root.物品改装界面._visible = true;/*else
-	{
-	_root.物品改装界面._visible = false;
-	}*/
+	_root.改装系统.加载改装清单("默认");
 }
 onClipEvent (load) {
-	显示文字 = _root.获得翻译("装备合成");//this._visible = 0;
-}/*on(rollOver){
-   _root.注释(150,_root.获得翻译(this.显示文字));
-}
-on(rollOut){
-   _root.注释结束();
-}
-*/]]></script>
+	显示文字 = _root.获得翻译("装备合成");
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="sprite/通用按钮" name="属性武器合成" centerPoint3DX="774.95" centerPoint3DY="210.35">
@@ -65,34 +42,11 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	if (_root.物品改装界面._currentframe != 1)
-	{
-		_root.物品改装界面.删除材料块();
-		_root.物品改装界面.改装清单 = _root.改装清单["属性武器"];
-		_root.改装系统当前页数 = 1;
-		_root.物品改装界面.gotoAndStop(1);
-	}
-	else
-	{
-		_root.物品改装界面.删除奖励块();
-		_root.物品改装界面.改装清单 = _root.改装清单["属性武器"];
-		_root.改装系统当前页数 = 1;
-		_root.物品改装界面.排列奖励块(_root.改装系统当前页数);
-	}
-	_root.物品改装界面._visible = true;/*else
-	{
-	_root.物品改装界面._visible = false;
-	}*/
+	_root.改装系统.加载改装清单("属性武器");
 }
 onClipEvent (load) {
-	显示文字 = _root.获得翻译("属性武器改装");//this._visible = 0;
-}/*on(rollOver){
-   _root.注释(150,_root.获得翻译(this.显示文字));
-}
-on(rollOut){
-   _root.注释结束();
-}
-*/]]></script>
+	显示文字 = _root.获得翻译("属性武器改装");
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="sprite/通用按钮" name="多阶装备合成" centerPoint3DX="774" centerPoint3DY="248.6">
@@ -104,42 +58,18 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	if (_root.物品改装界面._currentframe != 1)
-	{
-		_root.物品改装界面.删除材料块();
-		_root.物品改装界面.改装清单 = _root.改装清单["多阶装备"];
-		_root.改装系统当前页数 = 1;
-		_root.物品改装界面.gotoAndStop(1);
-	}
-	else
-	{
-		_root.物品改装界面.删除奖励块();
-		_root.物品改装界面.改装清单 = _root.改装清单["多阶装备"];
-		_root.改装系统当前页数 = 1;
-		_root.物品改装界面.排列奖励块(_root.改装系统当前页数);
-	}
-	_root.物品改装界面._visible = true;
-	/*else
-	{
-	_root.物品改装界面._visible = false;
-	}*/
+	_root.改装系统.加载改装清单("多阶装备");
 }
 onClipEvent (load) {
-	显示文字 = _root.获得翻译("多阶装备改装");//this._visible = 0;
-}/*on(rollOver){
-   _root.注释(150,_root.获得翻译(this.显示文字));
-}
-on(rollOut){
-   _root.注释结束();
-}
-*/]]></script>
+	显示文字 = _root.获得翻译("多阶装备改装");
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#96A2D7" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 4" color="#96A2D7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI引用" itemID="67cea98d-0000092d" lastModified="1750255144" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI引用" itemID="67cea98d-0000092d" lastModified="1752395730" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="UI引用">
+    <DOMTimeline name="UI引用" currentFrame="1">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <Actionscript>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -33,13 +33,7 @@
               </elements>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="import/UI组件/新版任务栏界面" centerPoint3DX="44.85" centerPoint3DY="24.7">
-                  <transformationPoint>
-                    <Point x="44.85" y="24.7"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
