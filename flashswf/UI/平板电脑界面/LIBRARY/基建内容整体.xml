@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="基建内容整体" itemID="68733173-0000068c" lastModified="1752387220" lastUniqueIdentifier="29">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="基建内容整体" itemID="68733173-0000068c" lastModified="1752391528" lastUniqueIdentifier="29">
   <timeline>
     <DOMTimeline name="基建内容整体">
       <layers>
@@ -40,7 +40,7 @@ function 打印基建升级需求(){
 		str += "\n金币 * " + 当前等级数据.Price;
 	}
 	if(当前等级数据.Material.length > 0){
-		str += "\n" + this.材料需求数组.join("\n");
+		str += "\n" + this.材料需求数组.join(", ");
 	}
 	if(当前等级数据.Skill.length > 0){
 		for(var i=0; i< 当前等级数据.Skill.length; i++){
@@ -107,7 +107,7 @@ function 基建升级(){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文字" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="文字" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -130,21 +130,15 @@ function 基建升级(){
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText name="名字" fontRenderingMode="device" width="109.55" height="17.9">
+                <DOMDynamicText name="名字" fontRenderingMode="device" width="124.65" height="18.45">
                   <matrix>
-                    <Matrix tx="136.55" ty="5.15"/>
+                    <Matrix tx="130.3" ty="5.15"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
                       <characters>名称</characters>
                       <textAttrs>
-                        <DOMTextAttrs aliasText="false" size="16" bitmapSize="320" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" size="16" bitmapSize="320" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
+                        <DOMTextAttrs aliasText="false" size="14" bitmapSize="280" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
@@ -157,7 +151,7 @@ function 基建升级(){
                     <DOMTextRun>
                       <characters></characters>
                       <textAttrs>
-                        <DOMTextAttrs aliasText="false" lineSpacing="1" size="10" bitmapSize="200" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
+                        <DOMTextAttrs aliasText="false" lineSpacing="1" size="10" bitmapSize="200" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
@@ -166,7 +160,7 @@ function 基建升级(){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="滑动栏" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="滑动栏" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -189,7 +183,7 @@ function 基建升级(){
                     <Color alphaMultiplier="0.8984375"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="通用UI-滑动按钮栏/滑动按钮栏" centerPoint3DX="32" centerPoint3DY="137.5">
+                <DOMSymbolInstance libraryItemName="通用UI-滑动按钮栏/滑动按钮栏" selected="true" centerPoint3DX="32" centerPoint3DY="137.5">
                   <matrix>
                     <Matrix tx="-28" ty="40"/>
                   </matrix>

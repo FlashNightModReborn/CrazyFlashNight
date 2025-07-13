@@ -124,7 +124,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!644 -42S2|644 46!644 46|-2 46!-2 46|-2 -42!-2 -42|644 -42"/>
+                    <Edge fillStyle1="1" edges="!644 46S2|-2 46!-2 46|-2 -42!-2 -42|644 -42!644 -42|644 46"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -185,8 +185,8 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!1129 381|24 381!24 381|24 13!24 13|1129 13!1129 13|1129 381"/>
                     <Edge fillStyle1="1" edges="!1150 397|0 397!0 397|0 0!0 0|1150 0!1150 0|1150 397"/>
+                    <Edge fillStyle0="1" edges="!1129 381|24 381!24 381|24 13!24 13|1129 13!1129 13|1129 381"/>
                   </edges>
                 </DOMShape>
               </elements>

@@ -16,9 +16,9 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="2" edges="!0 0S1|0 342!0 342|343 342"/>
-                    <Edge fillStyle0="2" fillStyle1="1" edges="!343 342S3|0 0"/>
                     <Edge fillStyle0="1" edges="!343 342S1|343 0!343 0|0 0"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!0 0S3|343 342"/>
+                    <Edge fillStyle0="2" edges="!0 0S1|0 342!0 342|343 342"/>
                     <Edge cubics="!0 0(;0,0 0,342 0,342q0 0 0 342);"/>
                     <Edge cubics="!0 342(;0,342 343,342 343,342q0 342 343 342);"/>
                     <Edge cubics="!343 342(;343,342 0,0 0,0q343 342 0 0);"/>

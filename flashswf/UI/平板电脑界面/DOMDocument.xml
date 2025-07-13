@@ -104,7 +104,7 @@
           <Include href="基建/基建图标整体.xml" loadImmediate="false" itemID="66fbbcaa-00004ba4" lastModified="1727776070"/>
           <Include href="基建/基建文字.xml" loadImmediate="false" itemID="66fbba49-00004b8b" lastModified="1727773257"/>
           <Include href="基建/基建文字透明.xml" loadImmediate="false" itemID="66fbbb57-00004ba0" lastModified="1727773537"/>
-          <Include href="基建内容整体.xml" loadImmediate="false" itemID="68733173-0000068c" lastModified="1752387220"/>
+          <Include href="基建内容整体.xml" loadImmediate="false" itemID="68733173-0000068c" lastModified="1752391528"/>
           <Include href="基建升级按钮.xml" itemIcon="0" loadImmediate="false" itemID="6873466a-00000a8c" lastModified="1752385130"/>
           <Include href="进入商店文字.xml" loadImmediate="false" itemID="670f9bf5-00000289" lastModified="1729076213"/>
           <Include href="联络/联络按钮.xml" loadImmediate="false" itemID="66fbc399-00004c1e" lastModified="1727791680"/>
@@ -243,7 +243,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="平板电脑界面" name="平板电脑界面" selected="true" centerPoint3DX="449.4" centerPoint3DY="299.9">
+                                        <DOMSymbolInstance libraryItemName="平板电脑界面" name="平板电脑界面" centerPoint3DX="449.4" centerPoint3DY="299.9">
                                              <matrix>
                                                   <Matrix tx="225" ty="150"/>
                                              </matrix>
@@ -533,6 +533,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="179023" publishTime="1752391367"/>
+          <PublishItem publishSize="179023" publishTime="1752391300"/>
+          <PublishItem publishSize="179038" publishTime="1752391083"/>
           <PublishItem publishSize="178277" publishTime="1752387216"/>
           <PublishItem publishSize="178988" publishTime="1752387119"/>
           <PublishItem publishSize="178988" publishTime="1752387055"/>
@@ -550,8 +553,5 @@
           <PublishItem publishSize="177177" publishTime="1747124325"/>
           <PublishItem publishSize="177086" publishTime="1746208871"/>
           <PublishItem publishSize="177089" publishTime="1743104576"/>
-          <PublishItem publishSize="177092" publishTime="1743104476"/>
-          <PublishItem publishSize="177092" publishTime="1743104465"/>
-          <PublishItem publishSize="177092" publishTime="1743104408"/>
      </publishHistory>
 </DOMDocument>
