@@ -230,7 +230,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="deadbody" color="#3488F9" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="deadbody" color="#3488F9" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -243,7 +243,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="玩家的车" color="#FF800A" autoNamed="false">
+        <DOMLayer name="玩家的车" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

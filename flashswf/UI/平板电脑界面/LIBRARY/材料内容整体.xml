@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料内容整体" itemID="673b5bd8-00001a8a" lastModified="1743104626" lastUniqueIdentifier="28">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料内容整体" itemID="673b5bd8-00001a8a" lastModified="1752379716" lastUniqueIdentifier="28">
   <timeline>
     <DOMTimeline name="材料内容整体">
       <layers>
@@ -125,7 +125,7 @@
                     <Color alphaMultiplier="0.8984375"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="通用UI-滑动按钮栏/滑动按钮栏" centerPoint3DX="32" centerPoint3DY="137.5">
+                <DOMSymbolInstance libraryItemName="通用UI-滑动按钮栏/滑动按钮栏" selected="true" centerPoint3DX="32" centerPoint3DY="137.5">
                   <matrix>
                     <Matrix tx="-28" ty="40"/>
                   </matrix>
@@ -134,7 +134,6 @@
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	//import org.flashNight.gesh.array.ArrayUtil;
 	this.材料大全 = _root.图鉴信息.材料大全;
 	this.itemNum = 材料大全.length;
 	this.itemNameList = new Array(itemNum);
@@ -153,11 +152,7 @@
 		_parent.图标壳.图标.gotoAndStop(2);
 	}
 }
-/*onClipEvent (load) {
-	this.itemNameList = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
-	this.buttonEvent = function(index){
-	}
-}*/]]></script>
+]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>

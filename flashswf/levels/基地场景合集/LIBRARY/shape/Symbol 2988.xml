@@ -36,12 +36,12 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="2" strokeStyle="2" edges="!19193 0|22166 6044!22166 6044|22166 6096"/>
                     <Edge strokeStyle="2" edges="!22166 6096|22192 6096!22192 6096|22166 6044"/>
+                    <Edge fillStyle1="2" strokeStyle="2" edges="!22166 6044|22166 6096"/>
                     <Edge fillStyle0="1" strokeStyle="2" edges="!0 6096|0 11072!0 11072|22166 11072!22166 11072|22166 6096"/>
-                    <Edge fillStyle1="2" strokeStyle="2" edges="!0 6096|4222 0!4222 0|4250 0"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!4250 0|19193 0"/>
                     <Edge fillStyle0="1" fillStyle1="2" strokeStyle="2" edges="!22166 6096|0 6096"/>
+                    <Edge fillStyle1="2" strokeStyle="2" edges="!19193 0|22166 6044!0 6096|4222 0!4222 0|4250 0"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!4250 0|19193 0"/>
                   </edges>
                 </DOMShape>
               </elements>

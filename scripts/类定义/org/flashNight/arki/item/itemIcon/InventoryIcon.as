@@ -49,7 +49,7 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
             return;
         }
 
-        var dragIcon = _root.鼠标.物品图标容器.attachMovie("图标-"+itemData.displayname, "物品图标", 0);
+        var dragIcon = _root.鼠标.物品图标容器.attachMovie("图标-" + itemData.icon, "物品图标", 0);
         dragIcon.gotoAndStop(2);
         icon._alpha = 30;
         _root.鼠标.gotoAndStop("手型抓取");

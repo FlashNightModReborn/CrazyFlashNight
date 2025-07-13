@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="联络列表" itemID="670b3884-000003a8" lastModified="1747717172" lastUniqueIdentifier="20">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="联络列表" itemID="670b3884-000003a8" lastModified="1752334315" lastUniqueIdentifier="20">
   <timeline>
     <DOMTimeline name="联络列表">
       <layers>
@@ -39,7 +39,7 @@ function 刷新NPC列表()
               <elements>
                 <DOMSymbolInstance libraryItemName="透明按钮" symbolType="button">
                   <matrix>
-                    <Matrix a="0.631866455078125" d="0.515579223632813" tx="360.3" ty="232.4"/>
+                    <Matrix a="0.631866455078125" d="0.515579223632813" tx="360.3" ty="240"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -52,9 +52,9 @@ function 刷新NPC列表()
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="进入商店文字" blendMode="add" centerPoint3DX="391.55" centerPoint3DY="242.45">
+                <DOMSymbolInstance libraryItemName="进入商店文字" blendMode="add" centerPoint3DX="391.55" centerPoint3DY="250.05">
                   <matrix>
-                    <Matrix tx="360.3" ty="232.7"/>
+                    <Matrix tx="360.3" ty="240.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="31.25" y="10.7"/>
@@ -64,34 +64,16 @@ function 刷新NPC列表()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" locked="true" outline="true" useOutlineView="true" layerType="mask">
+        <DOMLayer name="头像" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <SolidColor/>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle1="1" edges="!7993 4644|7997 5200!7997 5200|5000 5200!5000 5200|5000 1800!5000 1800|7969 1800!7969 1800|7992.5 4644!7992.5 4644|7993 4644"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="头像" color="#FF800A" parentLayerIndex="2" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="NPC头像" name="NPC头像" centerPoint3DX="325" centerPoint3DY="185">
+                <DOMSymbolInstance libraryItemName="NPC头像" name="NPC头像" centerPoint3DX="290" centerPoint3DY="145">
                   <matrix>
-                    <Matrix tx="250" ty="90"/>
+                    <Matrix tx="215" ty="50"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="75" y="95"/>
+                    <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

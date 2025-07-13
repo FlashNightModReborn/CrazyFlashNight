@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/停机坪" itemID="668aa0dc-000051de" linkageExportForAS="true" linkageIdentifier="基地场景-基地房顶" lastModified="1749711784" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/停机坪" itemID="668aa0dc-000051de" linkageExportForAS="true" linkageIdentifier="基地场景-基地房顶" lastModified="1752337404" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="停机坪">
       <layers>
@@ -64,11 +64,11 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#73FE1A">
+        <DOMLayer name="Layer 7" color="#73FE1A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="梯子2" name="梯子2" centerPoint3DX="1432.85" centerPoint3DY="522.05">
+                <DOMSymbolInstance libraryItemName="梯子2" name="梯子2" selected="true" centerPoint3DX="1432.85" centerPoint3DY="522.05">
                   <matrix>
                     <Matrix tx="1394.65" ty="397.75"/>
                   </matrix>
@@ -77,7 +77,7 @@ onClipEvent(load){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	_root.基建系统.初始化基建元件(this,"停机坪梯子",[[2, "正常"]]);
+	_root.基建系统.初始化基建元件(this,"停机坪梯子", [null, null, "正常"]);
 	this.swapDepths(this._y + 100);
 }]]></script>
                   </Actionscript>
@@ -268,7 +268,7 @@ onClipEvent (load) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	_root.基建系统.初始化基建元件(this,"停机坪梯子",[[1, "正常"]]);
+	_root.基建系统.初始化基建元件(this, "停机坪梯子", [null, "正常"]);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -276,7 +276,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#4CFECC" current="true" isSelected="true">
+        <DOMLayer name="Layer 12" color="#4CFECC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

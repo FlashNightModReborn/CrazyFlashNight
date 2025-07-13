@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="初始化/平板初始化" itemID="66f84139-000003bf" lastModified="1731944973" lastUniqueIdentifier="12">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="初始化/平板初始化" itemID="66f84139-000003bf" lastModified="1752333717" lastUniqueIdentifier="12">
   <timeline>
-    <DOMTimeline name="平板初始化" currentFrame="89">
+    <DOMTimeline name="平板初始化">
       <layers>
         <DOMLayer name="as" color="#9933CC" locked="true" autoNamed="false">
           <frames>
@@ -798,9 +798,12 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="边框与背景" color="#FF4FFF" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="背景" color="#9933CC" parentLayerIndex="21" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="背景" color="#9933CC" parentLayerIndex="21" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="18" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="平板背景空闲" blendMode="hardlight" centerPoint3DX="224.4" centerPoint3DY="149.9">
                   <matrix>
@@ -847,7 +850,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="soundlayer1" color="#9933CC" parentLayerIndex="21" autoNamed="false">
+        <DOMLayer name="soundlayer1" color="#9933CC" parentLayerIndex="21" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -862,13 +865,6 @@
               <SoundEnvelope>
                 <SoundEnvelopePoint level0="32768" level1="32768"/>
               </SoundEnvelope>
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="soundlayer2" color="#FF800A" parentLayerIndex="21" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="90" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>

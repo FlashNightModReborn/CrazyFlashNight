@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1751480972">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1752384192">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="41">
+    <DOMTimeline name="asLoader" currentFrame="69">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -62,7 +62,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="文件夹 1" color="#FF800A" layerType="folder"/>
-        <DOMLayer name="load脚本1" color="#9933CC" autoNamed="false">
+        <DOMLayer name="load脚本1" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -514,7 +514,6 @@ var scene_env_loader:SceneEnvironmentLoader = SceneEnvironmentLoader.getInstance
 scene_env_loader.loadSceneEnvironment(
     function(data:Object):Void {
         trace("主程序：场景环境数据加载成功！");
-		_root.发布消息("场景环境数据加载完毕");
 		_root.配置场景环境数据(data);
     },
     function():Void {
@@ -527,28 +526,28 @@ scene_env_loader.loadSceneEnvironment(
             </DOMFrame>
             <DOMFrame index="69" duration="5" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[var infra_loader = org.flashNight.gesh.xml.LoadXml.InfrastructureLoader.getInstance();
+                <script><![CDATA[打印加载内容("加载基建数据……");
+
+var infra_loader = org.flashNight.gesh.xml.LoadXml.InfrastructureLoader.getInstance();
 
 infra_loader.loadInfrastructure(
     function(data:Object):Void {
 		trace("主程序：基建项目数据加载成功！");
 		var infrastructureDict = {};
-		var infrastructureList = [];
+		var infrastructureList = data.Infrastructure;
 		for(var i=0; i<data.Infrastructure.length; i++){
-			var project = data.Infrastructure[i];
+			var project = infrastructureList[i];
 			if(project.Level != null){
-				if(!project.Level.length){
-					project.Level = [project.Level];
-				}
-				for(var i = 0; i < project.Level.length; i++){
-					var lvl = project.Level[i];
-					if(lvl.Material != null && !lvl.Material.length){
-						lvl.Material = [lvl.Material];
+				project.Level = org.flashNight.gesh.object.ObjectUtil.toArray(project.Level);
+				for(var j = 0; j < project.Level.length; j++){
+					var lvl = project.Level[j];
+					if(isNaN(lvl.Price)) lvl.Price = 0;
+					if(lvl.Material != null){
+						lvl.Material = org.flashNight.gesh.object.ObjectUtil.toArray(lvl.Material);
 					}
 				}
 			}
 			infrastructureDict[project.Name] = project;
-			infrastructureList.push(project.Name);
 		}
 		if(_root.基建系统 == null) _root.基建系统 = new Object();
 		_root.基建系统.dict = infrastructureDict;
@@ -710,7 +709,7 @@ this.removeMovieClip();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="load脚本5" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="load脚本5" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>

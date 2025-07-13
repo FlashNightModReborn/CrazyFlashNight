@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="平板背景" itemID="66f84083-0000036b" lastModified="1747716882" lastUniqueIdentifier="276">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="平板背景" itemID="66f84083-0000036b" lastModified="1752385681" lastUniqueIdentifier="279">
   <timeline>
-    <DOMTimeline name="平板背景" currentFrame="54">
+    <DOMTimeline name="平板背景" currentFrame="39">
       <layers>
         <DOMLayer name="标识" color="#808080" autoNamed="false">
           <frames>
@@ -98,14 +98,11 @@ this.基建悬停说明.gotoAndPlay(1);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="24" keyMode="9728">
+            <DOMFrame index="24" duration="15" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[进入基建界面 = true;
 stop();]]></script>
               </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="25" duration="14" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="39" keyMode="9728">
@@ -125,14 +122,11 @@ this.联络悬停说明.gotoAndPlay(1);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="54" keyMode="9728">
+            <DOMFrame index="54" duration="15" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[进入联络界面 = true;
 stop();]]></script>
               </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="55" duration="14" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="69" keyMode="9728">
@@ -171,32 +165,23 @@ stop();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="85" keyMode="9728">
+            <DOMFrame index="85" duration="13" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[材料内容整体._visible = 1;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="86" duration="12" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="98" keyMode="9728">
+            <DOMFrame index="98" duration="13" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="99" duration="12" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="111" keyMode="9728">
+            <DOMFrame index="111" duration="15" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[材料内容整体._visible = 0;
 stop();]]></script>
               </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="112" duration="14" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="126" keyMode="9728">
@@ -223,14 +208,11 @@ gotoAndStop("初始界面");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="146" keyMode="9728">
+            <DOMFrame index="146" duration="20" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
 _parent.关闭界面();]]></script>
               </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="147" duration="19" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="166" keyMode="9728">
@@ -240,13 +222,10 @@ _parent.关闭界面();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="167" keyMode="9728">
+            <DOMFrame index="167" duration="19" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this.联络按钮.gotoAndStop(20);]]></script>
               </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="168" duration="18" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="186" keyMode="9728">
@@ -256,7 +235,7 @@ _parent.关闭界面();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="187" keyMode="9728">
+            <DOMFrame index="187" duration="19" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this.图鉴按钮.gotoAndStop(20);
 this.支线查询按钮.gotoAndStop(20);
@@ -268,9 +247,6 @@ this.阵营信息按钮.gotoAndStop(20);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="188" duration="18" keyMode="9728">
-              <elements/>
-            </DOMFrame>
             <DOMFrame index="206" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
@@ -280,14 +256,66 @@ _parent.关闭界面();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="联络界面商店内容" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="基建界面内容" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="基建内容整体" selected="true" blendMode="add" centerPoint3DX="162.25" centerPoint3DY="91.65">
+                  <matrix>
+                    <Matrix a="0.878631591796875" d="0.878631591796875" tx="38.8" ty="48.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="140.5" y="48.65"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="基建内容整体" blendMode="add" centerPoint3DX="162.25" centerPoint3DY="91.65">
+                  <matrix>
+                    <Matrix a="0.878631591796875" d="0.878631591796875" tx="38.8" ty="48.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="140.5" y="48.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="基建内容整体" selected="true" blendMode="add" centerPoint3DX="162.25" centerPoint3DY="91.65">
+                  <matrix>
+                    <Matrix a="0.878631591796875" d="0.878631591796875" tx="38.8" ty="48.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="140.5" y="48.65"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="168" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="联络界面商店内容" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="40" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="40" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="联络列表" selected="true" blendMode="add" centerPoint3DX="92" centerPoint3DY="80">
+                <DOMSymbolInstance libraryItemName="联络列表" blendMode="add" centerPoint3DX="92" centerPoint3DY="80">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -299,14 +327,14 @@ _parent.关闭界面();]]></script>
             </DOMFrame>
             <DOMFrame index="54" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="联络列表" selected="true" blendMode="add" centerPoint3DX="92" centerPoint3DY="80">
+                <DOMSymbolInstance libraryItemName="联络列表" blendMode="add" centerPoint3DX="92" centerPoint3DY="80">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="69" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="69" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="联络列表" blendMode="add" centerPoint3DX="92" centerPoint3DY="80">
                   <transformationPoint>
@@ -354,7 +382,7 @@ _parent.关闭界面();]]></script>
             </DOMFrame>
             <DOMFrame index="85" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="材料内容整体" name="材料内容整体" blendMode="add" centerPoint3DX="162.25" centerPoint3DY="91.65">
+                <DOMSymbolInstance libraryItemName="材料内容整体" name="材料内容整体" selected="true" blendMode="add" centerPoint3DX="162.25" centerPoint3DY="91.65">
                   <matrix>
                     <Matrix a="0.878631591796875" d="0.878631591796875" tx="38.8" ty="48.9"/>
                   </matrix>
@@ -369,7 +397,7 @@ _parent.关闭界面();]]></script>
             </DOMFrame>
             <DOMFrame index="98" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="材料内容整体" selected="true" blendMode="add" centerPoint3DX="162.25" centerPoint3DY="91.65">
+                <DOMSymbolInstance libraryItemName="材料内容整体" blendMode="add" centerPoint3DX="162.25" centerPoint3DY="91.65">
                   <matrix>
                     <Matrix a="0.878631591796875" d="0.878631591796875" tx="38.8" ty="48.9"/>
                   </matrix>
@@ -400,7 +428,7 @@ _parent.关闭界面();]]></script>
           </frames>
         </DOMLayer>
         <DOMLayer name="功能按键" color="#4F80FF" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="透明按钮" color="#9933CC" parentLayerIndex="4" autoNamed="false">
+        <DOMLayer name="透明按钮" color="#9933CC" parentLayerIndex="5" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -628,7 +656,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="返回提示" color="#9933CC" parentLayerIndex="4" locked="true" autoNamed="false">
+        <DOMLayer name="返回提示" color="#9933CC" parentLayerIndex="5" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -764,15 +792,7 @@ on (rollOut) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="84" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.333333333333333" y="0.5"/>
-                  <Point x="0.666666666666667" y="0.833333333333333"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
+            <DOMFrame index="84" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="二级目录/重按按钮以返回选择界面" blendMode="add" centerPoint3DX="191" centerPoint3DY="33.25">
                   <matrix>
@@ -808,7 +828,7 @@ on (rollOut) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="111" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="111" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="二级目录/重按按钮以返回选择界面" blendMode="add" centerPoint3DX="191" centerPoint3DY="33.25">
                   <matrix>
@@ -965,7 +985,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="返回线遮罩" color="#4FFFFF" parentLayerIndex="4" locked="true" autoNamed="false" layerType="mask">
+        <DOMLayer name="返回线遮罩" color="#4FFFFF" parentLayerIndex="5" locked="true" autoNamed="false" layerType="mask">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -1123,18 +1143,7 @@ on (rollOut) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="84" tweenType="shape" keyMode="17922" acceleration="-50">
-              <MorphShape>
-                <morphSegments>
-                  <MorphSegment startPointA="#1.D5, #2.AB" startPointB="#1.D5, #2.AB" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="0">
-                    <MorphCurves controlPointA="#A.B6, #2.AB" anchorPointA="#13.96, #2.AB" controlPointB="#A.B6, #2.AB" anchorPointB="#13.96, #2.AB" isLine="true"/>
-                    <MorphCurves controlPointA="#13.96, #4.3E" anchorPointA="#13.96, #5.D" controlPointB="#13.96, #4.3E" anchorPointB="#13.96, #5.D" isLine="true"/>
-                    <MorphCurves controlPointA="#A.B6, #5.D" anchorPointA="#1.D5, #5.D" controlPointB="#A.B6, #5.D" anchorPointB="#1.D5, #5.D" isLine="true"/>
-                    <MorphCurves controlPointA="#1.D5, #4.3E" anchorPointA="#1.D5, #2.AB" controlPointB="#1.D5, #4.3E" anchorPointB="#1.D5, #2.AB" isLine="true"/>
-                  </MorphSegment>
-                </morphSegments>
-                <morphHintsList/>
-              </MorphShape>
+            <DOMFrame index="84" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -1198,18 +1207,7 @@ on (rollOut) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="111" tweenType="shape" keyMode="17922">
-              <MorphShape>
-                <morphSegments>
-                  <MorphSegment startPointA="#1.D5, #2.AB" startPointB="-1.375, #2.AB" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="0">
-                    <MorphCurves controlPointA="#A.B6, #2.AB" anchorPointA="#13.96, #2.AB" controlPointB="#7.81, #2.AB" anchorPointB="#10.61, #2.AB" isLine="true"/>
-                    <MorphCurves controlPointA="#13.96, #4.3E" anchorPointA="#13.96, #5.D" controlPointB="#10.61, #4.3E" anchorPointB="#10.61, #5.D" isLine="true"/>
-                    <MorphCurves controlPointA="#A.B6, #5.D" anchorPointA="#1.D5, #5.D" controlPointB="#7.81, #5.D" anchorPointB="-1.375, #5.D" isLine="true"/>
-                    <MorphCurves controlPointA="#1.D5, #4.3E" anchorPointA="#1.D5, #2.AB" controlPointB="-1.375, #4.3E" anchorPointB="-1.375, #2.AB" isLine="true"/>
-                  </MorphSegment>
-                </morphSegments>
-                <morphHintsList/>
-              </MorphShape>
+            <DOMFrame index="111" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -1381,7 +1379,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="返回线" color="#FF800A" parentLayerIndex="7" locked="true" autoNamed="false">
+        <DOMLayer name="返回线" color="#FF800A" parentLayerIndex="8" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -1517,15 +1515,7 @@ on (rollOut) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="84" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.333333333333333" y="0.5"/>
-                  <Point x="0.666666666666667" y="0.833333333333333"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
+            <DOMFrame index="84" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="二级目录/返回线" blendMode="add" centerPoint3DX="137.35" centerPoint3DY="49.25">
                   <matrix>
@@ -1561,7 +1551,7 @@ on (rollOut) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="111" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="111" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="二级目录/返回线" blendMode="add" centerPoint3DX="137.35" centerPoint3DY="49.25">
                   <matrix>
@@ -1718,7 +1708,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图鉴按钮" color="#4FFF4F" parentLayerIndex="4" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="图鉴按钮" color="#4FFF4F" parentLayerIndex="5" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
@@ -1854,15 +1844,7 @@ on (rollOut) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="84" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.333333333333333" y="0.5"/>
-                  <Point x="0.666666666666667" y="0.833333333333333"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
+            <DOMFrame index="84" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="图鉴/图鉴按钮" name="图鉴按钮" blendMode="add" centerPoint3DX="64.25" centerPoint3DY="37.15">
                   <matrix>
@@ -1901,7 +1883,7 @@ on (rollOut) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="111" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="111" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="图鉴/图鉴按钮" name="图鉴按钮" blendMode="add" centerPoint3DX="64.25" centerPoint3DY="37.15">
                   <matrix>
@@ -2020,7 +2002,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="联络按钮" color="#FF4F4F" parentLayerIndex="4" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="联络按钮" color="#FF4F4F" parentLayerIndex="5" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
@@ -2153,15 +2135,7 @@ on (rollOut) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="84" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.333333333333333" y="0.5"/>
-                  <Point x="0.666666666666667" y="0.833333333333333"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
+            <DOMFrame index="84" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="联络/联络按钮" name="联络按钮" blendMode="add" centerPoint3DX="111" centerPoint3DY="187.15">
                   <matrix>
@@ -2319,7 +2293,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="基建按钮" color="#FF800A" parentLayerIndex="4" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="基建按钮" color="#FF800A" parentLayerIndex="5" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
@@ -2452,15 +2426,7 @@ on (rollOut) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="84" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.333333333333333" y="0.5"/>
-                  <Point x="0.666666666666667" y="0.833333333333333"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
+            <DOMFrame index="84" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="基建/基建按钮" name="基建按钮" blendMode="add" centerPoint3DX="111.15" centerPoint3DY="106.85">
                   <matrix>
@@ -2615,19 +2581,10 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阵营信息按钮" color="#4FFF4F" parentLayerIndex="4" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="阵营信息按钮" color="#4FFF4F" parentLayerIndex="5" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="70" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="图鉴内容/阵营信息/阵营信息按钮" name="阵营信息按钮" centerPoint3DX="344.45" centerPoint3DY="238">
-                  <matrix>
-                    <Matrix tx="269.1" ty="220.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="75.35" y="17.9"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="70" duration="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
               <tweens>
@@ -2652,15 +2609,7 @@ on (rollOut) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="84" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.333333333333333" y="0.5"/>
-                  <Point x="0.666666666666667" y="0.833333333333333"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
+            <DOMFrame index="84" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="图鉴内容/阵营信息/阵营信息按钮" blendMode="add" centerPoint3DX="344.45" centerPoint3DY="238">
                   <matrix>
@@ -2715,15 +2664,7 @@ on (rollOut) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="111" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.333333333333333" y="0.5"/>
-                  <Point x="0.666666666666667" y="0.833333333333333"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
+            <DOMFrame index="111" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="图鉴内容/阵营信息/阵营信息按钮" blendMode="add" centerPoint3DX="344.45" centerPoint3DY="238">
                   <matrix>
@@ -2813,19 +2754,10 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="单位说明按钮" color="#4F80FF" parentLayerIndex="4" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="单位说明按钮" color="#4F80FF" parentLayerIndex="5" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="70" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="图鉴内容/单位说明/单位说明按钮" name="单位说明按钮" centerPoint3DX="341.9" centerPoint3DY="166.75">
-                  <matrix>
-                    <Matrix tx="267.3" ty="148.65"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="74.6" y="18.1"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="70" duration="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
               <tweens>
@@ -2850,15 +2782,7 @@ on (rollOut) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="84" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.333333333333333" y="0.5"/>
-                  <Point x="0.666666666666667" y="0.833333333333333"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
+            <DOMFrame index="84" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="图鉴内容/单位说明/单位说明按钮" name="单位说明按钮" blendMode="add" centerPoint3DX="341.9" centerPoint3DY="166.75">
                   <matrix>
@@ -2913,15 +2837,7 @@ on (rollOut) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="111" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.333333333333333" y="0.5"/>
-                  <Point x="0.666666666666667" y="0.833333333333333"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
+            <DOMFrame index="111" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="图鉴内容/单位说明/单位说明按钮" name="单位说明按钮" blendMode="add" centerPoint3DX="341.9" centerPoint3DY="166.75">
                   <matrix>
@@ -3011,19 +2927,10 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文本收集按钮" color="#808080" parentLayerIndex="4" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="文本收集按钮" color="#808080" parentLayerIndex="5" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="70" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="图鉴内容/文本收集/文本收集按钮" name="文本收集按钮" centerPoint3DX="345.1" centerPoint3DY="102.6">
-                  <matrix>
-                    <Matrix tx="270.45" ty="87.3"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="74.65" y="15.3"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="70" duration="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
               <tweens>
@@ -3048,15 +2955,7 @@ on (rollOut) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="84" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.333333333333333" y="0.5"/>
-                  <Point x="0.666666666666667" y="0.833333333333333"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
+            <DOMFrame index="84" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="图鉴内容/文本收集/文本收集按钮" name="文本收集按钮" blendMode="add" centerPoint3DX="345.1" centerPoint3DY="102.6">
                   <matrix>
@@ -3111,15 +3010,7 @@ on (rollOut) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="111" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.333333333333333" y="0.5"/>
-                  <Point x="0.666666666666667" y="0.833333333333333"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
+            <DOMFrame index="111" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="图鉴内容/文本收集/文本收集按钮" name="文本收集按钮" blendMode="add" centerPoint3DX="345.1" centerPoint3DY="102.6">
                   <matrix>
@@ -3209,19 +3100,10 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="角色信息按钮" color="#FF4FFF" parentLayerIndex="4" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="角色信息按钮" color="#FF4FFF" parentLayerIndex="5" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="70" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="图鉴内容/角色信息/角色信息按钮" name="角色信息按钮" centerPoint3DX="91.65" centerPoint3DY="234.45">
-                  <matrix>
-                    <Matrix tx="15.95" ty="213.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="75.7" y="21"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="70" duration="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
               <tweens>
@@ -3246,15 +3128,7 @@ on (rollOut) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="84" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.333333333333333" y="0.5"/>
-                  <Point x="0.666666666666667" y="0.833333333333333"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
+            <DOMFrame index="84" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="图鉴内容/角色信息/角色信息按钮" name="角色信息按钮" blendMode="add" centerPoint3DX="91.65" centerPoint3DY="234.45">
                   <matrix>
@@ -3309,15 +3183,7 @@ on (rollOut) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="111" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.333333333333333" y="0.5"/>
-                  <Point x="0.666666666666667" y="0.833333333333333"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
+            <DOMFrame index="111" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="图鉴内容/角色信息/角色信息按钮" name="角色信息按钮" blendMode="add" centerPoint3DX="91.65" centerPoint3DY="234.45">
                   <matrix>
@@ -3407,19 +3273,10 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="材料大全按钮" color="#FF800A" parentLayerIndex="4" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="材料大全按钮" color="#FF800A" parentLayerIndex="5" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="70" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="图鉴内容/材料大全/材料大全按钮" name="材料大全按钮" centerPoint3DX="103.35" centerPoint3DY="163.9">
-                  <matrix>
-                    <Matrix tx="20.05" ty="144.95"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="75.9" y="23.95"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="70" duration="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
               <tweens>
@@ -3444,15 +3301,7 @@ on (rollOut) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="84" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.333333333333333" y="0.5"/>
-                  <Point x="0.666666666666667" y="0.833333333333333"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
+            <DOMFrame index="84" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="图鉴内容/材料大全/材料大全按钮" name="材料大全按钮" blendMode="add" centerPoint3DX="103.35" centerPoint3DY="163.9">
                   <matrix>
@@ -3504,15 +3353,7 @@ on (rollOut) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="111" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.333333333333333" y="0.5"/>
-                  <Point x="0.666666666666667" y="0.833333333333333"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
+            <DOMFrame index="111" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="图鉴内容/材料大全/材料大全按钮" name="材料大全按钮" blendMode="add" centerPoint3DX="103.35" centerPoint3DY="163.9">
                   <matrix>
@@ -3602,19 +3443,10 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="支线查询按钮" color="#9933CC" parentLayerIndex="4" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="支线查询按钮" color="#9933CC" parentLayerIndex="5" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="70" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="图鉴内容/支线查询/支线查询按钮" name="支线查询按钮" centerPoint3DX="95.45" centerPoint3DY="96.15">
-                  <matrix>
-                    <Matrix tx="24.25" ty="74.4"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="71.2" y="21.75"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="70" duration="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
               <tweens>
@@ -3639,15 +3471,7 @@ on (rollOut) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="84" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.333333333333333" y="0.5"/>
-                  <Point x="0.666666666666667" y="0.833333333333333"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
+            <DOMFrame index="84" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="图鉴内容/支线查询/支线查询按钮" name="支线查询按钮" blendMode="add" centerPoint3DX="95.45" centerPoint3DY="96.15">
                   <matrix>
@@ -3702,15 +3526,7 @@ on (rollOut) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="111" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.333333333333333" y="0.5"/>
-                  <Point x="0.666666666666667" y="0.833333333333333"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
+            <DOMFrame index="111" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="图鉴内容/支线查询/支线查询按钮" name="支线查询按钮" blendMode="add" centerPoint3DX="95.45" centerPoint3DY="96.15">
                   <matrix>
@@ -3801,7 +3617,7 @@ on (rollOut) {
           </frames>
         </DOMLayer>
         <DOMLayer name="说明/功能" color="#FF4FFF" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="叉" color="#808080" parentLayerIndex="18" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="叉" color="#808080" parentLayerIndex="19" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements>
@@ -3972,7 +3788,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="说明元件" color="#4FFFFF" parentLayerIndex="18" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="说明元件" color="#4FFFFF" parentLayerIndex="19" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="98" keyMode="9728">
               <elements>
@@ -4061,7 +3877,7 @@ on (rollOut) {
           </frames>
         </DOMLayer>
         <DOMLayer name="装饰" color="#9933CC" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="无人机" color="#FF800A" parentLayerIndex="21" autoNamed="false">
+        <DOMLayer name="无人机" color="#FF800A" parentLayerIndex="22" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="40" keyMode="9728">
               <elements/>
@@ -4174,7 +3990,7 @@ on (rollOut) {
           </frames>
         </DOMLayer>
         <DOMLayer name="初始按键" color="#9933CC" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="屏幕触摸部分" color="#4FFFFF" parentLayerIndex="23" locked="true" autoNamed="false" visible="false">
+        <DOMLayer name="屏幕触摸部分" color="#4FFFFF" parentLayerIndex="24" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="98" keyMode="9728">
               <elements>
@@ -4307,7 +4123,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="轻按屏幕唤起按键" color="#FF4FFF" parentLayerIndex="23" locked="true" autoNamed="false">
+        <DOMLayer name="轻按屏幕唤起按键" color="#FF4FFF" parentLayerIndex="24" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="98" keyMode="9728">
               <elements>
@@ -4348,7 +4164,7 @@ on (rollOut) {
           </frames>
         </DOMLayer>
         <DOMLayer name="文件夹 3" color="#4F80FF" layerType="folder"/>
-        <DOMLayer name="平板UI中间动画" color="#808080" parentLayerIndex="26" locked="true" autoNamed="false">
+        <DOMLayer name="平板UI中间动画" color="#808080" parentLayerIndex="27" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="98" keyMode="9728">
               <elements>
@@ -4389,7 +4205,7 @@ on (rollOut) {
           </frames>
         </DOMLayer>
         <DOMLayer name="边框与背景" color="#FF4FFF" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="平板整体UI背景" color="#FF4FFF" parentLayerIndex="28" locked="true" autoNamed="false">
+        <DOMLayer name="平板整体UI背景" color="#FF4FFF" parentLayerIndex="29" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="127" keyMode="9728">
               <elements>
@@ -4560,7 +4376,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="soundlayer1" color="#9933CC" parentLayerIndex="28" autoNamed="false">
+        <DOMLayer name="soundlayer1" color="#9933CC" parentLayerIndex="29" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -4600,7 +4416,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="soundlayer2" color="#FF800A" parentLayerIndex="28" autoNamed="false">
+        <DOMLayer name="soundlayer2" color="#FF800A" parentLayerIndex="29" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -4658,7 +4474,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景循环音" color="#FF4FFF" parentLayerIndex="28" autoNamed="false">
+        <DOMLayer name="背景循环音" color="#FF4FFF" parentLayerIndex="29" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>

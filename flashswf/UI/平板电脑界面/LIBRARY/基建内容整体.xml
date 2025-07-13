@@ -1,0 +1,208 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="基建内容整体" itemID="68733173-0000068c" lastModified="1752385478" lastUniqueIdentifier="29">
+  <timeline>
+    <DOMTimeline name="基建内容整体">
+      <layers>
+        <DOMLayer name="图标" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 刷新基建数据(__name)
+{
+	this.currentName = __name;
+	this.当前基建数据 = this.基建列表[this.currentIndex];
+	this.名字.text = __name;
+	this.当前等级 = _root.基建系统.infrastructure[__name];
+	this.最大等级 = 当前基建数据.Level.length - 1;
+	this.当前等级数据 = 当前基建数据.Level[this.当前等级];
+	this.简介.htmlText = _root.处理html剧情文本(this.当前等级数据.Description);
+	this.材料需求数组 = this.生成材料需求数组();
+	this.升级需求.text = this.打印基建升级需求();
+	this.基建升级按钮._visible = this.当前等级 < this.最大等级;
+}
+
+function 生成材料需求数组(){
+	var list = [];
+	for(var i=0; i< 当前等级数据.Material.length; i++){
+		var material = 当前等级数据.Material[i];
+		list.push(material.Name + "#" + material.Value);
+	}
+	return list;
+}
+
+function 打印基建升级需求(){
+	var str = "当前等级：" + this.当前等级;
+	if(this.当前等级 >= this.最大等级){
+		str += "，已达到最大等级。"
+		return str;
+	}
+	str += "，升到下一级需要："
+	if(当前等级数据.Price > 0){
+		str += "\n金币 * " + 当前等级数据.Price;
+	}
+	if(当前等级数据.Material.length > 0){
+		str += "\n" + this.材料需求数组.join("\n");
+	}
+	return str;
+}
+
+function 基建升级(){
+	if(this.当前等级 >= this.最大等级) return;
+	if(当前等级数据.Price > 0 && _root.金钱 < 当前等级数据.Price){
+		_root.发布消息("金币不足！");
+		return;
+	}
+	if(当前等级数据.Material.length > 0){
+		var itemArr = _root.getRequirementFromTask(this.材料需求数组);
+		if(!_root.itemSubmit(itemArr)){
+			_root.发布消息("材料不足！");
+			return;
+		}
+	}
+	_root.基建系统.infrastructure[this.currentName]++;
+	this.刷新基建数据(this.currentName);
+}
+
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="按钮" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="基建升级按钮" name="基建升级按钮" symbolType="button">
+                  <matrix>
+                    <Matrix tx="397.85" ty="145.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.05" y="44.75"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+	基建升级();
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0.8984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文字" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="简介" fontRenderingMode="device" width="268.25" height="98.7" renderAsHTML="true" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="123.4" ty="35.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>点击左侧列表查看基建内容</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" lineSpacing="0" size="10" bitmapSize="200" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" lineSpacing="0" size="10" bitmapSize="200" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText name="名字" fontRenderingMode="device" width="109.55" height="17.9">
+                  <matrix>
+                    <Matrix tx="136.55" ty="5.15"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>名称</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="16" bitmapSize="320" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="16" bitmapSize="320" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText name="升级需求" fontRenderingMode="device" width="265.5" height="76.8" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="121.8" ty="152.75"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" lineSpacing="1" size="10" bitmapSize="200" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="滑动栏" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="材料大全/材料简介" centerPoint3DX="220.7" centerPoint3DY="46">
+                  <matrix>
+                    <Matrix a="1.46798706054688" d="1.46798706054688" tx="115.55" ty="-1.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-1.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料大全详细介绍" centerPoint3DX="210.4" centerPoint3DY="182.9">
+                  <matrix>
+                    <Matrix a="1.46766662597656" d="1.20246887207031" tx="116" ty="145.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.8984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="通用UI-滑动按钮栏/滑动按钮栏" centerPoint3DX="32" centerPoint3DY="137.5">
+                  <matrix>
+                    <Matrix tx="-28" ty="40"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60" y="97.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.基建列表 = _root.基建系统.获取已解锁基建列表();
+	this.itemNum = _parent.基建列表.length;
+	this.itemNameList = new Array(itemNum);
+	this.itemInfoList = new Array(itemNum);
+	for(var i = 0; i< itemNum; i++){
+		this.itemNameList[i] = _parent.基建列表[i].Name;
+	}
+	this.buttonEvent = function(index){
+		_parent.currentIndex = index;
+		_parent.刷新基建数据(this.itemNameList[index]);
+	}
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
