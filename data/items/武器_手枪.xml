@@ -3650,7 +3650,9 @@
     <weight>10</weight>
     <price>232960</price>
     <description>铁枪会基于XM556技术开发的革命性单手加特林武器系统。
-    这款被命名为"Stinger"的衍生型号配备了重新设计的紧凑供弹装置与优化动力系统，精准适配快速机动作战需求。 尽管为实现极致便携性而在射速和容量上有所取舍，但Stinger仍能在关键时刻瞬间倾泻致命火力风暴。</description>
+    这款被命名为"Stinger"的衍生型号配备了重新设计的紧凑供弹装置与优化动力系统，精准适配快速机动作战需求。 
+    尽管为实现极致便携性而在射速和容量上有所取舍，但Stinger仍能在关键时刻瞬间倾泻致命火力风暴。
+    该武器预留了一定的拓展升级空间，每级强化度可以提供3%的暴击率加成</description>
     <level>35</level>
     <data>
       <capacity>25</capacity>
@@ -3671,7 +3673,10 @@
     <lifecycle>
       <attr_0>
         <init>
-          <initRoutines>XM556_H_Stinger初始化</initRoutines>
+          <initRoutines>XM556_H_Stinger初始化</initRoutines>        
+          <initParam>
+            <criticalhitUpgrade>3</criticalhitUpgrade>
+          </initParam>
         </init>
         <cycle>
           <cycleRoutines>XM556_H_Stinger周期</cycleRoutines>
@@ -3679,7 +3684,8 @@
       </attr_0>
     </lifecycle>
     <equipped>
-      <dressup>枪-手枪-XM556-H-Stinger</dressup>      
+      <dressup>枪-手枪-XM556-H-Stinger</dressup>   
+      <criticalhit>3</criticalhit>   
       <evasion>-20</evasion>
       <accuracy>-20</accuracy>
     </equipped>    
