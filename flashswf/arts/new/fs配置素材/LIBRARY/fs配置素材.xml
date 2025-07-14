@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1752334730" lastUniqueIdentifier="130">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1752485149" lastUniqueIdentifier="134">
   <timeline>
-    <DOMTimeline name="fs配置素材" currentFrame="21" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;290&lt;/guideline&gt;&lt;guideline direction="v"&gt;247&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="20" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;290&lt;/guideline&gt;&lt;guideline direction="v"&gt;247&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
         <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
@@ -158,9 +158,9 @@
                     <Point x="75.7" y="33.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="吉他喷火/吉他喷火器" centerPoint3DX="277.1" centerPoint3DY="37.6">
+                <DOMSymbolInstance libraryItemName="吉他喷火/吉他喷火器" centerPoint3DX="280.05" centerPoint3DY="-327.8">
                   <matrix>
-                    <Matrix tx="127.95" ty="-33.1"/>
+                    <Matrix tx="130.9" ty="-398.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="146.5" y="-13.2"/>
@@ -286,7 +286,7 @@
                     <Point x="44.45" y="-28.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="XM556/XM556-H-Stinger" selected="true" centerPoint3DX="1067.6" centerPoint3DY="-58.5">
+                <DOMSymbolInstance libraryItemName="XM556/XM556-H-Stinger" centerPoint3DX="1067.6" centerPoint3DY="-58.5">
                   <matrix>
                     <Matrix tx="941.5" ty="-37.45"/>
                   </matrix>
@@ -326,22 +326,6 @@
                     <Point x="62.55" y="-38.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Jackhammer/Jackhammer" centerPoint3DX="-386.45" centerPoint3DY="-324.25">
-                  <matrix>
-                    <Matrix tx="-512.55" ty="-303.2"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="125.85" y="-21.05"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Jackhammer/图标-Jackhammer" centerPoint3DX="-241.6" centerPoint3DY="-320.8">
-                  <matrix>
-                    <Matrix tx="-241.6" ty="-320.8"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="62.55" y="-38.75"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="M1918A2/M1918A2" centerPoint3DX="-298.45" centerPoint3DY="-18.6">
                   <matrix>
                     <Matrix tx="-566.55" ty="6.25"/>
@@ -372,6 +356,38 @@
                   </matrix>
                   <transformationPoint>
                     <Point x="63.7" y="-39.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="XM25/XM25" selected="true" centerPoint3DX="360.45" centerPoint3DY="431.55">
+                  <matrix>
+                    <Matrix tx="92.35" ty="456.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="267.85" y="-24.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="XM25/图标-XM25" centerPoint3DX="320.55" centerPoint3DY="477.2">
+                  <matrix>
+                    <Matrix tx="320.55" ty="477.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="76.25" y="-50.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Jackhammer/图标-Jackhammer" centerPoint3DX="335.15" centerPoint3DY="257.75">
+                  <matrix>
+                    <Matrix tx="335.15" ty="257.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="76.25" y="-50.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Jackhammer/Jackhammer" centerPoint3DX="357.7" centerPoint3DY="208.15">
+                  <matrix>
+                    <Matrix tx="89.6" ty="233"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="267.85" y="-24.85"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

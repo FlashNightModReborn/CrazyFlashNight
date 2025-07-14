@@ -6207,5 +6207,35 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     <equipped>
       <dressup>枪-长枪-ZB-26</dressup>
     </equipped>
+  </item>  
+  <item>
+    <id>8092</id>
+    <name>XM25</name>
+    <displayname>XM25</displayname>
+    <icon>XM25</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>6</weight>
+    <price>140000</price>
+    <description>占位用待平衡</description>
+    <level>45</level>
+    <data>
+      <capacity>5</capacity>
+      <split>1</split>
+      <diffusion>5</diffusion>
+      <interval>500</interval>
+      <velocity>50</velocity>
+      <bullet>榴弹</bullet>
+      <sound>re_GL_ChinaLake.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>能量电池</clipname>
+      <bulletsize>40</bulletsize>
+      <power>16000</power>
+      <impact>0</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-XM25</dressup>
+    </equipped>
   </item>
 </root>
