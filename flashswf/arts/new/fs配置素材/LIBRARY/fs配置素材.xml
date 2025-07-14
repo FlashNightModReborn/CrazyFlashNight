@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1752485149" lastUniqueIdentifier="134">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1752505516" lastUniqueIdentifier="136">
   <timeline>
     <DOMTimeline name="fs配置素材" currentFrame="20" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;290&lt;/guideline&gt;&lt;guideline direction="v"&gt;247&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -358,7 +358,7 @@
                     <Point x="63.7" y="-39.2"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="XM25/XM25" selected="true" centerPoint3DX="360.45" centerPoint3DY="431.55">
+                <DOMSymbolInstance libraryItemName="XM25/XM25" centerPoint3DX="360.45" centerPoint3DY="431.55">
                   <matrix>
                     <Matrix tx="92.35" ty="456.4"/>
                   </matrix>
@@ -388,6 +388,22 @@
                   </matrix>
                   <transformationPoint>
                     <Point x="267.85" y="-24.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="M1918A2/G11" centerPoint3DX="282.3" centerPoint3DY="-94.7">
+                  <matrix>
+                    <Matrix tx="143.75" ty="-91.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="138.3" y="-2.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="M1918A2/图标-G11" centerPoint3DX="226.1" centerPoint3DY="-62.95">
+                  <matrix>
+                    <Matrix tx="226.1" ty="-62.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.7" y="-39.2"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
