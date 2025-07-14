@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1749286515" lastUniqueIdentifier="42">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1752512582" lastUniqueIdentifier="42">
   <timeline>
-    <DOMTimeline name="新版物品栏界面" currentFrame="11">
+    <DOMTimeline name="新版物品栏界面" currentFrame="47">
       <layers>
-        <DOMLayer name="Labels Layer" color="#23D4A1" current="true" isSelected="true">
+        <DOMLayer name="Labels Layer" color="#23D4A1">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -30,7 +30,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#894BAD">
+        <DOMLayer name="Script Layer" color="#894BAD" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -90,7 +90,8 @@ stop();]]></script>
             </DOMFrame>
             <DOMFrame index="45" duration="7" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[界面 = "情报";]]></script>
+                <script><![CDATA[界面 = "情报";
+_root.从库中加载外部UI("情报信息界面");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -1201,7 +1202,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="38" duration="7" keyMode="9728">
               <elements>
-                <DOMStaticText selected="true" fontRenderingMode="device" width="52.25" height="14.25" isSelectable="false">
+                <DOMStaticText fontRenderingMode="device" width="52.25" height="14.25" isSelectable="false">
                   <matrix>
                     <Matrix tx="163.2" ty="322.15"/>
                   </matrix>
@@ -1296,16 +1297,7 @@ on(rollOut){
               <elements/>
             </DOMFrame>
             <DOMFrame index="45" duration="7" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="情报信息界面" name="情报信息界面" centerPoint3DX="-506.95" centerPoint3DY="33.9">
-                  <matrix>
-                    <Matrix tx="-520" ty="20"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="13" y="14.15"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -1562,20 +1554,7 @@ on(rollOut){
               <elements/>
             </DOMFrame>
             <DOMFrame index="45" duration="7" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 298" name="窗体area" centerPoint3DX="-334" centerPoint3DY="165.95">
-                  <matrix>
-                    <Matrix a="2.2882080078125" d="0.999847412109375" tx="-550"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <DropShadowFilter angle="44.9992520943067" distance="3" strength="0.5"/>
-                    <BevelFilter blurX="1" blurY="1" angle="43.9999681257848" distance="1" strength="0.3"/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/库-UI" itemID="66795870-000009ce" lastModified="1752395870" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/库-UI" itemID="66795870-000009ce" lastModified="1752512703" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="库-UI" currentFrame="1">
+    <DOMTimeline name="库-UI" currentFrame="5">
       <layers>
-        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -23,7 +23,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!307 0|307 272!307 272|272 272!272 272|272 0!272 0|307 0!205 161[205 277 100 277!100 277[0 277 0 165!0 165|0 0!0 0|35 0!35 0|35 164!35 164[35 245 104 245!104 245[170 245 170 166!170 166|170 0!170 0|205 0!205 0|205 161"/>
+                    <Edge fillStyle1="1" edges="!205 161[205 277 100 277!100 277[0 277 0 165!0 165|0 0!0 0|35 0!35 0|35 164!35 164[35 245 104 245!104 245[170 245 170 166!170 166|170 0!170 0|205 0!205 0|205 161!307 0|307 272!307 272|272 272!272 272|272 0!272 0|307 0"/>
                     <Edge cubics="!205 0(;205,0 205,161 205,161q205 0 205 161);"/>
                     <Edge cubics="!272 0(;272,0 307,0 307,0q272 0 307 0);"/>
                     <Edge cubics="!0 165(;0,165 0,0 0,0q0 165 0 0);"/>
@@ -72,6 +72,15 @@
             <DOMFrame index="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="import/UI组件/物品改装界面" centerPoint3DX="30.5" centerPoint3DY="9.75">
+                  <transformationPoint>
+                    <Point x="30.5" y="9.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="import/UI组件/情报信息界面" centerPoint3DX="30.5" centerPoint3DY="9.75">
                   <transformationPoint>
                     <Point x="30.5" y="9.75"/>
                   </transformationPoint>

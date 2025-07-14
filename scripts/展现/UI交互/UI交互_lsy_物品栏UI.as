@@ -448,7 +448,7 @@ _root.物品UI函数.创建情报图标 = function(){
 		物品栏界面.情报图标列表[i] = 物品图标;
 		物品图标.itemIcon = new CollectionIcon(物品图标, 情报, 情报名);
 		物品图标.itemIcon.Press = function(){
-			_root.物品栏界面.情报信息界面.显示情报信息(this.name,this.item);
+			_root.通用UI层.情报信息界面.显示情报信息(this.name,this.item);
 		}
 	}
 }
@@ -467,14 +467,35 @@ _root.物品UI函数.初始化情报信息界面 = function(){
 	this.infovaluetext.text = "";
 	this.pagetext.text = "";
 	this.hinttext.text = "点击右侧情报物品查看详细信息";
-	this.当前情报物品图标.itemIcon = new ItemIcon(this.当前情报物品图标,null,null);
-	this.当前情报物品图标.itemIcon.RollOver = null;
-	this.当前情报物品图标.itemIcon.RollOut = null;
+	var 当前情报物品图标 = this.attachMovie("物品图标", "当前情报物品图标", 0);
+	当前情报物品图标._x = 45;
+	当前情报物品图标._y = 105;
+	当前情报物品图标._xscale = 200;
+	当前情报物品图标._yscale = 200;
+	当前情报物品图标.itemIcon = new ItemIcon(当前情报物品图标, null, null);
+	当前情报物品图标.itemIcon.RollOver = null;
+	当前情报物品图标.itemIcon.RollOut = null;
 	this.btn1._visible = false;
 	this.btn2._visible = false;
+	this.滑动按钮._visible = false;
+	this.滑动按钮btn._visible = false;
+	//
+	this.显示解密后文本 = true;
+	//
+	this._x = -550;
+	this.onEnterFrame = function(){
+		var movex = -this._x * 0.15;
+		if(movex < 1) movex = 1;
+		this._x += movex;
+		if(this._x >= 0){
+			this._x = 0;
+			delete this.onEnterFrame;
+		}
+	}
 }
 
 _root.物品UI函数.显示情报信息 = function(name,value){
+	this._visible = true;
 	var itemData = ItemUtil.getItemData(name);
 	this.当前情报物品图标.itemIcon.init(name, 1);
 	this.情报信息表 = [];
@@ -500,13 +521,23 @@ _root.物品UI函数.显示情报信息 = function(name,value){
 }
 
 _root.物品UI函数.刷新情报信息 = function(){
-	this.hinttext.text = "";
-	this.pagetext.text = String(this.当前信息序号 + 1) + " / " + this.已发现数量;
+	this.滑动按钮._visible = false;
+	this.滑动按钮btn._visible = false;
+	this.pagetext.text = String(this.当前信息序号 + 1) + " / " + this.已发现数量 + " 页";
 	var txt = this.情报信息表[this.当前信息序号].Text;
 	var 加密等级 = this.情报信息表[this.当前信息序号].EncryptLevel;
-	if(加密等级 > 0){
+	var 解密等级 = _root.主角被动技能.解密.启用 ? _root.主角被动技能.解密.等级 : 0;
+	if(加密等级 > 解密等级){
 		txt = _root.加密html剧情文本(txt, this.EncryptReplace, this.EncryptCut);
 		this.hinttext.text = "信息未完全解明。需要解密技能达到 " + 加密等级 + " 级";
+	}else if(加密等级 > 0){
+		this.滑动按钮._visible = true;
+		this.滑动按钮.gotoAndStop(this.显示解密后文本 ? 2 : 1);
+		this.滑动按钮btn._visible = true;
+		if(!this.显示解密后文本) txt = _root.加密html剧情文本(txt, this.EncryptReplace, this.EncryptCut);
+		this.hinttext.text = this.显示解密后文本 ? "信息已解明。点击按钮切换未解明的文本" : "信息未完全解明。点击按钮切换已解明的文本";
+	}else{
+		this.hinttext.text = "";
 	}
 	txt = _root.处理html剧情文本(txt);
 	this.infotext.htmlText = txt;
