@@ -447,7 +447,6 @@
     <price>0</price>
     <maxvalue>1</maxvalue>
     <description>记录了基础家常菜的制作方法。</description>
-    <!-- <synthesis>土豆炒肉丝</synthesis> -->
     <level>1</level>
   </item>
   <item>
@@ -461,6 +460,19 @@
     <price>5000</price>
     <maxvalue>14</maxvalue>
     <description>游离在失控之城中，区块链的自白与自焚。</description>
+    <level>1</level>
+  </item>
+  <item>
+    <id>20035</id>
+    <name>初级家常菜配方</name>
+    <displayname>初级家常菜配方</displayname>
+    <icon>烹饪指南</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <weight>0</weight>
+    <price>0</price>
+    <maxvalue>1</maxvalue>
+    <description>记录了初级家常菜的制作方法。</description>
     <level>1</level>
   </item>
 </root>
