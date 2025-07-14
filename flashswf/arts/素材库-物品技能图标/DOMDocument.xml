@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#999999" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" nextSceneIdentifier="2" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#999999" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" nextSceneIdentifier="2" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="3.位图相关" itemID="6690e84b-000017e9"/>
           <DOMFolderItem name="材料相关" itemID="6690f5aa-00003203"/>
@@ -69,7 +69,7 @@
           <DOMBitmapItem name="技能相关/图标素材/QQ截图20240130020129.png" itemID="65b7e860-00002247" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/QQ截图20240130020129.png" sourceLastImported="1706551291" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/QQ截图20240130020129.png" bitmapDataHRef="M 50 1740550143.dat" frameRight="14400" frameBottom="14400"/>
           <DOMBitmapItem name="技能相关/图标素材/QQ截图20240720173147 (1).png" itemID="669b84f0-00000521" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/QQ截图20240720173147 (1).png" sourceLastImported="1721468130" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/QQ截图20240720173147 (1).png" bitmapDataHRef="M 40 1740550143.dat" frameRight="3820" frameBottom="3820"/>
           <DOMBitmapItem name="消耗道具相关/各种图素材等/QQ图片20240114125757.jpg" itemID="65a369e5-000004a4" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/消耗道具相关/各种图素材等/QQ图片20240114125757.jpg" sourceLastImported="1705208239" quality="50" href="消耗道具相关/各种图素材等/QQ图片20240114125757.jpg" bitmapDataHRef="M 26 1740497968.dat" frameRight="10240" frameBottom="5760" isJPEG="true"/>
-          <DOMBitmapItem name="生活用品/020/u=1702814204,2418538836&amp;gp=22" itemID="46ef6b23-00000012" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" sourceLastImported="1190084491" originalCompressionType="lossless" quality="50" href="生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" bitmapDataHRef="M 1 1748966260.dat" frameRight="2780" frameBottom="2780"/>
+          <DOMBitmapItem name="生活用品/020/u=1702814204,2418538836&amp;gp=22" itemID="46ef6b23-00000012" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" sourceLastImported="1190084491" quality="50" href="生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" bitmapDataHRef="M 1 1748966260.dat" frameRight="2780" frameBottom="2780" isJPEG="true"/>
           <DOMBitmapItem name="技能相关/图标素材/位图 100" itemID="65e0a7bb-00002180" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/位图 100" sourceLastImported="1709221819" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/位图 100" bitmapDataHRef="M 41 1740550143.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="技能相关/图标素材/位图 103" itemID="663fa15d-00000e62" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/位图 103" sourceLastImported="1715446109" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/位图 103" bitmapDataHRef="M 42 1740550143.dat" frameRight="3940" frameBottom="3940"/>
           <DOMBitmapItem name="技能相关/图标素材/位图 104" itemID="663fa1fd-00000e72" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/位图 104" sourceLastImported="1715446269" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/位图 104" bitmapDataHRef="M 43 1740550143.dat" frameRight="2940" frameBottom="2940"/>
@@ -207,8 +207,8 @@
           <Include href="材料相关/图标-碱液.xml" itemID="66ebcb33-00000d45" lastModified="1726729012"/>
           <Include href="材料相关/图标-剑圣碎片.xml" itemID="66adbfe0-000018c2" lastModified="1722662884"/>
           <Include href="材料相关/图标-僵尸血液样本.xml" itemID="66adbb48-00001820" lastModified="1722661704"/>
-          <Include href="材料相关/图标-觉醒晶体.xml" itemID="66adc044-000018cd" lastModified="1722662991"/>
           <Include href="材料相关/图标-精油.xml" itemID="66ebbd8e-00000d28" lastModified="1726725520"/>
+          <Include href="材料相关/图标-觉醒晶体.xml" itemID="66adc044-000018cd" lastModified="1722662991"/>
           <Include href="材料相关/图标-军用帆布.xml" itemID="66adbb32-0000181c" lastModified="1722663078"/>
           <Include href="材料相关/图标-可充锂电池.xml" itemID="66adc19d-00001900" lastModified="1722663333"/>
           <Include href="材料相关/图标-可塑式钢板.xml" itemID="66adc183-000018fb" lastModified="1722663304"/>
@@ -393,6 +393,7 @@
           <Include href="食材相关/白糖.xml" loadImmediate="false" itemID="68142fb0-00000925" lastModified="1746153404"/>
           <Include href="食材相关/材料黑底.xml" itemIcon="1" loadImmediate="false" itemID="67bffb36-0000044e" lastModified="1726578491"/>
           <Include href="食材相关/材料红框.xml" itemIcon="1" loadImmediate="false" itemID="67bffb36-0000044d" lastModified="1740634476"/>
+          <Include href="食材相关/葱花炒蛋.xml" itemIcon="1" loadImmediate="false" itemID="6875054a-00000026" lastModified="1752499531"/>
           <Include href="食材相关/大地鱼干.xml" loadImmediate="false" itemID="68141232-0000059f" lastModified="1746145915"/>
           <Include href="食材相关/大米.xml" loadImmediate="false" itemID="681418d7-00000602" lastModified="1746147543"/>
           <Include href="食材相关/大蒜.xml" loadImmediate="false" itemID="68144416-000002a9" lastModified="1746158614"/>
@@ -425,14 +426,19 @@
           <Include href="食材相关/牛肉.xml" loadImmediate="false" itemID="68143617-00000967" lastModified="1746155031"/>
           <Include href="食材相关/茄子.xml" loadImmediate="false" itemID="68142597-00000894" lastModified="1746150807"/>
           <Include href="食材相关/芹菜.xml" loadImmediate="false" itemID="68142379-00000846" lastModified="1746150571"/>
+          <Include href="食材相关/清炒白菜.xml" itemIcon="1" loadImmediate="false" itemID="6874fef9-00000016" lastModified="1752498589"/>
+          <Include href="食材相关/清炒花菜.xml" itemIcon="1" loadImmediate="false" itemID="68750380-0000001e" lastModified="1752499072"/>
+          <Include href="食材相关/清炒土豆丝.xml" itemIcon="1" loadImmediate="false" itemID="687505c6-0000002e" lastModified="1752499654"/>
           <Include href="食材相关/沙茶酱.xml" loadImmediate="false" itemID="68146459-0000069a" lastModified="1746167003"/>
           <Include href="食材相关/生菜.xml" loadImmediate="false" itemID="681493a6-0000045a" lastModified="1746178983"/>
           <Include href="食材相关/生粉.xml" loadImmediate="false" itemID="68145b65-000005c3" lastModified="1746164581"/>
           <Include href="食材相关/食盐.xml" itemIcon="1" loadImmediate="false" itemID="67bff19d-00000074" lastModified="1740648344"/>
           <Include href="食材相关/食用油.xml" itemIcon="1" loadImmediate="false" itemID="67bd912d-0000002d" lastModified="1740635040"/>
           <Include href="食材相关/食用油玻璃.xml" itemIcon="1" loadImmediate="false" itemID="67bdbf5a-0000001e" lastModified="1740488539"/>
+          <Include href="食材相关/蒜蓉炒空心菜.xml" itemIcon="1" loadImmediate="false" itemID="6874fcbd-00000009" lastModified="1752500778"/>
           <Include href="食材相关/图标-白菜.xml" itemID="67bffb32-000000a5" lastModified="1740636094"/>
           <Include href="食材相关/图标-白糖.xml" itemID="68142fe8-00000933" lastModified="1746182201"/>
+          <Include href="食材相关/图标-葱花炒蛋.xml" itemID="68750939-000004af" lastModified="1752500556"/>
           <Include href="食材相关/图标-大地鱼干.xml" itemID="6814123c-000005ad" lastModified="1746182204"/>
           <Include href="食材相关/图标-大米.xml" itemID="681418eb-00000610" lastModified="1746182208"/>
           <Include href="食材相关/图标-大蒜.xml" itemID="6814445b-000002ba" lastModified="1746182212"/>
@@ -465,11 +471,15 @@
           <Include href="食材相关/图标-烹饪指南.xml" itemID="67c032d4-0000040a" lastModified="1740649207"/>
           <Include href="食材相关/图标-茄子.xml" itemID="681425cf-000008bc" lastModified="1746182289"/>
           <Include href="食材相关/图标-芹菜.xml" itemID="68142391-00000854" lastModified="1746182293"/>
+          <Include href="食材相关/图标-清炒白菜.xml" itemID="687509c7-000004c8" lastModified="1752500698"/>
+          <Include href="食材相关/图标-清炒花菜.xml" itemID="6875097a-000004bc" lastModified="1752500621"/>
+          <Include href="食材相关/图标-清炒土豆丝.xml" itemID="68750843-000004a1" lastModified="1752500319"/>
           <Include href="食材相关/图标-沙茶酱.xml" itemID="681464fd-000006c1" lastModified="1746182296"/>
           <Include href="食材相关/图标-生菜.xml" itemID="681493ba-00000469" lastModified="1746182300"/>
           <Include href="食材相关/图标-生粉.xml" itemID="68145b75-000005d1" lastModified="1746182304"/>
           <Include href="食材相关/图标-食盐.xml" itemID="67bffc07-000000bb" lastModified="1740636115"/>
           <Include href="食材相关/图标-食用油.xml" itemID="67bffbcd-000000b4" lastModified="1740636120"/>
+          <Include href="食材相关/图标-蒜蓉炒空心菜.xml" itemID="687509ee-000004d4" lastModified="1752500792"/>
           <Include href="食材相关/图标-土豆.xml" itemID="67bffacb-0000009e" lastModified="1740636123"/>
           <Include href="食材相关/图标-土豆炒肉丝.xml" itemID="67bffcc5-000000d5" lastModified="1741755290"/>
           <Include href="食材相关/图标-虾.xml" itemID="68146e46-00000a04" lastModified="1746182309"/>
@@ -708,7 +718,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="素材库-物品技能图标" selected="true" centerPoint3DX="78.55" centerPoint3DY="23.65">
+                                        <DOMSymbolInstance libraryItemName="素材库-物品技能图标" centerPoint3DX="78.55" centerPoint3DY="23.65">
                                              <transformationPoint>
                                                   <Point x="78.55" y="23.65"/>
                                              </transformationPoint>
