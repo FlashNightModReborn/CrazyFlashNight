@@ -27,11 +27,11 @@
                   <edges>
                     <Edge fillStyle1="1" strokeStyle="1" edges="!444 46S6|450 25!450 25|515 0!515 0[555 3 541 67!541 67|473 96!473 96|464 93"/>
                     <Edge fillStyle1="1" edges="!464 93S2|466 87"/>
-                    <Edge fillStyle1="2" edges="!466 87S2|457 91"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!457 91S6|15 268"/>
-                    <Edge fillStyle1="2" edges="!15 268S2|0 214"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!0 214S6|444 46"/>
-                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!444 46S7|454 42!454 42[486 44 466 87"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!466 87S7[486 44 454 42!454 42|444 46"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!444 46S5|0 214"/>
+                    <Edge fillStyle0="2" edges="!0 214S1|15 268"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!15 268S5|457 91"/>
+                    <Edge fillStyle0="2" edges="!457 91S1|466 87"/>
                   </edges>
                 </DOMShape>
               </elements>
