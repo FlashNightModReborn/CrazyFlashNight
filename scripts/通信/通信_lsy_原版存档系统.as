@@ -1,7 +1,9 @@
 ﻿import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.arki.item.itemCollection.*;
 
-_root.初始化物品栏 = function(){
+_root.存档系统 = new Object();
+
+_root.存档系统.初始化物品栏 = function(){
     return {
         背包:new ArrayInventory(null,50),
         装备栏:new EquipmentInventory(null),
@@ -11,14 +13,14 @@ _root.初始化物品栏 = function(){
     };
 }
 
-_root.初始化收集品栏 = function(){
+_root.存档系统.初始化收集品栏 = function(){
     return {
         材料:new DictCollection(null),
         情报:new InformationCollection(null)
     }
 }
 
-_root.mydata数据组包 = function(){
+_root.存档系统.mydata数据组包 = function(){
     _root.身价 = _root.基础身价值 * _root.等级;
     var 主角储存数据 = [_root.角色名,_root.性别,_root.金钱,_root.等级,_root.经验值,_root.身高,_root.技能点数,_root.玩家称号,_root.身价,_root.虚拟币,_root.键值设定,_root.difficultyMode,_root.佣兵是否出战信息,_root.easterEgg, _root.天气系统.开启昼夜系统];
     var 装备储存数据 = [_root.脸型,_root.发型,_root.头部装备,_root.上装装备,_root.手部装备,_root.下装装备,_root.脚部装备,_root.颈部装备,_root.长枪,_root.手枪,_root.手枪2,_root.刀,_root.手雷,_root.快捷物品栏1,_root.快捷物品栏2,_root.快捷物品栏3,_root.快捷技能栏1,_root.快捷技能栏2,_root.快捷技能栏3,_root.快捷技能栏4,_root.快捷技能栏5,_root.快捷技能栏6,_root.快捷技能栏7,_root.快捷技能栏8,_root.快捷技能栏9,_root.快捷技能栏10,_root.快捷技能栏11,_root.快捷技能栏12,_root.快捷物品栏4];
@@ -55,7 +57,7 @@ _root.mydata数据组包 = function(){
     var lastSaved:String = 年 + "-" + pad(月) + "-" + pad(日) + " " + pad(时) + ":" + pad(分) + ":" + pad(秒);
 
     var mydata = {};
-    mydata.version = "2.6";
+    mydata.version = "2.7";
     mydata[0] = 主角储存数据;
     mydata[1] = 装备储存数据;
     mydata[2] = null;
@@ -81,7 +83,7 @@ _root.自动存盘 = function(){
         if(_root.身价 < 1000 * _root.等级){
             _root.身价 = 1000 * _root.等级;
         }
-        _root.mydata数据组包();
+        _root.存档系统.mydata数据组包();
         _root.本地存盘战宠();
         if(_root.lastsave != _root.mydata.toString() or _root.lastsave_2 != _root.mydata_2.toString() or _root.lastsave_3 != _root.mydata_3.toString() or _root.lastsave_4 != _root.mydata_4.toString())
         {
@@ -103,97 +105,6 @@ _root.自动存盘 = function(){
     }
 }
 
-/*
-_root.将中文数据数字化 = function(中文数据, 对比数据){
-    var _loc4_ = "";
-    if(中文数据[0].toString() != 对比数据[0])
-    {
-        _loc4_ += "\n";
-        _loc4_ += _root.组装数据包(中文数据[0],0,对比数据);
-        对比数据[0] = 中文数据[0].toString();
-        存储标识 += "1";
-    }
-    else
-    {
-        存储标识 += "0";
-        _loc4_ += "\n";
-    }
-    if(中文数据[1].toString() != 对比数据[1])
-    {
-        _loc4_ += "\n";
-        _loc4_ += _root.组装数据包(中文数据[1],1,对比数据);
-        对比数据[1] = 中文数据[1].toString();
-        存储标识 += "1";
-    }
-    else
-    {
-        存储标识 += "0";
-        _loc4_ += "\n";
-    }
-    if(中文数据[2].toString() != 对比数据[2])
-    {
-        _loc4_ += "\n";
-        _loc4_ += _root.组装数据包(中文数据[2],2,对比数据);
-        对比数据[2] = 中文数据[2].toString();
-        存储标识 += "1";
-    }
-    else
-    {
-        存储标识 += "0";
-        _loc4_ += "\n";
-    }
-    if(中文数据[3].toString() != 对比数据[3])
-    {
-        _loc4_ += "\n";
-        _loc4_ += _root.组装数据包(中文数据[3],3,对比数据);
-        对比数据[3] = 中文数据[3].toString();
-        存储标识 += "1";
-    }
-    else
-    {
-        存储标识 += "0";
-        _loc4_ += "\n";
-    }
-    if(中文数据[4].toString() != 对比数据[4])
-    {
-        _loc4_ += "\n";
-        _loc4_ += _root.组装数据包(中文数据[4],4,对比数据);
-        对比数据[4] = 中文数据[4].toString();
-        存储标识 += "1";
-    }
-    else
-    {
-        存储标识 += "0";
-        _loc4_ += "\n";
-    }
-    if(中文数据[5].toString() != 对比数据[5])
-    {
-        _loc4_ += "\n";
-        _loc4_ += _root.组装数据包(中文数据[5],5,对比数据);
-        对比数据[5] = 中文数据[5].toString();
-        存储标识 += "1";
-    }
-    else
-    {
-        存储标识 += "0";
-        _loc4_ += "\n";
-    }
-    if(中文数据[6].toString() != 对比数据[6])
-    {
-        _loc4_ += "\n";
-        _loc4_ += _root.组装数据包(中文数据[6],6,对比数据);
-        对比数据[6] = 中文数据[6].toString();
-        存储标识 += "1";
-    }
-    else
-    {
-        存储标识 += "0";
-        _loc4_ += "\n";
-    }
-    存储标识 += "\n";
-    return _loc4_;
-}
-*/
 
 _root.本地存盘 = function() {
     var mysave = SharedObject.getLocal(_root.savePath);
@@ -244,12 +155,10 @@ _root.读取本地存盘 = function(){
     var 本地loadgame = SharedObject.getLocal(_root.savePath);
     _root.mydata = 本地loadgame.data[存盘名];
     //先检查存盘是否异常
-    ServerManager.getInstance().sendServerMessage("检查存盘异常");
-    _root.saveConvertor.convert(_root.mydata); // 检查并迁移存档数据
+    _root.存档系统.convert(_root.mydata); // 检查并迁移存档数据
 }
 
-_root.读取存盘 = function()
-{
+_root.读取存盘 = function(){
     ServerManager.getInstance().sendServerMessage("读取存盘");
     if(_root.当前玩家总数 == 1)
     {
@@ -395,7 +304,7 @@ _root.是否存过盘 = function(){
 }
 
 _root.新建角色 = function(){
-    _root.mydata数据组包();
+    _root.存档系统.mydata数据组包();
     _root.金钱 = 0;
     _root.虚拟币 = 0;
     _root.宠物信息 = [[],[],[],[],[]];

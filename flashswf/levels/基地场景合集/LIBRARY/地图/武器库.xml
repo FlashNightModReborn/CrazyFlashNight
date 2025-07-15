@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/武器库" itemID="668aa006-0000507c" linkageExportForAS="true" linkageIdentifier="基地场景-武器库" lastModified="1752397607" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/武器库" itemID="668aa006-0000507c" linkageExportForAS="true" linkageIdentifier="基地场景-武器库" lastModified="1752589480" lastUniqueIdentifier="9">
   <timeline>
     <DOMTimeline name="武器库">
       <layers>
@@ -45,23 +45,7 @@ onClipEvent (load) {
 	_root.改装系统.加载改装清单("属性武器");
 }
 onClipEvent (load) {
-	显示文字 = _root.获得翻译("属性武器改装");
-}]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/通用按钮" name="多阶装备合成" centerPoint3DX="774" centerPoint3DY="248.6">
-                  <matrix>
-                    <Matrix tx="728.2" ty="237.4"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[on (release) {
-	_root.改装系统.加载改装清单("多阶装备");
-}
-onClipEvent (load) {
-	显示文字 = _root.获得翻译("多阶装备改装");
+	显示文字 = _root.获得翻译("升阶与涂装");
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

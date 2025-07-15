@@ -1,24 +1,14 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/存档显示块" itemID="68521747-000225fa" lastModified="1750586879" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/存档显示块" itemID="68521747-000225fa" lastModified="1752593565" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="存档显示块" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;62&lt;/guideline&gt;&lt;guideline direction="h"&gt;33&lt;/guideline&gt;&lt;guideline direction="h"&gt;4&lt;/guideline&gt;&lt;guideline direction="h"&gt;58&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;65&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="存档显示块" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;62&lt;/guideline&gt;&lt;guideline direction="h"&gt;23&lt;/guideline&gt;&lt;guideline direction="h"&gt;4&lt;/guideline&gt;&lt;guideline direction="h"&gt;58&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;65&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="图层 3" color="#FF800A">
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 影片剪辑内第一帧代码 - 使用JSON序列化的版本
-// ==================== 初始化部分 ====================
-var slotName:String = this._name; 
-var slotIndex:Number = Number(slotName.substr(3)); 
-if (slotIndex == 0) {
-    currentSavePath = _root.baseSavePath;
-} else {
-    currentSavePath = _root.baseSavePath + slotIndex;
-}
 
-this.isHover = false;      
-this.isSelected = false;   
-this.useHandCursor = true;
+// 初始化部分已移到时间轴
 
 // ==================== JSON序列化功能 ====================
 // JSON 序列化函数
@@ -455,6 +445,10 @@ this.onPress = function() {
 
 // ==================== 原有每帧更新函数 ====================
 this.onEnterFrame = function() {
+	if(!this.slotName){
+		delete this.onEnterFrame;
+		return;
+	}
     this.focus._visible = this.isHover || (this.currentSavePath === _root.savePath); 
     this.name = this._name + " :";
     
@@ -480,6 +474,12 @@ this.onEnterFrame = function() {
                 this.角色信息文本 = "<font color='#00ff00'>lv." + 等级 + "</font> " + 
                                 "<font color='#ffd700'>" + 角色名 + "</font>";
             }
+			
+			if (saveData.version != null) {
+                this.版本文本 = saveData.version + "+";
+            }else{
+				this.版本文本 = "未知版本";
+			}
             
             if (主线进度 != undefined) {
                 var 难度 = saveData[0][11];
@@ -495,8 +495,9 @@ this.onEnterFrame = function() {
             trace("主线进度: " + 主线进度);
         } else {
             this.角色信息文本 = "暂无存档";
-            this.主线进度文本 = null;
-            this.lastSaved = null;
+			this.版本文本 = "";
+            this.主线进度文本 = "";
+            this.lastSaved = "";
             trace("没有找到存档数据");
         }
     }
@@ -513,17 +514,17 @@ this.onEnterFrame = function() {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMStaticText width="51.1" height="15.55" autoExpand="true" isSelectable="false">
                   <matrix>
-                    <Matrix tx="3.55" ty="35.2"/>
+                    <Matrix tx="3.55" ty="25.25"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>主线进度</characters>
+                      <characters>存档版本</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -538,7 +539,7 @@ this.onEnterFrame = function() {
                 </DOMStaticText>
                 <DOMDynamicText fontRenderingMode="device" width="56.3" height="15.55" isSelectable="false" variableName="name" lineType="multiline">
                   <matrix>
-                    <Matrix tx="2.55" ty="10.5"/>
+                    <Matrix tx="2.55" ty="5"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -551,7 +552,7 @@ this.onEnterFrame = function() {
                 </DOMDynamicText>
                 <DOMDynamicText fontRenderingMode="device" width="157.35" height="15.55" isSelectable="false" variableName="角色信息文本" renderAsHTML="true">
                   <matrix>
-                    <Matrix tx="67.95" ty="10.7"/>
+                    <Matrix tx="67.95" ty="5.2"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -562,22 +563,22 @@ this.onEnterFrame = function() {
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText fontRenderingMode="device" width="170.3" height="15.55" isSelectable="false" variableName="主线进度文本" lineType="multiline">
+                <DOMDynamicText fontRenderingMode="device" width="102.5" height="15.55" isSelectable="false" variableName="版本文本" lineType="multiline">
                   <matrix>
-                    <Matrix tx="68.05" ty="34.8"/>
+                    <Matrix tx="68.05" ty="25.95"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>???</characters>
+                      <characters>2.x+</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#AAAAAA"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMStaticText width="144" height="15.55" isSelectable="false">
+                <DOMStaticText width="61.2" height="15.55" isSelectable="false">
                   <matrix>
-                    <Matrix tx="2.8" ty="60.9"/>
+                    <Matrix tx="2.8" ty="65.4"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -594,15 +595,53 @@ this.onEnterFrame = function() {
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMDynamicText fontRenderingMode="device" width="144.7" height="33.1" isSelectable="false" variableName="lastSaved">
+                <DOMDynamicText fontRenderingMode="device" width="130.05" height="15.55" isSelectable="false" variableName="lastSaved">
                   <matrix>
-                    <Matrix tx="68" ty="60.9"/>
+                    <Matrix tx="68" ty="66.9"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
                       <characters>2012-12-21 23:59:59</characters>
                       <textAttrs>
-                        <DOMTextAttrs aliasText="false" indent="0.5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#AAAAAA"/>
+                        <DOMTextAttrs aliasText="false" indent="0.5" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#AAAAAA"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMStaticText width="51.1" height="15.55" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="3.55" ty="45.25"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>主线进度</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>:</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMDynamicText fontRenderingMode="device" width="170.3" height="15.55" isSelectable="false" variableName="主线进度文本" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="68.05" ty="46.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>???</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#AAAAAA"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>

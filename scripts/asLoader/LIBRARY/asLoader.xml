@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1752418419">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1752572939">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="76">
+    <DOMTimeline name="asLoader" currentFrame="3">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -111,8 +111,8 @@ org.flashNight.gesh.init.GlobalInitializer.initialize();]]></script>
 #include "../通信/通信_fs_lsy_XML数据解析.as"
 #include "../通信/通信_fs_本地服务器.as"
 #include "../通信/通信_fs_帧计时器.as"
-#include "../通信/通信_lsy_存档迁移.as"
 #include "../通信/通信_lsy_原版存档系统.as"
+#include "../通信/通信_lsy_存档迁移.as"
 #include "../通信/通信_鸡蛋_XML与JSON解析.as"
 #include "../通信/通信_鸡蛋_任务系统.as"
 ]]></script>

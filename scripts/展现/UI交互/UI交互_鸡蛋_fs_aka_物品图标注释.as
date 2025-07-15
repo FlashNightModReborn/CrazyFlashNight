@@ -6,7 +6,11 @@ _root.物品图标注释 = function(name, value){
 	var 物品数据 = ItemUtil.getItemData(name);
 	var 文本数据 = new Array();
 	文本数据.push("<B>");
-	文本数据.push(物品数据.displayname);
+
+	var displayName = 物品数据.displayname;
+	if(value.tier) displayName = "[" + value.tier + "]" + displayName;
+	文本数据.push(displayName);
+	
 	文本数据.push("</B><BR>");
 	文本数据.push(物品数据.type);
 	文本数据.push("    ");

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<!--已用ID：[1, 311, 312, 313, 314, 315, 316, 317, 318, 319, 327, 352, 380, 381, 382, 383, 2911, 2912, 2913, 20019, 20020, 20021, 20022, 20033]
+<!--已用ID：[1, 311, 312, 313, 314, 315, 316, 317, 318, 319, 327, 352, 372, 373, 374, 375, 380, 381, 382, 383, 2911, 2912, 2913, 20019, 20020, 20021, 20022, 20033]
 预留ID区间：17001-17300-->
 <root>
   <item>
@@ -146,6 +146,58 @@
     <price>5000</price>
     <maxvalue>2</maxvalue>
     <description>上面记录了黑龙堂相关的部分任务内容。黑龙令牌的大小要超过其他两个堂口令牌的大小，但对于那些黑龙堂的壮汉来说，这并不算什么。</description>
+    <level>1</level>
+  </item>
+  <item>
+    <id>372</id>
+    <name>镜之虎彻制作图纸</name>
+    <displayname>镜之虎彻制作图纸</displayname>
+    <icon>制作图纸默认</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <weight>0</weight>
+    <price>10000</price>
+    <maxvalue>1</maxvalue>
+    <description>记录了镜之虎彻的制作方法</description>
+    <level>1</level>
+  </item>
+  <item>
+    <id>373</id>
+    <name>加强版MP7制作图纸</name>
+    <displayname>加强版MP7制作图纸</displayname>
+    <icon>制作图纸默认</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <weight>0</weight>
+    <price>10000</price>
+    <maxvalue>1</maxvalue>
+    <description>记录了加强版MP7的制作方法</description>
+    <level>1</level>
+  </item>
+  <item>
+    <id>374</id>
+    <name>双管白火铳制作图纸</name>
+    <displayname>双管白火铳制作图纸</displayname>
+    <icon>制作图纸默认</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <weight>0</weight>
+    <price>10000</price>
+    <maxvalue>1</maxvalue>
+    <description>记录了双管白火铳的制作方法</description>
+    <level>1</level>
+  </item>
+  <item>
+    <id>375</id>
+    <name>A兵团制式套装改造图纸</name>
+    <displayname>A兵团制式套装改造图纸</displayname>
+    <icon>制作图纸默认</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <weight>0</weight>
+    <price>30000</price>
+    <maxvalue>1</maxvalue>
+    <description>记录了A兵团精致战术套装与项链的制作方法。</description>
     <level>1</level>
   </item>
   <item>
