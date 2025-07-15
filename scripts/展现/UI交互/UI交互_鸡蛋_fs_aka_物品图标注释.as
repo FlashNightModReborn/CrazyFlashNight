@@ -56,7 +56,9 @@ _root.物品图标注释 = function(name, value){
 			}
 			文本数据.push("<BR>");
 			文本数据.push("弹夹容量：");
-			var magazineCapacity:Number = (物品数据.data.bullet.indexOf("纵向") >= 0) ? 物品数据.data.split : 1;
+			var notMuti:Boolean = (物品数据.data.bullet.indexOf("纵向") >= 0);
+
+			var magazineCapacity:Number = notMuti ? 物品数据.data.split : 1;
 
 			文本数据.push(物品数据.data.capacity * magazineCapacity);
 			文本数据.push("<BR>");
@@ -65,7 +67,7 @@ _root.物品图标注释 = function(name, value){
 			文本数据.push("<FONT COLOR=\'#FFCC00\'>(+" + (_root.强化计算(物品数据.data.power, 强化等级) - 物品数据.data.power) + ")</FONT>");
 			文本数据.push("<BR>");
 			if(物品数据.data.split > 1){
-				文本数据.push("单发弹数：");
+				文本数据.push(notMuti ? "点射弹数：" : "弹丸数量：");
 				文本数据.push(物品数据.data.split);
 				文本数据.push("<BR>");
 			}
