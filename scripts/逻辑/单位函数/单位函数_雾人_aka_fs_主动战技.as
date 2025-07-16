@@ -123,8 +123,15 @@ _root.主动战技函数.长枪.突击者之眼 = {
         } else {
             upgradeLevel = _root.主角函数.获取人形怪强化等级(自机.等级, 自机.名字);
         }
+        
+        var k:Number = 22 / 1029;   // ≈ 0.02138
+        var level:Number = upgradeLevel;   // 1–13
 
-        自机.主动战技.长枪.冷却时间  *= 1 - upgradeLevel * 0.05;
+        var factor:Number = 1 / (1 + k * Math.pow(level, 3));
+        自机.主动战技.长枪.冷却时间 *= factor;
+        _root.发布消息("突击者之眼冷却时间: " + 自机.主动战技.长枪.冷却时间 + "秒");
+
+
 
         自机.dispatcher.subscribe("长枪射击", function() {
             if(!自机.突击者之眼开启) return;
