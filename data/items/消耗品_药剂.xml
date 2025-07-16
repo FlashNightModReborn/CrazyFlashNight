@@ -360,7 +360,7 @@
     <use>药剂</use>
     <weight>0</weight>
     <price>6000</price>
-    <description>使用净化药剂，清除自身积累的麻痹值，获得一定额度的麻痹抵抗能力，消除自身debuff，减少永久型地形伤害，缓解永久型地形负面效果。净化效果可叠加，效果逐步衰减。</description>
+    <description>使用净化药剂，清除自身积累的麻痹值，获得一定额度的麻痹抵抗能力，消除自身debuff，减少永久型地形伤害，缓解永久型地形负面效果。部分效果可叠加，效果逐步衰减。</description>
     <level>1</level>
     <data>
       <friend>净化</friend>
@@ -438,11 +438,11 @@
     </data>
   </item>
   <item>
-      <id>20100</id>
-      <name>番茄</name>
-      <displayname>番茄</displayname>
-      <icon>番茄</icon>
-      <type>消耗品</type>
+    <id>20100</id>
+    <name>番茄</name>
+    <displayname>番茄</displayname>
+    <icon>番茄</icon>
+    <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
     <price>300</price>
@@ -455,11 +455,11 @@
     </data>
   </item>
   <item>
-      <id>20101</id>
-      <name>土豆</name>
-      <displayname>土豆</displayname>
-      <icon>土豆</icon>
-      <type>消耗品</type>
+    <id>20101</id>
+    <name>土豆</name>
+    <displayname>土豆</displayname>
+    <icon>土豆</icon>
+    <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
     <price>300</price>
@@ -472,11 +472,11 @@
     </data>
   </item>
   <item>
-      <id>20102</id>
-      <name>黄瓜</name>
-      <displayname>黄瓜</displayname>
-      <icon>黄瓜</icon>
-      <type>消耗品</type>
+    <id>20102</id>
+    <name>黄瓜</name>
+    <displayname>黄瓜</displayname>
+    <icon>黄瓜</icon>
+    <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
     <price>300</price>
@@ -489,11 +489,11 @@
     </data>
   </item>
   <item>
-      <id>20103</id>
-      <name>白菜</name>
-      <displayname>白菜</displayname>
-      <icon>白菜</icon>
-      <type>消耗品</type>
+    <id>20103</id>
+    <name>白菜</name>
+    <displayname>白菜</displayname>
+    <icon>白菜</icon>
+    <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
     <price>200</price>
@@ -505,7 +505,7 @@
       <affectmp>50</affectmp>
     </data>
   </item>
-    <item>
+  <item>
     <id>20104</id>
     <name>食用油</name>
     <displayname>食用油</displayname>
@@ -517,7 +517,7 @@
     <description>烹饪材料</description>
     <level>1</level>
   </item>
-    <item>
+  <item>
     <id>20105</id>
     <name>食盐</name>
     <displayname>食盐</displayname>
@@ -529,7 +529,7 @@
     <description>烹饪材料</description>
     <level>1</level>
   </item>
-    <item>
+  <item>
     <id>20106</id>
     <name>猪肉</name>
     <displayname>猪肉</displayname>
@@ -541,7 +541,7 @@
     <description>烹饪材料</description>
     <level>1</level>
   </item>
-    <item>
+  <item>
     <id>20107</id>
     <name>鸡蛋</name>
     <displayname>鸡蛋</displayname>
@@ -554,11 +554,11 @@
     <level>1</level>
   </item>
   <item>
-      <id>20108</id>
-      <name>番茄炒蛋</name>
-      <displayname>番茄炒蛋</displayname>
-      <icon>番茄炒蛋</icon>
-      <type>消耗品</type>
+    <id>20108</id>
+    <name>番茄炒蛋</name>
+    <displayname>番茄炒蛋</displayname>
+    <icon>番茄炒蛋</icon>
+    <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
     <price>2000</price>
@@ -571,11 +571,11 @@
     </data>
   </item>
   <item>
-      <id>20109</id>
-      <name>土豆炒肉丝</name>
-      <displayname>土豆炒肉丝</displayname>
-      <icon>土豆炒肉丝</icon>
-      <type>消耗品</type>
+    <id>20109</id>
+    <name>土豆炒肉丝</name>
+    <displayname>土豆炒肉丝</displayname>
+    <icon>土豆炒肉丝</icon>
+    <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
     <price>2000</price>
@@ -588,11 +588,11 @@
     </data>
   </item>
   <item>
-      <id>20110</id>
-      <name>黄瓜炒肉片</name>
-      <displayname>黄瓜炒肉片</displayname>
-      <icon>黄瓜炒肉片</icon>
-      <type>消耗品</type>
+    <id>20110</id>
+    <name>黄瓜炒肉片</name>
+    <displayname>黄瓜炒肉片</displayname>
+    <icon>黄瓜炒肉片</icon>
+    <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
     <price>2000</price>
@@ -604,7 +604,7 @@
       <affectmp>300</affectmp>
     </data>
   </item>
-      <item>
+  <item>
     <id>20111</id>
     <name>大米</name>
     <displayname>大米</displayname>
@@ -616,7 +616,7 @@
     <description>烹饪材料</description>
     <level>1</level>
   </item>
-        <item>
+  <item>
     <id>20112</id>
     <name>面粉</name>
     <displayname>面粉</displayname>
@@ -628,7 +628,7 @@
     <description>烹饪材料</description>
     <level>1</level>
   </item>
-          <item>
+  <item>
     <id>20113</id>
     <name>黄豆</name>
     <displayname>黄豆</displayname>
@@ -640,7 +640,7 @@
     <description>烹饪材料</description>
     <level>1</level>
   </item>
-            <item>
+  <item>
     <id>20114</id>
     <name>花生</name>
     <displayname>花生</displayname>
@@ -652,7 +652,7 @@
     <description>烹饪材料</description>
     <level>1</level>
   </item>
-              <item>
+  <item>
     <id>20115</id>
     <name>莲藕</name>
     <displayname>莲藕</displayname>
@@ -664,7 +664,7 @@
     <description>烹饪材料</description>
     <level>1</level>
   </item>
-                <item>
+  <item>
     <id>20116</id>
     <name>茄子</name>
     <displayname>茄子</displayname>
@@ -676,7 +676,7 @@
     <description>烹饪材料</description>
     <level>1</level>
   </item>
-                  <item>
+  <item>
     <id>20117</id>
     <name>花菜</name>
     <displayname>花菜</displayname>
@@ -736,7 +736,7 @@
     <description>烹饪材料</description>
     <level>1</level>
   </item>
-    <item>
+  <item>
     <id>20122</id>
     <name>洋葱</name>
     <displayname>洋葱</displayname>
@@ -844,7 +844,7 @@
     <description>烹饪材料</description>
     <level>1</level>
   </item>
-    <item>
+  <item>
     <id>20131</id>
     <name>大地鱼干</name>
     <displayname>大地鱼干</displayname>
@@ -1097,11 +1097,11 @@
     <level>1</level>
   </item>
   <item>
-      <id>20152</id>
-      <name>蒜蓉炒空心菜</name>
-      <displayname>蒜蓉炒空心菜</displayname>
-      <icon>蒜蓉炒空心菜</icon>
-      <type>消耗品</type>
+    <id>20152</id>
+    <name>蒜蓉炒空心菜</name>
+    <displayname>蒜蓉炒空心菜</displayname>
+    <icon>蒜蓉炒空心菜</icon>
+    <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
     <price>2000</price>
@@ -1114,11 +1114,11 @@
     </data>
   </item>
   <item>
-      <id>20153</id>
-      <name>清炒白菜</name>
-      <displayname>清炒白菜</displayname>
-      <icon>清炒白菜</icon>
-      <type>消耗品</type>
+    <id>20153</id>
+    <name>清炒白菜</name>
+    <displayname>清炒白菜</displayname>
+    <icon>清炒白菜</icon>
+    <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
     <price>2000</price>
@@ -1131,11 +1131,11 @@
     </data>
   </item>
   <item>
-      <id>20154</id>
-      <name>清炒花菜</name>
-      <displayname>清炒花菜</displayname>
-      <icon>清炒花菜</icon>
-      <type>消耗品</type>
+    <id>20154</id>
+    <name>清炒花菜</name>
+    <displayname>清炒花菜</displayname>
+    <icon>清炒花菜</icon>
+    <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
     <price>2000</price>
@@ -1148,11 +1148,11 @@
     </data>
   </item>
   <item>
-      <id>20155</id>
-      <name>清炒土豆丝</name>
-      <displayname>清炒土豆丝</displayname>
-      <icon>清炒土豆丝</icon>
-      <type>消耗品</type>
+    <id>20155</id>
+    <name>清炒土豆丝</name>
+    <displayname>清炒土豆丝</displayname>
+    <icon>清炒土豆丝</icon>
+    <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
     <price>2000</price>
@@ -1165,11 +1165,11 @@
     </data>
   </item>
   <item>
-      <id>20156</id>
-      <name>葱花炒蛋</name>
-      <displayname>葱花炒蛋</displayname>
-      <icon>葱花炒蛋</icon>
-      <type>消耗品</type>
+    <id>20156</id>
+    <name>葱花炒蛋</name>
+    <displayname>葱花炒蛋</displayname>
+    <icon>葱花炒蛋</icon>
+    <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
     <price>2000</price>
@@ -1179,6 +1179,24 @@
       <friend>0</friend>
       <affecthp>300</affecthp>
       <affectmp>300</affectmp>
+    </data>
+  </item>
+  <item>
+    <id>20157</id>
+    <name>奶</name>
+    <displayname>奶</displayname>
+    <icon>奶</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <weight>0</weight>
+    <price>1000</price>
+    <description>富含蛋白质的奶，除了提供营养以外，还有少许解毒效果。减少自身积累的麻痹值，获得少许的麻痹抵抗能力，小概率消除自身debuff，少量减少永久型地形伤害，缓解永久型地形负面效果。部分效果可叠加，效果逐步衰减。</description>
+    <level>1</level>
+    <data>
+      <friend>净化</friend>
+      <affecthp>0</affecthp>
+      <affectmp>0</affectmp>
+      <clean>5</clean>
     </data>
   </item>
 </root>

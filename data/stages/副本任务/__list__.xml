@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<Stages><StageInfo>
+<Stages>
+    <StageInfo>
         <Type>无限过图</Type>
         <Name>92式装甲副本</Name>
         <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
@@ -213,10 +214,19 @@
     </StageInfo>
     <StageInfo>
         <Type>无限过图</Type>
+        <Name>挑战罪袋练舞室</Name>
+        <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
+        <UnlockCondition>1</UnlockCondition>
+        <Description />
+        <StartFrame>地图-彩蛋地图</StartFrame>
+    </StageInfo>
+    <StageInfo>
+        <Type>无限过图</Type>
         <Name>挑战诺艾尔</Name>
         <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
         <UnlockCondition>1</UnlockCondition>
         <Description />
+        <StartFrame>地图-彩蛋地图</StartFrame>
     </StageInfo>
     <StageInfo>
         <Type>无限过图</Type>
@@ -314,4 +324,4 @@
         <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
         <Limitation>DisableKnockdownProtection</Limitation>
     </StageInfo>
-    </Stages>
+</Stages>

@@ -10,17 +10,17 @@
           <DOMFolderItem name="情报物品相关" itemID="683f1b5b-000004b3"/>
           <DOMFolderItem name="生活用品" itemID="47cf854d-00001bf0"/>
           <DOMFolderItem name="生活用品/020" itemID="47721310-00001a3b"/>
-          <DOMFolderItem name="食材相关" itemID="67bff826-000003dc"/>
+          <DOMFolderItem name="食材相关" itemID="67bff826-000003dc" isExpanded="true"/>
           <DOMFolderItem name="未命名文件夹 1" itemID="67b9acf1-00000e73"/>
           <DOMFolderItem name="无AS链接" itemID="6690f257-00002761"/>
-          <DOMFolderItem name="项链相关" itemID="67bdcc7a-00000d2f" isExpanded="true"/>
+          <DOMFolderItem name="项链相关" itemID="67bdcc7a-00000d2f"/>
           <DOMFolderItem name="消耗道具相关" itemID="67bdcbfd-00000ccc"/>
           <DOMFolderItem name="消耗道具相关/0.回复增益类相关" itemID="67bdcc15-00000ce3"/>
           <DOMFolderItem name="消耗道具相关/1.弹药相关" itemID="67bdcc36-00000cff"/>
           <DOMFolderItem name="消耗道具相关/各种图素材等" itemID="65e07117-00000783"/>
-          <DOMFolderItem name="消耗道具相关/新道具" itemID="67bdd16a-000004e4" isExpanded="true"/>
+          <DOMFolderItem name="消耗道具相关/新道具" itemID="67bdd16a-000004e4"/>
           <DOMFolderItem name="消耗道具相关/新道具/棒棒糖" itemID="65fd744a-00001218"/>
-          <DOMFolderItem name="消耗道具相关/新道具/菠萝罐头" itemID="65fd7461-0000121e"/>
+          <DOMFolderItem name="消耗道具相关/新道具/菠萝罐头" itemID="65fd7461-0000121e" isExpanded="true"/>
           <DOMFolderItem name="消耗道具相关/新道具/红酒" itemID="65fd7349-00001202"/>
           <DOMFolderItem name="消耗道具相关/新道具/进口香烟" itemID="65fd7563-00001246"/>
           <DOMFolderItem name="消耗道具相关/新道具/啤酒" itemID="65fd755a-00001244"/>
@@ -423,6 +423,7 @@
           <Include href="食材相关/莲藕.xml" loadImmediate="false" itemID="68142a55-000008dc" lastModified="1746152122"/>
           <Include href="食材相关/米酒.xml" loadImmediate="false" itemID="68147f21-000002f8" lastModified="1746173729"/>
           <Include href="食材相关/面粉.xml" loadImmediate="false" itemID="6814179c-000005df" lastModified="1746147308"/>
+          <Include href="食材相关/奶.xml" loadImmediate="false" itemID="68779fa3-000004a5" lastModified="1752670997"/>
           <Include href="食材相关/牛肉.xml" loadImmediate="false" itemID="68143617-00000967" lastModified="1746155031"/>
           <Include href="食材相关/茄子.xml" loadImmediate="false" itemID="68142597-00000894" lastModified="1746150807"/>
           <Include href="食材相关/芹菜.xml" loadImmediate="false" itemID="68142379-00000846" lastModified="1746150571"/>
@@ -467,6 +468,7 @@
           <Include href="食材相关/图标-莲藕.xml" itemID="68142a82-0000090d" lastModified="1746182276"/>
           <Include href="食材相关/图标-米酒.xml" itemID="68147f2e-00000307" lastModified="1746182279"/>
           <Include href="食材相关/图标-面粉.xml" itemID="681417ab-000005ed" lastModified="1746182282"/>
+          <Include href="食材相关/图标-奶.xml" itemID="68779f6b-0000049f" lastModified="1752672781"/>
           <Include href="食材相关/图标-牛肉.xml" itemID="6814362d-00000978" lastModified="1746182286"/>
           <Include href="食材相关/图标-烹饪指南.xml" itemID="67c032d4-0000040a" lastModified="1740649207"/>
           <Include href="食材相关/图标-茄子.xml" itemID="681425cf-000008bc" lastModified="1746182289"/>
