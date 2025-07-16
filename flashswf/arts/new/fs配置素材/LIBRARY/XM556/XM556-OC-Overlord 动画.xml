@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="XM556/XM556-OC-Overlord 动画" itemID="686f22d9-00000552" lastModified="1752243091" lastUniqueIdentifier="57">
   <timeline>
-    <DOMTimeline name="XM556-OC-Overlord 动画">
+    <DOMTimeline name="XM556-OC-Overlord 动画" currentFrame="29">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <Actionscript>
@@ -1113,7 +1113,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A">
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -1132,7 +1132,7 @@
             </DOMFrame>
             <DOMFrame index="14" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="XM556/xm556oc激光模组" centerPoint3DX="469" centerPoint3DY="92.05">
+                <DOMSymbolInstance libraryItemName="XM556/xm556oc激光模组" selected="true" centerPoint3DX="469" centerPoint3DY="92.05">
                   <matrix>
                     <Matrix tx="180.25" ty="90.05"/>
                   </matrix>
