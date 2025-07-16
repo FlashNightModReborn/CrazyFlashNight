@@ -1,0 +1,27 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="联弹/单元体-无壳穿刺子弹" itemID="68776e2c-000029bf" linkageExportForAS="true" linkageIdentifier="单元体-无壳穿刺子弹" lastModified="1752657734" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="单元体-无壳穿刺子弹">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 722" centerPoint3DX="39.65" centerPoint3DY="1.6">
+                  <matrix>
+                    <Matrix a="1.11727905273438" d="-1.11727905273438" tx="0.55" ty="0.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8" color="#00FFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

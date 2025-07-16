@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1752638666" lastUniqueIdentifier="140">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1752651305" lastUniqueIdentifier="143">
   <timeline>
-    <DOMTimeline name="fs配置素材" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;370&lt;/guideline&gt;&lt;guideline direction="v"&gt;247&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="10" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;789&lt;/guideline&gt;&lt;guideline direction="v"&gt;247&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
         <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
@@ -254,9 +254,9 @@
                     <Point x="55.25" y="-34.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="PKP/PKP" centerPoint3DX="-337.1" centerPoint3DY="520.2">
+                <DOMSymbolInstance libraryItemName="PKP/PKP" centerPoint3DX="-332.2" centerPoint3DY="515.95">
                   <matrix>
-                    <Matrix tx="-606.85" ty="537.85"/>
+                    <Matrix tx="-601.95" ty="533.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="269.5" y="-17.65"/>
@@ -358,39 +358,39 @@
                     <Point x="63.7" y="-39.2"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="XM25/XM25" centerPoint3DX="357.05" centerPoint3DY="658.15">
+                <DOMSymbolInstance libraryItemName="XM25/XM25" centerPoint3DX="414.8" centerPoint3DY="566.75">
                   <matrix>
-                    <Matrix tx="88.95" ty="683"/>
+                    <Matrix tx="146.7" ty="591.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="267.85" y="-24.85"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="XM25/图标-XM25" centerPoint3DX="317.15" centerPoint3DY="703.8">
+                <DOMSymbolInstance libraryItemName="XM25/图标-XM25" centerPoint3DX="374.9" centerPoint3DY="612.4">
                   <matrix>
-                    <Matrix tx="317.15" ty="703.8"/>
+                    <Matrix tx="374.9" ty="612.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="76.25" y="-50.4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Jackhammer/图标-Jackhammer" centerPoint3DX="331.75" centerPoint3DY="484.35">
+                <DOMSymbolInstance libraryItemName="Jackhammer/图标-Jackhammer" centerPoint3DX="389.5" centerPoint3DY="392.95">
                   <matrix>
-                    <Matrix tx="331.75" ty="484.35"/>
+                    <Matrix tx="389.5" ty="392.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="76.25" y="-50.4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Jackhammer/Jackhammer" centerPoint3DX="354.3" centerPoint3DY="434.75">
+                <DOMSymbolInstance libraryItemName="Jackhammer/Jackhammer" centerPoint3DX="412.05" centerPoint3DY="343.35">
                   <matrix>
-                    <Matrix tx="86.2" ty="459.6"/>
+                    <Matrix tx="143.95" ty="368.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="267.85" y="-24.85"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="M1918A2/G11" centerPoint3DX="282.3" centerPoint3DY="-94.7">
+                <DOMSymbolInstance libraryItemName="M1918A2/G11" selected="true" centerPoint3DX="282.3" centerPoint3DY="-94.7">
                   <matrix>
                     <Matrix tx="143.75" ty="-91.8"/>
                   </matrix>
@@ -398,9 +398,9 @@
                     <Point x="138.3" y="-2.9"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="M1918A2/图标-G11" centerPoint3DX="226.1" centerPoint3DY="-62.95">
+                <DOMSymbolInstance libraryItemName="M1918A2/图标-G11" centerPoint3DX="357.95" centerPoint3DY="-64.1">
                   <matrix>
-                    <Matrix tx="226.1" ty="-62.95"/>
+                    <Matrix tx="357.95" ty="-64.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="63.7" y="-39.2"/>
@@ -414,12 +414,28 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="M1918A2/G1111" selected="true" centerPoint3DX="154.4" centerPoint3DY="166">
+                <DOMSymbolInstance libraryItemName="M1918A2/G1111" centerPoint3DX="140.5" centerPoint3DY="178.05">
                   <matrix>
-                    <Matrix tx="136.1" ty="194.15"/>
+                    <Matrix tx="122.2" ty="206.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="18.05" y="-28.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="M1918A2/图标-G111" centerPoint3DX="359" centerPoint3DY="71.15">
+                  <matrix>
+                    <Matrix tx="359" ty="71.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="73.55" y="-47.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="M1918A2/图标-G1111" centerPoint3DX="362.75" centerPoint3DY="238.4">
+                  <matrix>
+                    <Matrix tx="362.75" ty="238.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="73.55" y="-47.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

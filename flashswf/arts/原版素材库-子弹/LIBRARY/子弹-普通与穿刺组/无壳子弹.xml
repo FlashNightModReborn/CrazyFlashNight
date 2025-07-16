@@ -1,0 +1,102 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/无壳子弹" itemID="68775c6d-0000179e" linkageExportForAS="true" linkageIdentifier="无壳子弹" lastModified="1752654007">
+  <timeline>
+    <DOMTimeline name="无壳子弹">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#AF03E7">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#E33B8C">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#B3FD2D">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="7.5" centerPoint3DY="7.5">
+                  <matrix>
+                    <Matrix a="0.399993896484375" d="0.399993896484375" tx="-5" ty="-5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#9347D5" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.002288818359375" b="-0.0651397705078125" c="-0.030303955078125" d="-0.001068115234375" tx="18.15" ty="-1.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.0980392156862745"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0017547607421875" b="0.065155029296875" c="-0.030303955078125" d="0.0008087158203125" tx="18.15" ty="-0.45"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.0980392156862745"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!146 -14|109 -19!109 -19|103 -17!103 -17[96 -26 79 -26!79 -26|-4 -23!-4 -23|-20 -20!-20 -20|-25 -21!-25 -21|-89 -23!-89 -23|-133 -35!-133 -35|-126 -34!-126 -34|-64 -37!-64 -37|-49 -36!-49 -36|-39 -34!-39 -34[-19 -34 21 -41!21 -41|47 -38
+!47 -38|69 -38!69 -38|71 -37!71 -37|194 -28!194 -28[207 -28 212 -35!212 -35|215 -35!215 -35|225 -27!225 -27|240 -26!240 -26|350 -36!350 -36[357 -34 360 -38!360 -38|437 -20"/>
+                    <Edge fillStyle1="2" edges="
+!437 -20|468 -16!468 -16|462 -14"/>
+                    <Edge fillStyle1="1" edges="
+!462 -14|469 -13!469 -13|436 -9"/>
+                    <Edge fillStyle1="2" edges="
+!436 -9|360 8!360 8[357 4 351 6!351 6|240 -4!240 -4|225 -4!225 -4|215 4!215 4|212 4!212 4[207 -3 194 -3!194 -3|71 5!71 5|69 6!69 6|67 5!67 5|21 8!21 8[-19 1 -39 1!-39 1|-64 4!-64 4|-126 0!-126 0|-134 1!-134 1|-89 -11!-89 -11|-25 -12!-25
+ -12|-20 -13!-20 -13|-4 -10!-4 -10|37 -11!37 -11|78 -6!78 -6[95 -7 103 -15!103 -15|109 -13!109 -13|146 -14"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!146 -14|209 -7!209 -7|242 -9!242 -9|249 -7!249 -7|309 -9!309 -9|360 -4!360 -4|366 0!366 0|436 -9!462 -14|437 -20"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

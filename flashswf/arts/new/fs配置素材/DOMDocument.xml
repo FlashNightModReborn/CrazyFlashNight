@@ -124,16 +124,19 @@
           <Include href="53式步骑枪/调整层.xml" loadImmediate="false" itemID="659eb6ee-000005a7" lastModified="1704953093"/>
           <Include href="53式步骑枪/图标-53式步骑枪.xml" itemID="659eadd3-00000327" lastModified="1704901315"/>
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1752638666"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1752651305"/>
+          <Include href="G11动画.xml" loadImmediate="false" itemID="68776282-000017ba" lastModified="1752654466"/>
           <Include href="g111动作件.xml" loadImmediate="false" itemID="6875ffba-00000a39" lastModified="1752564416"/>
           <Include href="G1111轮盘.xml" loadImmediate="false" itemID="687662df-000003bc" lastModified="1752589023"/>
           <Include href="Jackhammer/Jackhammer.xml" itemID="6870d3d5-00000654" lastModified="1752633499"/>
           <Include href="Jackhammer/图标-Jackhammer.xml" itemID="6870dc6b-000007f4" lastModified="1752226965"/>
-          <Include href="M1918A2/G11.xml" itemID="68751898-0000072e" lastModified="1752505372"/>
-          <Include href="M1918A2/G111.xml" itemID="6875b9ba-00000990" lastModified="1752568461"/>
-          <Include href="M1918A2/G1111.xml" loadImmediate="false" itemID="687633d0-00000c36" lastModified="1752641464"/>
+          <Include href="M1918A2/G11.xml" itemID="68751898-0000072e" lastModified="1752656002"/>
+          <Include href="M1918A2/G111.xml" itemID="6875b9ba-00000990" lastModified="1752651696"/>
+          <Include href="M1918A2/G1111.xml" itemID="687633d0-00000c36" lastModified="1752651243"/>
           <Include href="M1918A2/M1918A2.xml" itemID="687109e5-00002571" lastModified="1752240876"/>
           <Include href="M1918A2/图标-G11.xml" itemID="68751c93-0000074a" lastModified="1752505513"/>
+          <Include href="M1918A2/图标-G111.xml" itemID="687755fb-00000d7a" lastModified="1752651300"/>
+          <Include href="M1918A2/图标-G1111.xml" itemID="68775606-00000d9b" lastModified="1752651335"/>
           <Include href="M1918A2/图标-M1918A2.xml" itemID="68727d9b-000003aa" lastModified="1752333723"/>
           <Include href="NEGEV/Negev.xml" itemID="686a4cad-0000364f" lastModified="1751878281"/>
           <Include href="NEGEV/内格夫弹链动画.xml" loadImmediate="false" itemID="686a67d8-000036bc" lastModified="1751805789"/>
@@ -1116,6 +1119,11 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1241281" publishTime="1752654769"/>
+          <PublishItem publishSize="1241282" publishTime="1752654606"/>
+          <PublishItem publishSize="1240721" publishTime="1752653082"/>
+          <PublishItem publishSize="1240720" publishTime="1752651699"/>
+          <PublishItem publishSize="1240717" publishTime="1752651564"/>
           <PublishItem publishSize="1106934" publishTime="1752485384"/>
           <PublishItem publishSize="998670" publishTime="1752399608"/>
           <PublishItem publishSize="998669" publishTime="1752399207"/>
@@ -1131,10 +1139,5 @@
           <PublishItem publishSize="912484" publishTime="1752196833"/>
           <PublishItem publishSize="912627" publishTime="1752196077"/>
           <PublishItem publishSize="912451" publishTime="1752195485"/>
-          <PublishItem publishSize="912398" publishTime="1752195267"/>
-          <PublishItem publishSize="907313" publishTime="1752195193"/>
-          <PublishItem publishSize="883940" publishTime="1752156729"/>
-          <PublishItem publishSize="889133" publishTime="1752156618"/>
-          <PublishItem publishSize="888391" publishTime="1752156351"/>
      </publishHistory>
 </DOMDocument>
