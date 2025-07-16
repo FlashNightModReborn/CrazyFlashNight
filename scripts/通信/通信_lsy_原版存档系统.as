@@ -2,6 +2,7 @@
 import org.flashNight.arki.item.itemCollection.*;
 
 _root.存档系统 = new Object();
+_root.存档系统.latest_version = "2.7";
 
 _root.存档系统.初始化物品栏 = function(){
     return {
@@ -57,7 +58,7 @@ _root.存档系统.mydata数据组包 = function(){
     var lastSaved:String = 年 + "-" + pad(月) + "-" + pad(日) + " " + pad(时) + ":" + pad(分) + ":" + pad(秒);
 
     var mydata = {};
-    mydata.version = "2.7";
+    mydata.version = _root.存档系统.latest_version;
     mydata[0] = 主角储存数据;
     mydata[1] = 装备储存数据;
     mydata[2] = null;

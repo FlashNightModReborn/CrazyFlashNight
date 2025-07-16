@@ -1,14 +1,5 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#666666" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" timelineLabelWidth="216" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
-          <DOMFolderItem name="1.冷兵器" itemID="66f2d400-00001015"/>
-          <DOMFolderItem name="1.冷兵器/钝器" itemID="66f61336-0000049b"/>
-          <DOMFolderItem name="1.冷兵器/钝器/方钢锤" itemID="66f61336-0000049c"/>
-          <DOMFolderItem name="1.冷兵器/冷兵" itemID="66fbe776-000012d8"/>
-          <DOMFolderItem name="1.冷兵器/冷兵/锐器-重" itemID="66fbe776-000012d9"/>
-          <DOMFolderItem name="1.冷兵器/冷兵/锐器-重/黑铁重剑" itemID="66fbe776-000012da"/>
-          <DOMFolderItem name="1.冷兵器/长柄" itemID="66f2d400-00001016"/>
-          <DOMFolderItem name="1.冷兵器/长柄/5.黑铁重剑枪" itemID="66f2d400-00001017"/>
-          <DOMFolderItem name="1.冷兵器/长柄/7.硬木长矛" itemID="66f76b32-000004f8"/>
           <DOMFolderItem name="1.特效文件夹" itemID="67cddd8a-000023e2"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系" itemID="67cddd8a-000023e3" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系/雷电电" itemID="67cddd8a-000023e4" isExpanded="true"/>
@@ -47,8 +38,8 @@
           <DOMFolderItem name="特效与子弹/01.白净色系/圆状气爆/未命名文件夹 1" itemID="6634d11f-000008c5" isExpanded="true"/>
           <DOMFolderItem name="特效与子弹/01.白净色系/重力用特效" itemID="66660762-00001512"/>
           <DOMFolderItem name="特效与子弹/08.力大砖飞" itemID="66fc24d5-000017a4"/>
-          <DOMFolderItem name="特效与子弹/08.力大砖飞/碎石飞扬" itemID="66fc24d5-000017a5"/>
-          <DOMFolderItem name="特效与子弹/08.力大砖飞/碎石飞扬/Graphic" itemID="66fc24d5-000017a6"/>
+          <DOMFolderItem name="特效与子弹/08.力大砖飞/碎石飞扬" itemID="66fc24d5-000017a5" isExpanded="true"/>
+          <DOMFolderItem name="特效与子弹/08.力大砖飞/碎石飞扬/Graphic" itemID="66fc24d5-000017a6" isExpanded="true"/>
           <DOMFolderItem name="特效与子弹/裂地拳特效" itemID="668be6aa-00000635" isExpanded="true"/>
           <DOMFolderItem name="无AS链接" itemID="673f5879-00000b0e"/>
           <DOMFolderItem name="无AS链接/气功弹（和爆炸）素材" itemID="673f5879-00000b0f" isExpanded="true"/>
@@ -62,11 +53,11 @@
           <DOMFolderItem name="主角动画层" itemID="66577cd4-00002e52"/>
      </folders>
      <fonts>
-          <DOMFontItem name="Font 633" itemID="6577b697-0000075f" font="MS-PGothic" size="0" id="633" embeddedCharacters="否射是机"/>
-          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
-          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
-          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
           <DOMFontItem name="Font 86" itemID="6577b697-00000757" font="MicrosoftYaHei" size="0" id="86" embeddedCharacters=".Lv"/>
+          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
+          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
+          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
+          <DOMFontItem name="Font 633" itemID="6577b697-0000075f" font="MS-PGothic" size="0" id="633" embeddedCharacters="否射是机"/>
      </fonts>
      <media>
           <DOMSoundItem name="sound/BERSERK ON.wav" itemID="67ee296b-00000733" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/things0/LIBRARY/sound/BERSERK ON.wav" sourceLastImported="1743616370" externalFileSize="2840844" href="sound/BERSERK ON.wav" soundDataHRef="M 107 1743661368.dat" format="44kHz 16bit Stereo" sampleCount="710010" exportFormat="5" exportBits="17"/>
@@ -1166,14 +1157,8 @@
           <Include href="sprite/战技.xml" loadImmediate="false" itemID="66098aa7-00002911" lastModified="1750180972"/>
           <Include href="sprite/主角-女（弃用）.xml" loadImmediate="false" itemID="67c8031d-00000716" lastModified="1741161249"/>
           <Include href="sprite/主角模板npc.xml" itemID="686f3f88-000007c6" lastModified="1752121224"/>
-          <Include href="补间 1.xml" itemIcon="1" loadImmediate="false" itemID="66e80072-0000289c" lastModified="1726480498"/>
-          <Include href="补间 2.xml" itemIcon="1" loadImmediate="false" itemID="66e80072-0000289e" lastModified="1726480498"/>
-          <Include href="补间 3.xml" itemIcon="1" loadImmediate="false" itemID="67138899-00000e6a" lastModified="1729333401"/>
-          <Include href="补间 4.xml" itemIcon="1" loadImmediate="false" itemID="67138899-00000e6c" lastModified="1729333401"/>
           <Include href="补间 5.xml" itemIcon="1" loadImmediate="false" itemID="674c99aa-00002fa6" lastModified="1733073322"/>
           <Include href="补间 6.xml" itemIcon="1" loadImmediate="false" itemID="674c99ab-00002fab" lastModified="1733073323"/>
-          <Include href="补间 7.xml" itemIcon="1" loadImmediate="false" itemID="6850039e-0000074d" lastModified="1750074270"/>
-          <Include href="补间 8.xml" itemIcon="1" loadImmediate="false" itemID="6850039e-0000074f" lastModified="1750074270"/>
           <Include href="残影1.xml" loadImmediate="false" itemID="674008f5-0000089b" lastModified="1732286029"/>
           <Include href="残影2.xml" loadImmediate="false" itemID="674008ff-0000089d" lastModified="1732286250"/>
           <Include href="残影3.xml" loadImmediate="false" itemID="67400921-0000089f" lastModified="1732286409"/>
@@ -1221,7 +1206,7 @@
           <Include href="拳风2.xml" itemIcon="1" loadImmediate="false" itemID="68499d3f-00005805" lastModified="1749654847"/>
           <Include href="拳风特效.xml" itemIcon="1" loadImmediate="false" itemID="68499705-000050c2" lastModified="1749653253"/>
           <Include href="日字冲拳残影.xml" loadImmediate="false" itemID="67cc950f-00000672" lastModified="1741460802"/>
-          <Include href="神秘文件夹/神秘影片剪辑.xml" itemID="66530531-00000d80" lastModified="1716719800"/>
+          <Include href="神秘文件夹/神秘影片剪辑.xml" itemID="66530531-00000d80" lastModified="1752652103"/>
           <Include href="狮子斩刀光.xml" loadImmediate="false" itemID="66fac585-0000073c" lastModified="1731920115"/>
           <Include href="狮子斩刀光1.xml" loadImmediate="false" itemID="673b01ff-000006f2" lastModified="1731920383"/>
           <Include href="狮子斩刀光2.xml" loadImmediate="false" itemID="673b0205-000006f6" lastModified="1731920389"/>

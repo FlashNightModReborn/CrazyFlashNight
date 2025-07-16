@@ -3,10 +3,10 @@
           <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
           <DOMFolderItem name="font" itemID="65977cd0-00001d33"/>
           <DOMFolderItem name="image" itemID="65976161-00000eac"/>
-          <DOMFolderItem name="import" itemID="65977cdc-00001d38" isExpanded="true"/>
+          <DOMFolderItem name="import" itemID="65977cdc-00001d38"/>
           <DOMFolderItem name="import/arts" itemID="65981594-00000b2f"/>
           <DOMFolderItem name="import/scripts" itemID="65996a47-00000b1c"/>
-          <DOMFolderItem name="import/UI组件" itemID="6700c220-00000b13" isExpanded="true"/>
+          <DOMFolderItem name="import/UI组件" itemID="6700c220-00000b13"/>
           <DOMFolderItem name="import/关卡地图" itemID="65c78d54-00000eac"/>
           <DOMFolderItem name="import/外部地图" itemID="65d313c5-00000b63"/>
           <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
@@ -532,7 +532,7 @@
           <Include href="button/帮助界面按钮.xml" itemIcon="0" loadImmediate="false" itemID="66521db7-00000bd8" lastModified="1716657591"/>
           <Include href="button/关闭按钮.xml" itemIcon="0" loadImmediate="false" itemID="67bb5ced-000004a8" lastModified="1740332590"/>
           <Include href="button/退出游戏按钮.xml" itemIcon="0" loadImmediate="false" itemID="66521dda-00000bd9" lastModified="1716657626"/>
-          <Include href="import/_check.xml" loadImmediate="false" itemID="6653116c-00000d72" lastModified="1716719994"/>
+          <Include href="import/_check.xml" loadImmediate="false" itemID="6653116c-00000d72" lastModified="1752652040"/>
           <Include href="import/arts/things-new.xml" itemID="6599827a-00000c51" lastModified="1704559398"/>
           <Include href="import/arts/加载MC库-00.xml" itemID="65977e02-000031d3" lastModified="1704467233"/>
           <Include href="import/arts/加载mc库-2.xml" itemID="65977ea3-000035db" lastModified="1704467238"/>
@@ -867,7 +867,7 @@
           <Include href="sprite/装备强化按钮.xml" loadImmediate="false" itemID="66521e44-00000bdc" lastModified="1740332185"/>
           <Include href="UI引用.xml" loadImmediate="false" itemID="67cea98d-0000092d" lastModified="1752395730"/>
           <Include href="UI重构/K点图标.xml" itemID="666120fd-000010dd" lastModified="1717646028"/>
-          <Include href="UI重构/存档显示块.xml" loadImmediate="false" itemID="68521747-000225fa" lastModified="1752593565"/>
+          <Include href="UI重构/存档显示块.xml" loadImmediate="false" itemID="68521747-000225fa" lastModified="1752651930"/>
           <Include href="UI重构/技能学习图标.xml" loadImmediate="false" itemID="66914f92-00004dff" lastModified="1720799123"/>
           <Include href="UI重构/金币图标.xml" itemID="66612104-000010df" lastModified="1717646045"/>
           <Include href="UI重构/商店相关/npc商店名称UI.xml" loadImmediate="false" itemID="668a5bba-000008f1" lastModified="1732205311"/>
@@ -898,7 +898,7 @@
           <Include href="无限过图摄像机.xml" loadImmediate="false" itemID="68402519-00001790" lastModified="1749034265"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;guideline direction="h"&gt;476&lt;/guideline&gt;&lt;guideline direction="h"&gt;516&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" currentFrame="3" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;guideline direction="h"&gt;476&lt;/guideline&gt;&lt;guideline direction="h"&gt;516&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Labels Layer 1" color="#E88C68" autoNamed="false">
                          <frames>
@@ -1018,9 +1018,9 @@
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="as" color="#7B84C3" autoNamed="false">
+                    <DOMLayer name="as" color="#7B84C3" current="true" isSelected="true" autoNamed="false">
                          <frames>
-                              <DOMFrame index="0" duration="5" keyMode="9728">
+                              <DOMFrame index="0" keyMode="9728">
                                    <Actionscript>
                                         <script><![CDATA[_root.isSWF = true;
 _root.加载片头动画 = false;
@@ -1201,6 +1201,12 @@ STEAMstory.onLoad = function()
 };
 */
 ]]></script>
+                                   </Actionscript>
+                                   <elements/>
+                              </DOMFrame>
+                              <DOMFrame index="1" duration="4" keyMode="9728">
+                                   <Actionscript>
+                                        <script><![CDATA[stop();]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
@@ -2528,7 +2534,7 @@ onClipEvent (mouseMove) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="Layer 179" color="#417BFC" parentLayerIndex="9" current="true" isSelected="true" autoNamed="false">
+                    <DOMLayer name="Layer 179" color="#417BFC" parentLayerIndex="9" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="5" keyMode="9728">
                                    <elements/>
@@ -3153,7 +3159,7 @@ on (press) {
                                                   <Point x="97.65" y="43.55"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="UI重构/存档显示块" name="工具用存档块" selected="true" centerPoint3DX="-185.05" centerPoint3DY="279">
+                                        <DOMSymbolInstance libraryItemName="UI重构/存档显示块" name="工具用存档块" centerPoint3DX="-185.05" centerPoint3DY="279">
                                              <matrix>
                                                   <Matrix tx="-305" ty="231"/>
                                              </matrix>
@@ -5226,15 +5232,15 @@ on(rollOut){
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!9382 4727|9685 4727!9685 4727|9975 4908!9975 4908|9672 4908!9672 4908|9369 4908!9369 4908|9659 5089!9659 5089|9355 5089!9355 5089|9065 4908!9065 4908|9369 4908!9369 4908|9079 4727!9079 4727|9382 4727!9382 4727|9672 4908!9685 4727|9395
- 4546!9395 4546|9699 4546!9699 4546|9989 4727!9989 4727|9685 4727!9395 4546|9092 4546!9092 4546|9382 4727!8472 4727|8182 4546!8182 4546|8485 4546!8485 4546|8775 4727!8775 4727|9065 4908!9065 4908|8762 4908!8762 4908|8472 4727!8472 4727
-|8775 4727!8485 4546|8789 4546!8789 4546|9079 4727!9079 4727|8775 4727!9355 5089|9645 5270!9645 5270|9342 5270!9342 5270|9052 5089!9052 5089|9355 5089!9645 5270|9935 5451!9935 5451|9633 5451!9633 5451|9342 5270!9052 5089|8762 4908!9092
- 4546|8789 4546!11755 5451|11452 5451!11452 5451|11162 5270!11162 5270|11465 5270!11465 5270|11755 5451!11465 5270|11175 5089!11175 5089|11479 5089!11479 5089|11769 5270!11769 5270|11465 5270!11769 5270|12059 5451!12059 5451|11755 5451
-!11175 5089|10885 4908!10885 4908|11189 4908!11189 4908|11479 5089!10885 4908|10582 4908!10582 4908|10872 5089!10872 5089|10569 5089!10569 5089|10279 4908!10279 4908|10582 4908!10582 4908|10292 4727!10292 4727|10595 4727!10595 4727|10885
- 4908!10595 4727|10305 4546!10305 4546|10609 4546!10609 4546|10899 4727!10899 4727|10595 4727!10899 4727|11189 4908!9699 4546|10002 4546!10002 4546|10292 4727!10292 4727|9989 4727!9989 4727|10279 4908!10279 4908|9975 4908!10002 4546|10305
- 4546!9645 5270|9949 5270!9949 5270|10239 5451!10239 5451|9935 5451!10555 5270|10859 5270!10859 5270|11149 5451!11149 5451|10845 5451!10845 5451|10555 5270!10555 5270|10252 5270!10252 5270|9949 5270!9949 5270|9659 5089!9659 5089|9962
- 5089!9962 5089|10252 5270!10252 5270|10542 5451!10542 5451|10239 5451!9962 5089|10265 5089!10265 5089|9975 4908!10265 5089|10569 5089!10569 5089|10859 5270!10859 5270|11162 5270!10845 5451|10542 5451!11162 5270|10872 5089!10872 5089
-|11175 5089!10555 5270|10265 5089!11452 5451|11149 5451!9672 4908|9962 5089"/>
+!10305 4546|10002 4546!10002 4546|10292 4727!10292 4727|10595 4727!10595 4727|10899 4727!10899 4727|10609 4546!10609 4546|10305 4546!10305 4546|10595 4727!10595 4727|10885 4908!10885 4908|10582 4908!10582 4908|10292 4727!10292 4727|9989
+ 4727!9989 4727|9685 4727!9685 4727|9395 4546!9395 4546|9092 4546!9092 4546|8789 4546!8789 4546|9079 4727!9079 4727|9382 4727!9382 4727|9685 4727!9092 4546|9382 4727!9382 4727|9672 4908!9672 4908|9369 4908!9369 4908|9079 4727!9079 4727
+|8775 4727!8775 4727|8472 4727!8472 4727|8762 4908!8762 4908|9065 4908!9065 4908|8775 4727!8775 4727|8485 4546!8485 4546|8182 4546!8182 4546|8472 4727!9395 4546|9699 4546!9699 4546|10002 4546!9065 4908|9369 4908!9369 4908|9659 5089!9659
+ 5089|9962 5089!9962 5089|9672 4908!8485 4546|8789 4546!10845 5451|10555 5270!10555 5270|10859 5270!10859 5270|11162 5270!11162 5270|11465 5270!11465 5270|11769 5270!11769 5270|11479 5089!11479 5089|11175 5089!11175 5089|11465 5270!11465
+ 5270|11755 5451!11755 5451|11452 5451!11452 5451|11149 5451!11149 5451|10845 5451!10845 5451|10542 5451!10542 5451|10239 5451!10239 5451|9935 5451!9935 5451|9633 5451!9633 5451|9342 5270!9342 5270|9052 5089!9052 5089|8762 4908!9052 5089
+|9355 5089!9355 5089|9645 5270!9645 5270|9949 5270!9949 5270|9659 5089!9659 5089|9355 5089!9935 5451|9645 5270!9645 5270|9342 5270!9355 5089|9065 4908!11769 5270|12059 5451!12059 5451|11755 5451!10899 4727|11189 4908!11189 4908|11479
+ 5089!10885 4908|11189 4908!10555 5270|10265 5089!10265 5089|10569 5089!10569 5089|10279 4908!10279 4908|9975 4908!9975 4908|9672 4908!9699 4546|9989 4727!9989 4727|10279 4908!10279 4908|10582 4908!10582 4908|10872 5089!10872 5089|11175
+ 5089!11175 5089|10885 4908!9962 5089|10265 5089!9962 5089|10252 5270!10252 5270|9949 5270!9949 5270|10239 5451!11452 5451|11162 5270!11162 5270|10872 5089!10872 5089|10569 5089!10569 5089|10859 5270!10859 5270|11149 5451!10265 5089|9975
+ 4908!10555 5270|10252 5270!10252 5270|10542 5451!9685 4727|9975 4908"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="865.35" centerPoint3DY="164.1">
@@ -5675,15 +5681,15 @@ on (rollOut) {
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!9662 4895|9372 4714!9372 4714|9069 4714!9069 4714|9359 4895!9359 4895|9662 4895!9385 4533|9082 4533!9082 4533|9372 4714!9372 4714|9675 4714!9675 4714|9385 4533!9385 4533|9689 4533!9689 4533|9992 4533!9992 4533|10295 4533!10295 4533|10599
+!9372 4714|9069 4714!9069 4714|9359 4895!9359 4895|9662 4895!9662 4895|9372 4714!9675 4714|9385 4533!9385 4533|9082 4533!9082 4533|9372 4714!9372 4714|9675 4714!9385 4533|9689 4533!9689 4533|9992 4533!9992 4533|10295 4533!10295 4533|10599
  4533!10599 4533|10889 4714!10889 4714|11179 4895!11179 4895|11469 5076!11469 5076|11759 5257!11759 5257|12049 5438!12049 5438|11745 5438!11745 5438|11442 5438!11442 5438|11139 5438!11139 5438|10835 5438!10835 5438|10532 5438!10532 5438
 |10229 5438!10229 5438|9925 5438!9925 5438|9623 5438!9623 5438|9332 5257!9332 5257|9042 5076!9042 5076|8752 4895!8752 4895|8462 4714!8462 4714|8172 4533!8172 4533|8475 4533!8475 4533|8779 4533!8779 4533|9082 4533!9055 4895|9345 5076!9345
- 5076|9649 5076!9649 5076|9359 4895!9359 4895|9055 4895!8462 4714|8765 4714!8765 4714|8475 4533!9332 5257|9635 5257!9635 5257|9345 5076!9345 5076|9042 5076!9055 4895|8752 4895!9069 4714|8765 4714!8765 4714|9055 4895!8779 4533|9069 4714
-!11759 5257|11455 5257!11455 5257|11745 5438!10889 4714|10585 4714!10585 4714|10875 4895!10875 4895|11179 4895!10572 4895|10862 5076!10862 5076|11165 5076!11165 5076|10875 4895!10875 4895|10572 4895!9689 4533|9979 4714!9979 4714|10282
- 4714!10282 4714|9992 4533!9979 4714|10269 4895!10269 4895|10572 4895!10572 4895|10282 4714!9965 4895|10255 5076!10255 5076|10559 5076!10559 5076|10269 4895!10269 4895|9965 4895!10229 5438|9939 5257!9939 5257|9635 5257!9635 5257|9925
- 5438!10532 5438|10242 5257!10242 5257|9939 5257!10242 5257|10545 5257!10545 5257|10255 5076!10255 5076|9952 5076!9952 5076|10242 5257!10835 5438|10545 5257!10849 5257|11152 5257!11152 5257|10862 5076!10862 5076|10559 5076!10559 5076
-|10849 5257!11139 5438|10849 5257!10849 5257|10545 5257!10585 4714|10282 4714!10295 4533|10585 4714!11165 5076|11469 5076!11152 5257|11455 5257!11455 5257|11165 5076!11152 5257|11442 5438!9675 4714|9979 4714!9649 5076|9952 5076!9952 5076
-|9662 4895!9939 5257|9649 5076!9662 4895|9965 4895!9965 4895|9675 4714"/>
+ 5076|9649 5076!9649 5076|9359 4895!9359 4895|9055 4895!8462 4714|8765 4714!8765 4714|8475 4533!9332 5257|9635 5257!9635 5257|9345 5076!9345 5076|9042 5076!8779 4533|9069 4714!9069 4714|8765 4714!8765 4714|9055 4895!9055 4895|8752 4895
+!11759 5257|11455 5257!11455 5257|11745 5438!10572 4895|10862 5076!10862 5076|11165 5076!11165 5076|10875 4895!10875 4895|10572 4895!10889 4714|10585 4714!10585 4714|10875 4895!10875 4895|11179 4895!9965 4895|10255 5076!10255 5076|10559
+ 5076!10559 5076|10269 4895!10269 4895|9965 4895!10269 4895|10572 4895!10572 4895|10282 4714!10282 4714|9979 4714!9979 4714|10269 4895!10282 4714|9992 4533!10242 5257|10545 5257!10545 5257|10255 5076!10255 5076|9952 5076!9952 5076|10242
+ 5257!10532 5438|10242 5257!10242 5257|9939 5257!9939 5257|10229 5438!11139 5438|10849 5257!10849 5257|10545 5257!10545 5257|10835 5438!10559 5076|10849 5257!10849 5257|11152 5257!11152 5257|10862 5076!10862 5076|10559 5076!10295 4533
+|10585 4714!10585 4714|10282 4714!11455 5257|11152 5257!11152 5257|11442 5438!11455 5257|11165 5076!11165 5076|11469 5076!9662 4895|9965 4895!9965 4895|9675 4714!9635 5257|9939 5257!9939 5257|9649 5076!9649 5076|9952 5076!9952 5076|9662
+ 4895!9675 4714|9979 4714!9979 4714|9689 4533!9635 5257|9925 5438"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="864.85" centerPoint3DY="163.45">
@@ -8059,6 +8065,16 @@ onClipEvent (enterFrame) {
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="682070" publishTime="1752652010"/>
+          <PublishItem publishSize="682006" publishTime="1752651920"/>
+          <PublishItem publishSize="682019" publishTime="1752651872"/>
+          <PublishItem publishSize="682089" publishTime="1752651702"/>
+          <PublishItem publishSize="682022" publishTime="1752651607"/>
+          <PublishItem publishSize="682031" publishTime="1752651575"/>
+          <PublishItem publishSize="682062" publishTime="1752651476"/>
+          <PublishItem publishSize="682071" publishTime="1752651394"/>
+          <PublishItem publishSize="682081" publishTime="1752651275"/>
+          <PublishItem publishSize="682081" publishTime="1752651100"/>
           <PublishItem publishSize="682009" publishTime="1752593514"/>
           <PublishItem publishSize="682020" publishTime="1752593428"/>
           <PublishItem publishSize="682046" publishTime="1752593399"/>
@@ -8069,15 +8085,5 @@ onClipEvent (enterFrame) {
           <PublishItem publishSize="681904" publishTime="1752592663"/>
           <PublishItem publishSize="681914" publishTime="1752592618"/>
           <PublishItem publishSize="681923" publishTime="1752592570"/>
-          <PublishItem publishSize="681995" publishTime="1752592442"/>
-          <PublishItem publishSize="681985" publishTime="1752592361"/>
-          <PublishItem publishSize="681962" publishTime="1752592285"/>
-          <PublishItem publishSize="681890" publishTime="1752592004"/>
-          <PublishItem publishSize="681921" publishTime="1752591770"/>
-          <PublishItem publishSize="681946" publishTime="1752591352"/>
-          <PublishItem publishSize="705303" publishTime="1752118695"/>
-          <PublishItem publishSize="705726" publishTime="1752116197"/>
-          <PublishItem publishSize="706670" publishTime="1750848009"/>
-          <PublishItem publishSize="868092" publishTime="1750694708"/>
      </publishHistory>
 </DOMDocument>

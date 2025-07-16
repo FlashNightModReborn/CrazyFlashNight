@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/存档显示块" itemID="68521747-000225fa" lastModified="1752593565" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/存档显示块" itemID="68521747-000225fa" lastModified="1752651930" lastUniqueIdentifier="4">
   <timeline>
     <DOMTimeline name="存档显示块" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;62&lt;/guideline&gt;&lt;guideline direction="h"&gt;23&lt;/guideline&gt;&lt;guideline direction="h"&gt;4&lt;/guideline&gt;&lt;guideline direction="h"&gt;58&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;65&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -476,7 +476,7 @@ this.onEnterFrame = function() {
             }
 			
 			if (saveData.version != null) {
-                this.版本文本 = saveData.version + "+";
+                this.版本文本 = saveData.version + (saveData.version == _root.存档系统.latest_version ? "+ (最新)" : "+");
             }else{
 				this.版本文本 = "未知版本";
 			}
@@ -497,19 +497,12 @@ this.onEnterFrame = function() {
             this.角色信息文本 = "暂无存档";
 			this.版本文本 = "";
             this.主线进度文本 = "";
-            this.lastSaved = "";
+            // this.lastSaved = "";
             trace("没有找到存档数据");
         }
     }
 };]]></script>
               </Actionscript>
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 5" color="#4FFFFF">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -563,7 +556,7 @@ this.onEnterFrame = function() {
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText fontRenderingMode="device" width="102.5" height="15.55" isSelectable="false" variableName="版本文本" lineType="multiline">
+                <DOMDynamicText fontRenderingMode="device" width="122.95" height="15.55" isSelectable="false" variableName="版本文本" lineType="multiline">
                   <matrix>
                     <Matrix tx="68.05" ty="25.95"/>
                   </matrix>
@@ -621,12 +614,6 @@ this.onEnterFrame = function() {
                     </DOMTextRun>
                     <DOMTextRun>
                       <characters>:</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                       </textAttrs>

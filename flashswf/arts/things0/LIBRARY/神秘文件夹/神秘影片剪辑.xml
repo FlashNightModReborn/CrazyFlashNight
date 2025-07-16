@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="神秘文件夹/神秘影片剪辑" itemID="66530531-00000d80" linkageExportForAS="true" linkageIdentifier="_loc119_" lastModified="1716719800">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="神秘文件夹/神秘影片剪辑" itemID="66530531-00000d80" linkageExportForAS="true" linkageIdentifier="_loc119_" lastModified="1752652103">
   <timeline>
     <DOMTimeline name="神秘影片剪辑">
       <layers>
@@ -12,7 +12,7 @@ _loc1_.onLoad = function(success)
 {
 	if (success)
 	{
-		_root.gotoAndStop("多语言");
+		_root.play();
 		delete _loc1_;
 	}
 	else
