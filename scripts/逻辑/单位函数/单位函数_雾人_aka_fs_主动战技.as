@@ -116,10 +116,21 @@ _root.主动战技函数.长枪.突击者之眼 = {
         自机.突击者之眼弹药类型 = skill.bullet ? skill.bullet : "无壳穿刺子弹";
         自机.突击者之眼数 = skill.split && skill.split > 0 ? Number(skill.split) : 3;
         自机.突击者之眼音效 = skill.sound ? skill.sound : "re_GL_under.wav";
+
+        if(_root.控制目标 == 自机._name) {
+            var equipment = _root.物品栏.装备栏;
+            upgradeLevel = equipment.getLevel("长枪");
+        } else {
+            upgradeLevel = _root.主角函数.获取人形怪强化等级(自机.等级, 自机.名字);
+        }
+
+        自机.主动战技.长枪.冷却时间  *= 1 - upgradeLevel * 0.05;
+        
+        _root.发布消息(自机.主动战技.长枪.冷却时间)
     },
     释放许可判定:function(自机){
         if(自机["主手射击中"]) return false;
-
+        _root.发布消息(自机.主动战技.长枪.冷却时间)
         var magazineCapName:String =  "长枪弹匣容量";
         var shootCountName:String = "长枪射击次数";
 
