@@ -230,7 +230,10 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             }
             
             // 检查射击许可
-            if (!that.射击许可标签) return;
+            if (!that.射击许可标签) {
+                // _root.发布消息("主角函数.射击许可", "不允许射击");
+                return;
+            }
             
             // 开始持续射击
             var continueShooting:Boolean = that[continueMethodName](parentRef, weaponType, that[speedProp], that);

@@ -85,6 +85,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         // 初始状态设定
         core.射击最大后摇中 = false;
         if (!man.射击许可标签) {
+            // _root.发布消息("主角函数.射击许可", "不允许射击");
             core[shootStateName] = false;
             root.帧计时器.移除任务(core[config.taskName]);
             return false;
@@ -215,7 +216,10 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         }
 
         // 检查射击许可标签
-        if (!protagonist.射击许可标签) return;
+        if (!protagonist.射击许可标签) {
+            // _root.发布消息("主角函数.射击许可", "不允许射击");
+            return;
+        }
 
         // 调用持续射击核心逻辑
         if (ShootCore.continuousShoot(core, attackMode, interval, params)) {

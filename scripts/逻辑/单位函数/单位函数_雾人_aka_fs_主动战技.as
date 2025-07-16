@@ -125,41 +125,44 @@ _root.主动战技函数.长枪.突击者之眼 = {
         }
 
         自机.主动战技.长枪.冷却时间  *= 1 - upgradeLevel * 0.05;
-        
-        _root.发布消息(自机.主动战技.长枪.冷却时间)
+
+        自机.dispatcher.subscribe("长枪射击", function() {
+            if(!自机.突击者之眼开启) return;
+            var prop:Object = 自机.man.子弹属性;
+            var shootCountName:String = "长枪射击次数";
+            prop.子弹种类 = 自机.突击者之眼弹药类型;
+            prop.霰弹值 = 自机.突击者之眼数;
+            prop.sound = 自机.突击者之眼音效;
+            自机[shootCountName][自机["长枪"]] += 自机.突击者之眼数 - 1;
+            自机.突击者之眼开启 = false;
+        });
     },
     释放许可判定:function(自机){
         if(自机["主手射击中"]) return false;
-        _root.发布消息(自机.主动战技.长枪.冷却时间)
         var magazineCapName:String =  "长枪弹匣容量";
         var shootCountName:String = "长枪射击次数";
 
-        if(自机[shootCountName][自机["长枪"]] + 3 > 自机[magazineCapName]) return false;
+        if(自机[shootCountName][自机["长枪"]] + 自机.突击者之眼数 > 自机[magazineCapName]) return false;
         if(自机.浮空 || 自机.倒地) return false;
-        if(!(自机.状态 === "长枪行走" || 自机.状态 === "长枪站立") || 自机.换弹中) return false;
         return true;
     },
     释放:function(自机){
+
+        自机.强制奔跑 = false;
+
         var currentA:Boolean = 自机.动作A;
         自机.动作A = true;
-
-        var prop:Object = 自机.man.子弹属性;
-        var type:String = prop.子弹种类;
-        var muti:Number = prop.霰弹值;
-        var sound:String = prop.sound;
-        var shootCountName:String = "长枪射击次数";
-
-        prop.子弹种类 = 自机.突击者之眼弹药类型;
-        prop.霰弹值 = 自机.突击者之眼数;
-        prop.sound = 自机.突击者之眼音效;
-        自机[shootCountName][自机["长枪"]] += 自机.突击者之眼数 - 1;
-        自机.man.开始射击();
+        自机.突击者之眼开启 = true;
+        自机.攻击();
         
-        prop.子弹种类 = type;
-        prop.霰弹值 = muti;
-        prop.sound = sound;
+        var data:Object = _root.getItemData(自机.长枪);
+        var prop:Object = 自机.man.子弹属性;
 
-        自机.动作A = currentA;
+        prop.子弹种类 = data.data.bullet;
+        prop.霰弹值 = data.data.split;
+        prop.sound = data.data.sound;
+
+        // 自机.动作A = currentA;
     }
 }
 
