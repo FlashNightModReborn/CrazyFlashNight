@@ -113,13 +113,16 @@ _root.主动战技函数.长枪.发射榴弹 = {
 
 _root.主动战技函数.长枪.突击者之眼 = {
     初始化:function(自机){
-        自机.突击者之眼弹药类型 = skill.bullet ? skill.bullet : "纵向联弹-无壳穿刺子弹";
+        自机.突击者之眼弹药类型 = skill.bullet ? skill.bullet : "无壳穿刺子弹";
         自机.突击者之眼数 = skill.split && skill.split > 0 ? Number(skill.split) : 3;
         自机.突击者之眼音效 = skill.sound ? skill.sound : "re_GL_under.wav";
     },
     释放许可判定:function(自机){
+        if(自机["主手射击中"]) return false;
+
         var magazineCapName:String =  "长枪弹匣容量";
         var shootCountName:String = "长枪射击次数";
+
         if(自机[shootCountName][自机["长枪"]] + 3 > 自机[magazineCapName]) return false;
         if(自机.浮空 || 自机.倒地) return false;
         if(!(自机.状态 === "长枪行走" || 自机.状态 === "长枪站立") || 自机.换弹中) return false;
