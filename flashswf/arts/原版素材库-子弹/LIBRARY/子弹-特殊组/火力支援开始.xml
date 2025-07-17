@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-特殊组/火力支援开始" itemID="669d3458-00001747" linkageExportForAS="true" linkageIdentifier="火力支援开始" lastModified="1722660646">
   <timeline>
-    <DOMTimeline name="火力支援开始" currentFrame="5">
+    <DOMTimeline name="火力支援开始">
       <layers>
-        <DOMLayer name="Labels Layer" color="#F29F48">
+        <DOMLayer name="Labels Layer" color="#F29F48" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -18,7 +18,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#BEDCE1" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#BEDCE1">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -98,15 +98,15 @@ else
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMShape isFloating="true">
+                <DOMShape>
                   <fills>
                     <FillStyle index="1">
                       <SolidColor color="#99CC00"/>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!330 -120[670 -47 670 90!670 90[670 158 631 210!631 210[569 290 430 290!430 290[305 290 113 221!113 221[-113 139 -200 125!-200 125|-380 105!-380 105|-529 85!-529 85[-670 50 -670 -90!-670 -90[-670 -290 -380 -290!-380 -290[-163 -290 7 -227
-!7 -227[257 -135 330 -120"/>
+                    <Edge fillStyle1="1" edges="!330 -120[670 -47 670 90!670 90[670 158 631 210!631 210[569 290 430 290!430 290[305 290 113 221!113 221[-113 139 -200 125!-200 125|-529 85!-529 85[-670 50 -670 -90!-670 -90[-670 -290 -380 -290!-380 -290[-163 -290 7 -227!7 -227[257 -135
+ 330 -120"/>
                   </edges>
                 </DOMShape>
               </elements>

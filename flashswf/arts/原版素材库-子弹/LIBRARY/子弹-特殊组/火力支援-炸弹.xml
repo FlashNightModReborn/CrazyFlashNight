@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-特殊组/火力支援-炸弹" itemID="669d345c-00001748" linkageExportForAS="true" linkageIdentifier="火力支援-炸弹" lastModified="1729338582">
   <timeline>
-    <DOMTimeline name="火力支援-炸弹" currentFrame="65">
+    <DOMTimeline name="火力支援-炸弹" currentFrame="15">
       <layers>
         <DOMLayer name="Labels Layer" color="#F9F958" locked="true">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#91B5D7" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#91B5D7" locked="true">
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements/>
@@ -530,7 +530,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>

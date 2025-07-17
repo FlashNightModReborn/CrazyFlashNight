@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="G1111前部件" itemID="6878c489-000003b4" symbolType="graphic" lastModified="1752745561">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="g11/G1111前部件" itemID="6878c489-000003b4" symbolType="graphic" lastModified="1752745561">
   <timeline>
     <DOMTimeline name="G1111前部件">
       <layers>
@@ -6,7 +6,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="G1111枪口" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="g11/G1111枪口" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="84.3" ty="17.1"/>
                   </matrix>
@@ -29,12 +29,12 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="G1111上护甲" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="g11/G1111上护甲" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point x="60.65" y="12.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="G1111下护甲" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="g11/G1111下护甲" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="36.35" ty="32.5"/>
                   </matrix>

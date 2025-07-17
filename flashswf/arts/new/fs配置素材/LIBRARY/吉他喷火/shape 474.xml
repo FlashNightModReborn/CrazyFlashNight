@@ -47,6 +47,7 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
+                    <Edge fillStyle1="5" strokeStyle="1" edges="!693 85|939 85!939 85|959 125!959 125|2405 125!2405 125|2405 154"/>
                     <Edge fillStyle1="6" strokeStyle="1" edges="!2405 154|2405 187"/>
                     <Edge fillStyle1="7" strokeStyle="1" edges="!2405 187|2425 187!2425 187|2425 273!2425 273|693 273"/>
                     <Edge fillStyle1="4" strokeStyle="1" edges="!693 273|577 371"/>
@@ -61,20 +62,19 @@
                     <Edge fillStyle1="2" strokeStyle="1" edges="!115 213|90 266!90 266|57 255!57 255|77 195"/>
                     <Edge fillStyle1="4" strokeStyle="1" edges="!77 195[9 157 1 113!1 113|0 93"/>
                     <Edge fillStyle1="3" strokeStyle="1" edges="!0 93[3 22 89 5!89 5[207 -18 229 57!229 57|519 27!519 27[623 48 693 85"/>
-                    <Edge fillStyle1="5" strokeStyle="1" edges="!693 85|939 85!939 85|959 125!959 125|2405 125!2405 125|2405 154"/>
                     <Edge fillStyle0="1" fillStyle1="6" edges="!891 120|890 122!890 122[887 127 887 135!887 135[887 158 911 158!911 158[932 158 936 145"/>
                     <Edge fillStyle0="1" fillStyle1="5" edges="!936 145|936 139!936 139|933 124!933 124[927 112 909 112!909 112[896 112 891 120"/>
                     <Edge fillStyle0="5" fillStyle1="6" edges="!936 145|942 154!942 154|2405 154"/>
-                    <Edge fillStyle0="3" fillStyle1="7" strokeStyle="1" edges="!693 247|693 187"/>
-                    <Edge fillStyle0="3" fillStyle1="6" strokeStyle="1" edges="!693 187|693 120"/>
                     <Edge fillStyle0="3" fillStyle1="5" strokeStyle="1" edges="!693 120|693 85"/>
+                    <Edge fillStyle0="3" fillStyle1="6" strokeStyle="1" edges="!693 187|693 120"/>
+                    <Edge fillStyle0="3" fillStyle1="7" strokeStyle="1" edges="!693 247|693 187"/>
                     <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!505 274|511 255!511 255[511 242 502 233!502 233[493 224 480 224!480 224[467 224 458 233!458 233[451 240 450 251"/>
                     <Edge fillStyle0="2" fillStyle1="4" strokeStyle="1" edges="!450 251|449 255!449 255[449 268 458 277!458 277|466 283!466 283|480 286!480 286[493 286 502 277!502 277|503 277"/>
                     <Edge fillStyle0="2" fillStyle1="4" edges="!503 277|505 274"/>
                     <Edge fillStyle0="3" fillStyle1="2" strokeStyle="2" edges="!547 282|553 267!553 267|556 263!556 263[565 254 578 254!578 254[591 254 600 263!600 263|609 279"/>
                     <Edge fillStyle0="3" fillStyle1="4" edges="!609 279|662 262!662 262|693 247"/>
-                    <Edge fillStyle0="4" fillStyle1="3" edges="!547 282|522 281!522 281|516 279!516 279|505 274"/>
                     <Edge fillStyle0="4" fillStyle1="2" strokeStyle="2" edges="!609 279|609 285!609 285|600 307!600 307[591 316 578 316!578 316[565 316 556 307!556 307[547 298 547 285!547 285|547 282"/>
+                    <Edge fillStyle0="4" fillStyle1="3" edges="!547 282|522 281!522 281|516 279!516 279|505 274"/>
                     <Edge fillStyle0="4" fillStyle1="2" strokeStyle="1" edges="!541 359|577 371"/>
                     <Edge fillStyle0="4" fillStyle1="3" edges="!450 251|449 251!449 251|443 250!443 250|391 234"/>
                     <Edge fillStyle0="4" fillStyle1="2" edges="!391 234|390 235"/>
