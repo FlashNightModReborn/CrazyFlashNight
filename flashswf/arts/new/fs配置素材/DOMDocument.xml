@@ -125,22 +125,33 @@
           <Include href="53式步骑枪/图标-53式步骑枪.xml" itemID="659eadd3-00000327" lastModified="1704901315"/>
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1752651305"/>
-          <Include href="G11动画.xml" loadImmediate="false" itemID="68776282-000017ba" lastModified="1752654466"/>
-          <Include href="G11上支架.xml" itemIcon="1" loadImmediate="false" itemID="68784e75-00003582" lastModified="1752714869"/>
-          <Include href="G111磁轨激发状态.xml" itemIcon="1" loadImmediate="false" itemID="68784f5e-00003590" lastModified="1752715102"/>
-          <Include href="G111磁轨熄灭状态.xml" itemIcon="1" loadImmediate="false" itemID="68784f50-0000358c" lastModified="1752715088"/>
-          <Include href="g111动作件.xml" loadImmediate="false" itemID="6875ffba-00000a39" lastModified="1752564416"/>
-          <Include href="G1111轮盘.xml" loadImmediate="false" itemID="687662df-000003bc" lastModified="1752589023"/>
+          <Include href="G1111前部件.xml" itemIcon="1" loadImmediate="false" itemID="6878c489-000003b4" lastModified="1752745561"/>
+          <Include href="G1111枪口.xml" itemIcon="1" loadImmediate="false" itemID="6878c2f3-000003ad" lastModified="1752746157"/>
+          <Include href="G1111上护甲.xml" itemIcon="1" loadImmediate="false" itemID="6878c651-000003d5" lastModified="1752745553"/>
+          <Include href="G1111下护甲.xml" itemIcon="1" loadImmediate="false" itemID="6878c659-000003d9" lastModified="1752745561"/>
           <Include href="Jackhammer/Jackhammer.xml" itemID="6870d3d5-00000654" lastModified="1752633499"/>
           <Include href="Jackhammer/图标-Jackhammer.xml" itemID="6870dc6b-000007f4" lastModified="1752226965"/>
           <Include href="M1918A2/G11.xml" itemID="68751898-0000072e" lastModified="1752656002"/>
-          <Include href="M1918A2/G111.xml" itemID="6875b9ba-00000990" lastModified="1752720248"/>
-          <Include href="M1918A2/G1111.xml" itemID="687633d0-00000c36" lastModified="1752651243"/>
+          <Include href="M1918A2/G11动画.xml" loadImmediate="false" itemID="68776282-000017ba" lastModified="1752654466"/>
+          <Include href="M1918A2/G11上支架.xml" itemIcon="1" loadImmediate="false" itemID="68784e75-00003582" lastModified="1752714869"/>
+          <Include href="M1918A2/G111.xml" itemID="6875b9ba-00000990" lastModified="1752743837"/>
+          <Include href="M1918A2/G111磁轨激发状态.xml" itemIcon="1" loadImmediate="false" itemID="68784f5e-00003590" lastModified="1752715102"/>
+          <Include href="M1918A2/G111磁轨熄灭状态.xml" itemIcon="1" loadImmediate="false" itemID="68784f50-0000358c" lastModified="1752715088"/>
+          <Include href="M1918A2/g111动作件.xml" loadImmediate="false" itemID="6875ffba-00000a39" lastModified="1752564416"/>
+          <Include href="M1918A2/G1111.xml" itemID="687633d0-00000c36" lastModified="1752746292"/>
+          <Include href="M1918A2/G1111轮盘.xml" loadImmediate="false" itemID="687662df-000003bc" lastModified="1752589023"/>
           <Include href="M1918A2/M1918A2.xml" itemID="687109e5-00002571" lastModified="1752240876"/>
+          <Include href="M1918A2/xm556枪管动画.xml" loadImmediate="false" itemID="6873745e-00000785" lastModified="1752476420"/>
+          <Include href="M1918A2/补间 10.xml" itemIcon="1" loadImmediate="false" itemID="68760227-00000a49" lastModified="1752564263"/>
+          <Include href="M1918A2/磁轨.xml" loadImmediate="false" itemID="6875bcec-000009a1" lastModified="1752720386"/>
+          <Include href="M1918A2/机动部件.xml" itemIcon="1" loadImmediate="false" itemID="6878badd-00000a1c" lastModified="1752742621"/>
+          <Include href="M1918A2/上轨道.xml" loadImmediate="false" itemID="6875bcf6-000009a5" lastModified="1752566592"/>
+          <Include href="M1918A2/上支架.xml" loadImmediate="false" itemID="68760b65-00000a7d" lastModified="1752716432"/>
           <Include href="M1918A2/图标-G11.xml" itemID="68751c93-0000074a" lastModified="1752505513"/>
           <Include href="M1918A2/图标-G111.xml" itemID="687755fb-00000d7a" lastModified="1752651300"/>
           <Include href="M1918A2/图标-G1111.xml" itemID="68775606-00000d9b" lastModified="1752651335"/>
           <Include href="M1918A2/图标-M1918A2.xml" itemID="68727d9b-000003aa" lastModified="1752333723"/>
+          <Include href="M1918A2/下轨道.xml" loadImmediate="false" itemID="6875bcfc-000009a9" lastModified="1752566546"/>
           <Include href="NEGEV/Negev.xml" itemID="686a4cad-0000364f" lastModified="1751878281"/>
           <Include href="NEGEV/内格夫弹链动画.xml" loadImmediate="false" itemID="686a67d8-000036bc" lastModified="1751805789"/>
           <Include href="NEGEV/内格夫子弹1.xml" loadImmediate="false" itemID="686a5e0b-00003660" lastModified="1751809025"/>
@@ -192,11 +203,8 @@
           <Include href="XM556/线圈前端.xml" loadImmediate="false" itemID="686f1216-00000532" lastModified="1752131345"/>
           <Include href="XM556/线圈中级.xml" loadImmediate="false" itemID="686f1f34-0000053c" lastModified="1752130775"/>
           <Include href="XM556/炎魔斩纹路.xml" loadImmediate="false" itemID="6678d078-000005ae" lastModified="1719193720"/>
-          <Include href="xm556枪管动画.xml" loadImmediate="false" itemID="6873745e-00000785" lastModified="1752476420"/>
           <Include href="ZB-26/ZB-26.xml" itemID="68725316-0000359d" lastModified="1752334536"/>
           <Include href="ZB-26/图标-ZB-26.xml" itemID="68727da4-000003bb" lastModified="1752333778"/>
-          <Include href="补间 10.xml" itemIcon="1" loadImmediate="false" itemID="68760227-00000a49" lastModified="1752564263"/>
-          <Include href="磁轨.xml" loadImmediate="false" itemID="6875bcec-000009a1" lastModified="1752720386"/>
           <Include href="电感切割刃/刀-电感切割刃.xml" itemID="655c55d9-00000308" lastModified="1721580831"/>
           <Include href="电感切割刃/刀脊.xml" loadImmediate="false" itemID="655c4e2f-0000062f" lastModified="1700551159"/>
           <Include href="电感切割刃/刀脊花纹.xml" loadImmediate="false" itemID="655c4e77-00000633" lastModified="1700548288"/>
@@ -316,8 +324,6 @@
           <Include href="龙破军霜/刀-龙破军霜.xml" itemID="65f704da-0000226e" lastModified="1721580528"/>
           <Include href="龙破军霜/龙破军霜.xml" itemIcon="1" loadImmediate="false" itemID="65f704e6-00002270" lastModified="1710690852"/>
           <Include href="龙破军霜/图标-龙破军霜.xml" itemID="65f704b4-00002269" lastModified="1710687412"/>
-          <Include href="上轨道.xml" loadImmediate="false" itemID="6875bcf6-000009a5" lastModified="1752566592"/>
-          <Include href="上支架.xml" loadImmediate="false" itemID="68760b65-00000a7d" lastModified="1752716432"/>
           <Include href="特效素材/打击伤害数字.xml" itemID="656983a5-000002a1" lastModified="1706446521"/>
           <Include href="特效与子弹/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="65e08f36-00001ff1" lastModified="1702237154"/>
           <Include href="特效与子弹/Symbol 13.xml" loadImmediate="false" itemID="65e08f36-00001ff0" lastModified="1702237154"/>
@@ -377,7 +383,6 @@
           <Include href="无AS链接/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005c2" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4270.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001073" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4751.xml" loadImmediate="false" itemID="668e7c1e-0000117a" lastModified="1720533000"/>
-          <Include href="下轨道.xml" loadImmediate="false" itemID="6875bcfc-000009a9" lastModified="1752566546"/>
           <Include href="炎魔斩/炎魔斩 new/烈焰剑待机剑身.xml" itemIcon="1" loadImmediate="false" itemID="64fc91fc-00000d54" lastModified="1694274044"/>
           <Include href="炎魔斩/炎魔斩 new/烈焰剑剑身.xml" loadImmediate="false" itemID="64fc920c-00000d56" lastModified="1694274060"/>
           <Include href="炎魔斩/炎魔斩 new/图标-炎魔斩new.xml" itemID="6559f07d-00000891" lastModified="1731792469"/>
@@ -1040,6 +1045,10 @@
                     <SolidSwatchItem color="#042223" hue="121" saturation="188" brightness="19"/>
                     <SolidSwatchItem color="#01EAF5" hue="122" saturation="238" brightness="116"/>
                     <SolidSwatchItem color="#0D2B28" hue="117" saturation="129" brightness="26"/>
+                    <SolidSwatchItem color="#0C0B08" hue="27" saturation="38" brightness="10"/>
+                    <SolidSwatchItem color="#4A3706" hue="29" saturation="202" brightness="38"/>
+                    <SolidSwatchItem color="#7E4619" hue="18" saturation="159" brightness="72"/>
+                    <SolidSwatchItem color="#006F84" hue="127" saturation="239" brightness="62"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1122,6 +1131,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1240917" publishTime="1752743105"/>
+          <PublishItem publishSize="1240917" publishTime="1752743065"/>
           <PublishItem publishSize="1241474" publishTime="1752720546"/>
           <PublishItem publishSize="1241534" publishTime="1752720261"/>
           <PublishItem publishSize="1241533" publishTime="1752719774"/>
@@ -1140,7 +1151,5 @@
           <PublishItem publishSize="1241282" publishTime="1752654606"/>
           <PublishItem publishSize="1240721" publishTime="1752653082"/>
           <PublishItem publishSize="1240720" publishTime="1752651699"/>
-          <PublishItem publishSize="1240717" publishTime="1752651564"/>
-          <PublishItem publishSize="1106934" publishTime="1752485384"/>
      </publishHistory>
 </DOMDocument>
