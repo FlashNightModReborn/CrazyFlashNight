@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="M1918A2/G111" itemID="6875b9ba-00000990" linkageExportForAS="true" linkageIdentifier="枪-长枪-G111" lastModified="1752651696" lastUniqueIdentifier="68">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="M1918A2/G111" itemID="6875b9ba-00000990" linkageExportForAS="true" linkageIdentifier="枪-长枪-G111" lastModified="1752720248" lastUniqueIdentifier="69">
   <timeline>
-    <DOMTimeline name="G111" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;89&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="G111" currentFrame="15" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;89&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="图层 13" color="#4FFFFF" current="true" isSelected="true">
+        <DOMLayer name="图层 13" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <Actionscript>
@@ -10492,7 +10492,7 @@
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="上支架" centerPoint3DX="99.2" centerPoint3DY="-53.4">
+                <DOMSymbolInstance libraryItemName="上支架" name="动画" centerPoint3DX="99.2" centerPoint3DY="-53.4">
                   <matrix>
                     <Matrix tx="29.15" ty="-65.15"/>
                   </matrix>
@@ -10502,9 +10502,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="上支架" centerPoint3DX="59.25" centerPoint3DY="-53.4">
+                <DOMSymbolInstance libraryItemName="上支架" name="动画" centerPoint3DX="59.25" centerPoint3DY="-53.4">
                   <matrix>
                     <Matrix tx="-10.8" ty="-65.15"/>
                   </matrix>
@@ -10514,9 +10514,33 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="13" keyMode="9728">
+            <DOMFrame index="5" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="上支架" centerPoint3DX="-30.65" centerPoint3DY="-53.4">
+                <DOMSymbolInstance libraryItemName="上支架" name="动画" selected="true" centerPoint3DX="49.25" centerPoint3DY="-53.4">
+                  <matrix>
+                    <Matrix tx="-20.8" ty="-65.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="70.05" y="11.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="上支架" name="动画" centerPoint3DX="-0.7" centerPoint3DY="-53.4">
+                  <matrix>
+                    <Matrix tx="-70.75" ty="-65.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="70.05" y="11.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="上支架" name="动画" centerPoint3DX="-30.65" centerPoint3DY="-53.4">
                   <matrix>
                     <Matrix tx="-100.7" ty="-65.15"/>
                   </matrix>
@@ -10631,7 +10655,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="上轨道" centerPoint3DX="108.25" centerPoint3DY="-44.45">
+                <DOMSymbolInstance libraryItemName="上轨道" selected="true" centerPoint3DX="108.25" centerPoint3DY="-44.45">
                   <matrix>
                     <Matrix tx="29" ty="-55.65"/>
                   </matrix>
@@ -10693,7 +10717,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="下轨道" centerPoint3DX="108.85" centerPoint3DY="-22.55">
+                <DOMSymbolInstance libraryItemName="下轨道" selected="true" centerPoint3DX="108.85" centerPoint3DY="-22.55">
                   <matrix>
                     <Matrix tx="30.05" ty="-34.6"/>
                   </matrix>
@@ -10717,12 +10741,12 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 5" color="#4FFFFF">
+        <DOMLayer name="图层 5" color="#4FFFFF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="15872">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="3" duration="12" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+            <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>
                 <CustomEase target="all">
                   <Point/>
@@ -10735,7 +10759,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="磁轨" centerPoint3DX="60.85" centerPoint3DY="-36.25">
+                <DOMSymbolInstance libraryItemName="磁轨" name="枪管" centerPoint3DX="60.85" centerPoint3DY="-36.25">
                   <matrix>
                     <Matrix tx="-18.8" ty="-43.95"/>
                   </matrix>
@@ -10745,9 +10769,52 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="5" duration="5" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.109865173949223" y="0.111710631551194"/>
+                  <Point x="0.211539722032996" y="0.252190342902299"/>
+                  <Point x="0.296640200918847" y="0.387358309744899"/>
+                  <Point x="0.487740146330028" y="0.690996408617352"/>
+                  <Point x="0.630120105658358" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="磁轨" name="枪管" centerPoint3DX="68.05" centerPoint3DY="-36.25">
+                  <matrix>
+                    <Matrix tx="-11.6" ty="-43.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="79.65" y="7.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="5" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.243795800941239" y="0.57230910479502"/>
+                  <Point x="0.527330951172557" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="磁轨" name="枪管" centerPoint3DX="100.75" centerPoint3DY="-36.3">
+                  <matrix>
+                    <Matrix tx="21.1" ty="-44"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="79.65" y="7.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
             <DOMFrame index="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="磁轨" centerPoint3DX="114.6" centerPoint3DY="-36.35">
+                <DOMSymbolInstance libraryItemName="磁轨" name="枪管" selected="true" centerPoint3DX="114.6" centerPoint3DY="-36.35">
                   <matrix>
                     <Matrix tx="34.95" ty="-44.05"/>
                   </matrix>
@@ -10778,7 +10845,7 @@
             </DOMFrame>
             <DOMFrame index="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="wa90/Graphic/shape 3716" name="激光模组" selected="true" centerPoint3DX="325" centerPoint3DY="-6.95">
+                <DOMSymbolInstance libraryItemName="wa90/Graphic/shape 3716" name="激光模组" centerPoint3DX="325" centerPoint3DY="-6.95">
                   <matrix>
                     <Matrix a="0.0162353515625" d="-0.347030639648438" tx="36.25" ty="-4.95"/>
                   </matrix>
@@ -10827,9 +10894,9 @@
           <frames>
             <DOMFrame index="0" duration="16" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="171.55" centerPoint3DY="-44.35">
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="181.7" centerPoint3DY="-35.25">
                   <matrix>
-                    <Matrix tx="159.1" ty="-57"/>
+                    <Matrix tx="169.25" ty="-47.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

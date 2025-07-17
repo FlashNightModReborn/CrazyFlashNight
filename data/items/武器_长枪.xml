@@ -6297,28 +6297,53 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     <icon>G111</icon>
     <type>武器</type>
     <use>长枪</use>
-    <weight>6</weight>
-    <price>140000</price>
-    <description>占位用待平衡</description>
-    <level>45</level>
+    <weight>4</weight>
+    <price>658944</price>
+    <description>
+    铁枪会基于H&amp;K G11技术平台的实验改进型号，对原版射击模式进行了重新设计。标准射击模式固定为三发连射，以提高单次射击的有效杀伤。
+该系统集成了实验性磁轨加速系统，用以应对重护甲目标的威胁。枪管结构可通过机械变形切换至磁轨发射模式，需预先蓄力后发射高动能弹丸，弹丸威力与武器强化等级呈线性关系。
+通过固定三点射和磁轨加速技术的结合，G111在保持常规作战效能的同时，具备了摧毁重护甲单位的专门能力。技术验证表明该设计能有效穿透现有护甲防护系统。
+</description>
+    <skill>
+      <skillname>突击者之怒</skillname>
+      <description>激活磁轨加速系统，枪管机械变形为磁轨发射模式。按下变形键开始蓄力，蓄力完成后射击发射高动能弹丸，威力随武器强化等级线性提升。
+      蓄力状态下射击或切换作战姿态将自动解除变形模式。该系统仅在武器静置时可激活，连续射击期间无法启动磁轨模式。
+      </description>
+      <cd>8000</cd>
+      <mp>50</mp>
+      <bullet>铁枪磁轨弹</bullet>
+      <sound>re_shotgun_m870.wav</sound>
+      <power>9</power>
+    </skill>
+    <level>44</level>
     <data>
-      <capacity>5</capacity>
-      <split>1</split>
-      <diffusion>5</diffusion>
-      <interval>500</interval>
-      <velocity>50</velocity>
-      <bullet>榴弹</bullet>
-      <sound>re_GL_ChinaLake.wav</sound>
+      <capacity>15</capacity>
+      <split>3</split>
+      <diffusion>1</diffusion>
+      <interval>360</interval>
+      <velocity>55</velocity>
+      <bullet>纵向联弹-无壳子弹</bullet>
+      <sound>m4a1_unsil-2.wav</sound>
       <muzzle>枪火</muzzle>
       <bullethit>火花</bullethit>
-      <clipname>能量电池</clipname>
+      <clipname>突击步枪钨芯穿甲弹</clipname>
       <bulletsize>40</bulletsize>
-      <power>16000</power>
-      <impact>0</impact>
+      <power>888</power>
+      <impact>12</impact>
     </data>
     <equipped>
       <dressup>枪-长枪-G111</dressup>
-    </equipped>
+    </equipped>    
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>G111初始化</initRoutines>
+        </init>
+        <cycle>
+          <cycleRoutines>G111周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>  
   <item>
     <id>8095</id>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="原版素材库-子弹" itemID="668b9f9e-000001f3" linkageExportForAS="true" linkageIdentifier="原版素材库-子弹" lastModified="1752659465" lastUniqueIdentifier="134">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="原版素材库-子弹" itemID="668b9f9e-000001f3" linkageExportForAS="true" linkageIdentifier="原版素材库-子弹" lastModified="1752723344" lastUniqueIdentifier="137">
   <timeline>
-    <DOMTimeline name="原版素材库-子弹" currentFrame="6">
+    <DOMTimeline name="原版素材库-子弹">
       <layers>
         <DOMLayer name="as" color="#9933CC" locked="true" autoNamed="false">
           <frames>
@@ -459,6 +459,27 @@
                     </DOMTextRun>
                     <DOMTextRun>
                       <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMSymbolInstance libraryItemName="子弹-普通与穿刺组/铁枪磁轨弹" selected="true" centerPoint3DX="25.65" centerPoint3DY="-8.1">
+                  <matrix>
+                    <Matrix tx="-69.9" ty="-9.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="95.55" y="1.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMStaticText fontRenderingMode="standard" width="78.5" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="225.75" ty="-16.65"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>铁枪磁轨弹</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -1404,6 +1425,14 @@
                     <Point x="44.2" y="-0.4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="联弹/单元体-无壳子弹" centerPoint3DX="195.15" centerPoint3DY="107.35">
+                  <matrix>
+                    <Matrix tx="150.95" ty="107.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.2" y="-0.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
@@ -2124,7 +2153,7 @@
                     <Point y="-78.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-动画与文字组/升级动画" centerPoint3DX="603.95" centerPoint3DY="90">
+                <DOMSymbolInstance libraryItemName="升级动画" centerPoint3DX="603.95" centerPoint3DY="90">
                   <matrix>
                     <Matrix tx="618.85" ty="156.15"/>
                   </matrix>

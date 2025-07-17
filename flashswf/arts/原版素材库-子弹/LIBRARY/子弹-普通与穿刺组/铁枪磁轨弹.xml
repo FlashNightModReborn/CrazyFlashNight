@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/巴雷特子弹" itemID="669d3447-00001743" linkageExportForAS="true" linkageIdentifier="巴雷特子弹" lastModified="1721578567" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/铁枪磁轨弹" itemID="68786a09-00004fe9" linkageExportForAS="true" linkageIdentifier="铁枪磁轨弹" lastModified="1752723584" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="巴雷特子弹">
+    <DOMTimeline name="铁枪磁轨弹">
       <layers>
         <DOMLayer name="Labels Layer" color="#D78AD1">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#B0E676" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#B0E676">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -109,7 +109,7 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="8.1" centerPoint3DY="7.55">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="8.1" centerPoint3DY="7.55">
                   <matrix>
                     <Matrix a="10.3998413085938" d="0.519989013671875" tx="-4.4" ty="-4.95"/>
                   </matrix>
@@ -124,16 +124,16 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#BBCD85">
+        <DOMLayer name="Layer 4" color="#BBCD85" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 738" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="联弹/单元体-铁枪能量子弹" centerPoint3DX="49.6" centerPoint3DY="-0.6">
                   <matrix>
-                    <Matrix a="1.55998229980469" d="1.19999694824219" tx="136.85" ty="-0.15"/>
+                    <Matrix a="1.07612609863281" d="1.07612609863281" tx="-0.65" ty="-0.6"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="46.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

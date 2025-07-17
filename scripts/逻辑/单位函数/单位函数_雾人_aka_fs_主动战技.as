@@ -113,6 +113,7 @@ _root.主动战技函数.长枪.发射榴弹 = {
 
 _root.主动战技函数.长枪.突击者之眼 = {
     初始化:function(自机){
+        var skill = 长枪物品信息.skill;
         自机.突击者之眼弹药类型 = skill.bullet ? skill.bullet : "无壳穿刺子弹";
         自机.突击者之眼数 = skill.split && skill.split > 0 ? Number(skill.split) : 3;
         自机.突击者之眼音效 = skill.sound ? skill.sound : "re_GL_under.wav";
@@ -129,9 +130,7 @@ _root.主动战技函数.长枪.突击者之眼 = {
 
         var factor:Number = 1 / (1 + k * Math.pow(level, 3));
         自机.主动战技.长枪.冷却时间 *= factor;
-        _root.发布消息("突击者之眼冷却时间: " + 自机.主动战技.长枪.冷却时间 + "秒");
-
-
+        // _root.发布消息("突击者之眼冷却时间: " + 自机.主动战技.长枪.冷却时间 + "秒");
 
         自机.dispatcher.subscribe("长枪射击", function() {
             if(!自机.突击者之眼开启) return;
@@ -168,6 +167,71 @@ _root.主动战技函数.长枪.突击者之眼 = {
         prop.子弹种类 = data.data.bullet;
         prop.霰弹值 = data.data.split;
         prop.sound = data.data.sound;
+
+        // 自机.动作A = currentA;
+    }
+}
+
+_root.主动战技函数.长枪.突击者之怒 = {
+    初始化:function(自机){
+        var skill = 长枪物品信息.skill;
+        自机.突击者之怒弹药类型 = skill.bullet ? skill.bullet : "铁枪磁轨弹";
+        自机.突击者之怒倍率 = skill.power && skill.power > 0 ? Number(skill.power) : 9;
+        自机.突击者之怒音效 = skill.sound ? skill.sound : "re_GL_under.wav";
+
+        if(_root.控制目标 == 自机._name) {
+            var equipment = _root.物品栏.装备栏;
+            upgradeLevel = equipment.getLevel("长枪");
+        } else {
+            upgradeLevel = _root.主角函数.获取人形怪强化等级(自机.等级, 自机.名字);
+        }
+
+        自机.突击者之怒倍率 += upgradeLevel;
+
+        自机.dispatcher.subscribe("长枪射击", function() {
+            if(!自机.突击者之怒开启) return;
+            var prop:Object = 自机.man.子弹属性;
+
+            prop.子弹种类 = 自机.突击者之怒弹药类型;
+            自机.突击者之怒原伤害 = prop.子弹威力;
+            prop.子弹威力 *= 自机.突击者之怒倍率;
+            prop.霰弹值 = 1;
+            prop.发射效果 = "铁枪能量弹枪火";
+            prop.sound = 自机.突击者之怒音效;
+            _root.发布消息(自机.突击者之怒原伤害, prop.子弹威力)
+        });
+    },
+    释放许可判定:function(自机){
+        if(自机["主手射击中"]) return false;
+        if(!自机.chargeComplete) return false;
+        var magazineCapName:String =  "长枪弹匣容量";
+        var shootCountName:String = "长枪射击次数";
+
+        if(自机[shootCountName][自机["长枪"]] + 1 > 自机[magazineCapName]) return false;
+        if(自机.浮空 || 自机.倒地) return false;
+        return true;
+    },
+    释放:function(自机){
+
+        自机.强制奔跑 = false;
+
+        var currentA:Boolean = 自机.动作A;
+        自机.突击者之怒开启 = true;
+        自机.动作A = true;
+        自机.攻击();
+
+        自机.突击者之怒开启 = false;
+        
+        var data:Object = _root.getItemData(自机.长枪);
+        var prop:Object = 自机.man.子弹属性;
+
+        prop.子弹种类 = data.data.bullet;
+        prop.霰弹值 = data.data.split;
+        prop.sound = data.data.sound;
+        prop.发射效果 = data.data.muzzle;
+        prop.子弹威力 = 自机.突击者之怒原伤害;
+
+        _root.发布消息(prop.子弹种类, prop.霰弹值, prop.子弹威力)
 
         // 自机.动作A = currentA;
     }

@@ -1,0 +1,58 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="联弹/单元体-无壳子弹" itemID="687868bf-00004cc4" linkageExportForAS="true" linkageIdentifier="单元体-无壳子弹" lastModified="1752721697" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="单元体-无壳子弹">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.002288818359375" b="-0.0651397705078125" c="-0.030303955078125" d="-0.001068115234375" tx="24.85" ty="-0.25"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.0980392156862745"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0017547607421875" b="0.065155029296875" c="-0.030303955078125" d="0.0008087158203125" tx="24.85" ty="0.35"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.0980392156862745"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!280 2|243 -3!243 -3|237 -1!237 -1[230 -10 213 -10!213 -10|130 -7!130 -7|114 -4!114 -4|109 -5!109 -5|45 -7!45 -7|1 -19!1 -19|8 -18!8 -18|70 -21!70 -21|85 -20!85 -20|95 -18!95 -18[115 -18 155 -25!155 -25|181 -22!181 -22|203 -22!203 -22
+|205 -21!205 -21|328 -12!328 -12[341 -12 346 -19!346 -19|349 -19!349 -19|359 -11!359 -11|374 -10!374 -10|484 -20!484 -20[491 -18 494 -22!494 -22|571 -4"/>
+                    <Edge fillStyle1="2" edges="
+!571 -4|602 0!602 0|596 2"/>
+                    <Edge fillStyle1="1" edges="
+!596 2|603 3!603 3|570 7"/>
+                    <Edge fillStyle1="2" edges="
+!570 7|494 24!494 24[491 20 485 22!485 22|374 12!374 12|359 12!359 12|349 20!349 20|346 20!346 20[341 13 328 13!328 13|205 21!205 21|203 22!203 22|201 21!201 21|155 24!155 24[115 17 95 17!95 17|70 20!70 20|8 16!8 16|0 17!0 17|45 5!45
+ 5|109 4!109 4|114 3!114 3|130 6!130 6|171 5!171 5|212 10!212 10[229 9 237 1!237 1|243 3!243 3|280 2"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!280 2|343 9!343 9|376 7!376 7|383 9!383 9|443 7!443 7|494 12!494 12|500 16!500 16|570 7!596 2|571 -4"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
