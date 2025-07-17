@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版商店界面" itemID="676cf8b9-00000359" linkageExportForAS="true" linkageIdentifier="购买物品界面" lastModified="1749320323" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版商店界面" itemID="676cf8b9-00000359" linkageExportForAS="true" linkageIdentifier="购买物品界面" lastModified="1752753966" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="新版商店界面" currentFrame="6">
+    <DOMTimeline name="新版商店界面" currentFrame="8">
       <layers>
         <DOMLayer name="Labels Layer" color="#88A9BF">
           <frames>
@@ -57,9 +57,9 @@ this.NPC物品栏 = null;]]></script>
             </DOMFrame>
             <DOMFrame index="5" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="购买执行界面" name="购买执行界面" centerPoint3DX="122" centerPoint3DY="363">
+                <DOMSymbolInstance libraryItemName="购买执行界面" name="购买执行界面" centerPoint3DX="122" centerPoint3DY="360">
                   <matrix>
-                    <Matrix tx="10" ty="335"/>
+                    <Matrix tx="10" ty="332"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="112" y="28"/>
@@ -76,7 +76,7 @@ this.NPC物品栏 = null;]]></script>
             </DOMFrame>
             <DOMFrame index="5" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="物品图标" centerPoint3DX="36.8" centerPoint3DY="64.15">
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="物品图标" selected="true" centerPoint3DX="36.8" centerPoint3DY="64.15">
                   <matrix>
                     <Matrix tx="23.5" ty="50"/>
                   </matrix>
@@ -247,9 +247,9 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 298" name="窗体area" centerPoint3DX="122" centerPoint3DY="200">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 298" name="窗体area" centerPoint3DX="122" centerPoint3DY="210">
                   <matrix>
-                    <Matrix a="1.03390502929688" d="1.20501708984375"/>
+                    <Matrix a="1.03390502929688" d="1.26527404785156"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

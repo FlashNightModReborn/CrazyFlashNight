@@ -139,6 +139,7 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
         if(_root.物品栏界面.垃圾箱.area.hitTest(xmouse, ymouse) || _root.仓库界面.垃圾箱.area.hitTest(xmouse, ymouse)){
             _root.发布消息("丢弃物品" + itemData.displayname);
             collection.remove(index);
+            _root.存档系统.dirtyMark = true;
             return;
         }
 

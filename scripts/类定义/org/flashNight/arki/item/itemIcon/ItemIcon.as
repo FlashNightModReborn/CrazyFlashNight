@@ -18,12 +18,15 @@ class org.flashNight.arki.item.itemIcon.ItemIcon{
     public var name:String;
     public var value;
 
+    private var locked:Boolean; // 记录物品图标是否锁定，锁定期间图标无法响应点击事件
+
     public function ItemIcon(_icon:MovieClip,__name:String, _item) {
         this.icon = _icon;
         this.x = icon._x;
         this.y = icon._y;
         this.valuetext = icon.valuetext;
         this.leveltext = icon.leveltext;
+        this.locked = false;
         // this.fullLevelFrame = icon.满级框;
         init(__name, _item);
     }
@@ -41,6 +44,7 @@ class org.flashNight.arki.item.itemIcon.ItemIcon{
         }else{
             this.itemData = ItemUtil.getItemData(this.name);
             this.icon.gotoAndStop("默认图标");
+            this.icon.互动提示.gotoAndStop(this.locked ? "锁定" : "空");
             refreshValue();
         }
     }
@@ -72,6 +76,15 @@ class org.flashNight.arki.item.itemIcon.ItemIcon{
         }
     }
 
+    public function lock(){
+        this.locked = true;
+        this.icon.互动提示.gotoAndStop("锁定");
+    }
+    public function unlock(){
+        this.locked = false;
+        this.icon.互动提示.gotoAndStop("空");
+    }
+
     public function dispose(){
         icon = null;
         valuetext = null;
@@ -85,7 +98,7 @@ class org.flashNight.arki.item.itemIcon.ItemIcon{
     }
 
     public function RollOut():Void{
-        icon.互动提示.gotoAndStop("空");
+        this.icon.互动提示.gotoAndStop(this.locked ? "锁定" : "空");
         _root.注释结束();
     }
 

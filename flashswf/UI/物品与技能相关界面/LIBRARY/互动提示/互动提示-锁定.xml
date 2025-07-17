@@ -1,0 +1,46 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="互动提示/互动提示-锁定" itemID="687918b2-000004fe" symbolType="graphic" lastModified="1752768396">
+  <timeline>
+    <DOMTimeline name="互动提示-锁定">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="锁定" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.19998168945313" d="1.19999694824219" tx="3" ty="-1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.25" y="6.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMRectangleObject objectWidth="27" objectHeight="27" x="-13.2" y="-13" lockFlag="true">
+                  <matrix>
+                    <Matrix tx="-0.3" ty="-0.5"/>
+                  </matrix>
+                  <fill>
+                    <LinearGradient>
+                      <matrix>
+                        <Matrix a="0" b="0.0164794921875" c="-0.0164794921875" d="0" tx="0.3" ty="0.5"/>
+                      </matrix>
+                      <GradientEntry alpha="0" ratio="0"/>
+                      <GradientEntry alpha="0.749019607843137" ratio="1"/>
+                    </LinearGradient>
+                  </fill>
+                </DOMRectangleObject>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

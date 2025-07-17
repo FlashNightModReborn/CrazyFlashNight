@@ -40,10 +40,10 @@ EventBus.getInstance().subscribe("材料栏排序图标点击",function(methodNa
 //商店购买售卖函数
 
 _root.物品UI函数.购买物品 = function(){
-	if(this.购买等级 > _root.等级){
-		pricetext.htmlText = "你的等级不足，无法购买！";
-		return false;
-	}
+	// if(this.购买等级 > _root.等级){
+	// 	pricetext.htmlText = "你的等级不足，无法购买！";
+	// 	return false;
+	// }
 	if(this.总价 > _root.金钱 || isNaN(_root.金钱) || isNaN(this.总价)){
 		pricetext.htmlText = "金钱不足！";
 		return false;
@@ -57,6 +57,7 @@ _root.物品UI函数.购买物品 = function(){
 	this.gotoAndStop("空");
 	this.showtext.text = "购买成功，花费 $" + this.总价;
 	this.物品名 = null;
+	_root.存档系统.dirtyMark = true;
 	return true;
 }
 
@@ -90,6 +91,7 @@ _root.物品UI函数.出售物品 = function(){
 	this.物品名 = null;
 	this.sellCollection = null;
 	this.sellIndex = null;
+	_root.存档系统.dirtyMark = true;
 	return true;
 }
 
@@ -170,17 +172,45 @@ _root.物品UI函数.创建商店图标 = function(NPC物品栏){
 	购买物品界面._visible = true;
 	购买物品界面.gotoAndStop("选择物品");
 
+	var onIconRollOver = function(){
+		var saleData = this.icon.saleData;
+		if(saleData.requiredInfo != null){
+			if(_root.收集品栏.情报.getValue(saleData.requiredInfo) <= 0){
+				this.lock();
+				var str = "<B>" + this.itemData.displayname + "</B><BR>获得情报<B>" + _root.getItemData(saleData.requiredInfo).displayname + "</B>后解锁购买";
+				_root.注释(180, str);
+				return;
+			}else{
+				this.unlock();
+				_root.物品图标注释(this.name, this.value);
+			}
+		}else{
+			_root.物品图标注释(this.name, this.value);
+		}
+	}
 	var onIconPress = function(){
 		_root.购买物品界面.准备购买的物品 = this.name;
-		_root.购买物品界面.准备购买的物品单价 = this.itemData.price;
-		_root.购买物品界面.准备购买的物品等级限制 = this.itemData.level;
+		// _root.购买物品界面.准备购买的物品单价 = this.itemData.price;
+		// _root.购买物品界面.准备购买的物品等级限制 = this.itemData.level;
 		_root.购买物品界面.购买执行界面.购买确认(this.name);
 	}
 	var func = function(iconMC, i){
-		var itemIcon = new ItemIcon(iconMC, NPC物品栏[i][0], 1);
+		iconMC.saleData = NPC物品栏[i];
+		var saleItemName = typeof iconMC.saleData == "string" ? iconMC.saleData : iconMC.saleData.name;
+		var itemIcon = new ItemIcon(iconMC, saleItemName, 1);
+		if(typeof iconMC.saleData == "object"){
+			// 检查需求情报
+			if(iconMC.saleData.requiredInfo != null){
+				itemIcon.RollOver = onIconRollOver;
+				if(_root.收集品栏.情报.getValue(iconMC.saleData.requiredInfo) <= 0){
+					itemIcon.lock();
+				}
+			}
+		}
 		itemIcon.Press = onIconPress;
 		return itemIcon;
 	}
+
 	var info = {
 		startindex: 0, 
 		startdepth: 0, 
@@ -191,6 +221,7 @@ _root.物品UI函数.创建商店图标 = function(NPC物品栏){
 			_root.购买物品界面.图标列表 = null;
 		}
 	}
+
 	var iconList = IconFactory.createIconLayout(购买物品界面.物品图标, func, info);
 	_root.购买物品界面.图标列表 = iconList;
 }

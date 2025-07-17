@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面" itemID="677cd804-00000291" lastModified="1742721795" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面" itemID="677cd804-00000291" lastModified="1752754324" lastUniqueIdentifier="9">
   <timeline>
     <DOMTimeline name="购买执行界面">
       <layers>
@@ -137,6 +137,9 @@ function 计算购买总价(数量)
 		var 降价 = 原总价 - this.总价;
 		text2 += " <FONT COLOR=\'#33FF00\'>已降价 " + 降价 + "</FONT>";
 	}
+	if(this.购买等级 > _root.等级){
+		text2 += "\n<FONT COLOR='#FF6600'>装备的限制等级高于玩家等级</FONT>";
+	}
 	this.pricetext.htmlText = text2;
 }
 
@@ -222,9 +225,9 @@ gotoAndStop("空");]]></script>
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新版通用勾选框" centerPoint3DX="224.2" centerPoint3DY="60.2">
+                <DOMSymbolInstance libraryItemName="新版通用勾选框" centerPoint3DX="224.2" centerPoint3DY="80.7">
                   <matrix>
-                    <Matrix tx="211.75" ty="47.75"/>
+                    <Matrix tx="211.75" ty="68.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -253,7 +256,7 @@ gotoAndStop("空");]]></script>
               <elements>
                 <DOMSymbolInstance libraryItemName="购买执行界面素材/返回按钮" symbolType="button">
                   <matrix>
-                    <Matrix tx="192" ty="36"/>
+                    <Matrix tx="192" ty="61"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -266,7 +269,7 @@ gotoAndStop("空");]]></script>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="购买执行界面素材/购买按钮" name="购买按钮" symbolType="button">
                   <matrix>
-                    <Matrix tx="192" ty="-2"/>
+                    <Matrix tx="192" ty="23"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -279,7 +282,7 @@ gotoAndStop("空");]]></script>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="购买执行界面素材/售卖按钮" name="售卖按钮" symbolType="button">
                   <matrix>
-                    <Matrix tx="192" ty="-3"/>
+                    <Matrix tx="192" ty="22"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -301,17 +304,17 @@ gotoAndStop("空");]]></script>
             </DOMFrame>
             <DOMFrame index="5" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="物品栏/滚动槽" name="滚动槽" centerPoint3DX="90" centerPoint3DY="49.95">
+                <DOMSymbolInstance libraryItemName="物品栏/滚动槽" name="滚动槽" centerPoint3DX="90" centerPoint3DY="69.95">
                   <matrix>
-                    <Matrix a="0.947372436523438" d="0.925003051757813" ty="49.95"/>
+                    <Matrix a="0.947372436523438" d="0.925003051757813" ty="69.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="91.6" y="1.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="购买执行界面素材/滚动按钮" name="滚动按钮" centerPoint3DX="22.4" centerPoint3DY="58.4">
+                <DOMSymbolInstance libraryItemName="购买执行界面素材/滚动按钮" name="滚动按钮" centerPoint3DX="22.4" centerPoint3DY="78.4">
                   <matrix>
-                    <Matrix tx="10" ty="50"/>
+                    <Matrix tx="10" ty="70"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -343,9 +346,9 @@ on(release, releaseOutside){
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements>
-                <DOMDynamicText name="showtext" fontRenderingMode="device" width="210" height="41.5" isSelectable="false" lineType="multiline">
+                <DOMDynamicText name="showtext" fontRenderingMode="device" width="210" height="51.5" isSelectable="false" lineType="multiline">
                   <matrix>
-                    <Matrix tx="7" ty="7"/>
+                    <Matrix tx="7" ty="17.5"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -358,7 +361,7 @@ on(release, releaseOutside){
                 </DOMDynamicText>
                 <DOMStaticText fontRenderingMode="device" width="54" height="12.95" isSelectable="false">
                   <matrix>
-                    <Matrix tx="145" ty="41.05"/>
+                    <Matrix tx="145" ty="61.55"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -379,7 +382,7 @@ on(release, releaseOutside){
             </DOMFrame>
             <DOMFrame index="5" duration="5" keyMode="9728">
               <elements>
-                <DOMDynamicText name="nametext" fontRenderingMode="device" width="154" height="15.55" isSelectable="false" renderAsHTML="true">
+                <DOMDynamicText name="nametext" fontRenderingMode="device" width="195.95" height="15.55" isSelectable="false" renderAsHTML="true">
                   <matrix>
                     <Matrix tx="32" ty="2"/>
                   </matrix>
@@ -422,22 +425,22 @@ on(release, releaseOutside){
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText name="pricetext" fontRenderingMode="device" width="184" height="15.55" isSelectable="false" renderAsHTML="true">
+                <DOMDynamicText name="pricetext" fontRenderingMode="device" width="184" height="33.5" isSelectable="false" renderAsHTML="true" lineType="multiline">
                   <matrix>
                     <Matrix tx="2" ty="25"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>$ 99999</characters>
+                      <characters>$ 99999&#xD;</characters>
                       <textAttrs>
-                        <DOMTextAttrs aliasText="false" lineSpacing="0" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                        <DOMTextAttrs aliasText="false" lineSpacing="0" size="11" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
                 <DOMDynamicText name="leveltext" fontRenderingMode="device" width="184" height="15.55" isSelectable="false" renderAsHTML="true">
                   <matrix>
-                    <Matrix tx="2" ty="41"/>
+                    <Matrix tx="2" ty="61"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -471,24 +474,22 @@ on(release, releaseOutside){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="售卖框" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="售卖框" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements>
-                <DOMShape>
-                  <strokes>
-                    <StrokeStyle index="1">
-                      <DashedStroke scaleMode="normal">
-                        <fill>
-                          <SolidColor color="#00CC00"/>
-                        </fill>
-                      </DashedStroke>
-                    </StrokeStyle>
-                  </strokes>
-                  <edges>
-                    <Edge strokeStyle="1" edges="!4480 213[4480 0 4267 0!4267 0|213 0!213 0[0 0 0 213!0 213|0 907!0 907[0 1120 213 1120!213 1120|4267 1120!4267 1120[4480 1120 4480 907!4480 907|4480 213"/>
-                  </edges>
-                </DOMShape>
+                <DOMRectangleObject objectWidth="224" objectHeight="80" x="1.5" y="72.5" lockFlag="true" topLeftRadius="10" topRightRadius="10" bottomLeftRadius="10" bottomRightRadius="10">
+                  <matrix>
+                    <Matrix tx="-1.5" ty="-72.5"/>
+                  </matrix>
+                  <stroke>
+                    <DashedStroke scaleMode="normal">
+                      <fill>
+                        <SolidColor color="#00CC00"/>
+                      </fill>
+                    </DashedStroke>
+                  </stroke>
+                </DOMRectangleObject>
               </elements>
             </DOMFrame>
             <DOMFrame index="5" duration="5" keyMode="9728">

@@ -88,13 +88,13 @@ _root.isStageUnlocked = function(name){
 
 //商店
 _root.getNPCShop = function(name){
+	return _root.shops[name];
 	var shopData = _root.shops[name];
 	if(shopData == null) return null;
-	var shop = new Array(80);
-	for (var i in shopData){
-		shop[Number(i)] = [shopData[i]];
-	}
-	return shop;
+	// var shop = new Array(80);
+	// for (var i in shopData){
+	// 	shop[Number(i)] = [shopData[i]];
+	// }
 }
 
 //兵种

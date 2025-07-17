@@ -70,6 +70,7 @@ class org.flashNight.arki.item.ItemUtil{
         }else{
             result = icon1.collection.swap(icon2.collection,icon1.index,icon2.index);
         }
+        _root.存档系统.dirtyMark = true;
         return result;
     }
 
@@ -99,6 +100,7 @@ class org.flashNight.arki.item.ItemUtil{
         _root.soundEffectManager.playSound(音效);
         _root.发布消息("成功装备[" + use + "][" + itemData.displayname + "]");
         _root.刷新人物装扮(_root.控制目标);
+        _root.存档系统.dirtyMark = true;
         return true;
     }
 
@@ -106,6 +108,7 @@ class org.flashNight.arki.item.ItemUtil{
     public static function moveItemToDrug(icon,drugIcon):Boolean{
         if(!drugIcon.isCoolDown()) return false;
         var result = ItemUtil.moveItemToInventory(icon,drugIcon);
+        _root.存档系统.dirtyMark = true;
         return result;
     }
 

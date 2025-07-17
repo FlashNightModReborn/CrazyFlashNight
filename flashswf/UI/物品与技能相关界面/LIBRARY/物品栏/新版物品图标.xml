@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="物品栏/新版物品图标" itemID="676a60d0-00000262" linkageExportForAS="true" linkageIdentifier="物品图标" lastModified="1749286500" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="物品栏/新版物品图标" itemID="676a60d0-00000262" linkageExportForAS="true" linkageIdentifier="物品图标" lastModified="1752769234" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="新版物品图标" currentFrame="7">
+    <DOMTimeline name="新版物品图标" currentFrame="6">
       <layers>
         <DOMLayer name="Labels Layer" color="#4DC4D9">
           <frames>
@@ -102,7 +102,7 @@ if(this.图标壳.图标)this.图标壳.基本款._visible = false;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="数量" color="#F2A592" autoNamed="false">
+        <DOMLayer name="数量" color="#F2A592" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="21" keyMode="9728">
               <elements>
@@ -165,10 +165,10 @@ on (rollOut) {
 	itemIcon.RollOut();
 }
 on (press) {
-	itemIcon.Press();
+	if(!itemIcon.locked) itemIcon.Press();
 }
 on (release, releaseOutside) {
-	itemIcon.Release();
+	if(!itemIcon.locked) itemIcon.Release();
 }
 ]]></script>
                   </Actionscript>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="互动提示/互动提示" itemID="676c07b4-00000f5f" lastModified="1735149222">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="互动提示/互动提示" itemID="676c07b4-00000f5f" lastModified="1752766654">
   <timeline>
-    <DOMTimeline name="互动提示" currentFrame="14">
+    <DOMTimeline name="互动提示" currentFrame="18">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -13,7 +13,7 @@
             <DOMFrame index="10" duration="8" name="卸下" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="18" duration="3" keyMode="9728">
+            <DOMFrame index="18" duration="6" name="锁定" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -32,7 +32,13 @@
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="17" duration="4" keyMode="9728">
+            <DOMFrame index="17" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="6" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();]]></script>
               </Actionscript>
@@ -74,15 +80,21 @@
             </DOMFrame>
             <DOMFrame index="10" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="互动提示/互动提示-卸下" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="互动提示/互动提示-卸下" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point x="12.5" y="12.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="18" duration="3" keyMode="9728">
-              <elements/>
+            <DOMFrame index="18" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="互动提示/互动提示-锁定" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point x="4" y="6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>

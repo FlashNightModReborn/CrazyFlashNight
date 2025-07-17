@@ -4,6 +4,8 @@ import org.flashNight.arki.item.itemCollection.*;
 _root.存档系统 = new Object();
 _root.存档系统.latest_version = "2.7";
 
+_root.存档系统.dirtyMark = false;
+
 _root.存档系统.初始化物品栏 = function(){
     return {
         背包:new ArrayInventory(null,50),
@@ -78,27 +80,23 @@ _root.存档系统.mydata数据组包 = function(){
 }
 
 _root.自动存盘 = function(){
-   if(_root.存盘中 == false){
-        _root.存盘动画._visible = 1;
-        _root.存盘动画.gotoAndStop("储存中");
+   if(_root.允许存档 === true){
+        _root.存档系统.dirtyMark = false;
+        _root.存盘动画._visible = true;
+        // _root.存盘动画.gotoAndStop("储存中");
         if(_root.身价 < 1000 * _root.等级){
             _root.身价 = 1000 * _root.等级;
         }
         _root.存档系统.mydata数据组包();
         _root.本地存盘战宠();
-        if(_root.lastsave != _root.mydata.toString() or _root.lastsave_2 != _root.mydata_2.toString() or _root.lastsave_3 != _root.mydata_3.toString() or _root.lastsave_4 != _root.mydata_4.toString())
-        {
+        if(_root.lastsave != _root.mydata.toString() or _root.lastsave_2 != _root.mydata_2.toString() or _root.lastsave_3 != _root.mydata_3.toString() or _root.lastsave_4 != _root.mydata_4.toString()){
             _root.本地存盘();
             _root.SavePCTasks();
-            _root.存盘中 = true;
-            _root.存盘中 = false;
             _root.存盘标志 = 1;
             // 存盘重连次数 = 0;
             _root.存盘动画.gotoAndPlay("存储成功");
-            _root.发布消息(_root.获得翻译("游戏服务器储存成功！"));
-        }
-        else
-        {
+            _root.发布消息("游戏服务器储存成功！");
+        }else{
             _root.存盘标志 = 1;
             _root.存盘动画.gotoAndPlay("存储成功");
             _root.安全退出界面.gotoAndStop("成功");
@@ -288,10 +286,10 @@ _root.读取存盘 = function(){
     _root.主线任务进度 = Math.floor(Number(任务储存数据));
     _root.LoadPCTasks();
     if(_root.角色名 == undefined){
-        _root.发布消息(_root.获得翻译("游戏本地无存盘！"));
+        _root.发布消息("游戏本地无存盘！");
         return false;
     }
-    _root.发布消息(_root.获得翻译("游戏本地读取成功！"));
+    _root.发布消息("游戏本地读取成功！");
     载入新佣兵库数据(0,0,0,0,0);
     return true;
 }
@@ -335,6 +333,8 @@ _root.lastsave = "";
 _root.lastsave_1 = "";
 _root.lastsave_2 = "";
 _root.lastsave_3 = "";
-_root.存盘中 = false;
+// _root.存盘中 = false;
+
+_root.允许存档 = true;
 // _root.存盘重连次数 = 0;
 // _root.存盘重连次数限制 = 10;

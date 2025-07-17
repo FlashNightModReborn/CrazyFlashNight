@@ -8,19 +8,15 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 _root.转场景记录数据 = function(){
 	转场景记录数据第一次记录 = true;
-	var i = 0;
-	while (i < 4){
-		if (_root.操控目标表[i] != null && _root.操控目标表[i] != ""){
-			var 操控对象 = _root.gameworld[_root.操控目标表[i]];
-			_root.转场景数据[i][0] = 操控对象.hp;
-			_root.转场景数据[i][1] = 操控对象.mp;
-			_root.转场景数据[i][2] = 操控对象.攻击模式;
-			_root.转场景数据[i][3] = 操控对象.长枪射击次数;
-			_root.转场景数据[i][4] = 操控对象.手枪射击次数;
-			_root.转场景数据[i][5] = 操控对象.手枪2射击次数;
-		}
-		i += 1;
-	}
+
+	var 操控对象 = _root.gameworld[_root.控制目标];
+	_root.转场景数据[i][0] = 操控对象.hp;
+	_root.转场景数据[i][1] = 操控对象.mp;
+	_root.转场景数据[i][2] = 操控对象.攻击模式;
+	_root.转场景数据[i][3] = 操控对象.长枪射击次数;
+	_root.转场景数据[i][4] = 操控对象.手枪射击次数;
+	_root.转场景数据[i][5] = 操控对象.手枪2射击次数;
+
 	佣兵同伴血量记录 = [-1, -1, -1];
 	var _loc3_ = 0;
 	while (_loc3_ < _root.同伴数){
@@ -55,26 +51,22 @@ _root.转场景数据传递 = function(){
 		_root.新出生 = false;
 		return;
 	}
-	var i = 0;
-	while (i < 4){
-		if (_root.操控目标表[i] != null && _root.操控目标表[i] != ""){
-			var 操控对象 = _root.gameworld[_root.操控目标表[i]];
-			if (_root.转场景数据[i][0] > 0){
-				操控对象.hp = _root.转场景数据[i][0];
-			}
-			if (_root.转场景数据[i][1] > 0){
-				操控对象.mp = _root.转场景数据[i][1];
-			}
-			if (转场景记录数据第一次记录){
-				操控对象.攻击模式切换(_root.转场景数据[i][2]);
-				操控对象.攻击模式 = _root.转场景数据[i][2];
-				操控对象.长枪射击次数 = _root.转场景数据[i][3];
-				操控对象.手枪射击次数 = _root.转场景数据[i][4];
-				操控对象.手枪2射击次数 = _root.转场景数据[i][5];
-			}
-		}
-		i += 1;
+
+	var 操控对象 = _root.gameworld[_root.控制目标];
+	if (_root.转场景数据[i][0] > 0){
+		操控对象.hp = _root.转场景数据[i][0];
 	}
+	if (_root.转场景数据[i][1] > 0){
+		操控对象.mp = _root.转场景数据[i][1];
+	}
+	if (转场景记录数据第一次记录){
+		操控对象.攻击模式切换(_root.转场景数据[i][2]);
+		操控对象.攻击模式 = _root.转场景数据[i][2];
+		操控对象.长枪射击次数 = _root.转场景数据[i][3];
+		操控对象.手枪射击次数 = _root.转场景数据[i][4];
+		操控对象.手枪2射击次数 = _root.转场景数据[i][5];
+	}
+
 	i = 0;
 	while (i < _root.同伴数){
 		if (_root.佣兵同伴血量记录[i] > 0){
@@ -379,16 +371,16 @@ _root.防止播放跳关 = function(){
 }
 
 _root.跳转地图 = function(跳转帧){
+	_root.当前为战斗地图 = false;
 	// var 游戏世界 = _root.gameworld;
 	// _root.常用工具函数.释放对象绘图内存(游戏世界);
-	_root.当前为战斗地图 = false;
-	for (var i = 0; i < _root.初期关卡列表.length; i++){
-		if (_root.关卡标志 == _root.初期关卡列表[i]){
-			_root.当前为战斗地图 = true;
-			_root.gotoAndPlay("初期关卡");
-			return;
-		}
-	}
+	// for (var i = 0; i < _root.初期关卡列表.length; i++){
+	// 	if (_root.关卡标志 == _root.初期关卡列表[i]){
+	// 		_root.当前为战斗地图 = true;
+	// 		_root.gotoAndPlay("初期关卡");
+	// 		return;
+	// 	}
+	// }
 	for (var i = 0; i < _root.基地地图列表.length; i++){
 		if (_root.关卡标志 == _root.基地地图列表[i]){
 			_root.gotoAndPlay("基地地图");
@@ -430,10 +422,13 @@ _root.清除游戏世界组件 = function(){
 	//关闭UI
 	_root.卸载外部UI();
 	_root.卸载全屏UI();
+	
 	_root.对话框UI.清理外部立绘缓存(3);
 	_root.对话框界面.关闭();
 	_root.对话框界面.followingEvent = null;
+
 	_root.购买物品界面.关闭();
+	_root.物品栏界面.关闭();
 	_root.仓库界面.关闭();
 	_root.商城主mc = null;
 	_root.关卡结束界面._visible = false;

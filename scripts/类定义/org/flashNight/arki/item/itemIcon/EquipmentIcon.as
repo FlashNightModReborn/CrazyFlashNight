@@ -30,5 +30,6 @@ class org.flashNight.arki.item.itemIcon.EquipmentIcon extends CollectionIcon{
         if(!result) return;
         _root[index] = "";
         _root.刷新人物装扮(_root.控制目标);
+        _root.存档系统.dirtyMark = true;
     }
 }

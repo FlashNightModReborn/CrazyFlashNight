@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1752512582" lastUniqueIdentifier="42">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1752747691" lastUniqueIdentifier="42">
   <timeline>
-    <DOMTimeline name="新版物品栏界面" currentFrame="47">
+    <DOMTimeline name="新版物品栏界面">
       <layers>
         <DOMLayer name="Labels Layer" color="#23D4A1">
           <frames>
@@ -30,7 +30,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#894BAD" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#894BAD">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -1526,7 +1526,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="关闭" color="#8EC1E5" autoNamed="false">
+        <DOMLayer name="关闭" color="#8EC1E5" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="52" keyMode="9728">
               <elements>
@@ -1539,7 +1539,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	_root.自动存盘();
+	if(_root.存档系统.dirtyMark) _root.自动存盘();
 	this.关闭();
 }]]></script>
                   </Actionscript>
