@@ -144,6 +144,78 @@ _root.主动战技函数.长枪.气锤地雷 = {
     }
 };
 
+_root.主动战技函数.长枪.气锤光炮 = {
+    初始化:function(自机){
+        var skill = 长枪物品信息.skill;
+        自机.气锤光炮弹药类型 = skill.bullet ? skill.bullet : "铁枪磁轨弹";
+        自机.气锤光炮音效 = skill.sound ? skill.sound : "re_GL_under.wav";
+
+
+        自机.dispatcher.subscribe("长枪射击", function() {
+            if(!自机.气锤光炮开启) return;
+            var prop:Object = 自机.man.子弹属性;
+
+            prop.子弹种类 = 自机.气锤光炮弹药类型;
+            自机.气锤光炮原伤害 = prop.子弹威力;
+            var magazineCapName:String =  "长枪弹匣容量";
+            var shootCountName:String = "长枪射击次数";
+            var rate:Number = (自机[magazineCapName] - 自机[shootCountName][自机["长枪"]]) * prop.霰弹值 / 2;
+            // _root.发布消息(自机.气锤光炮原伤害, rate)
+            prop.子弹威力 *= rate;
+            prop.霰弹值 = 1;
+            prop.子弹散射度 = 0;
+            prop.发射效果 = "铁枪能量弹枪火";
+            prop.sound = 自机.气锤光炮音效;
+
+            自机.气锤光炮开启 = false;
+        });
+    },
+    释放许可判定:function(自机){
+        if(自机["主手射击中"]) return false;
+        if(!自机.chargeComplete) return false;
+        var magazineCapName:String =  "长枪弹匣容量";
+        var shootCountName:String = "长枪射击次数";
+
+        if(自机[shootCountName][自机["长枪"]] + 1 > 自机[magazineCapName]) return false;
+        if(自机.浮空 || 自机.倒地) return false;
+        return true;
+    },
+    释放:function(自机){
+
+        自机.强制奔跑 = false;
+
+        var currentA:Boolean = 自机.动作A;
+        自机.气锤光炮开启 = true;
+        自机.动作A = true;
+        自机.攻击();
+
+        自机.气锤光炮开启 = false;
+        
+        var data:Object = _root.getItemData(自机.长枪);
+        var prop:Object = 自机.man.子弹属性;
+
+        prop.子弹种类 = data.data.bullet;
+        prop.霰弹值 = data.data.split;
+        prop.sound = data.data.sound;
+        prop.发射效果 = data.data.muzzle;
+        prop.子弹散射度 = data.data.diffusion;
+        prop.子弹威力 = 自机.气锤光炮原伤害;
+
+        // _root.发布消息("back", prop.子弹威力)
+
+        // _root.发布消息(prop.子弹种类, prop.霰弹值, prop.子弹威力)
+
+        // 自机.动作A = currentA;
+
+        var magazineCapName:String =  "长枪弹匣容量";
+        var shootCountName:String = "长枪射击次数";
+        自机[shootCountName][自机["长枪"]] = 自机[magazineCapName];
+        if(_root.控制目标 == 自机._name) {
+            _root.玩家信息界面.玩家必要信息界面["子弹数"] = 0;
+        }
+    }
+}
+
 _root.主动战技函数.长枪.突击者之眼 = {
     初始化:function(自机){
         var skill = 长枪物品信息.skill;

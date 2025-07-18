@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-持续组/旋转冲击" itemID="669d3440-00001741" linkageExportForAS="true" linkageIdentifier="旋转冲击" lastModified="1721578560">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-持续组/旋转冲击" itemID="669d3440-00001741" linkageExportForAS="true" linkageIdentifier="旋转冲击" lastModified="1752806839">
   <timeline>
-    <DOMTimeline name="旋转冲击" currentFrame="10">
+    <DOMTimeline name="旋转冲击">
       <layers>
-        <DOMLayer name="Script Layer" color="#F8A674" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#F8A674">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -36,11 +36,11 @@ stop();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#F8DEE1">
+        <DOMLayer name="Layer 3" color="#F8DEE1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4962" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4962" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.809112548828125" d="0.365859985351563" tx="-79.1" ty="-100.55"/>
                   </matrix>

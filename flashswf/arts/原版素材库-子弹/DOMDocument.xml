@@ -142,6 +142,7 @@
           <DOMSoundItem name="2.音效文件夹/爆炸/爆炸 大 05.mp3" itemID="656c2960-00001004" sourceExternalFilepath="./LIBRARY/2.音效文件夹/爆炸/爆炸 大 05.mp3" sourceLastImported="1699970393" href="2.音效文件夹/爆炸/爆炸 大 05.mp3" soundDataHRef="M 111 1748405203.dat" format="44kHz 16bit Stereo" sampleCount="338688" exportFormat="1" exportBits="7" dataLength="91523" exportNative="true" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="42336"/>
      </media>
      <symbols>
+          <Include href="Symbol 2.xml" loadImmediate="false" itemID="6577f78a-00000f72" lastModified="1701306521"/>
           <Include href="Symbol 721.xml" itemIcon="1" loadImmediate="false" itemID="65a50f67-00000570" lastModified="1705316192"/>
           <Include href="Symbol 722.xml" loadImmediate="false" itemID="65a50f67-00000571" lastModified="1705316192"/>
           <Include href="弹壳/步枪弹壳.xml" itemID="6634970f-00000eef" lastModified="1714742965"/>
@@ -191,6 +192,8 @@
           <Include href="联弹/纵向机枪联弹.xml" itemID="67e4c547-000044ea" lastModified="1743045959"/>
           <Include href="联弹/纵向联弹.xml" itemID="67e4a8eb-00002ab1" lastModified="1743045959"/>
           <Include href="联弹/纵向手枪联弹.xml" itemID="67ee2b69-000017dc" lastModified="1743661929"/>
+          <Include href="气锤上叶片.xml" itemIcon="1" loadImmediate="false" itemID="6879a7cf-00000602" lastModified="1752803279"/>
+          <Include href="气锤下叶片.xml" itemIcon="1" loadImmediate="false" itemID="6879a7dd-00000607" lastModified="1752803293"/>
           <Include href="升级动画.xml" itemID="669d33ea-0000172e" lastModified="1721578474"/>
           <Include href="特效-动画与文字组/升级动画2.xml" itemID="669d3460-00001749" lastModified="1721578592"/>
           <Include href="特效-动画与文字组/药剂动画.xml" itemID="669d3408-00001735" lastModified="1722876442"/>
@@ -214,6 +217,7 @@
           <Include href="特效-血液组/飙血.xml" itemID="669d3425-0000173b" lastModified="1723624672"/>
           <Include href="特效-血液组/血迹.xml" itemID="669d347b-0000174f" lastModified="1722914675"/>
           <Include href="特效-血液组/子弹碎片-飞血.xml" itemID="669d3480-00001750" lastModified="1722920091"/>
+          <Include href="铁枪磁轨弹动画.xml" itemIcon="1" loadImmediate="false" itemID="6879b5cc-00001095" lastModified="1752807115"/>
           <Include href="未分类子弹或特效/黑铁-落剑素材.xml" itemID="67ed50ce-000004cf" lastModified="1743605966"/>
           <Include href="未分类子弹或特效/小地震.xml" itemID="669d3467-0000174b" lastModified="1721578599"/>
           <Include href="无AS链接/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005be" lastModified="1720533000"/>
@@ -515,12 +519,12 @@
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 663.xml" itemIcon="1" loadImmediate="false" itemID="668b9cdd-000001df" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 664.xml" loadImmediate="false" itemID="668b9cdd-000001e0" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 1217.xml" itemIcon="1" loadImmediate="false" itemID="668b9f53-000001d0" lastModified="1720426265"/>
-          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1752759338"/>
+          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1752806807"/>
           <Include href="子弹-持续组/电球.xml" itemID="669d343b-00001740" lastModified="1722876120"/>
           <Include href="子弹-持续组/火焰.xml" itemID="669d3404-00001734" lastModified="1722875196"/>
           <Include href="子弹-持续组/声波.xml" itemID="669d34bf-0000176e" lastModified="1722875808"/>
           <Include href="子弹-持续组/声波1.xml" itemID="669d3436-0000173f" lastModified="1722876068"/>
-          <Include href="子弹-持续组/旋转冲击.xml" itemID="669d3440-00001741" lastModified="1721578560"/>
+          <Include href="子弹-持续组/旋转冲击.xml" itemID="669d3440-00001741" lastModified="1752806839"/>
           <Include href="子弹-持续组/血爆炸.xml" itemID="669d34de-00001776" lastModified="1721578718"/>
           <Include href="子弹-持续组/血滴落.xml" itemID="669d34db-00001775" lastModified="1721578715"/>
           <Include href="子弹-持续组/月光陨落.xml" itemID="669d34d7-00001774" lastModified="1721578711"/>
@@ -532,7 +536,7 @@
           <Include href="子弹-炮弹与爆炸组/普通爆炸.xml" itemID="669d33e6-0000172d" lastModified="1725374880"/>
           <Include href="子弹-炮弹与爆炸组/普通火箭弹.xml" itemID="669d34c3-0000176f" lastModified="1752758727"/>
           <Include href="子弹-炮弹与爆炸组/普通子弹.xml" itemID="669d342e-0000173d" lastModified="1721578542"/>
-          <Include href="子弹-炮弹与爆炸组/气锤地雷.xml" itemID="6878f9c7-00000a5c" lastModified="1752761149"/>
+          <Include href="子弹-炮弹与爆炸组/气锤地雷.xml" itemID="6878f9c7-00000a5c" lastModified="1752806297"/>
           <Include href="子弹-炮弹与爆炸组/气锤地雷素材.xml" loadImmediate="false" itemID="6878fa5b-00000a6f" lastModified="1752760717"/>
           <Include href="子弹-炮弹与爆炸组/小型导弹.xml" itemID="669d34c7-00001770" lastModified="1730004177"/>
           <Include href="子弹-普通与穿刺组/巴雷特子弹.xml" itemID="669d3447-00001743" lastModified="1721578567"/>
@@ -541,7 +545,7 @@
           <Include href="子弹-普通与穿刺组/能量子弹.xml" itemID="669d33e2-0000172c" lastModified="1721578466"/>
           <Include href="子弹-普通与穿刺组/普通弩箭.xml" itemID="669d3432-0000173e" lastModified="1722661273"/>
           <Include href="子弹-普通与穿刺组/糖果子弹.xml" itemID="669d3450-00001745" lastModified="1721578576"/>
-          <Include href="子弹-普通与穿刺组/铁枪磁轨弹.xml" itemID="68786a09-00004fe9" lastModified="1752723584"/>
+          <Include href="子弹-普通与穿刺组/铁枪磁轨弹.xml" itemID="68786a09-00004fe9" lastModified="1752807102"/>
           <Include href="子弹-普通与穿刺组/无壳穿刺子弹.xml" itemID="687775d5-00002db3" lastModified="1752659449"/>
           <Include href="子弹-普通与穿刺组/无壳子弹.xml" itemID="68775c6d-0000179e" lastModified="1752654007"/>
           <Include href="子弹-气功组/气功弹.xml" itemID="668b9d18-000001e7" lastModified="1722856067"/>
@@ -839,6 +843,11 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3915185" publishTime="1752807127"/>
+          <PublishItem publishSize="3915165" publishTime="1752807052"/>
+          <PublishItem publishSize="3915167" publishTime="1752806966"/>
+          <PublishItem publishSize="3915080" publishTime="1752806314"/>
+          <PublishItem publishSize="3914620" publishTime="1752805924"/>
           <PublishItem publishSize="3908150" publishTime="1752761160"/>
           <PublishItem publishSize="3908149" publishTime="1752760724"/>
           <PublishItem publishSize="3907561" publishTime="1752760556"/>
@@ -854,10 +863,5 @@
           <PublishItem publishSize="3906752" publishTime="1752758852"/>
           <PublishItem publishSize="3895113" publishTime="1752723421"/>
           <PublishItem publishSize="3895114" publishTime="1752723365"/>
-          <PublishItem publishSize="3895114" publishTime="1752723030"/>
-          <PublishItem publishSize="3895116" publishTime="1752722937"/>
-          <PublishItem publishSize="3895116" publishTime="1752722832"/>
-          <PublishItem publishSize="3895225" publishTime="1752722752"/>
-          <PublishItem publishSize="3895226" publishTime="1752722729"/>
      </publishHistory>
 </DOMDocument>

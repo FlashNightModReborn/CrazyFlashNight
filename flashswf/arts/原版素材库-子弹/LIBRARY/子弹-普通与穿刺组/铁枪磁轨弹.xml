@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/铁枪磁轨弹" itemID="68786a09-00004fe9" linkageExportForAS="true" linkageIdentifier="铁枪磁轨弹" lastModified="1752723584" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/铁枪磁轨弹" itemID="68786a09-00004fe9" linkageExportForAS="true" linkageIdentifier="铁枪磁轨弹" lastModified="1752807102" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="铁枪磁轨弹">
       <layers>
@@ -45,7 +45,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#EA35E6">
+        <DOMLayer name="Layer 3" color="#EA35E6" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -124,16 +124,23 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="17" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="Layer 4" color="#BBCD85" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="联弹/单元体-铁枪能量子弹" centerPoint3DX="49.6" centerPoint3DY="-0.6">
+                <DOMSymbolInstance libraryItemName="铁枪磁轨弹动画" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.07611083984375" d="1.07611083984375" tx="-0.65" ty="-0.6"/>
+                    <Matrix tx="-0.6" ty="-5"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="46.7"/>
+                    <Point x="50.2" y="4.4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
