@@ -164,6 +164,7 @@
           <Include href="弹壳/霰弹弹壳.xml" itemID="6634e7c1-0000196a" lastModified="1714811989"/>
           <Include href="弹壳/重机枪弹壳.xml" itemID="66357b12-00000b67" lastModified="1714811998"/>
           <Include href="导弹.xml" loadImmediate="false" itemID="671dc67e-000007ce" lastModified="1730004606"/>
+          <Include href="地雷激光扫描线.xml" itemIcon="1" loadImmediate="false" itemID="687af4b5-000005e2" lastModified="1752890259"/>
           <Include href="联弹/白色手里剑/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000250" lastModified="1705503817"/>
           <Include href="联弹/白色手里剑/Symbol 23.xml" loadImmediate="false" itemID="6577efbc-00000251" lastModified="1705503796"/>
           <Include href="联弹/白色手里剑/Symbol 573.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000416" lastModified="1705503893"/>
@@ -536,7 +537,7 @@
           <Include href="子弹-炮弹与爆炸组/普通爆炸.xml" itemID="669d33e6-0000172d" lastModified="1725374880"/>
           <Include href="子弹-炮弹与爆炸组/普通火箭弹.xml" itemID="669d34c3-0000176f" lastModified="1752758727"/>
           <Include href="子弹-炮弹与爆炸组/普通子弹.xml" itemID="669d342e-0000173d" lastModified="1721578542"/>
-          <Include href="子弹-炮弹与爆炸组/气锤地雷.xml" itemID="6878f9c7-00000a5c" lastModified="1752806297"/>
+          <Include href="子弹-炮弹与爆炸组/气锤地雷.xml" itemID="6878f9c7-00000a5c" lastModified="1752890474"/>
           <Include href="子弹-炮弹与爆炸组/气锤地雷素材.xml" loadImmediate="false" itemID="6878fa5b-00000a6f" lastModified="1752760717"/>
           <Include href="子弹-炮弹与爆炸组/小型导弹.xml" itemID="669d34c7-00001770" lastModified="1730004177"/>
           <Include href="子弹-普通与穿刺组/巴雷特子弹.xml" itemID="669d3447-00001743" lastModified="1721578567"/>
@@ -843,6 +844,11 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3916480" publishTime="1752890333"/>
+          <PublishItem publishSize="3916480" publishTime="1752890271"/>
+          <PublishItem publishSize="3916471" publishTime="1752889227"/>
+          <PublishItem publishSize="3916474" publishTime="1752889201"/>
+          <PublishItem publishSize="3916648" publishTime="1752888737"/>
           <PublishItem publishSize="3915185" publishTime="1752807127"/>
           <PublishItem publishSize="3915165" publishTime="1752807052"/>
           <PublishItem publishSize="3915167" publishTime="1752806966"/>
@@ -858,10 +864,5 @@
           <PublishItem publishSize="3907545" publishTime="1752759860"/>
           <PublishItem publishSize="3907574" publishTime="1752759459"/>
           <PublishItem publishSize="3907224" publishTime="1752759071"/>
-          <PublishItem publishSize="3907252" publishTime="1752758915"/>
-          <PublishItem publishSize="3907252" publishTime="1752758891"/>
-          <PublishItem publishSize="3906752" publishTime="1752758852"/>
-          <PublishItem publishSize="3895113" publishTime="1752723421"/>
-          <PublishItem publishSize="3895114" publishTime="1752723365"/>
      </publishHistory>
 </DOMDocument>
