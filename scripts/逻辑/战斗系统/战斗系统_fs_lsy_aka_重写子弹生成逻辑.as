@@ -80,12 +80,13 @@ _root.子弹区域shoot = function(声音, 霰弹值, 子弹散射度, 发射效
 		水平击退反向:水平击退反向,
 		角度偏移:角度偏移
 	};
+
+
 	_root.子弹区域shoot传递(子弹属性);
 }
 
 _root.子弹区域shoot传递 = function(Obj){
     //暂停判定
-
     if (_root.暂停 || isNaN(Obj.子弹威力)) return;
 
     var gameWorld:MovieClip = _root.gameworld;

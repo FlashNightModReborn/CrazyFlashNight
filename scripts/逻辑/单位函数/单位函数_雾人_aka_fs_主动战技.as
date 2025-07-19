@@ -114,7 +114,7 @@ _root.主动战技函数.长枪.发射榴弹 = {
 _root.主动战技函数.长枪.气锤地雷 = {
     初始化:null,
     释放许可判定:function(自机){
-        if(自机.浮空 || 自机.倒地) return false;
+        if(自机.倒地) return false;
         if(!(自机.状态 === "长枪行走" || 自机.状态 === "长枪站立") || 自机.换弹中) return false;
         return org.flashNight.arki.item.ItemUtil.singleSubmit("能量电池",1);
     },
@@ -135,7 +135,7 @@ _root.主动战技函数.长枪.气锤地雷 = {
         子弹属性.击中后子弹的效果 = "";
         子弹属性.发射者 = 自机._name;
         子弹属性.shootX = 自机._x;
-        子弹属性.shootY = 自机._y;
+        子弹属性.shootY = 自机.Z轴坐标;
         子弹属性.shootZ = 自机.Z轴坐标;
 
         _root.子弹区域shoot传递(子弹属性);
@@ -163,7 +163,7 @@ _root.主动战技函数.长枪.气锤光炮 = {
             // _root.发布消息(自机.气锤光炮原伤害, rate)
             prop.子弹威力 *= rate;
             prop.霰弹值 = 1;
-            prop.子弹散射度 = 0;
+            prop.站立子弹散射度 = 0;
             prop.发射效果 = "铁枪能量弹枪火";
             prop.sound = 自机.气锤光炮音效;
 
@@ -173,6 +173,7 @@ _root.主动战技函数.长枪.气锤光炮 = {
     释放许可判定:function(自机){
         if(自机["主手射击中"]) return false;
         if(!自机.chargeComplete) return false;
+        if(!(自机.状态 === "长枪行走" || 自机.状态 === "长枪站立") || 自机.换弹中) return false;
         var magazineCapName:String =  "长枪弹匣容量";
         var shootCountName:String = "长枪射击次数";
 
@@ -198,7 +199,7 @@ _root.主动战技函数.长枪.气锤光炮 = {
         prop.霰弹值 = data.data.split;
         prop.sound = data.data.sound;
         prop.发射效果 = data.data.muzzle;
-        prop.子弹散射度 = data.data.diffusion;
+        prop.站立子弹散射度 = data.data.diffusion;
         prop.子弹威力 = 自机.气锤光炮原伤害;
 
         // _root.发布消息("back", prop.子弹威力)
