@@ -220,7 +220,7 @@ _root.主动战技函数.长枪.气锤光炮 = {
 _root.主动战技函数.长枪.突击者之眼 = {
     初始化:function(自机){
         var skill = 长枪物品信息.skill;
-        自机.突击者之眼弹药类型 = skill.bullet ? skill.bullet : "无壳穿刺子弹";
+        自机.突击者之眼弹药类型 = skill.bullet ? skill.bullet : "横向联弹-无壳穿刺子弹";
         自机.突击者之眼数 = skill.split && skill.split > 0 ? Number(skill.split) : 3;
         自机.突击者之眼音效 = skill.sound ? skill.sound : "re_GL_under.wav";
 
@@ -230,6 +230,10 @@ _root.主动战技函数.长枪.突击者之眼 = {
         } else {
             upgradeLevel = _root.主角函数.获取人形怪强化等级(自机.等级, 自机.名字);
         }
+
+
+
+        
         
         var k:Number = 22 / 1029;   // ≈ 0.02138
         var level:Number = upgradeLevel;   // 1–13

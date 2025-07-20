@@ -96,10 +96,9 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MovementSystem {
                 missileParams.usePreLaunch = usePreLaunch;
                 return MissileMovement.create(missileParams);
             
-            // 可在此处添加其他移动类型
-            // case "homing":  // 追踪型
-            // case "spiral":  // 螺旋型
-            // 等等
+            case "freeFall":
+                // 新增：自由落体线性移动
+                return FreeFallLinearMovement.create(speedX, speedY, zyRatio);
                 
             case "linear":
             default:

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-炮弹与爆炸组/榴弹" itemID="669d34cb-00001771" linkageExportForAS="true" linkageIdentifier="榴弹" lastModified="1722875531">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-炮弹与爆炸组/榴弹" itemID="669d34cb-00001771" linkageExportForAS="true" linkageIdentifier="榴弹" lastModified="1752978175">
   <timeline>
-    <DOMTimeline name="榴弹" currentFrame="1">
+    <DOMTimeline name="榴弹">
       <layers>
         <DOMLayer name="Labels Layer" color="#A29897">
           <frames>
@@ -74,31 +74,13 @@ this.removeMovieClip();
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="2.55" centerPoint3DY="0.25">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="2.55" centerPoint3DY="0.25">
                   <matrix>
                     <Matrix d="0.999984741210938" tx="-9.95" ty="-12.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   垂直速度 = -5;
-   起始Y = _parent.Z轴坐标;
-   this.onEnterFrame = function()
-   {
-      _parent._y += 垂直速度;
-      垂直速度 += _root.重力加速度;
-      if(_parent._y >= 起始Y)
-      {
-         _parent._y = 起始Y;
-         delete this.onEnterFrame;
-         _parent.gotoAndPlay("消失");
-      }
-   };
-}
-]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

@@ -43,7 +43,7 @@
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
-        </shell>
+        </shell>        
     </bullet>
     <bullet>
         <name>子弹示例</name>
@@ -172,7 +172,13 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
-    </bullet>
+    </bullet>    
+    <bullet>
+        <name>榴弹</name>
+        <movement>
+            <func>freeFall</func>
+        </movement>
+    </bullet>        
     <bullet>
         <name>横向联弹-加强普通子弹</name>
         <shell>
