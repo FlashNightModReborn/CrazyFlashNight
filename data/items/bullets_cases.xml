@@ -172,9 +172,27 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
-    </bullet>    
+    </bullet>        
+    <bullet>
+        <name>火箭弹</name>
+        <movement>
+            <func>accelerated</func>
+        </movement>
+    </bullet>     
+    <bullet>
+        <name>普通火箭弹</name>
+        <movement>
+            <func>accelerated</func>
+        </movement>
+    </bullet>   
     <bullet>
         <name>榴弹</name>
+        <movement>
+            <func>freeFall</func>
+        </movement>
+    </bullet>      
+    <bullet>
+        <name>爆炎手里剑</name>
         <movement>
             <func>freeFall</func>
         </movement>

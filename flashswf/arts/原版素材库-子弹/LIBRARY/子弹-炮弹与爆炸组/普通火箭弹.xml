@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-炮弹与爆炸组/普通火箭弹" itemID="669d34c3-0000176f" linkageExportForAS="true" linkageIdentifier="普通火箭弹" lastModified="1752758727">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-炮弹与爆炸组/普通火箭弹" itemID="669d34c3-0000176f" linkageExportForAS="true" linkageIdentifier="普通火箭弹" lastModified="1752980967">
   <timeline>
-    <DOMTimeline name="普通火箭弹" currentFrame="2">
+    <DOMTimeline name="普通火箭弹">
       <layers>
         <DOMLayer name="Labels Layer" color="#B1EBC9">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#BFDC2F" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#BFDC2F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -82,7 +82,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#8FED89">
+        <DOMLayer name="Layer 4" color="#8FED89" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -93,36 +93,6 @@ this.removeMovieClip();
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   横向加速度 = 1;
-   横向速度 = 0;
-   this.onEnterFrame = function()
-   {
-      if(90 > _parent._rotation and _parent._rotation > -90)
-      {
-         横向速度 += 横向加速度;
-         _parent._x += 横向速度;
-      }
-      else if(360 > _parent._rotation and _parent._rotation > 270)
-      {
-         横向速度 += 横向加速度;
-         _parent._x += 横向速度;
-      }
-      else if(270 > _parent._rotation and _parent._rotation > 90)
-      {
-         横向速度 += 横向加速度;
-         _parent._x -= 横向速度;
-      }
-      else if(-90 > _parent._rotation and _parent._rotation > -270)
-      {
-         横向速度 += 横向加速度;
-         _parent._x -= 横向速度;
-      }
-   };
-}
-]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

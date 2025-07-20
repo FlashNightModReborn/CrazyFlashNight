@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-炮弹与爆炸组/爆炎手里剑" itemID="669d3b07-000017c2" linkageExportForAS="true" linkageIdentifier="爆炎手里剑" lastModified="1745168822">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-炮弹与爆炸组/爆炎手里剑" itemID="669d3b07-000017c2" linkageExportForAS="true" linkageIdentifier="爆炎手里剑" lastModified="1752979880">
   <timeline>
-    <DOMTimeline name="爆炎手里剑" currentFrame="2">
+    <DOMTimeline name="爆炎手里剑" currentFrame="3">
       <layers>
         <DOMLayer name="Labels Layer" color="#E637C5">
           <frames>
@@ -56,7 +56,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#69F2D7" locked="true">
+        <DOMLayer name="Layer 3" color="#69F2D7">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -67,24 +67,6 @@ this.removeMovieClip();
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   垂直速度 = -5;
-   起始Y = _parent.Z轴坐标;
-   this.onEnterFrame = function()
-   {
-      _parent._y += 垂直速度;
-      垂直速度 += _root.重力加速度 / 2;
-      if(_parent._y >= 起始Y)
-      {
-         _parent._y = 起始Y;
-         delete this.onEnterFrame;
-         _parent.gotoAndPlay("消失");
-      }
-   };
-}
-]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

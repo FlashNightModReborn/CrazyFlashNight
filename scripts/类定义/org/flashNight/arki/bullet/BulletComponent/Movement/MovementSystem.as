@@ -97,8 +97,13 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MovementSystem {
                 return MissileMovement.create(missileParams);
             
             case "freeFall":
-                // 新增：自由落体线性移动
+                // 自由落体线性移动，提供给榴弹
                 return FreeFallLinearMovement.create(speedX, speedY, zyRatio);
+
+
+            case "accelerated":
+                // 加速运动，提供给火箭弹
+                return AcceleratedMovement.create(speedX, speedY, 1);
                 
             case "linear":
             default:
