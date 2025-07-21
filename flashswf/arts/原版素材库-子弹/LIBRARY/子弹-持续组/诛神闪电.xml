@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-持续组/诛神闪电" itemID="669d33fc-00001732" linkageExportForAS="true" linkageIdentifier="诛神闪电" lastModified="1721580176">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-持续组/诛神闪电" itemID="669d33fc-00001732" linkageExportForAS="true" linkageIdentifier="诛神闪电" lastModified="1752981174">
   <timeline>
-    <DOMTimeline name="诛神闪电" currentFrame="14">
+    <DOMTimeline name="诛神闪电" currentFrame="8">
       <layers>
-        <DOMLayer name="Script Layer" color="#91AAC8" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#91AAC8">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -26,7 +26,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#EA1DF6" locked="true">
+        <DOMLayer name="Layer 2" color="#EA1DF6">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -45,11 +45,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#B794D3">
+        <DOMLayer name="Layer 3" color="#B794D3" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4073" centerPoint3DX="171.85" centerPoint3DY="153.2">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4073" selected="true" centerPoint3DX="171.85" centerPoint3DY="153.2">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

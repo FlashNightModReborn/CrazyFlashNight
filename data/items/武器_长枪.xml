@@ -6261,7 +6261,17 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
     <equipped>
       <dressup>枪-长枪-XM25</dressup>
-    </equipped>
+    </equipped>    
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>XM25初始化</initRoutines>
+        </init>
+        <cycle>
+          <cycleRoutines>XM25周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>  
   <item>
     <id>8093</id>
