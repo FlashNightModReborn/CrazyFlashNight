@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/系统UI" itemID="684a2580-00015772" linkageExportForAS="true" linkageIdentifier="系统UI" lastModified="1749718869" lastUniqueIdentifier="21">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/系统UI" itemID="684a2580-00015772" linkageExportForAS="true" linkageIdentifier="系统UI" lastModified="1753202464" lastUniqueIdentifier="21">
   <timeline>
-    <DOMTimeline name="系统UI" currentFrame="11" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;10&lt;/guideline&gt;&lt;guideline direction="v"&gt;119&lt;/guideline&gt;&lt;guideline direction="v"&gt;217&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="系统UI" currentFrame="9" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;10&lt;/guideline&gt;&lt;guideline direction="v"&gt;119&lt;/guideline&gt;&lt;guideline direction="v"&gt;217&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#C688B8">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#4B7DFD">
+        <DOMLayer name="Script Layer" color="#4B7DFD" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -105,7 +105,16 @@ _root.全部翻译(this);
             </DOMFrame>
             <DOMFrame index="9" duration="21" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.全部翻译(this);
+                <script><![CDATA[
+if(_root.帧计时器.性能等级上限){
+	performanceBtn._x = Math.ceil(_root.帧计时器.性能等级上限 * 33) * 1.5 + 40;
+	performanceBtn.num.text = _root.帧计时器.性能等级上限;
+}
+if(_root.basicZoomScale){
+	zoomBtn._x = Math.ceil(((_root.basicZoomScale - 0.5) / 2.5) * 100) * 1.45 + 15;
+}
+
+_root.全部翻译(this);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -2390,9 +2399,6 @@ on(release, releaseOutside){
 	delete this.onEnterFrame;
 }]]></script>
                   </Actionscript>
-                  <color>
-                    <Color/>
-                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2994,7 +3000,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 53" color="#97ED8A" current="true" isSelected="true">
+        <DOMLayer name="Layer 53" color="#97ED8A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -3108,19 +3114,7 @@ on(rollOut){
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>画面缩放视觉效果</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>:</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
+                      <characters>画面缩放视觉效果:</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -3133,19 +3127,7 @@ on(rollOut){
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>性能评估优化算法</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters> </characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>实时监测FPS表现&#xD;依据帧率波动，自动换挡，优化负载&#xD;高端设备：设定 0–1，完整特效渲染&#xD;中端设备：设定 2–3，帧率稳定运行&#xD;</characters>
+                      <characters>性能评估优化算法 实时监测FPS表现&#xD;依据帧率波动，自动换挡，优化负载&#xD;高端设备：设定 0–1，完整特效渲染&#xD;中端设备：设定 2–3，帧率稳定运行&#xD;</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -3158,19 +3140,7 @@ on(rollOut){
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>昼夜天气系统</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>:</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
+                      <characters>昼夜天气系统:</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -3242,7 +3212,7 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 298" selected="true" centerPoint3DX="118" centerPoint3DY="165.95">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 298" centerPoint3DX="118" centerPoint3DY="165.95">
                   <matrix>
                     <Matrix d="0.999847412109375"/>
                   </matrix>

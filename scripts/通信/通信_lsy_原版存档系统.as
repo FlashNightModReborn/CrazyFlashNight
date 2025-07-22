@@ -22,10 +22,40 @@ _root.存档系统.初始化收集品栏 = function(){
         情报:new InformationCollection(null)
     }
 }
+_root.存档系统.存储设置 = function(){
+    return {
+        setGlobalVolume:_root.soundEffectManager.getGlobalVolume(),
+        setBGMVolume:_root.soundEffectManager.getBGMVolume(),
+        性能等级上限:_root.帧计时器.性能等级上限,
+        是否阴影:_root.是否阴影,
+        是否视觉元素:_root.是否视觉元素,
+        是否打击数字特效:_root.是否打击数字特效,
+        cameraZoomToggle:_root.cameraZoomToggle,
+        basicZoomScale:_root.basicZoomScale,
+        开启昼夜系统:_root.天气系统.开启昼夜系统,
+        暂停昼夜系统:_root.天气系统.暂停昼夜系统,
+        使用滤镜渲染:_root.天气系统.使用滤镜渲染
+    }
+}
+
+_root.存档系统.读取设置 = function(设置){
+    if(!设置) return;
+    if(!isNaN(设置.setGlobalVolume)) _root.soundEffectManager.setGlobalVolume(设置.setGlobalVolume);
+    if(!isNaN(设置.setBGMVolume)) _root.soundEffectManager.setBGMVolume(设置.setBGMVolume);
+    if(!isNaN(设置.性能等级上限)) _root.帧计时器.性能等级上限 = 设置.性能等级上限;
+    if(设置.cameraZoomToggle || 设置.cameraZoomToggle  === false) _root.cameraZoomToggle = 设置.cameraZoomToggle;
+    if(!isNaN(设置.basicZoomScale)) _root.basicZoomScale = 设置.basicZoomScale;
+    if(设置.是否阴影 || 设置.是否阴影  === false) _root.是否阴影 = 设置.是否阴影;
+    if(设置.是否视觉元素 || 设置.是否视觉元素  === false) _root.是否视觉元素 = 设置.是否视觉元素;
+    if(设置.是否打击数字特效 || 设置.是否打击数字特效  === false) _root.是否打击数字特效 = 设置.是否打击数字特效;
+    if(设置.开启昼夜系统 || 设置.开启昼夜系统  === false) _root.天气系统.开启昼夜系统 = 设置.开启昼夜系统;
+    if(设置.暂停昼夜系统 || 设置.暂停昼夜系统  === false) _root.天气系统.暂停昼夜系统 = 设置.暂停昼夜系统;
+    if(设置.使用滤镜渲染 || 设置.使用滤镜渲染  === false) _root.天气系统.使用滤镜渲染 = 设置.使用滤镜渲染;
+}
 
 _root.存档系统.mydata数据组包 = function(){
     _root.身价 = _root.基础身价值 * _root.等级;
-    var 主角储存数据 = [_root.角色名,_root.性别,_root.金钱,_root.等级,_root.经验值,_root.身高,_root.技能点数,_root.玩家称号,_root.身价,_root.虚拟币,_root.键值设定,_root.difficultyMode,_root.佣兵是否出战信息,_root.easterEgg, _root.天气系统.开启昼夜系统];
+    var 主角储存数据 = [_root.角色名,_root.性别,_root.金钱,_root.等级,_root.经验值,_root.身高,_root.技能点数,_root.玩家称号,_root.身价,_root.虚拟币,_root.键值设定,_root.difficultyMode,_root.佣兵是否出战信息,_root.easterEgg];
     var 装备储存数据 = [_root.脸型,_root.发型,_root.头部装备,_root.上装装备,_root.手部装备,_root.下装装备,_root.脚部装备,_root.颈部装备,_root.长枪,_root.手枪,_root.手枪2,_root.刀,_root.手雷,_root.快捷物品栏1,_root.快捷物品栏2,_root.快捷物品栏3,_root.快捷技能栏1,_root.快捷技能栏2,_root.快捷技能栏3,_root.快捷技能栏4,_root.快捷技能栏5,_root.快捷技能栏6,_root.快捷技能栏7,_root.快捷技能栏8,_root.快捷技能栏9,_root.快捷技能栏10,_root.快捷技能栏11,_root.快捷技能栏12,_root.快捷物品栏4];
     var 主角技能表储存数据 = _root.主角技能表;
     // var 物品储存数据 = _root.物品栏;
@@ -44,6 +74,7 @@ _root.存档系统.mydata数据组包 = function(){
     var 任务储存数据 = _root.主线任务进度;
     // var 仓库储存数据 = _root.仓库栏;
     var 健身储存数据 = [_root.全局健身HP加成,_root.全局健身MP加成,_root.全局健身空攻加成,_root.全局健身防御加成,_root.全局健身内力加成];
+    var 其他存储数据 = {设置:_root.存档系统.存储设置()};
 
      // 获取当前时间并格式化为字符串
     var now:Date = new Date();
@@ -73,6 +104,7 @@ _root.存档系统.mydata数据组包 = function(){
     mydata.collection = 收集品储存数据;
     mydata.infrastructure = _root.基建系统.infrastructure;
     mydata.lastSaved = lastSaved;
+    mydata.others = 其他存储数据;
 
     _root.mydata = mydata;
     
@@ -216,10 +248,6 @@ _root.读取存盘 = function(){
             i++;
         }
     }
-    if(主角储存数据[14] || 主角储存数据[14] === false)
-    {
-        _root.天气系统.开启昼夜系统 = 主角储存数据[14];
-    }
     
     var tmp经验值 = 根据等级得升级所需经验(_root.等级);
     if(tmp经验值 < _root.经验值)
@@ -282,7 +310,11 @@ _root.读取存盘 = function(){
         情报:new InformationCollection(_root.mydata.collection.情报)
     };
     _root.基建系统.infrastructure = mydata.infrastructure;
-
+    if(_root.mydata.others){
+        if(_root.mydata.others.设置){
+            _root.存档系统.读取设置(_root.mydata.others.设置);
+        }
+    }
     _root.主线任务进度 = Math.floor(Number(任务储存数据));
     _root.LoadPCTasks();
     if(_root.角色名 == undefined){
