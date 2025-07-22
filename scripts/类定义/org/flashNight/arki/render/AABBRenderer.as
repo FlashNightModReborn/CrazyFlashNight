@@ -71,6 +71,47 @@ class org.flashNight.arki.render.AABBRenderer {
         unhitConfig.lineAlpha = 100;
         unhitConfig.shadowCount = 10;
         modeConfigs["unhit"] = unhitConfig;
+
+        // =============== 扫描锁定模式系列 ===============
+        // scan1 模式配置 - 初始扫描（淡青色，最轻微）
+        var scan1Config:Object = new Object();
+        scan1Config.fillColor = 0x00FFFF;    // 淡青色
+        scan1Config.lineColor = 0x00FFFF;    // 淡青色
+        scan1Config.lineWidth = 1;           // 细线
+        scan1Config.fillAlpha = 10;          // 很低的填充透明度
+        scan1Config.lineAlpha = 40;          // 较低的线条透明度
+        scan1Config.shadowCount = 1;         // 最少残影
+        modeConfigs["scan1"] = scan1Config;
+        
+        // scan2 模式配置 - 检测中（淡黄色，轻微增强）
+        var scan2Config:Object = new Object();
+        scan2Config.fillColor = 0xFFFF00;    // 黄色
+        scan2Config.lineColor = 0xFFFF00;    // 黄色
+        scan2Config.lineWidth = 1;           // 细线
+        scan2Config.fillAlpha = 15;          // 稍高的填充透明度
+        scan2Config.lineAlpha = 60;          // 中等线条透明度
+        scan2Config.shadowCount = 2;         // 较少残影
+        modeConfigs["scan2"] = scan2Config;
+        
+        // scan3 模式配置 - 锁定中（橙色，明显增强）
+        var scan3Config:Object = new Object();
+        scan3Config.fillColor = 0xFF8000;    // 橙色
+        scan3Config.lineColor = 0xFF8000;    // 橙色
+        scan3Config.lineWidth = 2;           // 中等线宽
+        scan3Config.fillAlpha = 25;          // 中等填充透明度
+        scan3Config.lineAlpha = 80;          // 较高线条透明度
+        scan3Config.shadowCount = 3;         // 中等残影
+        modeConfigs["scan3"] = scan3Config;
+        
+        // scan4 模式配置 - 完全锁定（红色，最强烈）
+        var scan4Config:Object = new Object();
+        scan4Config.fillColor = 0xFF0000;    // 红色
+        scan4Config.lineColor = 0xFF0000;    // 红色
+        scan4Config.lineWidth = 2;           // 中等线宽
+        scan4Config.fillAlpha = 35;          // 较高填充透明度
+        scan4Config.lineAlpha = 100;         // 完全不透明线条
+        scan4Config.shadowCount = 4;         // 最多残影（但仍<5）
+        modeConfigs["scan4"] = scan4Config;
         
         isInitialized = true;
     }
