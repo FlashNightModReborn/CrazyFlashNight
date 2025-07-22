@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/系统UI" itemID="684a2580-00015772" linkageExportForAS="true" linkageIdentifier="系统UI" lastModified="1753202464" lastUniqueIdentifier="21">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/系统UI" itemID="684a2580-00015772" linkageExportForAS="true" linkageIdentifier="系统UI" lastModified="1753203088" lastUniqueIdentifier="21">
   <timeline>
     <DOMTimeline name="系统UI" currentFrame="9" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;10&lt;/guideline&gt;&lt;guideline direction="v"&gt;119&lt;/guideline&gt;&lt;guideline direction="v"&gt;217&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#4B7DFD" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#4B7DFD">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -1411,7 +1411,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 33" color="#9CECB0">
+        <DOMLayer name="Layer 33" color="#9CECB0" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1433,7 +1433,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="144.45" centerPoint3DY="184.4">
+                <DOMSymbolInstance libraryItemName="sprite/复选框" selected="true" centerPoint3DX="144.45" centerPoint3DY="184.4">
                   <matrix>
                     <Matrix tx="132" ty="171.95"/>
                   </matrix>
@@ -1441,15 +1441,20 @@ on(rollOut){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   控制参数 = "cameraZoomToggle";
-   打钩值 = true;
-   无钩值 = false;
+                    <script><![CDATA[onClipEvent (load) {
+	控制参数 = "cameraZoomToggle";
+	打钩值 = true;
+	无钩值 = false;
 }
-onClipEvent(mouseUp){
-   刷新();
-}
-]]></script>
+onClipEvent (mouseUp) {
+	刷新();
+
+	if (!_root.cameraZoomToggle)
+	{
+		_root.basicZoomScale = 1;
+		_parent.zoomBtn._x = Math.ceil(((_root.basicZoomScale - 0.5) / 2.5) * 100) * 1.45 + 15;
+	}
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
@@ -2251,19 +2256,32 @@ onClipEvent(mouseUp){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[on(press){
-	this.zoomMC.onEnterFrame = function(){
-		var xmouse = this._xmouse;
-		var scale = (xmouse - 32.5) / 1.5;
-		scale -= scale % 1;
-		if(scale <= 0) scale = 0;
-		if(scale > 100) scale = 100;
-		this.zoomBtn.scaleNum = scale;
-		zoomBtn._x = scale * 1.45 + 15;
-		_root.basicZoomScale = Math.floor((0.5 + scale / 100 * 2.5) * 10) / 10;
+                    <script><![CDATA[on (press) {
+	if (_root.cameraZoomToggle)
+	{
+		this.zoomMC.onEnterFrame = function()
+		{
+			var xmouse = this._xmouse;
+			var scale = (xmouse - 32.5) / 1.5;
+			scale -= scale % 1;
+			if (scale <= 0)
+			{
+				scale = 0;
+			}
+			if (scale > 100)
+			{
+				scale = 100;
+			}
+			this.zoomBtn.scaleNum = scale;
+			zoomBtn._x = scale * 1.45 + 15;
+			_root.basicZoomScale = Math.floor((0.5 + scale / 100 * 2.5) * 10) / 10;
+		};
+	}else{
+		_root.basicZoomScale = 1;
+		zoomBtn._x = Math.ceil(((_root.basicZoomScale - 0.5) / 2.5) * 100) * 1.45 + 15;
 	}
 }
-on(release, releaseOutside){
+on (release, releaseOutside) {
 	delete this.zoomMC.onEnterFrame;
 }]]></script>
                   </Actionscript>
