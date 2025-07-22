@@ -11,7 +11,7 @@ import org.flashNight.arki.spatial.transform.*;
  * 主要功能：
  *   1. 用于可视化调试 AABBCollider（轴对齐边界框）碰撞器的边界框绘制。
  *   2. 提供多种绘制模式，以快速区分不同的碰撞状态（线框、粗线框、填充、未命中等）。
- *   3. 当 zRange > 0 时，基于 “主 AABB + y 轴平移/伸缩” 来可视化
+ *   3. 当 zRange > 0 时，基于 "主 AABB + y 轴平移/伸缩" 来可视化
  *      zOffset ± zRange 的上下边界，避免与主 AABB 形状脱节。
  *
  * 使用要点：
@@ -19,6 +19,83 @@ import org.flashNight.arki.spatial.transform.*;
  *     可在 shiftVerticesForZ 方法中自定义映射规则（平移、缩放、倾斜等）。
  */
 class org.flashNight.arki.render.AABBRenderer {
+
+    // =============== 配置缓存 ===============
+    private static var modeConfigs:Object;
+    private static var isInitialized:Boolean = false;
+
+    /**
+     * 初始化模式配置对象
+     */
+    private static function initModeConfigs():Void {
+        if (isInitialized) return;
+        
+        modeConfigs = new Object();
+        
+        // line 模式配置
+        var lineConfig:Object = new Object();
+        lineConfig.fillColor = 0xFF0000;
+        lineConfig.lineColor = 0x00FFFF;
+        lineConfig.lineWidth = 2;
+        lineConfig.fillAlpha = 0;
+        lineConfig.lineAlpha = 100;
+        lineConfig.shadowCount = 5;
+        modeConfigs["line"] = lineConfig;
+        
+        // thick 模式配置
+        var thickConfig:Object = new Object();
+        thickConfig.fillColor = 0xFF0000;
+        thickConfig.lineColor = 0xFFFF00;
+        thickConfig.lineWidth = 6;
+        thickConfig.fillAlpha = 0;
+        thickConfig.lineAlpha = 80;
+        thickConfig.shadowCount = 20;
+        modeConfigs["thick"] = thickConfig;
+        
+        // filled 模式配置
+        var filledConfig:Object = new Object();
+        filledConfig.fillColor = 0xFF0000;
+        filledConfig.lineColor = 0xFF0000;
+        filledConfig.lineWidth = 3;
+        filledConfig.fillAlpha = 60;
+        filledConfig.lineAlpha = 100;
+        filledConfig.shadowCount = 30;
+        modeConfigs["filled"] = filledConfig;
+        
+        // unhit 模式配置
+        var unhitConfig:Object = new Object();
+        unhitConfig.fillColor = 0x00FF00;
+        unhitConfig.lineColor = 0x00FF00;
+        unhitConfig.lineWidth = 2;
+        unhitConfig.fillAlpha = 20;
+        unhitConfig.lineAlpha = 100;
+        unhitConfig.shadowCount = 10;
+        modeConfigs["unhit"] = unhitConfig;
+        
+        isInitialized = true;
+    }
+
+    /**
+     * 获取指定模式的配置，如果模式不存在则返回默认配置
+     */
+    private static function getModeConfig(mode:String):Object {
+        initModeConfigs();
+        
+        var config:Object = modeConfigs[mode];
+        if (config != null) {
+            return config;
+        }
+        
+        // 返回默认配置
+        var defaultConfig:Object = new Object();
+        defaultConfig.fillColor = 0x0000FF;
+        defaultConfig.lineColor = 0x0000FF;
+        defaultConfig.lineWidth = 2;
+        defaultConfig.fillAlpha = 0;
+        defaultConfig.lineAlpha = 100;
+        defaultConfig.shadowCount = 3;
+        return defaultConfig;
+    }
 
     /**
      * 渲染传入的 AABBCollider 对象对应的轴对齐边界框，并可选地可视化 z 轴范围。
@@ -70,82 +147,33 @@ class org.flashNight.arki.render.AABBRenderer {
         var p2:Vector = new Vector(collider.right,  collider.bottom);
         var p3:Vector = new Vector(collider.left,   collider.bottom);
         
-        // ================== 默认绘图样式配置 ===================
-        var fillColor:Number   = 0xFF0000;  // 填充色：红色
-        var lineColor:Number   = 0x00FF00;  // 线条色：绿色
-        var lineWidth:Number   = 2;         // 线条宽度
-        var fillAlpha:Number   = 80;        // 填充透明度 (0~100)
-        var lineAlpha:Number   = 100;       // 线条透明度 (0~100)
-        var shadowCount:Number = 30;        // 残影持续帧数
+        // =============== 2. 根据 mode 获取样式配置 ===============
+        var styleConfig:Object = getModeConfig(mode);
         
-        // =============== 2. 根据 mode 调整主要 AABB 的样式 ===============
-        switch(mode) {
-            case "line":
-                lineColor   = 0x00FFFF; // 青色线
-                lineWidth   = 2;
-                fillAlpha   = 0;
-                lineAlpha   = 100;
-                shadowCount = 5;
-                break;
-            
-            case "thick":
-                lineColor   = 0xFFFF00; // 亮黄色线
-                lineWidth   = 6;
-                fillAlpha   = 0;
-                lineAlpha   = 80;
-                shadowCount = 20;
-                break;
-            
-            case "filled":
-                fillColor   = 0xFF0000;
-                lineColor   = 0xFF0000;
-                lineWidth   = 3;
-                fillAlpha   = 60;
-                lineAlpha   = 100;
-                shadowCount = 30;
-                break;
-            
-            case "unhit":
-                fillColor   = 0x00FF00;
-                lineColor   = 0x00FF00;
-                lineWidth   = 2;
-                fillAlpha   = 20;  
-                lineAlpha   = 100;
-                shadowCount = 10;
-                break;
-            
-            default:
-                fillColor   = 0x0000FF;
-                lineColor   = 0x0000FF;
-                lineWidth   = 2;
-                fillAlpha   = 0;
-                lineAlpha   = 100;
-                shadowCount = 3;
-                break;
-        }
+        // 提取样式参数
+        var fillColor:Number   = styleConfig.fillColor;
+        var lineColor:Number   = styleConfig.lineColor;
+        var lineWidth:Number   = styleConfig.lineWidth;
+        var fillAlpha:Number   = styleConfig.fillAlpha;
+        var lineAlpha:Number   = styleConfig.lineAlpha;
+        var shadowCount:Number = styleConfig.shadowCount;
         
         // =============== 3. 组装主要 AABB 的绘制信息 ===============
         var mainVertices:Array = [p0, p1, p2, p3];
-        var mainData:Object = {
-            vertices:   mainVertices,
-            fillColor:  fillColor,
-            lineColor:  lineColor,
-            lineWidth:  lineWidth,
-            fillAlpha:  fillAlpha,
-            lineAlpha:  lineAlpha,
-            shadowCount:shadowCount
-        };
+        var mainData:Object = new Object();
+        mainData.vertices = mainVertices;
+        mainData.fillColor = fillColor;
+        mainData.lineColor = lineColor;
+        mainData.lineWidth = lineWidth;
+        mainData.fillAlpha = fillAlpha;
+        mainData.lineAlpha = lineAlpha;
+        mainData.shadowCount = shadowCount;
         
         // =============== 4. 基于主 AABB 顶点计算 minZ/maxZ AABB（若 zRange>0） ===============
         var minZData:Object = null;
         var maxZData:Object = null;
         if(zRange > 0) {
-            // 你可以在此处自定义：zRange 在屏幕上相当于多少像素？缩放还是平移？
-            // 示例：假设 “1 的 zRange = 1 像素的 y 位移”，
-            //       zOffset + zRange 往 y 轴下方平移
-            //       zOffset - zRange 往 y 轴上方平移
-            
-            // 可酌情加入一个缩放系数
+            // 加入一个缩放系数
             var Z_TO_Y_SCALE:Number = 1; 
             
             // 下边界：zOffset - zRange => 相对主 AABB 向上移动
@@ -161,33 +189,31 @@ class org.flashNight.arki.render.AABBRenderer {
             var zRangeLineAlpha:Number = 60; // 半透明
             var zRangeShadowCount:Number = 10;
             
-            minZData = {
-                vertices: minZVertices,
-                fillColor: 0x000000,
-                lineColor: zRangeLineColor,
-                lineWidth: zRangeLineWidth,
-                fillAlpha: zRangeFillAlpha,
-                lineAlpha: zRangeLineAlpha,
-                shadowCount: zRangeShadowCount
-            };
+            minZData = new Object();
+            minZData.vertices = minZVertices;
+            minZData.fillColor = 0x000000;
+            minZData.lineColor = zRangeLineColor;
+            minZData.lineWidth = zRangeLineWidth;
+            minZData.fillAlpha = zRangeFillAlpha;
+            minZData.lineAlpha = zRangeLineAlpha;
+            minZData.shadowCount = zRangeShadowCount;
             
-            maxZData = {
-                vertices: maxZVertices,
-                fillColor: 0x000000,
-                lineColor: zRangeLineColor,
-                lineWidth: zRangeLineWidth,
-                fillAlpha: zRangeFillAlpha,
-                lineAlpha: zRangeLineAlpha,
-                shadowCount: zRangeShadowCount
-            };
+            maxZData = new Object();
+            maxZData.vertices = maxZVertices;
+            maxZData.fillColor = 0x000000;
+            maxZData.lineColor = zRangeLineColor;
+            maxZData.lineWidth = zRangeLineWidth;
+            maxZData.fillAlpha = zRangeFillAlpha;
+            maxZData.lineAlpha = zRangeLineAlpha;
+            maxZData.shadowCount = zRangeShadowCount;
         }
         
         // =============== 5. 返回包含主 AABB + zRange AABB 的综合数据 ===============
-        return {
-            mainAABB: mainData,  // 当前 zOffset AABB
-            minZAABB: minZData,  // zOffset - zRange
-            maxZAABB: maxZData   // zOffset + zRange
-        };
+        var result:Object = new Object();
+        result.mainAABB = mainData;  // 当前 zOffset AABB
+        result.minZAABB = minZData;  // zOffset - zRange
+        result.maxZAABB = maxZData;  // zOffset + zRange
+        return result;
     }
 
     
@@ -203,7 +229,7 @@ class org.flashNight.arki.render.AABBRenderer {
         var len:Number = vertices.length;
         for(var i:Number = 0; i < len; i++) {
             var v:Vector = vertices[i];
-            // 如果你需要额外做“缩放”、“倾斜”或“梯形变形”，
+            // 如果你需要额外做"缩放"、"倾斜"或"梯形变形"，
             // 也可在此处替换成更复杂的运算
             newVerts.push(new Vector(v.x, v.y + yShift));
         }
