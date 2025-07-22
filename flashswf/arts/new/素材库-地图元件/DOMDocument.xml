@@ -26,7 +26,8 @@
           <DOMFolderItem name="汽车炸弹" itemID="683b1e8f-000002dc"/>
           <DOMFolderItem name="汽车炸弹/变形动画" itemID="683b12eb-00000b92"/>
           <DOMFolderItem name="生存战素材" itemID="66a8fcff-00001f68"/>
-          <DOMFolderItem name="箱子素材" itemID="65c8edc1-0000067a"/>
+          <DOMFolderItem name="投影召唤器" itemID="687f5190-00004c7e"/>
+          <DOMFolderItem name="箱子素材" itemID="65c8edc1-0000067a" isExpanded="true"/>
           <DOMFolderItem name="箱子素材/保险柜" itemID="6837c8e0-0000190a"/>
           <DOMFolderItem name="箱子素材/生存箱" itemID="68381308-00002787"/>
           <DOMFolderItem name="箱子素材/纸箱" itemID="68380307-0000252c" isExpanded="true"/>
@@ -50,6 +51,8 @@
           <Include href="sprite/健身房沙袋.xml" itemID="66a8ed03-0000125e" lastModified="1748690096"/>
           <Include href="sprite/健身房沙袋 强制移动.xml" loadImmediate="false" itemID="66a8ed0d-00001267" lastModified="1722347298"/>
           <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
+          <Include href="补间 1.xml" itemIcon="1" loadImmediate="false" itemID="687f817f-00006a70" lastModified="1753186687"/>
+          <Include href="补间 2.xml" itemIcon="1" loadImmediate="false" itemID="687f817f-00006a72" lastModified="1753186687"/>
           <Include href="场景素材/废弃车辆/高级轿车a/场景素材-高级轿车a.xml" itemID="6836735a-00000bcb" lastModified="1748485842"/>
           <Include href="场景素材/废弃车辆/高级轿车a/高级轿车a车皮.xml" loadImmediate="false" itemID="68367561-00000bcd" lastModified="1748399520"/>
           <Include href="场景素材/废弃车辆/高级轿车a/高级轿车a碰撞箱.xml" loadImmediate="false" itemID="68367e75-00000bf3" lastModified="1748401880"/>
@@ -191,7 +194,9 @@
           <Include href="生存战素材/Symbol 36.xml" loadImmediate="false" itemID="65c24a9a-00000cdc" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 37.xml" itemIcon="1" loadImmediate="false" itemID="65c24a9a-00000cdd" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 38.xml" loadImmediate="false" itemID="65c24a9a-00000cde" lastModified="1699960314"/>
-          <Include href="素材库-地图元件.xml" itemID="65c24b72-00000cf2" lastModified="1750497873"/>
+          <Include href="素材库-地图元件.xml" itemID="65c24b72-00000cf2" lastModified="1753174419"/>
+          <Include href="投影召唤器/投影召唤器.xml" itemID="687f5035-00004c64" lastModified="1753188269"/>
+          <Include href="投影召唤器光影.xml" itemIcon="1" loadImmediate="false" itemID="687f669a-00006a46" lastModified="1753187125"/>
           <Include href="箱子素材/Symbol 9.xml" itemIcon="1" loadImmediate="false" itemID="65c8ed3c-00000647" lastModified="1704525302"/>
           <Include href="箱子素材/Symbol 10.xml" loadImmediate="false" itemID="65c8ed3c-00000648" lastModified="1714562335"/>
           <Include href="箱子素材/Symbol 11.xml" itemIcon="0" loadImmediate="false" itemID="65c8ed3c-00000649" lastModified="1704525302"/>
@@ -1121,6 +1126,7 @@
                     <SolidSwatchItem color="#200801" hue="10" saturation="225" brightness="16"/>
                     <SolidSwatchItem color="#626262" brightness="92"/>
                     <SolidSwatchItem color="#3B3B3B" brightness="56"/>
+                    <SolidSwatchItem color="#45C9EE" hue="129" saturation="200" brightness="145"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1170,6 +1176,10 @@
                          <GradientEntry color="#202020" ratio="0.858823529411765"/>
                          <GradientEntry color="#434343" ratio="0.984313725490196"/>
                     </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#59BCD8" ratio="0"/>
+                         <GradientEntry color="#FFFFFF" alpha="0" ratio="1"/>
+                    </LinearGradientSwatchItem>
                </swatches>
           </swatchList>
      </extendedSwatchLists>
@@ -1178,25 +1188,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="417026" publishTime="1753187661"/>
+          <PublishItem publishSize="417026" publishTime="1753187613"/>
+          <PublishItem publishSize="417026" publishTime="1753187136"/>
+          <PublishItem publishSize="413432" publishTime="1753187048"/>
+          <PublishItem publishSize="413152" publishTime="1753186903"/>
+          <PublishItem publishSize="412983" publishTime="1753186565"/>
+          <PublishItem publishSize="412322" publishTime="1753186422"/>
+          <PublishItem publishSize="414104" publishTime="1753186283"/>
+          <PublishItem publishSize="410536" publishTime="1753186212"/>
+          <PublishItem publishSize="410396" publishTime="1753186072"/>
+          <PublishItem publishSize="410382" publishTime="1753184967"/>
+          <PublishItem publishSize="410315" publishTime="1753180684"/>
+          <PublishItem publishSize="410252" publishTime="1753180540"/>
+          <PublishItem publishSize="409926" publishTime="1753180400"/>
+          <PublishItem publishSize="410536" publishTime="1753180059"/>
+          <PublishItem publishSize="408182" publishTime="1753176422"/>
+          <PublishItem publishSize="408702" publishTime="1753174423"/>
           <PublishItem publishSize="402921" publishTime="1750604392"/>
           <PublishItem publishSize="402919" publishTime="1750604161"/>
           <PublishItem publishSize="402906" publishTime="1750603869"/>
-          <PublishItem publishSize="403269" publishTime="1750588557"/>
-          <PublishItem publishSize="403252" publishTime="1750588289"/>
-          <PublishItem publishSize="403267" publishTime="1750588147"/>
-          <PublishItem publishSize="403247" publishTime="1750588051"/>
-          <PublishItem publishSize="403245" publishTime="1750587939"/>
-          <PublishItem publishSize="403244" publishTime="1750587829"/>
-          <PublishItem publishSize="403236" publishTime="1750587196"/>
-          <PublishItem publishSize="403211" publishTime="1750587084"/>
-          <PublishItem publishSize="403213" publishTime="1750587011"/>
-          <PublishItem publishSize="403213" publishTime="1750586956"/>
-          <PublishItem publishSize="403178" publishTime="1750586438"/>
-          <PublishItem publishSize="403197" publishTime="1750586289"/>
-          <PublishItem publishSize="403246" publishTime="1750586215"/>
-          <PublishItem publishSize="403225" publishTime="1750586053"/>
-          <PublishItem publishSize="403198" publishTime="1750585919"/>
-          <PublishItem publishSize="403198" publishTime="1750585491"/>
-          <PublishItem publishSize="352310" publishTime="1750186013"/>
      </publishHistory>
 </DOMDocument>

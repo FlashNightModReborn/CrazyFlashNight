@@ -1,4 +1,6 @@
-﻿_root.主动战技函数 = {空手:{},兵器:{},长枪:{}};
+﻿import org.flashNight.arki.scene.*;
+
+_root.主动战技函数 = {空手:{},兵器:{},长枪:{}};
 
 
 
@@ -144,6 +146,38 @@ _root.主动战技函数.长枪.气锤地雷 = {
     }
 };
 
+
+/*========================================================
+  主动战技 · 长枪 · 投影召唤
+========================================================*/
+_root.主动战技函数.长枪.投影召唤 = {
+
+    /** 初始化：此技能无被动帧更新，可留空 **/
+    初始化:function(自机){},
+
+    /** 是否允许释放 —— 这里留简单 true，后续可加冷却 / 条件判定 **/
+    释放许可判定:function(自机){
+        return true;
+    },
+
+    /** 真正释放逻辑 **/
+    释放:function(自机)
+    {
+        var name:String = 自机._name + "投影召唤";
+        /* ---------- A. 生成投影召唤器本体 ---------- */
+        var info:Object     = {};
+        info.Identifier     = "投影召唤器";           // 关联库导出名
+
+        var param:Object    = {};
+        param._x            = 自机._x;               // 水平位置与自机齐平
+        param._y            = 自机.Z轴坐标;          // Z→Y 投影平面
+        param.projector     = 自机;
+        info.Parameters     = param;
+        if(_root.gameworld[name]) _root.gameworld[name].removeMovieClip();
+        var target:MovieClip = SceneManager.getInstance().addInstance(info, name);
+    }
+};
+
 _root.主动战技函数.长枪.气锤光炮 = {
     初始化:function(自机){
         var skill = 长枪物品信息.skill;
@@ -233,7 +267,7 @@ _root.主动战技函数.长枪.突击者之眼 = {
 
 
 
-        
+
         
         var k:Number = 22 / 1029;   // ≈ 0.02138
         var level:Number = upgradeLevel;   // 1–13

@@ -8,6 +8,8 @@ import org.flashNight.arki.unit.Action.PickUp.*;
 import org.flashNight.arki.item.*;
 import org.flashNight.arki.item.itemCollection.*;
 
+import flash.display.*;
+import flash.geom.*;
 
 // 拾取相关函数
 _root.pickupItemManager = new PickUpManager();
@@ -93,6 +95,80 @@ _root.地图元件.掉落物创建物品 = function(item){
     return null;
 }
 
+_root.地图元件.初始化投影召唤器 = function(target:MovieClip) {
+    _root.地图元件.初始化地图元件(target, "投影召唤器");
+    var Projector:MovieClip = target.projector;
+
+    // 关闭信息框绘制
+    var infoVisible:Boolean = Projector.新版人物文字信息._visible;
+    Projector.新版人物文字信息._visible = false;
+
+    /* ---------- B. 生成Projector“全息投影” ---------- */
+    // 1. 计算Projector包围盒（局部坐标系）
+    var bb:Object = Projector.getBounds(Projector);              // {xMin, xMax, yMin, yMax}
+    var bmpW:Number = bb.xMax - bb.xMin;
+    var bmpH:Number = bb.yMax - bb.yMin;
+
+    // 宽高异常时提前返回，避免空 BitmapData
+    if (bmpW<=0 || bmpH<=0) { return; }
+
+    // 2. 准备位图并把Projector绘制进去
+    var holoBmp:BitmapData = new BitmapData(bmpW, bmpH, true, 0x00000000);
+
+    // 在绘制到位图时处理朝向
+    var mtx:Matrix = new Matrix();
+    mtx.translate(-bb.xMin, -bb.yMin);
+
+    // 如果Projector朝左，添加水平翻转
+    if (Projector._xscale < 0) {
+        mtx.scale(-1, 1);                    // 水平翻转
+        mtx.translate(bmpW, 0);              // 调整位置
+    }
+
+
+    /* 颜色变换：轻微蓝化，保持更多原色 */
+    var blueCT:ColorTransform = new ColorTransform(
+        0.60,
+        0.75,
+        1.10,
+        0.70,
+        0, 0, 20, 0 
+    );
+
+    holoBmp.draw(Projector, mtx, blueCT, "normal");
+
+    Projector.新版人物文字信息._visible = infoVisible;
+
+    // 3. 在投影召唤器里创建承载 MC 并贴 Bitmap
+    var holoMC:MovieClip = target.createEmptyMovieClip(
+        "hologram", target.getNextHighestDepth()
+    );
+    holoMC.attachBitmap(holoBmp, 0, "auto", true);
+
+    // 4. 定位：根据朝向精确计算位置
+    if (Projector._xscale < 0) {
+        // 朝左时，图像已经在绘制时翻转，需要重新计算中心点
+        holoMC._x = -bmpW * 0.42;           // 调整到圆盘中心
+    } else {
+        // 朝右时正常
+        holoMC._x = -bmpW / 5;
+    }
+
+    holoMC._y = -bmpH + 180;
+
+    // 缩放保持一致
+    holoMC._xscale = 66;
+    holoMC._yscale = 66;
+
+    // 5. 额外效果：加亮融合，夜色更显眼
+    holoMC.blendMode = "add";  
+
+    /* ---------- C. 投影随召唤器销毁时释放位图内存 ---------- */
+    target.onUnload = function()
+    {
+        if (holoBmp != null) { holoBmp.dispose(); }
+    };
+}
 
 
 _root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {

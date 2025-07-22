@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/资源箱/资源箱" itemID="66a8fec3-00001f86" linkageExportForAS="true" linkageIdentifier="资源箱" lastModified="1748865263" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="资源箱" currentFrame="51">
+    <DOMTimeline name="资源箱" currentFrame="11">
       <layers>
         <DOMLayer name="Labels Layer" color="#D4A0A9">
           <frames>
@@ -21,7 +21,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#9CD465" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#9CD465">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -80,7 +80,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#BDD3F1">
+        <DOMLayer name="Layer 3" color="#BDD3F1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>

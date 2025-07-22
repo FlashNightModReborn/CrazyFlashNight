@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="铁枪/图标-铁枪核心" itemID="687108b3-00002236" linkageExportForAS="true" linkageIdentifier="图标-铁枪核心" lastModified="1752238414" lastUniqueIdentifier="7">
   <timeline>
-    <DOMTimeline name="图标-铁枪核心">
+    <DOMTimeline name="图标-铁枪核心" currentFrame="1">
       <layers>
         <DOMLayer name="Action Layer" color="#FFFF00" locked="true">
           <frames>
@@ -26,11 +26,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Masked Layer 3 - 2" color="#FFFF00" parentLayerIndex="1" current="true" isSelected="true">
+        <DOMLayer name="Masked Layer 3 - 2" color="#FFFF00" parentLayerIndex="1">
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪高级logo图腾" selected="true" centerPoint3DX="-179.35" centerPoint3DY="-120.2">
+                <DOMSymbolInstance libraryItemName="铁枪高级logo图腾" centerPoint3DX="-179.35" centerPoint3DY="-120.2">
                   <matrix>
                     <Matrix a="0.0337982177734375" d="0.0337982177734375" tx="-12.9" ty="-19.75"/>
                   </matrix>
@@ -42,7 +42,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#FFFF00">
+        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <elements>
@@ -55,7 +55,7 @@
             </DOMFrame>
             <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁枪高级logo图腾" centerPoint3DX="-64.75" centerPoint3DY="-208.9">
+                <DOMSymbolInstance libraryItemName="铁枪高级logo图腾" selected="true" centerPoint3DX="-64.75" centerPoint3DY="-208.9">
                   <matrix>
                     <Matrix a="0.212646484375" d="0.212646484375" tx="-79.75" ty="-120.15"/>
                   </matrix>
