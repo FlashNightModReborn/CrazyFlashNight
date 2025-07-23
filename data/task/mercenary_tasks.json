@@ -565,6 +565,7 @@
       "get_requirements": [-1],
       "get_conversation": "$TRIAL_OF_SAMURAI_GET",
       "get_npc": "远古武士铁血使者",
+      "recommended_level": "50",
 
       "finish_requirements": ["通关远古铁血的试验#简单"],
       "finish_conversation": "$TRIAL_OF_SAMURAI_FINISH",
@@ -575,12 +576,10 @@
       "rewards": [
         "金币#120000",
         "经验值#1000000",
-        "加强抗生素药剂#40",
-        "加强mp药剂#40",
+        "加强抗生素药剂#30",
+        "加强mp药剂#30",
         "普通hp粉尘#20",
-        "普通mp粉尘#20",
         "复活币#20",
-        "材料盒子#5",
         "强化石#5000",
         "战宠灵石#5000",
         "压缩胶囊之武士铁血#5"
