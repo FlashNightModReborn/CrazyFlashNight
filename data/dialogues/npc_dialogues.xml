@@ -796,7 +796,7 @@
         </Dialogue>
     </Dialogues>                        
     <Dialogues>
-        <Name>酒桌情报-啤酒</Name>
+        <Name>酒泡氤氲-啤酒</Name>
         <Dialogue id="0">
             <TaskRequirement>0</TaskRequirement>
             <SubDialogue id="0">
@@ -925,10 +925,16 @@
                 <Char>酒保</Char>
                 <Text>个中细节就需要你自己把握了。</Text>
             </SubDialogue>
+            <SubDialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>（无意间听到了不少新鲜事······也许该把它们记录下来）</Text>
+            </SubDialogue>
         </Dialogue>
     </Dialogues>
     <Dialogues>
-        <Name>酒桌情报-鸡尾酒</Name>
+        <Name>酒泡氤氲-鸡尾酒</Name>
         <Dialogue id="0">
             <TaskRequirement>22</TaskRequirement>
             <SubDialogue id="0">
@@ -984,6 +990,30 @@
                 <Title>前情报员</Title>
                 <Char>酒保</Char>
                 <Text>堕落城真正的掌握者是黑铁会，挑战者可能是摇滚乐团。至于联合大学之流，能够在A兵团庇护下维持稳定已经不容易了。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>你之前说的“盗贼兄弟会”，也处在谁的庇护下吗？</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>是，也不是。兄弟会的成员以技术人员为主，他们是堕落城这座机器的齿轮。只要机器正常运转，没人会想打齿轮的主意。</Text>
+            </SubDialogue>
+            <SubDialogue id="4">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>一旦机器不转了，兄弟会就和别的小帮派一样朝不保夕了。</Text>
+            </SubDialogue>
+            <SubDialogue id="5">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>（将刚才听到的内容记录下来吧）</Text>
             </SubDialogue>
         </Dialogue>
     </Dialogues>

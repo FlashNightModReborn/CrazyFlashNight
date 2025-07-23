@@ -267,6 +267,20 @@
     <level>0</level>
   </item>
   <item>
+    <id>2909</id>
+    <name>特制委托书</name>
+    <displayname>特制委托书</displayname>
+    <icon>特制委托书</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <weight>0</weight>
+    <price>1000</price>
+    <maxvalue>1</maxvalue>
+    <description>一个装着委托书的信封，落款时间是审判日前数月。
+拥有该情报后可在黑市商店购买【镭射瞄准具】。</description>
+    <level>1</level>
+  </item>
+  <item>
     <id>2911</id>
     <name>关于通缉令1</name>
     <displayname>关于通缉令 #1</displayname>
@@ -277,7 +291,7 @@
     <price>1000</price>
     <maxvalue>1</maxvalue>
     <description>在浮士德兄弟的领地内发现。似乎是一份加密通讯记录的前半部分，涉及了通缉令发布前后的许多细节。
-拥有该情报后可在黑市商店直接购买【战术握把】。</description>
+拥有该情报后可在黑市商店购买【战术握把】。</description>
     <level>1</level>
   </item>
   <item>
@@ -525,6 +539,19 @@
     <price>0</price>
     <maxvalue>1</maxvalue>
     <description>记录了初级家常菜的制作方法。</description>
+    <level>1</level>
+  </item>
+  <item>
+    <id>20036</id>
+    <name>酒泡氤氲</name>
+    <displayname>酒泡氤氲</displayname>
+    <icon>酒泡氤氲</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <weight>0</weight>
+    <price>0</price>
+    <maxvalue>2</maxvalue>
+    <description>基于实用的农业出口政策，A兵团的酒吧通常提供相对劣质的自酿酒，于是发酵的气泡往往伴随脏话冒出，又弥散在酒吧里。当然，如果你愿意倾听，酒气之间也会有一些有价值的东西···</description>
     <level>1</level>
   </item>
 </root>
