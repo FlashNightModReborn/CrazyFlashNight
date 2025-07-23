@@ -391,6 +391,13 @@ class org.flashNight.arki.camera.HorizontalScroller {
             this.offsetTolerance = this.frameTimer.offsetTolerance;
         }
 
+        // 同步基础缩放倍率，避免场景切换后残留旧倍率
+        var pct:Number = _root.basicZoomScale * 100;
+        this.gameWorld._xscale = this.gameWorld._yscale = pct;
+        this.bgLayer._xscale = this.bgLayer._yscale = pct;
+        ZoomController.setCurrentScale(_root.basicZoomScale);
+
+
         // _root.发布消息(bgWidth,bgHeight,enableParallax,enableCameraZoom,horizonHeight);
         
         // 根据配置组装最优的更新函数
