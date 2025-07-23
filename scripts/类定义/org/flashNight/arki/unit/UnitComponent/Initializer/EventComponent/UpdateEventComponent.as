@@ -22,7 +22,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
         if(target._name === _root.控制目标) {
             func = UpdateEventComponent.onHeroUpdate;
         } else if(target.element) {
-            func = UpdateEventComponent.onMapElementUpdate;
+            func = UpdateEventComponent.getMapElementUpdate(target);
         } else {
             func = UpdateEventComponent.onUpdate;
         }
@@ -72,5 +72,27 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
 
     public static function onMapElementUpdate(target:MovieClip):Void {
         target.swapDepths(target._y);
+    }
+
+    public static function onTauntMapElementUpdate(target:MovieClip):Void {
+        if(target.hitPoint > 0) {
+            target.dispatcher.publish("hit", target);
+            target.hitPointText.text = target.hitPoint;
+        }
+        
+    }
+
+    public static function getMapElementUpdate(target:MovieClip):Function {
+        var basicFunc:Function = UpdateEventComponent.onMapElementUpdate;
+
+        if(target.taunt) {
+            return function(target:MovieClip):Void
+            {
+                basicFunc(target);
+                onTauntMapElementUpdate(target);
+            }
+        }
+        
+        return UpdateEventComponent.onMapElementUpdate;
     }
 }

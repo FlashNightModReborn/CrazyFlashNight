@@ -74,7 +74,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Preset
         
         // 纸箱预设
         PresetManager.registerPreset("投影召唤器", {
-            hitPoint: 10,
+            hitPoint: 100,
             maxFrame: 12
         });
     }

@@ -96,7 +96,10 @@ _root.地图元件.掉落物创建物品 = function(item){
 }
 
 _root.地图元件.初始化投影召唤器 = function(target:MovieClip) {
+    target.taunt = true;
+    
     _root.地图元件.初始化地图元件(target, "投影召唤器");
+    
     var Projector:MovieClip = target.projector;
 
     // 关闭信息框绘制

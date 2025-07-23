@@ -1,0 +1,52 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="投影召唤器element" itemID="68803dd5-0000725e" lastModified="1753235024" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="投影召唤器element" currentFrame="3">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="12" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="投影召唤器光影" name="element" blendMode="hardlight" centerPoint3DX="26.3" centerPoint3DY="42.1">
+                  <matrix>
+                    <Matrix tx="13.2" ty="29.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.1" y="12.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="投影召唤器光影" name="element" selected="true" blendMode="hardlight" centerPoint3DX="26.7" centerPoint3DY="42.25">
+                  <matrix>
+                    <Matrix tx="13.6" ty="29.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.1" y="12.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5" redMultiplier="0.5" blueMultiplier="0.5" greenMultiplier="0.5" redOffset="128"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

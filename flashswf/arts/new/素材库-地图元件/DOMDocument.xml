@@ -38,6 +38,9 @@
           <DOMFolderItem name="钻头出现动画/未命名文件夹 1" itemID="6842a60e-00000177"/>
           <DOMFolderItem name="钻头素材" itemID="667bdf9c-00000066"/>
      </folders>
+     <fonts>
+          <DOMFontItem name="字体 1" itemID="688046fb-000073b2" font="LcdStd" size="0" id="1" sourceLastImported="1753237243" embedRanges="3"/>
+     </fonts>
      <media>
           <DOMBitmapItem name="箱子素材/bitmap7.png" itemID="65c8ed3c-0000063c" sourceExternalFilepath="../素材库-地图元件/LIBRARY/箱子素材/bitmap7.png" sourceLastImported="1707666748" originalCompressionType="lossless" quality="50" href="箱子素材/bitmap7.png" bitmapDataHRef="M 1 1707666854.dat" frameRight="1360" frameBottom="1260"/>
      </media>
@@ -195,7 +198,9 @@
           <Include href="生存战素材/Symbol 37.xml" itemIcon="1" loadImmediate="false" itemID="65c24a9a-00000cdd" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 38.xml" loadImmediate="false" itemID="65c24a9a-00000cde" lastModified="1699960314"/>
           <Include href="素材库-地图元件.xml" itemID="65c24b72-00000cf2" lastModified="1753174419"/>
-          <Include href="投影召唤器/投影召唤器.xml" itemID="687f5035-00004c64" lastModified="1753188269"/>
+          <Include href="投影召唤器/投影召唤器.xml" itemID="687f5035-00004c64" lastModified="1753238678"/>
+          <Include href="投影召唤器element.xml" loadImmediate="false" itemID="68803dd5-0000725e" lastModified="1753235024"/>
+          <Include href="投影召唤器底座.xml" itemIcon="1" loadImmediate="false" itemID="68803cfe-00007256" lastModified="1753234686"/>
           <Include href="投影召唤器光影.xml" itemIcon="1" loadImmediate="false" itemID="687f669a-00006a46" lastModified="1753187125"/>
           <Include href="箱子素材/Symbol 9.xml" itemIcon="1" loadImmediate="false" itemID="65c8ed3c-00000647" lastModified="1704525302"/>
           <Include href="箱子素材/Symbol 10.xml" loadImmediate="false" itemID="65c8ed3c-00000648" lastModified="1714562335"/>
@@ -1188,25 +1193,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="419548" publishTime="1753238682"/>
+          <PublishItem publishSize="417700" publishTime="1753238445"/>
+          <PublishItem publishSize="417689" publishTime="1753238318"/>
+          <PublishItem publishSize="417689" publishTime="1753237718"/>
+          <PublishItem publishSize="417685" publishTime="1753237528"/>
+          <PublishItem publishSize="417685" publishTime="1753237489"/>
+          <PublishItem publishSize="417672" publishTime="1753237425"/>
+          <PublishItem publishSize="417699" publishTime="1753237384"/>
+          <PublishItem publishSize="417700" publishTime="1753237341"/>
+          <PublishItem publishSize="417797" publishTime="1753237329"/>
+          <PublishItem publishSize="417781" publishTime="1753237282"/>
+          <PublishItem publishSize="417197" publishTime="1753237111"/>
+          <PublishItem publishSize="417197" publishTime="1753235028"/>
+          <PublishItem publishSize="417186" publishTime="1753234966"/>
+          <PublishItem publishSize="417124" publishTime="1753234730"/>
+          <PublishItem publishSize="417043" publishTime="1753234563"/>
+          <PublishItem publishSize="417037" publishTime="1753188272"/>
           <PublishItem publishSize="417026" publishTime="1753187661"/>
           <PublishItem publishSize="417026" publishTime="1753187613"/>
           <PublishItem publishSize="417026" publishTime="1753187136"/>
-          <PublishItem publishSize="413432" publishTime="1753187048"/>
-          <PublishItem publishSize="413152" publishTime="1753186903"/>
-          <PublishItem publishSize="412983" publishTime="1753186565"/>
-          <PublishItem publishSize="412322" publishTime="1753186422"/>
-          <PublishItem publishSize="414104" publishTime="1753186283"/>
-          <PublishItem publishSize="410536" publishTime="1753186212"/>
-          <PublishItem publishSize="410396" publishTime="1753186072"/>
-          <PublishItem publishSize="410382" publishTime="1753184967"/>
-          <PublishItem publishSize="410315" publishTime="1753180684"/>
-          <PublishItem publishSize="410252" publishTime="1753180540"/>
-          <PublishItem publishSize="409926" publishTime="1753180400"/>
-          <PublishItem publishSize="410536" publishTime="1753180059"/>
-          <PublishItem publishSize="408182" publishTime="1753176422"/>
-          <PublishItem publishSize="408702" publishTime="1753174423"/>
-          <PublishItem publishSize="402921" publishTime="1750604392"/>
-          <PublishItem publishSize="402919" publishTime="1750604161"/>
-          <PublishItem publishSize="402906" publishTime="1750603869"/>
      </publishHistory>
 </DOMDocument>
