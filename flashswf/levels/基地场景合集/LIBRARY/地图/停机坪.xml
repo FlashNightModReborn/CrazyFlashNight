@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/停机坪" itemID="668aa0dc-000051de" linkageExportForAS="true" linkageIdentifier="基地场景-基地房顶" lastModified="1752337404" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/停机坪" itemID="668aa0dc-000051de" linkageExportForAS="true" linkageIdentifier="基地场景-基地房顶" lastModified="1753279842" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="停机坪">
       <layers>
@@ -64,11 +64,11 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#73FE1A" current="true" isSelected="true">
+        <DOMLayer name="Layer 7" color="#73FE1A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="梯子2" name="梯子2" selected="true" centerPoint3DX="1432.85" centerPoint3DY="522.05">
+                <DOMSymbolInstance libraryItemName="梯子2" name="梯子2" centerPoint3DX="1432.85" centerPoint3DY="522.05">
                   <matrix>
                     <Matrix tx="1394.65" ty="397.75"/>
                   </matrix>
@@ -150,11 +150,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#B5B91A">
+        <DOMLayer name="Layer 6" color="#B5B91A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 3047" centerPoint3DX="1424.4" centerPoint3DY="470.5">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3047" selected="true" centerPoint3DX="1424.4" centerPoint3DY="470.5">
                   <matrix>
                     <Matrix tx="1351.4" ty="363.8"/>
                   </matrix>
@@ -180,6 +180,7 @@ onClipEvent (load) {
 	默认对话[0][0] = ["远古武士铁血使者", "线人", "远古武士铁血使者", "(翻译机)：小F的翻译机挺好用，敌人的敌人就是朋友！", "普通"];
 	默认对话[1][0] = ["远古武士铁血使者", "线人", "远古武士铁血使者", "(翻译机)：一起干掉文明收割者！", "普通"];
 	默认对话[2][0] = ["远古武士铁血使者", "线人", "远古武士铁血使者", "(翻译机)：我们可以提供我们星球的技术！", "普通"];
+   NPC任务_任务_关卡路径 = "通关远古铁血的试验";
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

@@ -1205,7 +1205,7 @@
             <Item>凑数组的</Item>
         </Promotion>
     </Pet>
-    <Pet><!-- 不考虑实装-->
+    <Pet>        <!-- 不考虑实装-->
         <id>75</id>
         <Name>不知火舞</Name>
         <Identifier>敌人-不知火舞</Identifier>
@@ -1322,6 +1322,10 @@
         <Price>0</Price>
         <KPrice>10000</KPrice>
         <IncreasePrice>0</IncreasePrice>
+        <Promotion>
+            <Item>凑数组的</Item>
+            <Item>追踪飞弹</Item>
+        </Promotion>
     </Pet>
     <Pet>
         <id>82</id>
@@ -1492,7 +1496,7 @@
         <KPrice>6000</KPrice>
         <IncreasePrice>0</IncreasePrice>
     </Pet>
-    <Pet><!-- 未实装-->
+    <Pet>        <!-- 未实装-->
         <id>92</id>
         <Name>圣诞白忍</Name>
         <Identifier>敌人-圣诞白忍</Identifier>
@@ -1505,7 +1509,7 @@
         <KPrice>0</KPrice>
         <IncreasePrice>0</IncreasePrice>
     </Pet>
-    <Pet><!-- 未实装-->
+    <Pet>        <!-- 未实装-->
         <id>93</id>
         <Name>柜员女僵尸</Name>
         <Identifier>敌人-柜员女僵尸</Identifier>
@@ -1655,7 +1659,7 @@
             <Item>常驻淬毒</Item>
         </Promotion>
     </Pet>
-	    <Pet>
+    <Pet>
         <id>102</id>
         <Name>侦察队员</Name>
         <Identifier>敌人-不明士兵</Identifier>
