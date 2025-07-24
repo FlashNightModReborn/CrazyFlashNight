@@ -127,7 +127,7 @@
           <Include href="53式步骑枪/调整层.xml" loadImmediate="false" itemID="659eb6ee-000005a7" lastModified="1704953093"/>
           <Include href="53式步骑枪/图标-53式步骑枪.xml" itemID="659eadd3-00000327" lastModified="1704901315"/>
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1753326736"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1753354723"/>
           <Include href="g11/G11.xml" itemID="68751898-0000072e" lastModified="1752656002"/>
           <Include href="g11/G11动画.xml" loadImmediate="false" itemID="68776282-000017ba" lastModified="1752654466"/>
           <Include href="g11/G11上支架.xml" itemIcon="1" loadImmediate="false" itemID="68784e75-00003582" lastModified="1752714869"/>
@@ -155,6 +155,7 @@
           <Include href="Jackhammer/图标-Jackhammer.xml" itemID="6870dc6b-000007f4" lastModified="1752226965"/>
           <Include href="M1918A2/M1918A2.xml" itemID="687109e5-00002571" lastModified="1752240876"/>
           <Include href="M1918A2/图标-M1918A2.xml" itemID="68727d9b-000003aa" lastModified="1752333723"/>
+          <Include href="MACSIII锯片.xml" loadImmediate="false" itemID="6881fc3a-000005a4" lastModified="1753352189"/>
           <Include href="NEGEV/Negev.xml" itemID="686a4cad-0000364f" lastModified="1751878281"/>
           <Include href="NEGEV/内格夫弹链动画.xml" loadImmediate="false" itemID="686a67d8-000036bc" lastModified="1751805789"/>
           <Include href="NEGEV/内格夫子弹1.xml" loadImmediate="false" itemID="686a5e0b-00003660" lastModified="1751809025"/>
@@ -226,20 +227,21 @@
           <Include href="电感切割刃/元件 8.xml" loadImmediate="false" itemID="559006ce-00000012" lastModified="1435502417"/>
           <Include href="电感切割刃/元件 10.xml" loadImmediate="false" itemID="55900939-00000014" lastModified="1435503030"/>
           <Include href="电感切割刃/中间刀.xml" loadImmediate="false" itemID="655c4fdd-0000063b" lastModified="1700548573"/>
-          <Include href="改造打草机锯片.xml" loadImmediate="false" itemID="6881a79d-00000539" lastModified="1753327517"/>
+          <Include href="改造打草机锯片.xml" loadImmediate="false" itemID="6881a79d-00000539" lastModified="1753330525"/>
           <Include href="光玉的剑相关/刀-光玉的剑.xml" itemID="68668bb2-000033c5" lastModified="1751550918"/>
           <Include href="光玉的剑相关/光玉剑柄1.xml" itemIcon="1" loadImmediate="false" itemID="68668bba-000033c8" lastModified="1751550906"/>
           <Include href="光玉的剑相关/光玉剑缓存用.xml" loadImmediate="false" itemID="68668bbc-000033ca" lastModified="1751550908"/>
           <Include href="光玉的剑相关/光玉剑身.xml" itemIcon="1" loadImmediate="false" itemID="68668bbe-000033cc" lastModified="1751550910"/>
           <Include href="光玉的剑相关/图标-光玉的剑.xml" itemID="68673eb7-0000160f" lastModified="1751596727"/>
+          <Include href="火药燃气液压打桩机/M.A.C.S.III.xml" itemID="6881e4a7-0000054e" lastModified="1753361053"/>
           <Include href="火药燃气液压打桩机/打桩机子弹.xml" itemID="6551eea5-000021cc" lastModified="1702259181"/>
-          <Include href="火药燃气液压打桩机/改造打草机.xml" itemID="68819b25-000003c8" lastModified="1753328229"/>
           <Include href="火药燃气液压打桩机/杆体.xml" itemIcon="1" loadImmediate="false" itemID="651ce0aa-00002f3c" lastModified="1696425129"/>
           <Include href="火药燃气液压打桩机/护盾.xml" itemIcon="1" loadImmediate="false" itemID="651d6417-00002ff9" lastModified="1696424983"/>
           <Include href="火药燃气液压打桩机/护筒.xml" itemIcon="1" loadImmediate="false" itemID="651d642b-00002ffd" lastModified="1696425004"/>
           <Include href="火药燃气液压打桩机/火药燃气打桩机.xml" itemID="65519486-00001f36" lastModified="1746783541"/>
           <Include href="火药燃气液压打桩机/火药燃气打桩机动画.xml" loadImmediate="false" itemID="65519ab4-00001fd0" lastModified="1752227727"/>
           <Include href="火药燃气液压打桩机/机体.xml" itemIcon="1" loadImmediate="false" itemID="651d640c-00002ff5" lastModified="1699836975"/>
+          <Include href="火药燃气液压打桩机/僵尸割草机.xml" itemID="6881e42a-00000543" lastModified="1753343018"/>
           <Include href="火药燃气液压打桩机/图标-火药燃气液压打桩机.xml" itemID="6551c58b-00002089" lastModified="1699858364"/>
           <Include href="火药燃气液压打桩机/图标-铁枪.xml" itemID="68673ed8-00001625" lastModified="1751627941"/>
           <Include href="火药燃气液压打桩机/未命名文件夹 1/1/shape 9 (Up Over Down Hit).xml" itemIcon="1" loadImmediate="false" itemID="6551ede1-000021b8" lastModified="1443854724"/>
@@ -430,7 +432,7 @@
           <Include href="炎魔斩/炎魔斩alter/图标-炎魔斩alter.xml" itemID="6559e0cf-000005aa" lastModified="1731792474"/>
           <Include href="炎魔斩/炎魔斩alter/炎魔剑待机剑身.xml" loadImmediate="false" itemID="64fc9224-00000d57" lastModified="1694274084"/>
           <Include href="炎魔斩/炎魔斩alter/炎魔斩alter.xml" itemID="6558b0c3-000002f9" lastModified="1701854650"/>
-          <Include href="炎魔斩/炎魔斩alter/炎魔斩alter动画.xml" loadImmediate="false" itemID="6558afc8-000002ce" lastModified="1719191448"/>
+          <Include href="炎魔斩/炎魔斩alter/炎魔斩alter动画.xml" loadImmediate="false" itemID="6558afc8-000002ce" lastModified="1753348279"/>
           <Include href="炎魔斩/炎魔斩alter/元件 9.xml" loadImmediate="false" itemID="553f984e-0000001c" lastModified="1692791528"/>
           <Include href="炎魔斩/炎魔斩alter/元件 10.xml" loadImmediate="false" itemID="553f9b11-00000020" lastModified="1694229284"/>
           <Include href="炎魔斩/炎魔斩alter/元件 11.xml" loadImmediate="false" itemID="55422c53-0000001d" lastModified="1430400083"/>
@@ -1067,6 +1069,44 @@
                     <SolidSwatchItem color="#1B1E16" hue="57" saturation="34" brightness="25"/>
                     <SolidSwatchItem color="#27251A" hue="34" saturation="51" brightness="31"/>
                     <SolidSwatchItem color="#342917" hue="25" saturation="91" brightness="36"/>
+                    <SolidSwatchItem color="#725F31" hue="28" saturation="96" brightness="77"/>
+                    <SolidSwatchItem color="#7A2618" hue="6" saturation="160" brightness="69"/>
+                    <SolidSwatchItem color="#5D4E29" hue="28" saturation="93" brightness="64"/>
+                    <SolidSwatchItem color="#17190F" hue="48" saturation="63" brightness="19"/>
+                    <SolidSwatchItem color="#31322F" hue="53" saturation="8" brightness="46"/>
+                    <SolidSwatchItem color="#292A23" hue="46" saturation="23" brightness="37"/>
+                    <SolidSwatchItem color="#414141" brightness="61"/>
+                    <SolidSwatchItem color="#3F4040" hue="120" saturation="2" brightness="60"/>
+                    <SolidSwatchItem color="#24251E" hue="46" saturation="27" brightness="32"/>
+                    <SolidSwatchItem color="#EAB4A6" hue="8" saturation="148" brightness="188"/>
+                    <SolidSwatchItem color="#AD2B1C" hue="4" saturation="174" brightness="95"/>
+                    <SolidSwatchItem color="#D27969" hue="6" saturation="130" brightness="149"/>
+                    <SolidSwatchItem color="#892216" hue="4" saturation="173" brightness="75"/>
+                    <SolidSwatchItem color="#D57462" hue="6" saturation="138" brightness="146"/>
+                    <SolidSwatchItem color="#917437" hue="27" saturation="107" brightness="94"/>
+                    <SolidSwatchItem color="#8F6931" hue="24" saturation="118" brightness="91"/>
+                    <SolidSwatchItem color="#493519" hue="23" saturation="116" brightness="47"/>
+                    <SolidSwatchItem color="#3A2D17" hue="24" saturation="103" brightness="39"/>
+                    <SolidSwatchItem color="#372D17" hue="27" saturation="97" brightness="37"/>
+                    <SolidSwatchItem color="#49321B" hue="20" saturation="112" brightness="47"/>
+                    <SolidSwatchItem color="#4C3426" hue="15" saturation="80" brightness="54"/>
+                    <SolidSwatchItem color="#38271D" hue="15" saturation="78" brightness="40"/>
+                    <SolidSwatchItem color="#412E20" hue="17" saturation="82" brightness="46"/>
+                    <SolidSwatchItem color="#221711" hue="15" saturation="80" brightness="24"/>
+                    <SolidSwatchItem color="#393939" brightness="54"/>
+                    <SolidSwatchItem color="#31312F" hue="40" saturation="5" brightness="45"/>
+                    <SolidSwatchItem color="#252720" hue="52" saturation="25" brightness="34"/>
+                    <SolidSwatchItem color="#15170D" hue="48" saturation="71" brightness="17"/>
+                    <SolidSwatchItem color="#7A4D33" hue="14" saturation="99" brightness="82"/>
+                    <SolidSwatchItem color="#910000" saturation="239" brightness="68"/>
+                    <SolidSwatchItem color="#5B0000" saturation="239" brightness="43"/>
+                    <SolidSwatchItem color="#19170C" hue="34" saturation="89" brightness="18"/>
+                    <SolidSwatchItem color="#FF1717" saturation="239" brightness="131"/>
+                    <SolidSwatchItem color="#373835" hue="53" saturation="7" brightness="52"/>
+                    <SolidSwatchItem color="#FC8B00" hue="22" saturation="239" brightness="119"/>
+                    <SolidSwatchItem color="#31352B" hue="56" saturation="27" brightness="45"/>
+                    <SolidSwatchItem color="#4D4C3F" hue="40" saturation="24" brightness="66"/>
+                    <SolidSwatchItem color="#414138" hue="40" saturation="17" brightness="57"/>
                </swatches>
           </swatchList>
      </swatchLists>
