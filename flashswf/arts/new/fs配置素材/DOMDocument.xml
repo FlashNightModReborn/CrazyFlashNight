@@ -17,7 +17,7 @@
           <DOMFolderItem name="ZB-26" itemID="68728189-000006c7"/>
           <DOMFolderItem name="电感切割刃" itemID="655c5883-00000334"/>
           <DOMFolderItem name="光玉的剑相关" itemID="68668bb8-000033c6"/>
-          <DOMFolderItem name="火药燃气液压打桩机" itemID="655175a5-000006e2"/>
+          <DOMFolderItem name="火药燃气液压打桩机" itemID="655175a5-000006e2" isExpanded="true"/>
           <DOMFolderItem name="火药燃气液压打桩机/未命名文件夹 1" itemID="6551ede1-000021a3" isExpanded="true"/>
           <DOMFolderItem name="火药燃气液压打桩机/未命名文件夹 1/1" itemID="6551ede1-000021a4" isExpanded="true"/>
           <DOMFolderItem name="吉他喷火" itemID="65546112-000049ff"/>
@@ -127,7 +127,7 @@
           <Include href="53式步骑枪/调整层.xml" loadImmediate="false" itemID="659eb6ee-000005a7" lastModified="1704953093"/>
           <Include href="53式步骑枪/图标-53式步骑枪.xml" itemID="659eadd3-00000327" lastModified="1704901315"/>
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1752758906"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1753326736"/>
           <Include href="g11/G11.xml" itemID="68751898-0000072e" lastModified="1752656002"/>
           <Include href="g11/G11动画.xml" loadImmediate="false" itemID="68776282-000017ba" lastModified="1752654466"/>
           <Include href="g11/G11上支架.xml" itemIcon="1" loadImmediate="false" itemID="68784e75-00003582" lastModified="1752714869"/>
@@ -226,12 +226,14 @@
           <Include href="电感切割刃/元件 8.xml" loadImmediate="false" itemID="559006ce-00000012" lastModified="1435502417"/>
           <Include href="电感切割刃/元件 10.xml" loadImmediate="false" itemID="55900939-00000014" lastModified="1435503030"/>
           <Include href="电感切割刃/中间刀.xml" loadImmediate="false" itemID="655c4fdd-0000063b" lastModified="1700548573"/>
+          <Include href="改造打草机锯片.xml" loadImmediate="false" itemID="6881a79d-00000539" lastModified="1753327517"/>
           <Include href="光玉的剑相关/刀-光玉的剑.xml" itemID="68668bb2-000033c5" lastModified="1751550918"/>
           <Include href="光玉的剑相关/光玉剑柄1.xml" itemIcon="1" loadImmediate="false" itemID="68668bba-000033c8" lastModified="1751550906"/>
           <Include href="光玉的剑相关/光玉剑缓存用.xml" loadImmediate="false" itemID="68668bbc-000033ca" lastModified="1751550908"/>
           <Include href="光玉的剑相关/光玉剑身.xml" itemIcon="1" loadImmediate="false" itemID="68668bbe-000033cc" lastModified="1751550910"/>
           <Include href="光玉的剑相关/图标-光玉的剑.xml" itemID="68673eb7-0000160f" lastModified="1751596727"/>
           <Include href="火药燃气液压打桩机/打桩机子弹.xml" itemID="6551eea5-000021cc" lastModified="1702259181"/>
+          <Include href="火药燃气液压打桩机/改造打草机.xml" itemID="68819b25-000003c8" lastModified="1753328229"/>
           <Include href="火药燃气液压打桩机/杆体.xml" itemIcon="1" loadImmediate="false" itemID="651ce0aa-00002f3c" lastModified="1696425129"/>
           <Include href="火药燃气液压打桩机/护盾.xml" itemIcon="1" loadImmediate="false" itemID="651d6417-00002ff9" lastModified="1696424983"/>
           <Include href="火药燃气液压打桩机/护筒.xml" itemIcon="1" loadImmediate="false" itemID="651d642b-00002ffd" lastModified="1696425004"/>
@@ -1060,6 +1062,11 @@
                     <SolidSwatchItem color="#006F84" hue="127" saturation="239" brightness="62"/>
                     <SolidSwatchItem color="#163035" hue="127" saturation="98" brightness="36"/>
                     <SolidSwatchItem color="#162E33" hue="127" saturation="94" brightness="35"/>
+                    <SolidSwatchItem color="#1C1E16" hue="52" saturation="34" brightness="25"/>
+                    <SolidSwatchItem color="#433722" hue="26" saturation="78" brightness="48"/>
+                    <SolidSwatchItem color="#1B1E16" hue="57" saturation="34" brightness="25"/>
+                    <SolidSwatchItem color="#27251A" hue="34" saturation="51" brightness="31"/>
+                    <SolidSwatchItem color="#342917" hue="25" saturation="91" brightness="36"/>
                </swatches>
           </swatchList>
      </swatchLists>

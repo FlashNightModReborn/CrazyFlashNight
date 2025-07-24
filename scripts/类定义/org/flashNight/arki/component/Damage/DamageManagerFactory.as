@@ -257,7 +257,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
                 } while ((bitmask &= (bitmask - 1)) != 0); // 清除最低有效位，继续循环
                 return new DamageManager(handles);
             };
-        } else if (hlen == 32) { // 注意这里使用 '==' 而不是 '=' 来进行比较
+        } else if (hlen == 32) { 
             return function(bitmask:Number):DamageManager {
                 var handles:Array = [];
                 var len:Number = 0;
