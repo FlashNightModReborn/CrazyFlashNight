@@ -1,8 +1,18 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="火药燃气液压打桩机/僵尸割草机" itemID="6881e42a-00000543" linkageExportForAS="true" linkageIdentifier="枪-长枪-僵尸割草机" lastModified="1753431042" lastUniqueIdentifier="13">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="火药燃气液压打桩机/僵尸割草机" itemID="6881e42a-00000543" linkageExportForAS="true" linkageIdentifier="枪-长枪-僵尸割草机" lastModified="1753442203" lastUniqueIdentifier="13">
   <timeline>
-    <DOMTimeline name="僵尸割草机" currentFrame="21">
+    <DOMTimeline name="僵尸割草机" currentFrame="29">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+        <DOMLayer name="图层 7" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="31" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
@@ -18,7 +28,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="操纵杆" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="操纵杆" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>

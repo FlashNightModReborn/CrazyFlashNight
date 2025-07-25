@@ -335,6 +335,14 @@
                         <x>1500</x>
                         <y>500</y>
                         <IsHostile>null</IsHostile>
+                        <Parameters>
+                            <掉落物>
+                                <名字>僵尸割草机</名字>
+                                <概率>5</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种370</Type>
@@ -344,6 +352,14 @@
                         <x>1500</x>
                         <y>500</y>
                         <IsHostile>null</IsHostile>
+                        <Parameters>
+                            <掉落物>
+                                <名字>僵尸割草机</名字>
+                                <概率>5</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种92</Type>

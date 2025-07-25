@@ -6415,4 +6415,54 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <dressup>枪-长枪-G1111</dressup>
     </equipped>
   </item>
+  <item>
+    <id>8096</id>
+    <name>僵尸割草机</name>
+    <displayname>僵尸割草机</displayname>
+    <icon>僵尸割草机</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>20</weight>
+    <price>140000</price>
+    <description>公社基于废弃农业机械改造的近战武器系统，特别适用于狭窄空间内的多目标清理。
+    采用大型旋转刀盘设计，配备强化传动机构和防护外壳，具备优异的切削性能和耐久度。
+    该武器偶见于盗贼团体中，通常为袭击公社设施时的缴获品。</description>
+    <level>9</level>
+    <data>
+      <capacity>50</capacity>
+      <split>3</split>
+      <diffusion>5</diffusion>
+      <interval>200</interval>
+      <velocity>0</velocity>
+      <bullet>近战子弹</bullet>
+      <sound>p90-1.wav</sound>
+      <muzzle>null</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>火焰喷射器燃料罐</clipname>
+      <bulletsize>40</bulletsize>
+      <power>260</power>
+      <impact>10</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-僵尸割草机</dressup>      
+      <hp>100</hp>
+      <defence>25</defence>
+    </equipped>    
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>僵尸割草机初始化</initRoutines>
+          <initParam>
+            <maxSpinCount>50</maxSpinCount>
+            <spinUpAmount>15</spinUpAmount>
+            <spinSpeedFactor>0.1</spinSpeedFactor>
+            <spinDownRate>1</spinDownRate>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>僵尸割草机周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
+  </item>
 </root>
