@@ -127,7 +127,7 @@
           <Include href="53式步骑枪/调整层.xml" loadImmediate="false" itemID="659eb6ee-000005a7" lastModified="1704953093"/>
           <Include href="53式步骑枪/图标-53式步骑枪.xml" itemID="659eadd3-00000327" lastModified="1704901315"/>
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1753354723"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1753418139"/>
           <Include href="g11/G11.xml" itemID="68751898-0000072e" lastModified="1752656002"/>
           <Include href="g11/G11动画.xml" loadImmediate="false" itemID="68776282-000017ba" lastModified="1752654466"/>
           <Include href="g11/G11上支架.xml" itemIcon="1" loadImmediate="false" itemID="68784e75-00003582" lastModified="1752714869"/>
@@ -233,17 +233,18 @@
           <Include href="光玉的剑相关/光玉剑缓存用.xml" loadImmediate="false" itemID="68668bbc-000033ca" lastModified="1751550908"/>
           <Include href="光玉的剑相关/光玉剑身.xml" itemIcon="1" loadImmediate="false" itemID="68668bbe-000033cc" lastModified="1751550910"/>
           <Include href="光玉的剑相关/图标-光玉的剑.xml" itemID="68673eb7-0000160f" lastModified="1751596727"/>
+          <Include href="混凝土切割机锯片.xml" loadImmediate="false" itemID="6882e4ed-000005ff" lastModified="1753409050"/>
           <Include href="火药燃气液压打桩机/M.A.C.S.III.xml" itemID="6881e4a7-0000054e" lastModified="1753361053"/>
           <Include href="火药燃气液压打桩机/打桩机子弹.xml" itemID="6551eea5-000021cc" lastModified="1702259181"/>
           <Include href="火药燃气液压打桩机/杆体.xml" itemIcon="1" loadImmediate="false" itemID="651ce0aa-00002f3c" lastModified="1696425129"/>
           <Include href="火药燃气液压打桩机/护盾.xml" itemIcon="1" loadImmediate="false" itemID="651d6417-00002ff9" lastModified="1696424983"/>
           <Include href="火药燃气液压打桩机/护筒.xml" itemIcon="1" loadImmediate="false" itemID="651d642b-00002ffd" lastModified="1696425004"/>
+          <Include href="火药燃气液压打桩机/混凝土切割机.xml" itemID="6882dbb0-000005e5" lastModified="1753417995"/>
           <Include href="火药燃气液压打桩机/火药燃气打桩机.xml" itemID="65519486-00001f36" lastModified="1746783541"/>
           <Include href="火药燃气液压打桩机/火药燃气打桩机动画.xml" loadImmediate="false" itemID="65519ab4-00001fd0" lastModified="1752227727"/>
           <Include href="火药燃气液压打桩机/机体.xml" itemIcon="1" loadImmediate="false" itemID="651d640c-00002ff5" lastModified="1699836975"/>
-          <Include href="火药燃气液压打桩机/僵尸割草机.xml" itemID="6881e42a-00000543" lastModified="1753343018"/>
+          <Include href="火药燃气液压打桩机/僵尸割草机.xml" itemID="6881e42a-00000543" lastModified="1753418208"/>
           <Include href="火药燃气液压打桩机/图标-火药燃气液压打桩机.xml" itemID="6551c58b-00002089" lastModified="1699858364"/>
-          <Include href="火药燃气液压打桩机/图标-铁枪.xml" itemID="68673ed8-00001625" lastModified="1751627941"/>
           <Include href="火药燃气液压打桩机/未命名文件夹 1/1/shape 9 (Up Over Down Hit).xml" itemIcon="1" loadImmediate="false" itemID="6551ede1-000021b8" lastModified="1443854724"/>
           <Include href="火药燃气液压打桩机/未命名文件夹 1/1/shape 1194.xml" itemIcon="1" loadImmediate="false" itemID="6551ede1-000021bd" lastModified="1443854765"/>
           <Include href="火药燃气液压打桩机/未命名文件夹 1/1/shape 1196.xml" itemIcon="1" loadImmediate="false" itemID="6551ede1-000021bb" lastModified="1443854765"/>
@@ -363,6 +364,7 @@
           <Include href="铁枪/铁枪枪托.xml" loadImmediate="false" itemID="68658669-00003eee" lastModified="1751612058"/>
           <Include href="铁枪/铁枪枪托打光.xml" loadImmediate="false" itemID="686651ca-0000047b" lastModified="1751536074"/>
           <Include href="铁枪/铁枪准星.xml" loadImmediate="false" itemID="68657e28-00003ea6" lastModified="1751481896"/>
+          <Include href="铁枪/图标-铁枪.xml" itemID="68673ed8-00001625" lastModified="1751627941"/>
           <Include href="铁枪/图标-铁枪核心.xml" itemID="687108b3-00002236" lastModified="1752238414"/>
           <Include href="铁枪高级logo图腾.xml" loadImmediate="false" itemID="685e57a7-00000725" lastModified="1751013287"/>
           <Include href="未命名文件夹 1/1/shape 9 (Up Over Down Hit).xml" itemIcon="1" loadImmediate="false" itemID="6551edd1-0000219f" lastModified="1443854724"/>
@@ -502,12 +504,36 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="fs配置素材" selected="true" centerPoint3DX="292.15" centerPoint3DY="267.7">
+                                        <DOMSymbolInstance libraryItemName="fs配置素材" centerPoint3DX="254.3" centerPoint3DY="303.25">
                                              <matrix>
-                                                  <Matrix tx="175.15" ty="251.25"/>
+                                                  <Matrix tx="137.3" ty="286.8"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="117" y="16.45"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/僵尸割草机" centerPoint3DX="196.3" centerPoint3DY="85.8">
+                                             <matrix>
+                                                  <Matrix tx="130.25" ty="41.3"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="65.65" y="44.55"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/M.A.C.S.III" centerPoint3DX="363.1" centerPoint3DY="387.3">
+                                             <matrix>
+                                                  <Matrix tx="282.3" ty="321.3"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="81.05" y="66"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/混凝土切割机" centerPoint3DX="137.7" centerPoint3DY="263.8">
+                                             <matrix>
+                                                  <Matrix tx="56.9" ty="197.8"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="81.05" y="66"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
                                    </elements>
@@ -1107,6 +1133,20 @@
                     <SolidSwatchItem color="#31352B" hue="56" saturation="27" brightness="45"/>
                     <SolidSwatchItem color="#4D4C3F" hue="40" saturation="24" brightness="66"/>
                     <SolidSwatchItem color="#414138" hue="40" saturation="17" brightness="57"/>
+                    <SolidSwatchItem color="#513109" hue="22" saturation="194" brightness="42"/>
+                    <SolidSwatchItem color="#2C240A" hue="31" saturation="154" brightness="25"/>
+                    <SolidSwatchItem color="#181D07" hue="48" saturation="141" brightness="17"/>
+                    <SolidSwatchItem color="#0F1401" hue="51" saturation="216" brightness="10"/>
+                    <SolidSwatchItem color="#7C3305" hue="15" saturation="220" brightness="61"/>
+                    <SolidSwatchItem color="#482204" hue="18" saturation="213" brightness="36"/>
+                    <SolidSwatchItem color="#020A01" hue="75" saturation="192" brightness="5"/>
+                    <SolidSwatchItem color="#8A7130" hue="29" saturation="117" brightness="88"/>
+                    <SolidSwatchItem color="#242E27" hue="93" saturation="28" brightness="39"/>
+                    <SolidSwatchItem color="#976231" hue="19" saturation="123" brightness="94"/>
+                    <SolidSwatchItem color="#472104" hue="17" saturation="213" brightness="36"/>
+                    <SolidSwatchItem color="#602701" hue="16" saturation="235" brightness="46"/>
+                    <SolidSwatchItem color="#6E6C60" hue="34" saturation="17" brightness="97"/>
+                    <SolidSwatchItem color="#020801" hue="74" saturation="187" brightness="5"/>
                </swatches>
           </swatchList>
      </swatchLists>
