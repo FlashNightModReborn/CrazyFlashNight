@@ -4,20 +4,21 @@
           <DOMFolderItem name="2.音效文件夹/爆炸" itemID="656c296a-0000103c" isExpanded="true"/>
           <DOMFolderItem name="2.音效文件夹/未命名文件夹 2" itemID="687108c8-00002251"/>
           <DOMFolderItem name="53式步骑枪" itemID="659ea370-00000ca4"/>
+          <DOMFolderItem name="ashcore" itemID="688350b6-00000e01" isExpanded="true"/>
           <DOMFolderItem name="g11" itemID="6878f46b-000007fd"/>
           <DOMFolderItem name="Jackhammer" itemID="6870de51-00000afb"/>
-          <DOMFolderItem name="M1918A2" itemID="6872364e-00003591" isExpanded="true"/>
+          <DOMFolderItem name="M1918A2" itemID="6872364e-00003591"/>
           <DOMFolderItem name="NEGEV" itemID="686a7a3e-0000131c"/>
           <DOMFolderItem name="PKP" itemID="686b8a7f-000003a1"/>
           <DOMFolderItem name="sprite" itemID="667d1fff-00000d61"/>
           <DOMFolderItem name="wa90" itemID="6559d3b1-000002db"/>
           <DOMFolderItem name="wa90/Graphic" itemID="5e86cc75-00001260"/>
           <DOMFolderItem name="XM25" itemID="6874cd16-000007b9"/>
-          <DOMFolderItem name="XM556" itemID="686bba3f-000040b0"/>
+          <DOMFolderItem name="XM556" itemID="686bba3f-000040b0" isExpanded="true"/>
           <DOMFolderItem name="ZB-26" itemID="68728189-000006c7"/>
           <DOMFolderItem name="电感切割刃" itemID="655c5883-00000334"/>
           <DOMFolderItem name="光玉的剑相关" itemID="68668bb8-000033c6"/>
-          <DOMFolderItem name="火药燃气液压打桩机" itemID="655175a5-000006e2" isExpanded="true"/>
+          <DOMFolderItem name="火药燃气液压打桩机" itemID="655175a5-000006e2"/>
           <DOMFolderItem name="火药燃气液压打桩机/未命名文件夹 1" itemID="6551ede1-000021a3" isExpanded="true"/>
           <DOMFolderItem name="火药燃气液压打桩机/未命名文件夹 1/1" itemID="6551ede1-000021a4" isExpanded="true"/>
           <DOMFolderItem name="吉他喷火" itemID="65546112-000049ff"/>
@@ -127,7 +128,9 @@
           <Include href="53式步骑枪/调整层.xml" loadImmediate="false" itemID="659eb6ee-000005a7" lastModified="1704953093"/>
           <Include href="53式步骑枪/图标-53式步骑枪.xml" itemID="659eadd3-00000327" lastModified="1704901315"/>
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1753432539"/>
+          <Include href="ashcore/ashcore.xml" itemID="688340fd-00000819" lastModified="1753436006"/>
+          <Include href="ashcore/图标-ashcore.xml" itemID="68835078-00000a95" lastModified="1753436313"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1753436354"/>
           <Include href="g11/G11.xml" itemID="68751898-0000072e" lastModified="1752656002"/>
           <Include href="g11/G11动画.xml" loadImmediate="false" itemID="68776282-000017ba" lastModified="1752654466"/>
           <Include href="g11/G11上支架.xml" itemIcon="1" loadImmediate="false" itemID="68784e75-00003582" lastModified="1752714869"/>
@@ -191,7 +194,6 @@
           <Include href="wa90/消音器.xml" itemIcon="1" loadImmediate="false" itemID="60abd2e4-0000291f" lastModified="1621887798"/>
           <Include href="XM25/XM25.xml" itemID="687467dd-000003a8" lastModified="1753091233"/>
           <Include href="XM25/图标-XM25.xml" itemID="6874cca8-0000047d" lastModified="1752485104"/>
-          <Include href="XM556/ashcore.xml" itemID="688340fd-00000819" lastModified="1753432403"/>
           <Include href="XM556/XM556-H-Stinger.xml" itemID="686cf53f-0000469e" lastModified="1752399202"/>
           <Include href="XM556/XM556-Microgun.xml" itemID="686bd9c0-000044e9" lastModified="1752399189"/>
           <Include href="XM556/XM556-OC-Overlord.xml" itemID="686ded67-0000038a" lastModified="1752227805"/>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-炮弹与爆炸组/气锤地雷" itemID="6878f9c7-00000a5c" linkageExportForAS="true" linkageIdentifier="气锤地雷" lastModified="1752890614" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-炮弹与爆炸组/气锤地雷" itemID="6878f9c7-00000a5c" linkageExportForAS="true" linkageIdentifier="气锤地雷" lastModified="1753436110" lastUniqueIdentifier="8">
   <timeline>
-    <DOMTimeline name="气锤地雷" currentFrame="176">
+    <DOMTimeline name="气锤地雷" currentFrame="152">
       <layers>
         <DOMLayer name="Labels Layer" color="#B1EBC9" locked="true">
           <frames>
@@ -15,16 +15,16 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#8FED89" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 4" color="#8FED89" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="150" duration="1652" keyMode="15872">
+            <DOMFrame index="150" duration="1652" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="-46.75" centerPoint3DY="-32.8">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="-36.5" centerPoint3DY="-19.65">
                   <matrix>
-                    <Matrix a="4.45950317382813" d="2.50296020507813" tx="-50.7" ty="-37.2"/>
+                    <Matrix a="3.53196716308594" d="1.64932250976563" tx="-40.45" ty="-24.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -593,7 +593,7 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="150" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="地雷激光扫描线" blendMode="hardlight" centerPoint3DX="5.2" centerPoint3DY="-5.65">
+                <DOMSymbolInstance libraryItemName="地雷激光扫描线" selected="true" blendMode="hardlight" centerPoint3DX="5.2" centerPoint3DY="-5.65">
                   <matrix>
                     <Matrix tx="-50.5" ty="-37.2"/>
                   </matrix>

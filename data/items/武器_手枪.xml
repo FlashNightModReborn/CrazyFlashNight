@@ -3735,4 +3735,40 @@
       </attr_0>
     </lifecycle>    
   </item>
+    <item>
+    <id>5706</id>
+    <name>ashcore</name>
+    <displayname>ashcore</displayname>
+    <icon>ashcore</icon>
+    <type>武器</type>
+    <use>手枪</use>
+    <weight>3</weight>
+    <price>145600</price>
+    <description>铁枪会基于工业等离子切割设备逆向开发的便携式等离子武器。
+    武器代号来源于等离子核心将目标物质瞬间气化为灰烬的作用机制。
+    系统配备强化合金外壳和散热系统，侧面装有能量状态指示器用于监控等离子室充能水平。
+    具备优异的装甲穿透能力，但发射频率受热管理系统限制。
+</description>
+    <level>35</level>
+    <data>
+      <capacity>12</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>1000</interval>
+      <velocity>50</velocity>
+      <bullet>等离子穿刺子弹</bullet>
+      <sound>re_pistol_m1911_2011.wav</sound>
+      <muzzle>铁枪能量弹枪火</muzzle>
+      <bullethit>能量火花</bullethit>
+      <clipname>能量电池</clipname>
+      <bulletsize>5</bulletsize>
+      <power>1111</power>
+      <impact>1</impact>
+    </data>
+    <equipped>
+      <dressup>枪-手枪-ashcore</dressup>
+      <damagetype>魔法</damagetype>
+      <magictype>能</magictype>
+    </equipped>
+  </item>  
 </root>
