@@ -1,12 +1,12 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="火药燃气液压打桩机/混凝土切割机" itemID="6882dbb0-000005e5" linkageExportForAS="true" linkageIdentifier="枪-长枪-混凝土切割机" lastModified="1753502327" lastUniqueIdentifier="16">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="火药燃气液压打桩机/混凝土切割机" itemID="6882dbb0-000005e5" linkageExportForAS="true" linkageIdentifier="枪-长枪-混凝土切割机" lastModified="1753517586" lastUniqueIdentifier="16">
   <timeline>
-    <DOMTimeline name="混凝土切割机" currentFrame="2">
+    <DOMTimeline name="混凝土切割机" currentFrame="30">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="76.45" centerPoint3DY="4.25">
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" selected="true" centerPoint3DX="76.45" centerPoint3DY="4.25">
                   <matrix>
                     <Matrix a="5.20394897460938" d="5.20394897460938" tx="63.9" ty="-8.15"/>
                   </matrix>
@@ -35,11 +35,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="操纵杆" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="操纵杆" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/混凝土切割机电火花" name="火花" selected="true" centerPoint3DX="11.95" centerPoint3DY="-38.25" isVisible="false">
+                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/混凝土切割机电火花" name="火花" centerPoint3DX="11.95" centerPoint3DY="-38.25" isVisible="false">
                   <matrix>
                     <Matrix tx="7.85" ty="-40.7"/>
                   </matrix>
@@ -16139,11 +16139,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="机体" color="#FF800A" autoNamed="false">
+        <DOMLayer name="机体" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/混凝土切割机锯片" centerPoint3DX="125.35" centerPoint3DY="51.95">
+                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/混凝土切割机锯片" name="锯片" centerPoint3DX="125.35" centerPoint3DY="51.95">
                   <matrix>
                     <Matrix tx="52.1" ty="-19.5"/>
                   </matrix>
@@ -16155,7 +16155,7 @@
             </DOMFrame>
             <DOMFrame index="6" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/混凝土切割机锯片" selected="true" centerPoint3DX="125.35" centerPoint3DY="51.95">
+                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/混凝土切割机锯片" name="锯片" centerPoint3DX="125.35" centerPoint3DY="51.95">
                   <matrix>
                     <Matrix a="0.30902099609375" b="0.950042724609375" c="-0.950042724609375" d="0.30902099609375" tx="170.55" ty="-39.75"/>
                   </matrix>
@@ -16167,7 +16167,7 @@
             </DOMFrame>
             <DOMFrame index="15" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/混凝土切割机锯片" selected="true" centerPoint3DX="125.35" centerPoint3DY="51.9">
+                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/混凝土切割机锯片" name="锯片" centerPoint3DX="125.35" centerPoint3DY="51.9">
                   <matrix>
                     <Matrix a="-1" d="-1" tx="198.6" ty="123.4"/>
                   </matrix>
@@ -16179,7 +16179,7 @@
             </DOMFrame>
             <DOMFrame index="23" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/混凝土切割机锯片" selected="true" centerPoint3DX="125.4" centerPoint3DY="51.95">
+                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/混凝土切割机锯片" name="锯片" centerPoint3DX="125.4" centerPoint3DY="51.95">
                   <matrix>
                     <Matrix a="0" b="-1" c="1" d="0" tx="53.9" ty="125.2"/>
                   </matrix>
@@ -16191,7 +16191,7 @@
             </DOMFrame>
             <DOMFrame index="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/混凝土切割机锯片" selected="true" centerPoint3DX="125.35" centerPoint3DY="52">
+                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/混凝土切割机锯片" name="锯片" selected="true" centerPoint3DX="125.35" centerPoint3DY="52">
                   <matrix>
                     <Matrix a="0.980789184570313" b="-0.195083618164063" c="0.195083618164063" d="0.980789184570313" tx="39.55" ty="-3.85"/>
                   </matrix>

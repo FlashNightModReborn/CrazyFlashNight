@@ -147,9 +147,42 @@ _root.主动战技函数.长枪.气锤地雷 = {
 };
 
 
-/*========================================================
-  主动战技 · 长枪 · 投影召唤
-========================================================*/
+_root.主动战技函数.长枪.混凝土切割机超载打击 = {
+    初始化:function(自机){
+        自机.混凝土切割机超载打击许可 = false;
+
+        var skill:Object = _root.getItemData(自机.长枪).skill;
+        var duration:Number = skill.duration || 5; 
+        
+        var upgradeLevel:Number;
+
+        if(_root.控制目标 == 自机._name) {
+            var equipment = _root.物品栏.装备栏;
+            upgradeLevel = equipment.getLevel("长枪");
+        } else {
+            upgradeLevel = _root.主角函数.获取人形怪强化等级(自机.等级, 自机.名字);
+        }
+        
+        duration += upgradeLevel;
+        var overRideCountMax:Number = duration * 30;
+        自机.混凝土切割机超载打击持续时间 = overRideCountMax;
+        自机.混凝土切割机超载打击剩余时间 = 0;
+    },
+
+    释放许可判定:function(自机){
+        if(自机.倒地) return false;
+        if(!(自机.状态 === "长枪行走" || 自机.状态 === "长枪站立") || 自机.换弹中) return false;
+        return org.flashNight.arki.item.ItemUtil.singleSubmit("强化石",1);
+    },
+
+    释放:function(自机)
+    {
+        自机.混凝土切割机超载打击许可 = true;
+        自机.混凝土切割机超载打击剩余时间 = 自机.混凝土切割机超载打击持续时间;
+    }
+};
+
+
 _root.主动战技函数.长枪.投影召唤 = {
 
     /** 初始化：此技能无被动帧更新，可留空 **/

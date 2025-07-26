@@ -6499,7 +6499,18 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <dressup>枪-长枪-混凝土切割机</dressup>      
       <hp>240</hp>
       <defence>60</defence>
-    </equipped>    
+    </equipped>      
+    <skill>
+      <skillname>混凝土切割机超载打击</skillname>
+      <description>启动超载模式，将设备调谐至临界共振点，诱发切割轮盘进入剧烈共振状态。
+      切割轮盘内的抗磁性配体半金属进入临界共振状态，通过轮盘传导，形成足以瓦解物质的穿透冲击波。
+      超载运行导致结构应力剧增，每次激活均需消耗一单位强化石，以抵消共振造成的结构劣化。
+      提升武器强化等级可延长超载模式持续时间，基础时间5S，每一级强化度额外提供1S持续时间。
+      </description>
+      <cd>30000</cd>
+      <duration>5</duration>
+      <mp>75</mp>
+    </skill>  
     <lifecycle>
       <attr_0>
         <init>

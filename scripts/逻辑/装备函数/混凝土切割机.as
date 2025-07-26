@@ -22,9 +22,13 @@ _root.装备生命周期函数.混凝土切割机初始化 = function(ref:Object
         var prop:Object = target.man.子弹属性;
         var area:MovieClip = gun.枪口位置;
         var spark:MovieClip = gun.火花;
+        var flag:Boolean = target.混凝土切割机超载打击许可;
         spark.play();
         spark._visible = true;
         prop.区域定位area = area;
+        prop.伤害类型 = flag ? "魔法" : null;
+        prop.魔法伤害属性 = "冲";
+        
     });
 };
 
@@ -54,4 +58,33 @@ _root.装备生命周期函数.混凝土切割机周期 = function(ref:Object, p
 
     // 3. 重置射击状态
     ref.isFiring = false;
+
+    var flag:Boolean = target.混凝土切割机超载打击许可;
+    var clip:MovieClip = gun.锯片.晶片;
+
+    if(flag) {
+        if(--target.混凝土切割机超载打击剩余时间 < 0) {
+            target.混凝土切割机超载打击许可 = false;
+        }
+        // 0‑1 归一化进度
+        var prog:Number = 1 - (target.混凝土切割机超载打击剩余时间 /
+                            target.混凝土切割机超载打击持续时间);
+
+        var ramp:Number = 0.05;      // 峰值所处的时间占比（越小 = 越快亮）
+        var fade:Number;             // 0‑1 的可见度系数
+
+        if (prog <= ramp) {
+            // --- 快速线性冲峰 ---
+            fade = prog / ramp;                 // 0 → 1
+        } else {
+            // --- 慢速衰减 ---
+            var t:Number = (prog - ramp) / (1 - ramp);     // 0 → 1
+            fade = Math.pow(1 - t, 2);   // 二次幂衰减，比线性更平滑
+        }
+
+        // 10‑100 Alpha 区间
+        clip._alpha = 10 + 90 * fade;
+    }
+
+    clip._visible = flag;
 };
