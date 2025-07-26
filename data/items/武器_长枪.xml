@@ -6499,6 +6499,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <dressup>枪-长枪-混凝土切割机</dressup>      
       <hp>240</hp>
       <defence>60</defence>
+      <magictype>热</magictype>
     </equipped>      
     <skill>
       <skillname>混凝土切割机超载打击</skillname>
@@ -6524,6 +6525,74 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
         </init>
         <cycle>
           <cycleRoutines>混凝土切割机周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
+  </item>
+  <item>
+    <id>8098</id>
+    <name>MACSIII</name>
+    <displayname>MACSIII</displayname>
+    <icon>MACSIII</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>30</weight>
+    <price>209664</price>
+    <description>M.A.C.S. III – Modular Argent Combat Saw.
+    公社订单，前巨企设计，铁枪会仿品，旗舰级战斗用链锯，设计理念完全以实战为导向。
+    链锯引入了实验性的 Argent 纳米机器人集群，于审判日前夕正式定型。
+    锯片借助高频振动激发自热熔切效应，无视绝大部分护甲，并通过纳米修复机制实时修复链轨与机体损耗。
+    机体覆盖了重型战斗框架，为了追求极致的可靠性与操控平衡，刻意缩短了锯身长度。
+    铁枪会生产线缺少原版设计所需的抗磁性配体半金属，高级协议目前处于锁定状态。
+    协议包括对重伤目标的处决功能及汲取生物组织进行超额修复的能力，解锁需要用户自行获取并补充指定材料配额。</description>
+    <level>30</level>
+    <data>
+      <capacity>100</capacity>
+      <split>4</split>
+      <diffusion>5</diffusion>
+      <interval>200</interval>
+      <velocity>0</velocity>
+      <bullet>近战子弹</bullet>
+      <sound>混凝土切割机音效.waz</sound>
+      <muzzle>null</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>火焰喷射器燃料罐</clipname>
+      <bulletsize>40</bulletsize>
+      <power>40</power>
+      <impact>10</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-MACSIII</dressup>      
+      <hp>160</hp>
+      <defence>100</defence>      
+      <damagetype>魔法</damagetype>
+      <magictype>热</magictype>
+    </equipped>      
+    <skill>
+      <skillname>MACSIII超载打击</skillname>
+      <description>消耗一枚强化石强制执行被锁定的高级协议，发动一次毁灭性挥砍。
+      此后纳米机器人集群将保持活性，基础持续时间5秒，每一级武器强化度可额外延长1秒。
+      活性状态下，链锯的攻击将获得增益，具体效果由武器强化等级决定：3级解锁处决功能，6级解锁汲取功能。
+      </description>
+      <cd>3000</cd>
+      <duration>5</duration>
+      <mp>100</mp>
+    </skill>  
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>MACSIII初始化</initRoutines>
+          <initParam>
+            <maxSpinCount>29</maxSpinCount>
+            <spinUpAmount>4</spinUpAmount>
+            <spinSpeedFactor>0.1</spinSpeedFactor>
+            <spinDownRate>2</spinDownRate>
+            <executeLevel>3</executeLevel>
+            <lifeStealLevel>6</lifeStealLevel>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>MACSIII周期</cycleRoutines>
         </cycle>
       </attr_0>
     </lifecycle>

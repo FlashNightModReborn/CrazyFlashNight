@@ -25,3 +25,4 @@
 #include "../逻辑/装备函数/黑铁的剑.as"
 #include "../逻辑/装备函数/僵尸割草机.as"
 #include "../逻辑/装备函数/混凝土切割机.as"
+#include "../逻辑/装备函数/MACSIII.as"

@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.scene.*;
+import org.flashNight.sara.util.*;
 
 _root.主动战技函数 = {空手:{},兵器:{},长枪:{}};
 
@@ -179,6 +180,76 @@ _root.主动战技函数.长枪.混凝土切割机超载打击 = {
     {
         自机.混凝土切割机超载打击许可 = true;
         自机.混凝土切割机超载打击剩余时间 = 自机.混凝土切割机超载打击持续时间;
+    }
+};
+
+_root.主动战技函数.长枪.MACSIII超载打击 = {
+    初始化:function(自机){
+        自机.MACSIII超载打击许可 = false;
+
+        var skill:Object = _root.getItemData(自机.长枪).skill;
+        var duration:Number = skill.duration || 5; 
+        
+        var upgradeLevel:Number;
+
+        if(_root.控制目标 == 自机._name) {
+            var equipment = _root.物品栏.装备栏;
+            upgradeLevel = equipment.getLevel("长枪");
+        } else {
+            upgradeLevel = _root.主角函数.获取人形怪强化等级(自机.等级, 自机.名字);
+        }
+        
+        duration += upgradeLevel;
+        var overRideCountMax:Number = duration * 30;
+        自机.MACSIII超载打击持续时间 = overRideCountMax;
+        自机.MACSIII超载打击剩余时间 = 0;
+    },
+
+    释放许可判定:function(自机){
+        if(自机.倒地) return false;
+        if(!(自机.状态 === "长枪行走" || 自机.状态 === "长枪站立") || 自机.换弹中) return false;
+        return org.flashNight.arki.item.ItemUtil.singleSubmit("强化石",1);
+    },
+
+    释放:function(自机)
+    {
+        var prop:Object = 自机.man.子弹属性;
+        
+        自机.MACSIII超载打击许可 = true;
+        自机.MACSIII超载打击剩余时间 = 自机.MACSIII超载打击持续时间;
+        var gun:MovieClip = 自机.长枪_引用;
+        var area:MovieClip = gun.枪口位置;
+        var myPoint = new Vector(area._x, area._y);
+        gun.localToGlobal(myPoint);
+        _root.gameworld.globalToLocal(myPoint);
+
+        var 子弹属性 = new Object();
+
+        子弹属性.声音 = "";
+        子弹属性.霰弹值 = 5;
+        子弹属性.子弹散射度 = 0;
+        子弹属性.发射效果 = "";
+        子弹属性.子弹种类 = "近战子弹";
+        
+        子弹属性.子弹威力 = prop.子弹威力 * 10;
+        子弹属性.子弹速度 = 0;
+        子弹属性.击中地图效果 = "";
+        子弹属性.Z轴攻击范围 = 150;
+        子弹属性.击倒率 = 1;
+        子弹属性.击中后子弹的效果 = "火花";
+        子弹属性.发射者 = 自机._name;
+        子弹属性.shootX = myPoint.x;
+        子弹属性.shootY = myPoint.y;
+        子弹属性.shootZ = 自机.Z轴坐标;
+        子弹属性.区域定位area = area;
+        子弹属性.伤害类型 = "魔法";
+        子弹属性.魔法伤害属性 = "热";
+        子弹属性.斩杀 = 13;
+        子弹属性.吸血 = 20;
+
+        _root.子弹区域shoot传递(子弹属性);
+
+        自机.攻击模式切换("长枪");
     }
 };
 

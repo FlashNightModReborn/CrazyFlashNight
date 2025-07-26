@@ -27,8 +27,6 @@ _root.装备生命周期函数.混凝土切割机初始化 = function(ref:Object
         spark._visible = true;
         prop.区域定位area = area;
         prop.伤害类型 = flag ? "魔法" : null;
-        prop.魔法伤害属性 = "冲";
-        
     });
 };
 
@@ -81,6 +79,8 @@ _root.装备生命周期函数.混凝土切割机周期 = function(ref:Object, p
             var t:Number = (prog - ramp) / (1 - ramp);     // 0 → 1
             fade = Math.pow(1 - t, 2);   // 二次幂衰减，比线性更平滑
         }
+
+        // fade = fade * 2 - 1;
 
         // 10‑100 Alpha 区间
         clip._alpha = 10 + 90 * fade;

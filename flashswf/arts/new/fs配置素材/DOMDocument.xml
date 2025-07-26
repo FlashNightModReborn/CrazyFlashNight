@@ -136,7 +136,7 @@
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="ashcore/ashcore.xml" itemID="688340fd-00000819" lastModified="1753436006"/>
           <Include href="ashcore/图标-ashcore.xml" itemID="68835078-00000a95" lastModified="1753436313"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1753496105"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1753539030"/>
           <Include href="g11/G11.xml" itemID="68751898-0000072e" lastModified="1752656002"/>
           <Include href="g11/G11动画.xml" loadImmediate="false" itemID="68776282-000017ba" lastModified="1752654466"/>
           <Include href="g11/G11上支架.xml" itemIcon="1" loadImmediate="false" itemID="68784e75-00003582" lastModified="1752714869"/>
@@ -207,7 +207,7 @@
           <Include href="XM556/XM556-OC-Overlord枪身.xml" loadImmediate="false" itemID="686f22bf-0000054e" lastModified="1752149679"/>
           <Include href="XM556/xm556oc激光模组.xml" loadImmediate="false" itemID="68706327-00000e37" lastModified="1752196826"/>
           <Include href="XM556/xm556枪管动画.xml" loadImmediate="false" itemID="6873745e-00000785" lastModified="1752476420"/>
-          <Include href="XM556/XM123456-chaingun.xml" itemID="68843a23-0000335a" lastModified="1753496148"/>
+          <Include href="XM556/XM123456-chaingun.xml" itemID="68843a23-0000335a" lastModified="1753539012"/>
           <Include href="XM556/能量光效.xml" loadImmediate="false" itemID="686e3447-00000413" lastModified="1752052807"/>
           <Include href="XM556/能量腔荧光.xml" loadImmediate="false" itemID="686f2283-00000547" lastModified="1752149704"/>
           <Include href="XM556/能量指示灯.xml" loadImmediate="false" itemID="686e3435-0000040f" lastModified="1752149591"/>
@@ -244,7 +244,7 @@
           <Include href="光玉的剑相关/光玉剑身.xml" itemIcon="1" loadImmediate="false" itemID="68668bbe-000033cc" lastModified="1751550910"/>
           <Include href="光玉的剑相关/图标-光玉的剑.xml" itemID="68673eb7-0000160f" lastModified="1751596727"/>
           <Include href="混凝土切割机锯片强化激活.xml" loadImmediate="false" itemID="68848df1-000039ca" lastModified="1753517554"/>
-          <Include href="火药燃气液压打桩机/M.A.C.S.III.xml" itemID="6881e4a7-0000054e" lastModified="1753430069"/>
+          <Include href="火药燃气液压打桩机/MACSIII.xml" itemID="6884cbed-0000480a" lastModified="1753534142"/>
           <Include href="火药燃气液压打桩机/MACSIII锯片.xml" loadImmediate="false" itemID="6881fc3a-000005a4" lastModified="1753352189"/>
           <Include href="火药燃气液压打桩机/打桩机子弹.xml" itemID="6551eea5-000021cc" lastModified="1702259181"/>
           <Include href="火药燃气液压打桩机/改造打草机锯片.xml" loadImmediate="false" itemID="6881a79d-00000539" lastModified="1753330525"/>
@@ -258,7 +258,7 @@
           <Include href="火药燃气液压打桩机/火药燃气打桩机动画.xml" loadImmediate="false" itemID="65519ab4-00001fd0" lastModified="1752227727"/>
           <Include href="火药燃气液压打桩机/机体.xml" itemIcon="1" loadImmediate="false" itemID="651d640c-00002ff5" lastModified="1699836975"/>
           <Include href="火药燃气液压打桩机/僵尸割草机.xml" itemID="6881e42a-00000543" lastModified="1753442203"/>
-          <Include href="火药燃气液压打桩机/图标-M.A.C.S.III.xml" itemID="68836258-0000151c" lastModified="1753440877"/>
+          <Include href="火药燃气液压打桩机/图标-MACSIII.xml" itemID="6884cbfc-0000480b" lastModified="1753533436"/>
           <Include href="火药燃气液压打桩机/图标-混凝土切割机.xml" itemID="6883620d-000011a9" lastModified="1753440809"/>
           <Include href="火药燃气液压打桩机/图标-火药燃气液压打桩机.xml" itemID="6551c58b-00002089" lastModified="1699858364"/>
           <Include href="火药燃气液压打桩机/图标-僵尸割草机.xml" itemID="688361bb-00000e32" lastModified="1753440758"/>
@@ -528,36 +528,12 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="fs配置素材" centerPoint3DX="-64.7" centerPoint3DY="195.1">
+                                        <DOMSymbolInstance libraryItemName="fs配置素材" selected="true" centerPoint3DX="334.35" centerPoint3DY="165.45">
                                              <matrix>
-                                                  <Matrix tx="-181.7" ty="178.65"/>
+                                                  <Matrix tx="217.35" ty="149"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="117" y="16.45"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/僵尸割草机" centerPoint3DX="506.15" centerPoint3DY="107.45">
-                                             <matrix>
-                                                  <Matrix tx="440.1" ty="62.95"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="65.65" y="44.55"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/M.A.C.S.III" centerPoint3DX="490.25" centerPoint3DY="386.45">
-                                             <matrix>
-                                                  <Matrix tx="409.45" ty="320.45"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="81.05" y="66"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/混凝土切割机" selected="true" centerPoint3DX="132.6" centerPoint3DY="269.8">
-                                             <matrix>
-                                                  <Matrix tx="51.8" ty="203.8"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="81.05" y="66"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
                                    </elements>
@@ -1256,6 +1232,11 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1455741" publishTime="1753534252"/>
+          <PublishItem publishSize="1455739" publishTime="1753534156"/>
+          <PublishItem publishSize="1455776" publishTime="1753534146"/>
+          <PublishItem publishSize="1455782" publishTime="1753533440"/>
+          <PublishItem publishSize="1455787" publishTime="1753523231"/>
           <PublishItem publishSize="1455776" publishTime="1753518345"/>
           <PublishItem publishSize="1455776" publishTime="1753518152"/>
           <PublishItem publishSize="1457819" publishTime="1753517402"/>
@@ -1271,10 +1252,5 @@
           <PublishItem publishSize="1421913" publishTime="1753431133"/>
           <PublishItem publishSize="1421921" publishTime="1753431046"/>
           <PublishItem publishSize="1421920" publishTime="1753430976"/>
-          <PublishItem publishSize="1421889" publishTime="1753430901"/>
-          <PublishItem publishSize="1421919" publishTime="1753430867"/>
-          <PublishItem publishSize="1421893" publishTime="1753430780"/>
-          <PublishItem publishSize="1421499" publishTime="1753430735"/>
-          <PublishItem publishSize="1421509" publishTime="1753430567"/>
      </publishHistory>
 </DOMDocument>
