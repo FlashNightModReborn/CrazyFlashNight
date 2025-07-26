@@ -14,7 +14,7 @@
           <DOMFolderItem name="wa90" itemID="6559d3b1-000002db"/>
           <DOMFolderItem name="wa90/Graphic" itemID="5e86cc75-00001260"/>
           <DOMFolderItem name="XM25" itemID="6874cd16-000007b9"/>
-          <DOMFolderItem name="XM556" itemID="686bba3f-000040b0"/>
+          <DOMFolderItem name="XM556" itemID="686bba3f-000040b0" isExpanded="true"/>
           <DOMFolderItem name="ZB-26" itemID="68728189-000006c7"/>
           <DOMFolderItem name="电感切割刃" itemID="655c5883-00000334"/>
           <DOMFolderItem name="光玉的剑相关" itemID="68668bb8-000033c6"/>
@@ -25,6 +25,12 @@
           <DOMFolderItem name="吉他喷火/未命名文件夹 1" itemID="65546b1d-00004a12"/>
           <DOMFolderItem name="键盘镰刀" itemID="655480e9-00005ea5"/>
           <DOMFolderItem name="将军 披风" itemID="667d1ed9-00000ce9"/>
+          <DOMFolderItem name="军阀精英敌人" itemID="68843a37-00003366"/>
+          <DOMFolderItem name="军阀精英敌人/重甲" itemID="68843a37-00003367"/>
+          <DOMFolderItem name="军阀精英敌人/重甲/弹药" itemID="68843a37-00003370"/>
+          <DOMFolderItem name="军阀精英敌人/重甲/机枪" itemID="68843a37-00003368"/>
+          <DOMFolderItem name="军阀精英敌人/重甲/机枪/转轮机枪" itemID="68843a37-00003369"/>
+          <DOMFolderItem name="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A" itemID="68843a37-0000336a"/>
           <DOMFolderItem name="龙破军霜" itemID="65f704ac-00002258"/>
           <DOMFolderItem name="生存战素材" itemID="66a8fcff-00001f68" isExpanded="true"/>
           <DOMFolderItem name="特效素材" itemID="65698b55-000002b7"/>
@@ -130,7 +136,7 @@
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="ashcore/ashcore.xml" itemID="688340fd-00000819" lastModified="1753436006"/>
           <Include href="ashcore/图标-ashcore.xml" itemID="68835078-00000a95" lastModified="1753436313"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1753440859"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1753496105"/>
           <Include href="g11/G11.xml" itemID="68751898-0000072e" lastModified="1752656002"/>
           <Include href="g11/G11动画.xml" loadImmediate="false" itemID="68776282-000017ba" lastModified="1752654466"/>
           <Include href="g11/G11上支架.xml" itemIcon="1" loadImmediate="false" itemID="68784e75-00003582" lastModified="1752714869"/>
@@ -201,6 +207,7 @@
           <Include href="XM556/XM556-OC-Overlord枪身.xml" loadImmediate="false" itemID="686f22bf-0000054e" lastModified="1752149679"/>
           <Include href="XM556/xm556oc激光模组.xml" loadImmediate="false" itemID="68706327-00000e37" lastModified="1752196826"/>
           <Include href="XM556/xm556枪管动画.xml" loadImmediate="false" itemID="6873745e-00000785" lastModified="1752476420"/>
+          <Include href="XM556/XM123456-chaingun.xml" itemID="68843a23-0000335a" lastModified="1753496148"/>
           <Include href="XM556/能量光效.xml" loadImmediate="false" itemID="686e3447-00000413" lastModified="1752052807"/>
           <Include href="XM556/能量腔荧光.xml" loadImmediate="false" itemID="686f2283-00000547" lastModified="1752149704"/>
           <Include href="XM556/能量指示灯.xml" loadImmediate="false" itemID="686e3435-0000040f" lastModified="1752149591"/>
@@ -243,8 +250,8 @@
           <Include href="火药燃气液压打桩机/杆体.xml" itemIcon="1" loadImmediate="false" itemID="651ce0aa-00002f3c" lastModified="1696425129"/>
           <Include href="火药燃气液压打桩机/护盾.xml" itemIcon="1" loadImmediate="false" itemID="651d6417-00002ff9" lastModified="1696424983"/>
           <Include href="火药燃气液压打桩机/护筒.xml" itemIcon="1" loadImmediate="false" itemID="651d642b-00002ffd" lastModified="1696425004"/>
-          <Include href="火药燃气液压打桩机/混凝土切割机.xml" itemID="6882dbb0-000005e5" lastModified="1753440919"/>
-          <Include href="火药燃气液压打桩机/混凝土切割机电火花.xml" loadImmediate="false" itemID="68832e99-00000802" lastModified="1753427682"/>
+          <Include href="火药燃气液压打桩机/混凝土切割机.xml" itemID="6882dbb0-000005e5" lastModified="1753502327"/>
+          <Include href="火药燃气液压打桩机/混凝土切割机电火花.xml" loadImmediate="false" itemID="68832e99-00000802" lastModified="1753502313"/>
           <Include href="火药燃气液压打桩机/混凝土切割机锯片.xml" loadImmediate="false" itemID="6882e4ed-000005ff" lastModified="1753409050"/>
           <Include href="火药燃气液压打桩机/火药燃气打桩机.xml" itemID="65519486-00001f36" lastModified="1746783541"/>
           <Include href="火药燃气液压打桩机/火药燃气打桩机动画.xml" loadImmediate="false" itemID="65519ab4-00001fd0" lastModified="1752227727"/>
@@ -336,6 +343,15 @@
           <Include href="将军 披风/Symbol 911.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000015e5" lastModified="1701508661"/>
           <Include href="将军 披风/Symbol 912.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000015e6" lastModified="1701508661"/>
           <Include href="将军 披风/Symbol 913.xml" loadImmediate="false" itemID="6577faef-000015e7" lastModified="1719556794"/>
+          <Include href="军阀精英敌人/重甲/弹药/7.62×51mm NATO.xml" itemIcon="1" loadImmediate="false" itemID="56978d9c-000003ad" lastModified="1452772764"/>
+          <Include href="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A导轨支架.xml" loadImmediate="false" itemID="56f63329-0000032b" lastModified="1458975529"/>
+          <Include href="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A电机.xml" loadImmediate="false" itemID="56f6331c-00000326" lastModified="1458975516"/>
+          <Include href="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A机械瞄准镜.xml" loadImmediate="false" itemID="56f63320-00000327" lastModified="1458975520"/>
+          <Include href="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A机械瞄准镜‘.xml" loadImmediate="false" itemID="56f63323-00000328" lastModified="1458975523"/>
+          <Include href="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A枪管.xml" loadImmediate="false" itemID="56f6332b-0000032c" lastModified="1458975531"/>
+          <Include href="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A枪身.xml" loadImmediate="false" itemID="56f6333d-0000032e" lastModified="1701492624"/>
+          <Include href="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A主体.xml" loadImmediate="false" itemID="56f63325-00000329" lastModified="1458975525"/>
+          <Include href="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A转轮支架.xml" loadImmediate="false" itemID="56f63327-0000032a" lastModified="1458975527"/>
           <Include href="龙破军霜/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="65f704ad-00002267" lastModified="1710653981"/>
           <Include href="龙破军霜/Symbol 13.xml" loadImmediate="false" itemID="65f704ad-00002266" lastModified="1710653981"/>
           <Include href="龙破军霜/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="65f704ad-00002268" lastModified="1710653981"/>
@@ -511,7 +527,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="fs配置素材" selected="true" centerPoint3DX="-64.7" centerPoint3DY="195.1">
+                                        <DOMSymbolInstance libraryItemName="fs配置素材" centerPoint3DX="-64.7" centerPoint3DY="195.1">
                                              <matrix>
                                                   <Matrix tx="-181.7" ty="178.65"/>
                                              </matrix>
@@ -519,17 +535,17 @@
                                                   <Point x="117" y="16.45"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/僵尸割草机" centerPoint3DX="351.9" centerPoint3DY="107.45">
+                                        <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/僵尸割草机" selected="true" centerPoint3DX="506.15" centerPoint3DY="107.45">
                                              <matrix>
-                                                  <Matrix tx="285.85" ty="62.95"/>
+                                                  <Matrix tx="440.1" ty="62.95"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="65.65" y="44.55"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/M.A.C.S.III" centerPoint3DX="371.35" centerPoint3DY="369.35">
+                                        <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/M.A.C.S.III" centerPoint3DX="490.25" centerPoint3DY="386.45">
                                              <matrix>
-                                                  <Matrix tx="290.55" ty="303.35"/>
+                                                  <Matrix tx="409.45" ty="320.45"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="81.05" y="66"/>
@@ -1236,6 +1252,10 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1435956" publishTime="1753504081"/>
+          <PublishItem publishSize="1435950" publishTime="1753502416"/>
+          <PublishItem publishSize="1435949" publishTime="1753502318"/>
+          <PublishItem publishSize="1435918" publishTime="1753499266"/>
           <PublishItem publishSize="1432713" publishTime="1753441352"/>
           <PublishItem publishSize="1432713" publishTime="1753441321"/>
           <PublishItem publishSize="1431784" publishTime="1753440898"/>
@@ -1252,9 +1272,5 @@
           <PublishItem publishSize="1421962" publishTime="1753430408"/>
           <PublishItem publishSize="1422069" publishTime="1753430369"/>
           <PublishItem publishSize="1421999" publishTime="1753430329"/>
-          <PublishItem publishSize="1422872" publishTime="1753430076"/>
-          <PublishItem publishSize="1423085" publishTime="1753429960"/>
-          <PublishItem publishSize="1417349" publishTime="1753418229"/>
-          <PublishItem publishSize="1311511" publishTime="1753091241"/>
      </publishHistory>
 </DOMDocument>

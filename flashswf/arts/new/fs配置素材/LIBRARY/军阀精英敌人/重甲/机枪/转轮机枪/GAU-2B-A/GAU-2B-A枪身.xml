@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A枪身" itemID="56f6333d-0000032e" lastModified="1701492624">
+  <timeline>
+    <DOMTimeline name="GAU-2B-A枪身">
+      <layers>
+        <DOMLayer name="图层 1" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A枪管" centerPoint3DX="91.45" centerPoint3DY="11.6">
+                  <matrix>
+                    <Matrix a="0.618057250976563" d="1.10186767578125" tx="58.7" ty="6.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="53.15" y="4.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A主体" centerPoint3DX="30.3" centerPoint3DY="9.3">
+                  <transformationPoint>
+                    <Point x="30.35" y="9.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A转轮支架">
+                  <matrix>
+                    <Matrix a="0.618057250976563" d="1.10186767578125" tx="87.4" ty="4.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.95" y="6.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

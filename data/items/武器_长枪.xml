@@ -6435,7 +6435,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <interval>200</interval>
       <velocity>0</velocity>
       <bullet>近战子弹</bullet>
-      <sound>p90-1.wav</sound>
+      <sound>僵尸割草机音效.waz</sound>
       <muzzle>null</muzzle>
       <bullethit>火花</bullethit>
       <clipname>火焰喷射器燃料罐</clipname>
@@ -6461,6 +6461,58 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
         </init>
         <cycle>
           <cycleRoutines>僵尸割草机周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
+  </item>
+    <item>
+    <id>8097</id>
+    <name>混凝土切割机</name>
+    <displayname>混凝土切割机</displayname>
+    <icon>混凝土切割机</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>25</weight>
+    <price>209664</price>
+    <description>公社与多方技术合作的产物，常作为关键据点的防御兵器，兼具反步兵和破障能力。
+    基于建筑施工设备框架，整合铁枪会先进动力传动技术，植入了强化供能单元与热交换模块。
+    切割轮盘注入了抗磁性配体半金属，机体覆盖多层装甲板，可有效抵御高强度冲击。
+    本质上仍是民用工具的战地改造版本，极限环境下可靠性无法与制式军用武器相比。
+    </description>
+    <level>21</level>
+    <data>
+      <capacity>75</capacity>
+      <split>3</split>
+      <diffusion>5</diffusion>
+      <interval>200</interval>
+      <velocity>0</velocity>
+      <bullet>近战子弹</bullet>
+      <sound>混凝土切割机音效.waz</sound>
+      <muzzle>null</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>火焰喷射器燃料罐</clipname>
+      <bulletsize>40</bulletsize>
+      <power>381</power>
+      <impact>10</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-混凝土切割机</dressup>      
+      <hp>240</hp>
+      <defence>60</defence>
+    </equipped>    
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>混凝土切割机初始化</initRoutines>
+          <initParam>
+            <maxSpinCount>50</maxSpinCount>
+            <spinUpAmount>15</spinUpAmount>
+            <spinSpeedFactor>0.2</spinSpeedFactor>
+            <spinDownRate>0.5</spinDownRate>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>混凝土切割机周期</cycleRoutines>
         </cycle>
       </attr_0>
     </lifecycle>

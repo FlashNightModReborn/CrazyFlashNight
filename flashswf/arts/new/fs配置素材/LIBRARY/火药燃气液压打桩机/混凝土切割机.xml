@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="火药燃气液压打桩机/混凝土切割机" itemID="6882dbb0-000005e5" linkageExportForAS="true" linkageIdentifier="枪-长枪-混凝土切割机" lastModified="1753440919" lastUniqueIdentifier="16">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="火药燃气液压打桩机/混凝土切割机" itemID="6882dbb0-000005e5" linkageExportForAS="true" linkageIdentifier="枪-长枪-混凝土切割机" lastModified="1753502327" lastUniqueIdentifier="16">
   <timeline>
-    <DOMTimeline name="混凝土切割机">
+    <DOMTimeline name="混凝土切割机" currentFrame="2">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -21,6 +21,9 @@
         <DOMLayer name="图层 5" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
@@ -36,7 +39,7 @@
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/混凝土切割机电火花" name="火花" centerPoint3DX="11.95" centerPoint3DY="-38.25">
+                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/混凝土切割机电火花" name="火花" selected="true" centerPoint3DX="11.95" centerPoint3DY="-38.25" isVisible="false">
                   <matrix>
                     <Matrix tx="7.85" ty="-40.7"/>
                   </matrix>
