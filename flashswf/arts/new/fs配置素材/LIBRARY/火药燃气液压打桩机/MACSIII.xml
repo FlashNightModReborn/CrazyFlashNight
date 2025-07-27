@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="火药燃气液压打桩机/MACSIII" itemID="6884cbed-0000480a" linkageExportForAS="true" linkageIdentifier="枪-长枪-MACSIII" lastModified="1753630781" lastUniqueIdentifier="30">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="火药燃气液压打桩机/MACSIII" itemID="6884cbed-0000480a" linkageExportForAS="true" linkageIdentifier="枪-长枪-MACSIII" lastModified="1753637280" lastUniqueIdentifier="30">
   <timeline>
-    <DOMTimeline name="MACSIII" currentFrame="7">
+    <DOMTimeline name="MACSIII" currentFrame="4">
       <layers>
         <DOMLayer name="图层 5" color="#4FFFFF">
           <frames>
@@ -32,7 +32,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements>
@@ -70,7 +70,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="机体" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="机体" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements>
@@ -30256,7 +30256,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="链锯" color="#FF800A" autoNamed="false">
+        <DOMLayer name="链锯" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -30968,7 +30968,7 @@
                     <Point x="12.8" y="15.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/MACSIII活性锯片" symbolType="graphic" firstFrame="3" loop="loop">
+                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/MACSIII活性锯片" selected="true" symbolType="graphic" firstFrame="3" loop="loop">
                   <matrix>
                     <Matrix a="0.826904296875" b="0.562362670898438" c="-0.562362670898438" d="0.826904296875" tx="206.05" ty="0.95"/>
                   </matrix>

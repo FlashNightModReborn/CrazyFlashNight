@@ -166,6 +166,11 @@
           <Include href="Jackhammer/图标-Jackhammer.xml" itemID="6870dc6b-000007f4" lastModified="1752226965"/>
           <Include href="M1918A2/M1918A2.xml" itemID="687109e5-00002571" lastModified="1752240876"/>
           <Include href="M1918A2/图标-M1918A2.xml" itemID="68727d9b-000003aa" lastModified="1752333723"/>
+          <Include href="MACSIII火焰1.xml" itemIcon="1" loadImmediate="false" itemID="68865cb2-00006fb4" lastModified="1753636018"/>
+          <Include href="MACSIII火焰2.xml" itemIcon="1" loadImmediate="false" itemID="68865cd0-00006fb9" lastModified="1753636048"/>
+          <Include href="MACSIII火焰3.xml" itemIcon="1" loadImmediate="false" itemID="68865cd8-00006fbd" lastModified="1753636056"/>
+          <Include href="MACSIII火焰4.xml" itemIcon="1" loadImmediate="false" itemID="68865ce0-00006fc1" lastModified="1753636064"/>
+          <Include href="MACSIII火焰5.xml" itemIcon="1" loadImmediate="false" itemID="68865ce9-00006fc5" lastModified="1753636073"/>
           <Include href="NEGEV/Negev.xml" itemID="686a4cad-0000364f" lastModified="1751878281"/>
           <Include href="NEGEV/内格夫弹链动画.xml" loadImmediate="false" itemID="686a67d8-000036bc" lastModified="1751805789"/>
           <Include href="NEGEV/内格夫子弹1.xml" loadImmediate="false" itemID="686a5e0b-00003660" lastModified="1751809025"/>
@@ -243,8 +248,8 @@
           <Include href="光玉的剑相关/光玉剑缓存用.xml" loadImmediate="false" itemID="68668bbc-000033ca" lastModified="1751550908"/>
           <Include href="光玉的剑相关/光玉剑身.xml" itemIcon="1" loadImmediate="false" itemID="68668bbe-000033cc" lastModified="1751550910"/>
           <Include href="光玉的剑相关/图标-光玉的剑.xml" itemID="68673eb7-0000160f" lastModified="1751596727"/>
-          <Include href="火药燃气液压打桩机/MACSIII.xml" itemID="6884cbed-0000480a" lastModified="1753630781"/>
-          <Include href="火药燃气液压打桩机/MACSIII活性锯片.xml" loadImmediate="false" itemID="68863881-000003ec" lastModified="1753630501"/>
+          <Include href="火药燃气液压打桩机/MACSIII.xml" itemID="6884cbed-0000480a" lastModified="1753637280"/>
+          <Include href="火药燃气液压打桩机/MACSIII活性锯片.xml" loadImmediate="false" itemID="68863881-000003ec" lastModified="1753636075"/>
           <Include href="火药燃气液压打桩机/MACSIII锯片.xml" loadImmediate="false" itemID="6881fc3a-000005a4" lastModified="1753352189"/>
           <Include href="火药燃气液压打桩机/打桩机子弹.xml" itemID="6551eea5-000021cc" lastModified="1702259181"/>
           <Include href="火药燃气液压打桩机/改造打草机锯片.xml" loadImmediate="false" itemID="6881a79d-00000539" lastModified="1753330525"/>
@@ -1241,6 +1246,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1526438" publishTime="1753637162"/>
           <PublishItem publishSize="1527540" publishTime="1753630873"/>
           <PublishItem publishSize="1518763" publishTime="1753629630"/>
           <PublishItem publishSize="1518763" publishTime="1753629618"/>
@@ -1260,6 +1266,5 @@
           <PublishItem publishSize="1432713" publishTime="1753441321"/>
           <PublishItem publishSize="1431784" publishTime="1753440898"/>
           <PublishItem publishSize="1431568" publishTime="1753437017"/>
-          <PublishItem publishSize="1431559" publishTime="1753436359"/>
      </publishHistory>
 </DOMDocument>

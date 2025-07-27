@@ -5,11 +5,8 @@ _root.装备生命周期函数.MACSIII初始化 = function(ref:Object, param:Obj
     
     // --- 状态变量 ---
     ref.gunFrame = 1.0;              // 当前动画帧 (浮点数，支持平滑过渡)
-    ref.fireCount = 0;               // 当前连射计数
     ref.isFiring = false;            // 是否正在射击
-    ref.animSpeed = 0.15;            // 基础动画速度（空闲时）
-    ref.fireAnimSpeed = 1;         // 射击时动画速度（调整为不超过1.0）
-    ref.currentAnimSpeed = ref.animSpeed; // 当前实际动画速度
+    ref.animBudget = 0.0;            // 剩余的动画帧数 (浮点数支持)
     
     var upgradeLevel:Number;
     if(_root.控制目标 == target._name) {
@@ -34,13 +31,7 @@ _root.装备生命周期函数.MACSIII初始化 = function(ref:Object, param:Obj
         // 无任何额外效果
         return function () {
             ref.isFiring = true;
-            var mc = ref.自机;
-            var gun = mc.长枪_引用;
-            var prop = mc.man.子弹属性;
-            var area = gun.枪口位置;
-            spark.play();
-            
-            prop.区域定位 = area;
+            ref.自机.man.子弹属性.区域定位area = ref.自机.长枪_引用.枪口位置;
         };
     }
     
@@ -49,16 +40,11 @@ _root.装备生命周期函数.MACSIII初始化 = function(ref:Object, param:Obj
         return function () {
             ref.isFiring = true;
             var mc = ref.自机;
-            var gun = mc.长枪_引用;
             var prop = mc.man.子弹属性;
-            var area = gun.枪口位置;
-            spark.play();
             
-            prop.区域定位 = area;
+            prop.区域定位area = mc.长枪_引用.枪口位置;
             if(mc.MACSIII超载打击许可) {
                 prop.斩杀 = 8;
-            } else {
-                prop.斩杀 = 0;
             }
         };
     }
@@ -68,16 +54,11 @@ _root.装备生命周期函数.MACSIII初始化 = function(ref:Object, param:Obj
         return function () {
             ref.isFiring = true;
             var mc = ref.自机;
-            var gun = mc.长枪_引用;
             var prop = mc.man.子弹属性;
-            var area = gun.枪口位置;
-            spark.play();
             
-            prop.区域定位 = area;
+            prop.区域定位area = mc.长枪_引用.枪口位置;
             if(mc.MACSIII超载打击许可) {
                 prop.吸血 = 10;
-            } else {
-                prop.吸血 = 0;
             }
         };
     }
@@ -87,19 +68,12 @@ _root.装备生命周期函数.MACSIII初始化 = function(ref:Object, param:Obj
         return function () {
             ref.isFiring = true;
             var mc = ref.自机;
-            var gun = mc.长枪_引用;
             var prop = mc.man.子弹属性;
-            var area = gun.枪口位置;
-            spark.play();
-            spark._visible = true;
             
-            prop.区域定位 = area;
+            prop.区域定位area = mc.长枪_引用.枪口位置;
             if(mc.MACSIII超载打击许可) {
                 prop.斩杀 = 10;
                 prop.吸血 = 18;
-            } else {
-                prop.斩杀 = 0;
-                prop.吸血 = 0;
             }
         };
     }
@@ -113,28 +87,39 @@ _root.装备生命周期函数.MACSIII周期 = function(ref:Object, param:Object
     var target:MovieClip = ref.自机;
     var gun:MovieClip = target.长枪_引用;
     var totalFrames:Number = 4;
+    var currentFrame:Number = ref.gunFrame;
     
-    // 动态调整动画速度
-    if(ref.isFiring) {
-        // 射击时加速动画，营造电锯高速转动的效果
-        ref.currentAnimSpeed += (ref.fireAnimSpeed - ref.currentAnimSpeed) * 0.2;
-    } else {
-        // 非射击时恢复正常速度，但保持持续转动
-        ref.currentAnimSpeed += (ref.animSpeed - ref.currentAnimSpeed) * 0.1;
+    // 动态调整动画预算
+    if(ref.isFiring) ref.animBudget += 10.0;
+    if(ref.animBudget > 60.0) ref.animBudget = 60.0; // 限制最大预算
+    
+    // 平滑的动画帧推进系统
+    var frameAdvance:Number = 0.0;
+    
+    if(ref.animBudget >= 1.0) {
+        // 预算充足时：满速前进
+        frameAdvance = 1.0;
+        ref.animBudget -= 1.0;
+    } else if(ref.animBudget > 0.0) {
+        // 预算不足时：按剩余预算比例减速
+        frameAdvance = ref.animBudget;
+        ref.animBudget = 0.0; // 消耗完所有剩余预算
+    }
+    // else: 预算为0时，frameAdvance保持0.0，完全停止
+    
+    // 推进动画帧
+    if(frameAdvance > 0.0) {
+        currentFrame += frameAdvance;
+        
+        // 循环处理（保持浮点数精度）
+        if(currentFrame > totalFrames) {
+            currentFrame -= totalFrames;
+        }
     }
     
-    // 限制最大前进速度，避免跳帧导致的不连贯
-    ref.currentAnimSpeed = Math.min(ref.currentAnimSpeed, 1.0);
+    ref.gunFrame = currentFrame;
     
-    // 持续推进动画帧（电锯应该一直转动）
-    ref.gunFrame += ref.currentAnimSpeed;
-    
-    // 循环处理帧数（使用浮点数取模运算）
-    if(ref.gunFrame > totalFrames) {
-        ref.gunFrame -= totalFrames; // 保持浮点数精度的循环
-    }
-    
-    // 计算实际显示的帧数（向下取整并确保在1-4范围内）
+    // 计算显示帧（向下取整）
     var displayFrame:Number = Math.floor(ref.gunFrame);
     if(displayFrame < 1) displayFrame = 1;
     if(displayFrame > totalFrames) displayFrame = totalFrames;
@@ -146,14 +131,15 @@ _root.装备生命周期函数.MACSIII周期 = function(ref:Object, param:Object
         if(--target.MACSIII超载打击剩余时间 < 0) {
             target.MACSIII超载打击许可 = false;
         }
-        animFrame += 4; // 超载打击时动画帧偏移
+        animFrame += totalFrames; // 超载打击时动画帧偏移
+        var prop = target.man.子弹属性;
         
+        prop.斩杀 = 0;
+        prop.吸血 = 0;
     }
     
     gun.gotoAndStop(animFrame);
     
-    // 重置射击状态（放在最后，确保动画速度调整完成）
+    // 重置射击状态
     ref.isFiring = false;
-    
-    _root.发布消息(animFrame);
 };
