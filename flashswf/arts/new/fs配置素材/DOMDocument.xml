@@ -243,8 +243,8 @@
           <Include href="光玉的剑相关/光玉剑缓存用.xml" loadImmediate="false" itemID="68668bbc-000033ca" lastModified="1751550908"/>
           <Include href="光玉的剑相关/光玉剑身.xml" itemIcon="1" loadImmediate="false" itemID="68668bbe-000033cc" lastModified="1751550910"/>
           <Include href="光玉的剑相关/图标-光玉的剑.xml" itemID="68673eb7-0000160f" lastModified="1751596727"/>
-          <Include href="混凝土切割机锯片强化激活.xml" loadImmediate="false" itemID="68848df1-000039ca" lastModified="1753517554"/>
-          <Include href="火药燃气液压打桩机/MACSIII.xml" itemID="6884cbed-0000480a" lastModified="1753534142"/>
+          <Include href="火药燃气液压打桩机/MACSIII.xml" itemID="6884cbed-0000480a" lastModified="1753630781"/>
+          <Include href="火药燃气液压打桩机/MACSIII活性锯片.xml" loadImmediate="false" itemID="68863881-000003ec" lastModified="1753630501"/>
           <Include href="火药燃气液压打桩机/MACSIII锯片.xml" loadImmediate="false" itemID="6881fc3a-000005a4" lastModified="1753352189"/>
           <Include href="火药燃气液压打桩机/打桩机子弹.xml" itemID="6551eea5-000021cc" lastModified="1702259181"/>
           <Include href="火药燃气液压打桩机/改造打草机锯片.xml" loadImmediate="false" itemID="6881a79d-00000539" lastModified="1753330525"/>
@@ -252,8 +252,9 @@
           <Include href="火药燃气液压打桩机/护盾.xml" itemIcon="1" loadImmediate="false" itemID="651d6417-00002ff9" lastModified="1696424983"/>
           <Include href="火药燃气液压打桩机/护筒.xml" itemIcon="1" loadImmediate="false" itemID="651d642b-00002ffd" lastModified="1696425004"/>
           <Include href="火药燃气液压打桩机/混凝土切割机.xml" itemID="6882dbb0-000005e5" lastModified="1753517586"/>
-          <Include href="火药燃气液压打桩机/混凝土切割机电火花.xml" loadImmediate="false" itemID="68832e99-00000802" lastModified="1753502313"/>
+          <Include href="火药燃气液压打桩机/混凝土切割机电火花.xml" loadImmediate="false" itemID="68832e99-00000802" lastModified="1753623755"/>
           <Include href="火药燃气液压打桩机/混凝土切割机锯片.xml" loadImmediate="false" itemID="6882e4ed-000005ff" lastModified="1753523227"/>
+          <Include href="火药燃气液压打桩机/混凝土切割机锯片强化激活.xml" loadImmediate="false" itemID="68848df1-000039ca" lastModified="1753517554"/>
           <Include href="火药燃气液压打桩机/火药燃气打桩机.xml" itemID="65519486-00001f36" lastModified="1746783541"/>
           <Include href="火药燃气液压打桩机/火药燃气打桩机动画.xml" loadImmediate="false" itemID="65519ab4-00001fd0" lastModified="1752227727"/>
           <Include href="火药燃气液压打桩机/机体.xml" itemIcon="1" loadImmediate="false" itemID="651d640c-00002ff5" lastModified="1699836975"/>
@@ -1150,6 +1151,14 @@
                     <SolidSwatchItem color="#0088A9" hue="128" saturation="239" brightness="80"/>
                     <SolidSwatchItem color="#00E6F9" hue="123" saturation="239" brightness="117"/>
                     <SolidSwatchItem color="#1A8581" hue="118" saturation="163" brightness="75"/>
+                    <SolidSwatchItem color="#1E0A03" hue="10" saturation="194" brightness="16"/>
+                    <SolidSwatchItem color="#F04800" hue="12" saturation="239" brightness="113"/>
+                    <SolidSwatchItem color="#F8B52E" hue="27" saturation="224" brightness="138"/>
+                    <SolidSwatchItem color="#FF621D" alpha="0.498039215686275" hue="12" saturation="239" brightness="134"/>
+                    <SolidSwatchItem color="#FF6207" alpha="0.698039215686274" hue="15" saturation="239" brightness="124"/>
+                    <SolidSwatchItem color="#FF8718" alpha="0.8" hue="19" saturation="239" brightness="132"/>
+                    <SolidSwatchItem color="#FFBA2F" alpha="0.898039215686275" hue="27" saturation="239" brightness="142"/>
+                    <SolidSwatchItem color="#FFD855" alpha="0.898039215686275" hue="31" saturation="239" brightness="160"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1232,6 +1241,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1527540" publishTime="1753630873"/>
+          <PublishItem publishSize="1518763" publishTime="1753629630"/>
+          <PublishItem publishSize="1518763" publishTime="1753629618"/>
           <PublishItem publishSize="1455741" publishTime="1753534252"/>
           <PublishItem publishSize="1455739" publishTime="1753534156"/>
           <PublishItem publishSize="1455776" publishTime="1753534146"/>
@@ -1249,8 +1261,5 @@
           <PublishItem publishSize="1431784" publishTime="1753440898"/>
           <PublishItem publishSize="1431568" publishTime="1753437017"/>
           <PublishItem publishSize="1431559" publishTime="1753436359"/>
-          <PublishItem publishSize="1421913" publishTime="1753431133"/>
-          <PublishItem publishSize="1421921" publishTime="1753431046"/>
-          <PublishItem publishSize="1421920" publishTime="1753430976"/>
      </publishHistory>
 </DOMDocument>
