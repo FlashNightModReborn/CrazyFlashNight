@@ -76,7 +76,43 @@ class org.flashNight.arki.component.Damage.UniversalDamageHandle extends BaseDam
             
             enemyMagicResist = isNaN(enemyMagicResist) ? 20 : Math.min(Math.max(enemyMagicResist, -1000), 100);
             target.损伤值 = Math.floor(bullet.破坏力 * (100 - enemyMagicResist) / 100);
+        
+        // ========== 新增：破击伤害逻辑 ==========
+        } else if (bullet.伤害类型 === "破击") {
+            // 检查目标单位是否具有与子弹魔法伤害属性相匹配的魔法抗性
+            // (属性存在且不为 undefined/null，同时处理值为 0 的情况)
+            var magicDamageAttr:String = bullet.魔法伤害属性 ? bullet.魔法伤害属性 : "能";
+            var hasMatchingResist:Boolean = magicDamageAttr != null &&
+                                           target.魔法抗性 != null &&
+                                           (target.魔法抗性[magicDamageAttr] != undefined);
+
+            if (hasMatchingResist) {
+                // 如果有匹配的抗性，则计算混合伤害
+                var breakDamageColor:String = "#e49bc7ff"; // 深橙色凑合下再说
+                result.setDamageColor(breakDamageColor);
+                result.addDamageEffect('<font color="' + breakDamageColor + '" size="20"> ☠' + magicDamageAttr + '</font>');
+
+                // 1. 以 100% 破坏力计算物理伤害部分
+                var physicalPart:Number = bullet.破坏力 * DamageResistanceHandler.defenseDamageRatio(target.防御力);
+
+                // 2. 以 50% 破坏力计算魔法伤害部分
+                var magicResistValue:Number = target.魔法抗性[magicDamageAttr];
+                // 确保抗性值在有效范围内
+                magicResistValue = isNaN(magicResistValue) ? 20 : Math.min(Math.max(magicResistValue, -1000), 100);
+                var magicPart:Number = (bullet.破坏力 * 0.5) * (100 - magicResistValue) / 100;
+
+                // 总伤害为两部分之和，并取整
+                target.损伤值 = Math.floor(physicalPart + magicPart);
+
+            } else {
+                // 如果没有匹配的抗性，则回退到标准物理伤害计算
+                // 此处逻辑与最后的 else 分支完全相同
+                target.损伤值 = bullet.破坏力 * DamageResistanceHandler.defenseDamageRatio(target.防御力);
+            }
+        // ========== 新增逻辑结束 ==========
+
         } else {
+            // 默认物理伤害
             target.损伤值 = bullet.破坏力 * DamageResistanceHandler.defenseDamageRatio(target.防御力);
         }
     }

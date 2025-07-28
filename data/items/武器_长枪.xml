@@ -6424,8 +6424,10 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     <use>长枪</use>
     <weight>20</weight>
     <price>140000</price>
-    <description>公社基于废弃农业机械改造的近战武器系统，特别适用于狭窄空间内的多目标清理。
-    采用大型旋转刀盘设计，配备强化传动机构和防护外壳，具备优异的切削性能和耐久度。
+    <description>公社基于废弃农业机械改造的近战武器系统，专为狭窄空间内的多目标清理而优化。
+    采用大型旋转刀盘设计，配备强化传动机构和防护外壳，提供出色的切削效率和结构耐久性。
+    高扭矩锯盘通过持续的撕切和研磨作用，实现对有机结构的系统性分解。
+    能高效粉碎生化改造体速成的脆性骨甲，撕裂松散的组织，将血肉一并搅成碎块。
     该武器偶见于盗贼团体中，通常为袭击公社设施时的缴获品。</description>
     <level>9</level>
     <data>
@@ -6440,13 +6442,16 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <bullethit>火花</bullethit>
       <clipname>火焰喷射器燃料罐</clipname>
       <bulletsize>40</bulletsize>
-      <power>260</power>
+      <power>200</power>
       <impact>10</impact>
     </data>
     <equipped>
       <dressup>枪-长枪-僵尸割草机</dressup>      
-      <hp>100</hp>
-      <defence>25</defence>
+      <hp>125</hp>
+      <mp>40</mp>
+      <defence>50</defence>      
+      <damagetype>破击</damagetype>
+      <magictype>生化</magictype>
     </equipped>    
     <lifecycle>
       <attr_0>
@@ -6465,7 +6470,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       </attr_0>
     </lifecycle>
   </item>
-    <item>
+  <item>
     <id>8097</id>
     <name>混凝土切割机</name>
     <displayname>混凝土切割机</displayname>

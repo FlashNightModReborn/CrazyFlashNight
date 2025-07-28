@@ -175,14 +175,30 @@ _root.物品图标注释 = function(name, value){
 		文本数据.push(物品数据.equipped.rout + "%");
 		文本数据.push("<BR>");
 	}
+	// 检查是否存在伤害类型信息
 	if (物品数据.equipped.damagetype !== undefined && 物品数据.equipped.damagetype !== 0)
 	{
+		// 如果是“魔法”类型，并且指定了具体的魔法属性
 		if (物品数据.equipped.damagetype == "魔法" && 物品数据.equipped.magictype !== undefined && 物品数据.equipped.magictype !== 0)
 		{
 			文本数据.push("<FONT COLOR=\'#0099FF\'>伤害属性：");
 			文本数据.push(物品数据.equipped.magictype + "");
 			文本数据.push("</FONT><BR>");
-		}else{
+		}
+		// ========== 新增：“破击”类型的显示逻辑 ==========
+		// 如果是“破击”类型，并且指定了触发的魔法属性
+		else if (物品数据.equipped.damagetype == "破击" && 物品数据.equipped.magictype !== undefined && 物品数据.equipped.magictype !== 0)
+		{
+			// 使用“破击”的专属颜色，更醒目
+			文本数据.push("<FONT COLOR=\'#CC6600\'>伤害类型："); 
+			// 将“破击”和其关联的属性一同显示，例如：“破击 (生化)”
+			文本数据.push("破击 (" + 物品数据.equipped.magictype + ")");
+			文本数据.push("</FONT><BR>");
+		}
+		// ========== 新增逻辑结束 ==========
+		else
+		{
+			// 其他所有情况（如 真伤，或没有指定属性的魔法/破击）
 			文本数据.push("<FONT COLOR=\'#0099FF\'>伤害类型：");
 			文本数据.push(物品数据.equipped.damagetype == "魔法"? "能量" : 物品数据.equipped.damagetype + "");
 			文本数据.push("</FONT><BR>");
