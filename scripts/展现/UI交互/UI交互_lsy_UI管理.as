@@ -44,3 +44,7 @@ _root.卸载全屏UI = function(){
     _root.全屏UI层.当前UI.removeMovieClip();
     _root.全屏UI层.当前UI = null;
 }
+
+_root.加载引导界面 = function(filename){
+    _root.加载外部UI("flashswf/UI/引导界面合集/" + filename + ".swf");
+}

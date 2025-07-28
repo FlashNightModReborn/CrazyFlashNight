@@ -19,22 +19,20 @@ _root.层级管理器.检查层级范围 = function(){
     if(this.highest > 32767) this.highest = 1023;
 }
 
-_root.最上层加载外部动画 = function(动画路径)
-{
-	// if(!_root.外部动画加载壳mc) _root.attachMovie("外部动画加载壳mc","外部动画加载壳mc",_root.层级管理器.animation);
+_root.最上层加载外部动画 = function(动画路径){
 	_root.外部动画加载壳mc._x = 0;
 	_root.外部动画加载壳mc._y = 0;
 	_root.外部动画加载壳mc._xscale = 100;
 	_root.外部动画加载壳mc._yscale = 100;
-	loadMovie(动画路径, _root.外部动画加载壳mc);
+	_root.外部动画加载壳mc.loadMovie(动画路径);
 }
 
-_root.发布公告 = function(消息)
-{
-	_root.叹号公告窗._visible = true;
-	_root.叹号公告窗.gotoAndPlay(1);
-	_root.叹号公告窗.txt = 消息;
-}
+// _root.发布公告 = function(消息)
+// {
+// 	_root.叹号公告窗._visible = true;
+// 	_root.叹号公告窗.gotoAndPlay(1);
+// 	_root.叹号公告窗.txt = 消息;
+// }
 
 _root.最上层发布文字提示 = function(消息)
 {

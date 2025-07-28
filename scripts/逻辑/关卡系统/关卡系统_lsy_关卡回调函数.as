@@ -4,18 +4,17 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 _root.关卡回调函数 = new Object();
 
 _root.关卡回调函数.教学关卡 = function(){
-	_root.新手引导界面._visible = true;
-	_root.新手引导界面.gotoAndStop("初始操作");
+	_root.加载引导界面("引导-开始游戏");
 }
 
 _root.关卡回调函数.新手练习场_1 = function(){
-	_root.新手引导界面.显示指引("拾取",800);
+	_root.加载引导界面("引导-拾取");
 	_root.pickupItemManager.createCollectible("金钱",10,700,400,false);
 	_root.pickupItemManager.createCollectible("砖",2,750,500,false);
 }
 
 _root.关卡回调函数.新手练习场_2 = function(){
-	_root.新手引导界面.显示指引("奔跑");
+	_root.加载引导界面("引导-奔跑");
 }
 
 _root.关卡回调函数.AVP_重设光照 = function(最大光照,最小光照){
