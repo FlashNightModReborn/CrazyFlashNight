@@ -1,11 +1,108 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="XM556/XM123456-chaingun" itemID="68843a23-0000335a" linkageExportForAS="true" linkageIdentifier="枪-长枪-XM123456-chaingun" lastModified="1753539012" lastUniqueIdentifier="37">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="XM556/XM123456-chaingun" itemID="68843a23-0000335a" linkageExportForAS="true" linkageIdentifier="枪-长枪-XM123456-chaingun" lastModified="1753696108" lastUniqueIdentifier="51">
   <timeline>
     <DOMTimeline name="XM123456-chaingun" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;35&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="图层 5" color="#4FFFFF">
+        <DOMLayer name="图层 5" color="#4FFFFF" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <elements/>
+              <elements>
+                <DOMSymbolInstance libraryItemName="基础枪管" centerPoint3DX="497.95" centerPoint3DY="-3.45">
+                  <matrix>
+                    <Matrix a="0.244735717773438" d="-0.244735717773438" tx="262.75" ty="5.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="961.05" y="36.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="基础枪管" centerPoint3DX="511.55" centerPoint3DY="30.75">
+                  <matrix>
+                    <Matrix a="0.244735717773438" d="-0.244735717773438" tx="276.35" ty="39.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="961.05" y="36.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="基础枪管" centerPoint3DX="497.6" centerPoint3DY="66.6">
+                  <matrix>
+                    <Matrix a="0.244735717773438" d="-0.244735717773438" tx="262.4" ty="75.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="961.05" y="36.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="基础枪管" centerPoint3DX="493.15" centerPoint3DY="12.25">
+                  <matrix>
+                    <Matrix a="0.244735717773438" d="-0.244735717773438" tx="257.95" ty="21.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="961.05" y="36.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="基础枪管" centerPoint3DX="503.6" centerPoint3DY="26.2">
+                  <matrix>
+                    <Matrix a="0.244735717773438" d="-0.244735717773438" tx="268.4" ty="35.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="961.05" y="36.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="基础枪管" centerPoint3DX="494.45" centerPoint3DY="52.05">
+                  <matrix>
+                    <Matrix a="0.244735717773438" d="-0.244735717773438" tx="259.25" ty="60.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="961.05" y="36.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="基础枪管" centerPoint3DX="483.25" centerPoint3DY="52.25">
+                  <matrix>
+                    <Matrix a="0.244735717773438" d="-0.244735717773438" tx="248.05" ty="61.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="961.05" y="36.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="基础枪管" centerPoint3DX="473.8" centerPoint3DY="66.3">
+                  <matrix>
+                    <Matrix a="0.244735717773438" d="-0.244735717773438" tx="238.6" ty="75.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="961.05" y="36.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="基础枪管" centerPoint3DX="472.35" centerPoint3DY="32.3">
+                  <matrix>
+                    <Matrix a="0.244735717773438" d="-0.244735717773438" tx="237.15" ty="41.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="961.05" y="36.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="基础枪管" centerPoint3DX="478.1" centerPoint3DY="10.6">
+                  <matrix>
+                    <Matrix a="0.244735717773438" d="-0.244735717773438" tx="242.9" ty="19.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="961.05" y="36.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="基础枪管" centerPoint3DX="469.05" centerPoint3DY="-2.3">
+                  <matrix>
+                    <Matrix a="0.244735717773438" d="-0.244735717773438" tx="233.85" ty="6.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="961.05" y="36.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="基础枪管" centerPoint3DX="456.1" centerPoint3DY="34.6">
+                  <matrix>
+                    <Matrix a="0.244735717773438" d="-0.244735717773438" tx="220.9" ty="43.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="961.05" y="36.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -4927,526 +5024,14 @@
         <DOMLayer name="Layer 2" color="#FFFF00">
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
-              <elements>
-                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="258.05" centerPoint3DY="-21.75">
-                  <matrix>
-                    <Matrix tx="245.6" ty="-34.4"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A枪身" centerPoint3DX="431.05" centerPoint3DY="-2.15">
-                  <matrix>
-                    <Matrix a="5.43142700195313" d="5.43142700195313" tx="-16.45" ty="-54.9"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="82.55" y="9.45"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMGroup>
-                  <members>
-                    <DOMShape>
-                      <fills>
-                        <FillStyle index="1">
-                          <SolidColor color="#191919"/>
-                        </FillStyle>
-                        <FillStyle index="2">
-                          <SolidColor color="#0B0B0B"/>
-                        </FillStyle>
-                        <FillStyle index="3">
-                          <SolidColor color="#101010"/>
-                        </FillStyle>
-                        <FillStyle index="4">
-                          <SolidColor color="#121212"/>
-                        </FillStyle>
-                        <FillStyle index="5">
-                          <SolidColor color="#AEAEAE"/>
-                        </FillStyle>
-                        <FillStyle index="6">
-                          <SolidColor color="#838383"/>
-                        </FillStyle>
-                      </fills>
-                      <strokes>
-                        <StrokeStyle index="1">
-                          <SolidStroke scaleMode="normal" weight="0.8">
-                            <fill>
-                              <SolidColor/>
-                            </fill>
-                          </SolidStroke>
-                        </StrokeStyle>
-                      </strokes>
-                      <edges>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!1925 27|1925 -44!1925 -44|2175 -44!2175 -44|2175 27!2175 27|2305 27"/>
-                        <Edge fillStyle1="5" strokeStyle="1" edges="
-!2305 27|2425 27"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!2425 27|2555 27"/>
-                        <Edge fillStyle1="5" strokeStyle="1" edges="
-!2555 27|2675 27"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!2675 27|2800 27!2800 27|2800 -60!2800 -60|3017 -60!3017 -60|3017 27"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!3017 27|3017 233"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!3017 233|3690 233"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!3690 233|3690 184!3690 184|3821 184!3821 184|3821 331"/>
-                        <Edge fillStyle1="2" strokeStyle="1" edges="
-!3821 331|3821 429!3821 429|3690 429"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!3690 429|3017 429!3017 429|1925 429!1925 429|1925 27"/>
-                        <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="
-!3690 233|3690 331"/>
-                        <Edge fillStyle0="3" fillStyle1="2" edges="
-!3690 331|3821 331"/>
-                        <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
-!3690 331|3690 429"/>
-                        <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="
-!3017 331|3017 233"/>
-                        <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="
-!3017 429|3017 331"/>
-                        <Edge fillStyle0="4" fillStyle1="3" strokeStyle="1" edges="
-!2800 228|2800 125"/>
-                        <Edge fillStyle0="4" fillStyle1="1" edges="
-!2800 125|2675 125"/>
-                        <Edge fillStyle0="4" fillStyle1="6" edges="
-!2675 125|2675 228"/>
-                        <Edge fillStyle0="4" strokeStyle="1" edges="
-!2675 228|2800 228"/>
-                        <Edge fillStyle0="1" fillStyle1="5" edges="
-!2675 27|2675 125"/>
-                        <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="
-!2800 125|2800 27"/>
-                        <Edge fillStyle0="1" fillStyle1="5" edges="
-!2555 125|2555 27"/>
-                        <Edge fillStyle0="4" fillStyle1="6" edges="
-!2555 228|2555 125"/>
-                        <Edge fillStyle0="4" fillStyle1="1" edges="
-!2555 125|2425 125"/>
-                        <Edge fillStyle0="4" fillStyle1="6" edges="
-!2425 125|2425 228"/>
-                        <Edge fillStyle0="4" strokeStyle="1" edges="
-!2425 228|2555 228"/>
-                        <Edge fillStyle0="3" strokeStyle="1" edges="
-!2800 228|2800 320!2800 320|2175 320!2175 320|2175 228"/>
-                        <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="
-!2175 228|2175 125"/>
-                        <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="
-!2175 125|2175 27"/>
-                        <Edge fillStyle0="3" fillStyle1="1" edges="
-!2175 27|1925 27"/>
-                        <Edge fillStyle0="6" strokeStyle="1" edges="
-!2555 228|2675 228"/>
-                        <Edge fillStyle0="5" fillStyle1="6" edges="
-!2555 125|2675 125"/>
-                        <Edge fillStyle0="3" fillStyle1="1" edges="
-!3017 27|2800 27"/>
-                        <Edge fillStyle0="5" fillStyle1="6" edges="
-!2305 125|2425 125"/>
-                        <Edge fillStyle0="5" fillStyle1="1" edges="
-!2425 125|2425 27"/>
-                        <Edge fillStyle0="6" strokeStyle="1" edges="
-!2305 228|2425 228"/>
-                        <Edge fillStyle0="5" fillStyle1="1" edges="
-!2305 27|2305 125"/>
-                        <Edge fillStyle0="4" fillStyle1="6" edges="
-!2305 228|2305 125"/>
-                        <Edge fillStyle0="4" fillStyle1="1" edges="
-!2305 125|2175 125"/>
-                        <Edge fillStyle0="4" strokeStyle="1" edges="
-!2175 228|2305 228"/>
-                        <Edge fillStyle0="1" fillStyle1="3" edges="
-!3017 331|3690 331"/>
-                        <Edge cubics="!2800 320(;2800,320 2175,320 2175,320q2800 320 2175 320);"/>
-                        <Edge cubics="!2175 -44(2175,-44;2175,-44 1925,-44 1925,-44q2175 -44 1925 -44)1925,-44;"/>
-                        <Edge cubics="!2800 -60(;2800,-60 3017,-60 3017,-60q2800 -60 3017 -60);"/>
-                        <Edge cubics="!3017 429(;3017,429 1925,429 1925,429q3017 429 1925 429);"/>
-                        <Edge cubics="!2800 -60(;2800,-60 2800,27 2800,27q2800 -60 2800 27);"/>
-                        <Edge cubics="!2175 27(;2175,27 2175,-44 2175,-44q2175 27 2175 -44);"/>
-                        <Edge cubics="!2800 228(;2800,228 2800,320 2800,320q2800 228 2800 320);"/>
-                        <Edge cubics="!2175 320(;2175,320 2175,228 2175,228q2175 320 2175 228);"/>
-                        <Edge cubics="!2175 228(2175,228;2175,228 2305,228 2305,228q2175 228 2305 228)2305,228;"/>
-                        <Edge cubics="!2175 27(;2175,27 2305,27 2305,27q2175 27 2305 27);"/>
-                        <Edge cubics="!2675 228(;2675,228 2800,228 2800,228q2675 228 2800 228);"/>
-                        <Edge cubics="!2675 27(;2675,27 2800,27 2800,27q2675 27 2800 27);"/>
-                        <Edge cubics="!2305 27(;2305,27 2425,27 2425,27q2305 27 2425 27);"/>
-                        <Edge cubics="!2305 228(;2305,228 2425,228 2425,228q2305 228 2425 228);"/>
-                        <Edge cubics="!2555 27(;2555,27 2675,27 2675,27q2555 27 2675 27);"/>
-                        <Edge cubics="!2555 228(;2555,228 2675,228 2675,228q2555 228 2675 228);"/>
-                        <Edge cubics="!2425 27(2425,27;2425,27 2555,27 2555,27q2425 27 2555 27)2555,27;"/>
-                        <Edge cubics="!2425 228(;2425,228 2555,228 2555,228q2425 228 2555 228);"/>
-                        <Edge cubics="!2800 125(;2800,125 2800,228 2800,228q2800 125 2800 228);"/>
-                        <Edge cubics="!2675 125(;2675,125 2675,228 2675,228q2675 125 2675 228);"/>
-                        <Edge cubics="!2555 125(;2555,125 2555,228 2555,228q2555 125 2555 228);"/>
-                        <Edge cubics="!2555 125(;2555,125 2675,125 2675,125q2555 125 2675 125);"/>
-                        <Edge cubics="!2675 125(;2675,125 2800,125 2800,125q2675 125 2800 125);"/>
-                        <Edge cubics="!2800 27(;2800,27 2800,125 2800,125q2800 27 2800 125);"/>
-                        <Edge cubics="!2675 27(;2675,27 2675,125 2675,125q2675 27 2675 125);"/>
-                        <Edge cubics="!2555 27(;2555,27 2555,125 2555,125q2555 27 2555 125);"/>
-                        <Edge cubics="!2175 228(2175,228;2175,228 2175,125 2175,125q2175 228 2175 125)2175,125;"/>
-                        <Edge cubics="!2305 125(;2305,125 2425,125 2425,125q2305 125 2425 125);"/>
-                        <Edge cubics="!2425 125(;2425,125 2425,228 2425,228q2425 125 2425 228);"/>
-                        <Edge cubics="!2305 125(2305,125;2305,125 2305,228 2305,228q2305 125 2305 228)2305,228;"/>
-                        <Edge cubics="!2305 27(;2305,27 2305,125 2305,125q2305 27 2305 125);"/>
-                        <Edge cubics="!2175 125(;2175,125 2175,27 2175,27q2175 125 2175 27);"/>
-                        <Edge cubics="!2175 125(;2175,125 2305,125 2305,125q2175 125 2305 125);"/>
-                        <Edge cubics="!2425 27(2425,27;2425,27 2425,125 2425,125q2425 27 2425 125)2425,125;"/>
-                        <Edge cubics="!2425 125(;2425,125 2555,125 2555,125q2425 125 2555 125);"/>
-                        <Edge cubics="!3690 184(;3690,184 3821,184 3821,184q3690 184 3821 184);"/>
-                        <Edge cubics="!3017 429(;3017,429 3690,429 3690,429q3017 429 3690 429);"/>
-                        <Edge cubics="!3690 429(;3690,429 3821,429 3821,429q3690 429 3821 429);"/>
-                        <Edge cubics="!3017 331(;3017,331 3017,233 3017,233q3017 331 3017 233);"/>
-                        <Edge cubics="!3690 331(;3690,331 3821,331 3821,331q3690 331 3821 331);"/>
-                        <Edge cubics="!3821 184(;3821,184 3821,331 3821,331q3821 184 3821 331);"/>
-                        <Edge cubics="!3017 331(;3017,331 3690,331 3690,331q3017 331 3690 331);"/>
-                        <Edge cubics="!3690 331(;3690,331 3690,429 3690,429q3690 331 3690 429);"/>
-                        <Edge cubics="!3017 429(;3017,429 3017,331 3017,331q3017 429 3017 331);"/>
-                        <Edge cubics="!3821 331(;3821,331 3821,429 3821,429q3821 331 3821 429);"/>
-                        <Edge cubics="!3690 233(3690,233;3690,233 3690,331 3690,331q3690 233 3690 331)3690,331;"/>
-                        <Edge cubics="!3690 184(;3690,184 3690,233 3690,233q3690 184 3690 233);"/>
-                        <Edge cubics="!3017 233(;3017,233 3690,233 3690,233q3017 233 3690 233);"/>
-                        <Edge cubics="!3017 27(;3017,27 3017,-60 3017,-60q3017 27 3017 -60);"/>
-                        <Edge cubics="!2800 27(;2800,27 3017,27 3017,27q2800 27 3017 27);"/>
-                        <Edge cubics="!3017 233(;3017,233 3017,27 3017,27q3017 233 3017 27);"/>
-                        <Edge cubics="!2175 27(2175,27;2175,27 1925,27 1925,27q2175 27 1925 27)1925,27;"/>
-                        <Edge cubics="!1925 -44(;1925,-44 1925,27 1925,27q1925 -44 1925 27);"/>
-                        <Edge cubics="!1925 27(;1925,27 1925,429 1925,429q1925 27 1925 429);"/>
-                      </edges>
-                    </DOMShape>
-                  </members>
-                </DOMGroup>
-                <DOMSymbolInstance libraryItemName="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A电机" centerPoint3DX="160.1" centerPoint3DY="51.75">
-                  <matrix>
-                    <Matrix a="5.43142700195313" d="5.43142700195313" tx="45.4" ty="15.2"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="21.25" y="6.8"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="军阀精英敌人/重甲/弹药/7.62×51mm NATO" centerPoint3DX="168.05" centerPoint3DY="57.95">
-                  <matrix>
-                    <Matrix a="0" b="3.25724792480469" c="-3.25724792480469" d="0" tx="181.2" ty="-79.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="41.5" y="4"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMGroup>
-                  <members>
-                    <DOMShape>
-                      <fills>
-                        <FillStyle index="1">
-                          <SolidColor color="#191919"/>
-                        </FillStyle>
-                        <FillStyle index="2">
-                          <LinearGradient>
-                            <matrix>
-                              <Matrix a="0" b="0.0132598876953125" c="-0.01043701171875" d="0" tx="171.75" ty="45.6"/>
-                            </matrix>
-                            <GradientEntry color="#262626" ratio="0.258823529411765"/>
-                            <GradientEntry color="#333333" ratio="0.494117647058824"/>
-                            <GradientEntry color="#262626" ratio="0.737254901960784"/>
-                          </LinearGradient>
-                        </FillStyle>
-                      </fills>
-                      <strokes>
-                        <StrokeStyle index="1">
-                          <SolidStroke scaleMode="normal" weight="0.8">
-                            <fill>
-                              <SolidColor/>
-                            </fill>
-                          </SolidStroke>
-                        </StrokeStyle>
-                      </strokes>
-                      <edges>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!4136 1080|4136 1195!4136 1195|3669 1195!3669 1195|3538 1287!3538 1287|2544 1287!2544 1287|2544 1080!2544 1080|2457 994!2457 994|2457 825!2457 825|2544 738!2544 738|2588 738"/>
-                        <Edge fillStyle1="2" strokeStyle="1" edges="
-!2588 738|4304 738!4304 738|4304 1080!4304 1080|4136 1080"/>
-                        <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
-!2588 1080|2544 1080"/>
-                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
-!2588 1080|2588 738!4136 1080|2588 1080"/>
-                        <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
-!3669 1195|2810 1195"/>
-                      </edges>
-                    </DOMShape>
-                  </members>
-                </DOMGroup>
-                <DOMSymbolInstance libraryItemName="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A机械瞄准镜" centerPoint3DX="271.15" centerPoint3DY="-46.95">
-                  <matrix>
-                    <Matrix a="5.43142700195313" d="5.43142700195313" tx="105.45" ty="-85.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="18.4" y="5.8"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMGroup>
-                  <members>
-                    <DOMShape>
-                      <fills>
-                        <FillStyle index="1">
-                          <LinearGradient>
-                            <matrix>
-                              <Matrix a="0" b="0.016571044921875" c="-0.05255126953125" d="0" tx="132.65" ty="-29.1"/>
-                            </matrix>
-                            <GradientEntry color="#0A0A0A" ratio="0"/>
-                            <GradientEntry color="#171717" ratio="0.494117647058824"/>
-                            <GradientEntry color="#0A0A0A" ratio="1"/>
-                          </LinearGradient>
-                        </FillStyle>
-                        <FillStyle index="2">
-                          <SolidColor color="#AEAEAE"/>
-                        </FillStyle>
-                        <FillStyle index="3">
-                          <LinearGradient>
-                            <matrix>
-                              <Matrix a="0" b="0.0135955810546875" c="-0.0013275146484375" d="0" tx="84.55" ty="-30.7"/>
-                            </matrix>
-                            <GradientEntry color="#262626" ratio="0"/>
-                            <GradientEntry color="#333333" ratio="0.494117647058824"/>
-                            <GradientEntry color="#262626" ratio="1"/>
-                          </LinearGradient>
-                        </FillStyle>
-                        <FillStyle index="4">
-                          <SolidColor color="#838383"/>
-                        </FillStyle>
-                      </fills>
-                      <strokes>
-                        <StrokeStyle index="1">
-                          <SolidStroke scaleMode="normal" weight="0.6">
-                            <fill>
-                              <SolidColor/>
-                            </fill>
-                          </SolidStroke>
-                        </StrokeStyle>
-                      </strokes>
-                      <edges>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!1496 -1016|1545 -1032"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!1545 -1032|1583 -1049"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!1583 -1049|1621 -1065"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!1621 -1065|1664 -1081"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!1664 -1081|1708 -1098"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!1708 -1098|1740 -1108"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!1740 -1108|1789 -1130!1789 -1130|1789 -1060"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!1789 -1060|3511 -1060"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!3511 -1060|3511 -1179!3511 -1179|3549 -1179"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!3549 -1179|3587 -1179"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!3587 -1179|3641 -1179"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!3641 -1179|3679 -1179"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!3679 -1179|3728 -1179"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!3728 -1179|3766 -1179"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!3766 -1179|3810 -1179"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!3810 -1179|3859 -1179"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!3859 -1179|3929 -1179!3929 -1179|3929 -1065"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!3929 -1065|4635 -1065"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!4635 -1065|4635 -1130!4635 -1130|4673 -1119"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!4673 -1119|4711 -1108"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!4711 -1108|4749 -1098"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!4749 -1098|4782 -1087"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!4782 -1087|4825 -1070"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!4825 -1070|4858 -1060"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!4858 -1060|4896 -1049"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!4896 -1049|4929 -1043"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!4929 -1043|4961 -1032!4961 -1032|4961 -125!4961 -125|4929 -114"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!4929 -114|4896 -104"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!4896 -104|4858 -93"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!4858 -93|4825 -82"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!4825 -82|4782 -71"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!4782 -71|4749 -60"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!4749 -60|4711 -49"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!4711 -49|4673 -38"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!4673 -38|4635 -28!4635 -28|4635 -93"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!4635 -93|3929 -93"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!3929 -93|3929 21!3929 21|3859 21"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!3859 21|3810 21"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!3810 21|3766 21"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!3766 21|3728 21"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!3728 21|3679 21"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!3679 21|3641 21"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!3641 21|3587 21"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!3587 21|3549 21"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!3549 21|3511 21!3511 21|3511 -98"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!3511 -98|1789 -98"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!1789 -98|1789 -28!1789 -28|1740 -44"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!1740 -44|1708 -60"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!1708 -60|1664 -76"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!1664 -76|1621 -93"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!1621 -93|1583 -109"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!1583 -109|1545 -120"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!1545 -120|1496 -142"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!1496 -142|1453 -158"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!1453 -158|1409 -174"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!1409 -174|1045 -174"/>
-                        <Edge fillStyle1="2" strokeStyle="1" edges="
-!1045 -174|1002 -174"/>
-                        <Edge fillStyle1="4" strokeStyle="1" edges="
-!1002 -174|947 -174!947 -174|947 -799"/>
-                        <Edge fillStyle1="2" strokeStyle="1" edges="
-!947 -799|947 -864!947 -864|958 -864"/>
-                        <Edge fillStyle1="4" strokeStyle="1" edges="
-!958 -864|958 -956!958 -956|1078 -956"/>
-                        <Edge fillStyle1="2" strokeStyle="1" edges="
-!1078 -956|1078 -1049!1078 -1049|975 -1049!975 -1049|975 -1136!975 -1136|1203 -1136!1203 -1136|1203 -983"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!1203 -983|1409 -983"/>
-                        <Edge fillStyle1="3" strokeStyle="1" edges="
-!1409 -983|1453 -1000"/>
-                        <Edge fillStyle1="1" strokeStyle="1" edges="
-!1453 -1000|1496 -1016"/>
-                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
-!1203 -983|1203 -799"/>
-                        <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="
-!1203 -799|1203 -723!1203 -723|1045 -723"/>
-                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
-!1045 -723|1045 -511!1045 -511|1192 -511!1192 -511|1192 -451"/>
-                        <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="
-!1192 -451|1192 -402!1192 -402|1045 -402"/>
-                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
-!1045 -402|1045 -174"/>
-                        <Edge fillStyle0="2" fillStyle1="4" strokeStyle="1" edges="
-!1078 -956|1078 -864!1078 -864|958 -864"/>
-                        <Edge fillStyle0="4" fillStyle1="2" edges="
-!1203 -799|947 -799"/>
-                        <Edge fillStyle0="2" fillStyle1="4" edges="
-!1045 -723|1002 -723!1002 -723|1002 -174"/>
-                        <Edge fillStyle0="4" fillStyle1="2" edges="
-!1192 -451|1045 -451!1045 -451|1045 -402"/>
-                        <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="
-!1409 -983|1409 -174"/>
-                        <Edge fillStyle0="3" fillStyle1="1" edges="
-!1496 -1016|1496 -142"/>
-                        <Edge fillStyle0="1" fillStyle1="3" edges="
-!1545 -1032|1545 -120"/>
-                        <Edge fillStyle0="3" fillStyle1="1" edges="
-!1583 -1049|1583 -109!1453 -158|1453 -1000"/>
-                        <Edge fillStyle0="1" fillStyle1="3" edges="
-!1621 -1065|1621 -93"/>
-                        <Edge fillStyle0="3" fillStyle1="1" edges="
-!1664 -1081|1664 -76"/>
-                        <Edge fillStyle0="1" fillStyle1="3" edges="
-!1708 -1098|1708 -60"/>
-                        <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="
-!1789 -98|1789 -1060"/>
-                        <Edge fillStyle0="3" fillStyle1="1" edges="
-!1740 -1108|1740 -44"/>
-                        <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="
-!3929 -93|3929 -1065"/>
-                        <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="
-!3511 -98|3511 -1060"/>
-                        <Edge fillStyle0="3" fillStyle1="1" edges="
-!4782 -1087|4782 -71"/>
-                        <Edge fillStyle0="1" fillStyle1="3" edges="
-!4825 -1070|4825 -82"/>
-                        <Edge fillStyle0="3" fillStyle1="1" edges="
-!4858 -1060|4858 -93"/>
-                        <Edge fillStyle0="1" fillStyle1="3" edges="
-!4749 -1098|4749 -60!4673 -1119|4673 -38"/>
-                        <Edge fillStyle0="3" fillStyle1="1" edges="
-!4711 -1108|4711 -49"/>
-                        <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="
-!4635 -93|4635 -1065"/>
-                        <Edge fillStyle0="1" fillStyle1="3" edges="
-!4896 -1049|4896 -104"/>
-                        <Edge fillStyle0="3" fillStyle1="1" edges="
-!4929 -1043|4929 -114!3679 -1179|3679 21"/>
-                        <Edge fillStyle0="1" fillStyle1="3" edges="
-!3728 -1179|3728 21"/>
-                        <Edge fillStyle0="3" fillStyle1="1" edges="
-!3766 -1179|3766 21"/>
-                        <Edge fillStyle0="1" fillStyle1="3" edges="
-!3810 -1179|3810 21"/>
-                        <Edge fillStyle0="3" fillStyle1="1" edges="
-!3859 -1179|3859 21!3587 -1179|3587 21"/>
-                        <Edge fillStyle0="1" fillStyle1="3" edges="
-!3549 -1179|3549 21!3641 -1179|3641 21"/>
-                      </edges>
-                    </DOMShape>
-                  </members>
-                </DOMGroup>
-                <DOMSymbolInstance libraryItemName="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A导轨支架" centerPoint3DX="130.4" centerPoint3DY="-32.5">
-                  <matrix>
-                    <Matrix a="5.43142700195313" d="5.43142700195313" tx="103.55" ty="-62.2"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="5.1" y="5.6"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A/GAU-2B-A机械瞄准镜‘" centerPoint3DX="133.55" centerPoint3DY="-72.7">
-                  <matrix>
-                    <Matrix a="5.43142700195313" d="5.43142700195313" tx="105.45" ty="-84.75"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="4.9" y="2.35"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
