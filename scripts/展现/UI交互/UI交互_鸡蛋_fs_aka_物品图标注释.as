@@ -190,9 +190,9 @@ _root.物品图标注释 = function(name, value){
 		else if (物品数据.equipped.damagetype == "破击" && 物品数据.equipped.magictype !== undefined && 物品数据.equipped.magictype !== 0)
 		{
 			// 使用“破击”的专属颜色，更醒目
-			文本数据.push("<FONT COLOR=\'#CC6600\'>伤害类型："); 
+			文本数据.push("<FONT COLOR=\'#CC6600\'>破击类型："); 
 			// 将“破击”和其关联的属性一同显示，例如：“破击 (生化)”
-			文本数据.push("破击 (" + 物品数据.equipped.magictype + ")");
+			文本数据.push(物品数据.equipped.magictype + ")");
 			文本数据.push("</FONT><BR>");
 		}
 		// ========== 新增逻辑结束 ==========
