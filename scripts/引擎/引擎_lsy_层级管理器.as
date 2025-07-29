@@ -33,14 +33,3 @@ _root.最上层加载外部动画 = function(动画路径){
 // 	_root.叹号公告窗.gotoAndPlay(1);
 // 	_root.叹号公告窗.txt = 消息;
 // }
-
-_root.最上层发布文字提示 = function(消息)
-{
-    var depth = _root.getNextHighestDepth();
-    var 效果名 = "最上层文字提示" + depth;
-	var 效果 = _root.attachMovie("最上层文字提示", 效果名, depth);
-	效果._x = Stage.width / 2;
-	效果._y = Stage.height / 2;
-	效果.文本框.text = 消息;
-	效果.文本框._height = 效果.文本框.textHeight + 10;
-}

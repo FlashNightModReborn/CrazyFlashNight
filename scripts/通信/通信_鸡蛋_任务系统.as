@@ -76,9 +76,20 @@ _root.GetTask = function(id){
 			return false;
 		}
 	}
+	var taskData = TaskUtil.getTaskData(id);
 	_root.AddTask(id);
-	_root.SetDialogue(TaskUtil.getTaskText(TaskUtil.getTaskData(id).get_conversation));
+	_root.SetDialogue(TaskUtil.getTaskText(taskData.get_conversation));
 	_root.弹出公告界面.弹出新任务(id);
+	if(taskData.announcement.length > 0){
+		//#$#;用于分割多条公告
+		var announcement_Arr = taskData.announcement.split("#$#;");
+		// 在2秒后发布公告
+		_root.帧计时器.添加单次任务(function(){
+			for(var i=0; i<announcement_Arr.length; i++){
+				_root.最上层发布文字提示(announcement_Arr[i]);
+			}
+		}, 2000);
+	}
 }
 
 // 原名为taskFinished

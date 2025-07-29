@@ -372,26 +372,10 @@ _root.防止播放跳关 = function(){
 
 _root.跳转地图 = function(跳转帧){
 	_root.当前为战斗地图 = false;
-	// var 游戏世界 = _root.gameworld;
-	// _root.常用工具函数.释放对象绘图内存(游戏世界);
-	// for (var i = 0; i < _root.初期关卡列表.length; i++){
-	// 	if (_root.关卡标志 == _root.初期关卡列表[i]){
-	// 		_root.当前为战斗地图 = true;
-	// 		_root.gotoAndPlay("初期关卡");
-	// 		return;
-	// 	}
-	// }
-	for (var i = 0; i < _root.基地地图列表.length; i++){
-		if (_root.关卡标志 == _root.基地地图列表[i]){
-			_root.gotoAndPlay("基地地图");
-			return;
-		}
-	}
-	for (var i = 0; i < _root.外部地图列表.length; i++){
-		if (_root.关卡标志 == _root.外部地图列表[i]){
-			_root.gotoAndPlay("外部地图");
-			return;
-		}
+	// 检索环境xml中是否存在对应的基地地图或外部地图
+	if(_root.天气系统.场景环境设置[_root.关卡标志] != null){
+		// 通过关卡标志是否有“地图-”前缀来区分基地/外部地图
+		跳转帧 = _root.关卡标志.indexOf("地图-") === 0 ? "外部地图" : "基地地图";
 	}
 	_root.gotoAndPlay(跳转帧);
 }

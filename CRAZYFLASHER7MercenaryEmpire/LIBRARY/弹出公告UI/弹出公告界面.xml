@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="弹出公告UI/弹出公告界面" itemID="65bb977f-00000c80" lastModified="1706874282" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="弹出公告UI/弹出公告界面" itemID="65bb977f-00000c80" lastModified="1753775071" lastUniqueIdentifier="6">
   <timeline>
-    <DOMTimeline name="弹出公告界面">
+    <DOMTimeline name="弹出公告界面" currentFrame="1">
       <layers>
         <DOMLayer name="labels" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -13,7 +13,7 @@
             <DOMFrame index="119" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="120" duration="134" name="公告" labelType="name" keyMode="9728">
+            <DOMFrame index="120" duration="134" name="公告" labelType="comment" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="254" duration="21" keyMode="9728">
@@ -26,8 +26,8 @@
             <DOMFrame index="0" duration="119" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this.任务名称 = null;
-this.公告消息列表 = [];
-this.当前公告 = null;
+//this.公告消息列表 = [];
+//this.当前公告 = null;
 stop();
 
 function 弹出新任务(id)
@@ -35,34 +35,32 @@ function 弹出新任务(id)
 	var 任务信息 = _root.getTaskData(id);
 	this.任务名称 = _root.getTaskText(任务信息.title);
 	//this.任务系列 = 任务系列;
-	var announcement = 任务信息.announcement;
+	/*var announcement = 任务信息.announcement;
 	if (announcement and announcement.length > 0)
 	{
 		//#$#;用于分割多条公告
 		var announcement_Arr = announcement.split("#$#;");
 		this.公告消息列表 = this.公告消息列表.concat(announcement_Arr);
 		//this.公告消息列表.push(announcement);
-	}
+	}*/
 	this.gotoAndPlay("主线任务");
 }
-function 弹出公告(公告消息)
+/*function 弹出公告(公告消息)
 {
 	if (公告消息 and String(公告消息).length > 0)
 	{
 		this.公告消息列表.push(公告消息);
 		this.gotoAndPlay("公告");
 	}
-}]]></script>
+}*/]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="119" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[任务名称 = null;
-if (公告消息列表.length <= 0)
-{
-	stop();
-}]]></script>
+stop();
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -153,7 +151,7 @@ else
             </DOMFrame>
             <DOMFrame index="99" duration="21" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹出公告UI/任务开启栏" selected="true" centerPoint3DX="962.5" centerPoint3DY="122.5">
+                <DOMSymbolInstance libraryItemName="弹出公告UI/任务开启栏" centerPoint3DX="962.5" centerPoint3DY="122.5">
                   <matrix>
                     <Matrix tx="800" ty="100"/>
                   </matrix>
