@@ -47,10 +47,11 @@
             <Background>flashswf/backgrounds/gk1_2_BG.swf</Background>
             <PlayerX>818</PlayerX>
             <PlayerY>531</PlayerY>
-            <CallbackFunction>
-                <Name>新手练习场_2</Name>
-            </CallbackFunction>
         </BasicInformation>
+        <Event>
+            <EventName>Start</EventName>
+            <Guidance>引导-奔跑</Guidance>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>

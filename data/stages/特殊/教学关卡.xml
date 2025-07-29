@@ -15,9 +15,7 @@
         </BasicInformation>
         <Event>
             <EventName>Start</EventName>
-            <Callback>
-                <Name>教学关卡</Name>
-            </Callback>
+            <Guidance>引导-开始游戏</Guidance>
             <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
