@@ -382,6 +382,7 @@ _root.敌人函数.应用影子色彩 = function(target:MovieClip) {
         _root.重置色彩(target);
     }
 }
+_root.敌人函数.魔法伤害种类 = ["电", "热", "冷", "波", "蚀", "毒", "冲", "基础"];
 
 _root.初始化敌人模板 = function() {
     //以下14个是原版敌人的必要函数
@@ -471,6 +472,15 @@ _root.初始化敌人模板 = function() {
             this.魔法抗性[key] = 敌人属性.魔法抗性[key];
     }
 
+    // 基础抗性值
+    var baseResist = (this.魔法抗性.基础 !== undefined) ? this.魔法抗性.基础 : (10 + this.等级 / 2);
+    // 遍历每个抗性类型进行补全
+    for (var i = 0; i < _root.敌人函数.魔法伤害种类.length; i++) {
+        var type = _root.敌人函数.魔法伤害种类[i];
+        if (isNaN(魔法抗性[type])) {
+            this.魔法抗性[type] = baseResist;
+        }
+    }
 
     //掉落物
     if (!this.掉落物 && 敌人属性.掉落物 && 敌人属性.掉落物 != "null")
