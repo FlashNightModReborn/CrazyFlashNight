@@ -194,6 +194,109 @@ _root.联弹系统.横向联弹初始化 = function(clip:MovieClip):Void {
     };
 };
 
+
+/*====================================================================
+ * 横向拖尾联弹初始化 (修正版)
+ * 说明：
+ *   ① 坐标转换问题已修正。
+ *   ② trail[] 数组现在正确地存储全局坐标，并在绘制时转换回局部坐标。
+ *===================================================================*/
+_root.联弹系统.横向拖尾联弹初始化 = function (clip:MovieClip):Void
+{
+    /* ---------- ① 基础字段 ---------- */
+
+    clip.单元体列表     = [];
+    clip.运动方向系数   = (clip._parent.xmov < 0) ? -1 : 1;
+    clip.y_基准         = clip._y;
+    clip.余弦值         = Math.cos(clip._parent._rotation * Math.PI / 180);
+
+    var 子弹种类:String  = String(clip._parent.子弹种类).split("-")[1];
+
+    /* ---------- ② 生成子弹 ---------- */
+    for (var i:Number = 0;
+         (i < clip._parent.霰弹值) && (clip._parent.flag == undefined);
+         i++)
+    {
+        var b:MovieClip = _root.创建单元体(clip._parent, 子弹种类);
+
+        b._rotation = _root.随机偏移(clip._parent.子弹散射度);
+        b.trail     = []; // 拖尾轨迹将存储【全局坐标】
+        clip.单元体列表.push(b);
+    }
+
+    /* ---------- ③ 帧循环 ---------- */
+    clip.onEnterFrame = function ():Void
+    {
+        /* 3‑1 更新子弹 (此部分无需改变) --------------------------------*/
+        var y_min:Number =  Infinity;
+        var y_max:Number = -Infinity;
+
+        for (var j:Number = this.单元体列表.length - 1; j >= 0; j--)
+        {
+            var b:MovieClip = this.单元体列表[j];
+            b._y += this._parent.xmov * Math.sin(b._rotation * Math.PI / 180) * this.运动方向系数;
+
+            if ( b._y * this.余弦值 + this._parent._y > this._parent.Z轴坐标 && this.单元体列表.length > 1 )
+            {
+                _root.回收单元体(b);
+                this.单元体列表.splice(j, 1);
+                this._parent.霰弹值--;
+                continue;
+            }
+
+            y_max = Math.max(b._y, y_max);
+            y_min = Math.min(b._y, y_min);
+        }
+
+        /* 3‑2 绘制拖尾 (核心修正) --------------------------------------*/
+        this.clear();
+        this.moveTo(0, 0); 
+
+        for (var k:Number = 0; k < this.单元体列表.length; k++)
+        {
+            var bullet:MovieClip = this.单元体列表[k];
+
+            /* —— 【核心修正】采样当前位置时，使用正确的父级进行坐标转换 —— */
+            // 1. 获取子弹相对于其父级(clip._parent)的坐标
+            var global_p:Object = {x: bullet._x, y: bullet._y};
+            
+            // 2. 【重点】必须使用子弹的真正父级(this._parent)来调用localToGlobal
+            this._parent.localToGlobal(global_p);
+
+            /* —— trail[] 维护最近 8 帧的全局坐标 —— */
+            bullet.trail.unshift(global_p);
+            if (bullet.trail.length > 8) bullet.trail.pop();
+
+            /* —— 绘制部分 (此部分逻辑不变，但优化了渐变算法) —— */
+            if (bullet.trail.length > 1)
+            {
+                // 循环绘制后续线段
+                for (var t:Number = 0; t < bullet.trail.length - 1; t++)
+                {
+                    // 将存储的全局坐标点，转换为当前clip的局部坐标用于绘制
+                    var local_p1:Object = {x: bullet.trail[t].x, y: bullet.trail[t].y};
+                    var local_p2:Object = {x: bullet.trail[t+1].x, y: bullet.trail[t+1].y};
+                    this.globalToLocal(local_p1);
+                    this.globalToLocal(local_p2);
+                    
+                    // 为8帧的拖尾（7个线段）优化渐变效果
+                    var alpha:Number = 100 - t * 15;
+                    var width:Number = 2.5 - t * 0.3;
+                    if (width < 0.5) width = 0.5; // 确保线条不会完全消失
+
+                    this.lineStyle(width, 0xFFFFFF, alpha);
+                    this.moveTo(local_p1.x, local_p1.y);
+                    this.lineTo(local_p2.x, local_p2.y);
+                }
+            }
+        }
+
+        /* 3‑3 更新碰撞箱 (此部分无需改变) -------------------------------*/
+        this._y      = y_min;
+        this._height = Math.max(this.y_基准 * -2, y_max - y_min);
+    };
+};
+
 _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
     // 保存初始坐标与单元体列表初始化
     clip.y_基准 = clip._y;

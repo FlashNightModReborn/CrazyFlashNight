@@ -183,6 +183,8 @@
           <Include href="联弹/横向机枪联弹.xml" itemID="6634fe5c-00002247" lastModified="1743038166"/>
           <Include href="联弹/横向联弹.xml" itemID="65a09e8b-000001d6" lastModified="1743038052"/>
           <Include href="联弹/横向手枪联弹.xml" itemID="67ee2b7e-000017e7" lastModified="1743661950"/>
+          <Include href="联弹/横向拖尾联弹.xml" itemID="688a19b9-00000403" lastModified="1753881202"/>
+          <Include href="联弹/横向拖尾追踪联弹.xml" itemID="688a1a5f-0000055f" lastModified="1753881189"/>
           <Include href="联弹/滑翔联弹.xml" itemID="65a7f0f4-00001300" lastModified="1743037971"/>
           <Include href="联弹/加强子弹基底.xml" loadImmediate="false" itemID="65a27169-00000317" lastModified="1705144681"/>
           <Include href="联弹/近战联弹.xml" itemID="65a674b9-00000486" lastModified="1743037862"/>
@@ -521,7 +523,7 @@
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 663.xml" itemIcon="1" loadImmediate="false" itemID="668b9cdd-000001df" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 664.xml" loadImmediate="false" itemID="668b9cdd-000001e0" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 1217.xml" itemIcon="1" loadImmediate="false" itemID="668b9f53-000001d0" lastModified="1720426265"/>
-          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1753439261"/>
+          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1753882464"/>
           <Include href="子弹-持续组/电球.xml" itemID="669d343b-00001740" lastModified="1722876120"/>
           <Include href="子弹-持续组/火焰.xml" itemID="669d3404-00001734" lastModified="1722875196"/>
           <Include href="子弹-持续组/声波.xml" itemID="669d34bf-0000176e" lastModified="1722875808"/>
@@ -846,6 +848,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3921856" publishTime="1753881597"/>
+          <PublishItem publishSize="3921856" publishTime="1753881210"/>
+          <PublishItem publishSize="3921807" publishTime="1753881050"/>
           <PublishItem publishSize="3921937" publishTime="1753439252"/>
           <PublishItem publishSize="3921937" publishTime="1753439099"/>
           <PublishItem publishSize="3921934" publishTime="1753438736"/>
@@ -863,8 +868,5 @@
           <PublishItem publishSize="3916396" publishTime="1752980954"/>
           <PublishItem publishSize="3916393" publishTime="1752980246"/>
           <PublishItem publishSize="3916527" publishTime="1752979744"/>
-          <PublishItem publishSize="3916527" publishTime="1752979734"/>
-          <PublishItem publishSize="3916594" publishTime="1752978373"/>
-          <PublishItem publishSize="3916567" publishTime="1752978258"/>
      </publishHistory>
 </DOMDocument>

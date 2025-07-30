@@ -84,6 +84,16 @@
         </movement>
     </bullet>
     <bullet>
+        <name>横向拖尾追踪联弹-无壳子弹</name>
+        <movement>
+            <func>DefaultMissile</func>
+            <param>
+                <missileConfig>default</missileConfig>
+                <usePreLaunch>false</usePreLaunch>
+            </param>
+        </movement>
+    </bullet>
+    <bullet>
         <name>横向联弹-穿刺子弹</name>
         <shell>
             <casing>能量霰弹弹壳</casing>
