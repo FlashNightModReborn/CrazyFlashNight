@@ -48,11 +48,24 @@ class org.flashNight.gesh.regexp.RegExp {
         var inputLength:Number = input.length;
         var startPos:Number = 0;
 
+
         if (this.pattern.charAt(0) == '^') {
             // 模式以 ^ 开头，必须从字符串起始位置匹配
             var captures:Array = initializeCaptures();
             var result:Object = this.ast.match(input, 0, captures, this.ignoreCase);
-            return result.matched && (this.multiline || result.position == inputLength);
+            
+            if (!result.matched) {
+                return false;
+            }
+            
+            // 检查是否以 $ 结尾，如果是则需要匹配到字符串结尾
+            var endsWithDollar:Boolean = this.pattern.charAt(this.pattern.length - 1) == '$';
+            
+            if (endsWithDollar) {
+                return result.position == inputLength;
+            } else {
+                return true; // 不以$结尾的^开头模式，只需要匹配成功即可
+            }
         } else {
             // 遍历字符串中的每个位置进行匹配
             for (var pos:Number = 0; pos <= inputLength; pos++) {

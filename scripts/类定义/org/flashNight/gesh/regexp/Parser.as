@@ -204,13 +204,38 @@ class org.flashNight.gesh.regexp.Parser {
                     throw new Error("Escape character '\\' in character class at end of pattern");
                 }
                 var escapedCharInClass:String = consume();
-                if (isSpecialChar(escapedCharInClass)) {
+                if (escapedCharInClass == 'd') {
+                    // 展开 \d 为 0-9
+                    for (var digit:Number = 48; digit <= 57; digit++) { // ASCII 0-9
+                        chars.push(String.fromCharCode(digit));
+                    }
+                } else if (escapedCharInClass == 'D') {
+                    // \D 在字符类中比较复杂，暂时简化处理
+                    chars.push(getEscapedChar(escapedCharInClass));
+                } else if (escapedCharInClass == 'w') {
+                    // 展开 \w 为 a-z, A-Z, 0-9, _
+                    for (var i:Number = 97; i <= 122; i++) chars.push(String.fromCharCode(i)); // a-z
+                    for (var j:Number = 65; j <= 90; j++) chars.push(String.fromCharCode(j));  // A-Z
+                    for (var k:Number = 48; k <= 57; k++) chars.push(String.fromCharCode(k));  // 0-9
+                    chars.push('_');
+                } else if (escapedCharInClass == 'W') {
+                    // \W 在字符类中比较复杂，暂时简化处理
+                    chars.push(getEscapedChar(escapedCharInClass));
+                } else if (escapedCharInClass == 's') {
+                    // 展开 \s 为空白字符
+                    chars.push(' ');
+                    chars.push('\t');
+                    chars.push('\r');
+                    chars.push('\n');
+                } else if (escapedCharInClass == 'S') {
+                    // \S 在字符类中比较复杂，暂时简化处理
+                    chars.push(getEscapedChar(escapedCharInClass));
+                } else if (isSpecialChar(escapedCharInClass)) {
                     chars.push(getEscapedChar(escapedCharInClass));
                 } else {
                     chars.push(getEscapedChar(escapedCharInClass));
                 }
-            }
-            if (peek() == '-' && this.index + 1 < this.length && this.pattern.charAt(this.index + 1) != ']') {
+            } else if (peek() == '-' && this.index + 1 < this.length && this.pattern.charAt(this.index + 1) != ']') {
                 consume(); // 跳过 '-'
                 var endChar:String = consume();
                 if (endChar == '\\') {

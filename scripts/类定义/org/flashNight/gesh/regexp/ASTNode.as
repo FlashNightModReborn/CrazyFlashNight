@@ -124,6 +124,7 @@
                 if (position < input.length) {
                     var char:String = input.charAt(position);
                     var inSet:Boolean = false;
+                    
                     for (var j:Number = 0; j < this.value.length; j++) {
                         if (charEquals(this.value[j], char, ignoreCase)) {
                             inSet = true;
@@ -133,6 +134,7 @@
                     if (this.negated) {
                         inSet = !inSet;
                     }
+                    
                     if (inSet) {
                         result.matched = true;
                         result.position = position + 1;
@@ -177,6 +179,7 @@
                 if (this.child == null) {
                     throw new Error("Quantifier node has no child.");
                 }
+
 
                 // 限制 maxPossible 不超过输入字符串的剩余长度
                 var maxPossible:Number = Math.min(this.max, input.length - position);
