@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 13" itemID="688b39ff-000007ea" symbolType="graphic" lastModified="1753954815">
+  <timeline>
+    <DOMTimeline name="补间 13">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="XM556/xm556oc激光模组" name="激光模组" selected="true" centerPoint3DY="17.7">
+                  <matrix>
+                    <Matrix tx="-288.75" ty="15.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="288.75" y="2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" selected="true" centerPoint3DX="-231.2" centerPoint3DY="-13.05">
+                  <matrix>
+                    <Matrix tx="-243.65" ty="-25.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
