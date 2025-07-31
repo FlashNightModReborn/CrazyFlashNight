@@ -21,30 +21,32 @@ class org.flashNight.arki.item.ItemUtil{
     /*
      * 获取物品数据
      */
-    public static function getItemData(index){
+    public static function getItemData(index):Object{
         if (index.__proto__ == String.prototype) return ObjectUtil.clone(ItemUtil.itemDataDict[index]);
         if (index.__proto__ == Number.prototype) return ObjectUtil.clone(ItemUtil.itemDataDict[itemNamesByID[index]]);
+        return null;
     }
 
     /*
      * 获取物品数据（返回原始数据，不进行拷贝）
      * as2不支持protected，原则上只能在高性能需求时谨慎使用
      */
-    public static function getRawItemData(index){
+    public static function getRawItemData(index):Object{
         if (index.__proto__ == String.prototype) return ItemUtil.itemDataDict[index];
         if (index.__proto__ == Number.prototype) return ItemUtil.itemDataDict[itemNamesByID[index]];
+        return null;
     }
 
 
     /*
      * 创建物品对象
      */
-    public static function createItem(name, value):Object{
+    public static function createItem(name:String, value, lastUpdate:Number):Object{
         var itemData = getItemData(name);
         if(itemData == null || value <= 0) return null;
         var newItem = {
-            name:name, 
-            lastUpdate:new Date().getTime()
+            name: name, 
+            lastUpdate: isNaN(lastUpdate) ? new Date().getTime() : lastUpdate
         };
         if(itemData.type == "武器" || itemData.type == "防具") {
             if(value > 13 || value <= 1) value = 1;
@@ -74,7 +76,7 @@ class org.flashNight.arki.item.ItemUtil{
         return result;
     }
 
-    //将物品移入装备栏
+    // 将物品移入装备栏
     public static function moveItemToEquipment(icon,equipmentIcon,index):Boolean{
         if(index != equipmentIcon.index) return false;
         var itemData = icon.itemData;
@@ -104,7 +106,7 @@ class org.flashNight.arki.item.ItemUtil{
         return true;
     }
 
-    //将物品移入药剂栏
+    // 将物品移入药剂栏
     public static function moveItemToDrug(icon,drugIcon):Boolean{
         if(!drugIcon.isCoolDown()) return false;
         var result = ItemUtil.moveItemToInventory(icon,drugIcon);
@@ -118,7 +120,7 @@ class org.flashNight.arki.item.ItemUtil{
      * 基础方法共4个：require, acquire, contain, submit
      */
 
-    //根据原版物品数据生成itemRequirement
+    // 根据原版物品数据生成itemRequirement
     public static function getRequirement(itemArray:Array):Array{
         var newArray = new Array(itemArray.length);
         for(var i = 0; i<itemArray.length; i++){
@@ -127,7 +129,7 @@ class org.flashNight.arki.item.ItemUtil{
         return newArray;
     }
 
-    //根据任务文件内的物品字符串生成itemRequirement
+    // 根据任务文件内的物品字符串生成itemRequirement
     public static function getRequirementFromTask(itemArray:Array):Array{
         var newArray = new Array(itemArray.length);
         for(var i = 0; i < itemArray.length; i++){
@@ -242,6 +244,8 @@ class org.flashNight.arki.item.ItemUtil{
         var list = ItemUtil.require(itemArray);
         if(list == null) return false;
 
+        var acquireLastUpdate = new Date().getTime(); // 获取本次获得物品的时间戳
+
         //获取
         if(list.金币 > 0) _root.金钱 += list.金币;
         if(list.K点 > 0) _root.虚拟币 += list.K点;
@@ -276,18 +280,13 @@ class org.flashNight.arki.item.ItemUtil{
             // 对于已有项，直接增加数量
             if(药剂栏.isEmpty(drugIndex)){
                 // 格子为空的情况原则上不会触发
-                // 新物品添加时间戳
-                var newDrugItem = {
-                    name: req.name,
-                    value: req.value,
-                    lastUpdate: new Date().getTime() // 新增时间戳
-                };
+                var newDrugItem = createItem(req.name, req.value, acquireLastUpdate);
                 药剂栏.add(drugIndex, newDrugItem);
             } else {
                 // 已有物品更新数量和时间戳
                 药剂栏.addValue(drugIndex, req.value);
                 var existingDrug = 药剂栏.getItem(drugIndex);
-                existingDrug.lastUpdate = new Date().getTime(); // 更新时间戳
+                existingDrug.lastUpdate = acquireLastUpdate; // 更新时间戳
             }
         }
 
@@ -304,12 +303,12 @@ class org.flashNight.arki.item.ItemUtil{
                     背包.addValue(String(indexFound), req.value);
                     背包.addValue(indexFound, req.value);
                     var existingItem = 背包.getItem(indexFound);
-                    existingItem.lastUpdate = new Date().getTime(); // 更新时间戳
+                    existingItem.lastUpdate = acquireLastUpdate; // 更新时间戳
                 } else {
                     // 没有则添加新项，用 -1 表示新建堆
                     背包.addValue(indexFound, req.value);
                     var existingItem = 背包.getItem(indexFound);
-                    existingItem.lastUpdate = new Date().getTime(); // 更新时间戳
+                    existingItem.lastUpdate = acquireLastUpdate; // 更新时间戳
                 }
             } else {
                 // 对于已有项，直接增加数量
@@ -317,21 +316,13 @@ class org.flashNight.arki.item.ItemUtil{
 
                 if(背包.isEmpty(bagIndex)){
                     // 如果该格子为空，添加新物品
-                    var itemData = ItemUtil.getItemData(req.name);
-                    var newItem = {name: req.name};
-                    //检测是否为武器或防具，是则改写value的结构
-                    if(itemData.type == "武器" || itemData.type == "防具") {
-                        newItem.value = {level: req.value};
-                    } else {
-                        newItem.value = req.value;
-                    }
-                    newItem.lastUpdate = new Date().getTime(); // 新增时间戳
+                    var newItem = createItem(req.name, req.value, acquireLastUpdate);
                     背包.add(bagIndex, newItem);
                 } else {
                     // 已有物品更新数量和时间戳
                     背包.addValue(bagIndex, req.value);
                     var existingItem = 背包.getItem(bagIndex);
-                    existingItem.lastUpdate = new Date().getTime(); // 更新时间戳
+                    existingItem.lastUpdate = acquireLastUpdate; // 更新时间戳
                 }
             }
         }

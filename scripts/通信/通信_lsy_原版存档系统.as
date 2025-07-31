@@ -335,6 +335,27 @@ _root.是否存过盘 = function(){
 }
 
 _root.新建角色 = function(){
+    if (_root.上装装备 != ""){
+        _root.物品栏.装备栏.add("上装装备", org.flashNight.arki.item.ItemUtil.createItem(_root.上装装备, 1));
+    }
+    if (_root.下装装备 != ""){
+        _root.物品栏.装备栏.add("下装装备", org.flashNight.arki.item.ItemUtil.createItem(_root.下装装备, 1));
+    }
+    if (_root.脚部装备 != ""){
+        _root.物品栏.装备栏.add("脚部装备", org.flashNight.arki.item.ItemUtil.createItem(_root.脚部装备, 1));
+    }
+    if (_root.难度 == "逆天模式（简单）"){
+        _root.difficultyMode = 1;
+    }else if (_root.难度 == "挑战模式（自限）"){
+        _root.difficultyMode = 2;
+    }else{
+        _root.difficultyMode = 0;
+    }
+    _root.上装装备 = undefined;
+    _root.下装装备 = undefined;
+    _root.脚部装备 = undefined;
+    _root.难度 = undefined;
+    //
     _root.存档系统.mydata数据组包();
     _root.金钱 = 0;
     _root.虚拟币 = 0;

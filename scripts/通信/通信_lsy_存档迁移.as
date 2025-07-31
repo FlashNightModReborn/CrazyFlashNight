@@ -7,7 +7,7 @@
     for(var i=0; i < _root.物品栏总数; i++){
         var 旧物品 = 旧背包[i];
         if(!旧物品 || 旧物品[0] == "空") continue;
-        var 新物品 = {name:旧物品[0],value:旧物品[1]};
+        var 新物品 = {name:旧物品[0], value:旧物品[1], lastUpdate:0};
         var itemData = _root.getItemData(旧物品[0]);
         var type = itemData.type;
         var use = itemData.use;
@@ -30,7 +30,7 @@
     for(var i=0; i<1200; i++){
         var 旧物品 = 旧仓库[i];
         if(!旧物品 || 旧物品[0] == "空") continue;
-        var 新物品 = {name:旧物品[0],value:旧物品[1]};
+        var 新物品 = {name:旧物品[0], value:旧物品[1], lastUpdate:0};
         var itemData = _root.getItemData(旧物品[0]);
         var type = itemData.type;
         var use = itemData.use;
@@ -47,7 +47,7 @@
     for(var i=0; i<400; i++){
         var 旧物品 = 旧仓库[i+1200];
         if(!旧物品 || 旧物品[0] == "空") continue;
-        var 新物品 = {name:旧物品[0],value:旧物品[1]};
+        var 新物品 = {name:旧物品[0], value:旧物品[1], lastUpdate:0};
         var itemData = _root.getItemData(旧物品[0]);
         var type = itemData.type;
         var use = itemData.use;

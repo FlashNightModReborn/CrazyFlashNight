@@ -154,11 +154,7 @@ class org.flashNight.arki.item.ItemSortUtil {
             itemData = ItemUtil.getItemData(item.name);
             
             if (isStackable(item, itemData) && stackables[item.name]) {
-                var mergedItem:Object = {
-                    name: item.name,
-                    value: stackables[item.name].total,
-                    lastUpdate: stackables[item.name].lastUpdate
-                };
+                var mergedItem:Object = ItemUtil.createItem(item.name, stackables[item.name].total, stackables[item.name].lastUpdate);
                 newItems.push(mergedItem);
                 delete stackables[item.name]; // 防止重复添加
                 itemCount++;

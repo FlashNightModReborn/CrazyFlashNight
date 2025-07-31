@@ -1,19 +1,12 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1057" itemID="6597607e-00000848" lastModified="1747747524">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1057" itemID="6597607e-00000848" lastModified="1753882419">
   <timeline>
     <DOMTimeline name="Symbol 1057">
       <layers>
-        <DOMLayer name="Script Layer" color="#F0CF99">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
         <DOMLayer name="Layer 2" color="#DDB510" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 540" name="骷髅头" selected="true" centerPoint3DX="404.25" centerPoint3DY="232.35">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 540" name="骷髅头" centerPoint3DX="404.25" centerPoint3DY="232.35">
                   <matrix>
                     <Matrix tx="391.6" ty="217.7"/>
                   </matrix>
@@ -35,12 +28,8 @@
 	主角.称号 = "菜鸟";
 	主角.颈部装备 = "";
 	//_root.刷新人物装扮("主角");
+	主角.是否为敌人 = false;
 	主角.hp = 1;
-	this.onEnterFrame = function(){
-		主角.人物文字信息.称号文本框.text = "菜鸟";
-		主角.人物文字信息.称号文本框.htmlText = "菜鸟";
-		delete this.onEnterFrame;
-	}
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
