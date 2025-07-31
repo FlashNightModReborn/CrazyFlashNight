@@ -26,7 +26,8 @@ _root.装备生命周期函数.混凝土切割机初始化 = function(ref:Object
         spark.play();
         spark._visible = true;
         prop.区域定位area = area;
-        prop.伤害类型 = flag ? "魔法" : null;
+        prop.伤害类型 = flag ? "魔法" : "破击";
+        prop.魔法伤害属性 = flag ? "冲" : "装甲";
     });
 };
 
