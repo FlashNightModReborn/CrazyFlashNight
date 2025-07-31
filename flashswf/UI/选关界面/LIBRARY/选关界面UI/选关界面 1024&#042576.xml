@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关界面 1024*576" itemID="663b46a2-000023af" linkageExportForAS="true" linkageIdentifier="选关界面" lastModified="1750512633" lastUniqueIdentifier="208">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关界面 1024*576" itemID="663b46a2-000023af" linkageExportForAS="true" linkageIdentifier="选关界面" lastModified="1753960791" lastUniqueIdentifier="209">
   <timeline>
     <DOMTimeline name="选关界面 1024*576">
       <layers>
@@ -1007,7 +1007,7 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="473.55" centerPoint3DY="505.55">
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="473.55" centerPoint3DY="505.55">
                   <matrix>
                     <Matrix tx="222.55" ty="282.45"/>
                   </matrix>
@@ -1052,9 +1052,9 @@ on(rollOut){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="639.25" centerPoint3DY="331.05">
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="653.35" centerPoint3DY="392.4">
                   <matrix>
-                    <Matrix tx="388.25" ty="107.95"/>
+                    <Matrix tx="402.35" ty="169.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1193,9 +1193,9 @@ onClipEvent(load){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="483.45" centerPoint3DY="319.85">
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="607.45" centerPoint3DY="319.85">
                   <matrix>
-                    <Matrix tx="232.45" ty="96.75"/>
+                    <Matrix tx="356.45" ty="96.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1219,6 +1219,21 @@ onClipEvent(load){
                     <script><![CDATA[onClipEvent(load){
    this.配置关卡属性 = _root.配置关卡属性;
    this.配置关卡属性("废城环线");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="459.5" centerPoint3DY="323.55">
+                  <matrix>
+                    <Matrix tx="208.5" ty="100.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("医院");
 }
 ]]></script>
                   </Actionscript>
@@ -3952,7 +3967,7 @@ on(rollOut){
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!20480 11442|-130 11442!-130 11442|-130 -2111!-130 -2111|20480 -2111!20480 -2111|20480 11442"/>
+                    <Edge fillStyle1="1" edges="!20480 -2111|20480 11442!20480 11442|-130 11442!-130 11442|-130 -2111!-130 -2111|20480 -2111"/>
                   </edges>
                 </DOMShape>
               </elements>
