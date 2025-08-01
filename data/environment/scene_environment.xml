@@ -418,13 +418,21 @@
     <Environment>
         <BackgroundURL>地图-摇滚公园</BackgroundURL>
         <Alignment>true</Alignment>
-        <Xmin>400</Xmin>
-        <Xmax>1800</Xmax>
-        <Ymin>400</Ymin>
-        <Ymax>600</Ymax>
-        <Width>2230</Width>
-        <Height>1012</Height>
-        <Horizon>160</Horizon>
+        <Xmin>550</Xmin>
+        <Xmax>1600</Xmax>
+        <Ymin>570</Ymin>
+        <Ymax>840</Ymax>
+        <Width>2200</Width>
+        <Height>1100</Height>
+        <Horizon>0</Horizon>
+        <Skybox>
+            <url>堕落城远景.swf</url>
+            <SpeedRate>6</SpeedRate>
+        </Skybox>
+        <Skybox>
+            <url>大学远山天空.swf</url>
+            <SpeedRate>8</SpeedRate>
+        </Skybox>
         <BGM>Feel It Still</BGM>
     </Environment>
     <Environment>
