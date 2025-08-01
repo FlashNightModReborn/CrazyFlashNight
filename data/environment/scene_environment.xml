@@ -419,7 +419,7 @@
         <BackgroundURL>地图-摇滚公园</BackgroundURL>
         <Alignment>true</Alignment>
         <Xmin>550</Xmin>
-        <Xmax>1600</Xmax>
+        <Xmax>1610</Xmax>
         <Ymin>600</Ymin>
         <Ymax>900</Ymax>
         <Width>2200</Width>
@@ -433,6 +433,18 @@
             <url>大学远山天空.swf</url>
             <SpeedRate>8</SpeedRate>
         </Skybox>
+        <BGM>Feel It Still</BGM>
+    </Environment>
+    <Environment>
+        <BackgroundURL>地图-摇滚排练室</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>0</Xmin>
+        <Xmax>1100</Xmax>
+        <Ymin>300</Ymin>
+        <Ymax>530</Ymax>
+        <Width>1100</Width>
+        <Height>600</Height>
+        <Horizon>0</Horizon>
         <BGM>Feel It Still</BGM>
     </Environment>
     <Environment>

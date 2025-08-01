@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/地图库-外部地图" itemID="65c79a79-00000dc4" lastModified="1746164740" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/地图库-外部地图" itemID="65c79a79-00000dc4" lastModified="1754050453" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="地图库-外部地图" currentFrame="18">
+    <DOMTimeline name="地图库-外部地图" currentFrame="19">
       <layers>
         <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
@@ -204,12 +204,24 @@
             </DOMFrame>
             <DOMFrame index="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="import/外部地图/地图-堕落城商业街" selected="true" centerPoint3DX="64.1" centerPoint3DY="-24.7">
+                <DOMSymbolInstance libraryItemName="import/外部地图/地图-堕落城商业街" centerPoint3DX="64.1" centerPoint3DY="-24.7">
                   <matrix>
                     <Matrix tx="-58" ty="-46.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="122.1" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="import/外部地图/地图-摇滚排练室" selected="true" centerPoint3DX="-5" centerPoint3DY="90.2">
+                  <matrix>
+                    <Matrix tx="-57" ty="-12.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="52" y="103"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
