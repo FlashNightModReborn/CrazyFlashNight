@@ -6397,13 +6397,14 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     <description>占位用待平衡</description>
     <level>45</level>
     <data>
-      <capacity>5</capacity>
+      <capacity>15</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
-      <interval>500</interval>
+      <interval>300</interval>
+      <singleshoot>true</singleshoot>
       <velocity>50</velocity>
-      <bullet>榴弹</bullet>
-      <sound>re_GL_ChinaLake.wav</sound>
+      <bullet>铁枪磁轨弹</bullet>
+      <sound>m4a1_unsil-2.wav</sound>
       <muzzle>枪火</muzzle>
       <bullethit>火花</bullethit>
       <clipname>能量电池</clipname>
@@ -6413,7 +6414,17 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
     <equipped>
       <dressup>枪-长枪-G1111</dressup>
-    </equipped>
+    </equipped>    
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>G1111初始化</initRoutines>
+        </init>
+        <cycle>
+          <cycleRoutines>G1111周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <id>8096</id>

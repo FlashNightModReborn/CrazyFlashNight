@@ -1,7 +1,14 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="XM556/xm556oc激光模组" itemID="68706327-00000e37" lastModified="1752196826" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="XM556/xm556oc激光模组" itemID="68706327-00000e37" lastModified="1754117823" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="xm556oc激光模组">
       <layers>
+        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
@@ -13,7 +20,7 @@
                         <matrix>
                           <Matrix a="0.352508544921875" d="-0.00244140625" tx="288.75" ty="2"/>
                         </matrix>
-                        <GradientEntry color="#00A3FF" alpha="0.6" ratio="0"/>
+                        <GradientEntry color="#98FFFD" alpha="0.6" ratio="0"/>
                         <GradientEntry color="#FFFFFF" alpha="0" ratio="1"/>
                       </LinearGradient>
                     </FillStyle>
@@ -26,7 +33,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -37,7 +44,7 @@
                         <matrix>
                           <Matrix a="0.352508544921875" d="-0.006103515625" tx="288.75" ty="2"/>
                         </matrix>
-                        <GradientEntry color="#00A3FF" alpha="0.6" ratio="0"/>
+                        <GradientEntry color="#98FFFD" alpha="0.6" ratio="0"/>
                         <GradientEntry color="#FFFFFF" alpha="0" ratio="1"/>
                       </LinearGradient>
                     </FillStyle>
@@ -61,7 +68,7 @@
                         <matrix>
                           <Matrix a="0.352508544921875" d="-0.0098876953125" tx="288.75" ty="1.9"/>
                         </matrix>
-                        <GradientEntry color="#FF3800" alpha="0.250980392156863" ratio="0"/>
+                        <GradientEntry color="#A3FFFF" alpha="0.247058823529412" ratio="0"/>
                         <GradientEntry color="#FFFFFF" alpha="0" ratio="1"/>
                       </LinearGradient>
                     </FillStyle>

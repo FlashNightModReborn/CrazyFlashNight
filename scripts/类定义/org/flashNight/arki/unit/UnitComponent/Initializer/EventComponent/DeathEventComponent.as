@@ -46,6 +46,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEve
             }
         }
 
+
         // if(!target.已加经验值 && FactionManager.getFactionFromUnit(target) == FactionManager.FACTION_HOSTILE_NEUTRAL)
         // {
         //     _root.敌人死亡计数 = _root.敌人死亡计数 + 1;

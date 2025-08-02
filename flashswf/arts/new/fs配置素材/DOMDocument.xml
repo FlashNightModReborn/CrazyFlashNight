@@ -140,11 +140,11 @@
           <Include href="g11/G11.xml" itemID="68751898-0000072e" lastModified="1752656002"/>
           <Include href="g11/G11动画.xml" loadImmediate="false" itemID="68776282-000017ba" lastModified="1752654466"/>
           <Include href="g11/G11上支架.xml" itemIcon="1" loadImmediate="false" itemID="68784e75-00003582" lastModified="1752714869"/>
-          <Include href="g11/G111.xml" itemID="6875b9ba-00000990" lastModified="1753933723"/>
+          <Include href="g11/G111.xml" itemID="6875b9ba-00000990" lastModified="1754064901"/>
           <Include href="g11/G111磁轨激发状态.xml" itemIcon="1" loadImmediate="false" itemID="68784f5e-00003590" lastModified="1752715102"/>
           <Include href="g11/G111磁轨熄灭状态.xml" itemIcon="1" loadImmediate="false" itemID="68784f50-0000358c" lastModified="1752715088"/>
           <Include href="g11/g111动作件.xml" loadImmediate="false" itemID="6875ffba-00000a39" lastModified="1752564416"/>
-          <Include href="g11/G1111.xml" itemID="687633d0-00000c36" lastModified="1753955881"/>
+          <Include href="g11/G1111.xml" itemID="687633d0-00000c36" lastModified="1754118161"/>
           <Include href="g11/G1111轮盘.xml" loadImmediate="false" itemID="687662df-000003bc" lastModified="1752589023"/>
           <Include href="g11/G1111前部件.xml" itemIcon="1" loadImmediate="false" itemID="6878c489-000003b4" lastModified="1752745561"/>
           <Include href="g11/G1111枪口.xml" itemIcon="1" loadImmediate="false" itemID="6878c2f3-000003ad" lastModified="1752746157"/>
@@ -214,7 +214,7 @@
           <Include href="XM556/XM556-OC-Overlord.xml" itemID="686ded67-0000038a" lastModified="1752227805"/>
           <Include href="XM556/XM556-OC-Overlord 动画.xml" loadImmediate="false" itemID="686f22d9-00000552" lastModified="1752243091"/>
           <Include href="XM556/XM556-OC-Overlord枪身.xml" loadImmediate="false" itemID="686f22bf-0000054e" lastModified="1752149679"/>
-          <Include href="XM556/xm556oc激光模组.xml" loadImmediate="false" itemID="68706327-00000e37" lastModified="1752196826"/>
+          <Include href="XM556/xm556oc激光模组.xml" loadImmediate="false" itemID="68706327-00000e37" lastModified="1754117823"/>
           <Include href="XM556/xm556枪管动画.xml" loadImmediate="false" itemID="6873745e-00000785" lastModified="1752476420"/>
           <Include href="XM556/XM123456-chaingun.xml" itemID="68843a23-0000335a" lastModified="1753696108"/>
           <Include href="XM556/能量光效.xml" loadImmediate="false" itemID="686e3447-00000413" lastModified="1752052807"/>
@@ -264,7 +264,7 @@
           <Include href="火药燃气液压打桩机/杆体.xml" itemIcon="1" loadImmediate="false" itemID="651ce0aa-00002f3c" lastModified="1696425129"/>
           <Include href="火药燃气液压打桩机/护盾.xml" itemIcon="1" loadImmediate="false" itemID="651d6417-00002ff9" lastModified="1696424983"/>
           <Include href="火药燃气液压打桩机/护筒.xml" itemIcon="1" loadImmediate="false" itemID="651d642b-00002ffd" lastModified="1696425004"/>
-          <Include href="火药燃气液压打桩机/混凝土切割机.xml" itemID="6882dbb0-000005e5" lastModified="1753517586"/>
+          <Include href="火药燃气液压打桩机/混凝土切割机.xml" itemID="6882dbb0-000005e5" lastModified="1753981483"/>
           <Include href="火药燃气液压打桩机/混凝土切割机电火花.xml" loadImmediate="false" itemID="68832e99-00000802" lastModified="1753623755"/>
           <Include href="火药燃气液压打桩机/混凝土切割机锯片.xml" loadImmediate="false" itemID="6882e4ed-000005ff" lastModified="1753523227"/>
           <Include href="火药燃气液压打桩机/混凝土切割机锯片强化激活.xml" loadImmediate="false" itemID="68848df1-000039ca" lastModified="1753517554"/>
@@ -374,6 +374,7 @@
           <Include href="龙破军霜/刀-龙破军霜.xml" itemID="65f704da-0000226e" lastModified="1721580528"/>
           <Include href="龙破军霜/龙破军霜.xml" itemIcon="1" loadImmediate="false" itemID="65f704e6-00002270" lastModified="1710690852"/>
           <Include href="龙破军霜/图标-龙破军霜.xml" itemID="65f704b4-00002269" lastModified="1710687412"/>
+          <Include href="全息投影仪.xml" loadImmediate="false" itemID="688cd676-00001058" lastModified="1754060997"/>
           <Include href="生存战素材/Symbol 9.xml" itemIcon="1" loadImmediate="false" itemID="65c24a9a-00000cc3" lastModified="1699960314"/>
           <Include href="特效素材/打击伤害数字.xml" itemID="656983a5-000002a1" lastModified="1706446521"/>
           <Include href="特效与子弹/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="65e08f36-00001ff1" lastModified="1702237154"/>
@@ -1184,6 +1185,10 @@
                     <SolidSwatchItem color="#151A16" hue="90" saturation="22" brightness="22"/>
                     <SolidSwatchItem color="#001D16" hue="111" saturation="239" brightness="14"/>
                     <SolidSwatchItem color="#031916" hue="114" saturation="187" brightness="14"/>
+                    <SolidSwatchItem color="#0B0908" saturation="27" brightness="9"/>
+                    <SolidSwatchItem color="#98FFFD" hue="119" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#007B95" hue="127" saturation="239" brightness="70"/>
+                    <SolidSwatchItem color="#A3FFFF" hue="120" saturation="239" brightness="197"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1266,6 +1271,16 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2038797" publishTime="1754117848"/>
+          <PublishItem publishSize="2038578" publishTime="1754067812"/>
+          <PublishItem publishSize="2038557" publishTime="1754064910"/>
+          <PublishItem publishSize="2038525" publishTime="1754064592"/>
+          <PublishItem publishSize="2038513" publishTime="1754064452"/>
+          <PublishItem publishSize="2038525" publishTime="1754064414"/>
+          <PublishItem publishSize="2038466" publishTime="1754064020"/>
+          <PublishItem publishSize="2038477" publishTime="1754063903"/>
+          <PublishItem publishSize="2038446" publishTime="1754063791"/>
+          <PublishItem publishSize="2039444" publishTime="1754060613"/>
           <PublishItem publishSize="2038460" publishTime="1753955914"/>
           <PublishItem publishSize="1820389" publishTime="1753934429"/>
           <PublishItem publishSize="1820391" publishTime="1753934345"/>
@@ -1276,15 +1291,5 @@
           <PublishItem publishSize="1820323" publishTime="1753933748"/>
           <PublishItem publishSize="1820325" publishTime="1753933668"/>
           <PublishItem publishSize="1820323" publishTime="1753933562"/>
-          <PublishItem publishSize="1820323" publishTime="1753933483"/>
-          <PublishItem publishSize="1820322" publishTime="1753933428"/>
-          <PublishItem publishSize="1820322" publishTime="1753933329"/>
-          <PublishItem publishSize="1820321" publishTime="1753933307"/>
-          <PublishItem publishSize="1820312" publishTime="1753933155"/>
-          <PublishItem publishSize="1820323" publishTime="1753932982"/>
-          <PublishItem publishSize="1820295" publishTime="1753932798"/>
-          <PublishItem publishSize="1820073" publishTime="1753932527"/>
-          <PublishItem publishSize="1820067" publishTime="1753932448"/>
-          <PublishItem publishSize="1820024" publishTime="1753932328"/>
      </publishHistory>
 </DOMDocument>
