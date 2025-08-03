@@ -102,6 +102,11 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
         result.actualScatterUsed = actualScatterUsed;
 
         // 更新 bullet 和 target
+        // 重要：只有带"普通"前缀的子弹才会降低霰弹值
+        // 原因：联弹霰弹值降到0后，剩余段数会全部miss（包括近战联弹）
+        // 解决方案：给喷子用的会衰减的单元体都要带"普通"前缀
+        // 历史问题：之前普通子弹、加强普通子弹都正常，但无壳子弹没有"普通"前缀导致问题
+        // 现在"普通"也是词条了，所以需要显式检查普通检测
         if(bullet.普通检测 && !bullet.透明检测) bullet.霰弹值 -= actualScatterUsed; // 只有非透明的普通子弹会降低联弹霰弹值
         result.finalScatterValue = bullet.霰弹值;
 

@@ -67,8 +67,10 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
             // 非变形阶段：使用状态变量
             isRocketMode = ref.isRocketMode;
         }
-        prop.子弹种类 = isRocketMode ? "横向拖尾追踪联弹-无壳子弹" : "铁枪磁轨弹";
-        prop.霰弹值 = isRocketMode ? 3 : 1;
+
+        var isCharged = target.铁枪之锋许可;
+        prop.子弹种类 = isRocketMode ? "横向拖尾追踪联弹-普通无壳子弹" : "铁枪磁轨弹";
+        prop.霰弹值 = isRocketMode ? isCharged ? Math.ceil(8 * target.铁枪之锋倍率) : 3 : 1;
     });
 
 

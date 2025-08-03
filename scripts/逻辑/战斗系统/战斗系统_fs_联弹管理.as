@@ -224,12 +224,19 @@ _root.联弹系统.横向拖尾联弹初始化 = function (clip:MovieClip):Void
         clip.单元体列表.push(b);
     }
 
+
     /* ---------- ③ 帧循环 ---------- */
     clip.onEnterFrame = function ():Void
     {
         /* 3‑1 更新子弹 (此部分无需改变) --------------------------------*/
-        var y_min:Number =  Infinity;
+        var y_min:Number = Infinity;
         var y_max:Number = -Infinity;
+
+        // 检查霰弹值变化，移除多余的单元体
+        while (this.单元体列表.length > this._parent.霰弹值 && this.单元体列表.length > 1) {
+            var excessBullet:MovieClip = this.单元体列表.pop();
+            _root.回收单元体(excessBullet);
+        }
 
         for (var j:Number = this.单元体列表.length - 1; j >= 0; j--)
         {

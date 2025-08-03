@@ -25,7 +25,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A">
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -43,7 +43,7 @@
                     <Edge strokeStyle="1" edges="!-522 -904|-425 -906"/>
                   </edges>
                 </DOMShape>
-                <DOMSymbolInstance libraryItemName="PKP/PKP弹链动画" name="动画" centerPoint3DX="101.35" centerPoint3DY="-23.8">
+                <DOMSymbolInstance libraryItemName="PKP/PKP弹链动画" name="动画" selected="true" centerPoint3DX="101.35" centerPoint3DY="-23.8">
                   <matrix>
                     <Matrix a="1.05355834960938" d="1.05355834960938" tx="83.85" ty="-54.8"/>
                   </matrix>
@@ -62,7 +62,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
+        <DOMLayer name="Layer 1" color="#FFFF00">
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <elements>

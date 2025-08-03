@@ -282,13 +282,9 @@ _root.主动战技函数.长枪.投影召唤 = {
     }
 };
 
-_root.主动战技函数.长枪.铁枪之铤 = {
+_root.主动战技函数.长枪.铁枪之锋 = {
     初始化:function(自机){
-        自机.铁枪之铤许可 = false;
-
-        var skill:Object = _root.getItemData(自机.长枪).skill;
-        var duration:Number = skill.duration || 5; 
-        
+        自机.铁枪之锋许可 = false;
         var upgradeLevel:Number;
 
         if(_root.控制目标 == 自机._name) {
@@ -297,11 +293,8 @@ _root.主动战技函数.长枪.铁枪之铤 = {
         } else {
             upgradeLevel = _root.主角函数.获取人形怪强化等级(自机.等级, 自机.名字);
         }
-        
-        duration += upgradeLevel;
-        var overRideCountMax:Number = duration * 30;
-        自机.铁枪之铤持续时间 = overRideCountMax;
-        自机.铁枪之铤剩余时间 = 0;
+
+        自机.铁枪之锋倍率 = 1 + upgradeLevel * 0.1; 
     },
 
     释放许可判定:function(自机){
@@ -314,15 +307,11 @@ _root.主动战技函数.长枪.铁枪之铤 = {
     {
         自机.强制奔跑 = false;
         自机.动作A = true;
+        自机.铁枪之锋许可 = true;
+        自机.上行 = true;
         自机.攻击();
-        
-        var data:Object = _root.getItemData(自机.长枪);
-        var prop:Object = 自机.man.子弹属性;
-
-        prop.子弹种类 = data.data.bullet;
-        prop.霰弹值 = data.data.split;
-        prop.sound = data.data.sound;
-
+        自机.上行 = false;
+        自机.铁枪之锋许可 = false;
     }
 };
 

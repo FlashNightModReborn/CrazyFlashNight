@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="联弹/横向联弹" itemID="65a09e8b-000001d6" linkageExportForAS="true" linkageIdentifier="横向联弹" lastModified="1743038052" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="联弹/横向联弹" itemID="65a09e8b-000001d6" linkageExportForAS="true" linkageIdentifier="横向联弹" lastModified="1754228345" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="横向联弹">
+    <DOMTimeline name="横向联弹" currentFrame="1">
       <layers>
         <DOMLayer name="Labels Layer" color="#B93CFD">
           <frames>
@@ -13,7 +13,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
-        <DOMLayer name="Script Layer" color="#9B42CE">
+        <DOMLayer name="Script Layer" color="#9B42CE" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -30,11 +30,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#9FE08C" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#9FE08C">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="联弹/联弹area" name="area" selected="true" centerPoint3DX="7.5" centerPoint3DY="7.5">
+                <DOMSymbolInstance libraryItemName="联弹/联弹area" name="area" centerPoint3DX="7.5" centerPoint3DY="7.5">
                   <matrix>
                     <Matrix a="0.399993896484375" d="0.399993896484375" tx="-5" ty="-5"/>
                   </matrix>

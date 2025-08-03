@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="wa90/wa90动画" itemID="6559d54c-0000032c" lastModified="1754200443">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="wa90/wa90动画" itemID="6559d54c-0000032c" lastModified="1754200443" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="wa90动画">
       <layers>
@@ -18,11 +18,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="激光" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="激光" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="wa90/Graphic/shape 3716" name="激光">
+                <DOMSymbolInstance libraryItemName="wa90/Graphic/shape 3716" name="激光" selected="true">
                   <matrix>
                     <Matrix a="0.782638549804688" d="-0.347030639648438" tx="214.45" ty="70.1"/>
                   </matrix>
@@ -105,7 +105,7 @@
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="wa90/Symbol 5" symbolType="graphic" centerPoint3DX="154.8" centerPoint3DY="95.55" loop="loop">
+                <DOMSymbolInstance libraryItemName="wa90/Symbol 5" selected="true" symbolType="graphic" centerPoint3DX="154.8" centerPoint3DY="95.55" loop="loop">
                   <matrix>
                     <Matrix a="-0.829910278320313" d="0.829910278320313" tx="218.4" ty="64.3"/>
                   </matrix>
@@ -364,11 +364,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="wa90/Symbol 10" name="弹匣" selected="true" centerPoint3DX="127.65" centerPoint3DY="79.35">
+                <DOMSymbolInstance libraryItemName="wa90/Symbol 10" name="弹匣" centerPoint3DX="127.65" centerPoint3DY="79.35">
                   <matrix>
                     <Matrix a="-0.629425048828125" d="0.829910278320313" tx="179.3" ty="75.2"/>
                   </matrix>

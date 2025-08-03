@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="联弹/横向拖尾联弹" itemID="688a19b9-00000403" linkageExportForAS="true" linkageIdentifier="横向拖尾联弹" lastModified="1753881202" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="联弹/横向拖尾联弹" itemID="688a19b9-00000403" linkageExportForAS="true" linkageIdentifier="横向拖尾联弹" lastModified="1754230127" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="横向拖尾联弹">
+    <DOMTimeline name="横向拖尾联弹" currentFrame="1">
       <layers>
         <DOMLayer name="Labels Layer" color="#B93CFD">
           <frames>
@@ -13,7 +13,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
-        <DOMLayer name="Script Layer" color="#9B42CE">
+        <DOMLayer name="Script Layer" color="#9B42CE" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -34,7 +34,7 @@
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="联弹/联弹area" name="area" centerPoint3DX="7.5" centerPoint3DY="7.5">
+                <DOMSymbolInstance libraryItemName="联弹/联弹area" name="area" selected="true" centerPoint3DX="7.5" centerPoint3DY="7.5">
                   <matrix>
                     <Matrix a="0.399993896484375" d="0.399993896484375" tx="-5" ty="-5"/>
                   </matrix>
@@ -47,7 +47,7 @@
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="联弹/横向拖尾追踪联弹" selected="true" centerPoint3DX="8" centerPoint3DY="67">
+                <DOMSymbolInstance libraryItemName="联弹/横向拖尾追踪联弹" centerPoint3DX="8" centerPoint3DY="67">
                   <matrix>
                     <Matrix tx="8" ty="67"/>
                   </matrix>
