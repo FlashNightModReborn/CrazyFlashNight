@@ -6400,13 +6400,13 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <capacity>15</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
-      <interval>300</interval>
+      <interval>1000</interval>
       <singleshoot>true</singleshoot>
       <velocity>50</velocity>
       <bullet>铁枪磁轨弹</bullet>
       <sound>m4a1_unsil-2.wav</sound>
-      <muzzle>枪火</muzzle>
-      <bullethit>火花</bullethit>
+      <muzzle>铁枪能量弹枪火</muzzle>
+      <bullethit>铁枪能量弹火花</bullethit>
       <clipname>能量电池</clipname>
       <bulletsize>40</bulletsize>
       <power>16000</power>

@@ -146,9 +146,6 @@ _root.敌人函数.状态改变 = function(新状态名) {
 
     // this.旧状态 = this.状态; // 记录上一个状态名
     this.gotoAndStop(this.状态 = 新状态名);
-    if(this.状态 === "血腥死") {
-        _root.发布消息("敌人死亡", this._name);
-    }
 };
 
 

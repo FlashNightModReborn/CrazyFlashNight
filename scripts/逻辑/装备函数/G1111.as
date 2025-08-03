@@ -27,20 +27,55 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
     ref.transformCooldown = 0;
     ref.TRANSFORM_CD_F    = param.transformInterval || 30; // 30 fps = 1 s
 
-    /* ---------- 4. 全局主角同步 ---------- */
+    /* ---------- 4. 激光模组自动锁定系统 ---------- */
+    ref.laserRotation = 0;              // 激光当前角度
+    ref.laserRotationSpeed = 0.15;      // 激光旋转平滑系数
+    ref.laserMaxAngle = 45;             // 最大向右旋转角度
+    ref.laserMinAngle = -45;            // 最大向左旋转角度
+    ref.autoTarget = null;              // 自动锁定的目标
+    ref.targetSearchCooldown = 0;       // 搜索目标冷却
+    ref.TARGET_SEARCH_INTERVAL = 10;    // 搜索间隔(帧)
+
+    /* ---------- 5. 全局主角同步 ---------- */
     if (ref.是否为主角) {
         var key = ref.标签名 + ref.初始化函数;
-        var gl  = _root.装备生命周期函数.全局参数[key] || {};
+        // 确保全局参数对象存在
+        if (!_root.装备生命周期函数.全局参数) {
+            _root.装备生命周期函数.全局参数 = {};
+        }
+        if (!_root.装备生命周期函数.全局参数[key]) {
+            _root.装备生命周期函数.全局参数[key] = {};
+        }
+        var gl = _root.装备生命周期函数.全局参数[key];
         ref.isRocketMode  = gl.isRocketMode || false;
         ref.currentFrame  = ref.isRocketMode ? ref.ROCKET_START : ref.RIFLE_START;
         ref.globalData    = gl;
+        // 确保全局数据同步
+        gl.isRocketMode = ref.isRocketMode;
     }
 
     /* ---------- 5. 射击事件监听 ---------- */
+    target.dispatcher.subscribe("长枪射击", function () {
+        var prop:Object = target.man.子弹属性;
+
+        // 根据当前帧判断子弹类型，处理变形阶段
+        var isRocketMode;
+        if (ref.currentFrame >= ref.TRANSFORM_START && ref.currentFrame <= ref.TRANSFORM_END) {
+            // 变形阶段：根据变形方向判断
+            isRocketMode = ref.transformToRock;
+        } else {
+            // 非变形阶段：使用状态变量
+            isRocketMode = ref.isRocketMode;
+        }
+        prop.子弹种类 = isRocketMode ? "横向拖尾追踪联弹-无壳子弹" : "铁枪磁轨弹";
+        prop.霰弹值 = isRocketMode ? 3 : 1;
+    });
+
+
     target.dispatcher.subscribe
-    ("长枪射击", function () {
+    ("updateBullet", function () {
+        if(target.攻击模式 !== "长枪") return;
         ref.fireRequest = true;
-        _root.发布消息(target)
     });
 };
 
@@ -155,6 +190,83 @@ _root.装备生命周期函数.G1111周期 = function (ref)
         }
     }
 
+
+    /* ===== 6. 激光模组自动锁定（仅导弹模式） ===== */
+    if (ref.isRocketMode && ref.isWeaponActive) {
+        var laser = 长枪.激光模组;
+        if (laser != undefined) {
+            var RAD_TO_DEG = 180 / Math.PI;
+            var targetRotation = 0; // 默认归位到0度
+            
+            // 目标搜索冷却
+            if (ref.targetSearchCooldown > 0) {
+                ref.targetSearchCooldown--;
+            }
+            
+            // 定期搜索新目标或验证当前目标
+            if (ref.targetSearchCooldown <= 0) {
+                ref.targetSearchCooldown = ref.TARGET_SEARCH_INTERVAL;
+                
+                // 如果没有目标或当前目标无效，搜索新目标
+                if (ref.autoTarget == null || ref.autoTarget._x == undefined) {
+                    if (typeof TargetCacheManager !== "undefined") {
+                        ref.autoTarget = TargetCacheManager.findNearestEnemy(自机, 5);
+                    }
+                }
+            }
+            
+            // 如果有有效目标，计算追踪角度
+            if (ref.autoTarget != null && ref.autoTarget._x != undefined) {
+                var enemyGlobalPos = {x: ref.autoTarget._x, y: ref.autoTarget._y};
+                if (typeof UnitUtil !== "undefined" && UnitUtil.getAimPoint) {
+                    enemyGlobalPos = UnitUtil.getAimPoint(ref.autoTarget);
+                }
+                
+                长枪.globalToLocal(enemyGlobalPos);
+                
+                var dx = enemyGlobalPos.x - laser._x;
+                var dy = enemyGlobalPos.y - laser._y;
+                var angleRadians = Math.atan2(dy, dx);
+                
+                if (!isNaN(angleRadians)) {
+                    var calculatedAngle = angleRadians * RAD_TO_DEG;
+                    
+                    // 检查是否超出角度限制
+                    if (calculatedAngle > ref.laserMaxAngle || calculatedAngle < ref.laserMinAngle) {
+                        // 超出限制，清除目标
+                        ref.autoTarget = null;
+                        targetRotation = 0;
+                    } else {
+                        // 在限制内，追踪目标
+                        targetRotation = calculatedAngle;
+                        
+                        // 渲染锁定视觉效果
+                        if (ref.autoTarget.aabbCollider) {
+                            AABBRenderer.renderAABB(ref.autoTarget.aabbCollider, 0, "scan1");
+                        }
+                    }
+                }
+            }
+            
+            // 平滑旋转到目标角度
+            var currentRotation = ref.laserRotation;
+            var delta = targetRotation - currentRotation;
+            
+            // 确保旋转走最短路径
+            if (delta > 180) {
+                delta -= 360;
+            } else if (delta < -180) {
+                delta += 360;
+            }
+            
+            currentRotation += delta * ref.laserRotationSpeed;
+            ref.laserRotation = currentRotation;
+            
+            if (!isNaN(ref.laserRotation)) {
+                laser._rotation = ref.laserRotation;
+            }
+        }
+    }
 
     /* ===== 7. 绘制 ===== */
     长枪.gotoAndStop(ref.currentFrame);

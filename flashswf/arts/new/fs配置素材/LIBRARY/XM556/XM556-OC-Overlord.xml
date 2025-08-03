@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="XM556/XM556-OC-Overlord" itemID="686ded67-0000038a" linkageExportForAS="true" linkageIdentifier="枪-手枪-XM556-OC-Overlord" lastModified="1752227805" lastUniqueIdentifier="44">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="XM556/XM556-OC-Overlord" itemID="686ded67-0000038a" linkageExportForAS="true" linkageIdentifier="枪-手枪-XM556-OC-Overlord" lastModified="1754186892" lastUniqueIdentifier="44">
   <timeline>
     <DOMTimeline name="XM556-OC-Overlord">
       <layers>
@@ -16,11 +16,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="XM556/XM556-OC-Overlord 动画" name="动画" selected="true" centerPoint3DX="0.6" centerPoint3DY="48.95">
+                <DOMSymbolInstance libraryItemName="XM556/XM556-OC-Overlord 动画" name="动画" centerPoint3DX="0.6" centerPoint3DY="48.95">
                   <matrix>
                     <Matrix tx="-107.9" ty="-27.15"/>
                   </matrix>
@@ -67,13 +67,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#FFFF00">
+        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="127.4" centerPoint3DY="46.6">
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="85.5" centerPoint3DY="65.45">
                   <matrix>
-                    <Matrix tx="114.95" ty="33.95"/>
+                    <Matrix tx="73.05" ty="52.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

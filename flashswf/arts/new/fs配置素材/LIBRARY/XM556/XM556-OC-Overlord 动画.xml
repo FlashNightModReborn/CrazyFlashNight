@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="XM556/XM556-OC-Overlord 动画" itemID="686f22d9-00000552" lastModified="1752243091" lastUniqueIdentifier="57">
   <timeline>
-    <DOMTimeline name="XM556-OC-Overlord 动画" currentFrame="23">
+    <DOMTimeline name="XM556-OC-Overlord 动画" currentFrame="22">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="能量腔荧光" color="#9933CC" autoNamed="false">
+        <DOMLayer name="能量腔荧光" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>
@@ -154,7 +154,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="XM556/能量腔荧光" centerPoint3DX="81.2" centerPoint3DY="87.5">
+                <DOMSymbolInstance libraryItemName="XM556/能量腔荧光" selected="true" centerPoint3DX="81.2" centerPoint3DY="87.5">
                   <matrix>
                     <Matrix tx="59.05" ty="72.7"/>
                   </matrix>
@@ -379,7 +379,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 9" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 9" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -1095,7 +1095,7 @@
             </DOMFrame>
             <DOMFrame index="14" duration="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="XM556/XM556-OC-Overlord枪身" centerPoint3DX="85.95" centerPoint3DY="76.1">
+                <DOMSymbolInstance libraryItemName="XM556/XM556-OC-Overlord枪身" selected="true" centerPoint3DX="85.95" centerPoint3DY="76.1">
                   <transformationPoint>
                     <Point x="85.95" y="75.85"/>
                   </transformationPoint>
@@ -1132,7 +1132,7 @@
             </DOMFrame>
             <DOMFrame index="14" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="XM556/xm556oc激光模组" centerPoint3DX="469" centerPoint3DY="92.05">
+                <DOMSymbolInstance libraryItemName="XM556/xm556oc激光模组" selected="true" centerPoint3DX="469" centerPoint3DY="92.05">
                   <matrix>
                     <Matrix tx="180.25" ty="90.05"/>
                   </matrix>
