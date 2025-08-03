@@ -79,6 +79,9 @@ _root.装备生命周期函数.wa90变形款周期 = function(reflector:Object, 
     
     // 继续调用模板组件切换逻辑（用于控制部件显示/隐藏）
     _root.装备生命周期函数[paramObj.actionFunc](reflector, paramObj.actionFuncParam);
+
+    var bulletFrame = target["长枪射击次数"][target["长枪"]] + 1;
+    reflector.自机.长枪_引用.动画.弹匣.gotoAndStop(bulletFrame);
 };
 
 //【13】wa90专用触发函数：直接调用通用触发函数

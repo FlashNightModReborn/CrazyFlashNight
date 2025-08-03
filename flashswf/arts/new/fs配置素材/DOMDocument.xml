@@ -190,18 +190,18 @@
           <Include href="sprite/Symbol 35.xml" itemID="6577b699-00000971" lastModified="1718635260"/>
           <Include href="sprite/Symbol 36.xml" loadImmediate="false" itemID="6577b699-00000972" lastModified="1719476235"/>
           <Include href="wa90/Graphic/shape 3716.xml" itemIcon="1" loadImmediate="false" itemID="5e86cc7d-00000e85" lastModified="1585892477"/>
-          <Include href="wa90/Graphic/shape 4006.xml" itemIcon="1" loadImmediate="false" itemID="5e86cc7d-00000fa7" lastModified="1621886511"/>
+          <Include href="wa90/Graphic/shape 4006.xml" itemIcon="1" loadImmediate="false" itemID="5e86cc7d-00000fa7" lastModified="1754200354"/>
           <Include href="wa90/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="60abe370-00000028" lastModified="1621882292"/>
           <Include href="wa90/Symbol 5.xml" itemIcon="1" loadImmediate="false" itemID="60abe379-0000002c" lastModified="1700386543"/>
           <Include href="wa90/Symbol 6.xml" itemIcon="1" loadImmediate="false" itemID="60abe6b3-00000030" lastModified="1700386216"/>
           <Include href="wa90/Symbol 7.xml" itemIcon="1" loadImmediate="false" itemID="60abf063-00001280" lastModified="1621880931"/>
           <Include href="wa90/Symbol 8.xml" itemIcon="1" loadImmediate="false" itemID="60abf0da-0000128e" lastModified="1621881126"/>
           <Include href="wa90/Symbol 9.xml" itemIcon="1" loadImmediate="false" itemID="60abf364-00001295" lastModified="1621884711"/>
-          <Include href="wa90/Symbol 10.xml" itemIcon="1" loadImmediate="false" itemID="60abf9c4-000012a0" lastModified="1621883605"/>
+          <Include href="wa90/Symbol 10.xml" itemIcon="1" loadImmediate="false" itemID="60abf9c4-000012a0" lastModified="1754204326"/>
           <Include href="wa90/Symbol 11.xml" itemIcon="1" loadImmediate="false" itemID="60abfa2c-000012a6" lastModified="1621883436"/>
-          <Include href="wa90/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="60abfaa5-000012c5" lastModified="1621883557"/>
+          <Include href="wa90/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="60abfaa5-000012c5" lastModified="1754204459"/>
           <Include href="wa90/wa90变形款.xml" itemID="6559d321-000002d5" lastModified="1742978592"/>
-          <Include href="wa90/wa90动画.xml" loadImmediate="false" itemID="6559d54c-0000032c" lastModified="1743911198"/>
+          <Include href="wa90/wa90动画.xml" loadImmediate="false" itemID="6559d54c-0000032c" lastModified="1754200443"/>
           <Include href="wa90/wa管.xml" itemIcon="1" loadImmediate="false" itemID="60abd6f7-00002942" lastModified="1700386803"/>
           <Include href="wa90/激光遮罩.xml" loadImmediate="false" itemID="67e3d076-00002160" lastModified="1742983286"/>
           <Include href="wa90/瞄具.xml" itemIcon="1" loadImmediate="false" itemID="60abd43a-00002933" lastModified="1621873722"/>
@@ -1189,6 +1189,10 @@
                     <SolidSwatchItem color="#98FFFD" hue="119" saturation="239" brightness="192"/>
                     <SolidSwatchItem color="#007B95" hue="127" saturation="239" brightness="70"/>
                     <SolidSwatchItem color="#A3FFFF" hue="120" saturation="239" brightness="197"/>
+                    <SolidSwatchItem color="#584E47" hue="15" saturation="26" brightness="75"/>
+                    <SolidSwatchItem color="#39332E" hue="18" saturation="27" brightness="49"/>
+                    <SolidSwatchItem color="#3B3530" hue="18" saturation="26" brightness="51"/>
+                    <SolidSwatchItem color="#23201D" hue="20" saturation="24" brightness="30"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1271,6 +1275,11 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2039781" publishTime="1754205663"/>
+          <PublishItem publishSize="2039795" publishTime="1754201834"/>
+          <PublishItem publishSize="2039795" publishTime="1754201770"/>
+          <PublishItem publishSize="2039794" publishTime="1754201538"/>
+          <PublishItem publishSize="2039791" publishTime="1754201515"/>
           <PublishItem publishSize="2038802" publishTime="1754184255"/>
           <PublishItem publishSize="2038797" publishTime="1754117848"/>
           <PublishItem publishSize="2038578" publishTime="1754067812"/>
@@ -1286,10 +1295,5 @@
           <PublishItem publishSize="1820389" publishTime="1753934429"/>
           <PublishItem publishSize="1820391" publishTime="1753934345"/>
           <PublishItem publishSize="1820385" publishTime="1753934254"/>
-          <PublishItem publishSize="1820392" publishTime="1753934209"/>
-          <PublishItem publishSize="1820393" publishTime="1753934113"/>
-          <PublishItem publishSize="1820349" publishTime="1753934014"/>
-          <PublishItem publishSize="1820323" publishTime="1753933748"/>
-          <PublishItem publishSize="1820325" publishTime="1753933668"/>
      </publishHistory>
 </DOMDocument>

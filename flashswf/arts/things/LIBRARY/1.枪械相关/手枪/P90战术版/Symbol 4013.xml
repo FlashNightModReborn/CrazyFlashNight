@@ -1,7 +1,55 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.枪械相关/手枪/P90战术版/Symbol 4013" itemID="668e7c1e-00000ff4" linkageExportForAS="true" linkageIdentifier="枪-手枪-P90战术版" lastModified="1720533000">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.枪械相关/手枪/P90战术版/Symbol 4013" itemID="668e7c1e-00000ff4" linkageExportForAS="true" linkageIdentifier="枪-手枪-P90战术版" lastModified="1754207110" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="Symbol 4013">
       <layers>
+        <DOMLayer name="Symbol 4011" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#5C5C5E"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#3D3D3F"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!122 -867|139 -919!139 -919[#95.21 #FFFC4F.04 161 -970!161 -970|496 -970!496 -970|448 -884!448 -884[429 -841 418 -797!418 -797|417 -796!417 -796|412 -767"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!412 -767|407 -730!407 -730|118 -730!118 -730|116 -759!116 -759[114 -776 115 -796!115 -796|118 -852!118 -852|122 -867"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!412 -767|170 -767!170 -767[136 -810 122 -867"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/Symbol 10" name="弹匣" centerPoint3DX="7.45" centerPoint3DY="-41.1">
+                  <matrix>
+                    <Matrix a="-0.667404174804688" d="0.879974365234375" tx="62.2" ty="-45.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="82.05" y="5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="Layer 1" color="#69D3CC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
@@ -18,30 +66,17 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#FDED44">
+        <DOMLayer name="Layer 2" color="#FDED44" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 3722" blendMode="add" centerPoint3DX="464.5" centerPoint3DY="-45.9">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 3722" name="激光模组" selected="true" blendMode="add" centerPoint3DX="464.5" centerPoint3DY="-45.9">
                   <matrix>
                     <Matrix tx="95.55" ty="-51.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_parent._parent._parent._parent._parent.攻击模式 == "手枪" or _parent._parent._parent._parent._parent.攻击模式 == "手枪2" or _parent._parent._parent._parent._parent.攻击模式 == "双枪")
-   {
-      this._visible = 1;
-   }
-   else
-   {
-      this._visible = 0;
-   }
-}
-]]></script>
-                  </Actionscript>
                   <filters>
                     <GlowFilter/>
                   </filters>
@@ -69,7 +104,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#82E338" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#82E338">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

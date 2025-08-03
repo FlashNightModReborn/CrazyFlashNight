@@ -2845,7 +2845,17 @@
     </data>
     <equipped>
       <dressup>枪-手枪-P90</dressup>
-    </equipped>
+    </equipped>    
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>P90初始化</initRoutines>
+        </init>
+        <cycle>
+          <cycleRoutines>P90周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <id>274</id>
@@ -3003,7 +3013,20 @@
     <equipped>
       <dressup>枪-手枪-P90战术版</dressup>
       <criticalhit>10</criticalhit>
-    </equipped>
+    </equipped>    
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>P90初始化</initRoutines>
+          <initParam>
+            <bulletRate>2</bulletRate>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>P90周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <id>291</id>
@@ -3447,7 +3470,17 @@
     </data>
     <equipped>
       <dressup>枪-手枪-钛合金P90</dressup>
-    </equipped>
+    </equipped>    
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>P90初始化</initRoutines>
+        </init>
+        <cycle>
+          <cycleRoutines>P90周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <id>207</id>

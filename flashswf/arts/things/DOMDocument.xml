@@ -23,7 +23,7 @@
           <DOMFolderItem name="1.枪械相关" itemID="6690e808-0000178c" isExpanded="true"/>
           <DOMFolderItem name="1.枪械相关/KRISS相关" itemID="6690e0e7-00000faa"/>
           <DOMFolderItem name="1.枪械相关/手枪" itemID="6690e201-00001063" isExpanded="true"/>
-          <DOMFolderItem name="1.枪械相关/手枪/P90战术版" itemID="6690e0ce-00000f88"/>
+          <DOMFolderItem name="1.枪械相关/手枪/P90战术版" itemID="6690e0ce-00000f88" isExpanded="true"/>
           <DOMFolderItem name="1.枪械相关/手枪/UZI战术版" itemID="6690e023-00000eed" isExpanded="true"/>
           <DOMFolderItem name="1.枪械相关/手枪/极品UZI战术版" itemID="6690e016-00000ed1" isExpanded="true"/>
           <DOMFolderItem name="1.枪械相关/长枪" itemID="6690e1e8-0000103c" isExpanded="true"/>
@@ -53,6 +53,7 @@
           <DOMFolderItem name="NEGEV" itemID="686a8adf-000023e0"/>
           <DOMFolderItem name="Pins" itemID="67f69611-00002561"/>
           <DOMFolderItem name="shape" itemID="6751eae0-00001373"/>
+          <DOMFolderItem name="wa90" itemID="688f0887-00004d90"/>
           <DOMFolderItem name="待整理防具相关汇总" itemID="6690f7ce-000036b2"/>
           <DOMFolderItem name="弹药系列" itemID="683fe831-00000d35"/>
           <DOMFolderItem name="弹药系列/通用" itemID="683fe831-00000d36"/>
@@ -84,6 +85,7 @@
           <DOMFolderItem name="杂七杂八" itemID="67f69611-00002563"/>
           <DOMFolderItem name="战术配件系列" itemID="67f686b7-00002531"/>
           <DOMFolderItem name="战术配件系列/枪托" itemID="5eff39f8-00001206"/>
+          <DOMFolderItem name="重复项目文件夹" itemID="688f099a-00005706"/>
           <DOMFolderItem name="主角身体元件副本" itemID="67bc22a2-00001315"/>
      </folders>
      <fonts>
@@ -704,8 +706,8 @@
           <Include href="1.枪械相关/KRISS相关/Symbol 4033.xml" itemID="668e7c1e-00001007" lastModified="1720533000"/>
           <Include href="1.枪械相关/Symbol 3007.xml" itemID="668e7c1e-00000d6d" lastModified="1720533000"/>
           <Include href="1.枪械相关/Symbol 3012.xml" itemID="668e7c1e-00000d72" lastModified="1720533000"/>
-          <Include href="1.枪械相关/手枪/P90战术版/Symbol 4013.xml" itemID="668e7c1e-00000ff4" lastModified="1720533000"/>
-          <Include href="1.枪械相关/手枪/P90战术版/Symbol 4030.xml" itemID="668e7c1e-00001004" lastModified="1720533000"/>
+          <Include href="1.枪械相关/手枪/P90战术版/Symbol 4013.xml" itemID="668e7c1e-00000ff4" lastModified="1754207110"/>
+          <Include href="1.枪械相关/手枪/P90战术版/Symbol 4030.xml" itemID="668e7c1e-00001004" lastModified="1754207103"/>
           <Include href="1.枪械相关/手枪/Symbol 76.xml" itemID="668e7c1e-000005f2" lastModified="1720533000"/>
           <Include href="1.枪械相关/手枪/Symbol 3677.xml" itemID="668e7c1e-00000f14" lastModified="1720533000"/>
           <Include href="1.枪械相关/手枪/Symbol 3696.xml" itemID="668e7c1e-00000f17" lastModified="1720533000"/>
@@ -716,7 +718,7 @@
           <Include href="1.枪械相关/手枪/Symbol 3808.xml" itemID="668e7c1e-00000f6b" lastModified="1720533000"/>
           <Include href="1.枪械相关/手枪/Symbol 3810.xml" itemID="668e7c1e-00000f6d" lastModified="1720533000"/>
           <Include href="1.枪械相关/手枪/Symbol 3812.xml" itemID="668e7c1e-00000f6f" lastModified="1720533000"/>
-          <Include href="1.枪械相关/手枪/Symbol 3817.xml" itemID="668e7c1e-00000f71" lastModified="1720533000"/>
+          <Include href="1.枪械相关/手枪/Symbol 3817.xml" itemID="668e7c1e-00000f71" lastModified="1754204996"/>
           <Include href="1.枪械相关/手枪/Symbol 3818.xml" itemID="668e7c1e-00000f72" lastModified="1720533000"/>
           <Include href="1.枪械相关/手枪/Symbol 3819.xml" itemID="668e7c1e-00000f73" lastModified="1720533000"/>
           <Include href="1.枪械相关/手枪/Symbol 3820.xml" itemID="668e7c1e-00000f74" lastModified="1720533000"/>
@@ -725,9 +727,9 @@
           <Include href="1.枪械相关/手枪/Symbol 3823.xml" itemID="668e7c1e-00000f77" lastModified="1720533000"/>
           <Include href="1.枪械相关/手枪/Symbol 3824.xml" itemID="668e7c1e-00000f78" lastModified="1720533000"/>
           <Include href="1.枪械相关/手枪/Symbol 3825.xml" itemID="668e7c1e-00000f79" lastModified="1720533000"/>
-          <Include href="1.枪械相关/手枪/Symbol 3827.xml" itemID="668e7c1e-00000f7a" lastModified="1720533000"/>
-          <Include href="1.枪械相关/手枪/Symbol 4212.xml" itemID="668e7c1e-00001059" lastModified="1720533000"/>
-          <Include href="1.枪械相关/手枪/Symbol 4213.xml" itemID="668e7c1e-0000105a" lastModified="1720776571"/>
+          <Include href="1.枪械相关/手枪/Symbol 3827.xml" itemID="668e7c1e-00000f7a" lastModified="1754204992"/>
+          <Include href="1.枪械相关/手枪/Symbol 4212.xml" itemID="668e7c1e-00001059" lastModified="1754207101"/>
+          <Include href="1.枪械相关/手枪/Symbol 4213.xml" itemID="668e7c1e-0000105a" lastModified="1754206099"/>
           <Include href="1.枪械相关/手枪/UZI战术版/Symbol 4209.xml" itemID="668e7c1e-00001056" lastModified="1744213476"/>
           <Include href="1.枪械相关/手枪/UZI战术版/Symbol 4214.xml" itemID="668e7c1e-0000105b" lastModified="1744213502"/>
           <Include href="1.枪械相关/手枪/极品UZI战术版/Symbol 4219.xml" itemID="668e7c1e-0000105e" lastModified="1744213553"/>
@@ -868,6 +870,9 @@
           <Include href="Pins/Pin3.xml" itemIcon="1" loadImmediate="false" itemID="609349e2-00001546" lastModified="1620265442"/>
           <Include href="real mini uzi2.xml" loadImmediate="false" itemID="67f68ff4-000023ff" lastModified="1744212048"/>
           <Include href="shape/Symbol 860.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000ba4" lastModified="1722444119"/>
+          <Include href="wa90/Symbol 10.xml" itemIcon="1" loadImmediate="false" itemID="60abf9c4-000012a0" lastModified="1754204313"/>
+          <Include href="wa90/Symbol 11.xml" itemIcon="1" loadImmediate="false" itemID="60abfa2c-000012a6" lastModified="1621883436"/>
+          <Include href="wa90/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="60abfaa5-000012c5" lastModified="1621883557"/>
           <Include href="待整理防具相关汇总/Symbol 84.xml" itemID="668e7c1e-000005f7" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/Symbol 97.xml" itemID="668e7c1e-000005fe" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/Symbol 246.xml" itemID="668e7c1e-0000067d" lastModified="1720533000"/>
@@ -2161,7 +2166,7 @@
           <Include href="无AS链接/Symbol 3898.xml" loadImmediate="false" itemID="668e7c1e-00000f93" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 3899.xml" loadImmediate="false" itemID="668e7c1e-00000f94" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 3936.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000fb5" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 4011.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000ff2" lastModified="1720533000"/>
+          <Include href="无AS链接/Symbol 4011.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000ff2" lastModified="1754206073"/>
           <Include href="无AS链接/Symbol 4012.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000ff3" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4014.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000ff5" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4016.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000ff7" lastModified="1720533000"/>
@@ -2362,6 +2367,9 @@
           <Include href="杂七杂八/Symbol 3721.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00001019" lastModified="1710653981"/>
           <Include href="杂七杂八/Symbol 3722.xml" loadImmediate="false" itemID="65f68a66-0000101a" lastModified="1710653981"/>
           <Include href="战术配件系列/枪托/AR陆军枪托.xml" loadImmediate="false" itemID="5f015d1e-000001e8" lastModified="1594692959"/>
+          <Include href="重复项目文件夹/Symbol 10.xml" itemIcon="1" loadImmediate="false" itemID="688f099a-00005707" lastModified="1754204326"/>
+          <Include href="重复项目文件夹/Symbol 11.xml" itemIcon="1" loadImmediate="false" itemID="688f099b-00005bd1" lastModified="1621883436"/>
+          <Include href="重复项目文件夹/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="688f099a-00005708" lastModified="1754204459"/>
           <Include href="主角身体元件副本/男变装-裸体脚.xml" loadImmediate="false" itemID="67bc215a-00000de0" lastModified="1740382920"/>
           <Include href="主角身体元件副本/男变装-裸体屁股.xml" loadImmediate="false" itemID="67bc2158-00000ddf" lastModified="1740382918"/>
           <Include href="主角身体元件副本/男变装-裸体上臂.xml" loadImmediate="false" itemID="67bc2157-00000dde" lastModified="1740382918"/>
@@ -2729,6 +2737,8 @@
                     <SolidSwatchItem color="#373A3A" hue="120" saturation="7" brightness="54"/>
                     <SolidSwatchItem color="#252525" brightness="35"/>
                     <SolidSwatchItem color="#323435" hue="133" saturation="7" brightness="49"/>
+                    <SolidSwatchItem color="#1E1F21" hue="147" saturation="12" brightness="30"/>
+                    <SolidSwatchItem color="#413A41" hue="200" saturation="12" brightness="58"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -2893,6 +2903,14 @@
                          <GradientEntry color="#474747" ratio="0.584313725490196"/>
                          <GradientEntry color="#1F1F1F" ratio="1"/>
                     </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#FF5E08" ratio="0"/>
+                         <GradientEntry color="#9F3B04" ratio="1"/>
+                    </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem spreadMethod="reflect">
+                         <GradientEntry color="#A4AAA6" ratio="0"/>
+                         <GradientEntry color="#38302E" ratio="1"/>
+                    </LinearGradientSwatchItem>
                </swatches>
           </swatchList>
      </extendedSwatchLists>
@@ -2901,6 +2919,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2613459" publishTime="1754207141"/>
+          <PublishItem publishSize="2613423" publishTime="1754206312"/>
+          <PublishItem publishSize="2613853" publishTime="1754205728"/>
           <PublishItem publishSize="2620413" publishTime="1751865125"/>
           <PublishItem publishSize="2620571" publishTime="1751815702"/>
           <PublishItem publishSize="2619789" publishTime="1751813723"/>
@@ -2918,8 +2939,5 @@
           <PublishItem publishSize="2660668" publishTime="1746295863"/>
           <PublishItem publishSize="2660480" publishTime="1746295772"/>
           <PublishItem publishSize="2283856" publishTime="1743063205"/>
-          <PublishItem publishSize="2283841" publishTime="1743063000"/>
-          <PublishItem publishSize="2283782" publishTime="1743062961"/>
-          <PublishItem publishSize="2283918" publishTime="1743062612"/>
      </publishHistory>
 </DOMDocument>

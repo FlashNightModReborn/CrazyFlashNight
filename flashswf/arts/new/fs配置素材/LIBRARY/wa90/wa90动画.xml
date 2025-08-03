@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="wa90/wa90动画" itemID="6559d54c-0000032c" lastModified="1743911198">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="wa90/wa90动画" itemID="6559d54c-0000032c" lastModified="1754200443">
   <timeline>
-    <DOMTimeline name="wa90动画" currentFrame="3">
+    <DOMTimeline name="wa90动画">
       <layers>
         <DOMLayer name="图层 19" color="#FF4FFF">
           <frames>
@@ -73,11 +73,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="瞄具夹具" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="瞄具夹具" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="wa90/Symbol 4" selected="true" symbolType="graphic" centerPoint3DX="167.85" centerPoint3DY="53.15" loop="loop">
+                <DOMSymbolInstance libraryItemName="wa90/Symbol 4" symbolType="graphic" centerPoint3DX="167.85" centerPoint3DY="53.15" loop="loop">
                   <matrix>
                     <Matrix a="-0.742034912109375" d="0.829910278320313" tx="208.95" ty="36.15"/>
                   </matrix>
@@ -264,34 +264,6 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="p90部分" color="#FF800A" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="14" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="wa90/Graphic/shape 4006" symbolType="graphic" centerPoint3DX="109.6" centerPoint3DY="94.8" loop="loop">
-                  <matrix>
-                    <Matrix a="-0.629425048828125" d="0.829910278320313" tx="109.7" ty="94.8"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point y="0.05"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="14" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="wa90/Graphic/shape 4006" symbolType="graphic" centerPoint3DX="109.6" centerPoint3DY="94.8" loop="loop">
-                  <matrix>
-                    <Matrix a="-0.629425048828125" d="0.829910278320313" tx="109.7" ty="94.8"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point y="0.05"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
         <DOMLayer name="瞄准镜" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
@@ -358,6 +330,62 @@
                   </matrix>
                   <transformationPoint>
                     <Point x="74.65" y="16.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="p90部分" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="wa90/Graphic/shape 4006" symbolType="graphic" centerPoint3DX="109.9" centerPoint3DY="94.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.629425048828125" d="0.829910278320313" tx="110" ty="94.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="wa90/Graphic/shape 4006" symbolType="graphic" centerPoint3DX="109.6" centerPoint3DY="94.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.629425048828125" d="0.829910278320313" tx="109.7" ty="94.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="wa90/Symbol 10" name="弹匣" selected="true" centerPoint3DX="127.65" centerPoint3DY="79.35">
+                  <matrix>
+                    <Matrix a="-0.629425048828125" d="0.829910278320313" tx="179.3" ty="75.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="82.05" y="5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="wa90/Symbol 10" name="弹匣" centerPoint3DX="127.35" centerPoint3DY="79.35">
+                  <matrix>
+                    <Matrix a="-0.629425048828125" d="0.829910278320313" tx="179" ty="75.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="82.05" y="5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
