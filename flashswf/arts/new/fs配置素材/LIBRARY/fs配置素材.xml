@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1754185425" lastUniqueIdentifier="205">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1754220270" lastUniqueIdentifier="208">
   <timeline>
-    <DOMTimeline name="fs配置素材" currentFrame="15" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;247&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
         <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
@@ -129,6 +129,22 @@
                     <Point x="63.7" y="-39.2"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="wa90/Kel-Tec-P50" selected="true" centerPoint3DX="662.3" centerPoint3DY="431.45">
+                  <matrix>
+                    <Matrix tx="364.8" ty="446.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="297.35" y="-35.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="wa90/图标-Kel-Tec-P50" centerPoint3DX="536.9" centerPoint3DY="466.75">
+                  <matrix>
+                    <Matrix tx="536.9" ty="466.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.05" y="-34.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="15" duration="2" keyMode="9728">
@@ -157,7 +173,7 @@
                     <Point x="2.8"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="wa90/wa90变形款" selected="true" centerPoint3DX="159.4" centerPoint3DY="-520.25">
+                <DOMSymbolInstance libraryItemName="wa90/wa90变形款" centerPoint3DX="159.4" centerPoint3DY="-520.25">
                   <matrix>
                     <Matrix tx="98.15" ty="-531.85"/>
                   </matrix>

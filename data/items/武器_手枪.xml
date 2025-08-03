@@ -456,7 +456,7 @@
       <dressup>枪-手枪-PMM</dressup>
     </equipped>
   </item>
-<item>
+  <item>
     <id>8200</id>
     <name>MAC10</name>
     <displayname>MAC10</displayname>
@@ -517,7 +517,7 @@
       <dressup>枪-手枪-MAC10sil</dressup>
     </equipped>
   </item>
-    <item>
+  <item>
     <id>8202</id>
     <name>TMPmerc</name>
     <displayname>无名佣兵的TMP</displayname>
@@ -545,7 +545,7 @@
     </data>
     <equipped>
       <dressup>枪-手枪-TMPmerc</dressup>
-	        <criticalhit>30</criticalhit>
+      <criticalhit>30</criticalhit>
     </equipped>
   </item>
   <item>
@@ -2344,7 +2344,7 @@
       <slay>6</slay>
     </equipped>
   </item>
-	    <item>
+  <item>
     <id>8046</id>
     <name>鲁格MK3</name>
     <displayname>鲁格MK3</displayname>
@@ -2376,7 +2376,7 @@
       <dressup>枪-手枪-鲁格MK3</dressup>
     </equipped>
   </item>
-	<item>
+  <item>
     <id>8051</id>
     <name>土制转管手枪</name>
     <displayname>土制转管手枪</displayname>
@@ -2407,7 +2407,7 @@
       <dressup>枪-手枪-土制转管手枪</dressup>
     </equipped>
   </item>
-	 <item>
+  <item>
     <id>8056</id>
     <name>SMP5A3</name>
     <displayname>短MP5A3</displayname>
@@ -2436,10 +2436,10 @@
     </data>
     <equipped>
       <dressup>枪-手枪-MP5A3</dressup>
-	  	  <criticalhit>10</criticalhit>
+      <criticalhit>10</criticalhit>
     </equipped>
   </item>
-	 <item>
+  <item>
     <id>8065</id>
     <name>超级矮子</name>
     <displayname>超级矮个子</displayname>
@@ -2845,7 +2845,7 @@
     </data>
     <equipped>
       <dressup>枪-手枪-P90</dressup>
-    </equipped>    
+    </equipped>
     <lifecycle>
       <attr_0>
         <init>
@@ -3013,7 +3013,7 @@
     <equipped>
       <dressup>枪-手枪-P90战术版</dressup>
       <criticalhit>10</criticalhit>
-    </equipped>    
+    </equipped>
     <lifecycle>
       <attr_0>
         <init>
@@ -3470,7 +3470,7 @@
     </data>
     <equipped>
       <dressup>枪-手枪-钛合金P90</dressup>
-    </equipped>    
+    </equipped>
     <lifecycle>
       <attr_0>
         <init>
@@ -3674,7 +3674,7 @@
       <dressup>枪-手枪-STI2011</dressup>
       <slay>6</slay>
     </equipped>
-  </item>  
+  </item>
   <item>
     <id>5704</id>
     <name>XM556-H-Stinger</name>
@@ -3704,11 +3704,11 @@
       <bulletsize>30</bulletsize>
       <power>40</power>
       <impact>2</impact>
-    </data>    
+    </data>
     <lifecycle>
       <attr_0>
         <init>
-          <initRoutines>XM556_H_Stinger初始化</initRoutines>        
+          <initRoutines>XM556_H_Stinger初始化</initRoutines>
           <initParam>
             <criticalhitUpgrade>3</criticalhitUpgrade>
           </initParam>
@@ -3719,13 +3719,13 @@
       </attr_0>
     </lifecycle>
     <equipped>
-      <dressup>枪-手枪-XM556-H-Stinger</dressup>   
-      <criticalhit>3</criticalhit>   
+      <dressup>枪-手枪-XM556-H-Stinger</dressup>
+      <criticalhit>3</criticalhit>
       <evasion>-20</evasion>
       <accuracy>-20</accuracy>
-    </equipped>    
+    </equipped>
   </item>
-    <item>
+  <item>
     <id>5705</id>
     <name>XM556-OC-Overlord</name>
     <displayname>XM556-OC-Overlord</displayname>
@@ -3753,10 +3753,10 @@
       <impact>2</impact>
     </data>
     <equipped>
-      <dressup>枪-手枪-XM556-OC-Overlord</dressup>      
+      <dressup>枪-手枪-XM556-OC-Overlord</dressup>
       <evasion>-20</evasion>
       <accuracy>-20</accuracy>
-    </equipped>    
+    </equipped>
     <lifecycle>
       <attr_0>
         <init>
@@ -3766,9 +3766,9 @@
           <cycleRoutines>XM556_OC_Overlord周期</cycleRoutines>
         </cycle>
       </attr_0>
-    </lifecycle>    
+    </lifecycle>
   </item>
-    <item>
+  <item>
     <id>5706</id>
     <name>ashcore</name>
     <displayname>ashcore</displayname>
@@ -3781,7 +3781,7 @@
     武器代号来源于等离子核心将目标物质瞬间气化为灰烬的作用机制。
     系统配备强化合金外壳和散热系统，侧面装有能量状态指示器用于监控等离子室充能水平。
     具备优异的装甲穿透能力，但发射频率受热管理系统限制。
-</description>
+    </description>
     <level>35</level>
     <data>
       <capacity>23</capacity>
@@ -3803,5 +3803,51 @@
       <damagetype>魔法</damagetype>
       <magictype>能</magictype>
     </equipped>
-  </item>  
+  </item>
+  <item>
+    <id>5707</id>
+    <name>Kel-Tec-P50</name>
+    <displayname>Kel-Tec-P50</displayname>
+    <icon>Kel-Tec-P50</icon>
+    <type>武器</type>
+    <use>手枪</use>
+    <weight>9</weight>
+    <price>100000</price>
+    <description>铁枪会通过逆向工程将Kel-Tec P50从半自动升级为全自动模式，并优化弹药系统大幅提升穿甲性能，代价是损失了部分精准度。
+审判日前某知名战术模拟游戏曾收录此枪，引发玩家社区激烈讨论——从穿甲数据到射速调整的每个参数都被反复验证。
+这些虚拟实战数据为铁枪会工程师提供了宝贵的改造参考。</description>
+    <level>35</level>
+    <data>
+      <capacity>50</capacity>
+      <split>1</split>
+      <diffusion>6</diffusion>
+      <interval>150</interval>
+      <velocity>35</velocity>
+      <bullet>穿刺子弹</bullet>
+      <sound>re_SMG_P90_sil.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>冲锋枪钢芯穿甲弹</clipname>
+      <bulletsize>30</bulletsize>
+      <power>170</power>
+      <impact>35</impact>
+    </data>
+    <equipped>
+      <dressup>枪-手枪-Kel-Tec-P50</dressup>
+      <damagetype>破击</damagetype>
+      <magictype>装甲</magictype>
+      <criticalhit>12</criticalhit>
+      <accuracy>-20</accuracy>
+    </equipped>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>P90初始化</initRoutines>
+        </init>
+        <cycle>
+          <cycleRoutines>P90周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
+  </item>
 </root>
