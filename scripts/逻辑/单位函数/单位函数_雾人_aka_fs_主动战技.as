@@ -303,16 +303,40 @@ _root.主动战技函数.长枪.铁枪之锋 = {
         return org.flashNight.arki.item.ItemUtil.singleSubmit("强化石",1);
     },
 
-    释放:function(自机)
-    {
+    释放: function(自机) {
+        // 1. 清理所有射击相关的状态和任务
         自机.强制奔跑 = false;
         自机.射击最大后摇中 = false;
+        
+        // 清理可能干扰的帧计时器任务
+        _root.帧计时器.移除任务(自机.keepshooting);
+        _root.帧计时器.移除任务(自机.keepshooting2);
+        _root.帧计时器.移除任务("结束射击后摇");
+        
+        // 2. 重置射击状态标志
+        自机.主手射击中 = false;
+        自机.副手射击中 = false;
+        自机.长枪射击中 = false;
+        
+        // 3. 确保射击许可标签为true（关键修复）
+        var man = 自机.man;
+        var lable:MovieClip = man.射击许可标签;
+        man.射击许可标签 = true;
+
+        
+        // 4. 状态切换和攻击执行
+        自机.状态改变("长枪站立");
         自机.动作A = true;
         自机.铁枪之锋许可 = true;
         自机.上行 = true;
+        
+        // 5. 执行攻击
         自机.攻击();
+        
+        // 6. 清理临时状态
         自机.上行 = false;
         自机.铁枪之锋许可 = false;
+        man.射击许可标签 = lable;
     }
 };
 
