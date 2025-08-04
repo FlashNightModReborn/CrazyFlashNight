@@ -6392,7 +6392,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     <icon>G1111</icon>
     <type>武器</type>
     <use>长枪</use>
-    <weight>5</weight>
+    <weight>6</weight>
     <price>140000</price>
     <description>占位用待平衡</description>
     <level>55</level>
@@ -6409,8 +6409,8 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <bullethit>铁枪能量弹火花</bullethit>
       <clipname>能量电池</clipname>
       <bulletsize>40</bulletsize>
-      <power>3000</power>
-      <impact>10</impact>
+      <power>5432</power>
+      <impact>20</impact>
     </data>    
     <skill>
       <skillname>铁枪之锋</skillname>
@@ -6420,7 +6420,9 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <mp>50</mp>
     </skill>
     <equipped>
-      <dressup>枪-长枪-G1111</dressup>
+      <dressup>枪-长枪-G1111</dressup>      
+      <damagetype>魔法</damagetype>
+      <magictype>能</magictype>
     </equipped>    
     <lifecycle>
       <attr_0>
