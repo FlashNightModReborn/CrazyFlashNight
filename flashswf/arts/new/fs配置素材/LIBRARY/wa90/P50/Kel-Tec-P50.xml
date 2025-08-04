@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="wa90/Kel-Tec-P50" itemID="688f2946-000075a6" linkageExportForAS="true" linkageIdentifier="枪-手枪-Kel-Tec-P50" lastModified="1754223815" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="wa90/P50/Kel-Tec-P50" itemID="688f2946-000075a6" linkageExportForAS="true" linkageIdentifier="枪-手枪-Kel-Tec-P50" lastModified="1754290237" lastUniqueIdentifier="9">
   <timeline>
     <DOMTimeline name="Kel-Tec-P50" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;154&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -23,7 +23,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -1370,8 +1370,8 @@
                     <Edge fillStyle0="5" fillStyle1="37" edges="
 !436 -537|448 -545"/>
                     <Edge fillStyle0="266" fillStyle1="10" edges="
-!-632 -410|-674 -410!-674 -410|-674 -452!-674 -452|-692 -452!-692 -452|-692 -410!-692 -410|-734 -410!-734 -410|-734 -392!-734 -392|-692 -392!-692 -392|-692 -350!-692 -350|-674 -350!-674 -350|-674 -392!-674 -392|-632 -392!-632 -392|-632
- -410"/>
+!-692 -452|-692 -410!-692 -410|-734 -410!-734 -410|-734 -392!-734 -392|-692 -392!-692 -392|-692 -350!-692 -350|-674 -350!-674 -350|-674 -392!-674 -392|-632 -392!-632 -392|-632 -410!-632 -410|-674 -410!-674 -410|-674 -452!-674 -452|-692
+ -452"/>
                     <Edge fillStyle0="200" fillStyle1="10" edges="
 !-668 -211[#FFFD56.D3 #FFFF24.F2 -699 -235!-699 -235[-725 -258 -730 -263!-730 -263[-742 -273 -748 -279!-748 -279[-759 -288 -768 -291!-768 -291[-755 -276 -728 -242!-728 -242[#FFFD29.12 #FFFF0F.52 -726 -239.5"/>
                     <Edge fillStyle0="201" fillStyle1="203" edges="
@@ -5846,10 +5846,6 @@
                     <Edge cubics="!362 76(;369,70 378,62 390,53q362 76Q372 67q390 53);"/>
                     <Edge cubics="!362 71(;347,81 339,87 337,88q362 71Q340 86q337 88);"/>
                     <Edge cubics="!-831 -291(;-874,-312 -909,-329 -937,-342q-831 -291Q-895 -323q-937 -342);"/>
-                    <Edge cubics="!-1171 -33(;-1171,-33 -1171,-28 -1171,-28q-1171 -33 -1171 -28);"/>
-                    <Edge cubics="!-1171 -28(;-1171,-28 -1167,-28 -1167,-28q-1171 -28 -1167 -28);"/>
-                    <Edge cubics="!-1167 -28(;-1168,-28 -1168,-28 -1168,-29q-1167 -28Q-1168 -28q-1168 -29);"/>
-                    <Edge cubics="!-1168 -29(;-1169,-30 -1170,-32 -1171,-33q-1168 -29Q-1169 -31q-1171 -33);"/>
                     <Edge cubics="!-25 -609(;-27,-603 -28,-599 -29,-596q-25 -609Q-28 -600q-29 -596);"/>
                     <Edge cubics="!-29 -596(;-83,-595 -155,-595 -246,-595q-29 -596Q-110 -595q-246 -595);"/>
                     <Edge cubics="!-514 -604(;-520,-604 -528,-604 -539,-604q-514 -604Q-523 -604q-539 -604);"/>
@@ -7144,13 +7140,6 @@
                     <Edge cubics="!-380 101(;-393,86 -402,75 -407,68q-380 101Q-399 79q-407 68);"/>
                     <Edge cubics="!-402 270(;-402,270 -410,272 -410,272q-402 270 -410 272);"/>
                     <Edge cubics="!-587 492(;-587,492 -579,499 -579,499q-587 492 -579 499);"/>
-                    <Edge cubics="!-923 94(;-923,94 -924,94 -924,94q-923 94 -924 94);"/>
-                    <Edge cubics="!-924 94(;-924,94 -923,95 -923,95q-924 94 -923 95);"/>
-                    <Edge cubics="!-923 95(;-923,95 -923,94 -923,94q-923 95 -923 94);"/>
-                    <Edge cubics="!-955 162(;-953,161 -951,159 -950,158q-955 162Q-952 160q-950 158);"/>
-                    <Edge cubics="!-950 158(;-950,158 -949,156 -949,156q-950 158 -949 156);"/>
-                    <Edge cubics="!-949 156(;-951,155 -953,153 -955,152q-949 156Q-952 154q-955 152);"/>
-                    <Edge cubics="!-955 152(;-955,152 -955,162 -955,162q-955 152 -955 162);"/>
                     <Edge cubics="!-250 287(;-114,287 22,287 159,287q-250 287Q-46 287q159 287);"/>
                     <Edge cubics="!80 222(;42,222 -6,222 -65,221q80 222Q23 222q-65 221);"/>
                     <Edge cubics="!-32 203(;-20,212 -7,217 7,219q-32 203Q-14 216q7 219);"/>
@@ -7339,9 +7328,9 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="119.1" centerPoint3DY="-17">
+                <DOMSymbolInstance libraryItemName="火药燃气液压打桩机/未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="108.65" centerPoint3DY="-19.65">
                   <matrix>
-                    <Matrix a="0.880615234375" d="0.880615234375" tx="108.65" ty="-27.95"/>
+                    <Matrix a="0.880615234375" d="0.880615234375" tx="98.2" ty="-30.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -8058,11 +8047,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="wa90/Graphic/shape 3716" name="激光模组" centerPoint3DX="372.7" centerPoint3DY="9.3">
+                <DOMSymbolInstance libraryItemName="wa90/Graphic/shape 3716" name="激光模组" centerPoint3DX="372.7" centerPoint3DY="9.3" isVisible="false">
                   <matrix>
                     <Matrix a="0.782638549804688" d="-0.347030639648438" tx="83.95" ty="11.3"/>
                   </matrix>

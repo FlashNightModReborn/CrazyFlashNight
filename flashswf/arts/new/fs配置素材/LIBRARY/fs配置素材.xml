@@ -1,10 +1,10 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1754232376" lastUniqueIdentifier="208">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1754290151" lastUniqueIdentifier="210">
   <timeline>
-    <DOMTimeline name="fs配置素材" currentFrame="16" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="14" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="文件夹 1" color="#9933CC" outline="true" useOutlineView="true" layerType="folder"/>
-        <DOMLayer name="文件夹 2" color="#FF800A" outline="true" useOutlineView="true" layerType="folder"/>
-        <DOMLayer name="图层 3" color="#4FFFFF" outline="true" useOutlineView="true">
+        <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
+        <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
+        <DOMLayer name="图层 3" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="56" keyMode="9728">
               <elements/>
@@ -17,7 +17,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#FF4FFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 2" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="56" keyMode="9728">
               <Actionscript>
@@ -33,8 +33,8 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文件夹 3" color="#808080" outline="true" current="true" isSelected="true" useOutlineView="true" layerType="folder"/>
-        <DOMLayer name="图层 4" color="#4F80FF" outline="true" useOutlineView="true">
+        <DOMLayer name="文件夹 3" color="#808080" layerType="folder"/>
+        <DOMLayer name="图层 4" color="#4F80FF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -129,7 +129,7 @@
                     <Point x="63.7" y="-39.2"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="wa90/Kel-Tec-P50" centerPoint3DX="662.3" centerPoint3DY="431.45">
+                <DOMSymbolInstance libraryItemName="wa90/P50/Kel-Tec-P50" selected="true" centerPoint3DX="662.3" centerPoint3DY="431.45">
                   <matrix>
                     <Matrix tx="364.8" ty="446.45"/>
                   </matrix>
@@ -137,9 +137,25 @@
                     <Point x="297.35" y="-35.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="wa90/图标-Kel-Tec-P50" centerPoint3DX="536.9" centerPoint3DY="466.75">
+                <DOMSymbolInstance libraryItemName="wa90/P50/图标-Kel-Tec-P50" centerPoint3DX="536.9" centerPoint3DY="466.75">
                   <matrix>
                     <Matrix tx="536.9" ty="466.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.05" y="-34.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="wa90/AR57/AR57" centerPoint3DX="623.9" centerPoint3DY="559.25">
+                  <matrix>
+                    <Matrix tx="324.85" ty="552.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="298.8" y="6.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="wa90/AR57/图标-AR57" centerPoint3DX="488.45" centerPoint3DY="578.75">
+                  <matrix>
+                    <Matrix tx="488.45" ty="578.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="32.05" y="-34.3"/>
@@ -448,7 +464,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" duration="12" name="标题页" labelType="name" keyMode="9728">
               <elements>

@@ -12,7 +12,9 @@
           <DOMFolderItem name="PKP" itemID="686b8a7f-000003a1"/>
           <DOMFolderItem name="sprite" itemID="667d1fff-00000d61"/>
           <DOMFolderItem name="wa90" itemID="6559d3b1-000002db" isExpanded="true"/>
+          <DOMFolderItem name="wa90/AR57" itemID="68905807-0000a61f" isExpanded="true"/>
           <DOMFolderItem name="wa90/Graphic" itemID="5e86cc75-00001260"/>
+          <DOMFolderItem name="wa90/P50" itemID="689057d2-0000a3f3"/>
           <DOMFolderItem name="XM25" itemID="6874cd16-000007b9"/>
           <DOMFolderItem name="XM556" itemID="686bba3f-000040b0"/>
           <DOMFolderItem name="ZB-26" itemID="68728189-000006c7"/>
@@ -136,7 +138,7 @@
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="ashcore/ashcore.xml" itemID="688340fd-00000819" lastModified="1753436006"/>
           <Include href="ashcore/图标-ashcore.xml" itemID="68835078-00000a95" lastModified="1753436313"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1754232376"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1754290151"/>
           <Include href="g11/G11.xml" itemID="68751898-0000072e" lastModified="1752656002"/>
           <Include href="g11/G11动画.xml" loadImmediate="false" itemID="68776282-000017ba" lastModified="1752654466"/>
           <Include href="g11/G11上支架.xml" itemIcon="1" loadImmediate="false" itemID="68784e75-00003582" lastModified="1752714869"/>
@@ -189,9 +191,12 @@
           <Include href="PKP/图标-PKP.xml" itemID="686b8a7a-000003a0" lastModified="1751887291"/>
           <Include href="sprite/Symbol 35.xml" itemID="6577b699-00000971" lastModified="1718635260"/>
           <Include href="sprite/Symbol 36.xml" loadImmediate="false" itemID="6577b699-00000972" lastModified="1719476235"/>
+          <Include href="wa90/AR57/AR57.xml" itemID="68904bb0-0000a3d3" lastModified="1754290230"/>
+          <Include href="wa90/AR57/图标-AR57.xml" itemID="689057e5-0000a41b" lastModified="1754290211"/>
           <Include href="wa90/Graphic/shape 3716.xml" itemIcon="1" loadImmediate="false" itemID="5e86cc7d-00000e85" lastModified="1585892477"/>
           <Include href="wa90/Graphic/shape 4006.xml" itemIcon="1" loadImmediate="false" itemID="5e86cc7d-00000fa7" lastModified="1754200354"/>
-          <Include href="wa90/Kel-Tec-P50.xml" itemID="688f2946-000075a6" lastModified="1754223815"/>
+          <Include href="wa90/P50/Kel-Tec-P50.xml" itemID="688f2946-000075a6" lastModified="1754290237"/>
+          <Include href="wa90/P50/图标-Kel-Tec-P50.xml" itemID="688f460b-0000768a" lastModified="1754224051"/>
           <Include href="wa90/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="60abe370-00000028" lastModified="1621882292"/>
           <Include href="wa90/Symbol 5.xml" itemIcon="1" loadImmediate="false" itemID="60abe379-0000002c" lastModified="1700386543"/>
           <Include href="wa90/Symbol 6.xml" itemIcon="1" loadImmediate="false" itemID="60abe6b3-00000030" lastModified="1700386216"/>
@@ -206,7 +211,6 @@
           <Include href="wa90/wa管.xml" itemIcon="1" loadImmediate="false" itemID="60abd6f7-00002942" lastModified="1700386803"/>
           <Include href="wa90/激光遮罩.xml" loadImmediate="false" itemID="67e3d076-00002160" lastModified="1742983286"/>
           <Include href="wa90/瞄具.xml" itemIcon="1" loadImmediate="false" itemID="60abd43a-00002933" lastModified="1621873722"/>
-          <Include href="wa90/图标-Kel-Tec-P50.xml" itemID="688f460b-0000768a" lastModified="1754224051"/>
           <Include href="wa90/图标-wa90.xml" itemID="6559de84-0000042e" lastModified="1700388617"/>
           <Include href="wa90/消音器.xml" itemIcon="1" loadImmediate="false" itemID="60abd2e4-0000291f" lastModified="1621887798"/>
           <Include href="XM25/XM25.xml" itemID="687467dd-000003a8" lastModified="1753091233"/>
@@ -1296,6 +1300,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2066199" publishTime="1754290253"/>
+          <PublishItem publishSize="2066196" publishTime="1754290245"/>
+          <PublishItem publishSize="2056321" publishTime="1754232509"/>
           <PublishItem publishSize="2056332" publishTime="1754231057"/>
           <PublishItem publishSize="2056329" publishTime="1754224061"/>
           <PublishItem publishSize="2056334" publishTime="1754223824"/>
@@ -1313,8 +1320,5 @@
           <PublishItem publishSize="2038802" publishTime="1754184255"/>
           <PublishItem publishSize="2038797" publishTime="1754117848"/>
           <PublishItem publishSize="2038578" publishTime="1754067812"/>
-          <PublishItem publishSize="2038557" publishTime="1754064910"/>
-          <PublishItem publishSize="2038525" publishTime="1754064592"/>
-          <PublishItem publishSize="2038513" publishTime="1754064452"/>
      </publishHistory>
 </DOMDocument>
