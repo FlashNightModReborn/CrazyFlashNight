@@ -44,14 +44,14 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             return;
         }
         
-        // 绑定核心函数到目标对象，传入必要的引用
-        _bindCoreFunctions(self, parentRef, _root);
+        // 绑定核心函数到目标对象
+        _bindCoreFunctions(self, parentRef);
         
         // 处理双枪/单枪模式
         if (config.isDualGun) {
-            _initDualGunSystem(self, parentRef, _root, config);
+            _initDualGunSystem(self, parentRef, config);
         } else {
-            _initSingleGunSystem(self, parentRef, _root, config);
+            _initSingleGunSystem(self, parentRef, config);
         }
     }
 
@@ -61,12 +61,11 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
      * 
      * @param target     目标 MovieClip
      * @param parentRef  父级引用
-     * @param rootRef    根引用（用于传递给功能类）
      */
-    private static function _bindCoreFunctions(target:MovieClip, parentRef:Object, rootRef:Object):Void {
+    private static function _bindCoreFunctions(target:MovieClip, parentRef:Object):Void {
         // ShootCore 相关函数
         target.开始射击 = function() {
-            ShootCore.startShooting(parentRef, target, ShootCore.primaryParams, rootRef);
+            ShootCore.startShooting(parentRef, target, ShootCore.primaryParams);
         };
         
         // 持续射击函数
@@ -80,11 +79,11 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         
         // ReloadManager 相关函数
         target.开始换弹 = function() {
-            ReloadManager.startReload(target, parentRef, rootRef);
+            ReloadManager.startReload(target, parentRef);
         };
         
         target.换弹匣 = function() {
-            ReloadManager.reloadMagazine(target, parentRef, rootRef);
+            ReloadManager.reloadMagazine(target, parentRef);
         };
         
         target.结束换弹 = function() {
@@ -92,7 +91,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         };
         
         target.刷新弹匣数显示 = function() {
-            ReloadManager.updateAmmoDisplay(target, parentRef, rootRef);
+            ReloadManager.updateAmmoDisplay(target, parentRef);
         };
     }
 
@@ -102,10 +101,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
      * 
      * @param target    目标 MovieClip
      * @param parentRef 父级引用
-     * @param rootRef   根引用
      * @param config    双枪配置对象
      */
-    private static function _initDualGunSystem(target:MovieClip, parentRef:Object, rootRef:Object, config:Object):Void {
+    private static function _initDualGunSystem(target:MovieClip, parentRef:Object, config:Object):Void {
         // 创建武器状态管理器
         var stateManager:WeaponStateManager = new WeaponStateManager(
             parentRef, 
@@ -149,11 +147,11 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         target.副手开始射击 = _createHandShootFunction(target, parentRef, subHandConfig, stateManager);
         
         // 使用ReloadManager创建换弹函数
-        target.主手换弹匣 = ReloadManager.createHandReloadFunction(target, parentRef, rootRef, mainHandConfig, stateManager);
-        target.副手换弹匣 = ReloadManager.createHandReloadFunction(target, parentRef, rootRef, subHandConfig, stateManager);
+        target.主手换弹匣 = ReloadManager.createHandReloadFunction(target, parentRef, mainHandConfig, stateManager);
+        target.副手换弹匣 = ReloadManager.createHandReloadFunction(target, parentRef, subHandConfig, stateManager);
         
         // 使用ReloadManager创建开始换弹函数
-        target.开始换弹 = ReloadManager.createDualGunReloadStartFunction(target, parentRef, rootRef, stateManager);
+        target.开始换弹 = ReloadManager.createDualGunReloadStartFunction(target, parentRef, stateManager);
         
         // 刷新界面显示
         target.刷新弹匣数显示();
@@ -238,12 +236,13 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             // 开始持续射击
             var continueShooting:Boolean = that[continueMethodName](parentRef, weaponType, that[speedProp], that);
             if (continueShooting) {
-                parentRef[timerProp] = _root.帧计时器.添加生命周期任务(
+                // 内联帧计时器添加生命周期任务方法
+                parentRef[timerProp] = _root.帧计时器.taskManager.addLifecycleTask(
                     parentRef,
                     handPrefix + "开始射击",
                     that[continueMethodName],
                     that[speedProp],
-                    parentRef, weaponType, that[speedProp]
+                    [parentRef, weaponType, that[speedProp]]
                 );
             }
         };
@@ -255,10 +254,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
      * 
      * @param target    目标 MovieClip
      * @param parentRef 父级引用
-     * @param rootRef   根引用
      * @param config    单武器配置对象
      */
-    private static function _initSingleGunSystem(target:MovieClip, parentRef:Object, rootRef:Object, config:Object):Void {
+    private static function _initSingleGunSystem(target:MovieClip, parentRef:Object, config:Object):Void {
         var weaponData:Array = config.weaponData;
         var extraParams:Object = config.extraParams || {};
         

@@ -84,7 +84,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         if (!man.射击许可标签) {
             // _root.发布消息("主角函数.射击许可", "不允许射击");
             core[shootStateName] = false;
-            root.帧计时器.移除任务(core[config.taskName]);
+            // 内联帧计时器移除任务方法
+            _root.帧计时器.taskManager.removeTask(core[config.taskName]);
             return false;
         }
 
@@ -138,9 +139,10 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             dispatcher.publish("updateBullet", core, shootStateName, magazineRemaining, config.playerBulletField);
             if (shootSpeed > 300) {
                 // 延迟任务：结束后摇状态
-                root.帧计时器.添加或更新任务(core, "结束射击后摇", function(target:Object):Void {
+                // 内联帧计时器添加或更新任务方法
+                _root.帧计时器.taskManager.addOrUpdateTask(core, "结束射击后摇", function(target:Object):Void {
                     target.射击最大后摇中 = false;
-                }, 300, core);
+                }, 300, [core]);
             }
         }
 
@@ -148,7 +150,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         if (core[shootStateName]) {
             return true;
         }
-        root.帧计时器.移除任务(core[config.taskName]);
+        // 内联帧计时器移除任务方法
+        _root.帧计时器.taskManager.removeTask(core[config.taskName]);
         return false;
     }
 
@@ -164,7 +167,6 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      * @param core         自机对象的 MovieClip 引用（通常为 this._parent）
      * @param protagonist  主角功能对象（包含换弹标签、射击速度等属性）
      * @param params       射击配置参数对象（主副手参数对象）
-     * @param root         全局根引用（用于访问帧计时器等系统）
      * 
      * @see ShootCore.continuousShoot  实际执行持续射击的核心逻辑
      * @see ShootCore.primaryParams    主手射击的标准配置
@@ -174,8 +176,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      * ShootCore.startShooting(
      *     _parent, 
      *     this,
-     *     ShootCore.primaryParams,
-     *     _root
+     *     ShootCore.primaryParams
      * );
      * 
      * @internal 关键流程说明：
@@ -189,8 +190,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
     public static function startShooting(
         core:Object,           // 自机对象（原 parent）
         protagonist:Object,       // 原主角函数对象（原 this）
-        params:Object,            // 主副手参数（primaryParams/secondaryParams）
-        root:Object               // 全局根引用
+        params:Object             // 主副手参数（primaryParams/secondaryParams）
     ):Void {
         // 若正在该状态射击中或正在换弹，直接返回
         if (core[params.shootingStateName] || protagonist.换弹标签) return;
@@ -207,7 +207,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         // 检查弹匣是否打空
         if (core[shootCountName][core[attackMode]] >= core[magazineCapName]) {
             // 若剩余弹匣>0 或非控制目标，触发换弹
-            if (protagonist.剩余弹匣数 > 0 || root.控制目标 != core._name) {
+            if (protagonist.剩余弹匣数 > 0 || _root.控制目标 != core._name) {
                 protagonist.开始换弹();
             }
             return;
@@ -221,8 +221,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
         // 调用持续射击核心逻辑
         if (ShootCore.continuousShoot(core, attackMode, interval, params)) {
-            // 添加持续射击任务到帧计时器
-            core[params.taskName] = root.帧计时器.taskManager.addLifecycleTask(
+            // 内联帧计时器添加生命周期任务方法
+            core[params.taskName] = _root.帧计时器.taskManager.addLifecycleTask(
                 core, 
                 "开始射击", 
                 ShootCore.continuousShoot, 
@@ -232,14 +232,15 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
             // 若射击间隔较长，添加后摇解除任务
             if (interval > 300) {
-                root.帧计时器.添加或更新任务(
+                // 内联帧计时器添加或更新任务方法
+                _root.帧计时器.taskManager.addOrUpdateTask(
                     core,
                     "结束射击后摇",
                     function(自机:MovieClip):Void {
                         自机.射击最大后摇中 = false;
                     },
                     300,
-                    core
+                    [core]
                 );
             }
         }
