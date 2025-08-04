@@ -115,7 +115,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         
         assert(task1Id != task2Id, "任务ID应该不同");
         
-        for (var i:Number = 0; i < 4; i++) {
+        for (var i:Number = 0; i < 15; i++) {
             wheel.tick();
         }
         assert(results.length == 2, "两个延迟任务都应执行");
@@ -170,7 +170,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         trace("    添加重复3次的任务，间隔100ms...");
         
         // 执行足够的帧数
-        for (var i:Number = 0; i < 10; i++) {
+        for (var i:Number = 0; i < 25; i++) {
             wheel.tick();
         }
         
@@ -293,7 +293,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         
         trace("    模拟渐隐任务，间隔100ms，重复5次...");
         
-        for (var i:Number = 0; i < 15; i++) {
+        for (var i:Number = 0; i < 35; i++) {
             wheel.tick();
         }
         
@@ -324,7 +324,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         // 长延迟任务
         wheel.addDelayedTask(300, function():Void { results.push("long"); });
         
-        for (var i:Number = 0; i < 8; i++) {
+        for (var i:Number = 0; i < 12; i++) {
             wheel.tick();
         }
         
@@ -482,7 +482,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         }, 1000, 3);
         
         // 模拟游戏运行
-        for (var i:Number = 0; i < 60; i++) {
+        for (var i:Number = 0; i < 200; i++) {
             wheel.tick();
         }
         

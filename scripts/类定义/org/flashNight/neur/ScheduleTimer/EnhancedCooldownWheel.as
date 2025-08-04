@@ -14,20 +14,22 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
     private var nextTaskId:Number = 1;       // 任务ID生成器
     private var activeTasks:Object;          // taskId -> TaskNode 映射
     
-    // 每帧毫秒数（假设60FPS）
-    public var 每帧毫秒:Number = 1000 / 60;
+    // 每帧毫秒数（假设30FPS）
+    public var 每帧毫秒:Number = 1000 / 30;
     
     // ————————————————————————
-    // 任务节点类
+    // 任务节点创建函数
     // ————————————————————————
-    private function TaskNode(id:Number, callback:Function, args:Array, 
-                             interval:Number, isRepeating:Boolean) {
-        this.id = id;
-        this.callback = callback;
-        this.args = args || [];
-        this.interval = interval;
-        this.isRepeating = isRepeating;
-        this.isActive = true;
+    private function createTaskNode(id:Number, callback:Function, args:Array, 
+                                   interval:Number, isRepeating:Boolean):Object {
+        var node:Object = {};
+        node.id = id;
+        node.callback = callback;
+        node.args = args || [];
+        node.interval = interval;
+        node.isRepeating = isRepeating;
+        node.isActive = true;
+        return node;
     }
     
     // ————————————————————————
@@ -70,6 +72,11 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
      * @return 任务ID，用于后续移除
      */
     public function 添加任务(callback:Function, intervalMs:Number, repeatCount:Number):Number {
+        // NaN防御机制
+        if (isNaN(intervalMs) || intervalMs < 1) {
+            intervalMs = 33.33; // 30fps下约1帧
+        }
+        
         var args:Array = [];
         // 获取可变参数（从第4个参数开始）
         for (var i:Number = 3; i < arguments.length; i++) {
@@ -79,7 +86,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
         var intervalFrames:Number = Math.max(1, Math.round(intervalMs / 每帧毫秒));
         var taskId:Number = nextTaskId++;
         
-        var task:Object = new TaskNode(taskId, callback, args, intervalFrames, true);
+        var task:Object = createTaskNode(taskId, callback, args, intervalFrames, true);
         task.remainingCount = repeatCount;
         
         activeTasks[taskId] = task;
@@ -116,7 +123,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
         var delayFrames:Number = Math.max(1, Math.round(delay / 每帧毫秒));
         var taskId:Number = nextTaskId++;
         
-        var task:Object = new TaskNode(taskId, callback, args, 0, false);
+        var task:Object = createTaskNode(taskId, callback, args, 0, false);
         activeTasks[taskId] = task;
         scheduleTask(task, delayFrames);
         
@@ -182,7 +189,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
                         delete activeTasks[task.id];
                     }
                 } else {
-                    // 无限重复
+                    // 无限重复 (remainingCount <= 0)
                     scheduleTask(task, task.interval);
                 }
             } else {

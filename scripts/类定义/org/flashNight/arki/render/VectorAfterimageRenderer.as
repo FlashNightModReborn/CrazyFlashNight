@@ -1,6 +1,7 @@
 ﻿import flash.geom.*;
 import org.flashNight.neur.Event.*;
 import org.flashNight.sara.util.* ;
+import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 
 /**
  * 矢量残影渲染器（极致复用版）
@@ -9,7 +10,7 @@ import org.flashNight.sara.util.* ;
  * 1. 合并形状绘制：提供批量绘制接口，通过合并多个形状的点集，
  *    只调用一次 beginFill/endFill，降低绘制开销。
  * 2. 最小化事件监听器：利用统一任务管理，对所有画布的渐隐动画进行处理，
- *    目前依然采用 _root.帧计时器 添加任务的方式，但在结构上便于后续集中管理。
+ *    采用 EnhancedCooldownWheel 增强时间轮进行任务调度，提供更精确的时间管理。
  * 
  * 功能特性：
  * - 支持 MovieClip 残影、混合形状残影（部分直线部分曲线）和自定义路径残影的绘制。
@@ -42,7 +43,7 @@ import org.flashNight.sara.util.* ;
  * VectorAfterimageRenderer.instance.drawClip(mc, {brightness:20});
  * 
  * // 场景切换时调用 onSceneChanged 重置所有状态和对象池
- * _root.帧计时器.eventBus.subscribe("SceneChanged", VectorAfterimageRenderer.instance.onSceneChanged, VectorAfterimageRenderer.instance);
+ * // 注意：已替换为 EnhancedCooldownWheel 时间轮，无需额外事件订阅
  */
 class org.flashNight.arki.render.VectorAfterimageRenderer {
 
@@ -91,10 +92,23 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         _fadingCanvases = [];
         
         // 预先计算默认配置参数
-        var frameDuration:Number = _root.帧计时器.每帧毫秒;
+        var frameDuration:Number = EnhancedCooldownWheel.I().每帧毫秒;
+        
+        // 防御NaN
+        if (isNaN(frameDuration) || frameDuration <= 0) {
+            frameDuration = 33.33; // 30fps下约1帧
+        }
+        
         var shadowDuration:Number = frameDuration * _defaultShadowCount;
         var decayFactor:Number = Math.pow(0.01, 1 / _defaultShadowCount);
         var refreshInterval:Number = shadowDuration / (_defaultShadowCount * _defaultShadowCount);
+        
+        // 防御refreshInterval的NaN
+        if (isNaN(refreshInterval) || refreshInterval < 1) {
+            refreshInterval = 33.33;
+        }
+        refreshInterval = Math.max(1, Math.round(refreshInterval));
+        
         _config[_defaultShadowCount] = { shadowDuration: shadowDuration, decayFactor: decayFactor, refreshInterval: refreshInterval };
         
         // 初始化对象池
@@ -119,7 +133,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
             // releaseFunc：释放画布时执行的清理操作
             function():Void {
                 if (this.fadeTask) {
-                    _root.帧计时器.移除任务(this.fadeTask);
+                    EnhancedCooldownWheel.I().移除任务(this.fadeTask);
                 }
                 this._visible = false;
                 if (this.clear != undefined) {
@@ -151,7 +165,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     public function configureSystem(shadowCount:Number):Void {
         _defaultShadowCount = shadowCount;
         if (_config[shadowCount] == undefined) {
-            var frameDuration:Number = _root.帧计时器.每帧毫秒;
+            var frameDuration:Number = EnhancedCooldownWheel.I().每帧毫秒;
             var shadowDuration:Number = frameDuration * shadowCount;
             var decayFactor:Number = Math.pow(0.01, 1 / shadowCount);
             var refreshInterval:Number = shadowDuration / (shadowCount * shadowCount);
@@ -416,21 +430,26 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         // 获取或生成当前残影配置参数
         var configObj:Object = _config[shadowCount];
         if (configObj == undefined) {
-            var frameDuration:Number = _root.帧计时器.每帧毫秒;
+            var frameDuration:Number = EnhancedCooldownWheel.I().每帧毫秒;
             var shadowDuration:Number = frameDuration * shadowCount;
             var decayFactor:Number = Math.pow(0.01, 1 / shadowCount);
             var refreshInterval:Number = shadowDuration / (shadowCount * shadowCount);
+            // 防御NaN和过小值
+            if (isNaN(refreshInterval) || refreshInterval < 1) {
+                refreshInterval = 33.33; // 兜底为约1帧
+            }
+            refreshInterval = Math.max(1, Math.round(refreshInterval));
             configObj = { shadowDuration: shadowDuration, decayFactor: decayFactor, refreshInterval: refreshInterval };
             _config[shadowCount] = configObj;
         }
         
         // 移除之前可能存在的渐隐任务
         if (canvas.fadeTask) {
-            _root.帧计时器.移除任务(canvas.fadeTask);
+            EnhancedCooldownWheel.I().移除任务(canvas.fadeTask);
         }
-        // 绑定 onFadeUpdate 方法，添加渐隐任务（后续可替换为统一管理的 ENTER_FRAME 监听器）
+        // 绑定 onFadeUpdate 方法，添加渐隐任务（使用增强时间轮替换原帧计时器）
         var callback:Function = Delegate.create(this, onFadeUpdate);
-        canvas.fadeTask = _root.帧计时器.添加任务(callback, configObj.refreshInterval, shadowCount, canvas);
+        canvas.fadeTask = EnhancedCooldownWheel.I().添加任务(callback, configObj.refreshInterval, shadowCount, canvas);
     }
     
     /**
@@ -461,7 +480,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
      */
     private function recycleCanvas(canvas:MovieClip):Void {
         if (canvas.__isDestroyed) return; // 防止重复回收
-        _root.帧计时器.移除任务(canvas.fadeTask);
+        EnhancedCooldownWheel.I().移除任务(canvas.fadeTask);
         canvas._visible = false;
         if (canvas.clear != undefined) {
             canvas.clear();
