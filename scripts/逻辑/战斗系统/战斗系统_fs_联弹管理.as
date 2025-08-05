@@ -370,6 +370,8 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
                 // 更新Y和X
                 unit._y += bulletSpeedX * sinVal * directionalCoefficient;
                 unit._x += deltaXUpdate * cosVal;
+
+                /*
                 
                 isHitGround = (unit._y * parentCos + currentParentY > hitZ);
                 isHIt = isHitMap && !Mover.isMovieClipPositionValid(unit);
@@ -378,6 +380,8 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
                     this.单元体列表.splice(j, 1);
                     continue;
                 }
+
+                */
                 
                 if (unit._y > y_max) y_max = unit._y;
                 if (unit._y < y_min) y_min = unit._y;
@@ -418,6 +422,8 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
                 
                 // 仅更新Y
                 unit._y += bulletSpeedX * sinVal * directionalCoefficient;
+
+                /*
                 
                 isHitGround = (unit._y * parentCos + currentParentY > hitZ);
                 isHIt = isHitMap && !Mover.isMovieClipPositionValid(unit);
@@ -426,6 +432,8 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
                     this.单元体列表.splice(j, 1);
                     continue;
                 }
+
+                */
                 
                 if (unit._y > y_max) y_max = unit._y;
                 if (unit._y < y_min) y_min = unit._y;
