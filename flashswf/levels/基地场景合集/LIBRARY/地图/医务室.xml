@@ -13,7 +13,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#64AEAB" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#64AEAB">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -93,11 +93,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#0DDEDB">
+        <DOMLayer name="Layer 9" color="#0DDEDB" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/格格巫/格格巫-NPC" centerPoint3DX="594.8" centerPoint3DY="404.5">
+                <DOMSymbolInstance libraryItemName="NPC/格格巫/格格巫-NPC" selected="true" centerPoint3DX="594.8" centerPoint3DY="404.5">
                   <matrix>
                     <Matrix tx="520.5" ty="296.75"/>
                   </matrix>

@@ -99,11 +99,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="985女" color="#60B1F3" autoNamed="false">
+        <DOMLayer name="985女" color="#60B1F3" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/985女-NPC" centerPoint3DX="426.6" centerPoint3DY="263.15">
+                <DOMSymbolInstance libraryItemName="NPC/985女-NPC" selected="true" centerPoint3DX="426.6" centerPoint3DY="263.15">
                   <matrix>
                     <Matrix tx="374.6" ty="91.5"/>
                   </matrix>
@@ -199,7 +199,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="deadbody" color="#624BF7" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="deadbody" color="#624BF7" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
