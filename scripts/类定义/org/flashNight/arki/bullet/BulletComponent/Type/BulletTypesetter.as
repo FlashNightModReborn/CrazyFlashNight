@@ -150,15 +150,15 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
         // 设置子弹检测标志
         // bullet.近战检测 = ((flags & FLAG_MELEE) != 0);
         // bullet.联弹检测 = ((flags & FLAG_CHAIN) != 0);
-        bullet.穿刺检测 = bullet.穿刺检测 || ((flags & FLAG_PIERCE) != 0);
-        bullet.透明检测 = bullet.透明检测 || ((flags & FLAG_TRANSPARENCY) != 0);
+        bullet.穿刺检测 = ((flags & FLAG_PIERCE) != 0);
+        bullet.透明检测 = ((flags & FLAG_TRANSPARENCY) != 0);
+        bullet.纵向检测 = ((flags & FLAG_VERTICAL) != 0);
+        bullet.普通检测 = ((flags & FLAG_NORMAL) != 0);
+        
         bullet.手雷检测 = bullet.手雷检测 || ((flags & FLAG_GRENADE) != 0);
         bullet.爆炸检测 = bullet.爆炸检测 || ((flags & FLAG_EXPLOSIVE) != 0);
         
-        bullet.纵向检测 = ((flags & FLAG_VERTICAL) != 0);
 
-        // 更新普通子弹标志
-        bullet.普通检测 = ((flags & FLAG_NORMAL) != 0);
 
         // 缓存基础素材名
         bullet.baseAsset = baseAsset;

@@ -17,8 +17,9 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.Hi
     public function processHitResult(target:MovieClip, shooter:MovieClip, hitTarget:MovieClip, collisionResult:CollisionResult, damageResult:DamageResult):Void {
         var dispatcher:EventDispatcher = hitTarget.dispatcher;
         dispatcher.publish("hit", hitTarget, shooter, target, collisionResult, damageResult);
-        
-        if (!target.近战检测 && !target.爆炸检测 && hitTarget.hp <= 0) {
+
+        #include "../macros/FLAG_MELEE.as"
+        if ((target.flags & FLAG_MELEE) === 0 && !target.爆炸检测 && hitTarget.hp <= 0) {
             dispatcher.publish("kill", hitTarget);
         }
         

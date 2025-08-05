@@ -12,8 +12,10 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.Ta
     public function shouldSkipHitTarget(target:MovieClip, hitTarget:MovieClip, zOffset:Number):Boolean {
         if (zOffset * zOffset >= target.zAttackRangeSq) {
             return true;
-        }
-        if (hitTarget.防止无限飞 == true && target.近战检测) {
+        }                
+        
+        #include "../macros/FLAG_MELEE.as"
+        if (hitTarget.防止无限飞 == true && (target.flags & FLAG_MELEE) != 0) {
             return true;
         }
         return false;

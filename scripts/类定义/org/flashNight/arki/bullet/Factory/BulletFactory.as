@@ -39,7 +39,7 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
     public static function createBullet(Obj, shooter, shootingAngle){
         // 1. 属性缓存 (收益极高) - 使用位标志优化联弹检测性能
         #include "../macros/FLAG_CHAIN.as"
-        var isCombinedShot:Boolean = Boolean(Obj.flags & FLAG_CHAIN);
+        var isCombinedShot:Boolean = (Obj.flags & FLAG_CHAIN) != 0;
         var shotgunValue:Number = Obj.霰弹值;
 
         // 2. 使用局部变量计算
@@ -74,16 +74,20 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
      */
     public static function createBulletInstance(Obj, shooter, shootingAngle) {
         #include "../macros/FLAG_CHAIN.as"
+        #include "../macros/FLAG_MELEE.as"
+
         var gameWorld:MovieClip = _root.gameworld,
             isTransparent:Boolean = Obj.透明检测,
-            isChain:Boolean = Boolean(Obj.flags & FLAG_CHAIN),
+            isChain:Boolean = (Obj.flags & FLAG_CHAIN) != 0,
             zyRatio:Number = Obj.ZY比例,
             speedX:Number = Obj.速度X,
             speedY:Number = Obj.速度Y,
             velocity:Number = Obj.子弹速度,
+            isMelee:Boolean = (Obj.flags & FLAG_MELEE) != 0,
+            
 
             // 散射角度计算
-            scatteringAngle:Number = Obj.近战检测 ? 0 : (shootingAngle + (isChain ? 0 : _root.随机偏移(Obj.子弹散射度))),
+            scatteringAngle:Number = isMelee ? 0 : (shootingAngle + (isChain ? 0 : _root.随机偏移(Obj.子弹散射度))),
 
             angleRadians = scatteringAngle * (Math.PI / 180),
             bulletInstance;
@@ -124,7 +128,7 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
         }
         else
         {
-            if(bulletInstance.近战检测)
+            if(isMelee)
             {
                 lifecycle = MeleeBulletLifecycle.BASIC;
             }

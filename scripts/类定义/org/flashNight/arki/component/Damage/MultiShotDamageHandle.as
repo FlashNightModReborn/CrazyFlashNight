@@ -44,17 +44,15 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
     // ========== 公共方法 ==========
 
     /**
-     * 判断子弹是否具有联弹属性且不穿刺。
-     * - 如果子弹的联弹检测为 true 且穿刺检测为 false，则返回 true。
+     * 判断子弹是否具有联弹属性
      *
      * @param bullet 子弹对象
-     * @return Boolean 如果子弹具有联弹属性且不穿刺则返回 true，否则返回 false
+     * @return Boolean 如果子弹具有联弹属性则返回 true，否则返回 false
      */
     public function canHandle(bullet:Object):Boolean {
         // 使用位标志优化联弹检测性能
         #include "../macros/FLAG_CHAIN.as"
-        // _root.发布消息(!!(bullet.联弹检测 && !bullet.穿刺检测))
-        return Boolean(bullet.flags & FLAG_CHAIN);
+        return (bullet.flags & FLAG_CHAIN) != 0;
     }
 
     /**
@@ -71,7 +69,8 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
         var overlapRatio:Number = manager.overlapRatio;
         if(bullet.穿刺检测 && bullet.纵向检测) {
-            overlapRatio = overlapRatio * 5 / 9; // 对纵向穿刺联弹削弱覆盖率
+            overlapRatio = overlapRatio * 7 / 18; // 对纵向穿刺联弹削弱覆盖率
+            // _root.发布消息("联弹覆盖率削弱: " + overlapRatio);
         }
         // 计算 A = bullet.最小霰弹值 + overlapRatio * (bullet.霰弹值 - bullet.最小霰弹值 + 1) * 1.2
         var A:Number = bullet.最小霰弹值 + overlapRatio * (bullet.霰弹值 - bullet.最小霰弹值 + 1) * 1.2;

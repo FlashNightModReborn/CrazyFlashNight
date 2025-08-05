@@ -18,7 +18,7 @@
 		var Z轴坐标差 = 子弹实例.Z轴坐标 - shootZ;
 		// 使用位标志优化近战检测性能
 		#include "../macros/FLAG_MELEE.as"
-		if(Math.abs(Z轴坐标差) > Z轴攻击范围 or (子弹实例.flags & FLAG_MELEE) or 子弹实例.xmov == 0){
+		if(Math.abs(Z轴坐标差) > Z轴攻击范围 || (子弹实例.flags & FLAG_MELEE) || 子弹实例.xmov == 0){
 			continue;
 		}
 		

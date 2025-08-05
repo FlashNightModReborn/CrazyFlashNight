@@ -78,7 +78,7 @@ class org.flashNight.arki.component.Damage.NanoToxicDamageHandle extends BaseDam
         } else {
             nanoToxicAmount *= 0.3; // 非普通检测时，毒素伤害减少为 30%
         }
-        if(bullet.子弹种类.indexOf("纵向") != -1 && result.actualScatterUsed > 1){
+        if(bullet.纵向检测 && result.actualScatterUsed > 1){
             nanoToxicAmount *= result.actualScatterUsed;
         }
 
@@ -94,7 +94,8 @@ class org.flashNight.arki.component.Damage.NanoToxicDamageHandle extends BaseDam
             result.addDamageEffect('<font color="#66dd00" size="20"> 毒</font>');
 
             // 如果子弹具有毒素衰减属性且为近战检测，并且射击者的淬毒值大于 10，则减少射击者的淬毒值
-            if (bullet.nanoToxicDecay && bullet.近战检测 && shooter.淬毒 > 10) {
+            #include "../macros/FLAG_MELEE.as"
+            if (bullet.nanoToxicDecay && (bullet.flags & FLAG_MELEE) != 0 && shooter.淬毒 > 10) {
                 shooter.淬毒 -= bullet.nanoToxicDecay;
             }
 

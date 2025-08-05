@@ -144,9 +144,10 @@ _root.子弹生命周期 = function()
     var bullet_rotation:Number = this._rotation; // 本地化以减少多次访问 getter 的开销
     // 使用位标志优化联弹检测性能
     #include "../macros/FLAG_CHAIN.as"
-    var isPointSet:Boolean = (this.flags & FLAG_CHAIN) && (bullet_rotation != 0 && bullet_rotation != 180);
+    var isPointSet:Boolean = ((this.flags & FLAG_CHAIN) != 0) && (bullet_rotation != 0 && bullet_rotation != 180);
     var bulletZOffset:Number = this.Z轴坐标;
     var bulletZRange:Number  = this.Z轴攻击范围;
+    // _root.发布消息(this.flags, FLAG_CHAIN, this.联弹检测, (this.flags & FLAG_CHAIN) != 0);
 
     if (this.透明检测 && !this.子弹区域area) {
         areaAABB.updateFromTransparentBullet(this);
@@ -216,6 +217,8 @@ _root.子弹生命周期 = function()
                 this.polygonCollider.updateFromBullet(this, detectionArea);
                 collisionResult = this.polygonCollider.checkCollision(unitArea, zOffset);
             }
+
+            _root.发布消息(collisionResult)
 
             if (_root.调试模式)
             {

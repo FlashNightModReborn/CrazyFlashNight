@@ -28,7 +28,8 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LinkedBulletLifecycle
      */
     public function bindLifecycle(target:MovieClip):Void {
         normalLifecycle.bindLifecycle(target);
-        if(target.联弹检测) {
+        #include "../macros/FLAG_CHAIN.as"
+        if((target.flags & FLAG_CHAIN) != 0) {
             bindLinkedBulletLogic(target);
         }
     }

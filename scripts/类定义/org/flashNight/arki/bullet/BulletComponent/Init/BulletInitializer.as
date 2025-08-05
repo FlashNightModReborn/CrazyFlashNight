@@ -114,7 +114,9 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
             if (shooterToxic && shooterToxic > Obj.毒) {
                 bullet.nanoToxic = shooterToxic;
                 bullet.nanoToxicDecay = 1;
-                if (!bullet.近战检测 && shooter.淬毒 > 10) {
+                // 使用位标志优化近战检测性能
+                #include "../macros/FLAG_MELEE.as"
+                if ((bullet.flags & FLAG_MELEE) === 0 && shooter.淬毒 > 10) {
                     if(bullet.子弹种类.indexOf("纵向") != -1 && bullet.霰弹值 > 1){
                         shooter.淬毒 -= bullet.霰弹值;
                     }else{

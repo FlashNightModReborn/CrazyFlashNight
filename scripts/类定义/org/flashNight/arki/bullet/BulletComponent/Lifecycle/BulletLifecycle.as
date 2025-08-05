@@ -62,8 +62,8 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle imple
      */
     private function getDynamicFrameHandler(target:MovieClip):Function {
         // 在绑定时固化检测结果（假设此时状态已确定）
-
-        return target.联弹检测 
+        #include "../macros/FLAG_CHAIN.as"
+        return (target.flags & FLAG_CHAIN) != 0
             ? function() { BulletLifecycle.processor.processFrame(this); }
             : function() { BulletLifecycle.processor.processFrameWithoutPointCheck(this); };
     }

@@ -44,7 +44,8 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.Ba
      * 默认逻辑：若目标支持近战检测且不免硬直，则使射手进入硬直状态
      */
     public function processHardening(target:MovieClip, shooter:MovieClip):Void {
-        if (target.近战检测 && !target.不硬直) {
+        #include "../macros/FLAG_MELEE.as"
+        if ((target.flags & FLAG_MELEE) != 0 && !target.不硬直) {
             shooter.硬直(shooter.man, _root.钝感硬直时间);
         }
     }

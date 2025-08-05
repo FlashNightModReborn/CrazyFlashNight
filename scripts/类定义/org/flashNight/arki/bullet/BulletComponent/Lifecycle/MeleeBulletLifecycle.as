@@ -34,7 +34,9 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.MeleeBulletLifecycle 
     private function checkMapCollision(target:MovieClip):Boolean {
         var gameWorld:Object = _root.gameworld;
         var Z轴坐标:Number = target.Z轴坐标;
-        var 近战检测:Boolean = target.近战检测;
+        
+        #include "../macros/FLAG_MELEE.as"
+        var 近战检测:Boolean = (target.flags & FLAG_MELEE) != 0;
         
         // 地图边界检测
         var Xmin:Number = _root.Xmin;

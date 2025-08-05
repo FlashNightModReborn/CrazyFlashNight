@@ -12,7 +12,8 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.ChainDetector {
      */
     public static function processChainDetection(target:MovieClip):Object {
         var result:Object = {};
-        if (target.联弹检测) {
+        #include "../macros/FLAG_CHAIN.as"
+        if ((target.flags & FLAG_CHAIN) != 0) {
             var chainResult:Object = createChainCollider(target);
             result.factory = chainResult.factory;
             if (chainResult.collider) {
