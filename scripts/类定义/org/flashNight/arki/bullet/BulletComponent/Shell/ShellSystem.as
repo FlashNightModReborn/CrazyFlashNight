@@ -5,6 +5,7 @@ import org.flashNight.neur.Server.*;
 import org.flashNight.gesh.object.*;
 import org.flashNight.arki.bullet.BulletComponent.Loader.*;
 import org.flashNight.arki.bullet.BulletComponent.Shell.*;
+import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 
 class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
     // 弹壳映射表（由数据加载）
@@ -189,12 +190,11 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
         弹壳.swapDepths(弹壳.Z轴坐标);
         弹壳.存活帧 = 0;          // 记录已执行 tick 次数
 
-        弹壳.任务ID = _root.帧计时器.taskManager.addLifecycleTask(
-            弹壳,
-            "运动",
+        弹壳.任务ID = EnhancedCooldownWheel.I().添加任务(
             shellPhysics,
             33,
-            [弹壳]
+            -1,
+            弹壳
         );
     }
 
@@ -234,10 +234,10 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
             } else {
                 // 弹壳落地，添加回收任务
                 _root.add2map3(弹壳, 2);
-                _root.帧计时器.移除任务(弹壳.任务ID);
-                _root.帧计时器.添加或更新任务(弹壳, "回收", function(壳:MovieClip) {
+                EnhancedCooldownWheel.I().移除任务(弹壳.任务ID);
+                EnhancedCooldownWheel.I().addDelayedTask(33, function(壳:MovieClip) {
                     recycleShell(壳);
-                }, 1, 弹壳);
+                }, 弹壳);
             }
         }
     }
