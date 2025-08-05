@@ -740,7 +740,7 @@
                 <Text>嗯？我手上的这些？错啦，番茄酱嘛！</Text>
             </SubDialogue>
         </Dialogue>
-    </Dialogues>    
+    </Dialogues>
     <Dialogues>
         <Name>丽丽丝</Name>
         <Dialogue id="0">
@@ -767,7 +767,7 @@
                 <Text>不买快走，你好碍眼···</Text>
             </SubDialogue>
         </Dialogue>
-    </Dialogues>    
+    </Dialogues>
     <Dialogues>
         <Name>酒保</Name>
         <Dialogue id="0">
@@ -794,7 +794,7 @@
                 <Text>我曾经也和你一样是个威风凛凛的战士，直到我的膝盖中了一枪···</Text>
             </SubDialogue>
         </Dialogue>
-    </Dialogues>                        
+    </Dialogues>
     <Dialogues>
         <Name>酒泡氤氲-啤酒</Name>
         <Dialogue id="0">
@@ -1409,7 +1409,7 @@
                 <Text>大的要来了。</Text>
             </SubDialogue>
         </Dialogue>
-    </Dialogues>    
+    </Dialogues>
     <Dialogues>
         <Name>冷兵器商人</Name>
         <Dialogue id="0">
@@ -2042,7 +2042,7 @@
                 <Text>一般性的基因改造，比如皮肤强化之类的，早已在末世前普及开。我们相比于祖先，有着更强大的肉体，当然，代价就是你现在能看到的这个世界了。</Text>
             </SubDialogue>
         </Dialogue>
-    </Dialogues>   
+    </Dialogues>
     <Dialogues>
         <Name>文天</Name>
         <Dialogue id="0">
@@ -2258,7 +2258,7 @@
             </SubDialogue>
         </Dialogue>
     </Dialogues>
-     <Dialogues>
+    <Dialogues>
         <Name>lochan</Name>
         <Dialogue id="0">
             <SubDialogue id="0">
@@ -2284,7 +2284,7 @@
                 <Text>不过，摆出跳舞姿势也是很累的，希望那些mmder更加善待我哦。</Text>
             </SubDialogue>
         </Dialogue>
-        </Dialogues>
+    </Dialogues>
     <Dialogues>
         <Name>director</Name>
         <Dialogue id="0">
@@ -2376,8 +2376,8 @@
                 <Text>可惜没人为我的艺术喝彩···除了丧尸，大概。</Text>
             </SubDialogue>
         </Dialogue>
-		    </Dialogues>
-		    <Dialogues>
+    </Dialogues>
+    <Dialogues>
         <Name>机哥</Name>
         <Dialogue id="0">
             <SubDialogue id="0">
@@ -2396,7 +2396,7 @@
             </SubDialogue>
         </Dialogue>
     </Dialogues>
-			    <Dialogues>
+    <Dialogues>
         <Name>阿波</Name>
         <Dialogue id="0">
             <SubDialogue id="0">
@@ -2415,7 +2415,7 @@
             </SubDialogue>
         </Dialogue>
     </Dialogues>
-				    <Dialogues>
+    <Dialogues>
         <Name>排骨</Name>
         <Dialogue id="0">
             <SubDialogue id="0">
@@ -2434,7 +2434,7 @@
             </SubDialogue>
         </Dialogue>
     </Dialogues>
-					    <Dialogues>
+    <Dialogues>
         <Name>PROPHET</Name>
         <Dialogue id="0">
             <SubDialogue id="0">
@@ -2442,8 +2442,8 @@
                 <Title>神棍？</Title>
                 <Char>PROPHET</Char>
                 <Text>欢迎来到天国的间隙，只有这里能够容纳你我这样的凡人之躯，为神宠爱之子。</Text>
-				            </SubDialogue>
-			<SubDialogue id="1">
+            </SubDialogue>
+            <SubDialogue id="1">
                 <Name>PROPHET</Name>
                 <Title>神棍？</Title>
                 <Char>PROPHET2</Char>
@@ -2456,22 +2456,22 @@
                 <Title>神棍？</Title>
                 <Char>PROPHET2</Char>
                 <Text>在混乱之中天使长陷入了漫长的沉睡，天使们只能选择以武力维持这一领域的神圣性。</Text>
-				            </SubDialogue>
-			 <SubDialogue id="1">
+            </SubDialogue>
+            <SubDialogue id="1">
                 <Name>PROPHET</Name>
                 <Title>神棍？</Title>
                 <Char>PROPHET</Char>
                 <Text>或许你我本不应踏足这一神圣的领域，但此时此刻正是神的授意。</Text>
             </SubDialogue>
         </Dialogue>
-		        <Dialogue id="2">
+        <Dialogue id="2">
             <SubDialogue id="0">
                 <Name>PROPHET</Name>
                 <Title>神棍？</Title>
                 <Char>PROPHET2</Char>
                 <Text>这里是堕天使们的藏身之处，染指了智慧之果的堕天使们被天使视为势必讨伐的邪恶，然此非神的本意。</Text>
-				            </SubDialogue>
-				            <SubDialogue id="1">
+            </SubDialogue>
+            <SubDialogue id="1">
                 <Name>PROPHET</Name>
                 <Title>神棍？</Title>
                 <Char>PROPHET</Char>
@@ -2599,6 +2599,56 @@
                 <Title>站岗的</Title>
                 <Char>soldier</Char>
                 <Text>没有公社，我们吃什么？</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>每天就是看着这破防线，偶尔有人路过买点制式装备，日子过得跟流水账似的。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>不过话说回来，我这儿的家伙把式，质量还是过得去的，童叟无欺。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="4">
+            <SubDialogue id="0">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>制式步枪、手枪什么的都有，价格公道。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="5">
+            <SubDialogue id="0">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>...观先生气度不凡，想必是行家里手，莫要带身破铜烂铁。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>我这边颇有些铁枪会的尖货，或不价廉，实在物美。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>于真正行家而言，此等利器，确是物有所值。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="6">
+            <SubDialogue id="0">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>最近僵尸群的活动越来越频繁了，打点精神起来！</Text>
             </SubDialogue>
         </Dialogue>
     </Dialogues>
