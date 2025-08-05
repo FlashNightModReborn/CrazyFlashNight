@@ -26,26 +26,44 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
     }
     
     /**
-     * 创建子弹
+     * 创建子弹 (约定 fireCount 为正整数)
+     * 1. 属性缓存：应对AS2的高昂查表开销。
+     * 2. 约定大于规范：约定 fireCount >= 1，从而简化了快速通道的逻辑判断。
+     * 3. 快速通道：使用一次判断 `== 1` 代替了之前的嵌套判断，逻辑更少，速度更快。
+     * 4. do-while 优化：在多重发射时，减少一次循环判断。
      * @param Obj 子弹配置对象
      * @param shooter 发射者
      * @param shootingAngle 发射角度
      * @return 创建的子弹实例
      */
     public static function createBullet(Obj, shooter, shootingAngle){
-        var fireCount:Number = Obj.联弹检测 ? 1 : Obj.霰弹值;
-        var bulletInstance:Object;
-        
-        Obj.联弹霰弹值 = Obj.联弹检测 ? Obj.霰弹值 : 1; // 修正大小写问题
-        
+        // 1. 属性缓存 (收益极高)
+        var isCombinedShot:Boolean = Obj.联弹检测;
+        var shotgunValue:Number = Obj.霰弹值;
+
+        // 2. 使用局部变量计算
+        var fireCount:Number = isCombinedShot ? 1 : shotgunValue;
+        Obj.联弹霰弹值 = isCombinedShot ? shotgunValue : 1;
+
+        // 3. 简化的快速通道 (核心优化)
+        // 基于约定 fireCount >= 1，我们不再需要处理 <= 0 的情况。
+        // 将之前的嵌套判断 `if(<=1){ if(==1){...} }` 直接简化为一次 `if(==1){...}`。
+        // 这是最常见的路径，我们让它拥有最少的逻辑开销。
+        if (fireCount == 1) {
+            return createBulletInstance(Obj, shooter, shootingAngle);
+        }
+
+        // 4. do-while 循环
+        // 能执行到这里，基于约定，我们100%确定 fireCount >= 2。
+        // 这个隐含的条件让我们可以安全地使用 do-while，无需任何额外检查。
         do {
-            bulletInstance = createBulletInstance(Obj, shooter, shootingAngle);
-        } while (--fireCount > 0);
+            createBulletInstance(Obj, shooter, shootingAngle);
+        } while (--fireCount > 1);
         
-        
-        return bulletInstance;
+        // 5. 返回最后一个实例
+        return createBulletInstance(Obj, shooter, shootingAngle);
     }
-    
+        
     /**
      * 创建子弹实例
      * @param Obj 子弹配置对象
