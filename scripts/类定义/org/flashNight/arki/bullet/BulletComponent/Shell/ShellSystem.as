@@ -112,11 +112,11 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
         if (!initialized) {
             // 如果未初始化，则尝试初始化
             initializeBulletPools();
+            if (!initialized) {
+                return; // 初始化失败，直接返回
+            }
         }
         var shellCount:Number = bullet.纵向检测 ? bullet.霰弹值 : 1;
-        
-        // 性能保护：限制单次生成的弹壳数量上限为10个
-        shellCount = Math.min(shellCount, 10);
         
         // 性能优化：使用线性随机数引擎的直接方法调用替代 _root.成功率
         // 原 _root.成功率 通过 Delegate.create 包装，增加了函数调用开销
@@ -138,16 +138,15 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
 
             var pool:ObjectPool = shellPools[弹壳种类];
             if (!pool) {
-                initializeBulletPools();
-                pool = shellPools[弹壳种类];
-                if (!pool)
-                    return;
+                return; // 池不存在，避免重复初始化
             }
 
             var scale = xscale / 100;
             var ascale = Math.abs(scale);
             var baseX:Number = myX - scale * 弹壳信息.myX;
             var baseY:Number = myY + ascale * 弹壳信息.myY;
+            var yScale:Number = ascale * 100;
+            var hasMultipleShells:Boolean = shellCount > 1;
             
             // 根据shellCount生成对应数量的弹壳
             for (var i:Number = 0; i < shellCount; i++) {
@@ -158,14 +157,14 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
                 var 弹壳:MovieClip = pool.getObject();
                 
                 // 为多个弹壳添加轻微的位置偏移，避免重叠
-                var offsetX:Number = (shellCount > 1) ? engine.randomFloatOffset(8) : 0;
-                var offsetY:Number = (shellCount > 1) ? engine.randomFloatOffset(4) : 0;
+                var offsetX:Number = hasMultipleShells ? engine.randomFloatOffset(8) : 0;
+                var offsetY:Number = hasMultipleShells ? engine.randomFloatOffset(4) : 0;
                 
                 弹壳._x = baseX + offsetX;
                 弹壳._y = baseY + offsetY;
                 弹壳._visible = true;
                 弹壳._xscale = xscale;
-                弹壳._yscale = ascale * 100;
+                弹壳._yscale = yScale;
 
                 // 存储子弹类型
                 弹壳.弹壳种类 = 弹壳种类;
@@ -188,6 +187,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
         弹壳.旋转速度 = engine.randomFloat(-10, 10);
         弹壳.Z轴坐标 = 弹壳._y + 100;
         弹壳.swapDepths(弹壳.Z轴坐标);
+        弹壳.存活帧 = 0;          // 记录已执行 tick 次数
 
         弹壳.任务ID = _root.帧计时器.taskManager.addLifecycleTask(
             弹壳,
@@ -201,10 +201,18 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
     /**
      * 弹壳物理运动函数 (原逻辑)
      */
-    /**
-     * 弹壳物理运动函数 (原逻辑)
-     */
     private static function shellPhysics(弹壳:MovieClip):Void {
+
+        // --------------- 60 帧保险丝 ----------------
+        // 每执行一次物理逻辑先 ++，
+        // 到 60 就直接强制回收，跳过其余计算
+        if (++弹壳.存活帧 >= 60) {
+            recycleShell(弹壳);
+            return;
+        }
+        // ------------------------------------------
+
+
         if (弹壳._y - 弹壳.Z轴坐标 < -5) {
             弹壳.垂直速度 += 4;
             弹壳._x += 弹壳.水平速度;
@@ -213,6 +221,9 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
         } else {
             var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
             弹壳.垂直速度 = 弹壳.垂直速度 / -2 - engine.randomIntegerStrict(0, 5);
+            // 透视缩放效果：根据旋转角度调整水平缩放，模拟3D旋转的透视感
+            // 公式简化为：0.75 + 0.25 * sin(θ)，取值范围 [0.5, 1.0]
+            // 当弹壳正面朝向时缩放为1.0，侧面时缩放为0.5，产生压扁效果
             弹壳._xscale *= ((Math.sin(弹壳._rotation * 0.0174533) + 1) * 0.5) * 0.5 + 0.5;
             if (弹壳.垂直速度 < -10) {
                 弹壳.水平速度 += engine.randomFloatOffset(4)
