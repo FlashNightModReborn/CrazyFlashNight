@@ -348,19 +348,30 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
         var taskID:String = this.taskManager.addSingleTask(
             function():Void {
                 executed = true;
-                trace("Non-numeric delay task executed at frame " + self.currentFrame);
+                trace("Non-numeric delay task executed at frame " + self.currentFrame + " (BUG!)");
             },
             100
         );
+        
+        // 检查 AS2 中布尔值的数字转换行为
+        trace("DEBUG: isNaN(true) = " + isNaN(true));
+        trace("DEBUG: typeof(true) = " + typeof(true));
+        trace("DEBUG: Number(true) = " + Number(true));
+        
         // 使用非数字参数 true 进行延迟
         this.taskManager.delayTask(taskID, true);
         simulateFrames(10);
+        
+        trace("Task executed after delay(true): " + executed + " at frame " + this.currentFrame);
         assert(!executed, "Task with non-numeric delay (true) should not execute");
+        
         // 通过反射检查内部 pendingFrames（仅供调试）
         var taskObj:Task = this.taskManager.locateTask(taskID);
         if (taskObj != null) {
             trace("Non-numeric delay task pendingFrames: " + taskObj.pendingFrames);
             assert(taskObj.pendingFrames == Infinity, "PendingFrames should be Infinity for non-numeric delay true");
+        } else {
+            trace("Task not found - may have been executed and removed");
         }
     }
 
@@ -597,6 +608,229 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
     // ----------------------------
 
     /**
+     * testRaceConditionBug
+     * ---------------------------------------------------------------------------
+     * 测试竞态条件缺陷（对应 TaskManager.as 第82-94行注释中的问题）：
+     *  - 任务在回调中调用 removeTask() 删除自己
+     *  - 但 updateFrame() 不知情，继续执行重调度逻辑
+     *  - 导致已删除的"僵尸任务"被重新添加回调度器
+     */
+    public function testRaceConditionBug():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testRaceConditionBug...");
+        var executionCount:Number = 0;
+        var taskID:String;
+        
+        // 创建一个会在回调中删除自己的循环任务
+        taskID = this.taskManager.addLoopTask(
+            function():Void {
+                executionCount++;
+                trace("Race condition task executed, count=" + executionCount + " at frame " + self.currentFrame);
+                
+                if (executionCount == 2) {
+                    trace("Task removing itself at execution #" + executionCount);
+                    trace("Task exists before removal: " + (self.taskManager.locateTask(taskID) != null));
+                    self.taskManager.removeTask(taskID);
+                    trace("Task exists after removal: " + (self.taskManager.locateTask(taskID) != null));
+                    trace("Task removal completed");
+                }
+            },
+            50 // 每50ms执行一次
+        );
+        
+        trace("Initial task ID: " + taskID);
+        
+        // 运行足够多的帧让任务执行多次
+        simulateFrames(25);
+        
+        // 验证任务被删除后的状态
+        var taskAfterRemoval:Task = this.taskManager.locateTask(taskID);
+        trace("Task location after self-removal: " + (taskAfterRemoval != null ? "FOUND (POTENTIAL BUG!)" : "null (correct)"));
+        assert(taskAfterRemoval == null, "Task should be null after self-removal, but found: " + taskAfterRemoval);
+        
+        // 继续运行更多帧，检查是否有"僵尸任务"重新出现
+        var countBeforeMoreFrames:Number = executionCount;
+        trace("Execution count before additional frames: " + countBeforeMoreFrames);
+        simulateFrames(15);
+        trace("Execution count after additional frames: " + executionCount);
+        
+        // 即使测试通过，也要警告潜在风险
+        if (executionCount == countBeforeMoreFrames) {
+            trace("WARNING: Race condition test passed, but the risk still exists in the code!");
+            trace("The bug may manifest under different timing or load conditions.");
+        }
+        
+        assert(executionCount == countBeforeMoreFrames, 
+            "Zombie task detected! Expected count=" + countBeforeMoreFrames + ", actual=" + executionCount);
+    }
+
+    /**
+     * testAS2TypeCheckingIssue
+     * ---------------------------------------------------------------------------
+     * 专门测试 AS2 中 isNaN() 对布尔值的错误处理
+     * 验证 delayTask 中的类型检查逻辑问题
+     */
+    public function testAS2TypeCheckingIssue():Void {
+        trace("Running testAS2TypeCheckingIssue...");
+        trace("=== AS2 Type Checking Behavior Analysis ===");
+        
+        // 测试各种值在 isNaN() 下的行为
+        var testValues:Array = [true, false, "string", null, undefined, 0, 1, NaN];
+        for (var i:Number = 0; i < testValues.length; i++) {
+            var val = testValues[i];
+            trace("Value: " + val + " (type: " + typeof(val) + ")");
+            trace("  isNaN(val): " + isNaN(val));
+            trace("  Number(val): " + Number(val));
+            trace("  typeof(val) != 'number': " + (typeof(val) != "number"));
+            trace("  ---");
+        }
+        
+        trace("=== Bug Demonstration ===");
+        trace("delayTask expects non-numeric values to set infinite delay");
+        trace("But isNaN(true) = " + isNaN(true) + " (should be true for infinite delay)");
+        trace("Correct check: typeof(true) != 'number' = " + (typeof(true) != "number"));
+        
+        // 实际测试 delayTask 的行为
+        var self:TaskManagerTester = this;
+        var executed:Boolean = false;
+        var taskID:String = this.taskManager.addSingleTask(
+            function():Void {
+                executed = true;
+                trace("Task executed due to AS2 type checking bug!");
+            },
+            50
+        );
+        
+        trace("Applying delay with boolean true...");
+        this.taskManager.delayTask(taskID, true);
+        
+        // 检查任务状态
+        var task:Task = this.taskManager.locateTask(taskID);
+        if (task) {
+            trace("Task pendingFrames after delay(true): " + task.pendingFrames);
+            if (task.pendingFrames == Infinity) {
+                trace("Correct: Task properly delayed to infinity");
+            } else {
+                trace("BUG: Task pendingFrames is not infinity, will execute soon!");
+            }
+        }
+        
+        simulateFrames(5);
+        if (executed) {
+            trace("CONFIRMED BUG: Task executed despite delay(true)");
+        } else {
+            trace("Task correctly delayed");
+        }
+    }
+
+    /**
+     * testLifecycleTaskIDReuseBug
+     * ---------------------------------------------------------------------------
+     * 测试生命周期任务ID复用缺陷（对应 TaskManager.as 第323-334行注释中的问题）：
+     *  - addLifecycleTask 后手动 removeTask
+     *  - obj.taskLabel[labelName] 不会被清除
+     *  - 再次调用 addLifecycleTask 复用相同taskID，形成"幽灵任务"
+     */
+    public function testLifecycleTaskIDReuseBug():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testLifecycleTaskIDReuseBug...");
+        var obj:Object = {};
+        var firstCallCount:Number = 0;
+        var secondCallCount:Number = 0;
+        
+        // 第一次添加生命周期任务
+        var firstTaskID:String = this.taskManager.addLifecycleTask(obj, "testLabel",
+            function():Void {
+                firstCallCount++;
+                trace("First lifecycle task executed, count=" + firstCallCount + " at frame " + self.currentFrame);
+            },
+            50
+        );
+        
+        trace("First task ID: " + firstTaskID);
+        trace("obj.taskLabel['testLabel']: " + obj.taskLabel["testLabel"]);
+        
+        // 让任务执行几次
+        simulateFrames(10);
+        trace("First task execution count after 10 frames: " + firstCallCount);
+        
+        // 手动删除任务（模拟外部代码的误用）
+        this.taskManager.removeTask(firstTaskID);
+        trace("Manually removed first task");
+        
+        // 检查任务是否被删除
+        var taskAfterRemoval:Task = this.taskManager.locateTask(firstTaskID);
+        assert(taskAfterRemoval == null, "First task should be removed");
+        
+        // 关键检查：obj.taskLabel 是否仍然保留旧的taskID
+        trace("obj.taskLabel['testLabel'] after manual removal: " + obj.taskLabel["testLabel"]);
+        
+        // 再次添加相同label的生命周期任务
+        var secondTaskID:String = this.taskManager.addLifecycleTask(obj, "testLabel",
+            function():Void {
+                secondCallCount++;
+                trace("Second lifecycle task executed, count=" + secondCallCount + " at frame " + self.currentFrame);
+            },
+            50
+        );
+        
+        trace("Second task ID: " + secondTaskID);
+        trace("Task ID reuse detected: " + (firstTaskID == secondTaskID ? "YES (BUG!)" : "NO (correct)"));
+        
+        // 验证是否复用了相同的taskID（这是bug的症状）
+        assert(firstTaskID != secondTaskID, 
+            "Task ID should not be reused! First ID: " + firstTaskID + ", Second ID: " + secondTaskID);
+        
+        // 运行更多帧，检查第二个任务是否正常工作
+        var countBefore:Number = secondCallCount;
+        simulateFrames(10);
+        trace("Second task execution count: " + secondCallCount + " (should be > " + countBefore + ")");
+        assert(secondCallCount > countBefore, 
+            "Second task should execute normally, expected count > " + countBefore + ", got " + secondCallCount);
+    }
+
+    /**
+     * testTaskIDCounterConsistency
+     * ---------------------------------------------------------------------------
+     * 测试任务ID计数器一致性：
+     *  - 验证即使在复杂操作后，taskIdCounter 仍然单调递增
+     *  - 这个测试有助于发现ID生成器的异常状态
+     */
+    public function testTaskIDCounterConsistency():Void {
+        var self:TaskManagerTester = this;
+        trace("Running testTaskIDCounterConsistency...");
+        
+        var taskIDs:Array = [];
+        var obj:Object = {};
+        
+        // 添加多种类型的任务并记录ID
+        taskIDs.push(this.taskManager.addSingleTask(function():Void{}, 100));
+        taskIDs.push(this.taskManager.addLoopTask(function():Void{}, 50));
+        taskIDs.push(this.taskManager.addLifecycleTask(obj, "label1", function():Void{}, 75));
+        
+        // 删除某些任务
+        this.taskManager.removeTask(taskIDs[1]);
+        
+        // 再添加更多任务
+        taskIDs.push(this.taskManager.addLifecycleTask(obj, "label2", function():Void{}, 60));
+        taskIDs.push(this.taskManager.addSingleTask(function():Void{}, 120));
+        
+        trace("Generated task IDs: " + taskIDs.join(", "));
+        
+        // 验证所有ID都是唯一的且递增的
+        for (var i:Number = 0; i < taskIDs.length; i++) {
+            if (taskIDs[i] == null) continue; // 跳过立即执行的任务
+            for (var j:Number = i + 1; j < taskIDs.length; j++) {
+                if (taskIDs[j] == null) continue;
+                assert(taskIDs[i] != taskIDs[j], 
+                    "Task IDs should be unique: " + taskIDs[i] + " vs " + taskIDs[j] + " at indices " + i + ", " + j);
+                assert(Number(taskIDs[i]) < Number(taskIDs[j]), 
+                    "Task IDs should be monotonically increasing: " + taskIDs[i] + " should be < " + taskIDs[j]);
+            }
+        }
+    }
+
+    /**
      * runAllTests
      * ---------------------------------------------------------------------------
      * 运行所有测试用例，每个测试用例在独立的测试环境中执行，最后输出所有断言结果和调试日志。
@@ -608,7 +842,9 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
             "testAddLifecycleTask", "testRemoveTask", "testLocateTask",
             "testDelayTask", "testDelayTaskNonNumeric", "testZeroIntervalTask",
             "testNegativeIntervalTask", "testZeroRepeatCount", "testNegativeRepeatCount",
-            "testTaskIDUniqueness", "testMixedScenarios", "testConcurrentTasks"
+            "testTaskIDUniqueness", "testMixedScenarios", "testConcurrentTasks",
+            "testRaceConditionBug", "testAS2TypeCheckingIssue", "testLifecycleTaskIDReuseBug", 
+            "testTaskIDCounterConsistency"
         ];
         for (var i:Number = 0; i < tests.length; i++) {
             trace("-----------------------------------------------------");
@@ -619,5 +855,31 @@ class org.flashNight.neur.ScheduleTimer.TaskManagerTester {
             trace("-----------------------------------------------------");
         }
         trace("All tests completed.");
+    }
+
+    /**
+     * runBugTests
+     * ---------------------------------------------------------------------------
+     * 仅运行专门用于复现已知bug的测试用例
+     */
+    public static function runBugTests():Void {
+        trace("Starting TaskManager BUG REPRODUCTION tests...");
+        var bugTests:Array = [
+            "testDelayTaskNonNumeric",      // AS2 isNaN() 类型检查bug
+            "testAS2TypeCheckingIssue",     // AS2 类型检查行为分析
+            "testLifecycleTaskIDReuseBug",  // 生命周期任务ID复用bug  
+            "testRaceConditionBug"          // 竞态条件潜在风险
+        ];
+        for (var i:Number = 0; i < bugTests.length; i++) {
+            trace("=====================================================");
+            trace("BUG TEST: " + bugTests[i]);
+            trace("=====================================================");
+            var tester:TaskManagerTester = new TaskManagerTester();
+            var methodName:String = bugTests[i];
+            tester[methodName]();
+            tester.printAssertions();
+            trace("=====================================================");
+        }
+        trace("Bug reproduction tests completed.");
     }
 }
