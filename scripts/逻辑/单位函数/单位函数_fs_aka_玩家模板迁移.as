@@ -2220,12 +2220,13 @@ _root.主角函数.状态改变 = function(新状态名)
 	{
 		状态 = 新状态名;
 		this.gotoAndStop(新状态名);
-		// 联机2015发送角色数据();
-		state.push(新状态名);
-		if (state.length > 6)
-		{
-			state.shift();
-		}
+		
+		// 只保留一个状态历史，不再使用state数组
+		// state.push(新状态名);
+		// if (state.length > 6)
+		// {
+		// 	state.shift();
+		// }
 	}
 
 	// _root.服务器.发布服务器消息(旧状态 + " 状态改变到 " +  新状态名);
