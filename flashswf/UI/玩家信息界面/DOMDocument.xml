@@ -13,10 +13,10 @@
           <DOMFolderItem name="性能-帧率显示器" itemID="662dc04e-00000d12" isExpanded="true"/>
      </folders>
      <fonts>
-          <DOMFontItem name="嵌入字体/Bebas Neue" itemID="664e31ab-000085a7" font="BebasNeue-Regular" size="0" id="1" sourceLastImported="1716649140" embedRanges="9999"/>
-          <DOMFontItem name="嵌入字体/Aero" itemID="664e3cd0-00000bd4" font="Aero" size="0" id="2" sourceLastImported="1716649147" embedRanges="9999"/>
-          <DOMFontItem name="嵌入字体/思源宋体" itemID="664e0718-00004cb5" font="SourceHanSerifSC-Heavy" size="0" id="3" sourceLastImported="1716649172" embedRanges="1|2|3|4|14"/>
           <DOMFontItem name="嵌入字体/LCD Std" itemID="664e350a-000085f3" font="LcdStd" size="0" id="4" sourceLastImported="1716649178" embedRanges="9999"/>
+          <DOMFontItem name="嵌入字体/思源宋体" itemID="664e0718-00004cb5" font="SourceHanSerifSC-Heavy" size="0" id="3" sourceLastImported="1716649172" embedRanges="1|2|3|4|14"/>
+          <DOMFontItem name="嵌入字体/Aero" itemID="664e3cd0-00000bd4" font="Aero" size="0" id="2" sourceLastImported="1716649147" embedRanges="9999"/>
+          <DOMFontItem name="嵌入字体/Bebas Neue" itemID="664e31ab-000085a7" font="BebasNeue-Regular" size="0" id="1" sourceLastImported="1716649140" embedRanges="9999"/>
      </fonts>
      <media>
           <DOMBitmapItem name="image/bitmap1804.png" itemID="6597607b-00000400" sourceExternalFilepath="../玩家信息界面/LIBRARY/image/bitmap1804.png" sourceLastImported="1704419451" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap1804.png" bitmapDataHRef="M 2 1716646761.dat" frameRight="140" frameBottom="180"/>
@@ -84,7 +84,7 @@
           <Include href="sprite/快捷药剂界面.xml" loadImmediate="false" itemID="665210bd-00002498" lastModified="1735535401"/>
           <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
           <Include href="sprite/图标壳.xml" loadImmediate="false" itemID="659d384c-0000310a" lastModified="1704802380"/>
-          <Include href="sprite/玩家必要信息界面.xml" loadImmediate="false" itemID="665210ca-00002499" lastModified="1722149757"/>
+          <Include href="sprite/玩家必要信息界面.xml" loadImmediate="false" itemID="665210ca-00002499" lastModified="1754384342"/>
           <Include href="sprite/物品栏/物品满级框.xml" loadImmediate="false" itemID="659d3902-0000310e" lastModified="1704802562"/>
           <Include href="sprite/物品栏/物品图标位置示意.xml" loadImmediate="false" itemID="6772201e-00000286" lastModified="1735534441"/>
           <Include href="sprite/物品栏/物品已装备图标.xml" loadImmediate="false" itemID="659d38ed-0000310d" lastModified="1704802541"/>
@@ -140,7 +140,7 @@
           <Include href="补间 5.xml" itemIcon="1" loadImmediate="false" itemID="6820073b-00000ec9" lastModified="1746929467"/>
           <Include href="补间 6.xml" itemIcon="1" loadImmediate="false" itemID="6820073b-00000ecb" lastModified="1746929467"/>
           <Include href="通用透明组件.xml" loadImmediate="false" itemID="659d4755-000039c9" lastModified="1704806229"/>
-          <Include href="玩家信息界面.xml" itemID="6651f9a1-00001952" lastModified="1746943378"/>
+          <Include href="玩家信息界面.xml" itemID="6651f9a1-00001952" lastModified="1754384451"/>
           <Include href="玩家信息界面示意图.xml" loadImmediate="false" itemID="6651fadf-00001a7f" lastModified="1716648671"/>
           <Include href="性能-帧率显示器/性能帧率显示器.xml" loadImmediate="false" itemID="662da682-00000b97" lastModified="1730624790"/>
           <Include href="性能-帧率显示器/帧率显示器画布.xml" loadImmediate="false" itemID="662dac72-00000bfa" lastModified="1714271598"/>
@@ -254,7 +254,7 @@ import flash.filters.*;]]></script>
                          <GradientEntry color="#FF9900" ratio="1"/>
                          <GradientEntry color="#FF7E00" ratio="1"/>
                     </RadialGradientSwatchItem>
-                    <RadialGradientSwatchItem spreadMethod="reflect" focalPointRatio="-0.305882352941176">
+                    <RadialGradientSwatchItem spreadMethod="reflect" focalPointRatio="-0.301960784313725">
                          <GradientEntry color="#FF001C" ratio="0"/>
                          <GradientEntry color="#FF9900" ratio="1"/>
                          <GradientEntry color="#FF7E00" ratio="1"/>
@@ -277,6 +277,8 @@ import flash.filters.*;]]></script>
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="12627372" publishTime="1754384349"/>
+          <PublishItem publishSize="12627378" publishTime="1754384257"/>
           <PublishItem publishSize="12630411" publishTime="1746944492"/>
           <PublishItem publishSize="12630412" publishTime="1746943401"/>
           <PublishItem publishSize="12630698" publishTime="1746943093"/>
@@ -295,7 +297,5 @@ import flash.filters.*;]]></script>
           <PublishItem publishSize="12628491" publishTime="1746870605"/>
           <PublishItem publishSize="12628441" publishTime="1746870524"/>
           <PublishItem publishSize="12628255" publishTime="1746870106"/>
-          <PublishItem publishSize="12628243" publishTime="1746869845"/>
-          <PublishItem publishSize="12621486" publishTime="1746869697"/>
      </publishHistory>
 </DOMDocument>

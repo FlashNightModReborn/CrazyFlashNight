@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/快捷技能界面" itemID="66520790-00001b5c" lastModified="1746408795" lastUniqueIdentifier="74">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/快捷技能界面" itemID="66520790-00001b5c" lastModified="1746408795" lastUniqueIdentifier="75">
   <timeline>
     <DOMTimeline name="快捷技能界面" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;10&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -113,7 +113,7 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMStaticText selected="true" fontRenderingMode="standard" width="21.2" height="11.15" includeOutlines="true" isSelectable="false">
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="21.2" height="10.85" includeOutlines="true" isSelectable="false">
                   <matrix>
                     <Matrix a="1.5" d="1.5" tx="56.8" ty="-16.55"/>
                   </matrix>
@@ -140,7 +140,7 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMStaticText fontRenderingMode="standard" width="33.2" height="20.1" autoExpand="true" includeOutlines="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="39.95" height="19.45" autoExpand="true" includeOutlines="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="6" ty="-19.2"/>
                   </matrix>
@@ -236,11 +236,11 @@ on(rollOut){
                     <Edge fillStyle1="1" edges="
 !7088 -217/7296 -217!7296 -217/7481 -63!7481 -63/7272 -63!7272 -63/7088 -217"/>
                     <Edge fillStyle1="2" edges="
-!7546 -217/7731 -63!7731 -63/7522 -63!7522 -63/7337 -217!7337 -217/7546 -217"/>
-                    <Edge fillStyle1="3" edges="
-!7771 -63/7587 -217!7587 -217/7769 -217!7769 -217/7954 -63!7954 -63/7771 -63"/>
+!7337 -217/7546 -217!7546 -217/7731 -63!7731 -63/7522 -63!7522 -63/7337 -217"/>
                     <Edge fillStyle1="6" edges="
 !7817 -217/7970 -217!7970 -217/8155 -63!8155 -63/8001 -63!8001 -63/7817 -217"/>
+                    <Edge fillStyle1="3" edges="
+!7954 -63/7771 -63!7771 -63/7587 -217!7587 -217/7769 -217!7769 -217/7954 -63"/>
                     <Edge fillStyle1="5" edges="
 !8203 -63/8018 -217!8018 -217/8122 -217!8122 -217/8307 -63!8307 -63/8203 -63"/>
                     <Edge fillStyle1="4" strokeStyle="1" edges="

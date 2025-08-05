@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="玩家信息界面" itemID="6651f9a1-00001952" linkageExportForAS="true" linkageIdentifier="玩家信息界面" lastModified="1746943378" lastUniqueIdentifier="21">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="玩家信息界面" itemID="6651f9a1-00001952" linkageExportForAS="true" linkageIdentifier="玩家信息界面" lastModified="1754384451" lastUniqueIdentifier="23">
   <timeline>
     <DOMTimeline name="玩家信息界面">
       <layers>
@@ -28,7 +28,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="快捷技能界面" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="快捷技能界面" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -159,7 +159,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="玩家必要信息界面" color="#FF4F4F" autoNamed="false">
+        <DOMLayer name="玩家必要信息界面" color="#FF4F4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

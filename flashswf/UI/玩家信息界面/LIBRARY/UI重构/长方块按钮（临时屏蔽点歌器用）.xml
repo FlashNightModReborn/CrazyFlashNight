@@ -62,7 +62,7 @@ on (press, rollOut) {
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!316 -135|316 82!316 82|263 134!263 134|-315 134!-315 134|-315 -135!-315 -135|316 -135"/>
+                    <Edge strokeStyle="1" edges="!263 134|-315 134!-315 134|-315 -135!-315 -135|316 -135!316 -135|316 82!316 82|263 134"/>
                   </edges>
                 </DOMShape>
                 <DOMShape isDrawingObject="true">
@@ -139,7 +139,7 @@ on (press, rollOut) {
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!279 83|260 83!260 83|260 102!242 83|260 83!260 83|260 65"/>
+                    <Edge strokeStyle="1" edges="!242 83|260 83!260 83|260 65!279 83|260 83!260 83|260 102"/>
                   </edges>
                 </DOMShape>
                 <DOMShape isDrawingObject="true">
