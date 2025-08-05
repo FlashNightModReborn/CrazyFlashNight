@@ -518,12 +518,12 @@ _root.帧计时器.eventBus.subscribe("frameUpdate", function() {
     this.定期更新天气();
     this.键盘输入控制目标();
     this.当前帧数 = this.server.currentFrame;
+    _root.发布消息(System.IME.getEnabled())
 }, _root.帧计时器);
 
 _root.帧计时器.eventBus.subscribe("frameUpdate", function() {
     _root.显示列表.播放列表();
 }, _root.帧计时器);
-
 
 
 // ---------------------------------------------------
@@ -600,6 +600,7 @@ _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
     _root.帧计时器.kalmanFilter.reset(30,1);
     _root.帧计时器.PID.reset();
     _root.帧计时器.执行性能调整(0);
+    System.IME.setEnabled(false);
 }, null); 
 
 
