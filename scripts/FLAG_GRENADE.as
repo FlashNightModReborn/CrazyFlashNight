@@ -1,0 +1,1 @@
+﻿var FLAG_GRENADE:Number      = 1 << 4;

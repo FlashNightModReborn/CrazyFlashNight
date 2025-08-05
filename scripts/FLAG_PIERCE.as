@@ -1,0 +1,1 @@
+﻿var FLAG_PIERCE:Number       = 1 << 2;

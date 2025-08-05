@@ -1,0 +1,1 @@
+﻿var FLAG_TRANSPARENCY:Number = 1 << 3;

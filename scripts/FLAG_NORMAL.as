@@ -1,0 +1,1 @@
+﻿var FLAG_NORMAL:Number       = 1 << 6;

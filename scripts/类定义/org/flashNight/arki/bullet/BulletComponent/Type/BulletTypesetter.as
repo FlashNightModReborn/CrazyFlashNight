@@ -14,17 +14,22 @@ import org.flashNight.gesh.object.ObjectUtil;
 class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implements ITypesetter {
 
     /**
+     * 初始化标志，确保位标志常量正确加载
+     */
+    private static var initialized:Boolean = init();
+
+    /**
      * 子弹类型位标志定义
      * 每种子弹类型使用一个唯一的二进制位表示。
      */
-    private static var FLAG_MELEE:Number         = 1 << 0; // 近战子弹
-    private static var FLAG_CHAIN:Number         = 1 << 1; // 联弹子弹
-    private static var FLAG_PIERCE:Number        = 1 << 2; // 穿刺子弹
-    private static var FLAG_TRANSPARENCY:Number  = 1 << 3; // 透明子弹
-    private static var FLAG_GRENADE:Number       = 1 << 4; // 手雷子弹
-    private static var FLAG_EXPLOSIVE:Number     = 1 << 5; // 爆炸子弹
-    private static var FLAG_NORMAL:Number        = 1 << 6; // 普通子弹
-    private static var FLAG_VERTICAL:Number      = 1 << 7; // 纵向子弹
+    private static var FLAG_MELEE:Number;
+    private static var FLAG_CHAIN:Number;
+    private static var FLAG_PIERCE:Number;
+    private static var FLAG_TRANSPARENCY:Number;
+    private static var FLAG_GRENADE:Number;
+    private static var FLAG_EXPLOSIVE:Number;
+    private static var FLAG_NORMAL:Number;
+    private static var FLAG_VERTICAL:Number;
 
     /**
      * 缓存对象
@@ -40,6 +45,48 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
      * 透明类型字符串使用 "|" 作为分隔符。
      */
     private static var transparency:String = "|" + ["近战子弹", "近战联弹", "透明子弹"].join("|") + "|";
+
+    /**
+     * 静态初始化方法 - AS2 宏展开机制性能优化方案
+     * 
+     * === 宏展开机制说明 ===
+     * AS2 的 #include 指令在编译时将外部文件内容直接插入到当前位置，
+     * 类似于 C/C++ 的宏预处理机制。这种方式实现零运行时开销的常量引用。
+     * 
+     * === 性能优化要点 ===
+     * 1. 编译时处理：所有 #include 在编译阶段完成，运行时无额外开销
+     * 2. 作用域限制：宏展开的变量仅在当前函数作用域有效
+     * 3. 一次初始化：静态变量只在类首次加载时初始化一次
+     * 4. 内存优化：避免重复的常量定义，减少内存占用
+     * 
+     * === 最佳实践 ===
+     * - 仅在需要时引用特定标志位宏文件
+     * - 避免在热点代码路径中重复宏展开
+     * - 利用静态初始化确保常量值的一致性
+     */
+    private static function init():Boolean {
+        // 使用宏展开获取各个位标志值（编译时处理，零运行时成本）
+        #include "../FLAG_MELEE.as"
+        #include "../FLAG_CHAIN.as"
+        #include "../FLAG_PIERCE.as"
+        #include "../FLAG_TRANSPARENCY.as"
+        #include "../FLAG_GRENADE.as"
+        #include "../FLAG_EXPLOSIVE.as"
+        #include "../FLAG_NORMAL.as"
+        #include "../FLAG_VERTICAL.as"
+        
+        // 将宏展开的临时变量赋值给类的静态变量（一次性操作）
+        BulletTypesetter.FLAG_MELEE = FLAG_MELEE;
+        BulletTypesetter.FLAG_CHAIN = FLAG_CHAIN;
+        BulletTypesetter.FLAG_PIERCE = FLAG_PIERCE;
+        BulletTypesetter.FLAG_TRANSPARENCY = FLAG_TRANSPARENCY;
+        BulletTypesetter.FLAG_GRENADE = FLAG_GRENADE;
+        BulletTypesetter.FLAG_EXPLOSIVE = FLAG_EXPLOSIVE;
+        BulletTypesetter.FLAG_NORMAL = FLAG_NORMAL;
+        BulletTypesetter.FLAG_VERTICAL = FLAG_VERTICAL;
+        
+        return true;
+    }
 
     /**
      * 构造函数

@@ -1,0 +1,1 @@
+﻿var FLAG_EXPLOSIVE:Number    = 1 << 5;

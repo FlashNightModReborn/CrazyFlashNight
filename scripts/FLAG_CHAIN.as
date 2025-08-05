@@ -1,0 +1,1 @@
+﻿var FLAG_CHAIN:Number        = 1 << 1;

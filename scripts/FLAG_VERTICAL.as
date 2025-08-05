@@ -1,0 +1,1 @@
+﻿var FLAG_VERTICAL:Number     = 1 << 7;
