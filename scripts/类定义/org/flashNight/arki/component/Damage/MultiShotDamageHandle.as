@@ -52,7 +52,7 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
      */
     public function canHandle(bullet:Object):Boolean {
         // _root.发布消息(!!(bullet.联弹检测 && !bullet.穿刺检测))
-        return (bullet.联弹检测 && !bullet.穿刺检测);
+        return bullet.联弹检测;
     }
 
     /**
@@ -68,7 +68,9 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
      */
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
         var overlapRatio:Number = manager.overlapRatio;
-
+        if(bullet.穿刺检测 && bullet.纵向检测) {
+            overlapRatio = overlapRatio * 5 / 9; // 对纵向穿刺联弹削弱覆盖率
+        }
         // 计算 A = bullet.最小霰弹值 + overlapRatio * (bullet.霰弹值 - bullet.最小霰弹值 + 1) * 1.2
         var A:Number = bullet.最小霰弹值 + overlapRatio * (bullet.霰弹值 - bullet.最小霰弹值 + 1) * 1.2;
 
@@ -88,7 +90,7 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
         } else {
             ceilC = floorC;
         }
-        // _root.发布消息( "A:" + A + ", B:" + B + ", ceilC:" + ceilC);
+        
 
         // 计算 min(bullet.霰弹值, ceilC)
         var actualScatterUsed:Number;

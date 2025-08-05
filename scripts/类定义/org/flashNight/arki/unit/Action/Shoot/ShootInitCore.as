@@ -66,7 +66,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     private static function _bindCoreFunctions(target:MovieClip, parentRef:Object, rootRef:Object):Void {
         // ShootCore 相关函数
         target.开始射击 = function() {
-            ShootCore.startShooting(parentRef, target, ShootCore.primaryParams, rootRef);
+            ShootCore.startShooting(parentRef, target, ShootCore.primaryParams);
         };
         
         // 持续射击函数
