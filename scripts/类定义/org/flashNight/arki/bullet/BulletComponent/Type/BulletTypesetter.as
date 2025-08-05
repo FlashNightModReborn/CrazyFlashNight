@@ -66,14 +66,14 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
      */
     private static function init():Boolean {
         // 使用宏展开获取各个位标志值（编译时处理，零运行时成本）
-        #include "../FLAG_MELEE.as"
-        #include "../FLAG_CHAIN.as"
-        #include "../FLAG_PIERCE.as"
-        #include "../FLAG_TRANSPARENCY.as"
-        #include "../FLAG_GRENADE.as"
-        #include "../FLAG_EXPLOSIVE.as"
-        #include "../FLAG_NORMAL.as"
-        #include "../FLAG_VERTICAL.as"
+        #include "../macros/FLAG_MELEE.as"
+        #include "../macros/FLAG_CHAIN.as"
+        #include "../macros/FLAG_PIERCE.as"
+        #include "../macros/FLAG_TRANSPARENCY.as"
+        #include "../macros/FLAG_GRENADE.as"
+        #include "../macros/FLAG_EXPLOSIVE.as"
+        #include "../macros/FLAG_NORMAL.as"
+        #include "../macros/FLAG_VERTICAL.as"
         
         // 将宏展开的临时变量赋值给类的静态变量（一次性操作）
         BulletTypesetter.FLAG_MELEE = FLAG_MELEE;
@@ -148,13 +148,14 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
         var baseAsset:String = data.baseAsset;
 
         // 设置子弹检测标志
-        bullet.近战检测 = ((flags & FLAG_MELEE) != 0);
-        bullet.联弹检测 = ((flags & FLAG_CHAIN) != 0);
+        // bullet.近战检测 = ((flags & FLAG_MELEE) != 0);
+        // bullet.联弹检测 = ((flags & FLAG_CHAIN) != 0);
         bullet.穿刺检测 = bullet.穿刺检测 || ((flags & FLAG_PIERCE) != 0);
         bullet.透明检测 = bullet.透明检测 || ((flags & FLAG_TRANSPARENCY) != 0);
         bullet.手雷检测 = bullet.手雷检测 || ((flags & FLAG_GRENADE) != 0);
         bullet.爆炸检测 = bullet.爆炸检测 || ((flags & FLAG_EXPLOSIVE) != 0);
-        bullet.纵向检测 = bullet.纵向检测 || ((flags & FLAG_VERTICAL) != 0);
+        
+        bullet.纵向检测 = ((flags & FLAG_VERTICAL) != 0);
 
         // 更新普通子弹标志
         bullet.普通检测 = ((flags & FLAG_NORMAL) != 0);

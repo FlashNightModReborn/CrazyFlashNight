@@ -142,7 +142,9 @@ _root.子弹生命周期 = function()
     var detectionArea:MovieClip;
     var areaAABB:ICollider = this.aabbCollider;
     var bullet_rotation:Number = this._rotation; // 本地化以减少多次访问 getter 的开销
-    var isPointSet:Boolean = this.联弹检测 && (bullet_rotation != 0 && bullet_rotation != 180);
+    // 使用位标志优化联弹检测性能
+    #include "../macros/FLAG_CHAIN.as"
+    var isPointSet:Boolean = (this.flags & FLAG_CHAIN) && (bullet_rotation != 0 && bullet_rotation != 180);
     var bulletZOffset:Number = this.Z轴坐标;
     var bulletZRange:Number  = this.Z轴攻击范围;
 
@@ -246,9 +248,14 @@ _root.子弹生命周期 = function()
             var dispatcher:EventDispatcher = hitTarget.dispatcher;
             dispatcher.publish("hit", hitTarget, shooter, this, collisionResult, damageResult);
 
+            // 使用位标志优化近战检测性能
+            #include "../macros/FLAG_MELEE.as"
+            
             if(hitTarget.hp <= 0)
             {
-                if(!this.近战检测 && !this.爆炸检测)
+                // 在此处按需展开爆炸检测宏
+                #include "../macros/FLAG_EXPLOSIVE.as"
+                if(!(this.flags & FLAG_MELEE) && !(this.flags & FLAG_EXPLOSIVE))
                 {
                     dispatcher.publish("kill", hitTarget);
                 }
@@ -259,7 +266,7 @@ _root.子弹生命周期 = function()
 
             damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
 
-            if (this.近战检测 && !this.不硬直)
+            if ((this.flags & FLAG_MELEE) && !this.不硬直)
             {
                 shooter.硬直(shooter.man, _root.钝感硬直时间);
             }

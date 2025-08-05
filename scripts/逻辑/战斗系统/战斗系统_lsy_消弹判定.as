@@ -16,7 +16,9 @@
 	{
 		var 子弹实例 = _root.gameworld.子弹区域[bullet];
 		var Z轴坐标差 = 子弹实例.Z轴坐标 - shootZ;
-		if(Math.abs(Z轴坐标差) > Z轴攻击范围 or 子弹实例.近战检测 or 子弹实例.xmov == 0){
+		// 使用位标志优化近战检测性能
+		#include "../macros/FLAG_MELEE.as"
+		if(Math.abs(Z轴坐标差) > Z轴攻击范围 or (子弹实例.flags & FLAG_MELEE) or 子弹实例.xmov == 0){
 			continue;
 		}
 		

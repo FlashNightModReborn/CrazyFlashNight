@@ -51,8 +51,10 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
      * @return Boolean 如果子弹具有联弹属性且不穿刺则返回 true，否则返回 false
      */
     public function canHandle(bullet:Object):Boolean {
+        // 使用位标志优化联弹检测性能
+        #include "../macros/FLAG_CHAIN.as"
         // _root.发布消息(!!(bullet.联弹检测 && !bullet.穿刺检测))
-        return bullet.联弹检测;
+        return Boolean(bullet.flags & FLAG_CHAIN);
     }
 
     /**

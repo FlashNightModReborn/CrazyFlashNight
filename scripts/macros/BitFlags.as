@@ -23,8 +23,8 @@
  * 
  * 1. 在函数内部按需引用：
  *    function checkBulletType(bullet) {
- *        #include "../FLAG_MELEE.as"
- *        #include "../FLAG_CHAIN.as"
+ *        #include "../macros/FLAG_MELEE.as"
+ *        #include "../macros/FLAG_CHAIN.as"
  *        
  *        if (bullet.flags & FLAG_MELEE) {
  *            // 处理近战子弹逻辑
@@ -34,9 +34,9 @@
  * 2. 在类方法中引用：
  *    public static function setTypeFlags(bullet:Object):Number {
  *        if (cachedData == undefined) {
- *            #include "../FLAG_MELEE.as"
- *            #include "../FLAG_CHAIN.as"
- *            #include "../FLAG_PIERCE.as"
+ *            #include "../macros/FLAG_MELEE.as"
+ *            #include "../macros/FLAG_CHAIN.as"
+ *            #include "../macros/FLAG_PIERCE.as"
  *            // ... 根据需要引用其他标志
  *            
  *            var flags:Number = ((isMelee ? FLAG_MELEE : 0)

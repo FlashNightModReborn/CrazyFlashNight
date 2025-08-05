@@ -37,8 +37,9 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
      * @return 创建的子弹实例
      */
     public static function createBullet(Obj, shooter, shootingAngle){
-        // 1. 属性缓存 (收益极高)
-        var isCombinedShot:Boolean = Obj.联弹检测;
+        // 1. 属性缓存 (收益极高) - 使用位标志优化联弹检测性能
+        #include "../macros/FLAG_CHAIN.as"
+        var isCombinedShot:Boolean = Boolean(Obj.flags & FLAG_CHAIN);
         var shotgunValue:Number = Obj.霰弹值;
 
         // 2. 使用局部变量计算
@@ -72,9 +73,10 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
      * @return 创建的子弹实例
      */
     public static function createBulletInstance(Obj, shooter, shootingAngle) {
+        #include "../macros/FLAG_CHAIN.as"
         var gameWorld:MovieClip = _root.gameworld,
             isTransparent:Boolean = Obj.透明检测,
-            isChain:Boolean = Obj.联弹检测,
+            isChain:Boolean = Boolean(Obj.flags & FLAG_CHAIN),
             zyRatio:Number = Obj.ZY比例,
             speedX:Number = Obj.速度X,
             speedY:Number = Obj.速度Y,
