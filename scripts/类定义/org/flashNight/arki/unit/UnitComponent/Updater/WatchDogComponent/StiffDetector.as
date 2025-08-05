@@ -96,6 +96,9 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.StiffDete
      * @private
      */
     private static function _recoverFromStiff(target:MovieClip, data:Object):Void {
+        // 添加日志插桩
+        // _root.服务器.发布服务器消息("[StiffDetector] 触发攻击硬直卡死检测 - 目标: " + target + ", stiffID: " + target.stiffID + ", 状态: " + target.状态);
+        
         // 调用恢复处理方法
         onStiffDetected(target);
         
@@ -143,9 +146,9 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.StiffDete
      * @param target:MovieClip 卡死的目标对象
      */
     public static function onStiffDetected(target:MovieClip):Void {
-        // 发布消息通知系统
-        //_root.发布消息("[WatchDog] 检测到对象攻击硬直卡死，已自动恢复: " + target + "[" + target.stiffID + "]");
-
+        // 添加日志插桩 - 恢复操作
+        // _root.服务器.发布服务器消息("[StiffDetector] 执行恢复操作 - 目标: " + target + ", 清除stiffID: " + target.stiffID);
+        
         // printStiffTaskInfo(target.stiffID);
 
         // 解除硬直状态

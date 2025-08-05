@@ -146,6 +146,9 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.StuckDete
      * @private
      */
     private static function _recoverFromStuck(target:MovieClip, data:Object):Void {
+        // 添加日志插桩
+        // _root.服务器.发布服务器消息("[StuckDetector] 触发受击硬直卡死检测 - 目标: " + target + ", HP: " + target.hp + ", 状态: " + target.状态 + ", 硬直中: " + target.硬直中 + ", 浮空: " + target.浮空);
+        
         // 调用恢复处理方法
         onStuckDetected(target);
         
@@ -194,8 +197,9 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.StuckDete
      * @param target:MovieClip 卡死的目标对象
      */
     public static function onStuckDetected(target:MovieClip):Void {
-        // 发布消息通知系统
-        // _root.发布消息("[WatchDog] 检测到对象受击硬直卡死，已自动恢复: " + target + "[" + target.hp + "," + target.状态 + " " + target.knockStiffID + "] " + target.硬直中 + " " + target.浮空);
+        // 添加日志插桩 - 恢复操作
+        // _root.服务器.发布服务器消息("[StuckDetector] 执行恢复操作 - 目标: " + target + ", knockStiffID: " + target.knockStiffID + ", flyID: " + target.flyID);
+        
         // if(target.硬直中) printStuckTaskInfo(target.knockStiffID);
         // else if(target.浮空) printStuckTaskInfo(target.flyID);
 
@@ -208,7 +212,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.StuckDete
             target.状态改变("空手站立");
         } else {
             var dispatcher:EventDispatcher = target.dispatcher;
-
+            // _root.服务器.发布服务器消息("[StuckDetector] 发布击杀事件 - 目标: " + target);
             dispatcher.publish("kill", target);
         }
         

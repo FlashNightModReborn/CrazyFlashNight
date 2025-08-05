@@ -97,6 +97,9 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
     private static function _handleRespawnWaiting(target:MovieClip, data:Object):Void {
         // 检查单位是否已经复活（HP已恢复）
         if (target.hp > 0) {
+            // 添加日志插桩 - 复活成功
+            // _root.服务器.发布服务器消息("[ZeroHPDetector] 单位成功复活 - 目标: " + target + ", HP: " + target.hp);
+            
             // 单位已复活，发布复活事件
             _publishRespawnEvent(target);
             
@@ -133,6 +136,9 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
      * @private
      */
     private static function _handleZeroHPStuck(target:MovieClip, data:Object):Void {
+        // 添加日志插桩
+        // _root.服务器.发布服务器消息("[ZeroHPDetector] 触发零血不死检测 - 目标: " + target + ", HP: " + target.hp + ", 状态: " + target.状态 + ", respawn: " + target.respawn + ", _killed: " + target._killed);
+        
         // 调用回调处理方法
         onZeroHPStuckDetected(target, data);
     }
@@ -182,15 +188,18 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
     public static function onZeroHPStuckDetected(target:MovieClip, data:Object):Void {
         var dispatcher:EventDispatcher = target.dispatcher;
         
-        // _root.发布消息("[WatchDog] 检测到单位零血不死: ", target, target.respawn, target._killed);
-        
         if (target.respawn) {
+            // 添加日志插桩 - 等待复活
+            // _root.服务器.发布服务器消息("[ZeroHPDetector] 设置等待复活状态 - 目标: " + target);
+            
             // 有复活标签的单位，进入等待复活状态
             data.waitingForRespawn = true;
         } else {
             // 无复活标签且未被击杀的单位，直接发布击杀事件
             if (!target._killed) {
-                // _root.发布消息("[WatchDog] 强制击杀幽灵单位: ", target);
+                // 添加日志插桩 - 强制击杀
+                // _root.服务器.发布服务器消息("[ZeroHPDetector] 强制击杀幽灵单位 - 目标: " + target);
+                
                 dispatcher.publish("kill", target);
             }
         }
