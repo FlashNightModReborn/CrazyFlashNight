@@ -190,7 +190,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
         弹壳.swapDepths(弹壳.Z轴坐标);
         弹壳.存活帧 = 0;          // 记录已执行 tick 次数
 
-        弹壳.任务ID = EnhancedCooldownWheel.I().添加任务(
+        弹壳.任务ID = EnhancedCooldownWheel.I().addTask(
             shellPhysics,
             33,
             -1,
@@ -234,7 +234,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
             } else {
                 // 弹壳落地，添加回收任务
                 _root.add2map3(弹壳, 2);
-                EnhancedCooldownWheel.I().移除任务(弹壳.任务ID);
+                EnhancedCooldownWheel.I().removeTask(弹壳.任务ID);
                 EnhancedCooldownWheel.I().addDelayedTask(33, function(壳:MovieClip) {
                     recycleShell(壳);
                 }, 弹壳);

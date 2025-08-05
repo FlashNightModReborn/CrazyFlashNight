@@ -71,7 +71,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
      * @param args 传递给回调的参数（可变参数）
      * @return 任务ID，用于后续移除
      */
-    public function 添加任务(callback:Function, intervalMs:Number, repeatCount:Number):Number {
+    public function addTask(callback:Function, intervalMs:Number, repeatCount:Number):Number {
         // NaN防御机制
         if (isNaN(intervalMs) || intervalMs < 1) {
             intervalMs = 33.33; // 30fps下约1帧
@@ -99,7 +99,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
      * 移除任务
      * @param taskId 任务ID
      */
-    public function 移除任务(taskId:Number):Void {
+    public function removeTask(taskId:Number):Void {
         var task:Object = activeTasks[taskId];
         if (task) {
             task.isActive = false;

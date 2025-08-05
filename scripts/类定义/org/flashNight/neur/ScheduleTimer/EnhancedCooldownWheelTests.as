@@ -162,7 +162,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         wheel.reset();
         
         var counter:Number = 0;
-        var taskId:Number = wheel.添加任务(function():Void { 
+        var taskId:Number = wheel.addTask(function():Void { 
             counter++;
             trace("    重复任务执行第" + counter + "次");
         }, 100, 3); // 100ms间隔，重复3次
@@ -198,7 +198,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         
         // 取消任务
         trace("    取消任务...");
-        wheel.移除任务(taskId);
+        wheel.removeTask(taskId);
         
         // 继续执行
         for (var i:Number = 0; i < 10; i++) {
@@ -223,7 +223,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         }, "hello");
         
         // 多参数
-        wheel.添加任务(function(a:Number, b:String, c:Boolean):Void { 
+        wheel.addTask(function(a:Number, b:String, c:Boolean):Void { 
             results.push("multi:" + a + "," + b + "," + c);
         }, 80, 1, 42, "world", true);
         
@@ -267,7 +267,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         
         // 取消一半任务
         for (var l:Number = 0; l < 5; l++) {
-            wheel.移除任务(ids[l]);
+            wheel.removeTask(ids[l]);
         }
         
         assert(wheel.getActiveTaskCount() == 5, "取消后应剩余5个活跃任务");
@@ -289,7 +289,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
             trace("    渐隐回调执行，cycleCount=" + canvasObj.cycleCount);
         };
         
-        var taskId:Number = wheel.添加任务(callback, 100, 5, canvas);
+        var taskId:Number = wheel.addTask(callback, 100, 5, canvas);
         
         trace("    模拟渐隐任务，间隔100ms，重复5次...");
         
@@ -316,7 +316,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         wheel.addDelayedTask(50, function():Void { results.push("once"); });
         
         // 重复任务
-        wheel.添加任务(function():Void { results.push("repeat"); }, 80, 2);
+        wheel.addTask(function():Void { results.push("repeat"); }, 80, 2);
         
         // 立即任务
         wheel.add(0, function():Void { results.push("immediate"); });
@@ -359,7 +359,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         
         // 取消大部分任务
         for (var j:Number = 0; j < 80; j++) {
-            wheel.移除任务(ids[j]);
+            wheel.removeTask(ids[j]);
         }
         
         assert(wheel.getActiveTaskCount() == 20, "取消后应剩余20个活跃任务");
@@ -381,11 +381,11 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         var counter:Number = 0;
         
         // 无限重复任务（传入0或负数作为重复次数）
-        var taskId:Number = wheel.添加任务(function():Void { 
+        var taskId:Number = wheel.addTask(function():Void { 
             counter++;
             if (counter >= 10) {
                 // 手动停止无限重复
-                wheel.移除任务(taskId);
+                wheel.removeTask(taskId);
             }
         }, 50, 0); // 0表示无限重复
         
@@ -434,7 +434,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
             if (i % 3 == 0) {
                 wheel.addDelayedTask(100, function():Void {});
             } else {
-                wheel.添加任务(function():Void {}, 80, 1);
+                wheel.addTask(function():Void {}, 80, 1);
             }
         }
         
@@ -476,7 +476,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         gameState.buffTimers.haste = hasteId;
         
         // 持续伤害效果
-        var dotId:Number = wheel.添加任务(function():Void {
+        var dotId:Number = wheel.addTask(function():Void {
             gameState.effects.push("dot_tick");
             trace("    持续伤害tick");
         }, 1000, 3);
@@ -501,7 +501,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         
         // 添加各种任务
         wheel.addDelayedTask(200, function():Void { executed++; });
-        wheel.添加任务(function():Void { executed++; }, 100, 5);
+        wheel.addTask(function():Void { executed++; }, 100, 5);
         wheel.add(10, function():Void { executed++; });
         
         assert(wheel.getActiveTaskCount() > 0, "重置前应有活跃任务");
@@ -569,7 +569,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         
         _measure("Repeating‑Tasks (" + N + ")", function():Void {
             for (var i:Number = 0; i < N; i++) {
-                wheel.添加任务(dummyCb, 100, 3);
+                wheel.addTask(dummyCb, 100, 3);
             }
         });
     }
@@ -588,7 +588,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
         var cancelCount:Number = Math.floor(N * BenchmarkConfig.CANCEL_RATIO);
         _measure("Task‑Cancellation (" + cancelCount + "/" + N + ")", function():Void {
             for (var j:Number = 0; j < cancelCount; j++) {
-                wheel.移除任务(ids[j]);
+                wheel.removeTask(ids[j]);
             }
         });
     }
@@ -645,7 +645,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
                 if (i % 4 == 0) {
                     ids.push(wheel.addDelayedTask(100, dummyCb));
                 } else if (i % 4 == 1) {
-                    ids.push(wheel.添加任务(dummyCb, 80, 2));
+                    ids.push(wheel.addTask(dummyCb, 80, 2));
                 } else {
                     wheel.add(i % 10, dummyCb);
                 }
@@ -653,7 +653,7 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
             
             // 取消一些任务
             for (var j:Number = 0; j < 100; j++) {
-                if (ids[j]) wheel.移除任务(ids[j]);
+                if (ids[j]) wheel.removeTask(ids[j]);
             }
             
             // 执行一些tick

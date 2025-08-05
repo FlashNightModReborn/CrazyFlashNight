@@ -133,7 +133,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
             // releaseFunc：释放画布时执行的清理操作
             function():Void {
                 if (this.fadeTask) {
-                    EnhancedCooldownWheel.I().移除任务(this.fadeTask);
+                    EnhancedCooldownWheel.I().removeTask(this.fadeTask);
                 }
                 this._visible = false;
                 if (this.clear != undefined) {
@@ -445,11 +445,11 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         
         // 移除之前可能存在的渐隐任务
         if (canvas.fadeTask) {
-            EnhancedCooldownWheel.I().移除任务(canvas.fadeTask);
+            EnhancedCooldownWheel.I().removeTask(canvas.fadeTask);
         }
         // 绑定 onFadeUpdate 方法，添加渐隐任务（使用增强时间轮替换原帧计时器）
         var callback:Function = Delegate.create(this, onFadeUpdate);
-        canvas.fadeTask = EnhancedCooldownWheel.I().添加任务(callback, configObj.refreshInterval, shadowCount, canvas);
+        canvas.fadeTask = EnhancedCooldownWheel.I().addTask(callback, configObj.refreshInterval, shadowCount, canvas);
     }
     
     /**
@@ -480,7 +480,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
      */
     private function recycleCanvas(canvas:MovieClip):Void {
         if (canvas.__isDestroyed) return; // 防止重复回收
-        EnhancedCooldownWheel.I().移除任务(canvas.fadeTask);
+        EnhancedCooldownWheel.I().removeTask(canvas.fadeTask);
         canvas._visible = false;
         if (canvas.clear != undefined) {
             canvas.clear();
