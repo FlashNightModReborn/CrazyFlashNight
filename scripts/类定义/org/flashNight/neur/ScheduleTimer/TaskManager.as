@@ -79,6 +79,18 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
 
                     // _root.服务器.发布服务器消息("taskTable: " + task.toString());
                     
+                    // ===== 关键设计缺陷警告 =====
+                    // 【竞态条件风险】：task.action() 可能在执行过程中调用 removeTask(taskID)
+                    // 删除当前任务，但 updateFrame() 不知情，会继续执行后续的重调度逻辑，
+                    // 导致已删除的"僵尸任务"被重新添加回调度器。
+                    // 
+                    // 症状：相同 taskID 反复出现在日志中，任务状态不一致
+                    // 根因：任务执行与任务移除的时序冲突
+                    // 
+                    // 安全做法：
+                    // 1. 避免在任务回调中调用 removeTask()
+                    // 2. 或在 task.action() 后检查任务是否仍存在
+                    // 3. 使用单次任务而非生命周期任务进行手动控制
                     task.action();
                     // 根据任务重复逻辑进行处理：
                     // 如果只执行一次，则从任务表中删除；如果重复，则根据计数（或无限循环）重新调度
@@ -307,6 +319,19 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      */
     public function addLifecycleTask(obj:Object, labelName:String, action:Function, interval:Number, parameters:Array):String {
         if (!obj) return null;
+        
+        // ===== 关键设计缺陷警告 =====
+        // 【生命周期管理缺陷】：addLifecycleTask 设计假设任务会自然到期或随对象卸载而清理，
+        // 但当外部代码手动调用 removeTask(taskID) 时，obj.taskLabel[labelName] 不会被清除，
+        // 导致后续调用 addLifecycleTask 时复用相同的 taskID，形成"幽灵任务"。
+        // 
+        // 症状：相同 taskID 被反复使用，任务状态混乱
+        // 根因：手动 removeTask() 与 addLifecycleTask 的生命周期管理不匹配
+        // 
+        // 安全做法：
+        // 1. 避免混用 addLifecycleTask 和手动 removeTask()
+        // 2. 或在 removeTask() 时同步清理 obj.taskLabel
+        // 3. 使用 addTask/addSingleTask 替代需要手动控制的场景
         
         // 若该 labelName 尚未存在，生成新的任务ID
         if (!obj.taskLabel[labelName]) {
