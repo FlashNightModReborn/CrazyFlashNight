@@ -95,15 +95,6 @@ _root.子弹区域shoot传递 = function(Obj){
     // 计算射击角度
     var shootingAngle:Number = ShootingAngleCalculator.calculate(Obj, shooter);
 
-    // 创建发射效果和音效
-    var shootX:Number = Obj.shootX;
-    var shootY:Number = Obj.shootY;
-    var xscale:Number = shooter._xscale;
-    var effect:MovieClip = EffectSystem.Effect(Obj.发射效果, shootX, shootY, xscale);
-    if(effect) effect._rotation = Obj.角度偏移;
-    ShellSystem.launchShell(Obj.子弹种类, shootX, shootY, xscale);
-    _root.soundEffectManager.playSound(Obj.声音);
-
     // 设置子弹类型标志
     BulletTypesetter.setTypeFlags(Obj);
 
@@ -121,8 +112,16 @@ _root.子弹区域shoot传递 = function(Obj){
 
     // 创建子弹
     var bulletInstance = BulletFactory.createBullet(Obj, shooter, shootingAngle);
-
     // _root.服务器.发布服务器消息(ObjectUtil.toString(bulletInstance));
+
+    // 创建发射效果和音效
+    var shootX:Number = Obj.shootX;
+    var shootY:Number = Obj.shootY;
+    var xscale:Number = shooter._xscale;
+    var effect:MovieClip = EffectSystem.Effect(Obj.发射效果, shootX, shootY, xscale);
+    if(effect) effect._rotation = Obj.角度偏移;
+    ShellSystem.launchShell(bulletInstance, shootX, shootY, xscale);
+    _root.soundEffectManager.playSound(Obj.声音);
 
     return bulletInstance;
 };

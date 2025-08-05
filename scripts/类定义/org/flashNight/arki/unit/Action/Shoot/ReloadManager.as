@@ -1,5 +1,5 @@
 ﻿import org.flashNight.arki.item.*;
-
+import org.flashNight.arki.bullet.BulletComponent.Type.*;
 /**
  * ReloadManager.as
  * 
@@ -138,9 +138,10 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         for (var i:Number = 0; i < weapons.length; i++) {
             var w:Object = weapons[i];
             var data:Object = ItemUtil.getRawItemData(w.weapon);
+            var dataData:Object = data.data;
             
             // 计算子弹消耗系数
-            var cost:Number = (data.data.bullet.indexOf("纵向") >= 0) ? data.data.split : 1;
+            var cost:Number = BulletTypesetter.isVertical(dataData.bullet) ? dataData.split : 1;
             
             // 计算剩余子弹数
             var remaining:Number = w.capacity - w.shot;

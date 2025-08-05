@@ -24,6 +24,7 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
     private static var FLAG_GRENADE:Number       = 1 << 4; // 手雷子弹
     private static var FLAG_EXPLOSIVE:Number     = 1 << 5; // 爆炸子弹
     private static var FLAG_NORMAL:Number        = 1 << 6; // 普通子弹
+    private static var FLAG_VERTICAL:Number      = 1 << 7; // 纵向子弹
 
     /**
      * 缓存对象
@@ -70,7 +71,8 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
             var isPierce:Boolean        = (bulletType.indexOf("穿刺") != -1);         // 是否穿刺子弹
             var isTransparency:Boolean  = (transparency.indexOf("|" + bulletType + "|") != -1); // 是否透明子弹
             var isGrenade:Boolean       = (bulletType.indexOf("手雷") != -1);         // 是否手雷子弹
-            var isExplosive:Boolean     = (bulletType.indexOf("爆炸") != -1);         // 是否爆炸子弹\
+            var isExplosive:Boolean     = (bulletType.indexOf("爆炸") != -1);         // 是否爆炸子弹
+            var isVertical:Boolean      = (bulletType.indexOf("纵向") != -1);         // 是否纵向子弹
 
             // 是否普通子弹的逻辑
             var isNormal:Boolean = !isPierce && !isExplosive &&
@@ -83,7 +85,8 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
                               | (isTransparency  ? FLAG_TRANSPARENCY  : 0)
                               | (isGrenade       ? FLAG_GRENADE       : 0)
                               | (isExplosive     ? FLAG_EXPLOSIVE     : 0)
-                              | (isNormal        ? FLAG_NORMAL        : 0));
+                              | (isNormal        ? FLAG_NORMAL        : 0)
+                              | (isVertical      ? FLAG_VERTICAL      : 0));
 
             // 对联弹提取基础素材名（取子弹种类中 "-" 分隔符前的部分）
             var baseAsset:String = isChain ? bulletType.split("-")[0] : bulletType;
@@ -104,6 +107,7 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
         bullet.透明检测 = bullet.透明检测 || ((flags & FLAG_TRANSPARENCY) != 0);
         bullet.手雷检测 = bullet.手雷检测 || ((flags & FLAG_GRENADE) != 0);
         bullet.爆炸检测 = bullet.爆炸检测 || ((flags & FLAG_EXPLOSIVE) != 0);
+        bullet.纵向检测 = bullet.纵向检测 || ((flags & FLAG_VERTICAL) != 0);
 
         // 更新普通子弹标志
         bullet.普通检测 = ((flags & FLAG_NORMAL) != 0);
@@ -161,6 +165,17 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
     }
 
     /**
+     * 检查子弹类型是否为纵向子弹。
+     * 
+     * @param bulletType:String 子弹种类字符串。
+     * @return Boolean 如果是纵向子弹返回 true，否则返回 false。
+     */
+    public static function isVertical(bulletType:String):Boolean {
+        var flags:Number = getFlags({ 子弹种类: bulletType });
+        return (flags & FLAG_VERTICAL) != 0;
+    }
+
+    /**
     * 将子弹类型的标志位转换为可读的字符串，便于调试输出。
     * 
     * @param flags:Number 标志位值。
@@ -175,6 +190,7 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
         if (flags & FLAG_GRENADE)       parts.push("GRENADE");
         if (flags & FLAG_EXPLOSIVE)     parts.push("EXPLOSIVE");
         if (flags & FLAG_NORMAL)        parts.push("NORMAL");
+        if (flags & FLAG_VERTICAL)      parts.push("VERTICAL");
         return parts.length > 0 ? parts.join(", ") : "NONE";
     }
 

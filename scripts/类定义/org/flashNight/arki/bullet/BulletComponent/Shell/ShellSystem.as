@@ -105,15 +105,25 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
 
     /**
      * 发射弹壳接口
-     * 与原先 _root.弹壳系统.发射弹壳 功能一致，可通过 delegate 转接
      */
-    public static function launchShell(子弹类型:String, myX:Number, myY:Number, xscale:Number, 必然触发:Boolean):Void {
+    public static function launchShell(bullet:MovieClip, myX:Number, myY:Number, xscale:Number, 必然触发:Boolean):Void {
+        var 子弹类型:String = bullet.子弹种类;
+
         if (!initialized) {
             // 如果未初始化，则尝试初始化
             initializeBulletPools();
         }
-
-        if (currentShellCount <= maxShellCount || _root.成功率(maxShellCount) || 必然触发) {
+        var shellCount:Number = bullet.纵向检测 ? bullet.霰弹值 : 1;
+        
+        // 性能保护：限制单次生成的弹壳数量上限为10个
+        shellCount = Math.min(shellCount, 10);
+        
+        // 性能优化：使用线性随机数引擎的直接方法调用替代 _root.成功率
+        // 原 _root.成功率 通过 Delegate.create 包装，增加了函数调用开销
+        // 直接调用 engine.successRate 避免了 Delegate 包装的性能损耗
+        var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
+        
+        if (currentShellCount <= maxShellCount || engine.successRate(maxShellCount) || 必然触发) {
             var 游戏世界 = _root.gameworld;
             if (!游戏世界)
                 return;
@@ -134,30 +144,42 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
                     return;
             }
 
-            var 弹壳:MovieClip = pool.getObject();
             var scale = xscale / 100;
             var ascale = Math.abs(scale);
-            myX -= scale * 弹壳信息.myX;
-            myY += ascale * 弹壳信息.myY;
+            var baseX:Number = myX - scale * 弹壳信息.myX;
+            var baseY:Number = myY + ascale * 弹壳信息.myY;
+            
+            // 根据shellCount生成对应数量的弹壳
+            for (var i:Number = 0; i < shellCount; i++) {
+                if (currentShellCount >= maxShellCount && !必然触发) {
+                    break; // 如果达到上限且非必然触发，停止生成
+                }
+                
+                var 弹壳:MovieClip = pool.getObject();
+                
+                // 为多个弹壳添加轻微的位置偏移，避免重叠
+                var offsetX:Number = (shellCount > 1) ? engine.randomFloatOffset(8) : 0;
+                var offsetY:Number = (shellCount > 1) ? engine.randomFloatOffset(4) : 0;
+                
+                弹壳._x = baseX + offsetX;
+                弹壳._y = baseY + offsetY;
+                弹壳._visible = true;
+                弹壳._xscale = xscale;
+                弹壳._yscale = ascale * 100;
 
-            弹壳._x = myX;
-            弹壳._y = myY;
-            弹壳._visible = true;
-            弹壳._xscale = xscale;
-            弹壳._yscale = ascale * 100;
+                // 存储子弹类型
+                弹壳.弹壳种类 = 弹壳种类;
 
-            // 存储子弹类型
-            弹壳.弹壳种类 = 弹壳种类;
+                // 启动物理模拟
+                shellPhysicsSimulation(弹壳);
 
-            // 启动物理模拟
-            shellPhysicsSimulation(弹壳);
-
-            ++currentShellCount;
+                ++currentShellCount;
+            }
         }
     }
 
     /**
-     * 弹壳物理模拟函数 (原逻辑)
+     * 弹壳物理模拟函数 (增强版，支持多弹壳差异化)
      */
     private static function shellPhysicsSimulation(弹壳:MovieClip):Void {
         var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
