@@ -13,7 +13,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="合成按钮" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="合成按钮" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -129,11 +129,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#7E77A1">
+        <DOMLayer name="Layer 7" color="#7E77A1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/ShopGirl-NPC" centerPoint3DX="500.75" centerPoint3DY="445.6">
+                <DOMSymbolInstance libraryItemName="NPC/ShopGirl-NPC" selected="true" centerPoint3DX="500.75" centerPoint3DY="445.6">
                   <matrix>
                     <Matrix tx="412.45" ty="321.55"/>
                   </matrix>

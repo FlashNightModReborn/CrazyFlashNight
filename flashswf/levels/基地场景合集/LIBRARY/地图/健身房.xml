@@ -13,11 +13,11 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#B947D1" current="true" isSelected="true">
+        <DOMLayer name="Layer 5" color="#B947D1">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="健身房沙袋" name="沙袋" selected="true" centerPoint3DX="1249.55" centerPoint3DY="612.45">
+                <DOMSymbolInstance libraryItemName="健身房沙袋" name="沙袋" centerPoint3DX="1249.55" centerPoint3DY="612.45">
                   <matrix>
                     <Matrix tx="1189.35" ty="486.75"/>
                   </matrix>
@@ -59,11 +59,11 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#A71FD4">
+        <DOMLayer name="Layer 7" color="#A71FD4" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2439" name="挂机_木人桩" centerPoint3DX="248.05" centerPoint3DY="511.2">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2439" name="挂机_木人桩" selected="true" centerPoint3DX="248.05" centerPoint3DY="511.2">
                   <matrix>
                     <Matrix tx="196.05" ty="422.9"/>
                   </matrix>

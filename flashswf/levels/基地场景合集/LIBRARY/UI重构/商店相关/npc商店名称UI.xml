@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/商店相关/npc商店名称UI" itemID="668a5bba-000008f1" lastModified="1744224634" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/商店相关/npc商店名称UI" itemID="668a5bba-000008f1" lastModified="1754405157" lastUniqueIdentifier="8">
   <timeline>
     <DOMTimeline name="npc商店名称UI">
       <layers>
@@ -20,11 +20,18 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="UI重构/商店相关/npc商店名称框" centerPoint3DX="15.05" centerPoint3DY="-0.25">
+                <DOMSymbolInstance libraryItemName="UI重构/商店相关/npc商店名称框" name="商店名" centerPoint3DX="15.05" centerPoint3DY="-0.25">
                   <matrix>
                     <Matrix tx="-36.95" ty="-10"/>
                   </matrix>
@@ -32,7 +39,7 @@ else
                     <Point x="52" y="9.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="UI重构/商店相关/购物图标UI" centerPoint3DX="-45.05" centerPoint3DY="0.75">
+                <DOMSymbolInstance libraryItemName="UI重构/商店相关/购物图标UI" name="商店图标" centerPoint3DX="-45.05" centerPoint3DY="0.75">
                   <matrix>
                     <Matrix a="0.849990844726563" d="0.899993896484375" tx="-53.05" ty="-5.1"/>
                   </matrix>
@@ -55,7 +62,7 @@ else
                     <GlowFilter blurX="3" blurY="3" color="#000000" strength="5"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="UI重构/商店相关/技能教学图标UI" selected="true" centerPoint3DX="-53.4" centerPoint3DY="7.8">
+                <DOMSymbolInstance libraryItemName="UI重构/商店相关/技能教学图标UI" name="技能图标" centerPoint3DX="-53.4" centerPoint3DY="7.8">
                   <matrix>
                     <Matrix a="0.995361328125" d="0.995361328125" tx="-63.1" ty="1.2"/>
                   </matrix>

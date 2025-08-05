@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/停机坪" itemID="668aa0dc-000051de" linkageExportForAS="true" linkageIdentifier="基地场景-基地房顶" lastModified="1753279842" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/停机坪" itemID="668aa0dc-000051de" linkageExportForAS="true" linkageIdentifier="基地场景-基地房顶" lastModified="1754406285" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="停机坪">
       <layers>
@@ -172,10 +172,13 @@ onClipEvent (load) {
 	身高 = 280;
 	性别 = "男";
 	方向 = "左";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
+   if(_root.NPCTaskCheck(名字).result == "接受任务")
+   {
+      _root.发布消息(名字 + "似乎需要你的帮助");
+        this.文字信息.任务接取提示._visible = 1;
+   }else {
+        this.文字信息.任务接取提示._visible = 0;
+    }
 	默认对话 = [[], [], []];
 	默认对话[0][0] = ["远古武士铁血使者", "线人", "远古武士铁血使者", "(翻译机)：小F的翻译机挺好用，敌人的敌人就是朋友！", "普通"];
 	默认对话[1][0] = ["远古武士铁血使者", "线人", "远古武士铁血使者", "(翻译机)：一起干掉文明收割者！", "普通"];
@@ -213,7 +216,10 @@ onClipEvent (load) {
    if(_root.NPCTaskCheck(名字).result == "接受任务")
    {
       _root.发布消息(名字 + "似乎需要你的帮助");
-   }
+        this.文字信息.任务接取提示._visible = 1;
+   }else {
+        this.文字信息.任务接取提示._visible = 0;
+    }
    默认对话 = [[],[],[]];
    默认对话[0][0] = ["被改造的方舟无人机","线人","被改造的方舟无人机","我这里有大量诺亚可公布信息可以随时查询！","普通"];
    默认对话[1][0] = ["被改造的方舟无人机","线人","被改造的方舟无人机","机器吱吱吱吱吱吱吱.....","普通"];

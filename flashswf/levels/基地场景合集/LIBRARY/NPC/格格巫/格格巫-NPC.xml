@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/格格巫/格格巫-NPC" itemID="668aa42e-000052db" lastModified="1740634045" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/格格巫/格格巫-NPC" itemID="668aa42e-000052db" lastModified="1754402493" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="格格巫-NPC">
       <layers>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#E45D97" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#E45D97">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -37,11 +37,11 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="UI重构/商店相关/npc商店名称UI" name="商店名" centerPoint3DX="71.05" centerPoint3DY="-172.7">
+                <DOMSymbolInstance libraryItemName="UI重构/商店相关/npc商店名称UI" name="商店名" selected="true" centerPoint3DX="71.05" centerPoint3DY="-172.7">
                   <matrix>
                     <Matrix tx="7.05" ty="-182.45"/>
                   </matrix>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地地下1层" itemID="668aa054-00005128" linkageExportForAS="true" linkageIdentifier="基地场景-地下室1层" lastModified="1749711593" lastUniqueIdentifier="24">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地地下1层" itemID="668aa054-00005128" linkageExportForAS="true" linkageIdentifier="基地场景-地下室1层" lastModified="1754406112" lastUniqueIdentifier="25">
   <timeline>
     <DOMTimeline name="基地地下1层">
       <layers>
@@ -176,11 +176,11 @@ onClipEvent (load) {
           </frames>
         </DOMLayer>
         <DOMLayer name="NPC" color="#9933CC" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="A兵团士兵？" color="#96DADD" parentLayerIndex="8" autoNamed="false">
+        <DOMLayer name="A兵团士兵？" color="#96DADD" parentLayerIndex="8" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2385" centerPoint3DX="1047.8" centerPoint3DY="587">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2385" selected="true" centerPoint3DX="1047.8" centerPoint3DY="587">
                   <matrix>
                     <Matrix tx="976.55" ty="461.05"/>
                   </matrix>
@@ -201,7 +201,10 @@ onClipEvent (load) {
 	if (_root.NPCTaskCheck(名字).result == "接受任务")
 	{
 		_root.发布消息(名字 + "也许需要你的帮助");
-	}
+        this.文字信息.任务接取提示._visible = 1;
+	}else {
+        this.文字信息.任务接取提示._visible = 0;
+    }
 	默认对话 = [[], [], []];
 	默认对话[0][0] = ["A兵团士兵", "线人", "A兵团士兵", "补给的事情就拜托给你了！", "微笑"];
 	默认对话[1][0] = ["A兵团士兵", "线人", "A兵团士兵", "搜集的时候要小心，很多地方残留的大量僵尸！", "普通"];
@@ -333,7 +336,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 16" color="#47BEF8" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Layer 16" color="#47BEF8" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

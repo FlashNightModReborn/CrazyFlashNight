@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#82E338" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#82E338">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -69,11 +69,11 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#C95D78">
+        <DOMLayer name="Layer 4" color="#C95D78" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2363" name="文字信息" centerPoint3DX="51.35" centerPoint3DY="-107.5">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2363" name="文字信息" selected="true" centerPoint3DX="51.35" centerPoint3DY="-107.5">
                   <matrix>
                     <Matrix tx="-0.65" ty="-131.1"/>
                   </matrix>

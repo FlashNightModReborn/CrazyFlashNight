@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/ShopGirl-NPC" itemID="668a8ce5-000030f4" lastModified="1740678504" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/ShopGirl-NPC" itemID="668a8ce5-000030f4" lastModified="1754402639" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="ShopGirl-NPC">
       <layers>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#BCA922" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#BCA922">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -112,11 +112,11 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#CCE86D">
+        <DOMLayer name="Layer 4" color="#CCE86D" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2363" name="文字信息" centerPoint3DX="52" centerPoint3DY="-121.75">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2363" name="文字信息" selected="true" centerPoint3DX="52" centerPoint3DY="-121.75">
                   <matrix>
                     <Matrix ty="-145.35"/>
                   </matrix>

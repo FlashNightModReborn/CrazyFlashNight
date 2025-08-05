@@ -2,8 +2,8 @@
      <folders>
           <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
           <DOMFolderItem name="image" itemID="65976161-00000eac"/>
-          <DOMFolderItem name="NPC" itemID="665f15da-000008f3"/>
-          <DOMFolderItem name="NPC/格格巫" itemID="668aa418-000052d6"/>
+          <DOMFolderItem name="NPC" itemID="665f15da-000008f3" isExpanded="true"/>
+          <DOMFolderItem name="NPC/格格巫" itemID="668aa418-000052d6" isExpanded="true"/>
           <DOMFolderItem name="NPC/格格巫/未命名文件夹 1" itemID="668aa428-000052d9"/>
           <DOMFolderItem name="NPC/黑铁会外交部长-部件" itemID="665b5cec-00001fa7"/>
           <DOMFolderItem name="NPC/冷武器商人" itemID="666550f9-00000a1c"/>
@@ -90,10 +90,10 @@
           <Include href="NPC/Blue-NPC.xml" loadImmediate="false" itemID="668a8cf4-00003141" lastModified="1740678532"/>
           <Include href="NPC/Boy-NPC.xml" loadImmediate="false" itemID="668aa688-0000543a" lastModified="1740634167"/>
           <Include href="NPC/King-NPC.xml" loadImmediate="false" itemID="668aa67d-000053b0" lastModified="1740678564"/>
-          <Include href="NPC/ShopGirl-NPC.xml" loadImmediate="false" itemID="668a8ce5-000030f4" lastModified="1740678504"/>
+          <Include href="NPC/ShopGirl-NPC.xml" loadImmediate="false" itemID="668a8ce5-000030f4" lastModified="1754402639"/>
           <Include href="NPC/爱国青年-NPC.xml" loadImmediate="false" itemID="668a9be5-00004f7b" lastModified="1732205606"/>
           <Include href="NPC/宝石线人-NPC.xml" loadImmediate="false" itemID="668a9bc7-00004f42" lastModified="1740633500"/>
-          <Include href="NPC/格格巫/格格巫-NPC.xml" loadImmediate="false" itemID="668aa42e-000052db" lastModified="1740634045"/>
+          <Include href="NPC/格格巫/格格巫-NPC.xml" loadImmediate="false" itemID="668aa42e-000052db" lastModified="1754402493"/>
           <Include href="NPC/格格巫/未命名文件夹 1/Symbol 2946.xml" loadImmediate="false" itemID="6597607e-00000dbd" lastModified="1704196122"/>
           <Include href="NPC/格格巫/未命名文件夹 1/Symbol 2947.xml" loadImmediate="false" itemID="6597607e-00000dbe" lastModified="1704196122"/>
           <Include href="NPC/格格巫/未命名文件夹 1/Symbol 2948.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000dbf" lastModified="1704196122"/>
@@ -629,7 +629,7 @@
           <Include href="sprite/Symbol 2345.xml" loadImmediate="false" itemID="6597607e-00000b1c" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2351.xml" loadImmediate="false" itemID="6597607e-00000b1e" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2360.xml" loadImmediate="false" itemID="6597607e-00000b1f" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 2363.xml" loadImmediate="false" itemID="6597607e-00000b21" lastModified="1720343543"/>
+          <Include href="sprite/Symbol 2363.xml" loadImmediate="false" itemID="6597607e-00000b21" lastModified="1754406130"/>
           <Include href="sprite/Symbol 2364.xml" itemID="6597607e-00000b22" lastModified="1740678556"/>
           <Include href="sprite/Symbol 2385.xml" loadImmediate="false" itemID="6597607e-00000b37" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2391.xml" loadImmediate="false" itemID="6597607e-00000b3c" lastModified="1704196122"/>
@@ -806,7 +806,7 @@
           <Include href="sprite/主角/枪-长枪-G36.xml" loadImmediate="false" itemID="67d7c61b-0000055b" lastModified="1742194204"/>
           <Include href="sprite/自行车.xml" loadImmediate="false" itemID="681880b5-00000e12" lastModified="1746438386"/>
           <Include href="sprite/自行车素材.xml" loadImmediate="false" itemID="68188672-00000f75" lastModified="1746437746"/>
-          <Include href="UI重构/商店相关/npc商店名称UI.xml" loadImmediate="false" itemID="668a5bba-000008f1" lastModified="1744224634"/>
+          <Include href="UI重构/商店相关/npc商店名称UI.xml" loadImmediate="false" itemID="668a5bba-000008f1" lastModified="1754405157"/>
           <Include href="UI重构/商店相关/npc商店名称框.xml" loadImmediate="false" itemID="668a5ba5-000008ed" lastModified="1720356537"/>
           <Include href="UI重构/商店相关/购物图标UI.xml" loadImmediate="false" itemID="668a7428-00000c8d" lastModified="1720349737"/>
           <Include href="UI重构/商店相关/技能教学图标UI.xml" loadImmediate="false" itemID="6735005d-000008cc" lastModified="1731528994"/>
@@ -814,14 +814,14 @@
           <Include href="UI重构/书架系统/书架.xml" loadImmediate="false" itemID="66519f17-00003cc7" lastModified="1716631965"/>
           <Include href="UI重构/文天彩蛋UI所用素材/文天.xml" loadImmediate="false" itemID="65c1c8c7-00000c83" lastModified="1707198663"/>
           <Include href="UI重构/文天彩蛋UI所用素材/元件 1.xml" loadImmediate="false" itemID="65c1c94d-00000c97" lastModified="1720345000"/>
-          <Include href="地图/车库.xml" itemID="668aa123-00005253" lastModified="1752395462"/>
+          <Include href="地图/车库.xml" itemID="668aa123-00005253" lastModified="1754406308"/>
           <Include href="地图/基地1层.xml" itemID="668a9fdf-00005040" lastModified="1749711693"/>
-          <Include href="地图/基地地下1层.xml" itemID="668aa054-00005128" lastModified="1749711593"/>
+          <Include href="地图/基地地下1层.xml" itemID="668aa054-00005128" lastModified="1754406112"/>
           <Include href="地图/基地门口.xml" itemID="668aa11b-00005252" lastModified="1749711814"/>
           <Include href="地图/健身房.xml" itemID="668aa068-0000512a" lastModified="1749711627"/>
           <Include href="地图/溶洞.xml" itemID="668aa0c1-000051a2" lastModified="1749711656"/>
           <Include href="地图/宿舍房间.xml" itemID="668a9fda-0000503f" lastModified="1749713410"/>
-          <Include href="地图/停机坪.xml" itemID="668aa0dc-000051de" lastModified="1753279842"/>
+          <Include href="地图/停机坪.xml" itemID="668aa0dc-000051de" lastModified="1754406285"/>
           <Include href="地图/武器库.xml" itemID="668aa006-0000507c" lastModified="1752589480"/>
           <Include href="地图/医务室.xml" itemID="668aa0bc-000051a1" lastModified="1749711735"/>
           <Include href="地图/佣兵酒吧.xml" itemID="668aa09a-00005167" lastModified="1749711706"/>
@@ -861,6 +861,7 @@
           <Include href="房间摆件/睡觉-高级床.xml" itemIcon="0" loadImmediate="false" itemID="66503816-000010db" lastModified="1716535982"/>
           <Include href="房间摆件/睡觉-普通床.xml" itemIcon="0" loadImmediate="false" itemID="66503821-000010e7" lastModified="1716536184"/>
           <Include href="健身房沙袋.xml" loadImmediate="false" itemID="65a79007-00000b58" lastModified="1749992608"/>
+          <Include href="任务接取提示.xml" loadImmediate="false" itemID="68920f7c-0000053e" lastModified="1754406124"/>
           <Include href="素材库-基地场景.xml" itemID="67877067-00002014" lastModified="1746453357"/>
           <Include href="梯子1.xml" loadImmediate="false" itemID="67ed053a-00000733" lastModified="1743587297"/>
           <Include href="梯子2.xml" loadImmediate="false" itemID="67ed0cd9-00000ec1" lastModified="1743588724"/>
@@ -1158,6 +1159,12 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2825613" publishTime="1754405786"/>
+          <PublishItem publishSize="2825665" publishTime="1754405653"/>
+          <PublishItem publishSize="2825636" publishTime="1754405406"/>
+          <PublishItem publishSize="2825688" publishTime="1754404470"/>
+          <PublishItem publishSize="2825620" publishTime="1754403861"/>
+          <PublishItem publishSize="2825614" publishTime="1754403767"/>
           <PublishItem publishSize="2383265" publishTime="1752397621"/>
           <PublishItem publishSize="2383676" publishTime="1752337498"/>
           <PublishItem publishSize="2381387" publishTime="1749992613"/>
@@ -1172,11 +1179,5 @@
           <PublishItem publishSize="1043040" publishTime="1746441892"/>
           <PublishItem publishSize="1042901" publishTime="1746441425"/>
           <PublishItem publishSize="1042901" publishTime="1746441384"/>
-          <PublishItem publishSize="1042894" publishTime="1746441234"/>
-          <PublishItem publishSize="1042562" publishTime="1746438401"/>
-          <PublishItem publishSize="1042536" publishTime="1746438041"/>
-          <PublishItem publishSize="1041786" publishTime="1746437402"/>
-          <PublishItem publishSize="1041773" publishTime="1746437110"/>
-          <PublishItem publishSize="1042394" publishTime="1746436962"/>
      </publishHistory>
 </DOMDocument>

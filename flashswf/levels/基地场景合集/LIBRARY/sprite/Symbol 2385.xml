@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2385" itemID="6597607e-00000b37" lastModified="1704196122" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2385" itemID="6597607e-00000b37" lastModified="1704196122" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="Symbol 2385">
       <layers>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#54D0B4" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#54D0B4">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -69,11 +69,11 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#9BA17A">
+        <DOMLayer name="Layer 4" color="#9BA17A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2363" name="文字信息" centerPoint3DX="52" centerPoint3DY="-181.75">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2363" name="文字信息" selected="true" centerPoint3DX="52" centerPoint3DY="-181.75">
                   <matrix>
                     <Matrix ty="-205.35"/>
                   </matrix>
