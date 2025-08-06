@@ -5,7 +5,6 @@ import org.flashNight.arki.spatial.move.*;
 import org.flashNight.aven.Coordinator.*;
 import org.flashNight.arki.unit.*;
 import org.flashNight.naki.RandomNumberEngine.*
-import org.flashNight.neur.ScheduleTimer.*;
 
 //容纳敌人函数的对象
 _root.敌人函数 = new Object();
@@ -164,10 +163,10 @@ _root.敌人函数.硬直 = function(目标, 时间) {
     var 自机:Object = this; // 在外部保存对当前对象的引用
     目标.stop();
 
-    this.stiffID = EnhancedCooldownWheel.I().addTask(function() {
+    this.stiffID = _root.帧计时器.添加或更新任务(目标, "硬直", function() {
         自机.stiffID = null;
         目标.play();
-    }, 时间, 1);
+    }, 时间);
 };
 
 _root.敌人函数.移动钝感硬直 = _root.主角函数.移动钝感硬直;
@@ -323,7 +322,7 @@ _root.敌人函数.fly = function(target:MovieClip) {
     if (target._y >= target.Z轴坐标) {
         target._y = target.Z轴坐标;
         target.浮空 = false;
-        EnhancedCooldownWheel.I().removeTask(target.flyID);
+        _root.帧计时器.移除任务(target.flyID);
         target.flyID = null;
         if (target.状态 == "击倒") {
             target.状态改变("倒地");
@@ -342,9 +341,7 @@ _root.敌人函数.击飞浮空 = function() {
     if (this.垂直速度 >= this.起跳速度)
         this.垂直速度 = this.起跳速度;
 
-    this.flyID = EnhancedCooldownWheel.I().addTask(function() {
-        _root.敌人函数.fly(this);
-    }.bind(this), 33, -1);
+    this.flyID = _root.帧计时器.taskManager.addLifecycleTask(this, "击飞浮空", _root.敌人函数.fly, 1, [this]);
 }
 
 _root.敌人函数.击飞倒地 = function() {
