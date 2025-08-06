@@ -132,7 +132,13 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
                 return; // 初始化失败，直接返回
             }
         }
-        var shellCount:Number = bullet.纵向检测 ? bullet.霰弹值 : 1;
+        // 位掩码优化：使用宏展开避免属性索引开销
+        #include "../macros/FLAG_VERTICAL.as"    
+        // 注入: var FLAG_VERTICAL:Number = 128;
+        
+        // 原始: bullet.纵向检测 ? bullet.霰弹值 : 1 - 需要属性哈希查找
+        // 优化: (bullet.flags & FLAG_VERTICAL) != 0 - 直接位运算检测
+        var shellCount:Number = ((bullet.flags & FLAG_VERTICAL) != 0) ? bullet.霰弹值 : 1;
         
         // 性能优化：使用线性随机数引擎的直接方法调用替代 _root.成功率
         // 原 _root.成功率 通过 Delegate.create 包装，增加了函数调用开销

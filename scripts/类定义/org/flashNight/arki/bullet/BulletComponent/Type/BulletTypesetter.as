@@ -152,8 +152,70 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
         // bullet.联弹检测 = ((flags & FLAG_CHAIN) != 0);
         // bullet.穿刺检测 = ((flags & FLAG_PIERCE) != 0);
         // bullet.透明检测 = ((flags & FLAG_TRANSPARENCY) != 0);
-        bullet.纵向检测 = ((flags & FLAG_VERTICAL) != 0);
-        bullet.普通检测 = ((flags & FLAG_NORMAL) != 0);
+        // bullet.纵向检测 = ((flags & FLAG_VERTICAL) != 0);
+        // bullet.普通检测 = ((flags & FLAG_NORMAL) != 0);
+        
+        /**
+         * === 宏展开 + 位掩码双重性能优化教程 ===
+         * 
+         * 本项目采用"宏展开 + 位掩码"组合技术，实现极致性能优化，
+         * 核心突破：完全绕开AS2运行时的属性索引开销！
+         * 
+         * === 第一层优化：宏展开机制绕开属性索引 ===
+         * 
+         * // 宏文件示例（FLAG_MELEE.as）：
+         * var FLAG_MELEE:Number = 1 << 0;  // 编译时常量：1
+         * var FLAG_CHAIN:Number = 1 << 1;  // 编译时常量：2  
+         * var FLAG_PIERCE:Number = 1 << 2; // 编译时常量：4
+         * var FLAG_VERTICAL:Number = 1 << 7; // 编译时常量：128
+         * 
+         * // 传统方式（每次都有属性索引开销）：
+         * var melee = MyClass.FLAG_MELEE;     // 运行时查找类属性
+         * var chain = MyClass.FLAG_CHAIN;     // 运行时查找类属性
+         * 
+         * // 宏展开优化（零属性索引开销）：
+         * #include "../macros/FLAG_MELEE.as"  // 编译时直接注入: var FLAG_MELEE:Number = 1;
+         * #include "../macros/FLAG_CHAIN.as"  // 编译时直接注入: var FLAG_CHAIN:Number = 2;
+         * // 现在 FLAG_MELEE, FLAG_CHAIN 是当前作用域的局部常量，无需任何属性查找！
+         * 
+         * === 第二层优化：位掩码技术压缩存储与计算 ===
+         * 
+         * // 组合掩码创建（编译时计算）：
+         * var PIERCE_AND_VERTICAL_MASK:Number = FLAG_PIERCE | FLAG_VERTICAL; // 4 | 128 = 132
+         * 
+         * // 高效条件检测（一次位运算替代多次布尔比较）：
+         * if ((bullet.flags & PIERCE_AND_VERTICAL_MASK) == PIERCE_AND_VERTICAL_MASK) {
+         *     // 同时满足穿刺和纵向条件
+         * }
+         * 
+         * === 性能对比分析 ===
+         * 
+         * 传统方式的开销：
+         * • 属性索引：MyClass.FLAG_XXX 需要哈希表查找
+         * • 多次比较：if(a && b && c) 需要3次布尔运算和短路求值
+         * • 内存访问：每个布尔属性独立存储和访问
+         * 
+         * 优化后的优势：
+         * • 零索引开销：宏展开直接注入编译时常量
+         * • 单次位运算：一个 & 操作替代多个 && 操作
+         * • 紧凑存储：8个标志位压缩在1个Number中
+         * • CPU缓存友好：减少内存访问次数
+         * 
+         * === 实际应用示例 ===
+         * 
+         * // 在需要使用标志的函数中：
+         * function checkBulletProperties(bullet:Object):Boolean {
+         *     #include "../macros/FLAG_PIERCE.as"      // 注入: var FLAG_PIERCE:Number = 4;
+         *     #include "../macros/FLAG_VERTICAL.as"    // 注入: var FLAG_VERTICAL:Number = 128;
+         *     
+         *     var MASK:Number = FLAG_PIERCE | FLAG_VERTICAL; // 编译时计算为 132
+         *     return (bullet.flags & MASK) == MASK;          // 运行时仅一次位运算
+         * }
+         * 
+         * 参考实现：MultiShotDamageHandle.as 第71-88行 和 第130-151行
+         */
+        
+
         
         bullet.手雷检测 = bullet.手雷检测 || ((flags & FLAG_GRENADE) != 0);
         bullet.爆炸检测 = bullet.爆炸检测 || ((flags & FLAG_EXPLOSIVE) != 0);

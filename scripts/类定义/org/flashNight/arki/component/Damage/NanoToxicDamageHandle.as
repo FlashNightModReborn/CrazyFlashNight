@@ -72,13 +72,30 @@ class org.flashNight.arki.component.Damage.NanoToxicDamageHandle extends BaseDam
         var damageNumber:Number = target.损伤值;
         var nanoToxicAmount:Number = bullet.nanoToxic;
 
+        /**
+         * === 位掩码优化的毒素伤害计算 ===
+         * 使用宏展开+位运算替代属性索引，避免运行时哈希查找开销
+         */
+        
+        // 宏展开注入位标志常量（编译时处理，零运行时开销）
+        #include "../macros/FLAG_NORMAL.as"      
+        // 注入: var FLAG_NORMAL:Number = 32;
+        #include "../macros/FLAG_VERTICAL.as"    
+        // 注入: var FLAG_VERTICAL:Number = 128;
+        
         // 根据普通检测调整毒素伤害
-        if (bullet.普通检测) {
-            nanoToxicAmount *= 1; // 普通检测时，毒素伤害不变
-        } else {
-            nanoToxicAmount *= 0.3; // 非普通检测时，毒素伤害减少为 30%
+        // 原始: if (bullet.普通检测) - 需要属性哈希查找
+        // 优化: (bullet.flags & FLAG_NORMAL) - 直接位运算
+        if ((bullet.flags & FLAG_NORMAL) == 0) {
+            // 普通子弹：毒素伤害保持100%（省略 *= 1 操作）
+            // 非普通子弹：毒素伤害降低到30%
+            nanoToxicAmount *= 0.3;
         }
-        if(bullet.纵向检测 && result.actualScatterUsed > 1){
+        
+        // 纵向检测优化
+        // 原始: bullet.纵向检测 && result.actualScatterUsed > 1
+        // 优化: 先位运算检测纵向标志，再检查散弹值
+        if (((bullet.flags & FLAG_VERTICAL) != 0) && (result.actualScatterUsed > 1)) {
             nanoToxicAmount *= result.actualScatterUsed;
         }
 
