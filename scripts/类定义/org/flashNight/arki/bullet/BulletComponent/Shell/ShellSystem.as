@@ -236,31 +236,28 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
         if (activeShells.length > 0) {
             // _root.服务器.发布服务器消息("[ShellSystem] updateAllShells: 开始更新 " + activeShells.length + " 个活动弹壳, currentShellCount=" + currentShellCount);
         }
+        
+        // 缓存常用对象引用以减少属性访问开销
+        var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
+        var cooldownWheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+        
         for (var i:Number = activeShells.length - 1; i >= 0; --i) {
             var 弹壳:MovieClip = activeShells[i];
+            var shouldRemove:Boolean = false;
 
             // --------------- 60 帧保险丝 ----------------
             // 每执行一次物理逻辑先 ++，
             // 到 60 就直接强制回收，跳过其余计算
             if (++弹壳.存活帧 >= 60) {
                 // _root.服务器.发布服务器消息("[ShellSystem] updateAllShells: 弹壳存活帧>=60, 强制回收 " + 弹壳);
-                // 同步移除并减少计数
-                activeShells.splice(i, 1);
-                --currentShellCount;
-                // 延迟释放到对象池
-                弹壳.__scheduledRecycle = true;
-                EnhancedCooldownWheel.I().addDelayedTask(33, recycleShell, 弹壳);
-                continue;
-            }
-            // ------------------------------------------
-
-            if (弹壳._y - 弹壳.Z轴坐标 < -5) {
+                shouldRemove = true;
+            } else if (弹壳._y - 弹壳.Z轴坐标 < -5) {
+                // ------------------------------------------
                 弹壳.垂直速度 += 4;
                 弹壳._x += 弹壳.水平速度;
                 弹壳._y += 弹壳.垂直速度;
                 弹壳._rotation += 弹壳.旋转速度;
             } else {
-                var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
                 弹壳.垂直速度 = 弹壳.垂直速度 / -2 - engine.randomIntegerStrict(0, 5);
                 // 透视缩放效果：根据旋转角度调整水平缩放，模拟3D旋转的透视感
                 // 公式简化为：0.75 + 0.25 * sin(θ)，取值范围 [0.5, 1.0]
@@ -276,18 +273,21 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
                     // 弹壳落地，立即从活动循环中移除并调度回收
                     // _root.服务器.发布服务器消息("[ShellSystem] updateAllShells: 弹壳落地 " + 弹壳 + ", 从activeShells[" + i + "]移除并调度回收");
                     _root.add2map3(弹壳, 2);
-                    
-                    // **立刻从 activeShells 删除，防止再进循环**
-                    activeShells.splice(i, 1);
-                    // **同步减少计数**
-                    --currentShellCount;
-                    
-                    // **标记已调度，防止重复 addDelayedTask**
-                    弹壳.__scheduledRecycle = true;
-                    
-                    EnhancedCooldownWheel.I().addDelayedTask(33, recycleShell, 弹壳);
-                    continue; // 跳过本帧剩余逻辑
+                    shouldRemove = true;
                 }
+            }
+            
+            // 统一处理删除和回收逻辑
+            if (shouldRemove) {
+                // 使用交换并弹出技巧进行O(1)删除操作
+                if (i < activeShells.length - 1) {
+                    activeShells[i] = activeShells[activeShells.length - 1];
+                }
+                activeShells.pop();
+                --currentShellCount;
+                // 延迟释放到对象池
+                弹壳.__scheduledRecycle = true;
+                cooldownWheel.addDelayedTask(33, recycleShell, 弹壳);
             }
         }
     }
