@@ -218,7 +218,7 @@ _root.子弹生命周期 = function()
                 collisionResult = this.polygonCollider.checkCollision(unitArea, zOffset);
             }
 
-            _root.发布消息(collisionResult)
+            // _root.发布消息(collisionResult)
 
             if (_root.调试模式)
             {
