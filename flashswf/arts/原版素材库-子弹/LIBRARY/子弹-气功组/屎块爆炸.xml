@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/屎块爆炸" itemID="66bb409c-00001c97" linkageExportForAS="true" linkageIdentifier="屎块爆炸" lastModified="1723548774" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="屎块爆炸" currentFrame="9">
+    <DOMTimeline name="屎块爆炸" currentFrame="12">
       <layers>
         <DOMLayer name="Script Layer" color="#CA8E4F">
           <frames>
@@ -24,7 +24,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#88F25D" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 2" color="#88F25D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -61,7 +61,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#5976C3">
+        <DOMLayer name="Layer 3" color="#5976C3" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>

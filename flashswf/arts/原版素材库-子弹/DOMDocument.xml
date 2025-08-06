@@ -4,15 +4,20 @@
           <DOMFolderItem name="2.音效文件夹/爆炸" itemID="68368bd3-000028d3"/>
           <DOMFolderItem name="3.位图相关" itemID="6690e84b-000017e9"/>
           <DOMFolderItem name="3.音效相关" itemID="6690f591-00003200"/>
-          <DOMFolderItem name="弹壳" itemID="68368c1d-0000293f" isExpanded="true"/>
-          <DOMFolderItem name="联弹" itemID="68368bd3-000028d4" isExpanded="true"/>
+          <DOMFolderItem name="弹壳" itemID="68368c1d-0000293f"/>
+          <DOMFolderItem name="联弹" itemID="68368bd3-000028d4"/>
           <DOMFolderItem name="联弹/白色手里剑" itemID="68368bd3-000028df"/>
           <DOMFolderItem name="联弹/联弹爆炸" itemID="68368bd3-000028e6"/>
           <DOMFolderItem name="联弹/纸飞机" itemID="68368bd3-000028e3"/>
-          <DOMFolderItem name="特效-动画与文字组" itemID="669d3a20-000017ae" isExpanded="true"/>
-          <DOMFolderItem name="特效-击中效果组" itemID="669d39ad-000017a2" isExpanded="true"/>
+          <DOMFolderItem name="诺亚" itemID="6551e7c0-00001580"/>
+          <DOMFolderItem name="其他" itemID="656cb4b0-0000042a"/>
+          <DOMFolderItem name="其他武器" itemID="6551e8df-000015b7"/>
+          <DOMFolderItem name="手雷" itemID="689365e6-00002ce7" isExpanded="true"/>
+          <DOMFolderItem name="手雷/高爆手雷" itemID="6893651b-00002cce" isExpanded="true"/>
+          <DOMFolderItem name="特效-动画与文字组" itemID="669d3a20-000017ae"/>
+          <DOMFolderItem name="特效-击中效果组" itemID="669d39ad-000017a2"/>
           <DOMFolderItem name="特效-枪火组" itemID="669d3996-000017a1" isExpanded="true"/>
-          <DOMFolderItem name="特效-血液组" itemID="669d3970-00001798" isExpanded="true"/>
+          <DOMFolderItem name="特效-血液组" itemID="669d3970-00001798"/>
           <DOMFolderItem name="未分类子弹或特效" itemID="669d39d9-000017a4" isExpanded="true"/>
           <DOMFolderItem name="无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="无AS链接/不知道用在了哪的特效" itemID="669d3934-0000178b"/>
@@ -20,11 +25,11 @@
           <DOMFolderItem name="无AS链接/不知道用在了哪的特效/陨星坠地" itemID="6554d2de-0000309e"/>
           <DOMFolderItem name="无AS链接/不知道用在了哪的特效/陨星坠地/未命名文件夹 1" itemID="654f0342-00002948" isExpanded="true"/>
           <DOMFolderItem name="无AS链接/气功弹（和爆炸）素材" itemID="669d393b-0000178c"/>
-          <DOMFolderItem name="子弹-持续组" itemID="669d3984-0000179c" isExpanded="true"/>
+          <DOMFolderItem name="子弹-持续组" itemID="669d3984-0000179c"/>
           <DOMFolderItem name="子弹-近战子弹专享座位" itemID="669d3aec-000017c1" isExpanded="true"/>
-          <DOMFolderItem name="子弹-炮弹与爆炸组" itemID="669d34e9-0000177b" isExpanded="true"/>
+          <DOMFolderItem name="子弹-炮弹与爆炸组" itemID="669d34e9-0000177b"/>
           <DOMFolderItem name="子弹-普通与穿刺组" itemID="669d349c-00001757" isExpanded="true"/>
-          <DOMFolderItem name="子弹-气功组" itemID="669d3a53-000017b3" isExpanded="true"/>
+          <DOMFolderItem name="子弹-气功组" itemID="669d3a53-000017b3"/>
           <DOMFolderItem name="子弹-特殊组" itemID="669d3a9d-000017bc" isExpanded="true"/>
           <DOMFolderItem name="自瞄准星特效" itemID="67139c16-00000684" isExpanded="true"/>
      </folders>
@@ -143,8 +148,11 @@
      </media>
      <symbols>
           <Include href="Symbol 2.xml" loadImmediate="false" itemID="6577f78a-00000f72" lastModified="1701306521"/>
+          <Include href="Symbol 24.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000013c7" lastModified="1701508661"/>
+          <Include href="Symbol 25.xml" loadImmediate="false" itemID="6577faef-000013c8" lastModified="1701508661"/>
           <Include href="Symbol 721.xml" itemIcon="1" loadImmediate="false" itemID="65a50f67-00000570" lastModified="1705316192"/>
           <Include href="Symbol 722.xml" loadImmediate="false" itemID="65a50f67-00000571" lastModified="1705316192"/>
+          <Include href="Symbol 1540.xml" loadImmediate="false" itemID="6577faef-0000173e" lastModified="1746217049"/>
           <Include href="弹壳/步枪弹壳.xml" itemID="6634970f-00000eef" lastModified="1714742965"/>
           <Include href="弹壳/加强弹壳.xml" itemID="66357ced-00000b76" lastModified="1714781421"/>
           <Include href="弹壳/加强榴弹弹壳.xml" itemID="66384119-00001761" lastModified="1752978353"/>
@@ -196,9 +204,22 @@
           <Include href="联弹/纵向机枪联弹.xml" itemID="67e4c547-000044ea" lastModified="1743045959"/>
           <Include href="联弹/纵向联弹.xml" itemID="67e4a8eb-00002ab1" lastModified="1743045959"/>
           <Include href="联弹/纵向手枪联弹.xml" itemID="67ee2b69-000017dc" lastModified="1743661929"/>
+          <Include href="诺亚/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="65524854-00001be9" lastModified="1699150908"/>
+          <Include href="其他/Symbol 13 副本.xml" loadImmediate="false" itemID="6551ea57-000015ed" lastModified="1699150908"/>
+          <Include href="其他武器/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="6551e9fc-000015c0" lastModified="1699150908"/>
+          <Include href="其他武器/Symbol 13.xml" loadImmediate="false" itemID="6551e9fc-000015bf" lastModified="1699150908"/>
+          <Include href="其他武器/Symbol 5645.xml" itemIcon="1" loadImmediate="false" itemID="6551e7a2-000014c4" lastModified="1746216877"/>
+          <Include href="其他武器/刀-砖头.xml" itemID="661114ae-000018c6" lastModified="1714796679"/>
           <Include href="气锤上叶片.xml" itemIcon="1" loadImmediate="false" itemID="6879a7cf-00000602" lastModified="1752803279"/>
           <Include href="气锤下叶片.xml" itemIcon="1" loadImmediate="false" itemID="6879a7dd-00000607" lastModified="1752803293"/>
           <Include href="升级动画.xml" itemID="669d33ea-0000172e" lastModified="1721578474"/>
+          <Include href="手雷/高爆手雷/Symbol 1540.xml" loadImmediate="false" itemID="66424ac1-00000e36" lastModified="1746217044"/>
+          <Include href="手雷/高爆手雷/高爆手雷.xml" itemID="6893661b-00002cea" lastModified="1754490395"/>
+          <Include href="手雷/高爆手雷/手雷-高爆手雷.xml" itemID="681527f2-00004946" lastModified="1754490230"/>
+          <Include href="手雷/高爆手雷/手雷-战术核弹手雷.xml" itemID="689366f4-00003299" lastModified="1754490631"/>
+          <Include href="手雷/高爆手雷/图标-高爆手雷.xml" itemID="681527a8-00004353" lastModified="1754490765"/>
+          <Include href="手雷/高爆手雷/图标-战术核弹手雷.xml" itemID="68936744-00003490" lastModified="1754490887"/>
+          <Include href="手雷/高爆手雷/战术核弹手雷.xml" itemID="68936621-00002cfc" lastModified="1754490508"/>
           <Include href="特效-动画与文字组/升级动画2.xml" itemID="669d3460-00001749" lastModified="1721578592"/>
           <Include href="特效-动画与文字组/药剂动画.xml" itemID="669d3408-00001735" lastModified="1722876442"/>
           <Include href="特效-动画与文字组/药剂动画-2.xml" itemID="669d346d-0000174c" lastModified="1722876464"/>
@@ -523,7 +544,8 @@
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 663.xml" itemIcon="1" loadImmediate="false" itemID="668b9cdd-000001df" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 664.xml" loadImmediate="false" itemID="668b9cdd-000001e0" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 1217.xml" itemIcon="1" loadImmediate="false" itemID="668b9f53-000001d0" lastModified="1720426265"/>
-          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1753882464"/>
+          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1754490935"/>
+          <Include href="战术核弹素材.xml" itemIcon="1" loadImmediate="false" itemID="6893663f-00002d0f" lastModified="1754491166"/>
           <Include href="子弹-持续组/电球.xml" itemID="669d343b-00001740" lastModified="1722876120"/>
           <Include href="子弹-持续组/火焰.xml" itemID="669d3404-00001734" lastModified="1722875196"/>
           <Include href="子弹-持续组/声波.xml" itemID="669d34bf-0000176e" lastModified="1722875808"/>
@@ -840,6 +862,16 @@
                     <SolidSwatchItem color="#2D8DAF" alpha="0.498039215686275" hue="130" saturation="143" brightness="104"/>
                     <SolidSwatchItem color="#0CB2DD" hue="128" saturation="216" brightness="110"/>
                     <SolidSwatchItem color="#3C9ECD" hue="133" saturation="142" brightness="125"/>
+                    <SolidSwatchItem color="#3C3815" hue="37" saturation="114" brightness="38"/>
+                    <SolidSwatchItem color="#2D2C0E" hue="39" saturation="127" brightness="28"/>
+                    <SolidSwatchItem color="#2E2D0E" hue="39" saturation="129" brightness="28"/>
+                    <SolidSwatchItem color="#19160C" hue="31" saturation="89" brightness="18"/>
+                    <SolidSwatchItem color="#393F2A" hue="51" saturation="46" brightness="50"/>
+                    <SolidSwatchItem color="#3C3816" hue="37" saturation="109" brightness="39"/>
+                    <SolidSwatchItem color="#15140B" hue="36" saturation="80" brightness="15"/>
+                    <SolidSwatchItem color="#312C1C" hue="30" saturation="67" brightness="36"/>
+                    <SolidSwatchItem color="#4A4829" hue="38" saturation="68" brightness="55"/>
+                    <SolidSwatchItem color="#171504" hue="36" saturation="166" brightness="13"/>
                </swatches>
           </swatchList>
      </swatchLists>
