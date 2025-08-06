@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/姓名动画" itemID="664e2146-000084a9" lastModified="1717573774" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/姓名动画" itemID="664e2146-000084a9" lastModified="1754493681" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="姓名动画" currentFrame="204">
+    <DOMTimeline name="姓名动画" currentFrame="199">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="300" keyMode="9728">
               <Actionscript>
@@ -76,11 +76,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文本" color="#4FFF4F" parentLayerIndex="2" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="文本" color="#4FFF4F" parentLayerIndex="2" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="99" keyMode="9728">
               <elements>
-                <DOMDynamicText selected="true" fontRenderingMode="device" width="94.45" height="14.25" isSelectable="false" variableName="_root.角色名">
+                <DOMDynamicText fontRenderingMode="device" width="94.45" height="14.25" isSelectable="false" variableName="_root.角色名">
                   <matrix>
                     <Matrix tx="3" ty="1.5"/>
                   </matrix>
@@ -120,7 +120,7 @@
             </DOMFrame>
             <DOMFrame index="199" keyMode="9728">
               <elements>
-                <DOMDynamicText selected="true" fontRenderingMode="device" width="94.45" height="14.25" isSelectable="false" variableName="_root.角色名">
+                <DOMDynamicText fontRenderingMode="device" width="94.45" height="14.25" isSelectable="false" variableName="_root.角色名">
                   <matrix>
                     <Matrix tx="-96.65" ty="2"/>
                   </matrix>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="玩家信息界面" itemID="6651f9a1-00001952" linkageExportForAS="true" linkageIdentifier="玩家信息界面" lastModified="1754384451" lastUniqueIdentifier="23">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="玩家信息界面" itemID="6651f9a1-00001952" linkageExportForAS="true" linkageIdentifier="玩家信息界面" lastModified="1754496470" lastUniqueIdentifier="23">
   <timeline>
     <DOMTimeline name="玩家信息界面">
       <layers>
@@ -159,7 +159,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="玩家必要信息界面" color="#FF4F4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="玩家必要信息界面" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -170,11 +170,6 @@
                   <transformationPoint>
                     <Point x="121.8" y="17"/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	gotoAndStop("空手");
-}]]></script>
-                  </Actionscript>
                   <filters>
                     <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" highlightColor="#666666" isEnabled="false"/>
                   </filters>
@@ -183,7 +178,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="主角经验值显示界面" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="主角经验值显示界面" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

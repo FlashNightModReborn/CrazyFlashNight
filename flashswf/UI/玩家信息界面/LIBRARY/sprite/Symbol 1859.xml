@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1859" itemID="6597607e-00000a2c" lastModified="1735152412" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1859" itemID="6597607e-00000a2c" lastModified="1754495777" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="Symbol 1859" currentFrame="21">
+    <DOMTimeline name="Symbol 1859">
       <layers>
-        <DOMLayer name="刷新符" color="#DC04BE" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="刷新符" color="#DC04BE" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="101" keyMode="9728">
               <elements>
@@ -18,39 +18,27 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码记录" color="#4F80FF" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="101" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="LV" color="#FF4FFF" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="LV" color="#BF61D6" parentLayerIndex="2" locked="true" autoNamed="false">
+        <DOMLayer name="LV" color="#FF4FFF" current="true" isSelected="true" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="LV 矢量图" color="#BF61D6" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="101" keyMode="9728">
               <elements>
-                <DOMStaticText fontRenderingMode="standard" width="15.9" height="19.5" autoExpand="true">
-                  <matrix>
-                    <Matrix tx="221.9" ty="-23.95"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>Lv.</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" lineSpacing="0" rightMargin="2" size="15" bitmapSize="300" face="Bebas Neue*" fillColor="#E5E5E5"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                  <filters>
-                    <GlowFilter color="#000000" quality="3" strength="3" isEnabled="false"/>
-                  </filters>
-                </DOMStaticText>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#E5E5E5"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!4452 -404|4485 -404!4485 -404|4485 -224!4485 -224|4540 -224!4540 -224|4540 -194!4540 -194|4452 -194!4452 -194|4452 -404!4580 -404|4601 -241!4601 -241|4602 -241!4602 -241|4624 -404!4624 -404|4654 -404!4654 -404|4622 -194!4622 -194|4578
+ -194!4578 -194|4547 -404!4547 -404|4580 -404!4670 -226|4702 -226!4702 -226|4702 -194!4702 -194|4670 -194!4670 -194|4670 -226"/>
+                  </edges>
+                </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="LV数字" color="#AE22FE" parentLayerIndex="2" autoNamed="false">
+        <DOMLayer name="LV数字" color="#AE22FE" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="101" keyMode="9728">
               <elements>
@@ -69,15 +57,12 @@
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
-                  <filters>
-                    <GlowFilter color="#000000" quality="3" strength="3" isEnabled="false"/>
-                  </filters>
                 </DOMDynamicText>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="LV背景" color="#75DA62" parentLayerIndex="2" locked="true" autoNamed="false">
+        <DOMLayer name="LV背景" color="#75DA62" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="101" keyMode="9728">
               <elements>
@@ -143,7 +128,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="经验条满" color="#31BCF7" parentLayerIndex="6" locked="true" autoNamed="false">
+        <DOMLayer name="经验条满" color="#31BCF7" parentLayerIndex="5" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="101" keyMode="9728">
               <elements>
@@ -163,7 +148,8 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!250 -25/452 13!452 13/4230 13!4230 13/4241 -54!4241 -54/12787 -56!12787 -56/12879 40!12879 40/432 40!432 40/241 5!241 5/9 5!9 5|9 -25!9 -25/250 -25"/>
+                    <Edge fillStyle1="1" edges="
+!250 -25/452 13!452 13/4230 13!4230 13/4241 -54!4241 -54/12787 -56!12787 -56/12879 40!12879 40/432 40!432 40/241 5!241 5/9 5!9 5|9 -25!9 -25/250 -25"/>
                     <Edge cubics="!12879 40(;12879,40 12787,-56 12787,-56q12879 40 12787 -56);"/>
                     <Edge cubics="!4241 -54(;4241,-54 12787,-56 12787,-56p4241 -54 12787 -56);"/>
                     <Edge cubics="!4241 -54(;4241,-54 4230,13 4230,13p4241 -54 4230 13);"/>
@@ -201,7 +187,8 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!250 -25/452 13!452 13/4230 13!4230 13/4241 -54!4241 -54/12787 -56!12787 -56/12879 40!12879 40/432 40!432 40/241 5!241 5/9 5!9 5|9 -25!9 -25/250 -25"/>
+                    <Edge fillStyle1="1" edges="
+!250 -25/452 13!452 13/4230 13!4230 13/4241 -54!4241 -54/12787 -56!12787 -56/12879 40!12879 40/432 40!432 40/241 5!241 5/9 5!9 5|9 -25!9 -25/250 -25"/>
                     <Edge cubics="!12879 40(;12879,40 12787,-56 12787,-56q12879 40 12787 -56);"/>
                     <Edge cubics="!4241 -54(;4241,-54 12787,-56 12787,-56p4241 -54 12787 -56);"/>
                     <Edge cubics="!4241 -54(;4241,-54 4230,13 4230,13p4241 -54 4230 13);"/>
@@ -234,8 +221,10 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!-75 -34S1[-82 -27 -82 -16!-82 -16[-82 -6 -75 1!-75 1[-67 8 -57 8!-57 8[-46 8 -39 1!-39 1[-32 -6 -32 -16!-32 -16[-32 -27 -39 -34!-39 -34[-46 -41 -57 -41!-57 -41[-67 -41 -75 -34"/>
-                    <Edge fillStyle0="1" edges="!-17 -56[-33 -72 -57 -72!-57 -72[-80 -72 -97 -56!-97 -56[-113 -40 -113 -16!-113 -16[-113 7 -97 24!-97 24[-80 40 -57 40!-57 40[-33 40 -17 24!-17 24[-1 7 -1 -16!-1 -16[-1 -40 -17 -56!-9 -16[-9 4 -23 18!-23 18[-37 32 -57 32!-57 32[-77 32
+                    <Edge fillStyle0="1" edges="
+!-75 -34S1[-82 -27 -82 -16!-82 -16[-82 -6 -75 1!-75 1[-67 8 -57 8!-57 8[-46 8 -39 1!-39 1[-32 -6 -32 -16!-32 -16[-32 -27 -39 -34!-39 -34[-46 -41 -57 -41!-57 -41[-67 -41 -75 -34"/>
+                    <Edge fillStyle0="1" edges="
+!-17 -56[-33 -72 -57 -72!-57 -72[-80 -72 -97 -56!-97 -56[-113 -40 -113 -16!-113 -16[-113 7 -97 24!-97 24[-80 40 -57 40!-57 40[-33 40 -17 24!-17 24[-1 7 -1 -16!-1 -16[-1 -40 -17 -56!-9 -16[-9 4 -23 18!-23 18[-37 32 -57 32!-57 32[-77 32
  -91 18!-91 18[-104 4 -104 -16!-104 -16[-104 -36 -91 -50!-91 -50[-77 -64 -57 -64!-57 -64[-37 -64 -23 -50!-23 -50[-9 -36 -9 -16"/>
                     <Edge cubics="!-57 32(;-83,32 -104,10 -104,-16q-57 32Q-77 32q-91 18Q-104 4q-104 -16);"/>
                     <Edge cubics="!-104 -16(;-104,-42 -83,-64 -57,-64q-104 -16Q-104 -36q-91 -50Q-77 -64q-57 -64);"/>
@@ -255,7 +244,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="信息" color="#808080" locked="true" autoNamed="false">
+        <DOMLayer name="信息" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="101" keyMode="9728">
               <elements>
@@ -350,6 +339,20 @@
           <frames>
             <DOMFrame index="0" duration="101" keyMode="9728">
               <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFCC00"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!4219 -523|4256 -486!4256 -486|4293 -523!4293 -523|4307 -509!4307 -509|4270 -472!4270 -472|4307 -435!4307 -435|4293 -421!4293 -421|4256 -458!4256 -458|4219 -421!4219 -421|4205 -435!4205 -435|4242 -472!4242 -472|4205 -509!4205 -509|4219
+ -523!4205 -542|4242 -579!4242 -579|4205 -616!4205 -616|4219 -630!4219 -630|4256 -593!4256 -593|4293 -630!4293 -630|4307 -616!4307 -616|4270 -579!4270 -579|4307 -542!4307 -542|4293 -528!4293 -528|4256 -565!4256 -565|4219 -528!4219 -528
+|4205 -542!4307 -402|4270 -365!4270 -365|4307 -328!4307 -328|4293 -314!4293 -314|4256 -351!4256 -351|4219 -314!4219 -314|4205 -328!4205 -328|4242 -365!4242 -365|4205 -402!4205 -402|4219 -416!4219 -416|4256 -379!4256 -379|4293 -416!4293
+ -416|4307 -402"/>
+                  </edges>
+                </DOMShape>
                 <DOMShape isDrawingObject="true">
                   <matrix>
                     <Matrix ty="-0.6"/>
@@ -543,12 +546,12 @@
                   </strokes>
                   <edges>
                     <Edge strokeStyle="1" edges="
-!3218 -546|3257 -546!3257 -546|3257 -507!3257 -507|3218 -507!3218 -507|3218 -546!3714 -546|3753 -546!3753 -546|3753 -507!3753 -507|3714 -507!3714 -507|3714 -546!3652 -507|3652 -546!3652 -546|3691 -546!3691 -546|3691 -507!3691 -507|3652
- -507!3776 -546|3815 -546!3815 -546|3815 -507!3815 -507|3776 -507!3776 -507|3776 -546!3838 -546|3877 -546!3877 -546|3877 -507!3877 -507|3838 -507!3838 -507|3838 -546!3900 -507|3900 -546!3900 -546|3939 -546!3939 -546|3939 -507!3939 -507
-|3900 -507!4001 -507|3962 -507!3962 -507|3962 -546!3962 -546|4001 -546!4001 -546|4001 -507!4024 -546|4063 -546!4063 -546|4063 -507!4063 -507|4024 -507!4024 -507|4024 -546!3319 -546|3319 -507!3319 -507|3280 -507!3280 -507|3280 -546!3280
- -546|3319 -546!3342 -546|3381 -546!3381 -546|3381 -507!3381 -507|3342 -507!3342 -507|3342 -546!3404 -546|3443 -546!3443 -546|3443 -507!3443 -507|3404 -507!3404 -507|3404 -546!3505 -546|3505 -507!3505 -507|3466 -507!3466 -507|3466 -546
-!3466 -546|3505 -546!3528 -546|3567 -546!3567 -546|3567 -507!3567 -507|3528 -507!3528 -507|3528 -546!3590 -546|3629 -546!3629 -546|3629 -507!3629 -507|3590 -507!3590 -507|3590 -546!4148 -546|4187 -546!4187 -546|4187 -507!4187 -507|4148
- -507!4148 -507|4148 -546!4125 -546|4125 -507!4125 -507|4086 -507!4086 -507|4086 -546!4086 -546|4125 -546"/>
+!3218 -546|3257 -546!3257 -546|3257 -507!3257 -507|3218 -507!3218 -507|3218 -546!3714 -546|3753 -546!3753 -546|3753 -507!3753 -507|3714 -507!3714 -507|3714 -546!3691 -546|3691 -507!3691 -507|3652 -507!3652 -507|3652 -546!3652 -546|3691
+ -546!3776 -546|3815 -546!3815 -546|3815 -507!3815 -507|3776 -507!3776 -507|3776 -546!3838 -546|3877 -546!3877 -546|3877 -507!3877 -507|3838 -507!3838 -507|3838 -546!3939 -546|3939 -507!3939 -507|3900 -507!3900 -507|3900 -546!3900 -546
+|3939 -546!3962 -507|3962 -546!3962 -546|4001 -546!4001 -546|4001 -507!4001 -507|3962 -507!4024 -546|4063 -546!4063 -546|4063 -507!4063 -507|4024 -507!4024 -507|4024 -546!3319 -546|3319 -507!3319 -507|3280 -507!3280 -507|3280 -546!3280
+ -546|3319 -546!3342 -546|3381 -546!3381 -546|3381 -507!3381 -507|3342 -507!3342 -507|3342 -546!3404 -546|3443 -546!3443 -546|3443 -507!3443 -507|3404 -507!3404 -507|3404 -546!3466 -507|3466 -546!3466 -546|3505 -546!3505 -546|3505 -507
+!3505 -507|3466 -507!3528 -546|3567 -546!3567 -546|3567 -507!3567 -507|3528 -507!3528 -507|3528 -546!3590 -546|3629 -546!3629 -546|3629 -507!3629 -507|3590 -507!3590 -507|3590 -546!4148 -546|4187 -546!4187 -546|4187 -507!4187 -507|4148
+ -507!4148 -507|4148 -546!4086 -507|4086 -546!4086 -546|4125 -546!4125 -546|4125 -507!4125 -507|4086 -507"/>
                   </edges>
                 </DOMShape>
                 <DOMShape isDrawingObject="true">
@@ -716,24 +719,11 @@
 !-233 -141|170 -141!170 -141|364.5 -238!364.5 -238|925 -239"/>
                   </edges>
                 </DOMShape>
-                <DOMStaticText fontRenderingMode="standard" left="65.9" width="12.2" height="33.75" autoExpand="true" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="140.8" ty="-35.45"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>×&#xD;×&#xD;×</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" lineSpacing="-9" bitmapSize="240" face="思源宋体*" fillColor="#FFCC00"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMStaticText>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="大背景" color="#FF800A" autoNamed="false">
+        <DOMLayer name="大背景" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="101" keyMode="9728">
               <elements>

@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/快捷药剂界面" itemID="665210bd-00002498" lastModified="1735535401" lastUniqueIdentifier="38">
   <timeline>
-    <DOMTimeline name="快捷药剂界面" currentFrame="1" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;-50&lt;/guideline&gt;&lt;guideline direction="h"&gt;-10&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="快捷药剂界面" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;-50&lt;/guideline&gt;&lt;guideline direction="h"&gt;-10&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Script Layer" color="#5FE4C4" autoNamed="false">
           <frames>
@@ -175,7 +175,7 @@ _root.物品UI函数.初始化药剂栏图标();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="纯图形" color="#808080" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="纯图形" color="#808080" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -216,11 +216,11 @@ _root.物品UI函数.初始化药剂栏图标();
           </frames>
         </DOMLayer>
         <DOMLayer name="主要信息" color="#9933CC" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="名字" color="#14AFCA" parentLayerIndex="6" autoNamed="false">
+        <DOMLayer name="名字" color="#14AFCA" parentLayerIndex="6" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="UI重构/姓名动画" name="姓名框" centerPoint3DX="90.15" centerPoint3DY="-18.05">
+                <DOMSymbolInstance libraryItemName="UI重构/姓名动画" name="姓名框" selected="true" centerPoint3DX="90.15" centerPoint3DY="-18.05">
                   <matrix>
                     <Matrix tx="40.95" ty="-27.15"/>
                   </matrix>

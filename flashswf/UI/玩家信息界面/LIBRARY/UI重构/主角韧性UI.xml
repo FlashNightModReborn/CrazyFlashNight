@@ -1,19 +1,12 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/主角韧性UI" itemID="664c984c-00000c11" lastModified="1746930573">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/主角韧性UI" itemID="664c984c-00000c11" lastModified="1754495597">
   <timeline>
-    <DOMTimeline name="主角韧性UI" currentFrame="27">
+    <DOMTimeline name="主角韧性UI">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC">
-          <frames>
-            <DOMFrame index="0" duration="24" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isDrawingObject="true">
+                <DOMShape isDrawingObject="true">
                   <matrix>
                     <Matrix a="1.1988525390625" d="1.1988525390625" tx="-188.5" ty="-453.85"/>
                   </matrix>
@@ -30,7 +23,7 @@
                     <Edge strokeStyle="1" edges="!3912 7933|4149 7933!4149 7933|4253 7879!4253 7879|4695 7879!4695 7879|5588 7879!5588 7879|6298 7879!4695 7879|4799 7933!4799 7933|5484 7933!5484 7933|5588 7879"/>
                   </edges>
                 </DOMShape>
-                <DOMStaticText selected="true" fontRenderingMode="standard" width="40.3" height="15.15" autoExpand="true" includeOutlines="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="40.3" height="15.15" autoExpand="true" includeOutlines="true" isSelectable="false">
                   <matrix>
                     <Matrix a="1.1988525390625" d="1.1988525390625" tx="77.75" ty="2.9"/>
                   </matrix>
@@ -43,7 +36,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMDynamicText selected="true" fontRenderingMode="standard" width="34.6" height="15.15" autoExpand="true" includeOutlines="true" isSelectable="false" variableName="poise">
+                <DOMDynamicText fontRenderingMode="standard" width="34.6" height="15.15" autoExpand="true" includeOutlines="true" isSelectable="false" variableName="poise">
                   <matrix>
                     <Matrix a="1.1988525390625" d="1.1988525390625" tx="130.9" ty="2.9"/>
                   </matrix>
@@ -56,7 +49,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMShape selected="true" isDrawingObject="true">
+                <DOMShape isDrawingObject="true">
                   <matrix>
                     <Matrix c="-0.262496948242188" tx="5.45" ty="0.5"/>
                   </matrix>
@@ -76,11 +69,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="原点" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="原点" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMShape selected="true" isDrawingObject="true">
+                <DOMShape isDrawingObject="true">
                   <matrix>
                     <Matrix a="1.1988525390625" d="1.1988525390625" tx="-188.5" ty="-359.15"/>
                   </matrix>
@@ -558,7 +551,7 @@
                     <Edge fillStyle1="1" strokeStyle="1" edges="
 !245 229|256 451!256 451|208 451!208 451|208 197!208 197[#E8.D3 #DA.6C 245 229"/>
                     <Edge strokeStyle="1" edges="
-!245 229[#10C.C2 #F9.1E 245 228!245 228|245 229"/>
+!245 229|245 228!245 228[#10C.C2 #F9.1E 245 229"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1297,11 +1290,11 @@
                   </strokes>
                   <edges>
                     <Edge fillStyle1="1" strokeStyle="1" edges="
-!415 331S6[490 363 571 383!571 383|571 451!571 451|415 451!415 451|415 331"/>
+!571 451|415 451!415 451|415 331!415 331[490 363 571 383!571 383|571 451"/>
                     <Edge fillStyle1="2" strokeStyle="1" edges="
-!208 451S6|208 197!208 197[281 260 364 306!364 306|364 451!364 451|208 451"/>
+!208 197[281 260 364 306!364 306|364 451!364 451|208 451!208 451|208 197"/>
                     <Edge fillStyle1="3" strokeStyle="1" edges="
-!156 451S6|0 451!0 451|0 -98!0 -98[48 36 156 148!156 148|156 451"/>
+!0 451|0 -98!0 -98[48 36 156 148!156 148|156 451!156 451|0 451"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1350,11 +1343,11 @@
                   </strokes>
                   <edges>
                     <Edge fillStyle1="3" strokeStyle="1" edges="
-!415 331[490 363 571 383!571 383|571 451!571 451|415 451!415 451|415 331"/>
+!571 451|415 451!415 451|415 331!415 331[490 363 571 383!571 383|571 451"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="
-!208 197[281 260 364 306!364 306|364 451!364 451|208 451!208 451|208 197"/>
+!364 306|364 451!364 451|208 451!208 451|208 197!208 197[281 260 364 306"/>
                     <Edge fillStyle1="2" strokeStyle="1" edges="
-!0 451|0 -98!0 -98[48 36 156 148!156 148|156 451!156 451|0 451"/>
+!156 451|0 451!0 451|0 -98!0 -98[48 36 156 148!156 148|156 451"/>
                   </edges>
                 </DOMShape>
               </elements>

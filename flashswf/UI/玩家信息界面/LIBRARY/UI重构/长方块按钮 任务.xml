@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/长方块按钮 任务" itemID="67cea821-0000080e" lastModified="1741596784">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/长方块按钮 任务" itemID="67cea821-0000080e" lastModified="1754494097">
   <timeline>
     <DOMTimeline name="长方块按钮 任务">
       <layers>
@@ -19,27 +19,7 @@ stop();]]></script>
         <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMStaticText fontRenderingMode="standard" width="20.2" height="14.35" autoExpand="true" includeOutlines="true" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="-9.9" ty="-7.65"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>任务</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="10" bitmapSize="200" face="思源宋体*" fillColor="#E5E5E5"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="10" bitmapSize="200" face="思源宋体*" fillColor="#E5E5E5"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMStaticText>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -89,7 +69,7 @@ on (press, rollOut) {
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!316 -135|316 82!316 82|263 134!263 134|-315 134!-315 134|-315 -135!-315 -135|316 -135"/>
+                    <Edge strokeStyle="1" edges="!263 134|-315 134!-315 134|-315 -135!-315 -135|316 -135!316 -135|316 82!316 82|263 134"/>
                   </edges>
                 </DOMShape>
                 <DOMShape isDrawingObject="true">
@@ -166,7 +146,7 @@ on (press, rollOut) {
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!279 83|260 83!260 83|260 102!242 83|260 83!260 83|260 65"/>
+                    <Edge strokeStyle="1" edges="!242 83|260 83!260 83|260 65!279 83|260 83!260 83|260 102"/>
                   </edges>
                 </DOMShape>
                 <DOMShape isDrawingObject="true">

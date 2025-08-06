@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/主角mp显示界面" itemID="66520796-00001b5d" lastModified="1746877068" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/主角mp显示界面" itemID="66520796-00001b5d" lastModified="1754494939" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="主角mp显示界面" currentFrame="44" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;36&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="主角mp显示界面" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;36&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="刷新符" color="#C452B2" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="刷新符" color="#C452B2" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="101" keyMode="9728">
               <elements>
@@ -18,7 +18,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="按钮" color="#F08E7E" locked="true" autoNamed="false">
+        <DOMLayer name="按钮" color="#F08E7E" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="101" keyMode="9728">
               <elements>
@@ -44,7 +44,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="信息" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="信息" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements>
@@ -87,7 +87,7 @@ on(rollOut){
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText name="最大MP" selected="true" fontRenderingMode="standard" left="26.85" width="44.95" height="14.5" autoExpand="true" includeOutlines="true" isSelectable="false">
+                <DOMDynamicText name="最大MP" fontRenderingMode="standard" left="26.85" width="44.95" height="14.5" autoExpand="true" includeOutlines="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="53.8" ty="6.05"/>
                   </matrix>
@@ -272,7 +272,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="装饰信息" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="装饰信息" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements>
@@ -283,7 +283,7 @@ on(rollOut){
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!1567 162S2/1583 162!1583 162/1558 274!1558 274/1534 377!1534 377/1518 377!1518 377|1567 162"/>
+                    <Edge fillStyle1="1" edges="!1567 162/1583 162!1583 162/1558 274!1558 274/1534 377!1534 377/1518 377!1518 377|1567 162"/>
                     <Edge cubics="!1583 162(;1583,162 1558,274 1558,274q1583 162 1558 274);"/>
                     <Edge cubics="!1558 274(;1558,274 1534,377 1534,377q1558 274 1534 377);"/>
                     <Edge cubics="!1567 162(;1567,162 1583,162 1583,162p1567 162 1583 162);"/>
@@ -291,7 +291,7 @@ on(rollOut){
                     <Edge cubics="!1518 377(;1518,377 1567,162 1567,162q1518 377 1567 162);"/>
                   </edges>
                 </DOMShape>
-                <DOMStaticText selected="true" fontRenderingMode="standard" width="44.95" height="14.05" autoExpand="true" includeOutlines="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="44.95" height="14.05" autoExpand="true" includeOutlines="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="29.6" ty="6.05"/>
                   </matrix>
@@ -304,7 +304,7 @@ on(rollOut){
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText selected="true" fontRenderingMode="standard" left="26.85" width="44.95" height="14.05" autoExpand="true" includeOutlines="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" left="26.85" width="44.95" height="14.05" autoExpand="true" includeOutlines="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="53.8" ty="6.05"/>
                   </matrix>
@@ -375,7 +375,7 @@ on(rollOut){
                   <edges>
                     <Edge fillStyle0="1" edges="!1564.5 244S1/1583 162!1583 162/1567 162!1567 162|1548.5 244"/>
                     <Edge fillStyle0="1" fillStyle1="1" edges="!1548.5 244S1|1564.5 244"/>
-                    <Edge fillStyle1="1" edges="!1564.5 244/1558 274!1558 274/1553.5 293!1553.5 293/1534 377!1534 377/1518 377!1518 377|1548.5 244"/>
+                    <Edge fillStyle0="1" edges="!1548.5 244|1518 377!1518 377/1534 377!1534 377/1553.5 293!1553.5 293/1558 274!1558 274/1564.5 244"/>
                     <Edge cubics="!1583 162(;1583,162 1558,274 1558,274q1583 162 1558 274);"/>
                     <Edge cubics="!1558 274(;1558,274 1534,377 1534,377q1558 274 1534 377);"/>
                     <Edge cubics="!1567 162(;1567,162 1583,162 1583,162p1567 162 1583 162);"/>
@@ -463,7 +463,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左侧MP遮罩" color="#31C697" locked="true" autoNamed="false" layerType="mask">
+        <DOMLayer name="左侧MP遮罩" color="#31C697" autoNamed="false" layerType="mask">
           <frames>
             <DOMFrame index="0" duration="99" tweenType="shape" keyMode="17922">
               <MorphShape>
@@ -509,7 +509,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景 复制" color="#19D0A9" parentLayerIndex="4" locked="true" autoNamed="false">
+        <DOMLayer name="背景 复制" color="#19D0A9" parentLayerIndex="4" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="99" keyMode="9728">
               <elements>
@@ -537,7 +537,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左侧MP槽" color="#B9D016" parentLayerIndex="4" locked="true" autoNamed="false">
+        <DOMLayer name="左侧MP槽" color="#B9D016" parentLayerIndex="4" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="100" keyMode="9728">
               <elements>
@@ -752,7 +752,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右侧MP遮罩" color="#31C697" locked="true" autoNamed="false" layerType="mask">
+        <DOMLayer name="右侧MP遮罩" color="#31C697" autoNamed="false" layerType="mask">
           <frames>
             <DOMFrame index="0" duration="33" tweenType="shape" keyMode="17922">
               <MorphShape>
@@ -864,7 +864,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="装饰性" color="#9933CC" parentLayerIndex="7" locked="true" autoNamed="false">
+        <DOMLayer name="装饰性" color="#9933CC" parentLayerIndex="7" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="101" keyMode="9728">
               <elements>
@@ -884,8 +884,8 @@ on(rollOut){
                     <Edge fillStyle0="1" edges="
 !4174 -1179|4127 -1179!4127 -1179|4188 -1064!4188 -1064|4127 -951!4127 -951|4174 -951!4174 -951|4236 -1064!4236 -1064|4174 -1179!4384 -1064|4321 -951!4321 -951|4369 -951!4369 -951|4432 -1064!4432 -1064|4369 -1179!4369 -1179|4321 -1179
 !4321 -1179|4384 -1064!4270 -1179|4223 -1179!4223 -1179|4286 -1064!4286 -1064|4223 -951!4223 -951|4270 -951!4270 -951|4334 -1064!4334 -1064|4270 -1179!4466 -1179|4419 -1179!4419 -1179|4482 -1064!4482 -1064|4419 -951!4419 -951|4466 -951
-!4466 -951|4529 -1064!4529 -1064|4466 -1179!4516 -1179|4579 -1064!4579 -1064|4516 -951!4516 -951|4563 -951!4563 -951|4626 -1064!4626 -1064|4563 -1179!4563 -1179|4516 -1179!4709 -1179|4772 -1064!4772 -1064|4709 -951!4709 -951|4757 -951
-!4757 -951|4820 -1064!4820 -1064|4757 -1179!4757 -1179|4709 -1179!4807 -1179|4871 -1064!4871 -1064|4807 -951!4807 -951|4855 -951!4855 -951|4918 -1064!4918 -1064|4855 -1179!4855 -1179|4807 -1179!4660 -1179|4613 -1179!4613 -1179|4674 -1064
+!4466 -951|4529 -1064!4529 -1064|4466 -1179!4563 -1179|4516 -1179!4516 -1179|4579 -1064!4579 -1064|4516 -951!4516 -951|4563 -951!4563 -951|4626 -1064!4626 -1064|4563 -1179!4807 -1179|4871 -1064!4871 -1064|4807 -951!4807 -951|4855 -951
+!4855 -951|4918 -1064!4918 -1064|4855 -1179!4855 -1179|4807 -1179!4772 -1064|4709 -951!4709 -951|4757 -951!4757 -951|4820 -1064!4820 -1064|4757 -1179!4757 -1179|4709 -1179!4709 -1179|4772 -1064!4660 -1179|4613 -1179!4613 -1179|4674 -1064
 !4674 -1064|4613 -951!4613 -951|4660 -951!4660 -951|4722 -1064!4722 -1064|4660 -1179!4905 -1179|4968 -1064!4968 -1064|4905 -951!4905 -951|4952 -951!4952 -951|5016 -1064!5016 -1064|4952 -1179!4952 -1179|4905 -1179"/>
                     <Edge cubics="!4127 -1179(;4127,-1179 4188,-1064 4188,-1064p4127 -1179q4188 -1064);"/>
                     <Edge cubics="!4188 -1064(;4188,-1064 4127,-951 4127,-951q4188 -1064 4127 -951);"/>
@@ -991,7 +991,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右侧MP槽" color="#9933CC" parentLayerIndex="7" locked="true" autoNamed="false">
+        <DOMLayer name="右侧MP槽" color="#9933CC" parentLayerIndex="7" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="100" keyMode="9728">
               <elements>
@@ -1065,7 +1065,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右侧MP槽 空" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="右侧MP槽 空" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="101" keyMode="9728">
               <elements>

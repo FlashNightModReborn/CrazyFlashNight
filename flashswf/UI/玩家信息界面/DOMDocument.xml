@@ -3,29 +3,25 @@
           <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
           <DOMFolderItem name="image" itemID="65976161-00000eac"/>
           <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
-          <DOMFolderItem name="sound" itemID="6651f369-00001645"/>
+          <DOMFolderItem name="sound" itemID="6651f369-00001645" isExpanded="true"/>
           <DOMFolderItem name="sprite" itemID="6651f368-00001634" isExpanded="true"/>
           <DOMFolderItem name="sprite/物品栏" itemID="659d3927-00003122" isExpanded="true"/>
-          <DOMFolderItem name="sprite/主角" itemID="659bba25-000014b4"/>
+          <DOMFolderItem name="sprite/主角" itemID="659bba25-000014b4" isExpanded="true"/>
           <DOMFolderItem name="UI重构" itemID="6649a717-00000ffa"/>
           <DOMFolderItem name="UI重构/血槽相关" itemID="66509b4d-00001595" isExpanded="true"/>
-          <DOMFolderItem name="嵌入字体" itemID="66d9a14e-000009f1" isExpanded="true"/>
-          <DOMFolderItem name="性能-帧率显示器" itemID="662dc04e-00000d12" isExpanded="true"/>
+          <DOMFolderItem name="嵌入字体" itemID="66d9a14e-000009f1"/>
+          <DOMFolderItem name="性能-帧率显示器" itemID="662dc04e-00000d12"/>
      </folders>
      <fonts>
-          <DOMFontItem name="嵌入字体/LCD Std" itemID="664e350a-000085f3" font="LcdStd" size="0" id="4" sourceLastImported="1716649178" embedRanges="9999"/>
-          <DOMFontItem name="嵌入字体/思源宋体" itemID="664e0718-00004cb5" font="SourceHanSerifSC-Heavy" size="0" id="3" sourceLastImported="1716649172" embedRanges="1|2|3|4|14"/>
-          <DOMFontItem name="嵌入字体/Aero" itemID="664e3cd0-00000bd4" font="Aero" size="0" id="2" sourceLastImported="1716649147" embedRanges="9999"/>
-          <DOMFontItem name="嵌入字体/Bebas Neue" itemID="664e31ab-000085a7" font="BebasNeue-Regular" size="0" id="1" sourceLastImported="1716649140" embedRanges="9999"/>
+          <DOMFontItem name="嵌入字体/LCD Std" itemID="664e350a-000085f3" font="LcdStd" size="0" id="4" sourceLastImported="1716649178" embedRanges="1|2|3|4"/>
+          <DOMFontItem name="嵌入字体/Aero" itemID="664e3cd0-00000bd4" font="Aero" size="0" id="2" sourceLastImported="1716649147" embedRanges="1|2|3|4"/>
+          <DOMFontItem name="嵌入字体/Bebas Neue" itemID="664e31ab-000085a7" font="BebasNeue-Regular" size="0" id="1" sourceLastImported="1716649140" embedRanges="1|2|3|4"/>
      </fonts>
      <media>
           <DOMBitmapItem name="image/bitmap1804.png" itemID="6597607b-00000400" sourceExternalFilepath="../玩家信息界面/LIBRARY/image/bitmap1804.png" sourceLastImported="1704419451" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap1804.png" bitmapDataHRef="M 2 1716646761.dat" frameRight="140" frameBottom="180"/>
           <DOMBitmapItem name="image/bitmap1805.png" itemID="6597607b-00000405" sourceExternalFilepath="../玩家信息界面/LIBRARY/image/bitmap1805.png" sourceLastImported="1704419451" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap1805.png" bitmapDataHRef="M 1 1716646761.dat" frameRight="120" frameBottom="180"/>
-          <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="../玩家信息界面/LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" href="sound/sound19.wav" soundDataHRef="M 3 1716646761.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
      </media>
      <symbols>
-          <Include href="button/Symbol 1743.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000009e6" lastModified="1704196122"/>
-          <Include href="button/Symbol 1772.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000009f8" lastModified="1704196122"/>
           <Include href="button/Symbol 1783.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000009ff" lastModified="1704196122"/>
           <Include href="button/Symbol 1793.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000a09" lastModified="1704196122"/>
           <Include href="button/Symbol 1794.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000a0a" lastModified="1704196122"/>
@@ -57,7 +53,6 @@
           <Include href="shape/Symbol 1187.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000008a4" lastModified="1704196122"/>
           <Include href="shape/Symbol 1195.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000008a8" lastModified="1704196122"/>
           <Include href="shape/Symbol 1196.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000008a9" lastModified="1704196122"/>
-          <Include href="shape/Symbol 1738.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009e5" lastModified="1704196122"/>
           <Include href="shape/Symbol 1744.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009e7" lastModified="1704196122"/>
           <Include href="shape/Symbol 1784.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a00" lastModified="1704196122"/>
           <Include href="shape/Symbol 1788.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a04" lastModified="1704196122"/>
@@ -76,15 +71,15 @@
           <Include href="sprite/Symbol 1817.xml" loadImmediate="false" itemID="6597607e-00000a14" lastModified="1716648978"/>
           <Include href="sprite/Symbol 1830.xml" loadImmediate="false" itemID="6597607e-00000a17" lastModified="1704196122"/>
           <Include href="sprite/Symbol 1858.xml" loadImmediate="false" itemID="6597607e-00000a2b" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 1859.xml" loadImmediate="false" itemID="6597607e-00000a2c" lastModified="1735152412"/>
-          <Include href="sprite/功能按钮界面.xml" loadImmediate="false" itemID="665210a6-00002497" lastModified="1741596805"/>
+          <Include href="sprite/Symbol 1859.xml" loadImmediate="false" itemID="6597607e-00000a2c" lastModified="1754495777"/>
+          <Include href="sprite/功能按钮界面.xml" loadImmediate="false" itemID="665210a6-00002497" lastModified="1754494122"/>
           <Include href="sprite/技能控制器.xml" loadImmediate="false" itemID="6643303a-00000bee" lastModified="1735614075"/>
           <Include href="sprite/技能图标.xml" loadImmediate="false" itemID="66433dc8-0000156b" lastModified="1726334406"/>
           <Include href="sprite/快捷技能界面.xml" loadImmediate="false" itemID="66520790-00001b5c" lastModified="1746408795"/>
           <Include href="sprite/快捷药剂界面.xml" loadImmediate="false" itemID="665210bd-00002498" lastModified="1735535401"/>
           <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
           <Include href="sprite/图标壳.xml" loadImmediate="false" itemID="659d384c-0000310a" lastModified="1704802380"/>
-          <Include href="sprite/玩家必要信息界面.xml" loadImmediate="false" itemID="665210ca-00002499" lastModified="1754384342"/>
+          <Include href="sprite/玩家必要信息界面.xml" loadImmediate="false" itemID="665210ca-00002499" lastModified="1754496671"/>
           <Include href="sprite/物品栏/物品满级框.xml" loadImmediate="false" itemID="659d3902-0000310e" lastModified="1704802562"/>
           <Include href="sprite/物品栏/物品图标位置示意.xml" loadImmediate="false" itemID="6772201e-00000286" lastModified="1735534441"/>
           <Include href="sprite/物品栏/物品已装备图标.xml" loadImmediate="false" itemID="659d38ed-0000310d" lastModified="1704802541"/>
@@ -115,10 +110,10 @@
           <Include href="sprite/主角/Symbol 1197.xml" loadImmediate="false" itemID="6597607e-000008aa" lastModified="1716649011"/>
           <Include href="sprite/主角/Symbol 1198.xml" loadImmediate="false" itemID="6597607e-000008ab" lastModified="1704196122"/>
           <Include href="sprite/主角/Symbol 1199.xml" loadImmediate="false" itemID="6597607e-000008ac" lastModified="1704196122"/>
-          <Include href="sprite/主角hp显示界面.xml" loadImmediate="false" itemID="6652079b-00001b5e" lastModified="1746869971"/>
-          <Include href="sprite/主角mp显示界面.xml" loadImmediate="false" itemID="66520796-00001b5d" lastModified="1746877068"/>
+          <Include href="sprite/主角hp显示界面.xml" loadImmediate="false" itemID="6652079b-00001b5e" lastModified="1754496774"/>
+          <Include href="sprite/主角mp显示界面.xml" loadImmediate="false" itemID="66520796-00001b5d" lastModified="1754494939"/>
           <Include href="UI重构/快捷道具格子.xml" itemIcon="1" loadImmediate="false" itemID="664e18ac-00004df5" lastModified="1716395838"/>
-          <Include href="UI重构/姓名动画.xml" loadImmediate="false" itemID="664e2146-000084a9" lastModified="1717573774"/>
+          <Include href="UI重构/姓名动画.xml" loadImmediate="false" itemID="664e2146-000084a9" lastModified="1754493681"/>
           <Include href="UI重构/血槽相关/姓名动画-网格背景.xml" loadImmediate="false" itemID="665edd7b-00000468" lastModified="1717573901"/>
           <Include href="UI重构/血槽相关/血槽-图案-1.xml" loadImmediate="false" itemID="6649b24e-00002ddf" lastModified="1716105806"/>
           <Include href="UI重构/血槽相关/血槽-图案2.xml" loadImmediate="false" itemID="6649b332-00002e3b" lastModified="1716106767"/>
@@ -130,17 +125,12 @@
           <Include href="UI重构/血槽相关/血槽内头像-男.xml" loadImmediate="false" itemID="6649a93b-00001a92" lastModified="1716112799"/>
           <Include href="UI重构/血槽相关/血槽内头像-女.xml" loadImmediate="false" itemID="6649a953-00001b29" lastModified="1716112809"/>
           <Include href="UI重构/长方块按钮.xml" loadImmediate="false" itemID="664df471-000026f1" lastModified="1735141510"/>
-          <Include href="UI重构/长方块按钮 任务.xml" loadImmediate="false" itemID="67cea821-0000080e" lastModified="1741596784"/>
+          <Include href="UI重构/长方块按钮 任务.xml" loadImmediate="false" itemID="67cea821-0000080e" lastModified="1754494097"/>
           <Include href="UI重构/长方块按钮（临时屏蔽点歌器用）.xml" loadImmediate="false" itemID="67bddb04-000004f1" lastModified="1740495714"/>
-          <Include href="UI重构/主角韧性UI.xml" loadImmediate="false" itemID="664c984c-00000c11" lastModified="1746930573"/>
-          <Include href="补间 1.xml" itemIcon="1" loadImmediate="false" itemID="66a0f596-0000025d" lastModified="1721824662"/>
-          <Include href="补间 2.xml" itemIcon="1" loadImmediate="false" itemID="66a0f596-0000025f" lastModified="1721824662"/>
-          <Include href="补间 3.xml" itemIcon="1" loadImmediate="false" itemID="681f2a78-0000095e" lastModified="1746872952"/>
-          <Include href="补间 4.xml" itemIcon="1" loadImmediate="false" itemID="681f2a78-00000960" lastModified="1746872952"/>
-          <Include href="补间 5.xml" itemIcon="1" loadImmediate="false" itemID="6820073b-00000ec9" lastModified="1746929467"/>
-          <Include href="补间 6.xml" itemIcon="1" loadImmediate="false" itemID="6820073b-00000ecb" lastModified="1746929467"/>
-          <Include href="通用透明组件.xml" loadImmediate="false" itemID="659d4755-000039c9" lastModified="1704806229"/>
-          <Include href="玩家信息界面.xml" itemID="6651f9a1-00001952" lastModified="1754384451"/>
+          <Include href="UI重构/主角韧性UI.xml" loadImmediate="false" itemID="664c984c-00000c11" lastModified="1754495597"/>
+          <Include href="横线.xml" loadImmediate="false" itemID="6893770d-00000356" lastModified="1754494858"/>
+          <Include href="通用透明组件.xml" loadImmediate="false" itemID="659d4755-000039c9" lastModified="1754496671"/>
+          <Include href="玩家信息界面.xml" itemID="6651f9a1-00001952" lastModified="1754496470"/>
           <Include href="玩家信息界面示意图.xml" loadImmediate="false" itemID="6651fadf-00001a7f" lastModified="1716648671"/>
           <Include href="性能-帧率显示器/性能帧率显示器.xml" loadImmediate="false" itemID="662da682-00000b97" lastModified="1730624790"/>
           <Include href="性能-帧率显示器/帧率显示器画布.xml" loadImmediate="false" itemID="662dac72-00000bfa" lastModified="1714271598"/>
@@ -151,12 +141,8 @@
                     <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
-                                   <Actionscript>
-                                        <script><![CDATA[import flash.geom.ColorTransform;
-import flash.filters.*;]]></script>
-                                   </Actionscript>
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="玩家信息界面" selected="true" centerPoint3DX="511.8" centerPoint3DY="50.7">
+                                        <DOMSymbolInstance libraryItemName="玩家信息界面" centerPoint3DX="511.8" centerPoint3DY="50.7">
                                              <matrix>
                                                   <Matrix ty="3"/>
                                              </matrix>
@@ -254,7 +240,7 @@ import flash.filters.*;]]></script>
                          <GradientEntry color="#FF9900" ratio="1"/>
                          <GradientEntry color="#FF7E00" ratio="1"/>
                     </RadialGradientSwatchItem>
-                    <RadialGradientSwatchItem spreadMethod="reflect" focalPointRatio="-0.301960784313725">
+                    <RadialGradientSwatchItem spreadMethod="reflect" focalPointRatio="-0.286274509803922">
                          <GradientEntry color="#FF001C" ratio="0"/>
                          <GradientEntry color="#FF9900" ratio="1"/>
                          <GradientEntry color="#FF7E00" ratio="1"/>
@@ -277,6 +263,12 @@ import flash.filters.*;]]></script>
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="107708" publishTime="1754496788"/>
+          <PublishItem publishSize="116000" publishTime="1754496073"/>
+          <PublishItem publishSize="115997" publishTime="1754495962"/>
+          <PublishItem publishSize="115997" publishTime="1754495687"/>
+          <PublishItem publishSize="116037" publishTime="1754495462"/>
+          <PublishItem publishSize="115082" publishTime="1754494893"/>
           <PublishItem publishSize="12627372" publishTime="1754384349"/>
           <PublishItem publishSize="12627378" publishTime="1754384257"/>
           <PublishItem publishSize="12630411" publishTime="1746944492"/>
@@ -291,11 +283,5 @@ import flash.filters.*;]]></script>
           <PublishItem publishSize="12630137" publishTime="1746876304"/>
           <PublishItem publishSize="12630142" publishTime="1746876014"/>
           <PublishItem publishSize="12630128" publishTime="1746875746"/>
-          <PublishItem publishSize="12630118" publishTime="1746875671"/>
-          <PublishItem publishSize="12628748" publishTime="1746870829"/>
-          <PublishItem publishSize="12628747" publishTime="1746870815"/>
-          <PublishItem publishSize="12628491" publishTime="1746870605"/>
-          <PublishItem publishSize="12628441" publishTime="1746870524"/>
-          <PublishItem publishSize="12628255" publishTime="1746870106"/>
      </publishHistory>
 </DOMDocument>
