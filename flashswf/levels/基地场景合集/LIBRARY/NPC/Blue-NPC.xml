@@ -38,7 +38,7 @@
 	this.手枪2_装扮 = _root.根据物品名查找属性(手枪2, 15);
 	this.gotoAndPlay("刷新装扮");
 }
-]]></script>
+                ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -46,7 +46,7 @@
               <Actionscript>
                 <script><![CDATA[this.swapDepths(this._y);
 Z轴坐标 = this._y;
-]]></script>
+                ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -56,7 +56,7 @@ Z轴坐标 = this._y;
             <DOMFrame index="14" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[gotoAndPlay(2);
-]]></script>
+                ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -159,7 +159,7 @@ Z轴坐标 = this._y;
 }
 on(release){
    _root.是否达成任务检测();
-   if(_root.点击npc后检测任务(名字) == "路过")
+   if(_root.点击npc后检测任务(名字, this) == "路过")
    {
       _root.NPC功能菜单._visible = 1;
       _root.NPC功能菜单._x = _root._xmouse;
@@ -174,7 +174,7 @@ on(rollOver){
 on(rollOut){
    gotoAndPlay(1);
 }
-]]></script>
+                    ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
@@ -203,7 +203,7 @@ on(rollOut){
       _parent.非主角外观刷新();
    }
 }
-]]></script>
+                    ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
@@ -228,7 +228,7 @@ on(rollOut){
       _parent.非主角外观刷新();
    }
 }
-]]></script>
+                    ]]></script>
                   </Actionscript>
                   <filters>
                     <GlowFilter blurX="2" blurY="2" color="#CCFF00" strength="10"/>

@@ -32,7 +32,7 @@
                   <Actionscript>
                     <script><![CDATA[on (release) {
 	_root.是否达成任务检测();
-	if (_root.点击npc后检测任务(名字) == "路过")
+	if (_root.点击npc后检测任务(名字, this) == "路过")
 	{
 		_root.从库中加载外部UI("理发店界面");
 		_root.NPC功能菜单._visible = 1;

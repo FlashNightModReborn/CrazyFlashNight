@@ -21,14 +21,14 @@
               <Actionscript>
                 <script><![CDATA[this.swapDepths(this._y);
 Z轴坐标 = this._y;
-]]></script>
+                ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="14" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[gotoAndPlay(2);
-]]></script>
+                ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -99,7 +99,7 @@ Z轴坐标 = this._y;
 }
 on (release) {
 	_root.是否达成任务检测();
-	if (_root.点击npc后检测任务(名字) == "路过")
+	if (_root.点击npc后检测任务(名字, this) == "路过")
 	{
 		_root.加载外部UI("flashswf/UI/通缉令界面.swf");
 		_root.NPC功能菜单._visible = 1;

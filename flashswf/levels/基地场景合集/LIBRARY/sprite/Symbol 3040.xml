@@ -28,7 +28,7 @@ if(方向 == "左")
    this._xscale = - 身高转换值;
    this.文字信息._xscale = - 身高转换值;
 }
-]]></script>
+                ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -36,7 +36,7 @@ if(方向 == "左")
               <Actionscript>
                 <script><![CDATA[this.swapDepths(this._y);
 Z轴坐标 = this._y;
-]]></script>
+                ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -46,7 +46,7 @@ Z轴坐标 = this._y;
             <DOMFrame index="14" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[gotoAndPlay(2);
-]]></script>
+                ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -101,7 +101,7 @@ Z轴坐标 = this._y;
 }
 on(release){
    _root.是否达成任务检测();
-   if(_root.点击npc后检测任务(名字) == "路过")
+   if(_root.点击npc后检测任务(名字, this) == "路过")
    {
       _root.NPC功能菜单._visible = 1;
       _root.NPC功能菜单._x = _root._xmouse;
@@ -116,7 +116,7 @@ on(rollOver){
 on(rollOut){
    gotoAndPlay(1);
 }
-]]></script>
+                    ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>

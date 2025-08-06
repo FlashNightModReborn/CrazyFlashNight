@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地地下1层" itemID="668aa054-00005128" linkageExportForAS="true" linkageIdentifier="基地场景-地下室1层" lastModified="1754406112" lastUniqueIdentifier="25">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地地下1层" itemID="668aa054-00005128" linkageExportForAS="true" linkageIdentifier="基地场景-地下室1层" lastModified="1754406112" lastUniqueIdentifier="26">
   <timeline>
     <DOMTimeline name="基地地下1层">
       <layers>
@@ -176,11 +176,11 @@ onClipEvent (load) {
           </frames>
         </DOMLayer>
         <DOMLayer name="NPC" color="#9933CC" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="A兵团士兵？" color="#96DADD" parentLayerIndex="8" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="A兵团士兵？" color="#96DADD" parentLayerIndex="8" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2385" selected="true" centerPoint3DX="1047.8" centerPoint3DY="587">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2385" centerPoint3DX="1047.8" centerPoint3DY="587">
                   <matrix>
                     <Matrix tx="976.55" ty="461.05"/>
                   </matrix>
@@ -218,11 +218,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="蓝发女" color="#AFB740" parentLayerIndex="8" autoNamed="false">
+        <DOMLayer name="蓝发女" color="#AFB740" parentLayerIndex="8" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/蓝发女-NPC" centerPoint3DX="689.75" centerPoint3DY="384.75">
+                <DOMSymbolInstance libraryItemName="NPC/蓝发女-NPC" selected="true" centerPoint3DX="689.75" centerPoint3DY="384.75">
                   <matrix>
                     <Matrix tx="601.45" ty="260.7"/>
                   </matrix>
