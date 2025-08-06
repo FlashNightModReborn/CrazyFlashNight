@@ -138,22 +138,32 @@ class org.flashNight.neur.ScheduleTimer.CooldownWheelTests {
         assert(negativeCount == 2, "负延迟任务应执行2次");
     }
     
-    /** 测试4：长延迟环绕 */
+    /** 测试4：超容量延迟 (Overflow Modulo) */
     private function testLongDelayWrapping():Void {
-        trace("  测试4: 长延迟环绕测试");
+        trace("  测试4: 超容量延迟 Overflow-Modulo");
+
         var wheel:CooldownWheel = CooldownWheel.I();
         wheel.reset();
-        
-        var executed:Boolean = false;
-        wheel.add(125, function():Void { executed = true; }); // 超过轮尺寸
-        
-        // 应该在第 125 % 120 = 5 帧执行
-        for (var i:Number = 0; i < 6; i++) {
+
+        // —— 准备参数 ——
+        var delay:Number        = 130;                 // 超过 128
+        var expected:Number     = delay % 128;         // → 2
+        if (expected == 0) expected = 128;
+
+        var executed:Boolean    = false;
+
+        wheel.add(delay, function():Void { executed = true; });
+
+        // —— 模拟 expected 帧 ——  
+        for (var f:Number = 0; f < expected; f++) {
+            assert(!executed, "任务不应在第 " + (f + 1) + " 帧前触发");
             wheel.tick();
-            if (i < 4) assert(!executed, "长延迟任务不应过早执行");
         }
-        assert(executed, "长延迟任务应正确环绕执行");
+
+        // 第 expected 次 tick 后必须触发
+        assert(executed, "任务应在第 " + expected + " 帧准确触发 (delay=" + delay + ")");
     }
+
     
     /** 测试5：负延迟处理 */
     private function testNegativeDelay():Void {
