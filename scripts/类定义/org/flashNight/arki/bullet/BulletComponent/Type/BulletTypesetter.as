@@ -151,7 +151,7 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
         // bullet.近战检测 = ((flags & FLAG_MELEE) != 0);
         // bullet.联弹检测 = ((flags & FLAG_CHAIN) != 0);
         // bullet.穿刺检测 = ((flags & FLAG_PIERCE) != 0);
-        bullet.透明检测 = ((flags & FLAG_TRANSPARENCY) != 0);
+        // bullet.透明检测 = ((flags & FLAG_TRANSPARENCY) != 0);
         bullet.纵向检测 = ((flags & FLAG_VERTICAL) != 0);
         bullet.普通检测 = ((flags & FLAG_NORMAL) != 0);
         
