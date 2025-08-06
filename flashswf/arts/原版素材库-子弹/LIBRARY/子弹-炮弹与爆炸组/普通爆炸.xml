@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-炮弹与爆炸组/普通爆炸" itemID="669d33e6-0000172d" linkageExportForAS="true" linkageIdentifier="普通爆炸" lastModified="1725374880">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-炮弹与爆炸组/普通爆炸" itemID="669d33e6-0000172d" linkageExportForAS="true" linkageIdentifier="普通爆炸" lastModified="1754499671">
   <timeline>
-    <DOMTimeline name="普通爆炸">
+    <DOMTimeline name="普通爆炸" currentFrame="22">
       <layers>
-        <DOMLayer name="Script Layer" color="#83CD50" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#83CD50">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -57,7 +57,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#31E18C">
+        <DOMLayer name="Layer 2" color="#31E18C" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>

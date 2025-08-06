@@ -1,7 +1,38 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!--已用ID：[4, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 41, 42, 43, 44, 45, 46, 47, 143, 437, 438, 471, 517, 569, 579, 580, 581, 582, 583, 653, 833, 1553, 1702, 2517, 22011]
-预留ID区间： 18603-18700 -->
+预留ID区间： 18604-18700 -->
 <root>
+  <item>
+    <id>18603</id>
+    <name>战术核弹手雷</name>
+    <displayname>战术核弹手雷</displayname>
+    <icon>战术核弹手雷</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <weight>1</weight>
+    <price>100000</price>
+    <description>末日前秘密研制的单兵战术核弹，尖端科技的加持下使得步兵也能装配并实战使用。原本配套的高精度单兵发射器已无法修复，但弹头仍然可以利用。该弹头极度危险，对使用者要求极高，使用时请确保操作符合规范。
+爆炸时可同时对敌方和友方造成伤害。</description>
+    <level>50</level>
+    <data>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>10</interval>
+      <velocity>18</velocity>
+      <bullet>战术核弹手雷</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>战术核弹手雷</clipname>
+      <bulletsize>50</bulletsize>
+      <power>100000</power>
+      <impact>1</impact>
+    </data>
+    <equipped>
+      <dressup>手雷-战术核弹手雷</dressup>
+    </equipped>
+  </item>
   <item>
     <id>18602</id>
     <name>高爆手雷</name>
