@@ -251,9 +251,10 @@ _root.子弹生命周期 = function()
             var dispatcher:EventDispatcher = hitTarget.dispatcher;
             dispatcher.publish("hit", hitTarget, shooter, this, collisionResult, damageResult);
 
-            // 使用位标志优化近战检测性能
+            // 使用位标志优化近战，穿刺检测性能
             #include "../macros/FLAG_MELEE.as"
-            
+            #include "../macros/FLAG_PIERCE.as"
+
             if(hitTarget.hp <= 0)
             {
                 // 在此处按需展开爆炸检测宏
@@ -273,7 +274,7 @@ _root.子弹生命周期 = function()
             {
                 shooter.硬直(shooter.man, _root.钝感硬直时间);
             }
-            else if(!this.穿刺检测)
+            else if ((this.flags & FLAG_PIERCE) == 0) 
             {
                 this.gotoAndPlay("消失");
             }

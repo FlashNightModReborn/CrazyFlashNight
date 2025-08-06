@@ -68,7 +68,21 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
      */
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
         var overlapRatio:Number = manager.overlapRatio;
-        if(bullet.穿刺检测 && bullet.纵向检测) {
+        #include "../macros/FLAG_PIERCE.as"
+        #include "../macros/FLAG_VERTICAL.as"
+
+        // 2. 使用“按位或”(|)运算符，将多个标志合并成一个组合掩码
+        //    这个掩码现在代表了“既是穿刺又是纵向”这个复合条件
+        var PIERCE_AND_VERTICAL_MASK:Number = FLAG_PIERCE | FLAG_VERTICAL;
+
+        // 原来的代码:
+        // if(bullet.穿刺检测 && bullet.纵向检测)
+
+        // 3. 替换为一次性的、原子的位运算检测
+        //    将 bullet.flags 与我们的组合掩码进行“按位与”(&)
+        //    如果结果正好等于组合掩码自身，说明 bullet.flags 中包含了掩码要求的所有位。
+        if ((bullet.flags & PIERCE_AND_VERTICAL_MASK) == PIERCE_AND_VERTICAL_MASK) 
+        {
             overlapRatio = overlapRatio * 7 / 18; // 对纵向穿刺联弹削弱覆盖率
             // _root.发布消息("联弹覆盖率削弱: " + overlapRatio);
         }

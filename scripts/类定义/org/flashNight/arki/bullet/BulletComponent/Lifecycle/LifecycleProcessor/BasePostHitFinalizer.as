@@ -34,7 +34,12 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.Ba
      * 默认逻辑：若目标无法穿刺，则播放“消失”动画
      */
     public function processPiercing(target:MovieClip):Void {
-        if (!target.穿刺检测) {
+        // 在编译时，下面这行代码会被替换为 "var FLAG_PIERCE:Number = 1 << 2;"
+        // 这创建了一个临时的、访问速度最快的局部变量。
+        #include "../macros/FLAG_PIERCE.as"
+
+        // 直接使用这个局部变量 FLAG_PIERCE 进行位运算，实现零额外开销的检测。
+        if ((target.flags & FLAG_PIERCE) == 0) {
             target.gotoAndPlay("消失");
         }
     }
