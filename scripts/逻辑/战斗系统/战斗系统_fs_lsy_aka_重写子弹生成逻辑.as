@@ -131,31 +131,39 @@ _root.子弹区域shoot传递 = function(Obj){
 // 子弹生命周期函数
 _root.子弹生命周期 = function()
 {
-    // 原有逻辑保持不变，仅在合适位置调用 _root.子弹伤害结算
+    // 1. 在函数顶部，注入所有需要的宏，创建局部常量
+    #include "../macros/FLAG_CHAIN.as"
+    #include "../macros/FLAG_TRANSPARENCY.as" 
 
-    // 如果没有 area 且不是透明检测，直接进行运动更新
-    if(!this.area && !this.透明检测){
+    // 2. 执行一次位运算，并将布尔结果缓存到局部变量 isTransparent 中
+    var isTransparent:Boolean = (this.flags & FLAG_TRANSPARENCY) != 0;
+
+    // 如果没有 area 且不是透明，直接进行运动更新
+    // 原来: if(!this.area && !this.透明检测)
+    // 替换为直接使用缓存的布尔变量
+    if(!this.area && !isTransparent){
         this.updateMovement(this);
         return;
     }
 
     var detectionArea:MovieClip;
     var areaAABB:ICollider = this.aabbCollider;
-    var bullet_rotation:Number = this._rotation; // 本地化以减少多次访问 getter 的开销
-    // 使用位标志优化联弹检测性能
-    #include "../macros/FLAG_CHAIN.as"
+    var bullet_rotation:Number = this._rotation;
+    
+    // 使用位标志优化联弹检测性能 (这段代码保持不变)
     var isPointSet:Boolean = ((this.flags & FLAG_CHAIN) != 0) && (bullet_rotation != 0 && bullet_rotation != 180);
     var bulletZOffset:Number = this.Z轴坐标;
     var bulletZRange:Number  = this.Z轴攻击范围;
-    // _root.发布消息(this.flags, FLAG_CHAIN, this.联弹检测, (this.flags & FLAG_CHAIN) != 0);
-
-    if (this.透明检测 && !this.子弹区域area) {
+    
+    // 原来: if (this.透明检测 && !this.子弹区域area)
+    // 再次使用缓存的布尔变量，避免重复计算
+    if (isTransparent && !this.子弹区域area) {
         areaAABB.updateFromTransparentBullet(this);
     } else {
         detectionArea = this.子弹区域area || this.area;
         areaAABB.updateFromBullet(this, detectionArea);
     }
-
+    
     if (_root.调试模式)
     {
         // 绘制当前碰撞箱，并显示以子弹 Z轴坐标为基准的 z 轴攻击范围上下边界

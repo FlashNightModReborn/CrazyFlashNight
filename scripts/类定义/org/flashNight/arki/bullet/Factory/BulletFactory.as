@@ -75,9 +75,10 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
     public static function createBulletInstance(Obj, shooter, shootingAngle) {
         #include "../macros/FLAG_CHAIN.as"
         #include "../macros/FLAG_MELEE.as"
+        #include "../macros/FLAG_TRANSPARENCY.as"
 
         var gameWorld:MovieClip = _root.gameworld,
-            isTransparent:Boolean = Obj.透明检测,
+            isTransparent:Boolean = (Obj.flags & FLAG_TRANSPARENCY) != 0,
             isChain:Boolean = (Obj.flags & FLAG_CHAIN) != 0,
             zyRatio:Number = Obj.ZY比例,
             speedX:Number = Obj.速度X,

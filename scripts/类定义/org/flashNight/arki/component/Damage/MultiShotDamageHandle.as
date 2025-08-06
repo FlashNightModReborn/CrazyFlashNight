@@ -124,7 +124,32 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
         // 解决方案：给喷子用的会衰减的单元体都要带"普通"前缀
         // 历史问题：之前普通子弹、加强普通子弹都正常，但无壳子弹没有"普通"前缀导致问题
         // 现在"普通"也是词条了，所以需要显式检查普通检测
-        if(bullet.普通检测 && !bullet.透明检测) bullet.霰弹值 -= actualScatterUsed; // 只有非透明的普通子弹会降低联弹霰弹值
+
+
+        // 1. 在编译时注入所有需要的局部常量，确保零运行时开销
+        #include "../macros/FLAG_NORMAL.as"
+        #include "../macros/FLAG_TRANSPARENCY.as"
+
+        // 2. 创建一个“关注位掩码(Relevant Bits Mask)”，它包含了所有我们需要检查的位。
+        //    我们关心“普通”和“透明”这两个位的状态。
+        var RELEVANT_BITS_MASK:Number = FLAG_NORMAL | FLAG_TRANSPARENCY;
+
+        // 3. 我们期望的最终结果是：“普通”位为 1，“透明”位为 0。
+        //    这个期望的状态，其值恰好就是 FLAG_NORMAL 本身。
+        var EXPECTED_STATE:Number = FLAG_NORMAL;
+
+        // 原来的代码:
+        // if(bullet.普通检测 && !bullet.透明检测)
+
+        // 4. 将“提取”和“比较”合并为一次原子操作：
+        //    (bullet.flags & RELEVANT_BITS_MASK) 会提取出子弹中“普通”和“透明”位的当前状态。
+        //    然后将这个提取出的状态与我们期望的状态 (EXPECTED_STATE) 进行比较。
+        if ((bullet.flags & RELEVANT_BITS_MASK) == EXPECTED_STATE) 
+        {
+            // 只有非透明的普通子弹才会进入这里
+            bullet.霰弹值 -= actualScatterUsed;
+        }
+
         result.finalScatterValue = bullet.霰弹值;
 
         // _root.发布消息("au:" + actualScatterUsed + ",fv:" + bullet.霰弹值 + ", dg:" + target.损伤值);
