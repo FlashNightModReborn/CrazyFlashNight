@@ -1,5 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/佣兵npc" itemID="668be6be-00000638" linkageExportForAS="true" linkageIdentifier="佣兵npc" lastModified="1743161243" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/佣兵npc" itemID="668be6be-00000638" linkageExportForAS="true" linkageIdentifier="佣兵npc" lastModified="1743161243" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="佣兵npc">
       <layers>
@@ -32,7 +31,7 @@ this.初始化佣兵NPC模板();]]></script>
               <Actionscript>
                 <script><![CDATA[this.swapDepths(this._y);
 Z轴坐标 = this._y;
-]]>                </script>
+                ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -167,7 +166,7 @@ Z轴坐标 = this._y;
       _root.client.sendData(DataPackage.玩家移动(_root.me,_parent.方向,_parent.行走X速度,_parent.行走Y速度,_parent.跑X速度,_parent.跑Y速度,_parent.状态,_parent.攻击模式,_parent.上行,_parent.下行,_parent.左行,_parent.右行));
    }
 }
-]]>                    </script>
+                    ]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -251,7 +250,7 @@ on(release){
       _root.NPC功能菜单.刷新显示();
    }
 }
-]]>                    </script>
+                    ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
@@ -273,7 +272,7 @@ on(release){
                     <script><![CDATA[onClipEvent(load){
    _parent.非主角外观刷新();
 }
-]]>                    </script>
+                    ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
