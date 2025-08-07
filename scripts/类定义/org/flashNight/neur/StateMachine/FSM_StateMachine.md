@@ -52,7 +52,7 @@ a.runTests();
 --- Test: Basic Transitions ---
 [PASS] Initial state is idle
 [PASS] Still in idle state
-[FAIL] Transitioned to running state
+[PASS] Transitioned to running state
 
 --- Test: Transition Priority ---
 [PASS] Higher priority transition executed
@@ -64,11 +64,11 @@ a.runTests();
 [PASS] Transitioned to injured when health low
 
 --- Test: Transition with Callback ---
-[FAIL] All callbacks executed
+[PASS] All callbacks executed
 [PASS] Initial state entered
 [PASS] Transition condition checked
-[FAIL] Old state exited
-[FAIL] New state entered
+[PASS] Old state exited
+[PASS] New state entered
 
 --- Test: Complex Transition Logic ---
 [PASS] Game over when lives = 0
@@ -145,7 +145,7 @@ Workflow completed!
 [PASS] Chain ended correctly
 
 --- Test: Conditional Branching ---
-[PASS] Conditional branching led to valid path: A
+[PASS] Conditional branching led to valid path: B
 
 --- Test: StateMachine Composition ---
 [PASS] Login machine starts at login
@@ -178,28 +178,28 @@ Workflow completed!
 [PASS] Transition cleanup completed
 
 --- Test: Basic Performance ---
-Basic Performance: Transitions=75ms, Actions=103ms for 10000 operations
+Basic Performance: Transitions=76ms, Actions=132ms for 10000 operations
 [PASS] Transition performance acceptable
 [PASS] Action performance acceptable
 
 --- Test: Many States Performance ---
-Many States Performance: Create 1000 states in 33ms, 100 transitions in 1ms
+Many States Performance: Create 1000 states in 34ms, 100 transitions in 2ms
 [PASS] State creation scalable
 [PASS] State access scalable
 
 --- Test: Frequent Transitions Performance ---
-Frequent Transitions Performance: 5000 transitions in 112ms
+Frequent Transitions Performance: 5000 transitions in 853ms
 [PASS] Frequent transitions performance acceptable
 
 --- Test: Complex Transition Performance ---
-Complex Transition Performance: 1000 complex transitions in 49ms
+Complex Transition Performance: 1000 complex transitions in 45ms
 [PASS] Complex transition performance acceptable
 
 --- Test: Scalability Test ---
 Size 10: Create=0ms, Transition=0ms, Operation=2ms
-Size 50: Create=1ms, Transition=0ms, Operation=2ms
-Size 100: Create=1ms, Transition=2ms, Operation=2ms
-Size 500: Create=6ms, Transition=5ms, Operation=3ms
+Size 50: Create=1ms, Transition=0ms, Operation=3ms
+Size 100: Create=1ms, Transition=1ms, Operation=2ms
+Size 500: Create=6ms, Transition=6ms, Operation=2ms
 [PASS] Scalability performance acceptable across different sizes
 
 --- Test: Pause Gate Immediate Effect ---
@@ -210,8 +210,8 @@ Size 500: Create=6ms, Transition=5ms, Operation=3ms
 
 --- Test: Transition→Action Order ---
 [FAIL] Correct number of lifecycle events
-[FAIL] Should be in state B
-[FAIL] B's action should execute in same frame as transition
+[PASS] Should be in state B
+[PASS] B's action should execute in same frame as transition
 
 --- Test: Recursive Transition Safety ---
 [PASS] No stack overflow during rapid transitions
@@ -220,9 +220,9 @@ Size 500: Create=6ms, Transition=5ms, Operation=3ms
 [PASS] Final state is valid
 
 === FINAL FSM TEST REPORT ===
-Tests Passed: 105
-Tests Failed: 9
-Success Rate: 92%
+Tests Passed: 111
+Tests Failed: 3
+Success Rate: 97%
 ⚠️  Some tests failed. Please review the implementation.
 === FSM VERIFICATION SUMMARY ===
 ✓ Basic state machine operations verified
