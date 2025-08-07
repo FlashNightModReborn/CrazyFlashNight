@@ -41,10 +41,16 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
     private static var typeCache:Object = {};
 
     /**
-     * 定义透明类型的完整匹配列表，用于快速检查透明子弹。
-     * 透明类型字符串使用 "|" 作为分隔符。
+     * 透明子弹类型哈希表（单一数据源）
+     * 遵循DRY原则：关于"哪些子弹是透明的"这一信息只在此处定义
+     * 使用Object作为哈希表，O(1)查找性能，利用undefined的falsy特性
      */
-    private static var transparency:String = "|" + ["近战子弹", "近战联弹", "透明子弹"].join("|") + "|";
+    private static var TRANSPARENCY_MAP:Object = {
+        近战子弹: true,
+        近战联弹: true,
+        透明子弹: true
+        // 未来新增透明子弹类型时，只需在此对象中添加键值对
+    };
 
     /**
      * 静态初始化方法 - AS2 宏展开机制性能优化方案
@@ -113,33 +119,15 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
 
         // 如果缓存中不存在，进行计算
         if (cachedData == undefined) {
-            var isMelee:Boolean         = (bulletType.indexOf("近战") != -1);         // 是否近战子弹
-            var isChain:Boolean         = (bulletType.indexOf("联弹") != -1);         // 是否联弹子弹
-            var isPierce:Boolean        = (bulletType.indexOf("穿刺") != -1);         // 是否穿刺子弹
-            var isTransparency:Boolean  = (transparency.indexOf("|" + bulletType + "|") != -1); // 是否透明子弹
-            var isVertical:Boolean      = (bulletType.indexOf("纵向") != -1);         // 是否纵向子弹
-            var isExplosive:Boolean     = (bulletType.indexOf("爆炸") != -1);         // 是否爆炸子弹
-
-            // 个别手雷属性额外在xml中获取
-            var isGrenade:Boolean       = bullet.FLAG_GRENADE || (bulletType.indexOf("手雷") != -1);         // 是否手雷子弹
-
-
-            // 是否普通子弹的逻辑
-            var isNormal:Boolean = !isPierce && !isExplosive &&
-                                   (isMelee || isTransparency || (bulletType.indexOf("普通") != -1));
-
-            // 计算标志位
-            var flags:Number = ((isMelee         ? FLAG_MELEE         : 0)
-                              | (isChain         ? FLAG_CHAIN         : 0)
-                              | (isPierce        ? FLAG_PIERCE        : 0)
-                              | (isTransparency  ? FLAG_TRANSPARENCY  : 0)
-                              | (isGrenade       ? FLAG_GRENADE       : 0)
-                              | (isExplosive     ? FLAG_EXPLOSIVE     : 0)
-                              | (isNormal        ? FLAG_NORMAL        : 0)
-                              | (isVertical      ? FLAG_VERTICAL      : 0));
-
+            // 使用纯函数计算标志位
+            var flags:Number = calculateFlags(bullet);
+            
+            // 使用宏展开+位运算优化联弹检测
+            #include "../macros/FLAG_CHAIN.as"
+            
             // 对联弹提取基础素材名（取子弹种类中 "-" 分隔符前的部分）
-            var baseAsset:String = isChain ? bulletType.split("-")[0] : bulletType;
+            var baseAsset:String = ((flags & FLAG_CHAIN) != 0) ? 
+                bulletType.split("-")[0] : bulletType;
 
             // 将结果缓存
             typeCache[bulletType] = { flags: flags, baseAsset: baseAsset };
@@ -149,6 +137,11 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
         var data:Object = typeCache[bulletType];
         var flags:Number = data.flags;
         var baseAsset:String = data.baseAsset;
+
+        
+        if(((flags & FLAG_GRENADE) != 0)) {
+            delete bullet.FLAG_GRENADE; // 清除外部xml传参引入的冗余标志位
+        }
 
         // 设置子弹检测标志
         // bullet.近战检测 = ((flags & FLAG_MELEE) != 0);
@@ -219,48 +212,74 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
          * 
          * 参考实现：MultiShotDamageHandle.as 第71-88行 和 第130-151行
          */
-        
-
-        if(((flags & FLAG_GRENADE) != 0)) {
-            delete bullet.FLAG_GRENADE;
-        }
+    
 
         // 缓存基础素材名
         bullet.baseAsset = baseAsset;
 
         // _root.发布消息(baseAsset + ":" + flagsToString(flags, true));
 
-        // 缓存标志位
-        bullet.flags = flags;
-        // _root.发布消息(baseAsset + ":" + flagsToString(flags))
-        return flags
+        // 缓存并且返回标志位
+        return bullet.flags = flags;
     }
 
     /**
-     * 获取子弹的 flags 值，且不改变原始子弹对象。
+     * 纯函数：根据子弹对象计算标志位，不涉及缓存操作
      * 
-     * @param bullet:Object 子弹对象，需包含子弹种类 (子弹种类: String)。
-     * @return Number 计算后的标志位值，如果子弹或子弹种类未定义，则返回 0。
+     * @param bullet:Object 子弹对象，需包含子弹种类 (子弹种类: String)
+     * @return Number 计算后的标志位值，如果子弹或子弹种类未定义，则返回 0
+     */
+    public static function calculateFlags(bullet:Object):Number {
+        if (bullet == undefined || bullet.子弹种类 == undefined) {
+            return 0;
+        }
+
+        var bulletType:String = bullet.子弹种类;
+        
+        var isMelee:Boolean         = (bulletType.indexOf("近战") != -1);
+        var isChain:Boolean         = (bulletType.indexOf("联弹") != -1);
+        var isPierce:Boolean        = (bulletType.indexOf("穿刺") != -1);
+        var isTransparency:Boolean  = !!TRANSPARENCY_MAP[bulletType];
+        var isVertical:Boolean      = (bulletType.indexOf("纵向") != -1);
+        var isExplosive:Boolean     = (bulletType.indexOf("爆炸") != -1);
+        var isGrenade:Boolean       = bullet.FLAG_GRENADE || (bulletType.indexOf("手雷") != -1);
+
+        var isNormal:Boolean = !isPierce && !isExplosive &&
+                               (isMelee || isTransparency || (bulletType.indexOf("普通") != -1));
+
+        return ((isMelee         ? FLAG_MELEE         : 0)
+              | (isChain         ? FLAG_CHAIN         : 0)
+              | (isPierce        ? FLAG_PIERCE        : 0)
+              | (isTransparency  ? FLAG_TRANSPARENCY  : 0)
+              | (isGrenade       ? FLAG_GRENADE       : 0)
+              | (isExplosive     ? FLAG_EXPLOSIVE     : 0)
+              | (isNormal        ? FLAG_NORMAL        : 0)
+              | (isVertical      ? FLAG_VERTICAL      : 0));
+    }
+
+    /**
+     * 调试用方法：获取子弹的 flags 值，不改变原始子弹对象
+     * 
+     * 注意：约定大于限制 - 此方法允许对未完全初始化的对象产生误判
+     * 仅用于调试和便捷检查，业务逻辑应使用已完全初始化的子弹对象
+     * 
+     * @param bullet:Object 子弹对象，需包含子弹种类 (子弹种类: String)
+     * @return Number 计算后的标志位值，如果子弹或子弹种类未定义，则返回 0
      */
     public static function getFlags(bullet:Object):Number {
         if (bullet == undefined || bullet.子弹种类 == undefined) {
-            trace("Warning: Bullet object or 子弹种类 is undefined.");
             return 0;
         }
         
         var bulletType:String = bullet.子弹种类;
         var cachedData:Object = typeCache[bulletType];
         
-        if (cachedData == undefined) {
-            // 创建一个假子弹对象，仅包含必要的属性，避免影响原始对象
-            var dummyBullet:Object = { 子弹种类: bulletType };
-            // 注意：如果子弹类型需要从XML获取FLAG_GRENADE等属性
-            // 此方法可能不准确，甚至可能会造成缓存污染
-            // 建议优先使用已完整初始化的子弹对象调用setTypeFlags
-            return setTypeFlags(dummyBullet);
+        if (cachedData != undefined) {
+            return cachedData.flags;
         }
         
-        return cachedData.flags;
+        // 对于未缓存的类型，直接计算（不污染缓存）
+        return calculateFlags(bullet);
     }
 
 
@@ -333,8 +352,8 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
      * @return Boolean 如果是透明子弹返回 true，否则返回 false。
      */
     public static function isTransparency(bulletType:String):Boolean {
-        var flags:Number = getFlags({ 子弹种类: bulletType });
-        return (flags & FLAG_TRANSPARENCY) != 0;
+        // 使用O(1)哈希查找替代O(n)标志位计算，性能更优
+        return !!TRANSPARENCY_MAP[bulletType];
     }
 
     /**
@@ -406,6 +425,37 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
             if (flags & FLAG_VERTICAL)      parts.push("VERTICAL");
             return parts.length > 0 ? parts.join(", ") : "NONE";
         }
+    }
+
+
+    /**
+     * 获取所有透明子弹类型列表（只读访问）
+     * 
+     * @return Array 透明子弹类型数组
+     */
+    public static function getTransparencyTypes():Array {
+        var types:Array = [];
+        for (var type:String in TRANSPARENCY_MAP) {
+            types.push(type);
+        }
+        return types;
+    }
+
+    /**
+     * 动态添加透明子弹类型（运行时扩展，谨慎使用）
+     * 
+     * @param bulletType:String 要添加的子弹类型
+     * @return Boolean 添加成功返回true，已存在返回false
+     */
+    public static function addTransparencyType(bulletType:String):Boolean {
+        if (TRANSPARENCY_MAP[bulletType]) {
+            return false; // 已存在
+        }
+        
+        TRANSPARENCY_MAP[bulletType] = true;
+        // 清空相关缓存，确保一致性
+        clearCache();
+        return true;
     }
 
     /**
