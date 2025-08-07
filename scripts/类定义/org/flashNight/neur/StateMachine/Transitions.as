@@ -102,6 +102,7 @@ class org.flashNight.neur.StateMachine.Transitions {
      * @param func    条件判断函数，返回Boolean类型
      *                函数签名：function(current:String, target:String, transitions:Transitions):Boolean
      *                函数内this指向status实例
+     * @param isGate  是否为Gate转换（默认false）。Gate转换在动作前评估，普通转换在动作后评估
      * 
      * 示例：
      * ```actionscript
@@ -109,10 +110,16 @@ class org.flashNight.neur.StateMachine.Transitions {
      * transitions.push("idle", "talk", function():Boolean {
      *     return this.data.playerDistance < 50;
      * });
+     * 
+     * // Gate转换：暂停状态立即生效
+     * transitions.push("player", "paused", function():Boolean {
+     *     return this.data.isPaused;
+     * }, true);
      * ```
      */
-    public function push(current:String, target:String, func:Function):Void {
-        _add(current, target, func, false);
+    public function push(current:String, target:String, func:Function, isGate:Boolean):Void {
+        if (isGate == null) isGate = false;
+        _add(current, target, func, false, isGate);
     }
     
     /**
@@ -130,6 +137,7 @@ class org.flashNight.neur.StateMachine.Transitions {
      * @param target  目标状态名称
      * @param func    条件判断函数，返回Boolean类型
      *                函数签名同push方法
+     * @param isGate  是否为Gate转换（默认false）。Gate转换在动作前评估，普通转换在动作后评估
      * 
      * 示例：
      * ```actionscript
@@ -137,10 +145,16 @@ class org.flashNight.neur.StateMachine.Transitions {
      * transitions.unshift("combat", "death", function():Boolean {
      *     return this.data.health <= 0;
      * });
+     * 
+     * // Gate转换：紧急暂停（最高优先级Gate）
+     * transitions.unshift("playing", "emergency", function():Boolean {
+     *     return this.data.emergencyStop;
+     * }, true);
      * ```
      */
-    public function unshift(current:String, target:String, func:Function):Void {
-        _add(current, target, func, true);
+    public function unshift(current:String, target:String, func:Function, isGate:Boolean):Void {
+        if (isGate == null) isGate = false;
+        _add(current, target, func, true, isGate);
     }
     
     /**
@@ -235,7 +249,7 @@ class org.flashNight.neur.StateMachine.Transitions {
         if (list == null) return null;
         
         // 缓存状态引用，减少this.status访问开销
-        var statusRef:FSM_Status = status;
+        var statusRef:FSM_Status = this.status;
         // 缓存数组长度，避免重复计算
         var len:Number = list.length;
         
@@ -244,6 +258,71 @@ class org.flashNight.neur.StateMachine.Transitions {
             var node:Object = list[i];
             // 跳过非活跃规则
             if (!node.active) continue;
+            
+            // 缓存函数和目标到局部变量，优化属性访问
+            var fn:Function = node.func;
+            var tgt:String = node.target;
+            
+            // 调用条件函数，this指向statusRef
+            if (fn.call(statusRef, current, tgt, this)) {
+                return tgt;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * 执行Gate转换检查（仅检查Gate转换）
+     * 
+     * 专门用于在动作执行前检查Gate转换条件。
+     * Gate转换用于实现即时状态阻断，如暂停、紧急停止等。
+     * 
+     * @param current 当前状态名称
+     * @return String Gate目标状态名称，无Gate转换时返回null
+     */
+    public function TransitGate(current:String):String {
+        return _transit(current, true);
+    }
+    
+    /**
+     * 执行普通转换检查（仅检查普通转换）
+     * 
+     * 专门用于在动作执行后检查普通转换条件。
+     * 普通转换基于动作执行的结果进行状态切换。
+     * 
+     * @param current 当前状态名称
+     * @return String 普通目标状态名称，无普通转换时返回null
+     */
+    public function TransitNormal(current:String):String {
+        return _transit(current, false);
+    }
+    
+    /**
+     * 内部转换检查实现
+     * 
+     * @param current 当前状态名称
+     * @param gateOnly true=仅检查Gate转换，false=仅检查普通转换
+     * @return String 目标状态名称，无转换时返回null
+     */
+    private function _transit(current:String, gateOnly:Boolean):String {
+        // 缓存数组引用，避免重复属性查找
+        var list:Array = lists[current];
+        if (list == null) return null;
+        
+        // 缓存状态引用，减少this.status访问开销
+        var statusRef:FSM_Status = this.status;
+        // 缓存数组长度，避免重复计算
+        var len:Number = list.length;
+        
+        // 按优先级顺序检查转换条件
+        for (var i:Number = 0; i < len; i++) {
+            var node:Object = list[i];
+            // 跳过非活跃规则
+            if (!node.active) continue;
+            
+            // 根据gateOnly参数过滤转换类型
+            var nodeIsGate:Boolean = node.isGate ? true : false;
+            if (gateOnly != nodeIsGate) continue;
             
             // 缓存函数和目标到局部变量，优化属性访问
             var fn:Function = node.func;
@@ -277,8 +356,10 @@ class org.flashNight.neur.StateMachine.Transitions {
      * @param target  目标状态名称  
      * @param func    条件函数
      * @param atHead  是否添加到头部（高优先级）
+     * @param isGate  是否为Gate转换（默认false）
      */
-    private function _add(current:String, target:String, func:Function, atHead:Boolean):Void {
+    private function _add(current:String, target:String, func:Function, atHead:Boolean, isGate:Boolean):Void {
+        if (isGate == null) isGate = false;
         // 获取或创建状态的转换规则列表
         var list:Array = lists[current];
         if (list == null) {
@@ -305,7 +386,7 @@ class org.flashNight.neur.StateMachine.Transitions {
         
         // 创建新的转换规则节点
         // 使用小对象结构，AS2优化友好
-        var node:Object = { target: target, func: func, active: true };
+        var node:Object = { target: target, func: func, active: true, isGate: isGate };
         
         // 根据优先级要求添加到相应位置
         if (atHead) {

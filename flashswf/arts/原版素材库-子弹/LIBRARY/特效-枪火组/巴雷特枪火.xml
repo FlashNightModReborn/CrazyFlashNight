@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效-枪火组/巴雷特枪火" itemID="669d3444-00001742" linkageExportForAS="true" linkageIdentifier="巴雷特枪火" lastModified="1721648720">
   <timeline>
-    <DOMTimeline name="巴雷特枪火">
+    <DOMTimeline name="巴雷特枪火" currentFrame="14">
       <layers>
         <DOMLayer name="Script Layer" color="#A4F411">
           <frames>
@@ -103,22 +103,7 @@
               </elements>
             </DOMFrame>
             <DOMFrame index="12" duration="2" keyMode="9728">
-              <elements>
-                <DOMShape isFloating="true">
-                  <fills>
-                    <FillStyle index="1">
-                      <BitmapFill bitmapPath="3.位图相关/bitmap4711.png" bitmapIsClipped="false">
-                        <matrix>
-                          <Matrix a="0" b="13.75" c="-12.4166412353516" d="0" tx="114.5" ty="-82.55"/>
-                        </matrix>
-                      </BitmapFill>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!2290 -1651|2290 1649!2290 1649|-690 1649!-690 1649|-690 -1651!-690 -1651|2290 -1651"/>
-                  </edges>
-                </DOMShape>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="14" keyMode="9728">
               <elements/>

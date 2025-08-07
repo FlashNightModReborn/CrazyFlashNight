@@ -148,26 +148,43 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
      * 此方法正确地将onAction传播到活动的子状态，并处理自身的过渡。
      */
     public function onAction():Void {
-        // 1. 如果有激活的子状态，则首先执行子状态的onAction。
-        if (this.activeState) {
-            this.activeState.onAction();
-        }
-        // 2. 更新状态计数。
-        this.actionCount++;
+        if (!this.activeState) return;
 
-        // 3. 检查并执行此状态机级别的过渡。
-        //    注意：过渡是基于子状态的名称。
-        var currentSubStateName:String = this.getActiveStateName();
-        if (currentSubStateName != null) {
-            var nextStateName:String = this.transitions.Transit(currentSubStateName);
-            if (nextStateName != null) {
-                this.ChangeState(nextStateName);
-            }
-        }
+        var maxTransitions:Number = 10; // 防止无限循环
+        var transitionCount:Number = 0;
         
-        // 3. 最后，执行状态机自身的onAction回调（如果已定义）（实际上没有定义）。
+        // 主循环：处理Gate转换、状态动作、Normal转换的完整流程
+        while (transitionCount < maxTransitions) {
+            // Phase 1: Gate转换检查 - 门转换优先，立即生效
+            var gateTarget:String = this.transitions.TransitGate(this.getActiveStateName());
+            if (gateTarget && gateTarget != this.getActiveStateName()) {
+                this.ChangeState(gateTarget);
+                transitionCount++;
+                continue; // Gate转换后立即开始下一轮循环，不执行旧状态动作
+            }
+
+            // Phase 2: 执行当前状态动作
+            if (this.activeState) {
+                this.activeState.onAction();
+            }
+
+            // Phase 3: Normal转换检查 - 基于动作结果的转换
+            var normalTarget:String = this.transitions.TransitNormal(this.getActiveStateName());
+            if (normalTarget && normalTarget != this.getActiveStateName()) {
+                this.ChangeState(normalTarget);
+                transitionCount++;
+                continue; // Normal转换后继续下一轮循环，让新状态也能执行动作
+            }
+
+            // 如果既没有Gate转换也没有Normal转换，退出循环
+            break;
+        }
+
+        // Phase 4: 状态机自身维护
+        this.actionCount++;
         super.onAction();
     }
+
     // ========== 修正区结束 ==========
 
     public function destroy():Void{    

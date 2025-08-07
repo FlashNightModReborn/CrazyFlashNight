@@ -83,6 +83,11 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         this.testComplexTransitionPerformance();
         this.testScalabilityTest();
         
+        // P1 新增测试：路线A重构验证
+        this.testPauseGateImmediateEffect();
+        this.testTransitionToActionOrder();
+        this.testRecursiveTransitionSafety();
+        
         // 最终报告
         this.printFinalReport();
     }
@@ -1389,6 +1394,194 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         }
         
         this.assert(scalabilityGood, "Scalability performance acceptable across different sizes");
+    }
+
+    // ========== P1 新增测试：路线A重构验证 ==========
+    
+    /**
+     * S1 测试：Pause Gate 同帧阻断效果
+     * 验证暂停状态能在当帧生效，阻止子状态动作执行
+     */
+    public function testPauseGateImmediateEffect():Void {
+        trace("\n--- Test: Pause Gate Immediate Effect ---");
+        this.clearLifecycleLog();
+        
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        machine.data = {isPaused: false, actionExecuted: false};
+        
+        var self = this;
+        
+        // 玩家状态 - 会记录是否执行了动作
+        var playerState:FSM_Status = new FSM_Status(
+            function():Void { 
+                this.data.actionExecuted = true;  // 记录动作已执行
+                self._lifecycleLog.push("player:action");
+            },
+            function():Void { self._lifecycleLog.push("player:enter"); },
+            function():Void { self._lifecycleLog.push("player:exit"); }
+        );
+        
+        // 暂停状态 - Gate State，不应该执行子状态动作
+        var pausedState:FSM_Status = new FSM_Status(
+            null, // 暂停状态不执行动作
+            function():Void { self._lifecycleLog.push("paused:enter"); },
+            function():Void { self._lifecycleLog.push("paused:exit"); }
+        );
+        
+        machine.AddStatus("player", playerState);
+        machine.AddStatus("paused", pausedState);
+        
+        // 添加暂停转换：当isPaused=true时立即切换到暂停状态（使用Gate机制）
+        machine.transitions.push("player", "paused", function():Boolean { 
+            return this.data.isPaused; 
+        }, true);
+        
+        // 【关键测试】：在同一帧内触发暂停并执行onAction
+        this.clearLifecycleLog();
+        machine.data.isPaused = true;  // 触发暂停条件
+        machine.data.actionExecuted = false;  // 重置动作标记
+        
+        machine.onAction();  // 执行一帧的逻辑
+        
+        // 【预期行为 - 当前会失败】：
+        // 暂停应该在当帧生效，阻止玩家状态的动作执行
+        this.assert(machine.getActiveStateName() == "paused", "Should switch to paused state immediately");
+        this.assert(!machine.data.actionExecuted, "Player action should NOT execute when paused in same frame");
+        this.assert(this._lifecycleLog.indexOf("player:action") == -1, "Player action should not be logged");
+        this.assert(this._lifecycleLog.indexOf("paused:enter") != -1, "Paused state should be entered");
+        
+        machine.destroy();
+    }
+    
+    /**
+     * S2 测试：Exit→Enter→Action 正确顺序
+     * 验证转换发生时，新状态的动作能在同帧执行
+     */
+    public function testTransitionToActionOrder():Void {
+        trace("\n--- Test: Transition→Action Order ---");
+        this.clearLifecycleLog();
+        
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        machine.data = {shouldTransition: false, actionCount: 0};
+        var self = this;
+        
+        var stateA:FSM_Status = new FSM_Status(
+            function():Void { 
+                this.data.actionCount++;
+                self._lifecycleLog.push("A:action:" + this.data.actionCount);
+            },
+            function():Void { self._lifecycleLog.push("A:enter"); },
+            function():Void { self._lifecycleLog.push("A:exit"); }
+        );
+        
+        var stateB:FSM_Status = new FSM_Status(
+            function():Void { 
+                this.data.actionCount++;
+                self._lifecycleLog.push("B:action:" + this.data.actionCount);
+            },
+            function():Void { self._lifecycleLog.push("B:enter"); },
+            function():Void { self._lifecycleLog.push("B:exit"); }
+        );
+        
+        machine.AddStatus("A", stateA);
+        machine.AddStatus("B", stateB);
+        
+        // 转换条件：第2次动作后切换
+        machine.transitions.push("A", "B", function():Boolean { 
+            return this.data.actionCount >= 2; 
+        });
+        
+        this.clearLifecycleLog();
+        machine.onAction();  // 第1次：A:action:1
+        machine.onAction();  // 第2次：应该触发转换 A→B，然后执行B:action:2
+        
+        // 【预期行为 - 当前会失败】：
+        // 正确顺序应该是：A:action:1, A:action:2, A:exit, B:enter, B:action:3
+        // 当前实现是：A:action:1, A:action:2, A:exit, B:enter（B的action要到下一帧）
+        var expectedOrder:Array = [
+            "A:enter",      // 初始进入A
+            "A:action:1",   // 第1次onAction
+            "A:action:2",   // 第2次onAction（触发转换条件）
+            "A:exit",       // 退出A状态
+            "B:enter",      // 进入B状态  
+            "B:action:3"    // 同帧执行B的动作
+        ];
+        
+        this.assert(this._lifecycleLog.length == expectedOrder.length, "Correct number of lifecycle events");
+        this.assert(machine.getActiveStateName() == "B", "Should be in state B");
+        
+        // 检查最后一个事件是否是B的动作
+        var lastEvent:String = this._lifecycleLog[this._lifecycleLog.length - 1];
+        this.assert(lastEvent == "B:action:3", "B's action should execute in same frame as transition");
+        
+        machine.destroy();
+    }
+    
+    /**
+     * S3 测试：递归切换安全性
+     * 验证快速状态切换不会导致栈溢出或无限递归
+     */
+    public function testRecursiveTransitionSafety():Void {
+        trace("\n--- Test: Recursive Transition Safety ---");
+        
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        machine.data = {transitions: 0, maxTransitions: 50};
+        var self = this;
+        
+        var pingState:FSM_Status = new FSM_Status(
+            function():Void { 
+                this.data.transitions++;
+                self._lifecycleLog.push("ping:action:" + this.data.transitions);
+            },
+            function():Void { self._lifecycleLog.push("ping:enter"); },
+            function():Void { self._lifecycleLog.push("ping:exit"); }
+        );
+        
+        var pongState:FSM_Status = new FSM_Status(
+            function():Void { 
+                this.data.transitions++;
+                self._lifecycleLog.push("pong:action:" + this.data.transitions);
+            },
+            function():Void { self._lifecycleLog.push("pong:enter"); },
+            function():Void { self._lifecycleLog.push("pong:exit"); }
+        );
+        
+        machine.AddStatus("ping", pingState);
+        machine.AddStatus("pong", pongState);
+        
+        // 快速乒乓转换
+        machine.transitions.push("ping", "pong", function():Boolean { 
+            return this.data.transitions % 2 == 1; 
+        });
+        machine.transitions.push("pong", "ping", function():Boolean { 
+            return this.data.transitions % 2 == 0 && this.data.transitions < this.data.maxTransitions; 
+        });
+        
+        this.clearLifecycleLog();
+        
+        // 执行多帧，测试是否会栈溢出或无限递归
+        var frameCount:Number = 0;
+        var maxFrames:Number = 100;
+        
+        try {
+            while (frameCount < maxFrames && machine.data.transitions < machine.data.maxTransitions) {
+                machine.onAction();
+                frameCount++;
+            }
+            
+            this.assert(true, "No stack overflow during rapid transitions");
+            this.assert(frameCount < maxFrames, "Transitions completed within reasonable frames");
+            this.assert(machine.getActiveState() != null, "Active state remains valid");
+            
+            // 验证最终状态正确性
+            var finalState:String = machine.getActiveStateName();
+            this.assert(finalState == "ping" || finalState == "pong", "Final state is valid");
+            
+        } catch (e:Error) {
+            this.assert(false, "Recursive transition safety failed: " + e.message);
+        }
+        
+        machine.destroy();
     }
 
     // ========== 报告生成 ==========

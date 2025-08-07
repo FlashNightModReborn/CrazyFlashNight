@@ -12,7 +12,7 @@
           <DOMFolderItem name="诺亚" itemID="6551e7c0-00001580"/>
           <DOMFolderItem name="其他" itemID="656cb4b0-0000042a"/>
           <DOMFolderItem name="其他武器" itemID="6551e8df-000015b7"/>
-          <DOMFolderItem name="手雷" itemID="689365e6-00002ce7" isExpanded="true"/>
+          <DOMFolderItem name="手雷" itemID="689365e6-00002ce7"/>
           <DOMFolderItem name="手雷/高爆手雷" itemID="6893651b-00002cce" isExpanded="true"/>
           <DOMFolderItem name="特效-动画与文字组" itemID="669d3a20-000017ae"/>
           <DOMFolderItem name="特效-击中效果组" itemID="669d39ad-000017a2"/>
@@ -172,8 +172,8 @@
           <Include href="弹壳/霰弹弹壳.xml" itemID="6634e7c1-0000196a" lastModified="1714811989"/>
           <Include href="弹壳/重机枪弹壳.xml" itemID="66357b12-00000b67" lastModified="1714811998"/>
           <Include href="导弹.xml" loadImmediate="false" itemID="671dc67e-000007ce" lastModified="1730004606"/>
-          <Include href="地雷激光扫描线.xml" itemIcon="1" loadImmediate="false" itemID="687af4b5-000005e2" lastModified="1752890259"/>
           <Include href="等离子光片.xml" loadImmediate="false" itemID="6883540e-00000e06" lastModified="1753438466"/>
+          <Include href="地雷激光扫描线.xml" itemIcon="1" loadImmediate="false" itemID="687af4b5-000005e2" lastModified="1752890259"/>
           <Include href="联弹/白色手里剑/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000250" lastModified="1705503817"/>
           <Include href="联弹/白色手里剑/Symbol 23.xml" loadImmediate="false" itemID="6577efbc-00000251" lastModified="1705503796"/>
           <Include href="联弹/白色手里剑/Symbol 573.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000416" lastModified="1705503893"/>
@@ -238,7 +238,14 @@
           <Include href="特效-击中效果组/原版空手攻击火花.xml" loadImmediate="false" itemID="67ed511c-0000056e" lastModified="1743606056"/>
           <Include href="特效-击中效果组/战术巴雷特击中特效.xml" itemID="669d344b-00001744" lastModified="1721648514"/>
           <Include href="特效-枪火组/巴雷特枪火.xml" itemID="669d3444-00001742" lastModified="1721648720"/>
+          <Include href="特效-枪火组/冲锋枪枪火.xml" itemID="68942165-00001ac6" lastModified="1754538743"/>
+          <Include href="特效-枪火组/反器材枪火.xml" itemID="68942709-00001c4f" lastModified="1754539785"/>
+          <Include href="特效-枪火组/紧凑手枪枪火.xml" itemID="68940ff5-00000e8b" lastModified="1754537353"/>
+          <Include href="特效-枪火组/马格南手枪枪火.xml" itemID="68942170-00001ac7" lastModified="1754538961"/>
           <Include href="特效-枪火组/枪火.xml" itemID="669d341e-00001739" lastModified="1721578526"/>
+          <Include href="特效-枪火组/突击步枪枪火.xml" itemID="6894249f-00001adb" lastModified="1754539167"/>
+          <Include href="特效-枪火组/霰弹枪枪火.xml" itemID="689426dc-00001c42" lastModified="1754539740"/>
+          <Include href="特效-枪火组/战斗步枪枪火.xml" itemID="689425c6-00001c35" lastModified="1754539462"/>
           <Include href="特效-血液组/飙血.xml" itemID="669d3425-0000173b" lastModified="1723624672"/>
           <Include href="特效-血液组/血迹.xml" itemID="669d347b-0000174f" lastModified="1722914675"/>
           <Include href="特效-血液组/子弹碎片-飞血.xml" itemID="669d3480-00001750" lastModified="1722920091"/>
@@ -544,7 +551,7 @@
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 663.xml" itemIcon="1" loadImmediate="false" itemID="668b9cdd-000001df" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 664.xml" loadImmediate="false" itemID="668b9cdd-000001e0" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 1217.xml" itemIcon="1" loadImmediate="false" itemID="668b9f53-000001d0" lastModified="1720426265"/>
-          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1754490935"/>
+          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1754539796"/>
           <Include href="战术核弹素材.xml" itemIcon="1" loadImmediate="false" itemID="6893663f-00002d0f" lastModified="1754491166"/>
           <Include href="子弹-持续组/电球.xml" itemID="669d343b-00001740" lastModified="1722876120"/>
           <Include href="子弹-持续组/火焰.xml" itemID="669d3404-00001734" lastModified="1722875196"/>
@@ -593,7 +600,7 @@
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="原版素材库-子弹" selected="true" centerPoint3DX="66.7" centerPoint3DY="8.8">
                                              <transformationPoint>
-                                                  <Point x="66.7" y="8.8"/>
+                                                  <Point/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
                                    </elements>
@@ -872,6 +879,9 @@
                     <SolidSwatchItem color="#312C1C" hue="30" saturation="67" brightness="36"/>
                     <SolidSwatchItem color="#4A4829" hue="38" saturation="68" brightness="55"/>
                     <SolidSwatchItem color="#171504" hue="36" saturation="166" brightness="13"/>
+                    <SolidSwatchItem color="#FFFF89" hue="40" saturation="239" brightness="185"/>
+                    <SolidSwatchItem color="#FFFE91" hue="40" saturation="239" brightness="188"/>
+                    <SolidSwatchItem color="#FEBB0E" hue="29" saturation="238" brightness="126"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -880,25 +890,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3901429" publishTime="1754538983"/>
+          <PublishItem publishSize="3901209" publishTime="1754538763"/>
+          <PublishItem publishSize="3901219" publishTime="1754538693"/>
+          <PublishItem publishSize="3901427" publishTime="1754538500"/>
+          <PublishItem publishSize="3901493" publishTime="1754538413"/>
+          <PublishItem publishSize="3897977" publishTime="1754537785"/>
+          <PublishItem publishSize="3895465" publishTime="1754537390"/>
+          <PublishItem publishSize="3895482" publishTime="1754537317"/>
+          <PublishItem publishSize="3895479" publishTime="1754536888"/>
+          <PublishItem publishSize="3893986" publishTime="1754536519"/>
+          <PublishItem publishSize="3893992" publishTime="1754536291"/>
+          <PublishItem publishSize="3893601" publishTime="1754535848"/>
+          <PublishItem publishSize="3890029" publishTime="1754535211"/>
+          <PublishItem publishSize="3890014" publishTime="1754534434"/>
+          <PublishItem publishSize="3932971" publishTime="1754530248"/>
           <PublishItem publishSize="3932975" publishTime="1754503024"/>
           <PublishItem publishSize="3932983" publishTime="1754502996"/>
           <PublishItem publishSize="3932975" publishTime="1754502952"/>
           <PublishItem publishSize="3932971" publishTime="1754502923"/>
           <PublishItem publishSize="3932970" publishTime="1754502835"/>
-          <PublishItem publishSize="3932964" publishTime="1754501552"/>
-          <PublishItem publishSize="3932976" publishTime="1754501544"/>
-          <PublishItem publishSize="3932109" publishTime="1754496104"/>
-          <PublishItem publishSize="3921856" publishTime="1753881597"/>
-          <PublishItem publishSize="3921856" publishTime="1753881210"/>
-          <PublishItem publishSize="3921807" publishTime="1753881050"/>
-          <PublishItem publishSize="3921937" publishTime="1753439252"/>
-          <PublishItem publishSize="3921937" publishTime="1753439099"/>
-          <PublishItem publishSize="3921934" publishTime="1753438736"/>
-          <PublishItem publishSize="3921946" publishTime="1753438585"/>
-          <PublishItem publishSize="3921927" publishTime="1753438527"/>
-          <PublishItem publishSize="3921728" publishTime="1753437397"/>
-          <PublishItem publishSize="3921728" publishTime="1753437387"/>
-          <PublishItem publishSize="3921740" publishTime="1753437352"/>
-          <PublishItem publishSize="3921732" publishTime="1753437253"/>
      </publishHistory>
 </DOMDocument>
