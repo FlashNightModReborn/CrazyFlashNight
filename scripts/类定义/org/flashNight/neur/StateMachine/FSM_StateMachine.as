@@ -156,8 +156,9 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         // 主循环：处理Gate转换、状态动作、Normal转换的完整流程
         while (transitionCount < maxTransitions) {
             // Phase 1: Gate转换检查 - 门转换优先，立即生效
-            var gateTarget:String = this.transitions.TransitGate(this.getActiveStateName());
-            if (gateTarget && gateTarget != this.getActiveStateName()) {
+            var activeStateName:String = this.getActiveStateName();
+            var gateTarget:String = this.transitions.TransitGate(activeStateName);
+            if (gateTarget && gateTarget != activeStateName) {
                 this.ChangeState(gateTarget);
                 transitionCount++;
                 continue; // Gate转换后立即开始下一轮循环，不执行旧状态动作
@@ -169,8 +170,9 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
             }
 
             // Phase 3: Normal转换检查 - 基于动作结果的转换
-            var normalTarget:String = this.transitions.TransitNormal(this.getActiveStateName());
-            if (normalTarget && normalTarget != this.getActiveStateName()) {
+            activeStateName = this.getActiveStateName(); // 再获取一次当前状态名
+            var normalTarget:String = this.transitions.TransitNormal(activeStateName);
+            if (normalTarget && normalTarget != activeStateName) {
                 this.ChangeState(normalTarget);
                 transitionCount++;
                 continue; // Normal转换后继续下一轮循环，让新状态也能执行动作
@@ -181,8 +183,8 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         }
 
         // Phase 4: 状态机自身维护
-        this.actionCount++;
-        super.onAction();
+        this.actionCount++; // 增加action计数
+        // super.onAction(); // FSM_Status的onAction为空函数，故不执行
     }
 
     // ========== 修正区结束 ==========

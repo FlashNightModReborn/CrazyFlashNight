@@ -205,7 +205,7 @@ Size 500: Create=6ms, Transition=6ms, Operation=2ms
 --- Test: Pause Gate Immediate Effect ---
 [PASS] Should switch to paused state immediately
 [PASS] Player action should NOT execute when paused in same frame
-[FAIL] Player action should not be logged
+[PASS] Player action should not be logged
 [PASS] Paused state should be entered
 
 --- Test: Transition→Action Order ---
@@ -220,9 +220,9 @@ Size 500: Create=6ms, Transition=6ms, Operation=2ms
 [PASS] Final state is valid
 
 === FINAL FSM TEST REPORT ===
-Tests Passed: 111
-Tests Failed: 3
-Success Rate: 97%
+Tests Passed: 112
+Tests Failed: 2
+Success Rate: 98%
 ⚠️  Some tests failed. Please review the implementation.
 === FSM VERIFICATION SUMMARY ===
 ✓ Basic state machine operations verified

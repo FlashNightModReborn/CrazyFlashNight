@@ -25,15 +25,15 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
         this.AddStatus("Walking",new FSM_Status(this.walk, null, null));
 
         //过渡线
-        this.transitions.push("Idle","Thinking",function(){
+        this.pushGateTransition("Idle","Thinking",function(){
             return this.actionCount >= MecenaryBehavior.IDLE_TIME;
         });
-        this.transitions.push("Walking","Thinking",function(){
+        this.pushGateTransition("Walking","Thinking",function(){
             return this.actionCount % MecenaryBehavior.WALK_TIME == 0 && LinearCongruentialEngine.instance.randomCheckHalf();
         });
 
         // 检测到思考标签时结束睡眠状态进入思考状态
-        this.transitions.push("Sleeping","Thinking",this.wakeupCheck);
+        this.pushGateTransition("Sleeping","Thinking",this.wakeupCheck);
     }
 
 

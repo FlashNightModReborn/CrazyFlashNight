@@ -18,7 +18,7 @@ class org.flashNight.arki.unit.UnitAI.PickupEnemyBehavior extends EnemyBehavior{
         this.AddStatus("ChasingPickup",new FSM_Status(this.chase_pickup, null, null));
 
         // 过渡线
-        this.transitions.push("ChasingPickup","Thinking",function(){
+        this.pushGateTransition("ChasingPickup","Thinking",function(){
             return data.target.area == null || this.actionCount >= PickupEnemyBehavior.CHASE_PICKUP_TIME;
         });
     }

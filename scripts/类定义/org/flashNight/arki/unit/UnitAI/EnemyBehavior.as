@@ -32,24 +32,24 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         this.AddStatus("Wandering",new FSM_Status(null, this.wander_enter,null));
 
         //过渡线
-        this.transitions.push("Chasing","Idle",function(){
+        this.pushGateTransition("Chasing","Idle",function(){
             return this.actionCount >= data.idle_threshold;
         });
-        this.transitions.push("Chasing","Wandering",function(){
+        this.pushGateTransition("Chasing","Wandering",function(){
             return this.actionCount >= data.wander_threshold;
         });
-        this.transitions.push("Idle","Thinking",function(){
+        this.pushGateTransition("Idle","Thinking",function(){
             return this.actionCount >= data.think_threshold;
         });
-        this.transitions.push("Wandering","Thinking",function(){
+        this.pushGateTransition("Wandering","Thinking",function(){
             return this.actionCount >= data.think_threshold;
         });
-        this.transitions.push("Following","Thinking",function(){
+        this.pushGateTransition("Following","Thinking",function(){
             return this.actionCount >= EnemyBehavior.FOLLOW_TIME;
         });
 
         // 检测到思考标签时结束睡眠状态进入思考状态
-        this.transitions.push("Sleeping","Thinking",this.wakeupCheck);
+        this.pushGateTransition("Sleeping","Thinking",this.wakeupCheck);
     }
 
 

@@ -1447,6 +1447,12 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         // 暂停应该在当帧生效，阻止玩家状态的动作执行
         this.assert(machine.getActiveStateName() == "paused", "Should switch to paused state immediately");
         this.assert(!machine.data.actionExecuted, "Player action should NOT execute when paused in same frame");
+        this._lifecycleLog.indexOf = function(str:String):Number{
+            for(var i=0; i< this.length; i++){
+                if(this[i] === str) return i;
+            }
+            return -1;
+        }
         this.assert(this._lifecycleLog.indexOf("player:action") == -1, "Player action should not be logged");
         this.assert(this._lifecycleLog.indexOf("paused:enter") != -1, "Paused state should be entered");
         
