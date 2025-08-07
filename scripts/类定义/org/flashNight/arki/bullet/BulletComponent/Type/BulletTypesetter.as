@@ -117,9 +117,12 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
             var isChain:Boolean         = (bulletType.indexOf("联弹") != -1);         // 是否联弹子弹
             var isPierce:Boolean        = (bulletType.indexOf("穿刺") != -1);         // 是否穿刺子弹
             var isTransparency:Boolean  = (transparency.indexOf("|" + bulletType + "|") != -1); // 是否透明子弹
-            var isGrenade:Boolean       = (bulletType.indexOf("手雷") != -1);         // 是否手雷子弹
-            var isExplosive:Boolean     = (bulletType.indexOf("爆炸") != -1);         // 是否爆炸子弹
             var isVertical:Boolean      = (bulletType.indexOf("纵向") != -1);         // 是否纵向子弹
+            var isExplosive:Boolean     = (bulletType.indexOf("爆炸") != -1);         // 是否爆炸子弹
+
+            // 个别手雷属性额外在xml中获取
+            var isGrenade:Boolean       = bullet.FLAG_GRENADE || (bulletType.indexOf("手雷") != -1);         // 是否手雷子弹
+
 
             // 是否普通子弹的逻辑
             var isNormal:Boolean = !isPierce && !isExplosive &&
@@ -154,7 +157,9 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
         // bullet.透明检测 = ((flags & FLAG_TRANSPARENCY) != 0);
         // bullet.纵向检测 = ((flags & FLAG_VERTICAL) != 0);
         // bullet.普通检测 = ((flags & FLAG_NORMAL) != 0);
-        
+        // bullet.手雷检测 = ((flags & FLAG_GRENADE) != 0);
+        // bullet.爆炸检测 = ((flags & FLAG_EXPLOSIVE) != 0);
+
         /**
          * === 宏展开 + 位掩码双重性能优化教程 ===
          * 
@@ -216,14 +221,14 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
          */
         
 
-        
-        bullet.手雷检测 = bullet.手雷检测 || ((flags & FLAG_GRENADE) != 0);
-        bullet.爆炸检测 = bullet.爆炸检测 || ((flags & FLAG_EXPLOSIVE) != 0);
-        
-
+        if(((flags & FLAG_GRENADE) != 0)) {
+            delete bullet.FLAG_GRENADE;
+        }
 
         // 缓存基础素材名
         bullet.baseAsset = baseAsset;
+
+        // _root.发布消息(baseAsset + ":" + flagsToString(flags, true));
 
         // 缓存标志位
         bullet.flags = flags;
@@ -249,6 +254,9 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
         if (cachedData == undefined) {
             // 创建一个假子弹对象，仅包含必要的属性，避免影响原始对象
             var dummyBullet:Object = { 子弹种类: bulletType };
+            // 注意：如果子弹类型需要从XML获取FLAG_GRENADE等属性
+            // 此方法可能不准确，甚至可能会造成缓存污染
+            // 建议优先使用已完整初始化的子弹对象调用setTypeFlags
             return setTypeFlags(dummyBullet);
         }
         
@@ -286,22 +294,118 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
     }
 
     /**
+     * 检查子弹类型是否为近战子弹。
+     * 
+     * @param bulletType:String 子弹种类字符串。
+     * @return Boolean 如果是近战子弹返回 true，否则返回 false。
+     */
+    public static function isMelee(bulletType:String):Boolean {
+        var flags:Number = getFlags({ 子弹种类: bulletType });
+        return (flags & FLAG_MELEE) != 0;
+    }
+
+    /**
+     * 检查子弹类型是否为联弹子弹。
+     * 
+     * @param bulletType:String 子弹种类字符串。
+     * @return Boolean 如果是联弹子弹返回 true，否则返回 false。
+     */
+    public static function isChain(bulletType:String):Boolean {
+        var flags:Number = getFlags({ 子弹种类: bulletType });
+        return (flags & FLAG_CHAIN) != 0;
+    }
+
+    /**
+     * 检查子弹类型是否为穿刺子弹。
+     * 
+     * @param bulletType:String 子弹种类字符串。
+     * @return Boolean 如果是穿刺子弹返回 true，否则返回 false。
+     */
+    public static function isPierce(bulletType:String):Boolean {
+        var flags:Number = getFlags({ 子弹种类: bulletType });
+        return (flags & FLAG_PIERCE) != 0;
+    }
+
+    /**
+     * 检查子弹类型是否为透明子弹。
+     * 
+     * @param bulletType:String 子弹种类字符串。
+     * @return Boolean 如果是透明子弹返回 true，否则返回 false。
+     */
+    public static function isTransparency(bulletType:String):Boolean {
+        var flags:Number = getFlags({ 子弹种类: bulletType });
+        return (flags & FLAG_TRANSPARENCY) != 0;
+    }
+
+    /**
+     * 检查子弹类型是否为手雷子弹。
+     * 
+     * @param bulletType:String 子弹种类字符串。
+     * @return Boolean 如果是手雷子弹返回 true，否则返回 false。
+     */
+    public static function isGrenade(bulletType:String):Boolean {
+        var flags:Number = getFlags({ 子弹种类: bulletType });
+        return (flags & FLAG_GRENADE) != 0;
+    }
+
+    /**
+     * 检查子弹类型是否为爆炸子弹。
+     * 
+     * @param bulletType:String 子弹种类字符串。
+     * @return Boolean 如果是爆炸子弹返回 true，否则返回 false。
+     */
+    public static function isExplosive(bulletType:String):Boolean {
+        var flags:Number = getFlags({ 子弹种类: bulletType });
+        return (flags & FLAG_EXPLOSIVE) != 0;
+    }
+
+    /**
+     * 检查子弹类型是否为普通子弹。
+     * 
+     * @param bulletType:String 子弹种类字符串。
+     * @return Boolean 如果是普通子弹返回 true，否则返回 false。
+     */
+    public static function isNormal(bulletType:String):Boolean {
+        var flags:Number = getFlags({ 子弹种类: bulletType });
+        return (flags & FLAG_NORMAL) != 0;
+    }
+
+    /**
     * 将子弹类型的标志位转换为可读的字符串，便于调试输出。
     * 
     * @param flags:Number 标志位值。
-    * @return String 转换后的字符串，格式如 "MELEE, CHAIN"。若无标志位则返回 "NONE"。
+    * @param useChinese:Boolean 可选参数，是否使用中文输出。默认 false（英文）。
+    * @return String 转换后的字符串，格式如 "MELEE, CHAIN" 或 "近战, 联弹"。若无标志位则返回 "NONE" 或 "无"。
     */
-    public static function flagsToString(flags:Number):String {
+    public static function flagsToString(flags:Number, useChinese:Boolean):String {
+        // 处理默认参数
+        if (useChinese == undefined) useChinese = false;
+        
         var parts:Array = [];
-        if (flags & FLAG_MELEE)         parts.push("MELEE");
-        if (flags & FLAG_CHAIN)         parts.push("CHAIN");
-        if (flags & FLAG_PIERCE)        parts.push("PIERCE");
-        if (flags & FLAG_TRANSPARENCY)  parts.push("TRANSPARENCY");
-        if (flags & FLAG_GRENADE)       parts.push("GRENADE");
-        if (flags & FLAG_EXPLOSIVE)     parts.push("EXPLOSIVE");
-        if (flags & FLAG_NORMAL)        parts.push("NORMAL");
-        if (flags & FLAG_VERTICAL)      parts.push("VERTICAL");
-        return parts.length > 0 ? parts.join(", ") : "NONE";
+        
+        if (useChinese) {
+            // 中文输出
+            if (flags & FLAG_MELEE)         parts.push("近战");
+            if (flags & FLAG_CHAIN)         parts.push("联弹");
+            if (flags & FLAG_PIERCE)        parts.push("穿刺");
+            if (flags & FLAG_TRANSPARENCY)  parts.push("透明");
+            if (flags & FLAG_GRENADE)       parts.push("手雷");
+            if (flags & FLAG_EXPLOSIVE)     parts.push("爆炸");
+            if (flags & FLAG_NORMAL)        parts.push("普通");
+            if (flags & FLAG_VERTICAL)      parts.push("纵向");
+            return parts.length > 0 ? parts.join(", ") : "无";
+        } else {
+            // 英文输出（原有逻辑）
+            if (flags & FLAG_MELEE)         parts.push("MELEE");
+            if (flags & FLAG_CHAIN)         parts.push("CHAIN");
+            if (flags & FLAG_PIERCE)        parts.push("PIERCE");
+            if (flags & FLAG_TRANSPARENCY)  parts.push("TRANSPARENCY");
+            if (flags & FLAG_GRENADE)       parts.push("GRENADE");
+            if (flags & FLAG_EXPLOSIVE)     parts.push("EXPLOSIVE");
+            if (flags & FLAG_NORMAL)        parts.push("NORMAL");
+            if (flags & FLAG_VERTICAL)      parts.push("VERTICAL");
+            return parts.length > 0 ? parts.join(", ") : "NONE";
+        }
     }
 
     /**

@@ -95,9 +95,6 @@ _root.子弹区域shoot传递 = function(Obj){
     // 计算射击角度
     var shootingAngle:Number = ShootingAngleCalculator.calculate(Obj, shooter);
 
-    // 设置子弹类型标志
-    BulletTypesetter.setTypeFlags(Obj);
-
     // 1. 设置默认值
     BulletInitializer.setDefaults(Obj, shooter);
 
@@ -107,8 +104,12 @@ _root.子弹区域shoot传递 = function(Obj){
     // 3. 计算击退速度
     BulletInitializer.calculateKnockback(Obj);
 
-    // 4. 初始化子弹属性
+    // 4. 初始化子弹属性（包含从XML加载的额外属性）
     BulletInitializer.initializeBulletProperties(Obj);
+    
+    // 5. 设置子弹类型标志（必须在initializeBulletProperties之后调用）
+    // 因为部分标志位（如FLAG_GRENADE）需要从XML中获取，确保所有属性都已加载
+    BulletTypesetter.setTypeFlags(Obj);
 
     // 创建子弹
     var bulletInstance = BulletFactory.createBullet(Obj, shooter, shootingAngle);
@@ -267,13 +268,13 @@ _root.子弹生命周期 = function()
             {
                 // 在此处按需展开爆炸检测宏
                 #include "../macros/FLAG_EXPLOSIVE.as"
-                if(!(this.flags & FLAG_MELEE) && !(this.flags & FLAG_EXPLOSIVE))
-                {
-                    dispatcher.publish("kill", hitTarget);
-                }
-                else {
-                    dispatcher.publish("death", hitTarget);
-                }
+                
+                // 创建近战和爆炸的组合掩码（编译时计算：1 | 32 = 33）
+                var MELEE_EXPLOSIVE_MASK:Number = FLAG_MELEE | FLAG_EXPLOSIVE;
+                
+                // 一次位运算替代两次否定和逻辑与：!(this.flags & FLAG_MELEE) && !(this.flags & FLAG_EXPLOSIVE)
+                dispatcher.publish((this.flags & MELEE_EXPLOSIVE_MASK) === 0 ?
+                    "kill" : "death", hitTarget);
             }
 
             damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
@@ -296,8 +297,11 @@ _root.子弹生命周期 = function()
         }
     }
 
-    if(this.shouldGeneratePostHitEffect && this.hitCount > 0){
-        EffectSystem.Effect(this.击中后子弹的效果, this._x, this._y, shooter._xscale);
+    // 绝大部分情况 hitCount 均为 0，提前返回
+    if(this.hitCount > 0) {
+        if(this.shouldGeneratePostHitEffect) {
+            EffectSystem.Effect(this.击中后子弹的效果, this._x, this._y, shooter._xscale);
+        }
     }
 
     // 更新子弹运动逻辑

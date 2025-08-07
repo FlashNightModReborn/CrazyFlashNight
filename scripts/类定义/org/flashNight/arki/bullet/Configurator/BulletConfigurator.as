@@ -36,7 +36,15 @@ class org.flashNight.arki.bullet.Configurator.BulletConfigurator {
         config.固伤 = isNaN(config.固伤) ? 0 : Number(config.固伤);
         config.命中率 = isNaN(config.命中率) ? shooter.命中率 : Number(config.命中率);
         config.最小霰弹值 = isNaN(config.最小霰弹值) ? 1 : Number(config.最小霰弹值);
-        config.远距离不消失 = config.手雷检测 || config.爆炸检测;
+        // 使用宏展开+位掩码优化技术进行手雷和爆炸检测
+        #include "../../macros/FLAG_GRENADE.as"
+        #include "../../macros/FLAG_EXPLOSIVE.as"
+        
+        // 创建手雷和爆炸的组合掩码（编译时计算：16 | 32 = 48）
+        var GRENADE_EXPLOSIVE_MASK:Number = FLAG_GRENADE | FLAG_EXPLOSIVE;
+        
+        // 一次位运算替代两次布尔比较和OR操作
+        config.远距离不消失 = (config.flags & GRENADE_EXPLOSIVE_MASK) != 0;
     }
 
     /**

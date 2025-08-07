@@ -18,8 +18,15 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.Hi
         var dispatcher:EventDispatcher = hitTarget.dispatcher;
         dispatcher.publish("hit", hitTarget, shooter, target, collisionResult, damageResult);
 
+        // 使用宏展开+位掩码优化技术进行近战和爆炸检测
         #include "../macros/FLAG_MELEE.as"
-        if ((target.flags & FLAG_MELEE) === 0 && !target.爆炸检测 && hitTarget.hp <= 0) {
+        #include "../macros/FLAG_EXPLOSIVE.as"
+        
+        // 创建近战和爆炸的组合掩码（编译时计算：1 | 32 = 33）
+        var MELEE_EXPLOSIVE_MASK:Number = FLAG_MELEE | FLAG_EXPLOSIVE;
+        
+        // 一次位运算替代两次检测：非近战且非爆炸
+        if ((target.flags & MELEE_EXPLOSIVE_MASK) === 0 && hitTarget.hp <= 0) {
             dispatcher.publish("kill", hitTarget);
         }
         

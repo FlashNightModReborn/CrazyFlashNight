@@ -33,7 +33,15 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
         Obj.固伤 = Obj.固伤 | 0;
         Obj.命中率 = (isNaN(Obj.命中率)) ? shooter.命中率 : Obj.命中率;
         Obj.最小霰弹值 = (isNaN(Obj.最小霰弹值)) ? 1 : Obj.最小霰弹值;
-        Obj.远距离不消失 = Obj.手雷检测 || Obj.爆炸检测;
+        // 使用宏展开+位掩码优化技术进行手雷和爆炸检测
+        #include "../macros/FLAG_GRENADE.as"
+        #include "../macros/FLAG_EXPLOSIVE.as"
+        
+        // 创建手雷和爆炸的组合掩码（编译时计算：16 | 32 = 48）
+        var GRENADE_EXPLOSIVE_MASK:Number = FLAG_GRENADE | FLAG_EXPLOSIVE;
+        
+        // 一次位运算替代两次布尔比较和OR操作
+        Obj.远距离不消失 = (Obj.flags & GRENADE_EXPLOSIVE_MASK) != 0;
         Obj.shooter = shooter;
         Obj.是否为敌人 = shooter.是否为敌人;
         Obj.zAttackRangeSq = Obj.Z轴攻击范围 * Obj.Z轴攻击范围;
@@ -114,10 +122,12 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
             if (shooterToxic && shooterToxic > Obj.毒) {
                 bullet.nanoToxic = shooterToxic;
                 bullet.nanoToxicDecay = 1;
-                // 使用位标志优化近战检测性能
+                // 使用位标志优化近战和纵向检测性能
                 #include "../macros/FLAG_MELEE.as"
+                #include "../macros/FLAG_VERTICAL.as"
                 if ((bullet.flags & FLAG_MELEE) === 0 && shooter.淬毒 > 10) {
-                    if(bullet.子弹种类.indexOf("纵向") != -1 && bullet.霰弹值 > 1){
+                    // 用位掩码替代字符串查找：bullet.子弹种类.indexOf("纵向") != -1
+                    if((bullet.flags & FLAG_VERTICAL) != 0 && bullet.霰弹值 > 1){
                         shooter.淬毒 -= bullet.霰弹值;
                     }else{
                         shooter.淬毒 -= 1;

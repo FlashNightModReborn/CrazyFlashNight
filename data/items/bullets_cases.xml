@@ -342,4 +342,16 @@
             <yOffset>0</yOffset>
         </shell>
     </bullet>
+    <bullet>
+        <name>鞭炮</name>
+        <attribute>
+            <FLAG_GRENADE>true</FLAG_GRENADE>
+        </attribute>
+    </bullet>    
+    <bullet>
+        <name>导弹信标</name>
+        <attribute>
+            <FLAG_GRENADE>true</FLAG_GRENADE>
+        </attribute>
+    </bullet>
 </bullets>
