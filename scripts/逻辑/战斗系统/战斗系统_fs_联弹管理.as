@@ -196,21 +196,46 @@ _root.联弹系统.横向联弹初始化 = function(clip:MovieClip):Void {
 
 
 /*====================================================================
- * 横向拖尾联弹初始化 (修正版)
+ * 横向拖尾联弹初始化 (轴向螺旋版：绕飞行轴的衰减螺旋 + 柔化收束 + 伪Z透视)
  * 说明：
- *   ① 坐标转换问题已修正。
- *   ② trail[] 数组现在正确地存储全局坐标，并在绘制时转换回局部坐标。
+ *   ① 轴心：每颗子弹维护 centerX/centerY 作为“飞行轴”，沿原弹道推进；
+ *      实际绘制位置 = 轴心位置 + (随相位旋转的法向偏移)。
+ *   ② 螺旋：半径随生命周期衰减；相位按总圈数推进；附带伪Z（用于前后景明暗/粗细）。
+ *   ③ 拖尾：trail[] 存全局 {x,y,zn}（zn 为当帧 z 归一化），绘制时回到本地并据 zn 调整线条。
+ *   ④ 收束：采用“尾段延展 + smoothstep + 残留角”，避免猛收口。
  *===================================================================*/
 _root.联弹系统.横向拖尾联弹初始化 = function (clip:MovieClip):Void
 {
     /* ---------- ① 基础字段 ---------- */
 
-    clip.单元体列表     = [];
-    clip.运动方向系数   = (clip._parent.xmov < 0) ? -1 : 1;
-    clip.y_基准         = clip._y;
-    clip.余弦值         = Math.cos(clip._parent._rotation * Math.PI / 180);
+    clip.单元体列表       = [];
+    clip.运动方向系数     = (clip._parent.xmov < 0) ? -1 : 1;
+    clip.y_基准           = clip._y;
+    clip.余弦值           = Math.cos(clip._parent._rotation * Math.PI / 180);
+    var 子弹种类:String    = String(clip._parent.子弹种类).split("-")[1];
 
-    var 子弹种类:String  = String(clip._parent.子弹种类).split("-")[1];
+    // —— 角度收束参数（可被 clip._parent 覆盖）——
+    clip.聚拢延迟         = (clip._parent.聚拢延迟 != undefined) ? clip._parent.聚拢延迟 : 3;     // 帧
+    clip.聚拢时长         = (clip._parent.聚拢时长 != undefined) ? clip._parent.聚拢时长 : 18;    // 帧（偏慢更柔）
+    clip.目标角           = (clip._parent.聚拢目标角 != undefined) ? clip._parent.聚拢目标角 : 0;  // °
+    clip.速度自适应系数   = (clip._parent.聚拢速度自适应系数 != undefined) ? clip._parent.聚拢速度自适应系数 : 0.010;
+
+    // —— 尾段柔化参数 ——（让末段别“猛地一合”）
+    clip.尾段延展指数     = (clip._parent.尾段延展指数 != undefined) ? clip._parent.尾段延展指数 : 2.5; // >1 尾段更慢
+    clip.收束残留角       = (clip._parent.收束残留角 != undefined) ? clip._parent.收束残留角 : 1.2;  // ° 收束到目标角附近留少许残角
+
+    // —— 螺旋（绕轴）参数 ——（半径衰减 + 固定圈数 + 相位扰动）
+    clip.螺旋初半径       = (clip._parent.螺旋初半径 != undefined) ? clip._parent.螺旋初半径 : 10;    // px，出生时绕轴半径
+    clip.螺旋残留半径     = (clip._parent.螺旋残留半径 != undefined) ? clip._parent.螺旋残留半径 : 0;     // px，末段保留
+    clip.螺旋阻尼指数     = (clip._parent.螺旋阻尼指数 != undefined) ? clip._parent.螺旋阻尼指数 : 1.6;   // γ，越大衰得越慢
+    clip.螺旋圈数         = (clip._parent.螺旋圈数 != undefined) ? clip._parent.螺旋圈数 : 2.0;       // 生命周期内总圈数
+    clip.螺旋相位扰动     = (clip._parent.螺旋相位扰动 != undefined) ? clip._parent.螺旋相位扰动 : 0.5;   // 0~1，相位分散
+    // 伪Z对外观的影响（前近/后远）
+    clip.螺旋背面暗化     = (clip._parent.螺旋背面暗化 != undefined) ? clip._parent.螺旋背面暗化 : 0.30; // 0~1，背面透明提升
+    clip.螺旋近景增粗     = (clip._parent.螺旋近景增粗 != undefined) ? clip._parent.螺旋近景增粗 : 0.25; // 线宽在近景的加成比例
+
+    // —— 拖尾宽度增益（扩散期更粗→收束后更细）——
+    clip.拖尾扩散增益     = (clip._parent.拖尾扩散增益 != undefined) ? clip._parent.拖尾扩散增益 : 0.35;
 
     /* ---------- ② 生成子弹 ---------- */
     for (var i:Number = 0;
@@ -219,8 +244,25 @@ _root.联弹系统.横向拖尾联弹初始化 = function (clip:MovieClip):Void
     {
         var b:MovieClip = _root.创建单元体(clip._parent, 子弹种类);
 
+        // 初始随机散射角（先“扩散”）
         b._rotation = _root.随机偏移(clip._parent.子弹散射度);
-        b.trail     = []; // 拖尾轨迹将存储【全局坐标】
+
+        // —— 生命周期/收束状态 —— 
+        b.initRot   = b._rotation;
+        b.age       = 0;
+        b.phaseJit  = (Math.random() - 0.5) * 4;
+
+        // —— 轴心（飞行轨迹轴体）：沿原弹道推进；实际 _x/_y = 轴心 + 法向偏移 —— 
+        b.centerX = b._x;
+        b.centerY = b._y;
+
+        // —— 螺旋相位 —— 
+        var jitter:Number = (Math.random()*2 - 1) * Math.PI * clip.螺旋相位扰动; // [-πr, πr]
+        b.oscPhase0 = jitter;
+
+        // 拖尾（存全局 {x,y,zn}）
+        b.trail = [];
+
         clip.单元体列表.push(b);
     }
 
@@ -228,11 +270,10 @@ _root.联弹系统.横向拖尾联弹初始化 = function (clip:MovieClip):Void
     /* ---------- ③ 帧循环 ---------- */
     clip.onEnterFrame = function ():Void
     {
-        /* 3‑1 更新子弹 (此部分无需改变) --------------------------------*/
         var y_min:Number = Infinity;
         var y_max:Number = -Infinity;
 
-        // 检查霰弹值变化，移除多余的单元体
+        // 清理超额
         while (this.单元体列表.length > this._parent.霰弹值 && this.单元体列表.length > 1) {
             var excessBullet:MovieClip = this.单元体列表.pop();
             _root.回收单元体(excessBullet);
@@ -241,9 +282,60 @@ _root.联弹系统.横向拖尾联弹初始化 = function (clip:MovieClip):Void
         for (var j:Number = this.单元体列表.length - 1; j >= 0; j--)
         {
             var b:MovieClip = this.单元体列表[j];
-            b._y += this._parent.xmov * Math.sin(b._rotation * Math.PI / 180) * this.运动方向系数;
 
-            if ( b._y * this.余弦值 + this._parent._y > this._parent.Z轴坐标 && this.单元体列表.length > 1 )
+            // —— 生命周期进度（0~1） —— 
+            b.age++;
+            var delay:Number = this.聚拢延迟;
+            var span:Number  = this.聚拢时长;
+
+            var spd:Number = Math.abs(this._parent.xmov);
+            var spanScaled:Number = Math.round(span * (1 + this.速度自适应系数 * spd));
+
+            var p:Number = (b.age - delay - b.phaseJit) / spanScaled;
+            if (p < 0) p = 0; else if (p > 1) p = 1;
+
+            // —— 柔化收束（角度）：尾段延展 + smoothstep + 残留角 —— 
+            var gamma:Number = this.尾段延展指数;
+            var p1:Number = 1 - Math.pow(1 - p, gamma);
+            if (p1 < 0) p1 = 0; else if (p1 > 1) p1 = 1;
+
+            var s:Number = p1 * p1 * (3 - 2 * p1);   // smoothstep
+            var wRaw:Number = 1 - s;                 // 1→0
+            var target:Number = this.目标角;
+            var delta:Number  = Math.abs(b.initRot - target) + 1e-6;
+            var wMin:Number   = this.收束残留角 / delta; if (wMin > 0.5) wMin = 0.5; if (wMin < 0) wMin = 0;
+            var w:Number = wMin + (1 - wMin) * wRaw;
+
+            b._rotation = target + (b.initRot - target) * w;
+            b.convergeT = 1 - w;
+
+            // —— 轴心推进（沿原“纵向”速度模型） —— 
+            b.centerY += this._parent.xmov * Math.sin(b._rotation * Math.PI / 180) * this.运动方向系数;
+            // （保持 centerX 不变，若你想轴心随角度略前进，可加：b.centerX += this._parent.xmov * Math.cos(...)*k）
+
+            // —— 计算绕轴螺旋偏移 —— 
+            // 局部切线 U=(cosθ, sinθ)；法线 N=(-sinθ, cosθ)
+            var rad:Number = b._rotation * Math.PI / 180;
+            var Ux:Number = Math.cos(rad), Uy:Number = Math.sin(rad);
+            var Nx:Number = -Uy,          Ny:Number = Ux;
+
+            // 半径衰减：R = R_min + (R0 - R_min) * (1 - p)^γ
+            var env:Number = Math.pow(1 - p, this.螺旋阻尼指数);
+            var R:Number   = this.螺旋残留半径 + (this.螺旋初半径 - this.螺旋残留半径) * env;
+
+            // 相位：整段共转 螺旋圈数 圈；带初相偏移
+            var phase:Number = 2 * Math.PI * (this.螺旋圈数 * p) + b.oscPhase0;
+
+            // 在屏幕平面“绕轴”的法向位移（cos分量进屏内/外由伪Z承担）
+            var offsetN:Number = R * Math.cos(phase); // 平面内的法向投影
+            var zDepth:Number  = R * Math.sin(phase); // 伪Z：>0 近景，<0 远景
+
+            // 应用到实际位置：轴心 + 法向偏移
+            b._x = b.centerX + Nx * offsetN;
+            b._y = b.centerY + Ny * offsetN;
+
+            // —— 回收判断：按“轴心位置”判断，避免法向偏移误触阈值 —— 
+            if ( b.centerY * this.余弦值 + this._parent._y > this._parent.Z轴坐标 && this.单元体列表.length > 1 )
             {
                 _root.回收单元体(b);
                 this.单元体列表.splice(j, 1);
@@ -251,58 +343,69 @@ _root.联弹系统.横向拖尾联弹初始化 = function (clip:MovieClip):Void
                 continue;
             }
 
-            y_max = Math.max(b._y, y_max);
-            y_min = Math.min(b._y, y_min);
+            // 统计包围盒（以实际显示位置计算）
+            if (b._y < y_min) y_min = b._y;
+            if (b._y > y_max) y_max = b._y;
+
+            // —— 采样拖尾（全局坐标 + 归一化伪Z）——
+            var global_p:Object = {x: b._x, y: b._y};
+            this._parent.localToGlobal(global_p);
+            // 把 zDepth 归一化到 [-1,1]（用 R 做归一化，避免半径变化导致尺度漂移）
+            var zn:Number = (R > 0) ? (zDepth / R) : 0;
+            global_p.zn = zn;
+            b.trail.unshift(global_p);
+            if (b.trail.length > 8) b.trail.pop();
         }
 
-        /* 3‑2 绘制拖尾 (核心修正) --------------------------------------*/
+        /* 3-2 绘制拖尾（trail 全局→本地 + 基于伪Z调节线宽与透明） ----------*/
         this.clear();
-        this.moveTo(0, 0); 
+        this.moveTo(0, 0);
 
-        for (var k:Number = 0; k < this.单元体列表.length; k++)
+        for (var m:Number = 0; m < this.单元体列表.length; m++)
         {
-            var bullet:MovieClip = this.单元体列表[k];
-
-            /* —— 【核心修正】采样当前位置时，使用正确的父级进行坐标转换 —— */
-            // 1. 获取子弹相对于其父级(clip._parent)的坐标
-            var global_p:Object = {x: bullet._x, y: bullet._y};
-            
-            // 2. 【重点】必须使用子弹的真正父级(this._parent)来调用localToGlobal
-            this._parent.localToGlobal(global_p);
-
-            /* —— trail[] 维护最近 8 帧的全局坐标 —— */
-            bullet.trail.unshift(global_p);
-            if (bullet.trail.length > 8) bullet.trail.pop();
-
-            /* —— 绘制部分 (此部分逻辑不变，但优化了渐变算法) —— */
+            var bullet:MovieClip = this.单元体列表[m];
             if (bullet.trail.length > 1)
             {
-                // 循环绘制后续线段
                 for (var t:Number = 0; t < bullet.trail.length - 1; t++)
                 {
-                    // 将存储的全局坐标点，转换为当前clip的局部坐标用于绘制
-                    var local_p1:Object = {x: bullet.trail[t].x, y: bullet.trail[t].y};
-                    var local_p2:Object = {x: bullet.trail[t+1].x, y: bullet.trail[t+1].y};
-                    this.globalToLocal(local_p1);
-                    this.globalToLocal(local_p2);
-                    
-                    // 为8帧的拖尾（7个线段）优化渐变效果
-                    var alpha:Number = 100 - t * 15;
-                    var width:Number = 2.5 - t * 0.3;
-                    if (width < 0.5) width = 0.5; // 确保线条不会完全消失
+                    var gp1:Object = bullet.trail[t];
+                    var gp2:Object = bullet.trail[t+1];
 
-                    this.lineStyle(width, 0xFFFFFF, alpha);
-                    this.moveTo(local_p1.x, local_p1.y);
-                    this.lineTo(local_p2.x, local_p2.y);
+                    var lp1:Object = {x: gp1.x, y: gp1.y};
+                    var lp2:Object = {x: gp2.x, y: gp2.y};
+                    this.globalToLocal(lp1);
+                    this.globalToLocal(lp2);
+
+                    // 渐隐
+                    var alphaBase:Number = 100 - t * 15;
+
+                    // 近/远景调制（zn ∈ [-1,1]）：近景更粗更亮，远景更细更淡
+                    var znAvg:Number = (((gp1.zn != undefined) ? gp1.zn : 0) + ((gp2.zn != undefined) ? gp2.zn : 0)) * 0.5;
+                    if (znAvg > 1) znAvg = 1; else if (znAvg < -1) znAvg = -1;
+
+                    // 线宽：基础 ×（扩散增益）×（近景增粗）
+                    var baseW:Number = 2.5 - t * 0.3; if (baseW < 0.5) baseW = 0.5;
+                    var widen:Number = (bullet.convergeT != undefined) ? (1.0 + (1.0 - bullet.convergeT) * this.拖尾扩散增益) : 1.0;
+                    var nearGain:Number = 1 + this.螺旋近景增粗 * ((znAvg > 0) ? znAvg : 0); // 仅近景增粗
+                    var width:Number = baseW * widen * nearGain;
+
+                    // 透明：远景暗化
+                    var farFade:Number = 1 - this.螺旋背面暗化 * ((znAvg < 0) ? -znAvg : 0);
+                    var alphaDraw:Number = alphaBase * farFade;
+
+                    this.lineStyle(width, 0xFFFFFF, alphaDraw);
+                    this.moveTo(lp1.x, lp1.y);
+                    this.lineTo(lp2.x, lp2.y);
                 }
             }
         }
 
-        /* 3‑3 更新碰撞箱 (此部分无需改变) -------------------------------*/
+        /* 3-3 更新碰撞箱 -------------------------------------------------*/
         this._y      = y_min;
         this._height = Math.max(this.y_基准 * -2, y_max - y_min);
     };
 };
+
 
 _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
     // 保存初始坐标与单元体列表初始化
