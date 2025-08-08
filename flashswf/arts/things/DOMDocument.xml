@@ -72,9 +72,9 @@
           <DOMFolderItem name="素材/突击步枪/弹匣" itemID="683fe940-00000d6b"/>
           <DOMFolderItem name="特效与子弹相关" itemID="6690f52b-00003159"/>
           <DOMFolderItem name="无AS链接" itemID="6690f257-00002761"/>
-          <DOMFolderItem name="消耗道具相关" itemID="668e8827-0000137c"/>
+          <DOMFolderItem name="消耗道具相关" itemID="668e8827-0000137c" isExpanded="true"/>
           <DOMFolderItem name="消耗道具相关/2.压缩胶囊" itemID="66a5e90f-00001779" isExpanded="true"/>
-          <DOMFolderItem name="消耗道具相关/3.伤害性相关" itemID="66a5e9d6-0000178a"/>
+          <DOMFolderItem name="消耗道具相关/3.伤害性相关" itemID="66a5e9d6-0000178a" isExpanded="true"/>
           <DOMFolderItem name="消耗道具相关/3.伤害性相关/BBPLAYER炸弹" itemID="66d5f180-00001b06"/>
           <DOMFolderItem name="消耗道具相关/3.伤害性相关/鞭炮" itemID="66a5e01d-000014f1" isExpanded="true"/>
           <DOMFolderItem name="消耗道具相关/3.伤害性相关/普通手雷" itemID="66a5e023-000014f2" isExpanded="true"/>
@@ -89,14 +89,14 @@
           <DOMFolderItem name="主角身体元件副本" itemID="67bc22a2-00001315"/>
      </folders>
      <fonts>
-          <DOMFontItem name="Font 4557" itemID="668e7c19-000001df" font="SimHei" size="0" id="4557" embeddedCharacters="ACEHIMPR"/>
-          <DOMFontItem name="Font 5441" itemID="668e7c19-000001dd" font="ArialMT" size="0" id="5441" embeddedCharacters=" -.01235:ACEGHIMNRSacdeilmnortwxz"/>
-          <DOMFontItem name="Font 5437" itemID="668e7c19-000001db" font="Arial-BoldMT" size="0" id="5437" embeddedCharacters=" ./01348ACDEGIKLMNOPRSTUYi"/>
-          <DOMFontItem name="Font 5407" itemID="668e7c19-000001d9" font="Verdana-Bold" size="0" id="5407" embeddedCharacters="-ACFNRS"/>
-          <DOMFontItem name="Font 621" itemID="668e7c19-000001d7" font="Masque" size="0" id="621" embeddedCharacters=" !ACEGLRST"/>
-          <DOMFontItem name="Font 323" itemID="668e7c19-000001d5" font="SimSun" size="0" id="323" embeddedCharacters="127AMPX上中之书仔令份会伴作信僵公关兵军凤击制剂前剑功加动升厂同命品囊团园图地基堂士声备套子字定密小尘尸层属工弹强彻德徽息情战手技抗报拼控提摇攻效文新无明普最未本果枪标样械气浮液滚火灰炎炸烟焰爆片牛物特生画白的盘知硬碎示秘移空站章箭精素级纸线翅胶能致花药虎血装证过近迹通里金铁铳链镜阀雷雾震项风飙飞黑鼠龙（）"/>
-          <DOMFontItem name="Font 259" itemID="668e7c19-000001d3" font="MicrosoftYaHei" size="0" id="259" embeddedCharacters=",.INabcdefghijklmnoprstuvwy力援支火"/>
           <DOMFontItem name="Font 28" itemID="668e7c19-000001d1" font="MicrosoftYaHei" size="0" id="28" embeddedCharacters=",.INabcdefghijklmnoprstuvwy力援支火"/>
+          <DOMFontItem name="Font 259" itemID="668e7c19-000001d3" font="MicrosoftYaHei" size="0" id="259" embeddedCharacters=",.INabcdefghijklmnoprstuvwy力援支火"/>
+          <DOMFontItem name="Font 323" itemID="668e7c19-000001d5" font="SimSun" size="0" id="323" embeddedCharacters="127AMPX上中之书仔令份会伴作信僵公关兵军凤击制剂前剑功加动升厂同命品囊团园图地基堂士声备套子字定密小尘尸层属工弹强彻德徽息情战手技抗报拼控提摇攻效文新无明普最未本果枪标样械气浮液滚火灰炎炸烟焰爆片牛物特生画白的盘知硬碎示秘移空站章箭精素级纸线翅胶能致花药虎血装证过近迹通里金铁铳链镜阀雷雾震项风飙飞黑鼠龙（）"/>
+          <DOMFontItem name="Font 621" itemID="668e7c19-000001d7" font="Masque" size="0" id="621" embeddedCharacters=" !ACEGLRST"/>
+          <DOMFontItem name="Font 5407" itemID="668e7c19-000001d9" font="Verdana-Bold" size="0" id="5407" embeddedCharacters="-ACFNRS"/>
+          <DOMFontItem name="Font 5437" itemID="668e7c19-000001db" font="Arial-BoldMT" size="0" id="5437" embeddedCharacters=" ./01348ACDEGIKLMNOPRSTUYi"/>
+          <DOMFontItem name="Font 5441" itemID="668e7c19-000001dd" font="ArialMT" size="0" id="5441" embeddedCharacters=" -.01235:ACEGHIMNRSacdeilmnortwxz"/>
+          <DOMFontItem name="Font 4557" itemID="668e7c19-000001df" font="SimHei" size="0" id="4557" embeddedCharacters="ACEHIMPR"/>
      </fonts>
      <media>
           <DOMBitmapItem name="3.位图相关/bitmap2934.png" itemID="678d1911-00000d2f" sourceExternalFilepath="Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap2934.png" sourceLastImported="1737536156" externalFileCRC32="1586711525" externalFileSize="4706" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap2934.png" bitmapDataHRef="M 118 1720533000.dat" frameRight="640" frameBottom="1020"/>
@@ -2307,17 +2307,17 @@
           <Include href="消耗道具相关/3.伤害性相关/BBPLAYER炸弹/BBPLAYER炸弹.xml" itemID="66d5f280-00001b26" lastModified="1725297566"/>
           <Include href="消耗道具相关/3.伤害性相关/BBPLAYER炸弹/手雷-BBPLAYER炸弹.xml" itemID="66d5f1f5-00001b14" lastModified="1725297416"/>
           <Include href="消耗道具相关/3.伤害性相关/鞭炮/Symbol 3951.xml" loadImmediate="false" itemID="668e7c1e-00000fbe" lastModified="1720533000"/>
-          <Include href="消耗道具相关/3.伤害性相关/鞭炮/鞭炮.xml" itemID="66a5d97f-00001456" lastModified="1725297289"/>
+          <Include href="消耗道具相关/3.伤害性相关/鞭炮/鞭炮.xml" itemID="66a5d97f-00001456" lastModified="1754667324"/>
           <Include href="消耗道具相关/3.伤害性相关/鞭炮/鞭炮旋转动画.xml" loadImmediate="false" itemID="66a5e6b0-000016d7" lastModified="1722343865"/>
           <Include href="消耗道具相关/3.伤害性相关/鞭炮/手雷-鞭炮.xml" itemID="66a5dbb6-0000149f" lastModified="1725297154"/>
           <Include href="消耗道具相关/3.伤害性相关/鞭炮/图标-鞭炮.xml" itemID="66913d79-0000404d" lastModified="1720794494"/>
           <Include href="消耗道具相关/3.伤害性相关/普通手雷/Symbol 3796.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000f61" lastModified="1720533000"/>
-          <Include href="消耗道具相关/3.伤害性相关/普通手雷/普通手雷.xml" itemID="66a5d97c-00001455" lastModified="1723814231"/>
+          <Include href="消耗道具相关/3.伤害性相关/普通手雷/普通手雷.xml" itemID="66a5d97c-00001455" lastModified="1754668895"/>
           <Include href="消耗道具相关/3.伤害性相关/普通手雷/普通手雷旋转动画.xml" loadImmediate="false" itemID="66a5dfe6-000014e3" lastModified="1722148709"/>
-          <Include href="消耗道具相关/3.伤害性相关/普通手雷/手雷-普通手雷.xml" itemID="66a5da75-0000145a" lastModified="1723814227"/>
+          <Include href="消耗道具相关/3.伤害性相关/普通手雷/手雷-普通手雷.xml" itemID="66a5da75-0000145a" lastModified="1754668883"/>
           <Include href="消耗道具相关/3.伤害性相关/普通手雷/手雷-自制燃烧弹.xml" itemID="66a5da78-0000145b" lastModified="1723814221"/>
           <Include href="消耗道具相关/3.伤害性相关/普通手雷/图标-普通手雷.xml" itemID="66a5ea72-000017d8" lastModified="1722149490"/>
-          <Include href="消耗道具相关/3.伤害性相关/燃烧弹/燃烧弹.xml" itemID="66d71398-00001953" lastModified="1725465818"/>
+          <Include href="消耗道具相关/3.伤害性相关/燃烧弹/燃烧弹.xml" itemID="66d71398-00001953" lastModified="1754668878"/>
           <Include href="消耗道具相关/3.伤害性相关/燃烧弹/燃烧弹图形.xml" loadImmediate="false" itemID="66d71380-00001938" lastModified="1725371525"/>
           <Include href="消耗道具相关/3.伤害性相关/燃烧弹/燃烧弹旋转动画.xml" loadImmediate="false" itemID="66d7138b-00001943" lastModified="1725371465"/>
           <Include href="消耗道具相关/3.伤害性相关/燃烧弹/手雷-燃烧弹.xml" itemID="66d713a2-00001961" lastModified="1725371633"/>

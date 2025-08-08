@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="消耗道具相关/3.伤害性相关/鞭炮/鞭炮" itemID="66a5d97f-00001456" linkageExportForAS="true" linkageIdentifier="鞭炮" lastModified="1725297289" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="消耗道具相关/3.伤害性相关/鞭炮/鞭炮" itemID="66a5d97f-00001456" linkageExportForAS="true" linkageIdentifier="鞭炮" lastModified="1754667324" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="鞭炮">
+    <DOMTimeline name="鞭炮" currentFrame="2">
       <layers>
         <DOMLayer name="Labels Layer" color="#F31BF0">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#DE72FA">
+        <DOMLayer name="Script Layer" color="#DE72FA" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -63,7 +63,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#4566FB" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#4566FB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="消耗道具相关/3.伤害性相关/燃烧弹/燃烧弹" itemID="66d71398-00001953" linkageExportForAS="true" linkageIdentifier="燃烧弹" lastModified="1725465818" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="消耗道具相关/3.伤害性相关/燃烧弹/燃烧弹" itemID="66d71398-00001953" linkageExportForAS="true" linkageIdentifier="燃烧弹" lastModified="1754668878" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="燃烧弹" currentFrame="2">
       <layers>
@@ -26,35 +26,37 @@
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[声音 = "";
-霰弹值 = 1;
-子弹散射度 = 0;
-发射效果 = "";
-子弹种类 = "烈火燃烧";
-if(!子弹威力)
+                <script><![CDATA[
+
+if(子弹敌我属性值 == undefined)
 {
-   子弹威力 = 100;
+   子弹敌我属性值 = true;
 }
-else
+if(发射者名 == undefined)
 {
-   子弹威力 *= 0.7;
+   发射者名 = _root.控制目标;
 }
-子弹速度 = 0;
-击中地图效果 = "";
-Z轴攻击范围 = 60;
-击倒率 = 1;
-击中后子弹的效果 = "";
-子弹敌我属性 = 子弹敌我属性值;
-shootX = this._x;
-shootY = this._y;
-if(_root.client != null && _root.me != null)
-{
-   _root.子弹区域shoot表演(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
-}
-else
-{
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
-}
+
+子弹属性 = _root.子弹属性初始化(this,"烈火燃烧",发射者名);
+子弹属性.声音 = "";
+子弹属性.霰弹值 = 1;
+子弹属性.子弹散射度 = 0;
+子弹属性.发射效果 = "";
+子弹属性.子弹种类 = "烈火燃烧";
+子弹属性.子弹威力 = 子弹威力 ? 子弹威力 : 100;
+子弹属性.子弹速度 = 0;
+子弹属性.击中地图效果 = "";
+子弹属性.Z轴攻击范围 = 80;
+子弹属性.击倒率 = 1;
+子弹属性.击中后子弹的效果 = "";
+子弹属性.子弹敌我属性 = 子弹敌我属性值;
+子弹属性.伤害类型 = this.伤害类型 ? this.伤害类型 : "物理";
+子弹属性.魔法伤害属性 = this.魔法伤害属性 ? this.魔法伤害属性 : "";
+子弹属性.shootX = this._x;
+子弹属性.shootY = Z轴坐标;
+子弹属性.shootZ = Z轴坐标;
+子弹属性.发射者 = 发射者名;
+_root.子弹区域shoot传递(子弹属性);
 stop();
 this.removeMovieClip();
 ]]></script>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="消耗道具相关/3.伤害性相关/普通手雷/普通手雷" itemID="66a5d97c-00001455" linkageExportForAS="true" linkageIdentifier="普通手雷" lastModified="1723814231">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="消耗道具相关/3.伤害性相关/普通手雷/普通手雷" itemID="66a5d97c-00001455" linkageExportForAS="true" linkageIdentifier="普通手雷" lastModified="1754668895">
   <timeline>
     <DOMTimeline name="普通手雷">
       <layers>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#622BF3">
+        <DOMLayer name="Script Layer" color="#622BF3" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -63,7 +63,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#DA10CB" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#DA10CB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地瓜手雷" itemID="6724e9b8-00003bf5" linkageExportForAS="true" linkageIdentifier="地瓜手雷" lastModified="1739341324">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地瓜手雷" itemID="6724e9b8-00003bf5" linkageExportForAS="true" linkageIdentifier="地瓜手雷" lastModified="1754669149">
   <timeline>
-    <DOMTimeline name="地瓜手雷" currentFrame="6">
+    <DOMTimeline name="地瓜手雷" currentFrame="2">
       <layers>
         <DOMLayer name="Labels Layer" color="#B00DF6">
           <frames>
@@ -38,16 +38,17 @@ if(!子弹威力)
 }
 else
 {
-   子弹属性.子弹威力 = 子弹威力 * 0.9;
+   子弹属性.子弹威力 = 子弹威力 * 1;
 }
 子弹属性.子弹速度 = 0;
 子弹属性.击中地图效果 = "";
 子弹属性.Z轴攻击范围 = 80;
-子弹属性.击倒率 = 1;
+子弹属性.击倒率 = 0.5;
 子弹属性.击中后子弹的效果 = "";
 子弹属性.子弹敌我属性 = 子弹敌我属性值;
 子弹属性.shootX = this._x;
-子弹属性.shootY = this._y;
+子弹属性.shootY = Z轴坐标;
+子弹属性.shootZ = Z轴坐标;
 _root.子弹区域shoot传递(子弹属性);
 stop();
 this.removeMovieClip();
