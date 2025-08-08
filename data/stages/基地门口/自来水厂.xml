@@ -9,7 +9,7 @@
             <PlayerY>550</PlayerY>
             <BGM>
                 <Command>play</Command>
-                <Title>Moan</Title>
+                <Title>where am i</Title>
                 <Loop>true</Loop>
             </BGM>
         </BasicInformation>
@@ -60,7 +60,7 @@
                     <Enemy>
                         <Type>兵种6</Type>
                         <Interval>300</Interval>
-                        <Quantity>3</Quantity>
+                        <Quantity>2</Quantity>
                         <Level>15</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
@@ -81,14 +81,14 @@
                     <Enemy>
                         <Type>兵种7</Type>
                         <Interval>300</Interval>
-                        <Quantity>3</Quantity>
+                        <Quantity>2</Quantity>
                         <Level>15</Level>
                         <SpawnIndex>2</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种13</Type>
                         <Interval>400</Interval>
-                        <Quantity>4</Quantity>
+                        <Quantity>2</Quantity>
                         <Level>15</Level>
                         <SpawnIndex>1</SpawnIndex>
                     </Enemy>
@@ -109,7 +109,7 @@
                     <Enemy>
                         <Type>兵种7</Type>
                         <Interval>600</Interval>
-                        <Quantity>3</Quantity>
+                        <Quantity>2</Quantity>
                         <Level>15</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
@@ -136,8 +136,8 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种10</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>5</Quantity>
+                        <Interval>900</Interval>
+                        <Quantity>3</Quantity>
                         <Level>15</Level>
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
@@ -189,7 +189,7 @@
                     <Enemy>
                         <Type>兵种10</Type>
                         <Interval>800</Interval>
-                        <Quantity>4</Quantity>
+                        <Quantity>2</Quantity>
                         <Level>15</Level>
                         <SpawnIndex>1</SpawnIndex>
                     </Enemy>
@@ -208,25 +208,25 @@
                     <Enemy>
                         <Type>兵种6</Type>
                         <Interval>800</Interval>
-                        <Quantity>4</Quantity>
+                        <Quantity>2</Quantity>
                         <Level>15</Level>
                     </Enemy>
                     <Enemy>
                         <Type>兵种5</Type>
-                        <Interval>2000</Interval>
-                        <Quantity>5</Quantity>
+                        <Interval>1200</Interval>
+                        <Quantity>3</Quantity>
                         <Level>15</Level>
                     </Enemy>
                     <Enemy>
                         <Type>兵种4</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>4</Quantity>
+                        <Interval>900</Interval>
+                        <Quantity>3</Quantity>
                         <Level>15</Level>
                     </Enemy>
                     <Enemy>
                         <Type>兵种3</Type>
-                        <Interval>1200</Interval>
-                        <Quantity>4</Quantity>
+                        <Interval>800</Interval>
+                        <Quantity>2</Quantity>
                         <Level>15</Level>
                     </Enemy>
                 </EnemyGroup>
