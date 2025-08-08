@@ -10,21 +10,6 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.camera.*;
 import org.flashNight.arki.scene.*;
 
-// 原 add2map 的重构
-_root.add2map = function(tg, ln) {
-    DeathEffectRenderer.renderCorpse(tg, ln);
-};
-
-// 原 add2map2 的重构
-_root.add2map2 = function(tg, ln) {
-    // 注：原 add2map2 的清除逻辑与 renderCorpse 不同，但通过安全检查后可直接复用
-    DeathEffectRenderer.renderCorpse(tg, ln);
-};
-
-// 原 add2map3 的重构（处理旋转）
-_root.add2map3 = function(tg, ln) {
-    DeathEffectRenderer.renderRotatedCorpse(tg, ln);
-};
 
 _root.add2map = _root.add2map2 = DeathEffectRenderer.renderCorpse;
 _root.add2map3 = DeathEffectRenderer.renderRotatedCorpse;

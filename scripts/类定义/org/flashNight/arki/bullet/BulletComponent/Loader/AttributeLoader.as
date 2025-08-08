@@ -25,6 +25,10 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.AttributeLoader implemen
             if(attributeNode.FLAG_GRENADE != undefined) {
                 attributeInfo.FLAG_GRENADE = Boolean(attributeNode.FLAG_GRENADE);
             }
+
+            if(attributeNode.hitMark != undefined) {
+                attributeInfo.hitMark = String(attributeNode.hitMark);
+            }
             
             return attributeInfo;
         }

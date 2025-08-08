@@ -8,6 +8,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>巴雷特子弹</name>
@@ -17,6 +20,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>新电球</name>
@@ -26,6 +32,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>声波</name>
@@ -43,7 +52,10 @@
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
-        </shell>        
+        </shell>
+        <attribute>
+            <hitMark>弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>子弹示例</name>
@@ -72,6 +84,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>追踪铁血飞弹</name>
@@ -82,6 +97,15 @@
                 <usePreLaunch>false</usePreLaunch>
             </param>
         </movement>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+        </attribute>
+    </bullet>    
+    <bullet>
+        <name>无壳子弹</name>
+        <attribute>
+            <hitMark>弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>横向拖尾追踪联弹-普通无壳子弹</name>
@@ -92,6 +116,9 @@
                 <usePreLaunch>false</usePreLaunch>
             </param>
         </movement>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>横向联弹-穿刺子弹</name>
@@ -101,6 +128,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>纵向联弹-穿刺子弹</name>
@@ -110,6 +140,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>纵向联弹-能量普通子弹</name>
@@ -119,6 +152,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>纵向机枪联弹-穿刺子弹</name>
@@ -128,6 +164,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>横向机枪联弹-穿刺子弹</name>
@@ -137,6 +176,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>横向联弹-普通子弹</name>
@@ -146,6 +188,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>横向机枪联弹-普通子弹</name>
@@ -155,6 +200,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>加强普通子弹</name>
@@ -164,6 +212,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>糖果子弹</name>
@@ -173,6 +224,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>电球</name>
@@ -182,31 +236,37 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
-    </bullet>        
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+        </attribute>
+    </bullet>
     <bullet>
         <name>火箭弹</name>
         <movement>
             <func>accelerated</func>
         </movement>
-    </bullet>     
+    </bullet>
     <bullet>
         <name>普通火箭弹</name>
         <movement>
             <func>accelerated</func>
         </movement>
-    </bullet>   
+    </bullet>
     <bullet>
         <name>榴弹</name>
         <movement>
             <func>freeFall</func>
         </movement>
-    </bullet>      
+    </bullet>
     <bullet>
         <name>爆炎手里剑</name>
         <movement>
             <func>freeFall</func>
         </movement>
-    </bullet>        
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+        </attribute>
+    </bullet>
     <bullet>
         <name>横向联弹-加强普通子弹</name>
         <shell>
@@ -215,6 +275,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>纵向联弹-加强普通子弹</name>
@@ -224,6 +287,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>纵向手枪联弹-加强普通子弹</name>
@@ -233,6 +299,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>横向机枪联弹-加强普通子弹</name>
@@ -242,6 +311,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>纵向机枪联弹-加强普通子弹</name>
@@ -251,6 +323,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>麻醉子弹</name>
@@ -269,6 +344,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>横向联弹-红色针弹</name>
@@ -278,6 +356,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>横向机枪联弹-红色针弹</name>
@@ -287,6 +368,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>高爆子弹</name>
@@ -305,6 +389,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>新能量子弹</name>
@@ -314,6 +401,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>绿色能量子弹</name>
@@ -323,6 +413,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>能量普通子弹</name>
@@ -332,6 +425,9 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>绿色能量普通子弹</name>
@@ -341,13 +437,16 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+        </attribute>
     </bullet>
     <bullet>
         <name>鞭炮</name>
         <attribute>
             <FLAG_GRENADE>true</FLAG_GRENADE>
         </attribute>
-    </bullet>    
+    </bullet>
     <bullet>
         <name>导弹信标</name>
         <attribute>

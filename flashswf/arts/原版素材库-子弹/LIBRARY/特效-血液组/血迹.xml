@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效-血液组/血迹" itemID="669d347b-0000174f" linkageExportForAS="true" linkageIdentifier="血迹" lastModified="1722914675">
   <timeline>
-    <DOMTimeline name="血迹">
+    <DOMTimeline name="血迹" currentFrame="4">
       <layers>
         <DOMLayer name="Labels Layer" color="#0BE1A6">
           <frames>
@@ -200,7 +200,7 @@ this.removeMovieClip();]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!450 -285|450 155!450 155|-550 155!-550 155|-550 -285!-550 -285|450 -285"/>
+                    <Edge fillStyle1="1" edges="!450 155|-550 155!-550 155|-550 -285!-550 -285|450 -285!450 -285|450 155"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -236,7 +236,7 @@ this.removeMovieClip();]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!320 115|-480 115!-480 115|-480 -165!-480 -165|320 -165!320 -165|320 115"/>
+                    <Edge fillStyle1="1" edges="!320 -165|320 115!320 115|-480 115!-480 115|-480 -165!-480 -165|320 -165"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -272,7 +272,7 @@ this.removeMovieClip();]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!330 -170|330 90!330 90|-550 90!-550 90|-550 -170!-550 -170|330 -170"/>
+                    <Edge fillStyle1="1" edges="!330 90|-550 90!-550 90|-550 -170!-550 -170|330 -170!330 -170|330 90"/>
                   </edges>
                 </DOMShape>
               </elements>
