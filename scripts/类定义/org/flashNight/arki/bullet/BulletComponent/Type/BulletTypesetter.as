@@ -226,6 +226,15 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
     /**
      * 纯函数：根据子弹对象计算标志位，不涉及缓存操作
      * 
+     * === 宏展开优化说明 ===
+     * 本函数采用宏展开机制优化性能，将所有FLAG常量引用替换为编译时直接注入的局部变量，
+     * 完全绕开类属性索引的运行时开销。每个#include在编译时直接插入常量定义到当前作用域。
+     * 
+     * 性能提升要点：
+     * • 零属性索引：编译时展开替代运行时查找 BulletTypesetter.FLAG_xxx
+     * • CPU缓存友好：所有常量位于连续的栈空间，减少内存跳转
+     * • 编译器优化：静态常量利于编译器进行更激进的优化
+     * 
      * @param bullet:Object 子弹对象，需包含子弹种类 (子弹种类: String)
      * @return Number 计算后的标志位值，如果子弹或子弹种类未定义，则返回 0
      */
@@ -234,8 +243,31 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
             return 0;
         }
 
+        // === 宏展开性能优化：编译时常量注入 ===
+        // 以下#include指令在编译时直接将宏文件内容插入到当前作用域
+        // 每个宏文件包含形如 "var FLAG_XXX:Number = 位值;" 的定义
+        // 编译后这些将成为局部栈变量，访问速度远超类属性索引
+        
+        #include "../macros/FLAG_MELEE.as"        
+        // 注入: var FLAG_MELEE:Number = 1;
+        #include "../macros/FLAG_CHAIN.as"        
+        // 注入: var FLAG_CHAIN:Number = 2;  
+        #include "../macros/FLAG_PIERCE.as"       
+        // 注入: var FLAG_PIERCE:Number = 4;
+        #include "../macros/FLAG_TRANSPARENCY.as" 
+        // 注入: var FLAG_TRANSPARENCY:Number = 8;
+        #include "../macros/FLAG_GRENADE.as"      
+        // 注入: var FLAG_GRENADE:Number = 16;
+        #include "../macros/FLAG_EXPLOSIVE.as"    
+        // 注入: var FLAG_EXPLOSIVE:Number = 32;
+        #include "../macros/FLAG_NORMAL.as"       
+        // 注入: var FLAG_NORMAL:Number = 64;
+        #include "../macros/FLAG_VERTICAL.as"     
+        // 注入: var FLAG_VERTICAL:Number = 128;
+
         var bulletType:String = bullet.子弹种类;
         
+        // 子弹类型检测（字符串匹配性能已通过indexOf优化）
         var isMelee:Boolean         = (bulletType.indexOf("近战") != -1);
         var isChain:Boolean         = (bulletType.indexOf("联弹") != -1);
         var isPierce:Boolean        = (bulletType.indexOf("穿刺") != -1);
@@ -247,6 +279,9 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
         var isNormal:Boolean = !isPierce && !isExplosive &&
                                (isMelee || isTransparency || (bulletType.indexOf("普通") != -1));
 
+        // === 位运算组合：现在使用局部常量，性能最优 ===
+        // 原来：BulletTypesetter.FLAG_MELEE (类属性索引 + 哈希查找)
+        // 现在：FLAG_MELEE (局部栈变量直接访问)
         return ((isMelee         ? FLAG_MELEE         : 0)
               | (isChain         ? FLAG_CHAIN         : 0)
               | (isPierce        ? FLAG_PIERCE        : 0)
