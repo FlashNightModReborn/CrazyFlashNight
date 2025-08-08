@@ -22,42 +22,18 @@
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>60</Level>
-                        <Parameters>
-                            <宠物属性>
-                                <强化药剂>true</强化药剂>
-                                <超级血清>true</超级血清>
-                                <常驻淬毒>true</常驻淬毒>
-                                <追踪飞弹>true</追踪飞弹>
-                            </宠物属性>
-                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种22</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>60</Level>
-                        <Parameters>
-                            <宠物属性>
-                                <强化药剂>true</强化药剂>
-                                <超级血清>true</超级血清>
-                                <常驻淬毒>true</常驻淬毒>
-                                <追踪飞弹>true</追踪飞弹>
-                            </宠物属性>
-                        </Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种23</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>60</Level>
-                        <Parameters>
-                            <宠物属性>
-                                <强化药剂>true</强化药剂>
-                                <超级血清>true</超级血清>
-                                <常驻淬毒>true</常驻淬毒>
-                                <驯鹰者>true</驯鹰者>
-                            </宠物属性>
-                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -981,7 +957,7 @@
                         <Type>兵种407</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
-                        <Level>100</Level>
+                        <Level>50</Level>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
