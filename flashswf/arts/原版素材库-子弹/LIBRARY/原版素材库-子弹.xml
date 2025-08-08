@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="原版素材库-子弹" itemID="668b9f9e-000001f3" linkageExportForAS="true" linkageIdentifier="原版素材库-子弹" lastModified="1754540195" lastUniqueIdentifier="158">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="原版素材库-子弹" itemID="668b9f9e-000001f3" linkageExportForAS="true" linkageIdentifier="原版素材库-子弹" lastModified="1754624484" lastUniqueIdentifier="192">
   <timeline>
-    <DOMTimeline name="原版素材库-子弹" currentFrame="16">
+    <DOMTimeline name="原版素材库-子弹" currentFrame="17">
       <layers>
         <DOMLayer name="as" color="#9933CC" locked="true" autoNamed="false">
           <frames>
@@ -27,7 +27,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文字" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="文字" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -3326,8 +3326,22 @@
                 </DOMStaticText>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="14" duration="2" keyMode="9728">
               <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#6E6E6E"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!6139 14552|6139 14558!6139 14558|6151 14558!6151 14558[6151 14556 6150 14552!6150 14552[6145 14552 6139 14552"/>
+                    <Edge cubics="!6151 14558(;6151,14558 6139,14558 6139,14558q6151 14558 6139 14558);"/>
+                    <Edge cubics="!6151 14558(;6151,14556 6151,14555 6150,14552q6151 14558Q6151 14556q6150 14552);"/>
+                    <Edge cubics="!6150 14552(;6147,14552 6143,14552 6139,14552q6150 14552Q6145 14552q6139 14552);"/>
+                    <Edge cubics="!6139 14558(;6139,14558 6139,14552 6139,14552q6139 14558 6139 14552);"/>
+                  </edges>
+                </DOMShape>
                 <DOMStaticText fontRenderingMode="standard" left="-1.6" width="24.2" height="15.55" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="30" ty="33.95"/>
@@ -3789,9 +3803,13 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="3" keyMode="9728">
+              <elements>
                 <DOMStaticText fontRenderingMode="standard" width="97" height="15.55" isSelectable="false">
                   <matrix>
-                    <Matrix tx="343.2" ty="446.9"/>
+                    <Matrix tx="194" ty="40.8"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -3810,7 +3828,7 @@
                 </DOMStaticText>
                 <DOMStaticText fontRenderingMode="standard" width="97" height="15.55" isSelectable="false">
                   <matrix>
-                    <Matrix tx="424.9" ty="448.05"/>
+                    <Matrix tx="194" ty="128.8"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -3829,7 +3847,7 @@
                 </DOMStaticText>
                 <DOMStaticText fontRenderingMode="standard" width="97" height="15.55" isSelectable="false">
                   <matrix>
-                    <Matrix tx="501.55" ty="448.05"/>
+                    <Matrix tx="194" ty="225.85"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -3846,17 +3864,9 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMSymbolInstance libraryItemName="特效-枪火组/突击步枪枪火" centerPoint3DX="628.7" centerPoint3DY="400.85">
-                  <matrix>
-                    <Matrix tx="613.4" ty="402.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="15.3" y="-1.6"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
                 <DOMStaticText fontRenderingMode="standard" width="97" height="15.55" isSelectable="false">
                   <matrix>
-                    <Matrix tx="576.95" ty="448.05"/>
+                    <Matrix tx="194" ty="333.15"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -3873,21 +3883,25 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMSymbolInstance libraryItemName="特效-枪火组/战斗步枪枪火" centerPoint3DX="725.6" centerPoint3DY="396.4">
+                <DOMStaticText fontRenderingMode="standard" width="97" height="33.1" isSelectable="false">
                   <matrix>
-                    <Matrix tx="710.3" ty="398"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="15.3" y="-1.6"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMStaticText fontRenderingMode="standard" width="97" height="15.55" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="666.7" ty="449.35"/>
+                    <Matrix tx="194" ty="412.15"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
                       <characters>战斗步枪枪火</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>&#xD;</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>（狙，机枪用）</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -3900,17 +3914,9 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMSymbolInstance libraryItemName="特效-枪火组/霰弹枪枪火" centerPoint3DX="809.5" centerPoint3DY="398.85">
-                  <matrix>
-                    <Matrix tx="794.2" ty="400.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="15.3" y="-1.6"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
                 <DOMStaticText fontRenderingMode="standard" width="97" height="15.55" isSelectable="false">
                   <matrix>
-                    <Matrix tx="752.9" ty="451.75"/>
+                    <Matrix tx="197.6" ty="519.7"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -3927,21 +3933,25 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMSymbolInstance libraryItemName="特效-枪火组/反器材枪火" centerPoint3DX="871.55" centerPoint3DY="401">
+                <DOMStaticText fontRenderingMode="standard" width="97" height="33.1" isSelectable="false">
                   <matrix>
-                    <Matrix tx="856.25" ty="402.6"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="15.3" y="-1.6"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMStaticText fontRenderingMode="standard" width="97" height="15.55" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="824.5" ty="450.6"/>
+                    <Matrix tx="498.1" ty="32.1"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
                       <characters>反器材枪火</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>&#xD;(</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>最猛的枪）</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -3954,17 +3964,9 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMSymbolInstance libraryItemName="特效-枪火组/发射器枪火" centerPoint3DX="959.95" centerPoint3DY="396.95">
+                <DOMStaticText fontRenderingMode="standard" width="97" height="50.65" isSelectable="false">
                   <matrix>
-                    <Matrix tx="944.65" ty="398.55"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="15.3" y="-1.6"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMStaticText fontRenderingMode="standard" width="97" height="15.55" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="911.95" ty="451.75"/>
+                    <Matrix tx="503.95" ty="113.7"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -3974,7 +3976,19 @@
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
-                      <characters></characters>
+                      <characters>&#xD;</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>（榴弹发射器，导弹发射器之类的</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>)</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -4294,15 +4308,12 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="7" duration="7" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="14" duration="11" keyMode="9728">
+            <DOMFrame index="7" duration="18" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -4951,7 +4962,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="14" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="特效-击中效果组/火花">
                   <matrix>
@@ -5110,7 +5121,7 @@
                     <Matrix tx="952.75" ty="66.05"/>
                   </matrix>
                   <transformationPoint>
-                    <Point y="-0.05"/>
+                    <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="特效-击中效果组/屎花">
@@ -5145,28 +5156,80 @@
                     <Point x="-3.05" y="-1.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-枪火组/紧凑手枪枪火" centerPoint3DX="389.95" centerPoint3DY="402.45">
+                <DOMSymbolInstance libraryItemName="特效-血液组/弹坑" centerPoint3DX="1416.05" centerPoint3DY="362.15">
                   <matrix>
-                    <Matrix tx="389.95" ty="402.5"/>
+                    <Matrix tx="1396.8" ty="316.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-枪火组/冲锋枪枪火" centerPoint3DX="542.45" centerPoint3DY="408.05">
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效-枪火组/紧凑手枪枪火" centerPoint3DX="63.1" centerPoint3DY="46.15">
                   <matrix>
-                    <Matrix tx="537" ty="401.65"/>
+                    <Matrix tx="63.1" ty="46.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-枪火组/冲锋枪枪火" centerPoint3DX="55.2" centerPoint3DY="239.1">
+                  <matrix>
+                    <Matrix tx="49.75" ty="232.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="5.45" y="6.4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效-枪火组/马格南手枪枪火" centerPoint3DX="469.65" centerPoint3DY="402.95">
+                <DOMSymbolInstance libraryItemName="特效-枪火组/马格南手枪枪火" centerPoint3DX="66" centerPoint3DY="136.9">
                   <matrix>
-                    <Matrix tx="460.6" ty="403"/>
+                    <Matrix tx="56.95" ty="136.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="9.05" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-枪火组/突击步枪枪火" centerPoint3DX="53.75" centerPoint3DY="324.2">
+                  <matrix>
+                    <Matrix tx="38.45" ty="325.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.3" y="-1.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-枪火组/霰弹枪枪火" centerPoint3DX="63.55" centerPoint3DY="535.85">
+                  <matrix>
+                    <Matrix tx="48.25" ty="537.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.3" y="-1.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-枪火组/反器材枪火" selected="true" centerPoint3DX="445.8" centerPoint3DY="-3.8">
+                  <matrix>
+                    <Matrix tx="430.5" ty="-2.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.3" y="-1.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-枪火组/发射器枪火" centerPoint3DX="401.7" centerPoint3DY="135.35">
+                  <matrix>
+                    <Matrix tx="386.4" ty="136.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.3" y="-1.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效-枪火组/战斗步枪枪火" centerPoint3DX="51.85" centerPoint3DY="435.6">
+                  <matrix>
+                    <Matrix tx="42.3" ty="435.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.55" y="0.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

@@ -15,9 +15,9 @@
           <DOMFolderItem name="手雷" itemID="689365e6-00002ce7"/>
           <DOMFolderItem name="手雷/高爆手雷" itemID="6893651b-00002cce" isExpanded="true"/>
           <DOMFolderItem name="特效-动画与文字组" itemID="669d3a20-000017ae"/>
-          <DOMFolderItem name="特效-击中效果组" itemID="669d39ad-000017a2"/>
+          <DOMFolderItem name="特效-击中效果组" itemID="669d39ad-000017a2" isExpanded="true"/>
           <DOMFolderItem name="特效-枪火组" itemID="669d3996-000017a1" isExpanded="true"/>
-          <DOMFolderItem name="特效-血液组" itemID="669d3970-00001798"/>
+          <DOMFolderItem name="特效-血液组" itemID="669d3970-00001798" isExpanded="true"/>
           <DOMFolderItem name="未分类子弹或特效" itemID="669d39d9-000017a4" isExpanded="true"/>
           <DOMFolderItem name="无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="无AS链接/不知道用在了哪的特效" itemID="669d3934-0000178b"/>
@@ -238,16 +238,17 @@
           <Include href="特效-击中效果组/原版空手攻击火花.xml" loadImmediate="false" itemID="67ed511c-0000056e" lastModified="1743606056"/>
           <Include href="特效-击中效果组/战术巴雷特击中特效.xml" itemID="669d344b-00001744" lastModified="1721648514"/>
           <Include href="特效-枪火组/巴雷特枪火.xml" itemID="669d3444-00001742" lastModified="1721648720"/>
-          <Include href="特效-枪火组/冲锋枪枪火.xml" itemID="68942165-00001ac6" lastModified="1754538743"/>
-          <Include href="特效-枪火组/发射器枪火.xml" itemID="68942898-00001da9" lastModified="1754540184"/>
-          <Include href="特效-枪火组/反器材枪火.xml" itemID="68942709-00001c4f" lastModified="1754539785"/>
-          <Include href="特效-枪火组/紧凑手枪枪火.xml" itemID="68940ff5-00000e8b" lastModified="1754537353"/>
-          <Include href="特效-枪火组/马格南手枪枪火.xml" itemID="68942170-00001ac7" lastModified="1754538961"/>
+          <Include href="特效-枪火组/冲锋枪枪火.xml" itemID="68942165-00001ac6" lastModified="1754551062"/>
+          <Include href="特效-枪火组/发射器枪火.xml" itemID="68942898-00001da9" lastModified="1754629326"/>
+          <Include href="特效-枪火组/反器材枪火.xml" itemID="68942709-00001c4f" lastModified="1754628722"/>
+          <Include href="特效-枪火组/紧凑手枪枪火.xml" itemID="68940ff5-00000e8b" lastModified="1754551567"/>
+          <Include href="特效-枪火组/马格南手枪枪火.xml" itemID="68942170-00001ac7" lastModified="1754615687"/>
           <Include href="特效-枪火组/枪火.xml" itemID="669d341e-00001739" lastModified="1721578526"/>
-          <Include href="特效-枪火组/突击步枪枪火.xml" itemID="6894249f-00001adb" lastModified="1754539167"/>
-          <Include href="特效-枪火组/霰弹枪枪火.xml" itemID="689426dc-00001c42" lastModified="1754539740"/>
-          <Include href="特效-枪火组/战斗步枪枪火.xml" itemID="689425c6-00001c35" lastModified="1754539462"/>
+          <Include href="特效-枪火组/突击步枪枪火.xml" itemID="6894249f-00001adb" lastModified="1754550905"/>
+          <Include href="特效-枪火组/霰弹枪枪火.xml" itemID="689426dc-00001c42" lastModified="1754629076"/>
+          <Include href="特效-枪火组/战斗步枪枪火.xml" itemID="68945240-00002311" lastModified="1754622293"/>
           <Include href="特效-血液组/飙血.xml" itemID="669d3425-0000173b" lastModified="1723624672"/>
+          <Include href="特效-血液组/弹坑.xml" itemID="689456f9-00002478" lastModified="1754615626"/>
           <Include href="特效-血液组/血迹.xml" itemID="669d347b-0000174f" lastModified="1722914675"/>
           <Include href="特效-血液组/子弹碎片-飞血.xml" itemID="669d3480-00001750" lastModified="1722920091"/>
           <Include href="铁枪磁轨弹动画.xml" itemIcon="1" loadImmediate="false" itemID="6879b5cc-00001095" lastModified="1752807115"/>
@@ -552,10 +553,10 @@
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 663.xml" itemIcon="1" loadImmediate="false" itemID="668b9cdd-000001df" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 664.xml" loadImmediate="false" itemID="668b9cdd-000001e0" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 1217.xml" itemIcon="1" loadImmediate="false" itemID="668b9f53-000001d0" lastModified="1720426265"/>
-          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1754540195"/>
+          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1754624484"/>
           <Include href="战术核弹素材.xml" itemIcon="1" loadImmediate="false" itemID="6893663f-00002d0f" lastModified="1754491166"/>
           <Include href="子弹-持续组/电球.xml" itemID="669d343b-00001740" lastModified="1722876120"/>
-          <Include href="子弹-持续组/火焰.xml" itemID="669d3404-00001734" lastModified="1722875196"/>
+          <Include href="子弹-持续组/火焰.xml" itemID="669d3404-00001734" lastModified="1754557467"/>
           <Include href="子弹-持续组/声波.xml" itemID="669d34bf-0000176e" lastModified="1722875808"/>
           <Include href="子弹-持续组/声波1.xml" itemID="669d3436-0000173f" lastModified="1722876068"/>
           <Include href="子弹-持续组/旋转冲击.xml" itemID="669d3440-00001741" lastModified="1752806839"/>
@@ -599,9 +600,261 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="原版素材库-子弹" selected="true" centerPoint3DX="66.7" centerPoint3DY="8.8">
+                                        <DOMSymbolInstance libraryItemName="原版素材库-子弹" centerPoint3DX="66.7" centerPoint3DY="8.8">
                                              <transformationPoint>
                                                   <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="特效-枪火组/紧凑手枪枪火" centerPoint3DX="63.1" centerPoint3DY="46.15">
+                                             <matrix>
+                                                  <Matrix tx="63.1" ty="46.2"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="特效-枪火组/冲锋枪枪火" centerPoint3DX="55.2" centerPoint3DY="239.1">
+                                             <matrix>
+                                                  <Matrix tx="49.75" ty="232.7"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="5.45" y="6.4"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="特效-枪火组/马格南手枪枪火" centerPoint3DX="66" centerPoint3DY="136.9">
+                                             <matrix>
+                                                  <Matrix tx="56.95" ty="136.95"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="9.05" y="-0.05"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMStaticText fontRenderingMode="standard" width="97" height="15.55" isSelectable="false">
+                                             <matrix>
+                                                  <Matrix tx="194" ty="40.8"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>紧凑手枪枪火</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters></characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMStaticText>
+                                        <DOMStaticText fontRenderingMode="standard" width="97" height="15.55" isSelectable="false">
+                                             <matrix>
+                                                  <Matrix tx="194" ty="128.8"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>马格南手枪枪火</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters></characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMStaticText>
+                                        <DOMStaticText fontRenderingMode="standard" width="97" height="15.55" isSelectable="false">
+                                             <matrix>
+                                                  <Matrix tx="194" ty="225.85"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>冲锋枪枪火</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters></characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMStaticText>
+                                        <DOMSymbolInstance libraryItemName="特效-枪火组/突击步枪枪火" centerPoint3DX="53.75" centerPoint3DY="324.2">
+                                             <matrix>
+                                                  <Matrix tx="38.45" ty="325.8"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="15.3" y="-1.6"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMStaticText fontRenderingMode="standard" width="97" height="15.55" isSelectable="false">
+                                             <matrix>
+                                                  <Matrix tx="194" ty="333.15"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>突击步枪枪火</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters></characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMStaticText>
+                                        <DOMStaticText fontRenderingMode="standard" width="97" height="33.1" isSelectable="false">
+                                             <matrix>
+                                                  <Matrix tx="194" ty="412.15"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>战斗步枪枪火</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>&#xD;</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>（狙，机枪用）</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters></characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMStaticText>
+                                        <DOMSymbolInstance libraryItemName="特效-枪火组/霰弹枪枪火" centerPoint3DX="63.55" centerPoint3DY="535.85">
+                                             <matrix>
+                                                  <Matrix tx="48.25" ty="537.45"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMStaticText fontRenderingMode="standard" width="97" height="15.55" isSelectable="false">
+                                             <matrix>
+                                                  <Matrix tx="197.6" ty="519.7"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>霰弹枪枪火</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters></characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMStaticText>
+                                        <DOMSymbolInstance libraryItemName="特效-枪火组/反器材枪火" centerPoint3DX="408.45" centerPoint3DY="46.45">
+                                             <matrix>
+                                                  <Matrix tx="393.15" ty="48.05"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="15.3" y="-1.6"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMStaticText fontRenderingMode="standard" width="97" height="33.1" isSelectable="false">
+                                             <matrix>
+                                                  <Matrix tx="498.1" ty="32.1"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>反器材枪火</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>&#xD;(</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>最猛的枪）</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters></characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMStaticText>
+                                        <DOMSymbolInstance libraryItemName="特效-枪火组/发射器枪火" selected="true" centerPoint3DX="401.7" centerPoint3DY="135.35">
+                                             <matrix>
+                                                  <Matrix tx="386.4" ty="136.95"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="15.3" y="-1.6"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMStaticText fontRenderingMode="standard" width="97" height="50.65" isSelectable="false">
+                                             <matrix>
+                                                  <Matrix tx="503.95" ty="113.7"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters>发射器枪火</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>&#xD;</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>（榴弹发射器，导弹发射器之类的</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>)</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMStaticText>
+                                        <DOMSymbolInstance libraryItemName="特效-枪火组/战斗步枪枪火" centerPoint3DX="51.85" centerPoint3DY="435.6">
+                                             <matrix>
+                                                  <Matrix tx="42.3" ty="435.5"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="9.55" y="0.1"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
                                    </elements>
@@ -883,6 +1136,39 @@
                     <SolidSwatchItem color="#FFFF89" hue="40" saturation="239" brightness="185"/>
                     <SolidSwatchItem color="#FFFE91" hue="40" saturation="239" brightness="188"/>
                     <SolidSwatchItem color="#FEBB0E" hue="29" saturation="238" brightness="126"/>
+                    <SolidSwatchItem color="#F64C15" hue="10" saturation="223" brightness="126"/>
+                    <SolidSwatchItem color="#F89F18" hue="24" saturation="225" brightness="128"/>
+                    <SolidSwatchItem color="#F5DF5A" hue="34" saturation="214" brightness="158"/>
+                    <SolidSwatchItem color="#FB7601" hue="19" saturation="238" brightness="119"/>
+                    <SolidSwatchItem color="#FEB909" hue="29" saturation="238" brightness="124"/>
+                    <SolidSwatchItem color="#FBC428" alpha="0.498039215686275" hue="30" saturation="231" brightness="137"/>
+                    <SolidSwatchItem color="#D4D4D4" brightness="200"/>
+                    <SolidSwatchItem color="#48534E" hue="100" saturation="16" brightness="73"/>
+                    <SolidSwatchItem color="#6F756A" hue="64" saturation="11" brightness="105"/>
+                    <SolidSwatchItem color="#A4A591" hue="42" saturation="24" brightness="146"/>
+                    <SolidSwatchItem color="#ABAA96" hue="38" saturation="27" brightness="151"/>
+                    <SolidSwatchItem color="#B9B7A2" hue="36" saturation="34" brightness="163"/>
+                    <SolidSwatchItem color="#B4B39E" hue="38" saturation="30" brightness="159"/>
+                    <SolidSwatchItem color="#BEBBA6" hue="35" saturation="38" brightness="168"/>
+                    <SolidSwatchItem color="#898C7C" hue="48" saturation="16" brightness="125"/>
+                    <SolidSwatchItem color="#515A54" hue="93" saturation="13" brightness="81"/>
+                    <SolidSwatchItem color="#A3A390" hue="40" saturation="21" brightness="145"/>
+                    <SolidSwatchItem color="#757A6D" hue="57" saturation="13" brightness="109"/>
+                    <SolidSwatchItem color="#545E56" hue="89" saturation="13" brightness="84"/>
+                    <SolidSwatchItem color="#969986" hue="47" saturation="21" brightness="135"/>
+                    <SolidSwatchItem color="#939583" hue="45" saturation="19" brightness="132"/>
+                    <SolidSwatchItem color="#B6B49F" hue="36" saturation="32" brightness="161"/>
+                    <SolidSwatchItem color="#8A8C7C" hue="45" saturation="16" brightness="125"/>
+                    <SolidSwatchItem color="#693124" hue="7" saturation="117" brightness="67"/>
+                    <SolidSwatchItem color="#D65A0A" hue="16" saturation="219" brightness="105"/>
+                    <SolidSwatchItem color="#FFDD4A" hue="33" saturation="239" brightness="155"/>
+                    <SolidSwatchItem color="#A13017" alpha="0.498039215686275" hue="7" saturation="179" brightness="87"/>
+                    <SolidSwatchItem color="#FF6400" alpha="0.8" hue="16" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FFEE4E" hue="36" saturation="239" brightness="157"/>
+                    <SolidSwatchItem color="#FFFFCB" hue="40" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FAC328" hue="30" saturation="228" brightness="137"/>
+                    <SolidSwatchItem color="#FFF55D" hue="38" saturation="239" brightness="164"/>
+                    <SolidSwatchItem color="#FFE843" hue="35" saturation="239" brightness="152"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -891,6 +1177,18 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3948389" publishTime="1754628749"/>
+          <PublishItem publishSize="3948388" publishTime="1754628742"/>
+          <PublishItem publishSize="3945007" publishTime="1754622912"/>
+          <PublishItem publishSize="3946328" publishTime="1754622531"/>
+          <PublishItem publishSize="3937447" publishTime="1754558347"/>
+          <PublishItem publishSize="3921357" publishTime="1754551576"/>
+          <PublishItem publishSize="3922259" publishTime="1754550915"/>
+          <PublishItem publishSize="3922885" publishTime="1754550691"/>
+          <PublishItem publishSize="3922729" publishTime="1754550474"/>
+          <PublishItem publishSize="3921512" publishTime="1754550157"/>
+          <PublishItem publishSize="3921706" publishTime="1754549986"/>
+          <PublishItem publishSize="3919379" publishTime="1754541728"/>
           <PublishItem publishSize="3901429" publishTime="1754538983"/>
           <PublishItem publishSize="3901209" publishTime="1754538763"/>
           <PublishItem publishSize="3901219" publishTime="1754538693"/>
@@ -899,17 +1197,5 @@
           <PublishItem publishSize="3897977" publishTime="1754537785"/>
           <PublishItem publishSize="3895465" publishTime="1754537390"/>
           <PublishItem publishSize="3895482" publishTime="1754537317"/>
-          <PublishItem publishSize="3895479" publishTime="1754536888"/>
-          <PublishItem publishSize="3893986" publishTime="1754536519"/>
-          <PublishItem publishSize="3893992" publishTime="1754536291"/>
-          <PublishItem publishSize="3893601" publishTime="1754535848"/>
-          <PublishItem publishSize="3890029" publishTime="1754535211"/>
-          <PublishItem publishSize="3890014" publishTime="1754534434"/>
-          <PublishItem publishSize="3932971" publishTime="1754530248"/>
-          <PublishItem publishSize="3932975" publishTime="1754503024"/>
-          <PublishItem publishSize="3932983" publishTime="1754502996"/>
-          <PublishItem publishSize="3932975" publishTime="1754502952"/>
-          <PublishItem publishSize="3932971" publishTime="1754502923"/>
-          <PublishItem publishSize="3932970" publishTime="1754502835"/>
      </publishHistory>
 </DOMDocument>
