@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/手雷攻击" itemID="66a5d6cd-00000693" lastModified="1754675882" lastUniqueIdentifier="293">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/手雷攻击" itemID="66a5d6cd-00000693" lastModified="1754676280" lastUniqueIdentifier="293">
   <timeline>
-    <DOMTimeline name="手雷攻击">
+    <DOMTimeline name="手雷攻击" currentFrame="31">
       <layers>
         <DOMLayer name="Labels Layer" color="#85C892">
           <frames>
@@ -62,6 +62,27 @@
 	else
 	{
 		子弹属性.角度偏移 = 0;
+	}
+	// 伤害类型设置
+	if (_parent.手雷伤害类型)
+	{
+		子弹属性.伤害类型 = _parent.手雷伤害类型;
+	}
+	if (_parent.手雷魔法伤害属性)
+	{
+		子弹属性.魔法伤害属性 = _parent.手雷魔法伤害属性;
+	}
+	if (_parent.手雷毒)
+	{
+		子弹属性.毒 = _parent.手雷毒;
+	}
+	if (_parent.手雷吸血)
+	{
+		子弹属性.吸血 = _parent.手雷吸血;
+	}
+	if (_parent.手雷击溃)
+	{
+		子弹属性.血量上限击溃 = _parent.手雷击溃;
 	}
 	子弹属性.手雷检测 = true;
 	_root.子弹区域shoot传递(子弹属性);
@@ -202,6 +223,27 @@ else
 	子弹属性.shootY = shootY;
 	子弹属性.shootZ = _parent.Z轴坐标;
 	子弹属性.角度偏移 = 角度偏移;
+	// 伤害类型设置
+	if (_parent.手雷伤害类型)
+	{
+		子弹属性.伤害类型 = _parent.手雷伤害类型;
+	}
+	if (_parent.手雷魔法伤害属性)
+	{
+		子弹属性.魔法伤害属性 = _parent.手雷魔法伤害属性;
+	}
+	if (_parent.手雷毒)
+	{
+		子弹属性.毒 = _parent.手雷毒;
+	}
+	if (_parent.手雷吸血)
+	{
+		子弹属性.吸血 = _parent.手雷吸血;
+	}
+	if (_parent.手雷击溃)
+	{
+		子弹属性.血量上限击溃 = _parent.手雷击溃;
+	}
 	子弹属性.手雷检测 = true;
 	_root.子弹区域shoot传递(子弹属性);
 	换弹夹();

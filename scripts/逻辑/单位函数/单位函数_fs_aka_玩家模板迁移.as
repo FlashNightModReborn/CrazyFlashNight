@@ -362,6 +362,7 @@ _root.刷新人物装扮 = function(目标) {
         装备数据.push([手枪数据, 手枪强化等级]);
         装备数据.push([手枪2数据, 手枪2强化等级]);
         装备数据.push([刀数据, 刀强化等级]);
+        装备数据.push([手雷数据, 1]);
         if (_root.装备数据缓存 == undefined) {
             _root.装备数据缓存 = new Object();
         }
@@ -658,6 +659,10 @@ _root.刷新人物装扮 = function(目标) {
             case 9:
             case '9':
                 _temp武器加成前缀 = "兵器";
+                break;
+            case 10:
+            case '10':
+                _temp武器加成前缀 = "手雷";
                 break;
             default:
                 // 如果需要处理迭代器不是6, 7, 8, 9的情况，可以在这里添加代码  
