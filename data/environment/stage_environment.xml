@@ -2778,5 +2778,67 @@
                 <y>620</y>
             </Instance>
         </Instances>
+    </Environment> 
+    
+    <!--地铁站深处-->
+    <Environment>
+        <BackgroundURL>地铁站深处车厢入口.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>0</Xmin>
+        <Xmax>2200</Xmax>
+        <Ymin>380</Ymin>
+        <Ymax>800</Ymax>
+        <Width>2200</Width>
+        <Height>800</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>1</MaxIllumination>
+        <MinIllumination>1</MinIllumination>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>1750</x0>
+            <y0>300</y0>
+            <x1>1800</x1>
+            <y1>400</y1>
+        </Door>
+    </Environment>
+    <Environment>
+        <BackgroundURL>地铁站车厢内部.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>0</Xmin>
+        <Xmax>1500</Xmax>
+        <Ymin>390</Ymin>
+        <Ymax>480</Ymax>
+        <Width>1500</Width>
+        <Height>500</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>1</MaxIllumination>
+        <MinIllumination>1</MinIllumination>
+    </Environment>
+    <Environment>
+        <BackgroundURL>地铁站车厢尽头.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>0</Xmin>
+        <Xmax>1050</Xmax>
+        <Ymin>390</Ymin>
+        <Ymax>480</Ymax>
+        <Width>1100</Width>
+        <Height>500</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>1</MaxIllumination>
+        <MinIllumination>1</MinIllumination>
+    </Environment>
+    <Environment>
+        <BackgroundURL>地铁站隧道.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>0</Xmin>
+        <Xmax>1500</Xmax>
+        <Ymin>350</Ymin>
+        <Ymax>700</Ymax>
+        <Width>1500</Width>
+        <Height>700</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>1</MaxIllumination>
+        <MinIllumination>1</MinIllumination>
     </Environment>
 </EnvironmentSettings>
