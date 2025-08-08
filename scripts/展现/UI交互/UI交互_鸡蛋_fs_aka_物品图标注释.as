@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.item.*;
+import org.flashNight.gesh.array.*;
 
 _root.物品图标注释 = function(name, value) {
     var 强化等级 = value.level > 0 ? value.level : 1;
@@ -170,10 +171,17 @@ _root.物品图标注释 = function(name, value) {
         // ========== 新增：“破击”类型的显示逻辑 ==========
         // 如果是“破击”类型，并且指定了触发的魔法属性
         else if (物品数据.equipped.damagetype == "破击" && 物品数据.equipped.magictype !== undefined && 物品数据.equipped.magictype !== 0) {
-            // 使用“破击”的专属颜色，更醒目
-            文本数据.push("<FONT COLOR=\'#CC6600\'>破击类型：");
-            // 将“破击”和其关联的属性一同显示，例如：“破击 (生化)”
-            文本数据.push(物品数据.equipped.magictype);
+            if (ArrayUtil.includes(_root.敌人函数.魔法伤害种类, 物品数据.equipped.magictype)) {
+                // 比伤害类型淡一些的蓝色
+                文本数据.push("<FONT COLOR=\'#66bcf5\'>附加伤害：");
+                // 伤害数字可以考虑用这个图标：✨
+                文本数据.push(物品数据.equipped.magictype);
+            } else {
+                // 使用“破击”的专属颜色，更醒目
+                文本数据.push("<FONT COLOR=\'#CC6600\'>破击类型：");
+                // 将“破击”和其关联的属性一同显示，例如：“破击 (生化)”
+                文本数据.push(物品数据.equipped.magictype);
+            }
             文本数据.push("</FONT><BR>");
         }
         // ========== 新增逻辑结束 ==========
