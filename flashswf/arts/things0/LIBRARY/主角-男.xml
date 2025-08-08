@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1754579779" lastUniqueIdentifier="266">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1754675390" lastUniqueIdentifier="266">
   <timeline>
-    <DOMTimeline name="主角-男" currentFrame="677">
+    <DOMTimeline name="主角-男" currentFrame="442">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4">
           <frames>
@@ -2231,8 +2231,8 @@ onClipEvent (enterFrame) {
 	联机_是否射击 = true;
 	_parent.右行 = 0;
 	_parent.左行 = 0;
-	_parent.上行 = 0;
-	_parent.下行 = 0;
+	//_parent.上行 = 0;
+	//_parent.下行 = 0;
 	if (!_parent.手雷动作类型)
 	{
 		_parent.手雷动作类型 = "高抛";
@@ -2244,17 +2244,17 @@ onClipEvent (enterFrame) {
 	}
 }
 onClipEvent (enterFrame) {
-	if (Key.isDown(_parent.左键))
-	{
-		_parent.方向改变("左");
-	}
-	if (Key.isDown(_parent.右键))
-	{
-		_parent.方向改变("右");
-	}
 
 	if (_parent._name == _root.控制目标)
 	{
+		if (Key.isDown(_parent.左键))
+		{
+			_parent.方向改变("左");
+		}
+		if (Key.isDown(_parent.右键))
+		{
+			_parent.方向改变("右");
+		}
 		if (Key.isDown(_root.武器变形键))
 		{
 			if (未切换按键)
