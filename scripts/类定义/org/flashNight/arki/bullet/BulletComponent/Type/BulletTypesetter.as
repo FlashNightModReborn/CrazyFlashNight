@@ -1,5 +1,5 @@
-﻿import org.flashNight.arki.bullet.BulletComponent.Type.ITypesetter;
-import org.flashNight.gesh.object.ObjectUtil;
+﻿import org.flashNight.gesh.object.ObjectUtil;
+import org.flashNight.arki.bullet.BulletComponent.Type.*;
 
 /**
  * BulletTypesetter 类用于设置子弹类型的标志位和基础素材名。
@@ -14,22 +14,23 @@ import org.flashNight.gesh.object.ObjectUtil;
 class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implements ITypesetter {
 
     /**
-     * 初始化标志，确保位标志常量正确加载
+     * === 宏展开机制已替代初始化 ===
+     * 原有的initialized和init()机制已不再需要。
+     * 所有FLAG常量现在通过编译时宏展开直接注入到需要的函数作用域中。
      */
-    private static var initialized:Boolean = init();
 
     /**
-     * 子弹类型位标志定义
-     * 每种子弹类型使用一个唯一的二进制位表示。
+     * === 宏展开机制已替代静态变量 ===
+     * 原有的子弹类型位标志静态变量已被宏展开机制完全替代。
+     * 所有FLAG常量现在通过编译时#include指令直接注入到需要的函数作用域中，
+     * 实现零运行时开销的常量访问。
+     * 
+     * 性能提升：
+     * • 消除类属性哈希表查找开销
+     * • 减少静态变量内存占用
+     * • 提升CPU缓存局部性
+     * • 便于编译器优化
      */
-    private static var FLAG_MELEE:Number;
-    private static var FLAG_CHAIN:Number;
-    private static var FLAG_PIERCE:Number;
-    private static var FLAG_TRANSPARENCY:Number;
-    private static var FLAG_GRENADE:Number;
-    private static var FLAG_EXPLOSIVE:Number;
-    private static var FLAG_NORMAL:Number;
-    private static var FLAG_VERTICAL:Number;
 
     /**
      * 缓存对象
@@ -41,65 +42,31 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
     private static var typeCache:Object = {};
 
     /**
-     * 透明子弹类型哈希表（单一数据源）
-     * 遵循DRY原则：关于"哪些子弹是透明的"这一信息只在此处定义
-     * 使用Object作为哈希表，O(1)查找性能，利用undefined的falsy特性
+     * === 透明子弹管理已搬迁 ===
+     * 透明子弹类型管理已搬迁到 BulletTypeUtil 类中。
+     * 统一的透明子弹哈希表现在位于 BulletTypeUtil.TRANSPARENCY_MAP。
      */
-    private static var TRANSPARENCY_MAP:Object = {
-        近战子弹: true,
-        近战联弹: true,
-        透明子弹: true
-        // 未来新增透明子弹类型时，只需在此对象中添加键值对
-    };
 
     /**
-     * 静态初始化方法 - AS2 宏展开机制性能优化方案
+     * === 宏展开机制已替代静态初始化 ===
+     * 原有的init()函数已不再需要。
+     * 所有FLAG常量现在通过编译时#include指令直接注入到需要的函数作用域中，
+     * 实现真正的零运行时开销。
      * 
-     * === 宏展开机制说明 ===
-     * AS2 的 #include 指令在编译时将外部文件内容直接插入到当前位置，
-     * 类似于 C/C++ 的宏预处理机制。这种方式实现零运行时开销的常量引用。
-     * 
-     * === 性能优化要点 ===
-     * 1. 编译时处理：所有 #include 在编译阶段完成，运行时无额外开销
-     * 2. 作用域限制：宏展开的变量仅在当前函数作用域有效
-     * 3. 一次初始化：静态变量只在类首次加载时初始化一次
-     * 4. 内存优化：避免重复的常量定义，减少内存占用
-     * 
-     * === 最佳实践 ===
-     * - 仅在需要时引用特定标志位宏文件
-     * - 避免在热点代码路径中重复宏展开
-     * - 利用静态初始化确保常量值的一致性
+     * 性能优势：
+     * • 消除初始化函数调用开销
+     * • 消除静态变量赋值开销
+     * • 消除类属性索引开销
+     * • 减少内存占用和初始化时间
      */
-    private static function init():Boolean {
-        // 使用宏展开获取各个位标志值（编译时处理，零运行时成本）
-        #include "../macros/FLAG_MELEE.as"
-        #include "../macros/FLAG_CHAIN.as"
-        #include "../macros/FLAG_PIERCE.as"
-        #include "../macros/FLAG_TRANSPARENCY.as"
-        #include "../macros/FLAG_GRENADE.as"
-        #include "../macros/FLAG_EXPLOSIVE.as"
-        #include "../macros/FLAG_NORMAL.as"
-        #include "../macros/FLAG_VERTICAL.as"
-        
-        // 将宏展开的临时变量赋值给类的静态变量（一次性操作）
-        BulletTypesetter.FLAG_MELEE = FLAG_MELEE;
-        BulletTypesetter.FLAG_CHAIN = FLAG_CHAIN;
-        BulletTypesetter.FLAG_PIERCE = FLAG_PIERCE;
-        BulletTypesetter.FLAG_TRANSPARENCY = FLAG_TRANSPARENCY;
-        BulletTypesetter.FLAG_GRENADE = FLAG_GRENADE;
-        BulletTypesetter.FLAG_EXPLOSIVE = FLAG_EXPLOSIVE;
-        BulletTypesetter.FLAG_NORMAL = FLAG_NORMAL;
-        BulletTypesetter.FLAG_VERTICAL = FLAG_VERTICAL;
-        
-        return true;
-    }
 
     /**
      * 构造函数
      * 该类不需要实例化，因此不进行任何初始化。
+     * 宏展开机制使得所有初始化都在编译时完成。
      */
     public function BulletTypesetter() {
-        // 无需初始化
+        // 无需初始化 - 宏展开已在编译时完成所有常量定义
     }
 
     /**
@@ -138,6 +105,10 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
         var flags:Number = data.flags;
         var baseAsset:String = data.baseAsset;
 
+        
+        // === 宏展开优化：手雷标志检测 ===
+        #include "../macros/FLAG_GRENADE.as"  
+        // 注入: var FLAG_GRENADE:Number = 16;
         
         if(((flags & FLAG_GRENADE) != 0)) {
             delete bullet.FLAG_GRENADE; // 清除外部xml传参引入的冗余标志位
@@ -271,7 +242,7 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
         var isMelee:Boolean         = (bulletType.indexOf("近战") != -1);
         var isChain:Boolean         = (bulletType.indexOf("联弹") != -1);
         var isPierce:Boolean        = (bulletType.indexOf("穿刺") != -1);
-        var isTransparency:Boolean  = !!TRANSPARENCY_MAP[bulletType];
+        var isTransparency:Boolean  = BulletTypeUtil.isTransparency(bulletType);
         var isVertical:Boolean      = (bulletType.indexOf("纵向") != -1);
         var isExplosive:Boolean     = (bulletType.indexOf("爆炸") != -1);
         var isGrenade:Boolean       = bullet.FLAG_GRENADE || (bulletType.indexOf("手雷") != -1);
@@ -336,161 +307,57 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
         }
     }
 
+    // ========== 已搬迁方法的兼容性重定向 ==========
+    // 以下方法已搬迁到 BulletTypeUtil 类中，这里保留重定向以维护向后兼容性
+
     /**
-     * 检查子弹类型是否为纵向子弹。
-     * 
-     * @param bulletType:String 子弹种类字符串。
-     * @return Boolean 如果是纵向子弹返回 true，否则返回 false。
+     * === 已搬迁：重定向到 BulletTypeUtil ===
+     * 所有 is 系列查询方法已搬迁到 BulletTypeUtil 类中以减少 BulletTypesetter 的复杂度。
+     * 建议直接使用 BulletTypeUtil 中的对应方法以获得最佳性能。
      */
+    
     public static function isVertical(bulletType:String):Boolean {
-        var flags:Number = getFlags({ 子弹种类: bulletType });
-        return (flags & FLAG_VERTICAL) != 0;
+        return BulletTypeUtil.isVertical(bulletType);
     }
-
-    /**
-     * 检查子弹类型是否为近战子弹。
-     * 
-     * @param bulletType:String 子弹种类字符串。
-     * @return Boolean 如果是近战子弹返回 true，否则返回 false。
-     */
+    
     public static function isMelee(bulletType:String):Boolean {
-        var flags:Number = getFlags({ 子弹种类: bulletType });
-        return (flags & FLAG_MELEE) != 0;
+        return BulletTypeUtil.isMelee(bulletType);
     }
-
-    /**
-     * 检查子弹类型是否为联弹子弹。
-     * 
-     * @param bulletType:String 子弹种类字符串。
-     * @return Boolean 如果是联弹子弹返回 true，否则返回 false。
-     */
+    
     public static function isChain(bulletType:String):Boolean {
-        var flags:Number = getFlags({ 子弹种类: bulletType });
-        return (flags & FLAG_CHAIN) != 0;
+        return BulletTypeUtil.isChain(bulletType);
     }
-
-    /**
-     * 检查子弹类型是否为穿刺子弹。
-     * 
-     * @param bulletType:String 子弹种类字符串。
-     * @return Boolean 如果是穿刺子弹返回 true，否则返回 false。
-     */
+    
     public static function isPierce(bulletType:String):Boolean {
-        var flags:Number = getFlags({ 子弹种类: bulletType });
-        return (flags & FLAG_PIERCE) != 0;
+        return BulletTypeUtil.isPierce(bulletType);
     }
-
-    /**
-     * 检查子弹类型是否为透明子弹。
-     * 
-     * @param bulletType:String 子弹种类字符串。
-     * @return Boolean 如果是透明子弹返回 true，否则返回 false。
-     */
+    
     public static function isTransparency(bulletType:String):Boolean {
-        // 使用O(1)哈希查找替代O(n)标志位计算，性能更优
-        return !!TRANSPARENCY_MAP[bulletType];
+        return BulletTypeUtil.isTransparency(bulletType);
     }
-
-    /**
-     * 检查子弹类型是否为手雷子弹。
-     * 
-     * @param bulletType:String 子弹种类字符串。
-     * @return Boolean 如果是手雷子弹返回 true，否则返回 false。
-     */
+    
     public static function isGrenade(bulletType:String):Boolean {
-        var flags:Number = getFlags({ 子弹种类: bulletType });
-        return (flags & FLAG_GRENADE) != 0;
+        return BulletTypeUtil.isGrenade(bulletType);
     }
-
-    /**
-     * 检查子弹类型是否为爆炸子弹。
-     * 
-     * @param bulletType:String 子弹种类字符串。
-     * @return Boolean 如果是爆炸子弹返回 true，否则返回 false。
-     */
+    
     public static function isExplosive(bulletType:String):Boolean {
-        var flags:Number = getFlags({ 子弹种类: bulletType });
-        return (flags & FLAG_EXPLOSIVE) != 0;
+        return BulletTypeUtil.isExplosive(bulletType);
     }
-
-    /**
-     * 检查子弹类型是否为普通子弹。
-     * 
-     * @param bulletType:String 子弹种类字符串。
-     * @return Boolean 如果是普通子弹返回 true，否则返回 false。
-     */
+    
     public static function isNormal(bulletType:String):Boolean {
-        var flags:Number = getFlags({ 子弹种类: bulletType });
-        return (flags & FLAG_NORMAL) != 0;
+        return BulletTypeUtil.isNormal(bulletType);
     }
-
-    /**
-    * 将子弹类型的标志位转换为可读的字符串，便于调试输出。
-    * 
-    * @param flags:Number 标志位值。
-    * @param useChinese:Boolean 可选参数，是否使用中文输出。默认 false（英文）。
-    * @return String 转换后的字符串，格式如 "MELEE, CHAIN" 或 "近战, 联弹"。若无标志位则返回 "NONE" 或 "无"。
-    */
+    
     public static function flagsToString(flags:Number, useChinese:Boolean):String {
-        // 处理默认参数
-        if (useChinese == undefined) useChinese = false;
-        
-        var parts:Array = [];
-        
-        if (useChinese) {
-            // 中文输出
-            if (flags & FLAG_MELEE)         parts.push("近战");
-            if (flags & FLAG_CHAIN)         parts.push("联弹");
-            if (flags & FLAG_PIERCE)        parts.push("穿刺");
-            if (flags & FLAG_TRANSPARENCY)  parts.push("透明");
-            if (flags & FLAG_GRENADE)       parts.push("手雷");
-            if (flags & FLAG_EXPLOSIVE)     parts.push("爆炸");
-            if (flags & FLAG_NORMAL)        parts.push("普通");
-            if (flags & FLAG_VERTICAL)      parts.push("纵向");
-            return parts.length > 0 ? parts.join(", ") : "无";
-        } else {
-            // 英文输出（原有逻辑）
-            if (flags & FLAG_MELEE)         parts.push("MELEE");
-            if (flags & FLAG_CHAIN)         parts.push("CHAIN");
-            if (flags & FLAG_PIERCE)        parts.push("PIERCE");
-            if (flags & FLAG_TRANSPARENCY)  parts.push("TRANSPARENCY");
-            if (flags & FLAG_GRENADE)       parts.push("GRENADE");
-            if (flags & FLAG_EXPLOSIVE)     parts.push("EXPLOSIVE");
-            if (flags & FLAG_NORMAL)        parts.push("NORMAL");
-            if (flags & FLAG_VERTICAL)      parts.push("VERTICAL");
-            return parts.length > 0 ? parts.join(", ") : "NONE";
-        }
+        return BulletTypeUtil.flagsToString(flags, useChinese);
     }
-
-
-    /**
-     * 获取所有透明子弹类型列表（只读访问）
-     * 
-     * @return Array 透明子弹类型数组
-     */
+    
     public static function getTransparencyTypes():Array {
-        var types:Array = [];
-        for (var type:String in TRANSPARENCY_MAP) {
-            types.push(type);
-        }
-        return types;
+        return BulletTypeUtil.getTransparencyTypes();
     }
-
-    /**
-     * 动态添加透明子弹类型（运行时扩展，谨慎使用）
-     * 
-     * @param bulletType:String 要添加的子弹类型
-     * @return Boolean 添加成功返回true，已存在返回false
-     */
+    
     public static function addTransparencyType(bulletType:String):Boolean {
-        if (TRANSPARENCY_MAP[bulletType]) {
-            return false; // 已存在
-        }
-        
-        TRANSPARENCY_MAP[bulletType] = true;
-        // 清空相关缓存，确保一致性
-        clearCache();
-        return true;
+        return BulletTypeUtil.addTransparencyType(bulletType);
     }
 
     /**
