@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/高爆手雷/高爆手雷" itemID="6893661b-00002cea" linkageExportForAS="true" linkageIdentifier="高爆手雷" lastModified="1754490395" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/高爆手雷/高爆手雷" itemID="6893661b-00002cea" linkageExportForAS="true" linkageIdentifier="高爆手雷" lastModified="1754669901" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="高爆手雷" currentFrame="1">
+    <DOMTimeline name="高爆手雷" currentFrame="2">
       <layers>
         <DOMLayer name="Labels Layer" color="#B00DF6" locked="true">
           <frames>
@@ -26,31 +26,37 @@
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[声音 = "";
-霰弹值 = 1;
-子弹散射度 = 0;
-发射效果 = "";
-子弹种类 = "普通爆炸";
-子弹威力 = 子弹威力 ? 子弹威力 : 6000;
-子弹速度 = 0;
-击中地图效果 = "";
-Z轴攻击范围 = 80;
-击倒率 = 1;
-击中后子弹的效果 = "";
-子弹敌我属性 = 子弹敌我属性值;
-shootX = this._x;
-shootY = this._y;
-if(_root.client != null && _root.me != null)
+                <script><![CDATA[if(子弹敌我属性值 == undefined)
 {
-   _root.子弹区域shoot表演(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+   子弹敌我属性值 = true;
 }
-else
+if(发射者名 == undefined)
 {
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+   发射者名 = _root.控制目标;
 }
+
+子弹属性 = _root.子弹属性初始化(this,"普通爆炸",发射者名);
+子弹属性.声音 = "";
+子弹属性.霰弹值 = 1;
+子弹属性.子弹散射度 = 0;
+子弹属性.发射效果 = "";
+子弹属性.子弹种类 = "普通爆炸";
+子弹属性.子弹威力 = 子弹威力 ? 子弹威力 : 6000;
+子弹属性.子弹速度 = 0;
+子弹属性.击中地图效果 = "";
+子弹属性.Z轴攻击范围 = 80;
+子弹属性.击倒率 = 0.1;
+子弹属性.击中后子弹的效果 = "";
+子弹属性.子弹敌我属性 = 子弹敌我属性值;
+子弹属性.伤害类型 = this.伤害类型 ? this.伤害类型 : "物理";
+子弹属性.魔法伤害属性 = this.魔法伤害属性 ? this.魔法伤害属性 : "";
+子弹属性.shootX = this._x;
+子弹属性.shootY = Z轴坐标;
+子弹属性.shootZ = Z轴坐标;
+子弹属性.发射者 = 发射者名;
+_root.子弹区域shoot传递(子弹属性);
 stop();
-this.removeMovieClip();
-]]></script>
+this.removeMovieClip();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!--已用ID：[4, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 41, 42, 43, 44, 45, 46, 47, 143, 437, 438, 471, 517, 569, 579, 580, 581, 582, 583, 653, 833, 1553, 1702, 2517, 22011]
-预留ID区间： 18604-18700 -->
+预留ID区间： 18606-18700 -->
 <root>
   <item>
-    <id>18603</id>
+    <id>18605</id>
     <name>战术核弹手雷</name>
     <displayname>战术核弹手雷</displayname>
     <icon>战术核弹手雷</icon>
@@ -34,6 +34,38 @@
     </equipped>
   </item>
   <item>
+    <id>18603</id>
+    <name>燃烧弹</name>
+    <displayname>燃烧弹</displayname>
+    <icon>燃烧弹</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <weight>20</weight>
+    <price>3500</price>
+    <description>较为危险的投掷物，尽管控制了威力，但仍然是有效的武器。可造成热属性的附加伤害。</description>
+    <level>20</level>
+    <data>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>10</interval>
+      <velocity>20</velocity>
+      <bullet>燃烧弹手雷</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>燃烧弹</clipname>
+      <bulletsize>50</bulletsize>
+      <power>3500</power>
+      <impact>1</impact>
+    </data>
+    <equipped>
+      <dressup>手雷-燃烧弹</dressup>
+      <damagetype>破击</damagetype>
+      <magictype>热</magictype>
+    </equipped>
+  </item>
+  <item>
     <id>18602</id>
     <name>高爆手雷</name>
     <displayname>高爆手雷</displayname>
@@ -42,7 +74,7 @@
     <use>手雷</use>
     <weight>1</weight>
     <price>6000</price>
-    <description>高爆手雷，兼具威力与范围</description>
+    <description>高爆手雷，兼具威力与范围。</description>
     <level>25</level>
     <data>
       <capacity>1</capacity>
@@ -71,7 +103,7 @@
     <type>消耗品</type>
     <use>手雷</use>
     <weight>1</weight>
-    <price>100</price>
+    <price>50</price>
     <description>在随处可见的房屋废墟附近，突然遇见丧尸，这是末日下幸存者最无奈，也是最后的武器了。可以投掷。</description>
     <level>1</level>
     <data>

@@ -1,15 +1,28 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/屎块爆炸" itemID="66bb409c-00001c97" linkageExportForAS="true" linkageIdentifier="屎块爆炸" lastModified="1723548774" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/屎块爆炸" itemID="66bb409c-00001c97" linkageExportForAS="true" linkageIdentifier="屎块爆炸" lastModified="1754669881" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="屎块爆炸" currentFrame="12">
       <layers>
-        <DOMLayer name="Script Layer" color="#CA8E4F">
+        <DOMLayer name="Script Layer" color="#CA8E4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[var 获取发射对象 = _root.gameworld[this.发射者名];
+if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技能.轰炸专家.启用)
+{
+   this.子弹威力 *= 1 + 获取发射对象.被动技能.轰炸专家.等级 * 0.03;
+}
+]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="5" duration="7" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[this.伤害类型 = "魔法";
+                <script><![CDATA[
+if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技能.轰炸专家.启用)
+{
+   this.子弹威力 *= 1 + 获取发射对象.被动技能.轰炸专家.等级 * 0.03;
+}
+this.伤害类型 = "魔法";
 this.魔法伤害属性 = "毒";]]></script>
               </Actionscript>
               <elements/>
@@ -61,7 +74,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#5976C3" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#5976C3">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>

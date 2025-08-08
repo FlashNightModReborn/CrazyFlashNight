@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="健身房沙袋" itemID="65a79007-00000b58" lastModified="1749992608" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="健身房沙袋" itemID="65a79007-00000b58" lastModified="1754674564" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="健身房沙袋">
       <layers>
@@ -29,6 +29,7 @@ hp = 10000000;
 躲闪率 = 2;
 击中效果 = "火花";
 Z轴坐标 = this._y;
+魔法抗性 = {基础: 1, 电: 1, 热: 1, 冷: 1, 波: 1, 蚀: 1, 毒: 1, 冲: 1}; 
 _root.敌人函数.初始化单位(this);
 function 状态改变(新状态名)
 {
