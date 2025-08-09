@@ -1,0 +1,147 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/径庭拳" itemID="66674cd1-00001233" linkageExportForAS="true" linkageIdentifier="径庭拳" lastModified="1722367146">
+  <timeline>
+    <DOMTimeline name="径庭拳" currentFrame="15">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#F34485" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="6" name="消失?" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#96ACB7" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#D6328C" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" centerPoint3DX="-83.35" centerPoint3DY="-79.1">
+                  <matrix>
+                    <Matrix a="5.14398193359375" d="7.0594482421875" tx="-95.85" ty="-91.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" centerPoint3DX="-83.35" centerPoint3DY="-79.1">
+                  <matrix>
+                    <Matrix a="5.14398193359375" d="7.0594482421875" tx="-95.85" ty="-91.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Graphic/shape 837" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-3.2" ty="91.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.95"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Graphic/shape 838" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-3.2" ty="91.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.95"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Graphic/shape 839" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-3.2" ty="91.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.95"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Graphic/shape 840" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-3.2" ty="91.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.95"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="12" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="16" keyMode="9728" soundName="sound/sound159.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

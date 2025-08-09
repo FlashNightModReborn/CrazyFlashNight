@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/Symbol 5365" itemID="659a8435-00001be2" lastModified="1704627307" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="Symbol 5365">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="各种图素材等/技能背景" centerPoint3DX="2.15" centerPoint3DY="2.15">
+                  <matrix>
+                    <Matrix a="0.962997436523438" d="0.962997436523438" tx="-100.4" ty="-105.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="104.4" y="109.9"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#F9359A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="各种图素材等/位图 88">
+                  <matrix>
+                    <Matrix a="0.557952880859375" d="0.557952880859375" tx="-99.45" ty="-99.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="178.4" y="178.25"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

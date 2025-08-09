@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防具/硬化巨拳/男变装-硬化巨拳右手" itemID="6839ee84-00001720" linkageExportForAS="true" linkageIdentifier="男变装-硬化巨拳右手" lastModified="1748628939" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="男变装-硬化巨拳右手">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防具/硬化巨拳/素材/Symbol 253" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.229385375976563" b="0.655181884765625" c="0.655181884765625" d="0.229385375976563" tx="33.75" ty="23.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="防具/硬化巨拳/素材/Symbol 253" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.229385375976563" b="0.655181884765625" c="0.655181884765625" d="0.229385375976563" tx="37.65" ty="29.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="防具/硬化巨拳/素材/Symbol 254" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.072052001953125" b="0.87158203125" c="0.87158203125" d="0.072052001953125" tx="17.5" ty="-0.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="防具/硬化巨拳/素材/Symbol 244" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.681381225585938" b="0.544448852539063" c="0.544448852539063" d="0.681381225585938" tx="-74.6" ty="-5.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-47.75" y="45.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

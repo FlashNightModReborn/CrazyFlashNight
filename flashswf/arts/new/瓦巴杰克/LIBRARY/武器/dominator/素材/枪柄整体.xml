@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/dominator/素材/枪柄整体" itemID="65e6d2cf-0000028c" lastModified="1709626063" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="枪柄整体">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/dominator/素材/枪柄组件1">
+                  <matrix>
+                    <Matrix tx="16"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="40.4" y="54.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="武器/dominator/素材/枪柄组件2">
+                  <matrix>
+                    <Matrix ty="60.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="102" y="56.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="武器/dominator/素材/枪柄" selected="true" centerPoint3DX="388.25" centerPoint3DY="323.8">
+                  <matrix>
+                    <Matrix tx="90.9" ty="38.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="297.35" y="285"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

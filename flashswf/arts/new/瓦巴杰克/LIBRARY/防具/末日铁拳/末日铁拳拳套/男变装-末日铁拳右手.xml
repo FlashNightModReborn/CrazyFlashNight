@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防具/末日铁拳/末日铁拳拳套/男变装-末日铁拳右手" itemID="68373006-000006de" linkageExportForAS="true" linkageIdentifier="男变装-末日铁拳右手" lastModified="1754762817" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="男变装-末日铁拳右手">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/火箭重拳特效" selected="true" centerPoint3DX="-57.85" centerPoint3DY="-19.15">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防具/末日铁拳/末日铁拳拳套/素材/末日铁拳-右手" selected="true" centerPoint3DX="5.1" centerPoint3DY="2.05">
+                  <matrix>
+                    <Matrix a="1.14886474609375" d="1.14886474609375" tx="-2.05" ty="4.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-87.65" y="-17.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

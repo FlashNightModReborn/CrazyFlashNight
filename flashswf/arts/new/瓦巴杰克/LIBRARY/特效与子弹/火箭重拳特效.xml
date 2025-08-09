@@ -1,0 +1,1322 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/火箭重拳特效" itemID="684dbd91-0000442e" linkageExportForAS="true" linkageIdentifier="火箭重拳特效" lastModified="1754762925" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="火箭重拳特效" currentFrame="1">
+      <layers>
+        <DOMLayer name="图层 4" color="#FF4FFF" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="42" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="20" name="充能状态" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="62" duration="9" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("触电.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="71" duration="8" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("触电.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="79" duration="11" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("火箭重拳蓄力开始.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="90" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay(2);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 5" color="#4FFFFF" locked="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[
+自机 = _root.获得父节点(this, 5);
+自机.火箭重拳许可 = true;
+this.onUnload = function()
+{
+	自机.火箭重拳许可 = false;
+};
+if (自机._name == _root.控制目标)
+{
+	if(_root.火箭重拳){
+		自机.火箭重拳 = true;
+	}
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="14" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 506" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0191650390625" d="-0.939422607421875" tx="-102.6" ty="-56.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.48828125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 507" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0191650390625" d="-0.939422607421875" tx="-102.6" ty="-56.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.48828125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 508" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0191650390625" d="-0.939422607421875" tx="-102.6" ty="-56.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.48828125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 509" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0191650390625" d="-0.939422607421875" tx="-102.6" ty="-56.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.48828125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 510" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0191650390625" d="-0.939422607421875" tx="-102.6" ty="-56.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.48828125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 511" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0191650390625" d="-0.939422607421875" tx="-102.6" ty="-56.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.48828125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 512" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0191650390625" d="-0.939422607421875" tx="-102.6" ty="-56.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.48828125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 513" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0191650390625" d="-0.939422607421875" tx="-102.6" ty="-56.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.48828125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 514" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0191650390625" d="-0.939422607421875" tx="-102.6" ty="-56.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.48828125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 515" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0191650390625" d="-0.939422607421875" tx="-102.6" ty="-56.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.48828125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 516" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0191650390625" d="-0.939422607421875" tx="-102.6" ty="-56.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.48828125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 517" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0191650390625" d="-0.939422607421875" tx="-102.6" ty="-56.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.48828125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 518" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0191650390625" d="-0.939422607421875" tx="-102.6" ty="-56.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.48828125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 519" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0191650390625" d="-0.939422607421875" tx="-102.6" ty="-56.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.48828125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="11" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="2" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay(2);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="44" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 538" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.341323852539063" b="-0.939926147460938" c="0.939926147460938" d="0.341323852539063" tx="-54.15" ty="59.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 539" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.341323852539063" b="-0.939926147460938" c="0.939926147460938" d="0.341323852539063" tx="-54.15" ty="59.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 540" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.341323852539063" b="-0.939926147460938" c="0.939926147460938" d="0.341323852539063" tx="-54.15" ty="59.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 541" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.341323852539063" b="-0.939926147460938" c="0.939926147460938" d="0.341323852539063" tx="-54.15" ty="59.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 542" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.341323852539063" b="-0.939926147460938" c="0.939926147460938" d="0.341323852539063" tx="-54.15" ty="59.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" duration="3" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="52" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 538" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.37646484375" b="-1.03666687011719" c="1.03666687011719" d="0.37646484375" tx="-58.95" ty="65.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 539" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.37646484375" b="-1.03666687011719" c="1.03666687011719" d="0.37646484375" tx="-58.95" ty="65.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 540" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.37646484375" b="-1.03666687011719" c="1.03666687011719" d="0.37646484375" tx="-58.95" ty="65.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="55" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 541" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.37646484375" b="-1.03666687011719" c="1.03666687011719" d="0.37646484375" tx="-58.95" ty="65.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 542" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.37646484375" b="-1.03666687011719" c="1.03666687011719" d="0.37646484375" tx="-58.95" ty="65.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="57" duration="5" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="62" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 538" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.400924682617188" b="-1.10404968261719" c="1.10404968261719" d="0.400924682617188" tx="-57.75" ty="68.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="63" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 539" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.400924682617188" b="-1.10404968261719" c="1.10404968261719" d="0.400924682617188" tx="-57.75" ty="68.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="64" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 540" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.400924682617188" b="-1.10404968261719" c="1.10404968261719" d="0.400924682617188" tx="-57.75" ty="68.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="65" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 541" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.400924682617188" b="-1.10404968261719" c="1.10404968261719" d="0.400924682617188" tx="-57.75" ty="68.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="66" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 542" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.400924682617188" b="-1.10404968261719" c="1.10404968261719" d="0.400924682617188" tx="-57.75" ty="68.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="67" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="71" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 538" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.400924682617188" b="-1.10404968261719" c="1.10404968261719" d="0.400924682617188" tx="-57.75" ty="68.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 539" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.400924682617188" b="-1.10404968261719" c="1.10404968261719" d="0.400924682617188" tx="-57.75" ty="68.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 540" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.400924682617188" b="-1.10404968261719" c="1.10404968261719" d="0.400924682617188" tx="-57.75" ty="68.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 541" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.400924682617188" b="-1.10404968261719" c="1.10404968261719" d="0.400924682617188" tx="-57.75" ty="68.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="75" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 542" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.400924682617188" b="-1.10404968261719" c="1.10404968261719" d="0.400924682617188" tx="-57.75" ty="68.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="76" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="80" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 535" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.583587646484375" b="-1.11248779296875" c="1.11248779296875" d="0.583587646484375" tx="-63.35" ty="61"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="81" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 536" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.583587646484375" b="-1.11248779296875" c="1.11248779296875" d="0.583587646484375" tx="-63.35" ty="61"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="82" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 537" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.583587646484375" b="-1.11248779296875" c="1.11248779296875" d="0.583587646484375" tx="-63.35" ty="61"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="83" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 538" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.583587646484375" b="-1.11248779296875" c="1.11248779296875" d="0.583587646484375" tx="-63.35" ty="61"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="84" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 539" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.583587646484375" b="-1.11248779296875" c="1.11248779296875" d="0.583587646484375" tx="-63.35" ty="61"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 540" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.583587646484375" b="-1.11248779296875" c="1.11248779296875" d="0.583587646484375" tx="-63.35" ty="61"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="86" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 541" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.583587646484375" b="-1.11248779296875" c="1.11248779296875" d="0.583587646484375" tx="-63.35" ty="61"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="87" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 542" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.583587646484375" b="-1.11248779296875" c="1.11248779296875" d="0.583587646484375" tx="-63.35" ty="61"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" duration="3" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 506" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22991943359375" d="-1.06669616699219" tx="-140.4" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 507" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22991943359375" d="-1.06669616699219" tx="-140.4" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 508" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22991943359375" d="-1.06669616699219" tx="-140.4" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 509" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22991943359375" d="-1.06669616699219" tx="-140.4" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 510" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22991943359375" d="-1.06669616699219" tx="-140.4" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 511" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22991943359375" d="-1.06669616699219" tx="-140.4" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 512" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22991943359375" d="-1.06669616699219" tx="-140.4" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 513" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22991943359375" d="-1.06669616699219" tx="-140.4" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 514" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22991943359375" d="-1.06669616699219" tx="-140.4" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 515" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22991943359375" d="-1.06669616699219" tx="-140.4" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 516" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22991943359375" d="-1.06669616699219" tx="-140.4" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 517" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22991943359375" d="-1.06669616699219" tx="-140.4" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 518" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22991943359375" d="-1.06669616699219" tx="-140.4" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 519" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22991943359375" d="-1.06669616699219" tx="-140.4" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 520" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22991943359375" d="-1.06669616699219" tx="-140.4" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 521" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.22991943359375" d="-1.06669616699219" tx="-140.4" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="9" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="27" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 506" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.378173828125" d="-1.06669616699219" tx="-172.05" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 507" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.378173828125" d="-1.06669616699219" tx="-172.05" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 508" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.378173828125" d="-1.06669616699219" tx="-172.05" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 509" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.378173828125" d="-1.06669616699219" tx="-172.05" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 510" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.378173828125" d="-1.06669616699219" tx="-172.05" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 511" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.378173828125" d="-1.06669616699219" tx="-172.05" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 512" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.378173828125" d="-1.06669616699219" tx="-172.05" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 513" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.378173828125" d="-1.06669616699219" tx="-172.05" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 514" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.378173828125" d="-1.06669616699219" tx="-172.05" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 515" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.378173828125" d="-1.06669616699219" tx="-172.05" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 516" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.378173828125" d="-1.06669616699219" tx="-172.05" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 517" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.378173828125" d="-1.06669616699219" tx="-172.05" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 518" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.378173828125" d="-1.06669616699219" tx="-172.05" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 519" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.378173828125" d="-1.06669616699219" tx="-172.05" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="44" duration="8" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("火箭重拳蓄力开始.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="52" duration="15" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("火箭重拳蓄力持续1.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 506" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-131.8" ty="-72.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="68" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 507" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-131.8" ty="-72.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 508" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-131.8" ty="-72.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="70" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 509" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-131.8" ty="-72.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="71" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 510" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-131.8" ty="-72.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="72" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 511" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-131.8" ty="-72.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 512" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-131.8" ty="-72.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="74" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 513" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-131.8" ty="-72.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="76" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 514" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-131.8" ty="-72.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="78" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 515" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-131.8" ty="-72.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="80" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 516" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-131.8" ty="-72.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="82" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 517" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-131.8" ty="-72.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="84" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 518" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-131.8" ty="-72.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="86" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 519" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-131.8" ty="-72.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="87" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 520" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-131.8" ty="-72.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪电特效素材/shape 521" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-131.8" ty="-72.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 6" color="#808080" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" selected="true" centerPoint3DX="16" centerPoint3DY="110.4">
+                  <matrix>
+                    <Matrix tx="3.5" ty="97.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	var 自机 = _parent.自机 ? _parent.自机 : _root.获得父节点(this, 6);
+	if (自机.火箭重拳)
+	{
+		_parent.play();
+	}
+	else
+	{
+		_parent.stop();
+	}
+	按键中 = false;
+}
+onClipEvent (enterFrame) {
+	if (自机.火箭重拳蓄力中)
+	{
+		_parent.gotoAndPlay("充能状态");
+	}
+	else if (自机._name == _root.控制目标 && 自机.攻击模式 === "空手")
+	{
+		if (Key.isDown(_root.武器变形键))
+		{
+			if (!按键中)
+			{
+				if (自机.火箭重拳)
+				{
+					_root.发布消息("火箭重拳关闭！");
+					自机.火箭重拳 = false;
+					if (自机._name == _root.控制目标){
+						_root.火箭重拳 = false;
+					}
+					_parent.gotoAndStop(2);
+				}
+				else
+				{
+					_root.播放音效("触电.wav");
+					_root.发布消息("火箭重拳开启！");
+					自机.火箭重拳 = true;
+					if (自机._name == _root.控制目标){
+						_root.火箭重拳 = true;
+					}
+					_parent.gotoAndPlay(2);
+				}
+			}
+			按键中 = true;
+		}
+		else
+		{
+			按键中 = false;
+		}
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="49" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" centerPoint3DX="16" centerPoint3DY="110.4">
+                  <matrix>
+                    <Matrix tx="3.5" ty="97.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	var 自机 = _parent.自机?  _parent.自机 : _root.获得父节点(this, 6);
+}
+onClipEvent (enterFrame) {
+	if(!自机.火箭重拳蓄力中){
+		//_root.播放音效("火箭重拳最后一拳.wav");
+		_parent.gotoAndPlay(2);
+	}
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/3D打印：炎/枪-手枪-3D打印：炎" itemID="66e6f914-00000d62" linkageExportForAS="true" linkageIdentifier="枪-手枪-3D打印：炎" lastModified="1731860111" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="枪-手枪-3D打印：炎">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/3D打印：炎/0.area" name="枪口位置" selected="true" centerPoint3DX="102.5" centerPoint3DY="-14.65">
+                  <matrix>
+                    <Matrix tx="82.5" ty="-34.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/3D打印：炎/3D打印：炎" selected="true" centerPoint3DX="20.55" centerPoint3DY="-1.9">
+                  <matrix>
+                    <Matrix tx="3.7" ty="-14.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

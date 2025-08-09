@@ -1,0 +1,455 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/重力场" itemID="65802656-00000813" linkageExportForAS="true" linkageIdentifier="重力场" lastModified="1722239675" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="重力场">
+      <layers>
+        <DOMLayer name="代码" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="12" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[   this._rotation = 0;
+   //目标数组 = [];
+   for(var each in _root.gameworld)
+   {
+      if(_root.gameworld[each].是否为敌人 == !_parent._parent.是否为敌人 and _root.gameworld[each].hp > 0)
+      {
+        //目标数组.push(each);
+		_root.gameworld[each].状态改变("击倒");
+		_root.fly(_root.gameworld[each],10,0);
+      }
+   }
+   var 秒数计数 = 0;
+   if(!子弹威力){
+	   总秒数 = 5;
+   }else{
+	   总秒数 =子弹威力/100;
+   }
+   
+   this.onUnload = function()
+   {
+		if(_root.重力加速度基准){
+			_root.重力加速度 = _root.重力加速度基准;
+		}else{
+			_root.重力加速度 = 0.8;
+		}
+		_root.发布消息("反重力效果结束");
+   }]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+_root.重力加速度 = 0.2;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="30" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[秒数计数 +=1;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="48" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(秒数计数<总秒数){
+	gotoAndPlay(18);
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="50" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+		 /*
+   for(i=0;i<目标数组.length;i++)
+   {
+	  each = 目标数组[i];
+      if( _root.gameworld[each].hp > 0)
+      {
+		 _root.gameworld[each].play();
+		 _root.gameworld[each].左行=0;
+		 _root.gameworld[each].右行=0;
+		 _root.gameworld[each].上行=0;
+		 _root.gameworld[each].下行=0;
+		 if(_root.gameworld[each].行走X速度==0){
+		 	_root.gameworld[each].行走X速度=_root.gameworld[each].temp_行走X速度;
+		 	_root.gameworld[each].行走Y速度=_root.gameworld[each].temp_行走Y速度;
+		 	_root.gameworld[each].跑X速度=_root.gameworld[each].temp_跑X速度;
+		 	_root.gameworld[each].跑Y速度=_root.gameworld[each].temp_跑Y速度;
+		 }
+      }
+   }
+		 */
+		 /*
+	if(!_root.重力加速度基准){
+		_root.重力加速度 = _root.重力加速度基准;
+	}else{
+		_root.重力加速度 = 0.8;
+	}
+   _root.发布消息("反重力效果结束。");
+   */]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="判定" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="各种图素材等/area" name="area" centerPoint3DX="16.85" centerPoint3DY="80.5">
+                  <matrix>
+                    <Matrix a="13.5675659179688" d="8.68582153320313" tx="-255.4" ty="-268.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="51" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#F1FD99">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5094" blendMode="invert" centerPoint3DX="93.15" centerPoint3DY="80.8">
+                  <matrix>
+                    <Matrix a="1.47837829589844" d="1.23974609375" tx="-235.05" ty="-63.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900" strength="1.53"/>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600"/>
+                    <DropShadowFilter angle="178.999486597462" blurX="41" blurY="0" color="#FFCC00" distance="-21"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5090" blendMode="invert" centerPoint3DX="113.4" centerPoint3DY="75.9">
+                  <matrix>
+                    <Matrix a="2.59709167480469" d="2.50059509277344" tx="-262.85" ty="-172.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900" strength="1.53"/>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600"/>
+                    <DropShadowFilter angle="178.999486597462" blurX="41" blurY="0" color="#FFCC00" distance="-21"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5094" blendMode="invert" centerPoint3DX="75.15" centerPoint3DY="81.8">
+                  <matrix>
+                    <Matrix a="1.47837829589844" d="1.23974609375" tx="-253.05" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900" strength="1.53"/>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600"/>
+                    <DropShadowFilter angle="178.999486597462" blurX="41" blurY="0" color="#FFCC00" distance="-21"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5098" blendMode="invert" centerPoint3DX="81.6" centerPoint3DY="108.6">
+                  <matrix>
+                    <Matrix a="1.50787353515625" d="1.2645263671875" tx="-266.9" ty="-42.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900" strength="1.53"/>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600"/>
+                    <DropShadowFilter angle="178.999486597462" blurX="41" blurY="0" color="#FFCC00" distance="-21"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5102" blendMode="invert" centerPoint3DX="72.65" centerPoint3DY="111.65">
+                  <matrix>
+                    <Matrix a="1.53802490234375" d="1.28982543945313" tx="-284" ty="-41.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900" strength="1.53"/>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600"/>
+                    <DropShadowFilter angle="178.999486597462" blurX="41" blurY="0" color="#FFCC00" distance="-21"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5106" blendMode="invert" centerPoint3DX="84.95" centerPoint3DY="47.4">
+                  <matrix>
+                    <Matrix a="1.53741455078125" d="1.28929138183594" tx="-287.25" ty="-43.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900" strength="1.53"/>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600"/>
+                    <DropShadowFilter angle="178.999486597462" blurX="41" blurY="0" color="#FFCC00" distance="-21"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5110" blendMode="invert" centerPoint3DX="78.95" centerPoint3DY="49.75">
+                  <matrix>
+                    <Matrix a="1.53680419921875" d="1.28878784179688" tx="-292.1" ty="-19.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900" strength="1.53"/>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600"/>
+                    <DropShadowFilter angle="178.999486597462" blurX="41" blurY="0" color="#FFCC00" distance="-21"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#A68BBC">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5088" blendMode="invert" centerPoint3DX="115.25" centerPoint3DY="-127.75">
+                  <matrix>
+                    <Matrix a="2.59709167480469" d="2.50059509277344" tx="-264.85" ty="-334.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900" strength="1.53"/>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600"/>
+                    <DropShadowFilter angle="174.999727930806" blurX="41" blurY="0" color="#FFCC00" distance="-21"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5088" blendMode="invert" centerPoint3DX="75.25" centerPoint3DY="-164.75">
+                  <matrix>
+                    <Matrix a="2.98362731933594" d="2.849609375" tx="-304.85" ty="-371.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="101.9" y="68.65"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900" strength="1.53"/>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600"/>
+                    <DropShadowFilter angle="174.999727930806" blurX="41" blurY="0" color="#FFCC00" distance="-21"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5092" blendMode="invert" centerPoint3DX="91.35" centerPoint3DY="13.65">
+                  <matrix>
+                    <Matrix a="1.47837829589844" d="1.23974609375" tx="-233.15" ty="-104.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900" strength="1.53"/>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600"/>
+                    <DropShadowFilter angle="185.999706301874" blurX="41" blurY="0" color="#FFCC00" distance="-21"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5096" blendMode="invert" centerPoint3DX="81.6" centerPoint3DY="11.75">
+                  <matrix>
+                    <Matrix a="1.50787353515625" d="1.2645263671875" tx="-257.55" ty="-103.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900" strength="1.53"/>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600"/>
+                    <DropShadowFilter angle="174.999727930806" blurX="41" blurY="0" color="#FFCC00" distance="-21" strength="1.03"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5100" blendMode="invert" centerPoint3DX="77.55" centerPoint3DY="10.95">
+                  <matrix>
+                    <Matrix a="1.53802490234375" d="1.28982543945313" tx="-273.3" ty="-108.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900" strength="1.53"/>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600"/>
+                    <DropShadowFilter angle="178.999486597462" blurX="41" blurY="0" color="#FFCC00" distance="-21"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5104" blendMode="invert" centerPoint3DX="85.85" centerPoint3DY="21">
+                  <matrix>
+                    <Matrix a="1.53741455078125" d="1.28929138183594" tx="-279.25" ty="-87.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900" strength="1.53"/>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600"/>
+                    <DropShadowFilter angle="178.999486597462" blurX="41" blurY="0" color="#FFCC00" distance="-21"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5108" blendMode="invert" centerPoint3DX="81.6" centerPoint3DY="35.5">
+                  <matrix>
+                    <Matrix a="1.53680419921875" d="1.28878784179688" tx="-285.25" ty="-89.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900" strength="1.53"/>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600"/>
+                    <DropShadowFilter angle="178.999486597462" blurX="41" blurY="0" color="#FFCC00" distance="-21"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5112" blendMode="invert" centerPoint3DX="64.6" centerPoint3DY="39">
+                  <matrix>
+                    <Matrix a="1.51959228515625" d="1.27435302734375" tx="-357.1" ty="-84.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900" strength="1.53"/>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600"/>
+                    <DropShadowFilter angle="178.999486597462" blurX="41" blurY="0" color="#FFCC00" distance="-21"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5114" blendMode="invert" centerPoint3DX="-66.1" centerPoint3DY="-6.1">
+                  <matrix>
+                    <Matrix a="2.5333251953125" d="2.06968688964844" tx="-290.1" ty="-82.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900" strength="1.53"/>
+                    <GlowFilter blurX="10" blurY="10" color="#FF6600"/>
+                    <DropShadowFilter angle="178.999486597462" blurX="41" blurY="0" color="#FFCC00" distance="-21"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

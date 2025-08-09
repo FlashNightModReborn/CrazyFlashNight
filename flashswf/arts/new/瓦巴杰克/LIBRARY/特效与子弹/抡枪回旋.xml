@@ -1,0 +1,675 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/抡枪回旋" itemID="658997ae-000011ce" linkageExportForAS="true" linkageIdentifier="抡枪回旋" lastModified="1732327776" lastUniqueIdentifier="10">
+  <timeline>
+    <DOMTimeline name="抡枪回旋">
+      <layers>
+        <DOMLayer name="代码&amp;判定" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._rotation = 0;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.gameworld[发射者名].方向 == "左")
+{
+   this._xscale = -100;
+}
+this._rotation = 0;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="各种图素材等/area" name="area" selected="true" centerPoint3DX="12.7" centerPoint3DY="72.2">
+                  <matrix>
+                    <Matrix a="7.52299499511719" d="3.24017333984375" tx="-138.45" ty="-59.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="各种图素材等/area" name="area" selected="true" centerPoint3DX="3.5" centerPoint3DY="94.2">
+                  <matrix>
+                    <Matrix a="8.39035034179688" d="4.63632202148438" tx="-164.95" ty="-93.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="各种图素材等/area" name="area" selected="true" centerPoint3DX="5.55" centerPoint3DY="72.2">
+                  <matrix>
+                    <Matrix a="7.99430847167969" d="3.24017333984375" tx="-155" ty="-59.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="各种图素材等/area" name="area" selected="true" centerPoint3DX="12.7" centerPoint3DY="72.2">
+                  <matrix>
+                    <Matrix a="7.52299499511719" d="3.24017333984375" tx="-138.45" ty="-59.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="各种图素材等/area" name="area" selected="true" centerPoint3DX="5.55" centerPoint3DY="72.2">
+                  <matrix>
+                    <Matrix a="7.8853759765625" d="3.24017333984375" tx="-152.85" ty="-59.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="各种图素材等/area" name="area" selected="true" centerPoint3DX="4.5" centerPoint3DY="72.2">
+                  <matrix>
+                    <Matrix a="8.333740234375" d="3.24017333984375" tx="-162.8" ty="-59.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="各种图素材等/area" name="area" selected="true" centerPoint3DX="13.7" centerPoint3DY="72.2">
+                  <matrix>
+                    <Matrix a="8.03208923339844" d="3.24017333984375" tx="-147.6" ty="-59.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#A8AD6C">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#D8956F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 387" selected="true" centerPoint3DX="357.8" centerPoint3DY="-478.5">
+                  <matrix>
+                    <Matrix a="0.900924682617188" b="-0.988372802734375" c="-0.932907104492188" d="-0.5426025390625" tx="384.45" ty="-368.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.33984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 417" selected="true" centerPoint3DX="-527.5" centerPoint3DY="397.85">
+                  <matrix>
+                    <Matrix a="-1.2330322265625" b="0.792312622070313" c="0.734512329101563" d="0.717880249023438" tx="-496.45" ty="309.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.26171875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#3182ED">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#E0A2BA">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 385" selected="true" centerPoint3DX="38.7" centerPoint3DY="16.35">
+                  <matrix>
+                    <Matrix a="0.900924682617188" b="-0.988372802734375" c="-0.932907104492188" d="-0.5426025390625" tx="18.2" ty="159.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.1796875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 415" selected="true" centerPoint3DX="-11" centerPoint3DY="-15.9">
+                  <matrix>
+                    <Matrix a="-1.2330322265625" b="0.792312622070313" c="0.734512329101563" d="0.717880249023438" tx="39.95" ty="-144.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.12890625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#C5B0AA">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#C7B059">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 385" selected="true" centerPoint3DX="36.45" centerPoint3DY="22.65">
+                  <matrix>
+                    <Matrix a="0.945999145507813" b="-1.03775024414063" c="-0.979568481445313" d="-0.569732666015625" tx="17.35" ty="166.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.25"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 415" selected="true" centerPoint3DX="-4.8" centerPoint3DY="-20.2">
+                  <matrix>
+                    <Matrix a="-1.29466247558594" b="0.8319091796875" c="0.771240234375" d="0.753738403320313" tx="43" ty="-152"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.19140625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#7FC9FF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 375" selected="true" centerPoint3DX="-523.05" centerPoint3DY="319.85">
+                  <matrix>
+                    <Matrix a="-1.23838806152344" b="0.704757690429688" c="0.843063354492188" d="1.03520202636719" tx="-506.35" ty="240.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-404" y="46.35"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 377" selected="true" centerPoint3DX="-544.9" centerPoint3DY="375.8">
+                  <matrix>
+                    <Matrix a="-1.23838806152344" b="0.704757690429688" c="0.843063354492188" d="1.03520202636719" tx="-506.35" ty="240.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-395.9" y="45"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 379" selected="true" centerPoint3DX="-548.75" centerPoint3DY="380.95">
+                  <matrix>
+                    <Matrix a="-1.23838806152344" b="0.704757690429688" c="0.843063354492188" d="1.03520202636719" tx="-506.35" ty="240.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-397.9" y="41.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 381" selected="true" centerPoint3DX="-563.6" centerPoint3DY="393.2">
+                  <matrix>
+                    <Matrix a="-1.23838806152344" b="0.704757690429688" c="0.843063354492188" d="1.03520202636719" tx="-506.35" ty="240.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-387.35" y="29.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 377" selected="true" centerPoint3DX="-544.9" centerPoint3DY="375.8">
+                  <matrix>
+                    <Matrix a="-1.23838806152344" b="0.704757690429688" c="0.843063354492188" d="1.03520202636719" tx="-506.35" ty="240.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-395.9" y="45"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 379" selected="true" centerPoint3DX="-548.75" centerPoint3DY="380.95">
+                  <matrix>
+                    <Matrix a="-1.23838806152344" b="0.704757690429688" c="0.843063354492188" d="1.03520202636719" tx="-506.35" ty="240.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-397.9" y="41.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 377" selected="true" centerPoint3DX="-544.9" centerPoint3DY="375.8">
+                  <matrix>
+                    <Matrix a="-1.23838806152344" b="0.704757690429688" c="0.843063354492188" d="1.03520202636719" tx="-506.35" ty="240.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-395.9" y="45"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 379" selected="true" centerPoint3DX="-548.75" centerPoint3DY="380.95">
+                  <matrix>
+                    <Matrix a="-1.23838806152344" b="0.704757690429688" c="0.843063354492188" d="1.03520202636719" tx="-506.35" ty="240.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-397.9" y="41.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 381" selected="true" centerPoint3DX="-563.6" centerPoint3DY="393.2">
+                  <matrix>
+                    <Matrix a="-1.23838806152344" b="0.704757690429688" c="0.843063354492188" d="1.03520202636719" tx="-506.35" ty="240.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-387.35" y="29.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 377" selected="true" centerPoint3DX="-544.9" centerPoint3DY="375.8">
+                  <matrix>
+                    <Matrix a="-1.23838806152344" b="0.704757690429688" c="0.843063354492188" d="1.03520202636719" tx="-506.35" ty="240.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-395.9" y="45"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 379" selected="true" centerPoint3DX="-548.75" centerPoint3DY="380.95">
+                  <matrix>
+                    <Matrix a="-1.23838806152344" b="0.704757690429688" c="0.843063354492188" d="1.03520202636719" tx="-506.35" ty="240.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-397.9" y="41.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 381" selected="true" centerPoint3DX="-563.6" centerPoint3DY="393.2">
+                  <matrix>
+                    <Matrix a="-1.23838806152344" b="0.704757690429688" c="0.843063354492188" d="1.03520202636719" tx="-506.35" ty="240.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-387.35" y="29.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 381" selected="true" centerPoint3DX="-563.6" centerPoint3DY="393.2">
+                  <matrix>
+                    <Matrix a="-1.23838806152344" b="0.704757690429688" c="0.843063354492188" d="1.03520202636719" tx="-506.35" ty="240.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-387.35" y="29.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

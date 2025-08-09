@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/dominator/素材/补间 11" itemID="65e72542-000006b8" symbolType="graphic" lastModified="1709647170">
+  <timeline>
+    <DOMTimeline name="补间 11">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/dominator/素材/枪身5-组件1" selected="true" centerPoint3DX="14.2" centerPoint3DY="6.5">
+                  <matrix>
+                    <Matrix a="-0.10107421875" b="-0.006622314453125" c="-0.006622314453125" d="0.10107421875" tx="47.25" ty="-18.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="474.5" y="157.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="武器/dominator/素材/枪身5-组件2" selected="true" centerPoint3DX="-24.25" centerPoint3DY="-12.25">
+                  <matrix>
+                    <Matrix a="-0.10760498046875" b="-0.00225830078125" c="-0.00225830078125" d="0.10760498046875" tx="0.35" ty="-30.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="415.3" y="227.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

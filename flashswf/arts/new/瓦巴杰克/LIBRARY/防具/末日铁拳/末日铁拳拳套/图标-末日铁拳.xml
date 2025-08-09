@@ -1,0 +1,84 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防具/末日铁拳/末日铁拳拳套/图标-末日铁拳" itemID="68374215-0000113d" linkageExportForAS="true" linkageIdentifier="图标-末日铁拳" lastModified="1754752968" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="图标-末日铁拳" currentFrame="1">
+      <layers>
+        <DOMLayer name="Script Layer" color="#F707E4" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#DE83DA" locked="true" outline="true" useOutlineView="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.02069091796875" d="0.02069091796875"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry alpha="0" ratio="0.815686274509804"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-240 -240S2|240 -240!240 -240|240 240!240 240|-240 240!-240 240|-240 -240"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#F81EA4" parentLayerIndex="1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防具/末日铁拳/末日铁拳拳套/素材/末日铁拳-右手" centerPoint3DX="4.15" centerPoint3DY="-0.55">
+                  <matrix>
+                    <Matrix a="0.14801025390625" d="0.14801025390625" tx="1.2" ty="-0.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.6" y="-0.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防具/末日铁拳/末日铁拳拳套/素材/末日铁拳-右手" selected="true" centerPoint3DX="9.6" centerPoint3DY="-0.2">
+                  <matrix>
+                    <Matrix a="0.366775512695313" b="-0.000213623046875" c="0.000213623046875" d="0.366775512695313" tx="2.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.5" y="-0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#A157AB" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防具/末日铁拳/末日铁拳拳套/素材/图标阴影" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

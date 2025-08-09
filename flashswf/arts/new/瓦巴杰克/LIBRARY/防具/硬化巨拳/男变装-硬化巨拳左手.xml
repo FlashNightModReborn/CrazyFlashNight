@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防具/硬化巨拳/男变装-硬化巨拳左手" itemID="6839ee7b-00001718" linkageExportForAS="true" linkageIdentifier="男变装-硬化巨拳左手" lastModified="1748627765" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="男变装-硬化巨拳左手">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防具/硬化巨拳/素材/Symbol 243" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.550888061523438" b="1.25437927246094" c="1.25437927246094" d="0.550888061523438" tx="-82.35" ty="26.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="防具/硬化巨拳/素材/Symbol 244" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.376068115234375" b="0.699493408203125" c="0.699493408203125" d="0.376068115234375" tx="-60.4" ty="11.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

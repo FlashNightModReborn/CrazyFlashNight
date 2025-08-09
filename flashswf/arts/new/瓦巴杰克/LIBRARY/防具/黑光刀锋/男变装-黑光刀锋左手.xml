@@ -1,0 +1,105 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防具/黑光刀锋/男变装-黑光刀锋左手" itemID="6839e80e-00000bdc" linkageExportForAS="true" linkageIdentifier="男变装-黑光刀锋左手" lastModified="1748626626" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="男变装-黑光刀锋左手">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防具/黑光重锤/素材/元件 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.329818725585938" b="0.65570068359375" c="0.65570068359375" d="0.329818725585938" tx="-39.35" ty="-43.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="33.85" y="58.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="防具/黑光重锤/素材/元件 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.329818725585938" b="0.65570068359375" c="0.65570068359375" d="0.329818725585938" tx="-1.5" ty="-29.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.4" y="29.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMGroup>
+                  <members>
+                    <DOMSymbolInstance libraryItemName="防具/黑光重锤/素材/yellow axe light 1">
+                      <matrix>
+                        <Matrix a="-0.456649780273438" b="0.571334838867188" c="0.571334838867188" d="0.456649780273438" tx="-35" ty="-9"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="-0.3" y="-1.4"/>
+                      </transformationPoint>
+                      <filters>
+                        <GlowFilter blurX="4" blurY="4" quality="3" strength="2.5"/>
+                      </filters>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="防具/黑光重锤/素材/yellow axe light 1">
+                      <matrix>
+                        <Matrix a="-0.456649780273438" b="0.571334838867188" c="0.571334838867188" d="0.456649780273438" tx="-34.15" ty="-10.1"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="-0.2" y="-1.15"/>
+                      </transformationPoint>
+                      <filters>
+                        <GlowFilter blurX="13" blurY="0" color="#EC8202" quality="3" strength="3.5"/>
+                      </filters>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="防具/黑光重锤/素材/yellow axe light 1" selected="true">
+                      <matrix>
+                        <Matrix a="-0.456649780273438" b="0.571334838867188" c="0.571334838867188" d="0.456649780273438" tx="-34.45" ty="-9.35"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="-0.1" y="-1.2"/>
+                      </transformationPoint>
+                      <filters>
+                        <GlowFilter blurX="0" color="#FFFF00" strength="0.74"/>
+                      </filters>
+                    </DOMSymbolInstance>
+                  </members>
+                </DOMGroup>
+                <DOMSymbolInstance libraryItemName="防具/黑光重锤/素材/元件 4" centerPoint3DX="-5.55" centerPoint3DY="-11.9">
+                  <matrix>
+                    <Matrix a="-0.191925048828125" b="0.44158935546875" c="0.482070922851563" d="0.209518432617188" tx="-17.65" ty="-30.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.05" y="35.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#000000"/>
+                    <BlurFilter blurX="2" blurY="2"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="防具/黑光重锤/素材/元件 18" centerPoint3DX="-5.8" centerPoint3DY="-15">
+                  <matrix>
+                    <Matrix a="0.21014404296875" b="0.273757934570313" c="0.408721923828125" d="-0.313751220703125" tx="-32.85" ty="-16.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="51" y="39.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="防具/黑光重锤/素材/元件 18" centerPoint3DX="-9.4" centerPoint3DY="9.2">
+                  <matrix>
+                    <Matrix a="0.29229736328125" b="0.286712646484375" c="0.46490478515625" d="-0.473968505859375" tx="-43.15" ty="13.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.95" y="39.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="防具/黑光重锤/素材/元件 18" centerPoint3DX="-0.35" centerPoint3DY="14.85">
+                  <matrix>
+                    <Matrix a="0.383590698242188" b="0.143203735351563" c="0.232192993164063" d="-0.621978759765625" tx="-29.85" ty="32.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="51.1" y="39.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

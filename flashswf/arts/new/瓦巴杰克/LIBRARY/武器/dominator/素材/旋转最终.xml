@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/dominator/素材/旋转最终" itemID="65e73326-00000811" lastModified="1709650726" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="旋转最终">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/dominator/素材/枪身4" selected="true" centerPoint3DX="32.8" centerPoint3DY="25">
+                  <matrix>
+                    <Matrix a="0.106658935546875" b="0.0008544921875" c="0.0008544921875" d="-0.106658935546875" ty="45.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="114.05" y="219.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="武器/dominator/素材/插件旋转" centerPoint3DX="32.2" centerPoint3DY="19.15">
+                  <matrix>
+                    <Matrix a="0.108062744140625" b="0.015045166015625" c="0.015045166015625" d="-0.108062744140625" tx="22.05" ty="34.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="37.3" y="4.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="武器/dominator/素材/插件旋转" centerPoint3DX="24.65" centerPoint3DY="17.8">
+                  <matrix>
+                    <Matrix a="0.108062744140625" b="0.015045166015625" c="0.015045166015625" d="-0.108062744140625" tx="14.5" ty="33"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="37.3" y="4.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="武器/dominator/素材/插件旋转" centerPoint3DX="16.95" centerPoint3DY="16.15">
+                  <matrix>
+                    <Matrix a="0.108062744140625" b="0.015045166015625" c="0.015045166015625" d="-0.108062744140625" tx="6.8" ty="31.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="37.3" y="4.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,120 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/上帝之杖/上帝之杖" itemID="66e7ebf4-0000160c" linkageExportForAS="true" linkageIdentifier="上帝之杖" lastModified="1754496391" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="上帝之杖" currentFrame="6">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#F9F958">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="5" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#91B5D7" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(子弹威力 == undefined)
+{
+   子弹威力 = 100000;
+}
+if(子弹敌我属性值 == undefined)
+{
+   子弹敌我属性值 = true;
+}
+if(发射者名 == undefined)
+{
+   发射者名 = _root.控制目标;
+}
+
+子弹属性 = _root.子弹属性初始化(this,"巨大物理爆炸",发射者名);
+子弹属性.声音 = "";
+子弹属性.霰弹值 = 1;
+子弹属性.子弹散射度 = 0;
+子弹属性.发射效果 = "";
+子弹属性.子弹种类 = "巨大物理爆炸";
+子弹属性.子弹威力 = 子弹威力;
+子弹属性.子弹速度 = 0;
+子弹属性.击中地图效果 = "";
+子弹属性.Z轴攻击范围 = 160;
+子弹属性.击倒率 = 0.01;
+子弹属性.击中后子弹的效果 = "";
+子弹属性.子弹敌我属性 = 子弹敌我属性值;
+子弹属性.伤害类型 = "物理";
+子弹属性.斩杀 = 13;
+子弹属性.shootX = this._x;
+子弹属性.shootY = this._y;
+子弹属性.shootZ = this._y;
+子弹属性.发射者 = 发射者名;
+_root.子弹区域shoot传递(子弹属性);
+stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#EE9E14">
+          <frames>
+            <DOMFrame index="0" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/上帝之杖/无AS链接/Symbol 714" centerPoint3DX="13.5" centerPoint3DY="-633.55">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-719.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                    <BlurFilter blurY="50"/>
+                    <GlowFilter blurY="50"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/上帝之杖/无AS链接/Symbol 714" centerPoint3DX="13.5" centerPoint3DY="59.3">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" ty="-27"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                    <BlurFilter blurY="50"/>
+                    <GlowFilter blurY="50"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 0" color="#7DC96F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="10" keyMode="9728" soundName="特效与子弹/上帝之杖/3.音效相关/sound715.mp3" inPoint44="33165" outPoint44="45620" soundZoomLevel="3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

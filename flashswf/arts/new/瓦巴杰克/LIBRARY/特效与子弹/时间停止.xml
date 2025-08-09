@@ -1,0 +1,460 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/时间停止" itemID="6580323f-00000852" linkageExportForAS="true" linkageIdentifier="时间停止" lastModified="1729339735" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="时间停止">
+      <layers>
+        <DOMLayer name="代码" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[	this._rotation = 0;
+	目标数组 = [];
+   for(var each in _root.gameworld)
+   {
+      if(_root.gameworld[each].是否为敌人 == !_parent._parent.是否为敌人 and _root.gameworld[each].hp > 0)
+      {
+         目标数组.push(each);
+		 _root.gameworld[each].stop();
+		 _root.gameworld[each].被时停 = true;
+		 /*
+		 _root.gameworld[each].左行=0;
+		 _root.gameworld[each].右行=0;
+		 _root.gameworld[each].上行=0;
+		 _root.gameworld[each].下行=0;
+		 */
+		 _root.gameworld[each].temp_行走X速度=_root.gameworld[each].行走X速度;
+		 _root.gameworld[each].行走X速度=0;
+		 _root.gameworld[each].temp_行走Y速度=_root.gameworld[each].行走Y速度;
+		 _root.gameworld[each].行走Y速度=0;
+		 _root.gameworld[each].temp_跑X速度=_root.gameworld[each].跑X速度;
+		 _root.gameworld[each].跑X速度=0;
+		 _root.gameworld[each].temp_跑Y速度=_root.gameworld[each].跑Y速度;
+		 _root.gameworld[each].跑Y速度=0;
+   
+   		for(var eachObj in _root.gameworld[each])
+   		{
+			_root.gameworld[each][eachObj].stop();
+		}
+      }
+   }
+   var 秒数计数 = 0;
+   if(!子弹威力){
+	   总秒数 = 2;
+   }else{
+	   总秒数 =1+子弹威力*0.8;
+   }
+   
+   
+   this.onUnload = function()
+   {
+   		for(i=0;i<目标数组.length;i++)
+   		{
+	  		each = 目标数组[i];
+			_root.gameworld[each].被时停 = false;
+      		if( _root.gameworld[each].hp > 0)
+      		{
+		
+		 		if(_root.gameworld[each].行走X速度==0){
+		 			_root.gameworld[each].行走X速度=_root.gameworld[each].temp_行走X速度;
+		 			_root.gameworld[each].行走Y速度=_root.gameworld[each].temp_行走Y速度;
+		 			_root.gameworld[each].跑X速度=_root.gameworld[each].temp_跑X速度;
+		 			_root.gameworld[each].跑Y速度=_root.gameworld[each].temp_跑Y速度;
+		 		}
+   
+   				for(var eachObj in _root.gameworld[each])
+   				{
+					_root.gameworld[each][eachObj].play();
+				}
+      		}
+   		}
+		_root.发布消息("时停结束");
+   }
+   
+   
+   ]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="30" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[秒数计数 +=1;
+
+_root.发布消息("过了"+秒数计数+"秒……");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(秒数计数<总秒数){
+	gotoAndPlay(15);
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="46" duration="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[/*
+   for(i=0;i<目标数组.length;i++)
+   {
+	  each = 目标数组[i];
+      if( _root.gameworld[each].hp > 0)
+      {
+		 //_root.gameworld[each].play();
+		 / *
+		 _root.gameworld[each].左行=0;
+		 _root.gameworld[each].右行=0;
+		 _root.gameworld[each].上行=0;
+		 _root.gameworld[each].下行=0;
+		 * /
+		 if(_root.gameworld[each].行走X速度==0){
+		 	_root.gameworld[each].行走X速度=_root.gameworld[each].temp_行走X速度;
+		 	_root.gameworld[each].行走Y速度=_root.gameworld[each].temp_行走Y速度;
+		 	_root.gameworld[each].跑X速度=_root.gameworld[each].temp_跑X速度;
+		 	_root.gameworld[each].跑Y速度=_root.gameworld[each].temp_跑Y速度;
+		 }
+   
+   		for(var eachObj in _root.gameworld[each])
+   		{
+			_root.gameworld[each][eachObj].play();
+		}
+      }
+   }
+   
+   */]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" duration="18" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#55A3DA">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._rotation = 0;
+]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="各种图素材等/area 副本" name="area" centerPoint3DX="-0.05" centerPoint3DY="0.15">
+                  <matrix>
+                    <Matrix a="3.24676513671875" d="3.11656188964844" tx="-65.05" ty="-62.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.22" tintColor="#FFCC00"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="56" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#C874BE">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5031" blendMode="add" centerPoint3DX="-22.05" centerPoint3DY="1.4">
+                  <matrix>
+                    <Matrix a="1.77420043945313" d="1.7459716796875" tx="-97.4" ty="-77.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.22" tintColor="#FFCC00"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5035" blendMode="add" centerPoint3DX="-39.85" centerPoint3DY="4.05">
+                  <matrix>
+                    <Matrix a="1.77420043945313" d="1.7459716796875" tx="-167.5" ty="-128.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.22" tintColor="#FFCC00"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5039" blendMode="add" centerPoint3DX="-40.9" centerPoint3DY="1.4">
+                  <matrix>
+                    <Matrix a="1.77420043945313" d="1.7459716796875" tx="-219.9" ty="-178.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.22" tintColor="#FFCC00"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5043" blendMode="add" centerPoint3DX="-38.05" centerPoint3DY="-2.05">
+                  <matrix>
+                    <Matrix a="1.77420043945313" d="1.7459716796875" tx="-258" ty="-219.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.22" tintColor="#FFCC00"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#C49130">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 13" name="area" centerPoint3DX="87.6" centerPoint3DY="-43.2">
+                  <matrix>
+                    <Matrix a="-5.31756591796875" d="5.3173828125" tx="64.9" ty="-65.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.22" tintColor="#FFCC00"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#61EEC4">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5029" centerPoint3DX="-276.75" centerPoint3DY="-301.75">
+                  <matrix>
+                    <Matrix a="1.77420043945313" d="1.7459716796875" tx="-352" ty="-376.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.22" tintColor="#FFCC00"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5033" centerPoint3DX="-231.4" centerPoint3DY="-257.85">
+                  <matrix>
+                    <Matrix a="1.77420043945313" d="1.7459716796875" tx="-352" ty="-376.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.22" tintColor="#FFCC00"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5037" centerPoint3DX="-214.05" centerPoint3DY="-239.9">
+                  <matrix>
+                    <Matrix a="1.77420043945313" d="1.7459716796875" tx="-352" ty="-376.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.22" tintColor="#FFCC00"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5041" blendMode="add" centerPoint3DX="-0.4" centerPoint3DY="-3.65">
+                  <matrix>
+                    <Matrix a="1.77420043945313" d="1.7459716796875" tx="-147.15" ty="-146.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.22" tintColor="#FFCC00"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5045" blendMode="add" centerPoint3DX="-0.4" centerPoint3DY="-1.25">
+                  <matrix>
+                    <Matrix a="1.77420043945313" d="1.7459716796875" tx="-155.05" ty="-153.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.22" tintColor="#FFCC00"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5047" blendMode="add" centerPoint3DX="-0.4" centerPoint3DY="-1.75">
+                  <matrix>
+                    <Matrix a="1.77420043945313" d="1.7459716796875" tx="-163.05" ty="-161.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.22" tintColor="#FFCC00"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5049" blendMode="add" centerPoint3DX="-0.4" centerPoint3DY="-1.75">
+                  <matrix>
+                    <Matrix a="1.77420043945313" d="1.7459716796875" tx="-171.05" ty="-169.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.22" tintColor="#FFCC00"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5051" blendMode="add" centerPoint3DX="-0.4" centerPoint3DY="-2.05">
+                  <matrix>
+                    <Matrix a="1.77420043945313" d="1.7459716796875" tx="-179.9" ty="-178.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.22" tintColor="#FFCC00"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="46" keyMode="9728" soundName="音效/世界开始.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="46" duration="33" keyMode="9728" soundName="音效/世界结束.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,38 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防具/末日铁拳/末日铁拳拳套/素材/末日铁拳-右手" itemID="68373028-000006e3" lastModified="1749925418" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="末日铁拳-右手">
+      <layers>
+        <DOMLayer name="图层 4" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防具/末日铁拳/末日铁拳拳套/素材/铁拳下臂单独元件" selected="true" centerPoint3DX="-28.8" centerPoint3DY="-0.55">
+                  <matrix>
+                    <Matrix tx="-144" ty="-54.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="115.2" y="54.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

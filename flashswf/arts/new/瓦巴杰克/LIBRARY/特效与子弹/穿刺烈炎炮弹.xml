@@ -1,0 +1,215 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/穿刺烈炎炮弹" itemID="6732130b-0000117c" linkageExportForAS="true" linkageIdentifier="穿刺烈炎炮弹" lastModified="1740498053" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="穿刺烈炎炮弹">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#F34485" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#96ACB7" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#D6328C" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" centerPoint3DX="9.3" centerPoint3DY="-14.85">
+                  <matrix>
+                    <Matrix a="8.18975830078125" d="2.74008178710938" tx="-8.65" ty="-34.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" centerPoint3DX="9.3" centerPoint3DY="-15.45">
+                  <matrix>
+                    <Matrix a="8.18975830078125" d="2.74008178710938" tx="-8.65" ty="-34.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" centerPoint3DX="9.3" centerPoint3DY="-42.1">
+                  <matrix>
+                    <Matrix a="8.18975830078125" d="4.786865234375" tx="-8.65" ty="-60.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" selected="true" centerPoint3DX="9.3" centerPoint3DY="-42.1">
+                  <matrix>
+                    <Matrix a="8.18975830078125" d="4.786865234375" tx="-8.65" ty="-60.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" selected="true" centerPoint3DX="9.3" centerPoint3DY="-42.1">
+                  <matrix>
+                    <Matrix a="8.18975830078125" d="4.786865234375" tx="-8.65" ty="-60.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" centerPoint3DX="9.3" centerPoint3DY="-58.7">
+                  <matrix>
+                    <Matrix a="8.18975830078125" d="5.9453125" tx="-8.65" ty="-77.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" centerPoint3DX="9.3" centerPoint3DY="-42.1">
+                  <matrix>
+                    <Matrix a="8.18975830078125" d="4.786865234375" tx="-8.65" ty="-60.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" selected="true" centerPoint3DX="9.3" centerPoint3DY="-42.1">
+                  <matrix>
+                    <Matrix a="8.18975830078125" d="4.786865234375" tx="-8.65" ty="-60.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" selected="true" centerPoint3DX="9.3" centerPoint3DY="-42.1">
+                  <matrix>
+                    <Matrix a="8.18975830078125" d="4.786865234375" tx="-8.65" ty="-60.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" selected="true" centerPoint3DX="9.3" centerPoint3DY="-58.7">
+                  <matrix>
+                    <Matrix a="8.18975830078125" d="5.9453125" tx="-8.65" ty="-77.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area" selected="true" centerPoint3DX="9.3" centerPoint3DY="-42.1">
+                  <matrix>
+                    <Matrix a="8.18975830078125" d="4.786865234375" tx="-8.65" ty="-60.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/烈焰炮弹素材" centerPoint3DX="78.25" centerPoint3DY="-0.2">
+                  <matrix>
+                    <Matrix a="1.50247192382813" d="1.50247192382813" tx="-0.1" ty="-0.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="57.45" y="1.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

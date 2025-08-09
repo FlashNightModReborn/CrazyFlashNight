@@ -1,0 +1,919 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#999999" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+     <folders>
+          <DOMFolderItem name="Graphic" itemID="660e711f-00002492"/>
+          <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
+          <DOMFolderItem name="sound" itemID="66684e26-0000087a"/>
+          <DOMFolderItem name="sprite" itemID="666743d5-00000959"/>
+          <DOMFolderItem name="防具" itemID="68372e4d-000003a7" isExpanded="true"/>
+          <DOMFolderItem name="防具/大型拳套" itemID="6839fd1c-0000264e"/>
+          <DOMFolderItem name="防具/改造人巨拳" itemID="6839d1c6-000004af"/>
+          <DOMFolderItem name="防具/黑光刀锋" itemID="6839e7ef-00000ba4"/>
+          <DOMFolderItem name="防具/黑光刀锋/素材" itemID="6839e7f4-00000ba8"/>
+          <DOMFolderItem name="防具/黑光重锤" itemID="6839df72-00000854"/>
+          <DOMFolderItem name="防具/黑光重锤/素材" itemID="6839e00e-00000869"/>
+          <DOMFolderItem name="防具/末日铁拳" itemID="68372f48-000006cd" isExpanded="true"/>
+          <DOMFolderItem name="防具/末日铁拳/末日铁拳拳套" itemID="68372f4a-000006ce" isExpanded="true"/>
+          <DOMFolderItem name="防具/末日铁拳/末日铁拳拳套/素材" itemID="683993df-000011d4"/>
+          <DOMFolderItem name="防具/小型拳套" itemID="683a02dc-0000287b" isExpanded="true"/>
+          <DOMFolderItem name="防具/硬化巨拳" itemID="6839ee98-00001725" isExpanded="true"/>
+          <DOMFolderItem name="防具/硬化巨拳/素材" itemID="6839f14d-00001b36"/>
+          <DOMFolderItem name="各种图素材等" itemID="65e07117-00000783"/>
+          <DOMFolderItem name="闪电特效素材" itemID="684dbdac-00004430"/>
+          <DOMFolderItem name="特效与子弹" itemID="659a5bab-00000abc" isExpanded="true"/>
+          <DOMFolderItem name="特效与子弹/淬毒动画" itemID="658c7185-00001244"/>
+          <DOMFolderItem name="特效与子弹/上帝之杖" itemID="66e7ebe3-000015fc" isExpanded="true"/>
+          <DOMFolderItem name="特效与子弹/上帝之杖/3.位图相关" itemID="6690e84b-000017e9"/>
+          <DOMFolderItem name="特效与子弹/上帝之杖/3.音效相关" itemID="6690f591-00003200" isExpanded="true"/>
+          <DOMFolderItem name="特效与子弹/上帝之杖/无AS链接" itemID="6690f257-00002761"/>
+          <DOMFolderItem name="特效与子弹/特效素材" itemID="66e6ff89-00000d9e"/>
+          <DOMFolderItem name="特效与子弹/特效素材/01.白净色系" itemID="658030f8-00000834"/>
+          <DOMFolderItem name="特效与子弹/特效素材/01.白净色系/回旋风刃" itemID="65899798-0000119b"/>
+          <DOMFolderItem name="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1" itemID="65507bbb-00005be7" isExpanded="true"/>
+          <DOMFolderItem name="特效与子弹/特效素材/01.白净色系/圆状气爆" itemID="658030f8-00000835" isExpanded="true"/>
+          <DOMFolderItem name="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1" itemID="65536c5e-000029e2" isExpanded="true"/>
+          <DOMFolderItem name="特效与子弹/特效素材/03.赤橙色系" itemID="65802244-0000076f"/>
+          <DOMFolderItem name="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)" itemID="65539e08-00002db4"/>
+          <DOMFolderItem name="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1" itemID="65539dca-00002dae" isExpanded="true"/>
+          <DOMFolderItem name="特效与子弹/特效素材/Graphic" itemID="58132c33-0000064e"/>
+          <DOMFolderItem name="特效与子弹/特效素材/重力井素材" itemID="660e7010-00001bd7"/>
+          <DOMFolderItem name="特效与子弹/一瞬千击多次" itemID="66e6ff40-00000d70"/>
+          <DOMFolderItem name="特效与子弹/一瞬千击多次/素材" itemID="66e6ff53-00000d73"/>
+          <DOMFolderItem name="特效与子弹/自瞄准星特效" itemID="66e6ffdb-00000da8"/>
+          <DOMFolderItem name="武器" itemID="65df528e-00000447" isExpanded="true"/>
+          <DOMFolderItem name="武器/3D打印：炎" itemID="66e6fe54-00000d6d"/>
+          <DOMFolderItem name="武器/dominator" itemID="65e71ef4-00000627" isExpanded="true"/>
+          <DOMFolderItem name="武器/dominator/素材" itemID="65e71f00-0000062f"/>
+          <DOMFolderItem name="音效" itemID="65e0710b-0000077e"/>
+          <DOMFolderItem name="余烬小队" itemID="684dc081-000045b1"/>
+          <DOMFolderItem name="余烬小队/余烬剑痴" itemID="684dc081-000045b2"/>
+     </folders>
+     <media>
+          <DOMBitmapItem name="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/bitmap434.png" itemID="653dcca1-00000ebf" sourceExternalFilepath="./LIBRARY/特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/bitmap434.png" sourceLastImported="1698548897" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/bitmap434.png" bitmapDataHRef="M 82 1703516056.dat" frameRight="4380" frameBottom="3980"/>
+          <DOMBitmapItem name="特效与子弹/上帝之杖/3.位图相关/bitmap4735.png" itemID="668e7c1c-0000054a" sourceExternalFilepath="./LIBRARY/特效与子弹/上帝之杖/3.位图相关/bitmap4735.png" sourceLastImported="1720613917" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="特效与子弹/上帝之杖/3.位图相关/bitmap4735.png" bitmapDataHRef="M 126 1726478575.dat" frameRight="9560" frameBottom="5600"/>
+          <DOMBitmapItem name="特效与子弹/上帝之杖/3.位图相关/bitmap4736.png" itemID="668e7c1d-0000054f" sourceExternalFilepath="./LIBRARY/特效与子弹/上帝之杖/3.位图相关/bitmap4736.png" sourceLastImported="1720613917" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="特效与子弹/上帝之杖/3.位图相关/bitmap4736.png" bitmapDataHRef="M 127 1726478575.dat" frameRight="12000" frameBottom="8960"/>
+          <DOMBitmapItem name="特效与子弹/上帝之杖/3.位图相关/bitmap4737.png" itemID="668e7c1d-00000554" sourceExternalFilepath="./LIBRARY/特效与子弹/上帝之杖/3.位图相关/bitmap4737.png" sourceLastImported="1720613917" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="特效与子弹/上帝之杖/3.位图相关/bitmap4737.png" bitmapDataHRef="M 128 1726478575.dat" frameRight="14160" frameBottom="8280"/>
+          <DOMBitmapItem name="特效与子弹/上帝之杖/3.位图相关/bitmap4738.png" itemID="668e7c1d-00000559" sourceExternalFilepath="./LIBRARY/特效与子弹/上帝之杖/3.位图相关/bitmap4738.png" sourceLastImported="1720613917" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="特效与子弹/上帝之杖/3.位图相关/bitmap4738.png" bitmapDataHRef="M 129 1726478575.dat" frameRight="13500" frameBottom="8000"/>
+          <DOMBitmapItem name="特效与子弹/上帝之杖/3.位图相关/bitmap4739.png" itemID="668e7c1d-0000055e" sourceExternalFilepath="./LIBRARY/特效与子弹/上帝之杖/3.位图相关/bitmap4739.png" sourceLastImported="1720613917" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="特效与子弹/上帝之杖/3.位图相关/bitmap4739.png" bitmapDataHRef="M 130 1726478575.dat" frameRight="10400" frameBottom="6960"/>
+          <DOMBitmapItem name="特效与子弹/上帝之杖/3.位图相关/bitmap4740.png" itemID="668e7c1d-00000563" sourceExternalFilepath="./LIBRARY/特效与子弹/上帝之杖/3.位图相关/bitmap4740.png" sourceLastImported="1720613917" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="特效与子弹/上帝之杖/3.位图相关/bitmap4740.png" bitmapDataHRef="M 131 1726478575.dat" frameRight="10320" frameBottom="9280"/>
+          <DOMBitmapItem name="特效与子弹/上帝之杖/3.位图相关/bitmap4741.png" itemID="668e7c1d-00000568" sourceExternalFilepath="./LIBRARY/特效与子弹/上帝之杖/3.位图相关/bitmap4741.png" sourceLastImported="1720613917" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="特效与子弹/上帝之杖/3.位图相关/bitmap4741.png" bitmapDataHRef="M 132 1726478575.dat" frameRight="12600" frameBottom="10220"/>
+          <DOMBitmapItem name="特效与子弹/上帝之杖/3.位图相关/bitmap4742.png" itemID="668e7c1d-0000056d" sourceExternalFilepath="./LIBRARY/特效与子弹/上帝之杖/3.位图相关/bitmap4742.png" sourceLastImported="1720613917" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="特效与子弹/上帝之杖/3.位图相关/bitmap4742.png" bitmapDataHRef="M 133 1726478575.dat" frameRight="11220" frameBottom="11240"/>
+          <DOMBitmapItem name="特效与子弹/上帝之杖/3.位图相关/bitmap4743.png" itemID="668e7c1d-00000572" sourceExternalFilepath="./LIBRARY/特效与子弹/上帝之杖/3.位图相关/bitmap4743.png" sourceLastImported="1720613917" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="特效与子弹/上帝之杖/3.位图相关/bitmap4743.png" bitmapDataHRef="M 134 1726478575.dat" frameRight="11920" frameBottom="9920"/>
+          <DOMBitmapItem name="特效与子弹/上帝之杖/3.位图相关/bitmap4744.png" itemID="668e7c1d-00000577" sourceExternalFilepath="./LIBRARY/特效与子弹/上帝之杖/3.位图相关/bitmap4744.png" sourceLastImported="1720613917" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="特效与子弹/上帝之杖/3.位图相关/bitmap4744.png" bitmapDataHRef="M 135 1726478575.dat" frameRight="11880" frameBottom="10000"/>
+          <DOMBitmapItem name="特效与子弹/上帝之杖/3.位图相关/bitmap4745.png" itemID="668e7c1d-0000057c" sourceExternalFilepath="./LIBRARY/特效与子弹/上帝之杖/3.位图相关/bitmap4745.png" sourceLastImported="1720613918" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="特效与子弹/上帝之杖/3.位图相关/bitmap4745.png" bitmapDataHRef="M 136 1726478575.dat" frameRight="11200" frameBottom="9280"/>
+          <DOMBitmapItem name="特效与子弹/上帝之杖/3.位图相关/bitmap4746.png" itemID="668e7c1e-00000581" sourceExternalFilepath="./LIBRARY/特效与子弹/上帝之杖/3.位图相关/bitmap4746.png" sourceLastImported="1720613918" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="特效与子弹/上帝之杖/3.位图相关/bitmap4746.png" bitmapDataHRef="M 137 1726478575.dat" frameRight="11120" frameBottom="6360"/>
+          <DOMBitmapItem name="特效与子弹/上帝之杖/3.位图相关/bitmap4747.png" itemID="668e7c1e-00000586" sourceExternalFilepath="./LIBRARY/特效与子弹/上帝之杖/3.位图相关/bitmap4747.png" sourceLastImported="1720613918" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="特效与子弹/上帝之杖/3.位图相关/bitmap4747.png" bitmapDataHRef="M 138 1726478575.dat" frameRight="4800" frameBottom="4800"/>
+          <DOMBitmapItem name="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/bitmap5342.png" itemID="6577bc3f-000010c9" sourceExternalFilepath="./LIBRARY/特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/bitmap5342.png" sourceLastImported="1702345791" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/bitmap5342.png" bitmapDataHRef="M 79 1702918875.dat" frameRight="520" frameBottom="520"/>
+          <DOMBitmapItem name="bitmap5617.jpg" itemID="657b39a0-000005b8" sourceExternalFilepath="./LIBRARY/bitmap5617.jpg" sourceLastImported="1702574496" externalFileCRC32="2031358647" externalFileSize="165503" allowSmoothing="true" quality="50" href="bitmap5617.jpg" bitmapDataHRef="M 1 1702574457.dat" frameRight="16000" frameBottom="10000" isJPEG="true"/>
+          <DOMBitmapItem name="防具/黑光刀锋/素材/image 4726" itemID="584ce10a-0000127a" sourceExternalFilepath="./LIBRARY/防具/黑光刀锋/素材/image 4726" sourceLastImported="1481433354" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="防具/黑光刀锋/素材/image 4726" bitmapDataHRef="M 36 1748625530.dat" frameRight="11120" frameBottom="3720"/>
+          <DOMBitmapItem name="防具/黑光重锤/素材/image 4726" itemID="6841db48-000003f0" sourceExternalFilepath="./LIBRARY/防具/黑光重锤/素材/image 4726" sourceLastImported="1481433354" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="防具/黑光重锤/素材/image 4726" bitmapDataHRef="M 35 1748623356.dat" frameRight="11120" frameBottom="3720"/>
+          <DOMSoundItem name="sound/sound159.mp3" itemID="669c119a-00000919" sourceExternalFilepath="./LIBRARY/sound/sound159.wav" sourceLastImported="1721502441" externalFileCRC32="1910974532" externalFileSize="352844" href="sound/sound159.wav" soundDataHRef="M 114 1718111928.dat" format="44kHz 16bit Stereo" sampleCount="88200" exportFormat="5" exportBits="17" dataLength="2600"/>
+          <DOMSoundItem name="sound/sound188.mp3" itemID="669c15f2-00000928" sourceExternalFilepath="./LIBRARY/sound/sound188.wav" sourceLastImported="1721505236" externalFileCRC32="547263586" externalFileSize="231572" href="sound/sound188.wav" soundDataHRef="M 113 1718111831.dat" format="44kHz 16bit Stereo" sampleCount="57882" exportFormat="5" exportBits="17" dataLength="2704"/>
+          <DOMSoundItem name="sound/sound309.mp3" itemID="669c107a-00000917" sourceExternalFilepath="./LIBRARY/sound/sound309.wav" sourceLastImported="1721500815" externalFileCRC32="1277677073" externalFileSize="176444" href="sound/sound309.wav" soundDataHRef="M 112 1718111782.dat" format="44kHz 16bit Stereo" sampleCount="44100" exportFormat="5" exportBits="17" dataLength="7911"/>
+          <DOMSoundItem name="音效/sound4764.mp3" itemID="669c14d6-00000926" sourceExternalFilepath="./LIBRARY/音效/sound4764.wav" sourceLastImported="1721505041" externalFileCRC32="1657612231" externalFileSize="463096" href="音效/sound4764.wav" soundDataHRef="M 99 1709215542.dat" format="44kHz 16bit Stereo" sampleCount="115763" exportFormat="5" exportBits="17" dataLength="6247"/>
+          <DOMSoundItem name="特效与子弹/淬毒动画/sound502.mp3" itemID="66a93cd4-000018f3" sourceExternalFilepath="./LIBRARY/特效与子弹/淬毒动画/sound502.wav" sourceLastImported="1722367280" externalFileCRC32="3018213729" externalFileSize="132590" href="特效与子弹/淬毒动画/sound502.wav" soundDataHRef="M 86 1703702920.dat" format="44kHz 16bit Mono" sampleCount="63753" exportFormat="5" exportBits="17" dataLength="2392"/>
+          <DOMSoundItem name="音效/sound519.mp3" itemID="669c100d-00000915" sourceExternalFilepath="./LIBRARY/音效/sound519.wav" sourceLastImported="1721499455" externalFileCRC32="1761133546" externalFileSize="385920" href="音效/sound519.wav" soundDataHRef="M 86 1704623158.dat" format="44kHz 16bit Stereo" sampleCount="96469" exportFormat="5" exportBits="17" dataLength="5096"/>
+          <DOMSoundItem name="音效/sound5595.mp3" itemID="6577bc3f-000010cd" sourceExternalFilepath="./LIBRARY/音效/sound5595.mp3" sourceLastImported="1702345791" href="音效/sound5595.mp3" soundDataHRef="M 78 1702636348.dat" format="11kHz 16bit Mono" sampleCount="10368" exportFormat="5" exportBits="7" dataLength="1872" exportNative="true" cachedSampleCount="5184"/>
+          <DOMSoundItem name="特效与子弹/上帝之杖/3.音效相关/sound715.mp3" itemID="66951c54-00000e5f" sourceExternalFilepath="./LIBRARY/特效与子弹/上帝之杖/3.音效相关/sound715.wav" sourceLastImported="1721048299" href="特效与子弹/上帝之杖/3.音效相关/sound715.wav" soundDataHRef="M 125 1726475238.dat" format="44kHz 16bit Stereo" sampleCount="49170" exportFormat="5" exportBits="17" dataLength="1872"/>
+          <DOMSoundItem name="音效/触电.wav" itemID="666998d9-00000425" sourceExternalFilepath="./LIBRARY/音效/触电.wav" sourceLastImported="1709299860" externalFileCRC32="1672822772" externalFileSize="125696" href="音效/触电.wav" soundDataHRef="M 115 1718196441.dat" format="44kHz 16bit Mono" sampleCount="62826" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="音效/大爆炸.wav" itemID="66e88a9c-00000499" sourceExternalFilepath="./LIBRARY/音效/大爆炸.wav" sourceLastImported="1726515845" externalFileCRC32="3551188052" externalFileSize="786014" href="音效/大爆炸.wav" soundDataHRef="M 140 1726515868.dat" format="44kHz 16bit Stereo" sampleCount="192000"/>
+          <DOMSoundItem name="音效/火舞旋风.wav" itemID="66154ef7-000003b8" sourceExternalFilepath="./LIBRARY/音效/火舞旋风.wav" sourceLastImported="1712671981" externalFileCRC32="3217639232" externalFileSize="139376" href="音效/火舞旋风.wav" soundDataHRef="M 99 1712672503.dat" format="44kHz 16bit Mono" sampleCount="69666" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="特效与子弹/淬毒动画/净化.wav" itemID="66a93ecb-000018f7" sourceExternalFilepath="./LIBRARY/特效与子弹/淬毒动画/净化.wav" sourceLastImported="1722367668" externalFileCRC32="3523324674" externalFileSize="107088" href="特效与子弹/淬毒动画/净化.wav" soundDataHRef="M 124 1722367691.dat" format="44kHz 16bit Mono" sampleCount="51002" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="音效/世界结束.wav" itemID="658aafdd-00000128" sourceExternalFilepath="./LIBRARY/音效/世界结束.wav" sourceLastImported="1703587778" externalFileCRC32="1735965590" externalFileSize="142580" href="音效/世界结束.wav" soundDataHRef="M 86 1703587805.dat" format="44kHz 16bit Mono" sampleCount="64976" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="音效/世界开始.wav" itemID="669c0fd9-0000090f" sourceExternalFilepath="./LIBRARY/音效/世界开始.wav" sourceLastImported="1721499632" externalFileCRC32="45122350" externalFileSize="593732" href="音效/世界开始.wav" soundDataHRef="M 85 1703587516.dat" format="44kHz 16bit Stereo" sampleCount="148422" exportFormat="5" exportBits="17"/>
+          <DOMBitmapItem name="各种图素材等/位图 88" itemID="659a8481-00001beb" sourceExternalFilepath="./LIBRARY/各种图素材等/位图 88.png" sourceLastImported="1704625281" originalCompressionType="lossless" quality="50" href="各种图素材等/位图 88.png" bitmapDataHRef="M 88 1704625281.dat" frameRight="7120" frameBottom="7120"/>
+          <DOMBitmapItem name="各种图素材等/位图 89" itemID="659a857a-00001ce8" sourceExternalFilepath="./LIBRARY/各种图素材等/位图 89.png" sourceLastImported="1704625530" originalCompressionType="lossless" quality="50" href="各种图素材等/位图 89.png" bitmapDataHRef="M 89 1704625530.dat" frameRight="4180" frameBottom="4200"/>
+          <DOMBitmapItem name="各种图素材等/位图 91.png" itemID="659a875c-00001d02" sourceExternalFilepath="./LIBRARY/各种图素材等/位图 91.png" sourceLastImported="1704626012" externalFileCRC32="1716276378" externalFileSize="763" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="各种图素材等/位图 91.png" bitmapDataHRef="M 91 1704625942.dat" frameRight="2660" frameBottom="2800"/>
+          <DOMSoundItem name="音效/重力井.wav" itemID="66154f4b-000003c7" sourceExternalFilepath="./LIBRARY/音效/重力井.wav" sourceLastImported="1712672578" externalFileCRC32="1179850193" externalFileSize="132488" href="音效/重力井.wav" soundDataHRef="M 100 1712672587.dat" format="44kHz 16bit Mono" sampleCount="66222" exportFormat="5" exportBits="17"/>
+     </media>
+     <symbols>
+          <Include href="Graphic/shape 209.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000d1" lastModified="1477651338"/>
+          <Include href="Graphic/shape 210.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000d2" lastModified="1477651338"/>
+          <Include href="Graphic/shape 211.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000d3" lastModified="1477651338"/>
+          <Include href="Graphic/shape 212.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000d4" lastModified="1477651338"/>
+          <Include href="Graphic/shape 213.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000d5" lastModified="1477651338"/>
+          <Include href="Graphic/shape 214.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000d6" lastModified="1477651338"/>
+          <Include href="Graphic/shape 215.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000d7" lastModified="1477651338"/>
+          <Include href="Graphic/shape 217.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000d9" lastModified="1477651338"/>
+          <Include href="Graphic/shape 218.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000da" lastModified="1477651338"/>
+          <Include href="Graphic/shape 219.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000db" lastModified="1477651338"/>
+          <Include href="Graphic/shape 220.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000dc" lastModified="1477651338"/>
+          <Include href="Graphic/shape 221.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000dd" lastModified="1477651338"/>
+          <Include href="Graphic/shape 222.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000de" lastModified="1477651338"/>
+          <Include href="Graphic/shape 223.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000df" lastModified="1477651338"/>
+          <Include href="Graphic/shape 611.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-00000263" lastModified="1477651512"/>
+          <Include href="Graphic/shape 612.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-00000264" lastModified="1477651512"/>
+          <Include href="Graphic/shape 613.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-00000265" lastModified="1477651512"/>
+          <Include href="Graphic/shape 614.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-00000266" lastModified="1477651512"/>
+          <Include href="Graphic/shape 615.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-00000267" lastModified="1477651512"/>
+          <Include href="Graphic/shape 616.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-00000268" lastModified="1477651512"/>
+          <Include href="Graphic/shape 617.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-00000269" lastModified="1477651512"/>
+          <Include href="Graphic/shape 618.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-0000026a" lastModified="1477651512"/>
+          <Include href="Graphic/shape 619.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-0000026b" lastModified="1477651512"/>
+          <Include href="Graphic/shape 620.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-0000026c" lastModified="1477651512"/>
+          <Include href="Graphic/shape 621.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-0000026d" lastModified="1477651512"/>
+          <Include href="Graphic/shape 622.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-0000026e" lastModified="1477651512"/>
+          <Include href="Graphic/shape 623.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-0000026f" lastModified="1477651512"/>
+          <Include href="Graphic/shape 624.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-00000270" lastModified="1477651512"/>
+          <Include href="Graphic/shape 625.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-00000271" lastModified="1477651512"/>
+          <Include href="Graphic/shape 713.xml" itemIcon="1" loadImmediate="false" itemID="58132bff-000002c9" lastModified="1477651455"/>
+          <Include href="Graphic/shape 714.xml" itemIcon="1" loadImmediate="false" itemID="58132bff-000002ca" lastModified="1477651455"/>
+          <Include href="Graphic/shape 715.xml" itemIcon="1" loadImmediate="false" itemID="58132bff-000002cb" lastModified="1477651455"/>
+          <Include href="Graphic/shape 716.xml" itemIcon="1" loadImmediate="false" itemID="58132bff-000002cc" lastModified="1477651455"/>
+          <Include href="Graphic/shape 717.xml" itemIcon="1" loadImmediate="false" itemID="58132bff-000002cd" lastModified="1477651455"/>
+          <Include href="Graphic/shape 718.xml" itemIcon="1" loadImmediate="false" itemID="58132bff-000002ce" lastModified="1477651455"/>
+          <Include href="Graphic/shape 719.xml" itemIcon="1" loadImmediate="false" itemID="58132bff-000002cf" lastModified="1477651455"/>
+          <Include href="Graphic/shape 720.xml" itemIcon="1" loadImmediate="false" itemID="58132bff-000002d0" lastModified="1477651455"/>
+          <Include href="Graphic/shape 721.xml" itemIcon="1" loadImmediate="false" itemID="58132bff-000002d1" lastModified="1477651455"/>
+          <Include href="Graphic/shape 722.xml" itemIcon="1" loadImmediate="false" itemID="58132bff-000002d2" lastModified="1477651455"/>
+          <Include href="Graphic/shape 723.xml" itemIcon="1" loadImmediate="false" itemID="58132bff-000002d3" lastModified="1477651455"/>
+          <Include href="Graphic/shape 834.xml" itemIcon="1" loadImmediate="false" itemID="58132c70-00000342" lastModified="1477651568"/>
+          <Include href="Graphic/shape 835.xml" itemIcon="1" loadImmediate="false" itemID="58132c70-00000343" lastModified="1477651568"/>
+          <Include href="Graphic/shape 836.xml" itemIcon="1" loadImmediate="false" itemID="58132c70-00000344" lastModified="1477651568"/>
+          <Include href="Graphic/shape 837.xml" itemIcon="1" loadImmediate="false" itemID="58132c70-00000345" lastModified="1477651568"/>
+          <Include href="Graphic/shape 838.xml" itemIcon="1" loadImmediate="false" itemID="58132c70-00000346" lastModified="1477651568"/>
+          <Include href="Graphic/shape 839.xml" itemIcon="1" loadImmediate="false" itemID="58132c70-00000347" lastModified="1477651568"/>
+          <Include href="Graphic/shape 840.xml" itemIcon="1" loadImmediate="false" itemID="58132c70-00000348" lastModified="1477651568"/>
+          <Include href="Graphic/shape 1048.xml" itemIcon="1" loadImmediate="false" itemID="58132c20-00000419" lastModified="1477651488"/>
+          <Include href="Graphic/shape 1049.xml" itemIcon="1" loadImmediate="false" itemID="58132c20-0000041a" lastModified="1477651488"/>
+          <Include href="Graphic/shape 1050.xml" itemIcon="1" loadImmediate="false" itemID="58132c20-0000041b" lastModified="1477651488"/>
+          <Include href="Graphic/shape 1051.xml" itemIcon="1" loadImmediate="false" itemID="58132c20-0000041c" lastModified="1477651488"/>
+          <Include href="Graphic/shape 1216.xml" itemIcon="1" loadImmediate="false" itemID="58132bed-000004c1" lastModified="1477651437"/>
+          <Include href="Graphic/shape 1217.xml" itemIcon="1" loadImmediate="false" itemID="58132bed-000004c2" lastModified="1477651437"/>
+          <Include href="Graphic/shape 1218.xml" itemIcon="1" loadImmediate="false" itemID="58132bed-000004c3" lastModified="1477651437"/>
+          <Include href="Graphic/shape 1219.xml" itemIcon="1" loadImmediate="false" itemID="58132bed-000004c4" lastModified="1477651437"/>
+          <Include href="Graphic/shape 1220.xml" itemIcon="1" loadImmediate="false" itemID="58132bed-000004c5" lastModified="1477651437"/>
+          <Include href="Graphic/shape 1221.xml" itemIcon="1" loadImmediate="false" itemID="58132bed-000004c6" lastModified="1477651437"/>
+          <Include href="Graphic/shape 1222.xml" itemIcon="1" loadImmediate="false" itemID="58132bed-000004c7" lastModified="1477651437"/>
+          <Include href="Graphic/shape 1223.xml" itemIcon="1" loadImmediate="false" itemID="58132bed-000004c8" lastModified="1477651437"/>
+          <Include href="Graphic/shape 1224.xml" itemIcon="1" loadImmediate="false" itemID="58132bed-000004c9" lastModified="1477651437"/>
+          <Include href="Graphic/shape 1225.xml" itemIcon="1" loadImmediate="false" itemID="58132bed-000004ca" lastModified="1477651437"/>
+          <Include href="Graphic/shape 1226.xml" itemIcon="1" loadImmediate="false" itemID="58132bed-000004cb" lastModified="1477651437"/>
+          <Include href="Graphic/shape 1227.xml" itemIcon="1" loadImmediate="false" itemID="58132bed-000004cc" lastModified="1477651437"/>
+          <Include href="Graphic/shape 1354.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-0000054a" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1355.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-0000054b" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1357.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-0000054d" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1358.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-0000054e" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1359.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-0000054f" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1360.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000550" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1362.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000552" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1363.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000553" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1364.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000554" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1365.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000555" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1367.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000557" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1368.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000558" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1369.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000559" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1370.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-0000055a" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1372.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-0000055c" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1373.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-0000055d" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1374.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-0000055e" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1375.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-0000055f" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1377.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000561" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1378.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000562" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1379.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000563" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1380.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000564" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1382.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000566" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1383.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000567" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1384.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000568" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1385.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000569" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1387.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-0000056b" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1388.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-0000056c" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1389.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-0000056d" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1390.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-0000056e" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1392.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000570" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1393.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000571" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1394.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000572" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1395.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000573" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1397.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000575" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1398.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000576" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1400.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000578" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1401.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000579" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1403.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-0000057b" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1404.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-0000057c" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1405.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-0000057d" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1406.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-0000057e" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1407.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-0000057f" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1408.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000580" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1409.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000581" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1410.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000582" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1411.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000583" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1412.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000584" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1413.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000585" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1414.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000586" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1415.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000587" lastModified="1477651547"/>
+          <Include href="Graphic/shape 1416.xml" itemIcon="1" loadImmediate="false" itemID="58132c5b-00000588" lastModified="1477651547"/>
+          <Include href="Graphic/shape 2022.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-000007e6" lastModified="1477651346"/>
+          <Include href="Graphic/shape 2023.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-000007e7" lastModified="1477651346"/>
+          <Include href="Graphic/shape 2024.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-000007e8" lastModified="1477651346"/>
+          <Include href="Graphic/shape 2025.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-000007e9" lastModified="1477651346"/>
+          <Include href="Graphic/shape 2026.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-000007ea" lastModified="1477651346"/>
+          <Include href="Graphic/shape 2027.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-000007eb" lastModified="1477651346"/>
+          <Include href="shape/Symbol 5.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000958" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 308.xml" loadImmediate="false" itemID="6577b699-00000a23" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 311.xml" loadImmediate="false" itemID="6577b699-00000a24" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 313.xml" loadImmediate="false" itemID="6577b699-00000a25" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 315.xml" loadImmediate="false" itemID="6577b699-00000a26" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 317.xml" loadImmediate="false" itemID="6577b699-00000a27" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 319.xml" loadImmediate="false" itemID="6577b699-00000a28" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 321.xml" loadImmediate="false" itemID="6577b699-00000a29" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 323.xml" loadImmediate="false" itemID="6577b699-00000a2a" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 325.xml" loadImmediate="false" itemID="6577b699-00000a2b" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 327.xml" loadImmediate="false" itemID="6577b699-00000a2c" lastModified="1702343951"/>
+          <Include href="Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-0000063d" lastModified="1710653981"/>
+          <Include href="Symbol 5.xml" loadImmediate="false" itemID="65f68a66-0000063e" lastModified="1710653981"/>
+          <Include href="防具/大型拳套/大型拳套素材.xml" loadImmediate="false" itemID="6839fd7b-00002656" lastModified="1748631151"/>
+          <Include href="防具/大型拳套/男变装-大型拳套右手.xml" itemID="6839fd00-00002631" lastModified="1748631237"/>
+          <Include href="防具/大型拳套/男变装-大型拳套左手.xml" itemID="6839fd05-00002639" lastModified="1748632303"/>
+          <Include href="防具/大型拳套/图标-大型拳套.xml" itemID="6839fd09-00002649" lastModified="1748632599"/>
+          <Include href="防具/改造人巨拳/男变装-改造人巨拳右手.xml" itemID="6839d1b7-000004a4" lastModified="1748624970"/>
+          <Include href="防具/改造人巨拳/男变装-改造人巨拳左手.xml" itemID="6839d1c1-000004ae" lastModified="1748632456"/>
+          <Include href="防具/改造人巨拳/图标-改造人巨拳.xml" itemID="6839d1ae-00000496" lastModified="1748622322"/>
+          <Include href="防具/黑光刀锋/男变装-黑光刀锋右手.xml" itemID="6839e817-00000bf2" lastModified="1749146940"/>
+          <Include href="防具/黑光刀锋/男变装-黑光刀锋左手.xml" itemID="6839e80e-00000bdc" lastModified="1748626626"/>
+          <Include href="防具/黑光刀锋/素材/yellow axe light 1.xml" loadImmediate="false" itemID="6839e87a-00000c11" lastModified="1451137316"/>
+          <Include href="防具/黑光刀锋/素材/元件 5.xml" loadImmediate="false" itemID="65a37c2b-00000585" lastModified="1705213902"/>
+          <Include href="防具/黑光刀锋/素材/元件 7.xml" loadImmediate="false" itemID="65a37d55-000005a2" lastModified="1705213269"/>
+          <Include href="防具/黑光刀锋/素材/元件 9.xml" loadImmediate="false" itemID="65a37eca-000005ae" lastModified="1705213642"/>
+          <Include href="防具/黑光刀锋/素材/元件 12.xml" loadImmediate="false" itemID="65a37f7b-000005c1" lastModified="1705213819"/>
+          <Include href="防具/黑光刀锋/素材/元件 14.xml" loadImmediate="false" itemID="65a38131-000005dd" lastModified="1706700172"/>
+          <Include href="防具/黑光刀锋/素材/元件 15.xml" loadImmediate="false" itemID="65a3814a-000005e0" lastModified="1705214282"/>
+          <Include href="防具/黑光刀锋/素材/元件 17.xml" loadImmediate="false" itemID="65a38193-00000616" lastModified="1705214355"/>
+          <Include href="防具/黑光刀锋/素材/元件 18.xml" loadImmediate="false" itemID="6839e87a-00000c14" lastModified="1706775780"/>
+          <Include href="防具/黑光刀锋/素材/元件 19.xml" loadImmediate="false" itemID="65a3841e-000004eb" lastModified="1706776334"/>
+          <Include href="防具/黑光刀锋/图标-黑光刀锋.xml" itemID="6839e805-00000bc6" lastModified="1748627112"/>
+          <Include href="防具/黑光重锤/男变装-黑光重锤右手.xml" itemID="6839df6a-0000084f" lastModified="1748630884"/>
+          <Include href="防具/黑光重锤/男变装-黑光重锤左手.xml" itemID="6839df5e-00000847" lastModified="1748625826"/>
+          <Include href="防具/黑光重锤/素材/yellow axe light 1.xml" loadImmediate="false" itemID="567e987a-00000011" lastModified="1451137316"/>
+          <Include href="防具/黑光重锤/素材/元件 2.xml" itemIcon="1" loadImmediate="false" itemID="65bb536d-0000001a" lastModified="1719904000"/>
+          <Include href="防具/黑光重锤/素材/元件 3.xml" itemIcon="1" loadImmediate="false" itemID="65bb5371-0000001d" lastModified="1719904021"/>
+          <Include href="防具/黑光重锤/素材/元件 4.xml" itemIcon="1" loadImmediate="false" itemID="65bb545d-00000022" lastModified="1706775645"/>
+          <Include href="防具/黑光重锤/素材/元件 6.xml" itemIcon="1" loadImmediate="false" itemID="65bb54bc-00000065" lastModified="1706775740"/>
+          <Include href="防具/黑光重锤/素材/元件 8.xml" itemIcon="1" loadImmediate="false" itemID="65bb5517-0000006f" lastModified="1706775854"/>
+          <Include href="防具/黑光重锤/素材/元件 10.xml" itemIcon="1" loadImmediate="false" itemID="65bb556d-00000073" lastModified="1706775917"/>
+          <Include href="防具/黑光重锤/素材/元件 11.xml" itemIcon="1" loadImmediate="false" itemID="65bb564f-0000007c" lastModified="1706776143"/>
+          <Include href="防具/黑光重锤/素材/元件 13.xml" itemIcon="1" loadImmediate="false" itemID="65bb56d8-0000008c" lastModified="1708152243"/>
+          <Include href="防具/黑光重锤/素材/元件 18.xml" loadImmediate="false" itemID="65a383e7-000004e1" lastModified="1706775780"/>
+          <Include href="防具/黑光重锤/素材/元件 20.xml" itemIcon="1" loadImmediate="false" itemID="65bb573d-000000d1" lastModified="1719904013"/>
+          <Include href="防具/黑光重锤/图标-黑光重锤.xml" itemID="6839df55-0000083f" lastModified="1748624900"/>
+          <Include href="防具/末日铁拳/末日铁拳拳套/男变装-末日铁拳上臂.xml" itemID="6837301b-000006e0" lastModified="1748447261"/>
+          <Include href="防具/末日铁拳/末日铁拳拳套/男变装-末日铁拳右手.xml" itemID="68373006-000006de" lastModified="1754762817"/>
+          <Include href="防具/末日铁拳/末日铁拳拳套/男变装-末日铁拳右下臂.xml" itemID="6837300c-000006df" lastModified="1748452302"/>
+          <Include href="防具/末日铁拳/末日铁拳拳套/男变装-末日铁拳左手.xml" itemID="68372ffa-000006dd" lastModified="1748452781"/>
+          <Include href="防具/末日铁拳/末日铁拳拳套/素材/Symbol 16.xml" loadImmediate="false" itemID="6577b699-00000962" lastModified="1718634467"/>
+          <Include href="防具/末日铁拳/末日铁拳拳套/素材/Symbol 24.xml" loadImmediate="false" itemID="6577b699-00000968" lastModified="1748452784"/>
+          <Include href="防具/末日铁拳/末日铁拳拳套/素材/末日铁拳-完整.xml" loadImmediate="false" itemID="68373eab-0000095b" lastModified="1748451965"/>
+          <Include href="防具/末日铁拳/末日铁拳拳套/素材/末日铁拳-右手.xml" loadImmediate="false" itemID="68373028-000006e3" lastModified="1749925418"/>
+          <Include href="防具/末日铁拳/末日铁拳拳套/素材/末日铁拳-左手.xml" loadImmediate="false" itemID="6837302b-000006e4" lastModified="1748452654"/>
+          <Include href="防具/末日铁拳/末日铁拳拳套/素材/末日铁拳上臂.xml" loadImmediate="false" itemID="68373023-000006e1" lastModified="1748452100"/>
+          <Include href="防具/末日铁拳/末日铁拳拳套/素材/末日铁拳小臂右.xml" loadImmediate="false" itemID="68373026-000006e2" lastModified="1748452018"/>
+          <Include href="防具/末日铁拳/末日铁拳拳套/素材/男变装-裸体上臂.xml" loadImmediate="false" itemID="668be70f-00000657" lastModified="1748452073"/>
+          <Include href="防具/末日铁拳/末日铁拳拳套/素材/铁拳上臂单独元件.xml" loadImmediate="false" itemID="68373fc2-00000967" lastModified="1748451334"/>
+          <Include href="防具/末日铁拳/末日铁拳拳套/素材/铁拳下臂单独元件.xml" loadImmediate="false" itemID="683745a9-00001ae2" lastModified="1749146719"/>
+          <Include href="防具/末日铁拳/末日铁拳拳套/素材/图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="666e7c83-00000d39" lastModified="1718516867"/>
+          <Include href="防具/末日铁拳/末日铁拳拳套/图标-末日铁拳.xml" itemID="68374215-0000113d" lastModified="1754752968"/>
+          <Include href="防具/小型拳套/男变装-小型拳套右手.xml" itemID="683a02d5-00002876" lastModified="1748632565"/>
+          <Include href="防具/小型拳套/男变装-小型拳套左手.xml" itemID="683a02ce-0000286d" lastModified="1748632570"/>
+          <Include href="防具/小型拳套/图标-小型拳套.xml" itemID="683a02c6-00002865" lastModified="1754752329"/>
+          <Include href="防具/硬化巨拳/男变装-硬化巨拳右手.xml" itemID="6839ee84-00001720" lastModified="1748628939"/>
+          <Include href="防具/硬化巨拳/男变装-硬化巨拳左手.xml" itemID="6839ee7b-00001718" lastModified="1748627765"/>
+          <Include href="防具/硬化巨拳/素材/Symbol 243.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-000009e3" lastModified="1701332846"/>
+          <Include href="防具/硬化巨拳/素材/Symbol 244.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-000009e4" lastModified="1748627587"/>
+          <Include href="防具/硬化巨拳/素材/Symbol 253.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-000009ed" lastModified="1701332846"/>
+          <Include href="防具/硬化巨拳/素材/Symbol 254.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-000009ee" lastModified="1701332846"/>
+          <Include href="防具/硬化巨拳/图标-硬化僵尸碎肉块.xml" itemID="6839f5be-00001b4c" lastModified="1748630825"/>
+          <Include href="防具/硬化巨拳/图标-硬化巨拳.xml" itemID="6839ee70-00001710" lastModified="1754752356"/>
+          <Include href="各种图素材等/area.xml" loadImmediate="false" itemID="653d1625-00000520" lastModified="1702141674"/>
+          <Include href="各种图素材等/area 副本.xml" loadImmediate="false" itemID="659a630a-00000b49" lastModified="1702141674"/>
+          <Include href="各种图素材等/dominator素材.xml" loadImmediate="false" itemID="65df52de-00000457" lastModified="1718288823"/>
+          <Include href="各种图素材等/Symbol 13.xml" loadImmediate="false" itemID="657b39a0-000005bd" lastModified="1702574457"/>
+          <Include href="各种图素材等/Symbol 1099.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c3f" lastModified="1702343951"/>
+          <Include href="各种图素材等/Symbol 1101.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c40" lastModified="1702343951"/>
+          <Include href="各种图素材等/Symbol 1103.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c41" lastModified="1702343951"/>
+          <Include href="各种图素材等/Symbol 1105.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c42" lastModified="1702343951"/>
+          <Include href="各种图素材等/Symbol 1107.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c43" lastModified="1702343951"/>
+          <Include href="各种图素材等/Symbol 1109.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c44" lastModified="1702343951"/>
+          <Include href="各种图素材等/Symbol 1111.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c45" lastModified="1702343951"/>
+          <Include href="各种图素材等/Symbol 1113.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c46" lastModified="1702343951"/>
+          <Include href="各种图素材等/Symbol 1115.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c47" lastModified="1702343951"/>
+          <Include href="各种图素材等/Symbol 1117.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c48" lastModified="1702343951"/>
+          <Include href="各种图素材等/Symbol 1119.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c49" lastModified="1702343951"/>
+          <Include href="各种图素材等/Symbol 1121.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c4a" lastModified="1702343951"/>
+          <Include href="各种图素材等/Symbol 1123.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c4b" lastModified="1702343951"/>
+          <Include href="各种图素材等/Symbol 1125.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c4c" lastModified="1702343951"/>
+          <Include href="各种图素材等/Symbol 1127.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c4d" lastModified="1702343951"/>
+          <Include href="各种图素材等/Symbol 1129.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c4e" lastModified="1702343951"/>
+          <Include href="各种图素材等/Symbol 1131.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c4f" lastModified="1702343951"/>
+          <Include href="各种图素材等/Symbol 1133.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c50" lastModified="1702343951"/>
+          <Include href="各种图素材等/Symbol 4270.xml" itemIcon="1" loadImmediate="false" itemID="657b39a0-000005bf" lastModified="1702574457"/>
+          <Include href="各种图素材等/Symbol 5594.xml" loadImmediate="false" itemID="657b39a0-000005c0" lastModified="1702574457"/>
+          <Include href="各种图素材等/Symbol 5610.xml" loadImmediate="false" itemID="657b39a0-000005b9" lastModified="1702574457"/>
+          <Include href="各种图素材等/Symbol 5611.xml" loadImmediate="false" itemID="657b39a0-000005ba" lastModified="1702574457"/>
+          <Include href="各种图素材等/Symbol 5612.xml" loadImmediate="false" itemID="657b39a0-000005bb" lastModified="1702574457"/>
+          <Include href="各种图素材等/Symbol 5613.xml" loadImmediate="false" itemID="657b39a0-000005bc" lastModified="1702574457"/>
+          <Include href="各种图素材等/Symbol 5614.xml" itemIcon="1" loadImmediate="false" itemID="657b39a0-000005be" lastModified="1704612112"/>
+          <Include href="各种图素材等/补间 1.xml" itemIcon="1" loadImmediate="false" itemID="65e1c31d-0000037a" lastModified="1709294365"/>
+          <Include href="各种图素材等/补间 2.xml" itemIcon="1" loadImmediate="false" itemID="65e1c31d-0000037c" lastModified="1709294365"/>
+          <Include href="各种图素材等/补间 3.xml" itemIcon="1" loadImmediate="false" itemID="65e1c325-0000037e" lastModified="1709294373"/>
+          <Include href="各种图素材等/补间 4.xml" itemIcon="1" loadImmediate="false" itemID="65e1c328-00000380" lastModified="1709294376"/>
+          <Include href="各种图素材等/补间 5.xml" itemIcon="1" loadImmediate="false" itemID="65e1c32b-00000382" lastModified="1709294379"/>
+          <Include href="各种图素材等/补间 6.xml" itemIcon="1" loadImmediate="false" itemID="65e1c32d-00000384" lastModified="1709294875"/>
+          <Include href="各种图素材等/补间 7.xml" itemIcon="1" loadImmediate="false" itemID="65e1c32f-00000386" lastModified="1709294383"/>
+          <Include href="各种图素材等/技能背景.xml" loadImmediate="false" itemID="659a876f-00001d04" lastModified="1704626031"/>
+          <Include href="黑铁-落剑.xml" itemID="67bde3a3-000010b8" lastModified="1740497827"/>
+          <Include href="闪电特效素材/shape 506.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-000001fb" lastModified="1477651486"/>
+          <Include href="闪电特效素材/shape 507.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-000001fc" lastModified="1477651486"/>
+          <Include href="闪电特效素材/shape 508.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-000001fd" lastModified="1477651486"/>
+          <Include href="闪电特效素材/shape 509.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-000001fe" lastModified="1477651486"/>
+          <Include href="闪电特效素材/shape 510.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-000001ff" lastModified="1477651486"/>
+          <Include href="闪电特效素材/shape 511.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000200" lastModified="1749928518"/>
+          <Include href="闪电特效素材/shape 512.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000201" lastModified="1749928505"/>
+          <Include href="闪电特效素材/shape 513.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000202" lastModified="1477651486"/>
+          <Include href="闪电特效素材/shape 514.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000203" lastModified="1477651486"/>
+          <Include href="闪电特效素材/shape 515.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000204" lastModified="1477651486"/>
+          <Include href="闪电特效素材/shape 516.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000205" lastModified="1477651486"/>
+          <Include href="闪电特效素材/shape 517.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000206" lastModified="1477651486"/>
+          <Include href="闪电特效素材/shape 518.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000207" lastModified="1477651486"/>
+          <Include href="闪电特效素材/shape 519.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000208" lastModified="1477651486"/>
+          <Include href="闪电特效素材/shape 520.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000209" lastModified="1477651486"/>
+          <Include href="闪电特效素材/shape 521.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-0000020a" lastModified="1477651486"/>
+          <Include href="闪电特效素材/shape 535.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000218" lastModified="1477651486"/>
+          <Include href="闪电特效素材/shape 536.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000219" lastModified="1477651486"/>
+          <Include href="闪电特效素材/shape 537.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-0000021a" lastModified="1477651486"/>
+          <Include href="闪电特效素材/shape 538.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-0000021b" lastModified="1477651486"/>
+          <Include href="闪电特效素材/shape 539.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-0000021c" lastModified="1477651486"/>
+          <Include href="闪电特效素材/shape 540.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-0000021d" lastModified="1477651486"/>
+          <Include href="闪电特效素材/shape 541.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-0000021e" lastModified="1477651486"/>
+          <Include href="闪电特效素材/shape 542.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-0000021f" lastModified="1477651486"/>
+          <Include href="特效与子弹/不卸之力冲击波.xml" itemID="660e7107-00002490" lastModified="1721503929"/>
+          <Include href="特效与子弹/常规旋风.xml" itemID="660db365-0000197e" lastModified="1722346045"/>
+          <Include href="特效与子弹/穿刺烈炎炮弹.xml" itemID="6732130b-0000117c" lastModified="1740498053"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="6577bc3f-000010d9" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 13.xml" loadImmediate="false" itemID="6577bc3f-000010da" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 498.xml" itemIcon="1" loadImmediate="false" itemID="6577bc3f-00001201" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 499.xml" loadImmediate="false" itemID="6577bc3f-00001202" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 500.xml" itemIcon="1" loadImmediate="false" itemID="6577bc3f-00001203" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 501.xml" loadImmediate="false" itemID="6577bc3f-00001204" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 504.xml" loadImmediate="false" itemID="6577bc3f-00001205" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 505.xml" itemIcon="1" loadImmediate="false" itemID="6577bc3f-00001206" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 506.xml" loadImmediate="false" itemID="6577bc3f-00001207" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 507.xml" itemIcon="1" loadImmediate="false" itemID="6577bc3f-00001208" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 508.xml" loadImmediate="false" itemID="6577bc3f-00001209" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 509.xml" itemIcon="1" loadImmediate="false" itemID="6577bc3f-0000120a" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 510.xml" loadImmediate="false" itemID="6577bc3f-0000120b" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 511.xml" itemIcon="1" loadImmediate="false" itemID="6577bc3f-0000120c" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 512.xml" loadImmediate="false" itemID="6577bc3f-0000120d" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 513.xml" itemIcon="1" loadImmediate="false" itemID="6577bc3f-0000120e" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 514.xml" loadImmediate="false" itemID="6577bc3f-0000120f" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 515.xml" itemIcon="1" loadImmediate="false" itemID="6577bc3f-00001210" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 516.xml" loadImmediate="false" itemID="6577bc3f-00001211" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 517.xml" itemIcon="1" loadImmediate="false" itemID="6577bc3f-00001212" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 518.xml" loadImmediate="false" itemID="6577bc3f-00001213" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 519.xml" loadImmediate="false" itemID="6577bc3f-00001214" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 521.xml" loadImmediate="false" itemID="6577bc3f-00001215" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 522.xml" loadImmediate="false" itemID="6577bc3f-00001216" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 524.xml" loadImmediate="false" itemID="6577bc3f-00001217" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 525.xml" loadImmediate="false" itemID="6577bc3f-00001218" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 526.xml" itemIcon="1" loadImmediate="false" itemID="6577bc3f-00001219" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/Symbol 527.xml" loadImmediate="false" itemID="6577bc3f-0000121a" lastModified="1702237154"/>
+          <Include href="特效与子弹/淬毒动画/淬毒动画.xml" itemID="66770a26-0000138a" lastModified="1722367745"/>
+          <Include href="特效与子弹/淬毒动画/淬毒动画2.xml" itemID="6677232c-000029f5" lastModified="1722367167"/>
+          <Include href="特效与子弹/淬毒动画/净化动画.xml" itemID="66770a2f-000013af" lastModified="1722367730"/>
+          <Include href="特效与子弹/淬毒动画/净化动画2.xml" itemID="66772323-000029d0" lastModified="1726415875"/>
+          <Include href="特效与子弹/电浆球.xml" itemID="65e0a6d7-0000217e" lastModified="1709298583"/>
+          <Include href="特效与子弹/毒穿刺子弹.xml" itemID="66c023c2-0000166c" lastModified="1723868101"/>
+          <Include href="特效与子弹/核弹爆炸.xml" itemID="68937d80-000006ec" lastModified="1754670720"/>
+          <Include href="特效与子弹/黑闪.xml" itemID="6667436e-00000955" lastModified="1721503894"/>
+          <Include href="特效与子弹/火箭重拳特效.xml" itemID="684dbd91-0000442e" lastModified="1754762925"/>
+          <Include href="特效与子弹/火舞旋风.xml" itemID="660db2ac-00001964" lastModified="1722346056"/>
+          <Include href="特效与子弹/径庭拳.xml" itemID="66674cd1-00001233" lastModified="1722367146"/>
+          <Include href="特效与子弹/裂地拳.xml" itemID="66474dd6-00000860" lastModified="1732327500"/>
+          <Include href="特效与子弹/抡枪回旋.xml" itemID="658997ae-000011ce" lastModified="1732327776"/>
+          <Include href="特效与子弹/能量盾.xml" itemID="66674bfc-000011a9" lastModified="1718196637"/>
+          <Include href="特效与子弹/普通麻醉子弹.xml" itemID="66c023f2-0000166e" lastModified="1723868150"/>
+          <Include href="特效与子弹/普通微波子弹.xml" itemID="66c023f8-0000166f" lastModified="1752342928"/>
+          <Include href="特效与子弹/上帝之杖/巨大物理爆炸.xml" itemID="66e7f8fb-000018ac" lastModified="1754670702"/>
+          <Include href="特效与子弹/上帝之杖/上帝之杖.xml" itemID="66e7ebf4-0000160c" lastModified="1754496391"/>
+          <Include href="特效与子弹/上帝之杖/无AS链接/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005be" lastModified="1720533000"/>
+          <Include href="特效与子弹/上帝之杖/无AS链接/Symbol 13.xml" loadImmediate="false" itemID="668e7c1e-000005bf" lastModified="1720533000"/>
+          <Include href="特效与子弹/上帝之杖/无AS链接/Symbol 404.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000006b1" lastModified="1720533000"/>
+          <Include href="特效与子弹/上帝之杖/无AS链接/Symbol 406.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000006b2" lastModified="1720533000"/>
+          <Include href="特效与子弹/上帝之杖/无AS链接/Symbol 409.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000006b3" lastModified="1720533000"/>
+          <Include href="特效与子弹/上帝之杖/无AS链接/Symbol 411.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000006b4" lastModified="1720533000"/>
+          <Include href="特效与子弹/上帝之杖/无AS链接/Symbol 413.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000006b5" lastModified="1720533000"/>
+          <Include href="特效与子弹/上帝之杖/无AS链接/Symbol 415.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000006b6" lastModified="1720533000"/>
+          <Include href="特效与子弹/上帝之杖/无AS链接/Symbol 417.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000006b7" lastModified="1720533000"/>
+          <Include href="特效与子弹/上帝之杖/无AS链接/Symbol 419.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000006b8" lastModified="1720533000"/>
+          <Include href="特效与子弹/上帝之杖/无AS链接/Symbol 421.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000006b9" lastModified="1720533000"/>
+          <Include href="特效与子弹/上帝之杖/无AS链接/Symbol 423.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000006ba" lastModified="1720533000"/>
+          <Include href="特效与子弹/上帝之杖/无AS链接/Symbol 425.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000006bb" lastModified="1720533000"/>
+          <Include href="特效与子弹/上帝之杖/无AS链接/Symbol 427.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000006bc" lastModified="1720533000"/>
+          <Include href="特效与子弹/上帝之杖/无AS链接/Symbol 429.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000006bd" lastModified="1720533000"/>
+          <Include href="特效与子弹/上帝之杖/无AS链接/Symbol 711.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000074f" lastModified="1720533000"/>
+          <Include href="特效与子弹/上帝之杖/无AS链接/Symbol 712.xml" loadImmediate="false" itemID="668e7c1e-00000750" lastModified="1720533000"/>
+          <Include href="特效与子弹/上帝之杖/无AS链接/Symbol 714.xml" loadImmediate="false" itemID="668e7c1e-00000752" lastModified="1726515383"/>
+          <Include href="特效与子弹/时间停止.xml" itemID="6580323f-00000852" lastModified="1729339735"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 375.xml" loadImmediate="false" itemID="653dcca3-00001048" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 376.xml" itemIcon="1" loadImmediate="false" itemID="653dcca3-00001049" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 377.xml" loadImmediate="false" itemID="653dcca3-0000104a" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 378.xml" itemIcon="1" loadImmediate="false" itemID="653dcca3-0000104b" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 379.xml" loadImmediate="false" itemID="653dcca3-0000104c" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 380.xml" itemIcon="1" loadImmediate="false" itemID="653dcca3-0000104d" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 381.xml" loadImmediate="false" itemID="653dcca3-0000104e" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 382.xml" itemIcon="1" loadImmediate="false" itemID="653dcca3-0000104f" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 383.xml" loadImmediate="false" itemID="653dcca3-00001050" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 385.xml" loadImmediate="false" itemID="653dcca3-00001051" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 387.xml" loadImmediate="false" itemID="653dcca3-00001052" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 388.xml" itemIcon="1" loadImmediate="false" itemID="653dcca3-00001053" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 389.xml" loadImmediate="false" itemID="653dcca3-00001054" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 391.xml" loadImmediate="false" itemID="653dcca3-00001055" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 393.xml" loadImmediate="false" itemID="653dcca3-00001056" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 394.xml" itemIcon="1" loadImmediate="false" itemID="653dcca3-00001057" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 395.xml" loadImmediate="false" itemID="653dcca3-00001058" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 397.xml" loadImmediate="false" itemID="653dcca3-00001059" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 399.xml" loadImmediate="false" itemID="653dcca3-0000105a" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 400.xml" itemIcon="1" loadImmediate="false" itemID="653dcca3-0000105b" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 401.xml" loadImmediate="false" itemID="653dcca3-0000105c" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 403.xml" loadImmediate="false" itemID="653dcca3-0000105d" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 405.xml" loadImmediate="false" itemID="653dcca3-0000105e" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 406.xml" itemIcon="1" loadImmediate="false" itemID="653dcca3-0000105f" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 407.xml" loadImmediate="false" itemID="653dcca3-00001060" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 409.xml" loadImmediate="false" itemID="653dcca3-00001061" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 411.xml" loadImmediate="false" itemID="653dcca3-00001062" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 412.xml" itemIcon="1" loadImmediate="false" itemID="653dcca3-00001063" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 413.xml" loadImmediate="false" itemID="653dcca3-00001064" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 415.xml" loadImmediate="false" itemID="653dcca3-00001065" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 417.xml" loadImmediate="false" itemID="653dcca3-00001066" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 418.xml" itemIcon="1" loadImmediate="false" itemID="653dcca3-00001067" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 419.xml" loadImmediate="false" itemID="653dcca3-00001068" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 421.xml" loadImmediate="false" itemID="653dcca3-00001069" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 423.xml" loadImmediate="false" itemID="653dcca3-0000106a" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 425.xml" loadImmediate="false" itemID="653dcca3-0000106b" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 427.xml" loadImmediate="false" itemID="653dcca3-0000106c" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 429.xml" loadImmediate="false" itemID="653dcca3-0000106d" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 431.xml" loadImmediate="false" itemID="653dcca3-0000106e" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 433.xml" loadImmediate="false" itemID="653dcca3-0000106f" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 436.xml" loadImmediate="false" itemID="653dcca3-00001070" lastModified="1698427020"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 13.xml" loadImmediate="false" itemID="65536bc5-00002913" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5029.xml" loadImmediate="false" itemID="65536bc5-00002989" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5030.xml" itemIcon="1" loadImmediate="false" itemID="65536bc5-0000298a" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5031.xml" loadImmediate="false" itemID="65536bc5-0000298b" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5033.xml" loadImmediate="false" itemID="65536bc5-0000298c" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5034.xml" itemIcon="1" loadImmediate="false" itemID="65536bc5-0000298d" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5035.xml" loadImmediate="false" itemID="65536bc5-0000298e" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5037.xml" loadImmediate="false" itemID="65536bc5-0000298f" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5038.xml" itemIcon="1" loadImmediate="false" itemID="65536bc5-00002990" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5039.xml" loadImmediate="false" itemID="65536bc5-00002991" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5041.xml" loadImmediate="false" itemID="65536bc5-00002992" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5043.xml" loadImmediate="false" itemID="65536bc5-00002993" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5045.xml" loadImmediate="false" itemID="65536bc5-00002994" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5047.xml" loadImmediate="false" itemID="65536bc5-00002995" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5049.xml" loadImmediate="false" itemID="65536bc5-00002996" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5051.xml" loadImmediate="false" itemID="65536bc5-00002997" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/Symbol 5344.xml" loadImmediate="false" itemID="6577bc3f-00001f60" lastModified="1731860310"/>
+          <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/Symbol 5365.xml" loadImmediate="false" itemID="659a8435-00001be2" lastModified="1704627307"/>
+          <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5088.xml" loadImmediate="false" itemID="65536bc5-000029af" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5089.xml" itemIcon="1" loadImmediate="false" itemID="65536bc5-000029b0" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5090.xml" loadImmediate="false" itemID="65536bc5-000029b1" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5092.xml" loadImmediate="false" itemID="65536bc5-000029b2" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5093.xml" itemIcon="1" loadImmediate="false" itemID="65536bc5-000029b3" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5094.xml" loadImmediate="false" itemID="65536bc5-000029b4" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5096.xml" loadImmediate="false" itemID="65536bc5-000029b5" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5097.xml" itemIcon="1" loadImmediate="false" itemID="65536bc5-000029b6" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5098.xml" loadImmediate="false" itemID="65536bc5-000029b7" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5100.xml" loadImmediate="false" itemID="65536bc5-000029b8" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5102.xml" loadImmediate="false" itemID="65536bc5-000029b9" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5104.xml" loadImmediate="false" itemID="65536bc5-000029ba" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5106.xml" loadImmediate="false" itemID="65536bc5-000029bb" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5108.xml" loadImmediate="false" itemID="65536bc5-000029bc" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5110.xml" loadImmediate="false" itemID="65536bc5-000029bd" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5112.xml" loadImmediate="false" itemID="65536bc5-000029be" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5114.xml" loadImmediate="false" itemID="65536bc5-000029bf" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/Graphic/shape 62.xml" itemIcon="1" loadImmediate="false" itemID="58132c35-0000003e" lastModified="1477651509"/>
+          <Include href="特效与子弹/特效素材/Graphic/shape 1365.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000555" lastModified="1477651515"/>
+          <Include href="特效与子弹/特效素材/Graphic/shape 1366.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000556" lastModified="1477651515"/>
+          <Include href="特效与子弹/特效素材/Graphic/shape 1367.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000557" lastModified="1477651515"/>
+          <Include href="特效与子弹/特效素材/Graphic/shape 1368.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000558" lastModified="1477651515"/>
+          <Include href="特效与子弹/特效素材/Graphic/shape 1369.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000559" lastModified="1477651515"/>
+          <Include href="特效与子弹/特效素材/Graphic/shape 1370.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-0000055a" lastModified="1477651515"/>
+          <Include href="特效与子弹/特效素材/Graphic/shape 1371.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-0000055b" lastModified="1477651515"/>
+          <Include href="特效与子弹/特效素材/Graphic/shape 1372.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-0000055c" lastModified="1477651515"/>
+          <Include href="特效与子弹/特效素材/Graphic/shape 1373.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-0000055d" lastModified="1477651515"/>
+          <Include href="特效与子弹/特效素材/Graphic/shape 1374.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-0000055e" lastModified="1477651515"/>
+          <Include href="特效与子弹/特效素材/Graphic/shape 1375.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-0000055f" lastModified="1477651515"/>
+          <Include href="特效与子弹/特效素材/Graphic/shape 1376.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000560" lastModified="1477651515"/>
+          <Include href="特效与子弹/特效素材/Graphic/shape 1377.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000561" lastModified="1477651515"/>
+          <Include href="特效与子弹/特效素材/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="65e08f36-00001ff1" lastModified="1702237154"/>
+          <Include href="特效与子弹/特效素材/Symbol 13.xml" loadImmediate="false" itemID="65e08f36-00001ff0" lastModified="1702237154"/>
+          <Include href="特效与子弹/特效素材/电浆球素材.xml" loadImmediate="false" itemID="65e0a966-00002184" lastModified="1709222281"/>
+          <Include href="特效与子弹/特效素材/电浆圆球.xml" itemIcon="1" loadImmediate="false" itemID="65e0a9aa-000022b5" lastModified="1709297830"/>
+          <Include href="特效与子弹/特效素材/电球素材.xml" loadImmediate="false" itemID="65e0a986-00002188" lastModified="1709222278"/>
+          <Include href="特效与子弹/特效素材/电球圆球.xml" itemIcon="1" loadImmediate="false" itemID="65e0a9bb-000022b9" lastModified="1709222331"/>
+          <Include href="特效与子弹/特效素材/烈焰炮弹素材.xml" loadImmediate="false" itemID="67321455-000011d1" lastModified="1740478205"/>
+          <Include href="特效与子弹/特效素材/重力井素材/Symbol 1936.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000007df" lastModified="1702098593"/>
+          <Include href="特效与子弹/特效素材/重力井素材/Symbol 1937.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000007e0" lastModified="1702098593"/>
+          <Include href="特效与子弹/特效素材/重力井素材/Symbol 1938.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000007e1" lastModified="1702098593"/>
+          <Include href="特效与子弹/特效素材/重力井素材/Symbol 1939.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000007e2" lastModified="1702098593"/>
+          <Include href="特效与子弹/特效素材/重力井素材/Symbol 1940.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000007e3" lastModified="1702098593"/>
+          <Include href="特效与子弹/特效素材/重力井素材/Symbol 1941.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000007e4" lastModified="1702098593"/>
+          <Include href="特效与子弹/特效素材/重力井素材/Symbol 1942.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000007e5" lastModified="1702098593"/>
+          <Include href="特效与子弹/特效素材/重力井素材/Symbol 1943.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000007e6" lastModified="1702098593"/>
+          <Include href="特效与子弹/新电球.xml" itemID="65e090d8-00002020" lastModified="1721505086"/>
+          <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5140.xml" loadImmediate="false" itemID="65536bc5-00002918" lastModified="1698481640"/>
+          <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5142.xml" loadImmediate="false" itemID="65536bc5-00002919" lastModified="1698481640"/>
+          <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5144.xml" loadImmediate="false" itemID="65536bc5-0000291a" lastModified="1698481640"/>
+          <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5146.xml" loadImmediate="false" itemID="65536bc5-0000291b" lastModified="1698481640"/>
+          <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5148.xml" loadImmediate="false" itemID="65536bc5-0000291c" lastModified="1698481640"/>
+          <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5150.xml" loadImmediate="false" itemID="65536bc5-0000291d" lastModified="1698481640"/>
+          <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5152.xml" loadImmediate="false" itemID="65536bc5-0000291e" lastModified="1698481640"/>
+          <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5154.xml" loadImmediate="false" itemID="65536bc5-0000291f" lastModified="1698481640"/>
+          <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5156.xml" loadImmediate="false" itemID="65536bc5-00002920" lastModified="1698481640"/>
+          <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5158.xml" loadImmediate="false" itemID="65536bc5-00002921" lastModified="1698481640"/>
+          <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5160.xml" loadImmediate="false" itemID="65536bc5-00002922" lastModified="1698481640"/>
+          <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5162.xml" loadImmediate="false" itemID="65536bc5-00002923" lastModified="1698481640"/>
+          <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5164.xml" loadImmediate="false" itemID="65536bc5-00002924" lastModified="1698481640"/>
+          <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5166.xml" loadImmediate="false" itemID="65536bc5-00002925" lastModified="1698481640"/>
+          <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5168.xml" loadImmediate="false" itemID="65536bc5-00002926" lastModified="1698481640"/>
+          <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5170.xml" loadImmediate="false" itemID="65536bc5-00002927" lastModified="1698481640"/>
+          <Include href="特效与子弹/一瞬千击多次/一瞬千击多次.xml" itemID="65b7e96a-000028a2" lastModified="1726414818"/>
+          <Include href="特效与子弹/重力场.xml" itemID="65802656-00000813" lastModified="1722239675"/>
+          <Include href="特效与子弹/重力井.xml" itemID="659a5c28-00000adb" lastModified="1729340112"/>
+          <Include href="特效与子弹/自瞄准星特效/导弹自瞄准星.xml" itemID="66e7eca6-0000161a" lastModified="1729345226"/>
+          <Include href="特效与子弹/自瞄准星特效/火力支援新瞄准镜.xml" loadImmediate="false" itemID="671399a0-00002828" lastModified="1729337760"/>
+          <Include href="特效与子弹/自瞄准星特效/自瞄准星.xml" itemID="66e6ff72-00000d99" lastModified="1730467466"/>
+          <Include href="瓦巴杰克.xml" itemIcon="1" itemID="659a511c-00000302" lastModified="1704612124"/>
+          <Include href="武器/3D打印：炎/0.area.xml" loadImmediate="false" itemID="66e6f8cc-00000d5d" lastModified="1701486304"/>
+          <Include href="武器/3D打印：炎/3D打印：炎.xml" loadImmediate="false" itemID="66e6f915-00000d63" lastModified="1726413635"/>
+          <Include href="武器/3D打印：炎/Symbol 2061.xml" loadImmediate="false" itemID="64d9ef31-0000129d" lastModified="1726413020"/>
+          <Include href="武器/3D打印：炎/枪-手枪-3D打印：炎.xml" itemID="66e6f914-00000d62" lastModified="1731860111"/>
+          <Include href="武器/3D打印：炎/图标-3D打印：炎.xml" itemID="66e6f9c5-00000d68" lastModified="1726413256"/>
+          <Include href="武器/dominator/dominator.xml" itemID="65df52bb-00000453" lastModified="1752343256"/>
+          <Include href="武器/dominator/素材/0.area.xml" loadImmediate="false" itemID="656a9ee0-00000818" lastModified="1708611921"/>
+          <Include href="武器/dominator/素材/补间 8.xml" itemIcon="1" loadImmediate="false" itemID="65e72492-000006aa" lastModified="1709651228"/>
+          <Include href="武器/dominator/素材/补间 9.xml" itemIcon="1" loadImmediate="false" itemID="65e72492-000006ac" lastModified="1709646994"/>
+          <Include href="武器/dominator/素材/补间 10.xml" itemIcon="1" loadImmediate="false" itemID="65e72542-000006b6" lastModified="1709647170"/>
+          <Include href="武器/dominator/素材/补间 11.xml" itemIcon="1" loadImmediate="false" itemID="65e72542-000006b8" lastModified="1709647170"/>
+          <Include href="武器/dominator/素材/补间 12.xml" itemIcon="1" loadImmediate="false" itemID="65e72bed-000006ea" lastModified="1709648877"/>
+          <Include href="武器/dominator/素材/补间 13.xml" itemIcon="1" loadImmediate="false" itemID="65e72bed-000006ec" lastModified="1709648877"/>
+          <Include href="武器/dominator/素材/补间 14.xml" itemIcon="1" loadImmediate="false" itemID="65e733f6-00000c04" lastModified="1709650934"/>
+          <Include href="武器/dominator/素材/补间 15.xml" itemIcon="1" loadImmediate="false" itemID="65e733f6-00000c06" lastModified="1709650934"/>
+          <Include href="武器/dominator/素材/补间 16.xml" itemIcon="1" loadImmediate="false" itemID="65e741ff-00001003" lastModified="1709654527"/>
+          <Include href="武器/dominator/素材/补间 17.xml" itemIcon="1" loadImmediate="false" itemID="65e741ff-00001005" lastModified="1709654527"/>
+          <Include href="武器/dominator/素材/插件.xml" loadImmediate="false" itemID="65e5bc90-00000215" lastModified="1709554832"/>
+          <Include href="武器/dominator/素材/插件旋转.xml" loadImmediate="false" itemID="65e5bd61-00000225" lastModified="1709555042"/>
+          <Include href="武器/dominator/素材/发光部件.xml" loadImmediate="false" itemID="65e5afc9-0000017d" lastModified="1709647469"/>
+          <Include href="武器/dominator/素材/枪柄.xml" loadImmediate="false" itemID="65e6d257-00000276" lastModified="1709653721"/>
+          <Include href="武器/dominator/素材/枪柄整体.xml" loadImmediate="false" itemID="65e6d2cf-0000028c" lastModified="1709626063"/>
+          <Include href="武器/dominator/素材/枪柄组件1.xml" loadImmediate="false" itemID="65e6c5e4-00000233" lastModified="1709622886"/>
+          <Include href="武器/dominator/素材/枪柄组件2.xml" loadImmediate="false" itemID="65e6c68b-00000239" lastModified="1709622923"/>
+          <Include href="武器/dominator/素材/枪身1.xml" loadImmediate="false" itemID="65e58f29-00000047" lastModified="1709648639"/>
+          <Include href="武器/dominator/素材/枪身1+文字.xml" loadImmediate="false" itemID="65e59d28-00000090" lastModified="1709653571"/>
+          <Include href="武器/dominator/素材/枪身2.xml" loadImmediate="false" itemID="65e59c47-00000083" lastModified="1709546626"/>
+          <Include href="武器/dominator/素材/枪身2+文字.xml" loadImmediate="false" itemID="65e59de8-00000092" lastModified="1709653528"/>
+          <Include href="武器/dominator/素材/枪身4.xml" loadImmediate="false" itemID="65e5bc03-0000020d" lastModified="1709652129"/>
+          <Include href="武器/dominator/素材/枪身5-组件1.xml" loadImmediate="false" itemID="65e6c1dc-00000218" lastModified="1709621724"/>
+          <Include href="武器/dominator/素材/枪身5-组件2.xml" loadImmediate="false" itemID="65e6c560-00000228" lastModified="1709654620"/>
+          <Include href="武器/dominator/素材/枪身文字.xml" loadImmediate="false" itemID="65e589d0-00000037" lastModified="1709541840"/>
+          <Include href="武器/dominator/素材/文字2.xml" loadImmediate="false" itemID="65e59d01-00000087" lastModified="1709653334"/>
+          <Include href="武器/dominator/素材/旋转1.xml" loadImmediate="false" itemID="65e72ec3-00000739" lastModified="1709649603"/>
+          <Include href="武器/dominator/素材/旋转最终.xml" loadImmediate="false" itemID="65e73326-00000811" lastModified="1709650726"/>
+          <Include href="武器/dominator/素材/阴影.xml" loadImmediate="false" itemID="65e739e8-00000e34" lastModified="1709652539"/>
+          <Include href="武器/dominator/素材/元件 1.xml" loadImmediate="false" itemID="65e72569-000006ba" lastModified="1709647209"/>
+          <Include href="武器/dominator/图标-dominator.xml" itemID="65df52c3-00000454" lastModified="1720791104"/>
+          <Include href="余烬小队/余烬剑痴/Symbol 6.xml" loadImmediate="false" itemID="6577b699-00000959" lastModified="1702343951"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="Scene 1">
+               <layers>
+                    <DOMLayer name="Layer 1" color="#60DECC" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="各种图素材等/Symbol 5614" symbolType="graphic" loop="loop">
+                                             <matrix>
+                                                  <Matrix a="12.6638336181641" d="10.2618865966797" tx="240.4" ty="191.75"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <swatchLists>
+          <swatchList>
+               <swatches>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#003300" hue="80" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#006600" hue="80" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#009900" hue="80" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC00" hue="80" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF00" hue="80" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330000" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#333300" hue="40" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#336600" hue="60" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#339900" hue="67" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#33CC00" hue="70" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#33FF00" hue="72" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#660000" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#663300" hue="20" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#666600" hue="40" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#669900" hue="53" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#66CC00" hue="60" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#66FF00" hue="64" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#333333" brightness="48"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#000033" hue="160" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#003333" hue="120" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#006633" hue="100" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#009933" hue="93" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC33" hue="90" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF33" hue="88" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330033" hue="200" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#333333" brightness="48"/>
+                    <SolidSwatchItem color="#336633" hue="80" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#339933" hue="80" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#33CC33" hue="80" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FF33" hue="80" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#660033" hue="220" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#663333" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#666633" hue="40" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#669933" hue="60" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#66CC33" hue="67" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#66FF33" hue="70" saturation="239" brightness="144"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#666666" brightness="96"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#000066" hue="160" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#003366" hue="140" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#006666" hue="120" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#009966" hue="107" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC66" hue="100" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF66" hue="96" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330066" hue="180" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#333366" hue="160" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#336666" hue="120" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#339966" hue="100" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#33CC66" hue="93" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FF66" hue="90" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#660066" hue="200" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#663366" hue="200" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#666666" brightness="96"/>
+                    <SolidSwatchItem color="#669966" hue="80" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#66CC66" hue="80" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66FF66" hue="80" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#999999" brightness="144"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#000099" hue="160" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#003399" hue="147" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#006699" hue="133" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#009999" hue="120" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC99" hue="110" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF99" hue="104" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330099" hue="173" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#333399" hue="160" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#336699" hue="140" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#339999" hue="120" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#33CC99" hue="107" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FF99" hue="100" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#660099" hue="187" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#663399" hue="180" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#666699" hue="160" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#669999" hue="120" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#66CC99" hue="100" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66FF99" hue="93" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#CCCCCC" brightness="192"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#0000CC" hue="160" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#0033CC" hue="150" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#0066CC" hue="140" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#0099CC" hue="130" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00CCCC" hue="120" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FFCC" hue="112" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#3300CC" hue="170" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#3333CC" hue="160" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#3366CC" hue="147" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#3399CC" hue="133" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33CCCC" hue="120" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FFCC" hue="110" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#6600CC" hue="180" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#6633CC" hue="173" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#6666CC" hue="160" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#6699CC" hue="140" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66CCCC" hue="120" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66FFCC" hue="107" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FFFFFF" brightness="240"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#0000FF" hue="160" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#0033FF" hue="152" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#0066FF" hue="144" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#0099FF" hue="136" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#00CCFF" hue="128" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#00FFFF" hue="120" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#3300FF" hue="168" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#3333FF" hue="160" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#3366FF" hue="150" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#3399FF" hue="140" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#33CCFF" hue="130" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#33FFFF" hue="120" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#6600FF" hue="176" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#6633FF" hue="170" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#6666FF" hue="160" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#6699FF" hue="147" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#66CCFF" hue="133" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#66FFFF" hue="120" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FF0000" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990000" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993300" hue="13" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#996600" hue="27" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#999900" hue="40" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#99CC00" hue="50" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#99FF00" hue="56" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#CC0000" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3300" hue="10" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC6600" hue="20" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC9900" hue="30" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CCCC00" hue="40" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CCFF00" hue="48" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF0000" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3300" hue="8" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF6600" hue="16" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF9900" hue="24" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FFCC00" hue="32" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FFFF00" hue="40" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#00FF00" hue="80" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990033" hue="227" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993333" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#996633" hue="20" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#999933" hue="40" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#99CC33" hue="53" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#99FF33" hue="60" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#CC0033" hue="230" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3333" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC6633" hue="13" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC9933" hue="27" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CCCC33" hue="40" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CCFF33" hue="50" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF0033" hue="232" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3333" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF6633" hue="10" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF9933" hue="20" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FFCC33" hue="30" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FFFF33" hue="40" saturation="239" brightness="144"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#0000FF" hue="160" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990066" hue="213" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993366" hue="220" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#996666" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#999966" hue="40" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#99CC66" hue="60" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#99FF66" hue="67" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#CC0066" hue="220" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3366" hue="227" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC6666" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CC9966" hue="20" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CCCC66" hue="40" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CCFF66" hue="53" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF0066" hue="224" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3366" hue="230" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF6666" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF9966" hue="13" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FFCC66" hue="27" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FFFF66" hue="40" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FFFF00" hue="40" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990099" hue="200" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993399" hue="200" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#996699" hue="200" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#999999" brightness="144"/>
+                    <SolidSwatchItem color="#99CC99" hue="80" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#99FF99" hue="80" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CC0099" hue="210" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3399" hue="213" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC6699" hue="220" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CC9999" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#CCCC99" hue="40" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#CCFF99" hue="60" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FF0099" hue="216" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3399" hue="220" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF6699" hue="227" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF9999" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFCC99" hue="20" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFFF99" hue="40" saturation="239" brightness="192"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#00FFFF" hue="120" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#9900CC" hue="190" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#9933CC" hue="187" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#9966CC" hue="180" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#9999CC" hue="160" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#99CCCC" hue="120" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#99FFCC" hue="100" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CC00CC" hue="200" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC33CC" hue="200" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC66CC" hue="200" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CC99CC" hue="200" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#CCCCCC" brightness="192"/>
+                    <SolidSwatchItem color="#CCFFCC" hue="80" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FF00CC" hue="208" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF33CC" hue="210" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF66CC" hue="213" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF99CC" hue="220" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFCCCC" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FFFFCC" hue="40" saturation="239" brightness="216"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FF00FF" hue="200" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#9900FF" hue="184" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#9933FF" hue="180" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#9966FF" hue="173" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#9999FF" hue="160" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#99CCFF" hue="140" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#99FFFF" hue="120" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CC00FF" hue="192" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#CC33FF" hue="190" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#CC66FF" hue="187" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#CC99FF" hue="180" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CCCCFF" hue="160" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#CCFFFF" hue="120" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FF00FF" hue="200" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF33FF" hue="200" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF66FF" hue="200" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF99FF" hue="200" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFCCFF" hue="200" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FFFFFF" brightness="240"/>
+                    <SolidSwatchItem color="#2D1F31" hue="191" saturation="54" brightness="38"/>
+                    <SolidSwatchItem color="#374951" hue="132" saturation="45" brightness="64"/>
+                    <SolidSwatchItem color="#505C68" hue="139" saturation="32" brightness="87"/>
+                    <SolidSwatchItem color="#2E323A" hue="147" saturation="29" brightness="49"/>
+                    <SolidSwatchItem color="#5D5F5F" hue="120" saturation="1" brightness="89"/>
+                    <SolidSwatchItem color="#44484C" hue="140" saturation="14" brightness="68"/>
+                    <SolidSwatchItem color="#53595D" hue="136" saturation="14" brightness="83"/>
+                    <SolidSwatchItem color="#3D4243" hue="127" saturation="12" brightness="60"/>
+                    <SolidSwatchItem color="#1C2428" hue="133" saturation="45" brightness="32"/>
+                    <SolidSwatchItem color="#57595E" hue="147" saturation="8" brightness="85"/>
+                    <SolidSwatchItem color="#3A434A" hue="139" saturation="29" brightness="63"/>
+                    <SolidSwatchItem color="#6B767F" hue="139" saturation="21" brightness="111"/>
+                    <SolidSwatchItem color="#667A82" hue="131" saturation="29" brightness="109"/>
+                    <SolidSwatchItem color="#010003" hue="173" saturation="239" brightness="2"/>
+                    <SolidSwatchItem color="#B2BEC5" hue="134" saturation="32" brightness="177"/>
+                    <SolidSwatchItem color="#354A52" hue="130" saturation="51" brightness="64"/>
+                    <SolidSwatchItem color="#0C0E10" hue="140" saturation="37" brightness="13"/>
+                    <SolidSwatchItem color="#1AFADA" hue="114" saturation="229" brightness="130"/>
+                    <SolidSwatchItem color="#050506" hue="160" saturation="22" brightness="6"/>
+                    <SolidSwatchItem color="#39A898" hue="114" saturation="118" brightness="106"/>
+                    <SolidSwatchItem color="#152A35" hue="133" saturation="103" brightness="35"/>
+                    <SolidSwatchItem color="#0F1E1E" hue="120" saturation="80" brightness="21"/>
+                    <SolidSwatchItem color="#0B161C" hue="133" saturation="107" brightness="18"/>
+                    <SolidSwatchItem color="#091318" hue="133" saturation="116" brightness="16"/>
+                    <SolidSwatchItem color="#9D9C9A" hue="27" saturation="4" brightness="147"/>
+                    <SolidSwatchItem color="#975C5F" hue="239" saturation="58" brightness="115"/>
+                    <SolidSwatchItem color="#1C0E65" hue="166" saturation="182" brightness="54"/>
+                    <SolidSwatchItem color="#170F62" hue="164" saturation="177" brightness="53"/>
+                    <SolidSwatchItem color="#FEFEFD" hue="40" saturation="80" brightness="239"/>
+                    <SolidSwatchItem color="#F8CF2E" hue="32" saturation="224" brightness="138"/>
+               </swatches>
+          </swatchList>
+     </swatchLists>
+     <persistentData>
+          <PD n="TestMovieChecked" v="FlashPro"/>
+     </persistentData>
+     <PrinterSettings/>
+     <publishHistory>
+          <PublishItem publishSize="2405962" publishTime="1754752846"/>
+          <PublishItem publishSize="2406289" publishTime="1754752655"/>
+          <PublishItem publishSize="2406294" publishTime="1754752620"/>
+          <PublishItem publishSize="2406291" publishTime="1754752506"/>
+          <PublishItem publishSize="2406271" publishTime="1754752417"/>
+          <PublishItem publishSize="2406329" publishTime="1754669221"/>
+          <PublishItem publishSize="2406325" publishTime="1754666543"/>
+          <PublishItem publishSize="2406330" publishTime="1754665762"/>
+          <PublishItem publishSize="2406316" publishTime="1754665426"/>
+          <PublishItem publishSize="2406691" publishTime="1754503417"/>
+          <PublishItem publishSize="2406718" publishTime="1754503324"/>
+          <PublishItem publishSize="2406713" publishTime="1754503295"/>
+          <PublishItem publishSize="2406717" publishTime="1754503263"/>
+          <PublishItem publishSize="2406724" publishTime="1754502617"/>
+          <PublishItem publishSize="2384270" publishTime="1754501935"/>
+          <PublishItem publishSize="2320630" publishTime="1754501445"/>
+          <PublishItem publishSize="2089275" publishTime="1752343108"/>
+          <PublishItem publishSize="2089252" publishTime="1751374933"/>
+          <PublishItem publishSize="2088564" publishTime="1751374607"/>
+          <PublishItem publishSize="2088556" publishTime="1751374464"/>
+     </publishHistory>
+</DOMDocument>

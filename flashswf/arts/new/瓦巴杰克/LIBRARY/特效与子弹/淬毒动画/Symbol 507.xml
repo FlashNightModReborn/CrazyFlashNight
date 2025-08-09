@@ -1,0 +1,51 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/淬毒动画/Symbol 507" itemID="6577bc3f-00001208" symbolType="graphic" lastModified="1702237154">
+  <timeline>
+    <DOMTimeline name="Symbol 507">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#A5F49B"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!886 213[871 152 808 106!808 106|650 0!650 0[782 45 881 117!881 117[979 189 986 255!986 255[991 321 946 349!946 349[900 376 788 373!788 373[675 370 577 335!577 335|421 273!421 273|405 266!405 266[271 202 197 91!197 91|426 218!426 218
+|431 221!431 221|513 257!513 257[587 283 701 296!701 296|858 291!858 291[901 273 886 213"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#99FFFF"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#A5F49B"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!436 193|431 221!431 221|426 218!426 218|436 193"/>
+                    <Edge fillStyle1="2" edges="
+!421 273[330 694 199 694!199 694[118 694 51 578!51 578[11 509 0 459!0 459[12 487 41 518!41 518[97 579 159 579!159 579[235 579 295 483!295 483[339 414 440 126!440 126[412 269 421 273"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

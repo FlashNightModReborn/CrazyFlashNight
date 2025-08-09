@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防具/黑光重锤/素材/元件 11" itemID="65bb564f-0000007c" symbolType="graphic" lastModified="1706776143">
+  <timeline>
+    <DOMTimeline name="元件 11">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防具/黑光重锤/素材/元件 3" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="5.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="33.85" y="58.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="防具/黑光重锤/素材/元件 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix ty="55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.45" y="29.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
