@@ -1,7 +1,49 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!--已用ID：[251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 276, 278, 279, 280, 281, 282, 283, 284, 285, 288, 289, 292, 294, 295, 296, 298, 299, 300, 301, 304, 306, 308, 394, 395, 444, 451, 452, 459, 460, 520, 524, 566, 567, 619, 627, 633, 647, 648, 686, 687, 691, 701, 711, 715, 752, 753, 754, 755, 899, 1523, 1524, 1701, 2596, 2608, 3201, 5001, 5701, 5702, 6001, 6003, 6004, 6005, 6006, 6007, 6017, 6023, 6030, 6031, 6033, 6063, 6071, 6073, 6074, 6075, 6076, 6077, 8002, 8003, 8005, 8007, 8009, 8024, 8025, 8028, 8033, 8042, 9002, 12002, 12004, 12006, 12008, 12010, 12014, 12024, 12026, 12032, 12034, 12036, 12102, 12104, 12106, 12108, 12110, 12114, 12124, 12126, 12132, 12134, 12136, 13000, 13001, 13004, 13005, 13006, 13010, 13011, 13016, 22001, 22002, 22004, 22005, 22006, 22007, 22008]
-预留ID区间：17702-17900-->
+预留ID区间：17703-17900-->
 <root>
+  <item>
+    <id>17702</id>
+    <name>XM556-Preview</name>
+    <displayname>XM556-Preview</displayname>
+    <icon>XM556</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>10</weight>
+    <price>65000</price>
+    <description>由美国Empty Shell公司开发的革命性小型化加特林机枪的早期版本。
+    突破性的小型化、极致射速与便携性的完美结合，使XM556成为现代特种部队与高风险作战单位的理想压制武器。</description>
+    <level>11</level>
+    <data>
+      <capacity>30</capacity>
+      <split>5</split>
+      <diffusion>8</diffusion>
+      <interval>200</interval>
+      <velocity>35</velocity>
+      <bullet>纵向机枪联弹-加强普通子弹</bullet>
+      <bulletrename>加强普通子弹</bulletrename>
+      <sound>xm556_5_shot.wav</sound>
+      <muzzle>战斗步枪枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>机枪通用弹药</clipname>
+      <bulletsize>30</bulletsize>
+      <power>70</power>
+      <impact>6</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-XM556</dressup>
+    </equipped>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>XM556初始化</initRoutines>
+        </init>
+        <cycle>
+          <cycleRoutines>XM556周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
+  </item>
   <item>
     <id>2004</id>
     <name>SAI GRY 幽灵</name>
@@ -6060,7 +6102,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
         </cycle>
       </attr_0>
     </lifecycle>
-  </item>  
+  </item>
   <item>
     <id>8088</id>
     <name>XM556-Microgun</name>
@@ -6086,12 +6128,12 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <bullethit>火花</bullethit>
       <clipname>机枪通用弹药</clipname>
       <bulletsize>30</bulletsize>
-      <power>21</power>
-      <impact>2.5</impact>
+      <power>85</power>
+      <impact>5</impact>
     </data>
     <equipped>
       <dressup>枪-长枪-XM556-Microgun</dressup>
-    </equipped>    
+    </equipped>
     <lifecycle>
       <attr_0>
         <init>
@@ -6101,8 +6143,8 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
           <cycleRoutines>XM556周期</cycleRoutines>
         </cycle>
       </attr_0>
-    </lifecycle>    
-  </item>  
+    </lifecycle>
+  </item>
   <item>
     <id>8089</id>
     <name>Jackhammer</name>
@@ -6132,7 +6174,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <bulletsize>30</bulletsize>
       <power>245</power>
       <impact>10</impact>
-    </data>    
+    </data>
     <skill>
       <skillname>气锤地雷</skillname>
       <description>【铁枪之铤】智能双模式战技系统，根据武器蓄力状态自动切换功能。
@@ -6146,11 +6188,11 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <dressup>枪-长枪-Jackhammer</dressup>
       <damagetype>魔法</damagetype>
       <magictype>冷</magictype>
-    </equipped>    
+    </equipped>
     <lifecycle>
       <attr_0>
         <init>
-          <initRoutines>Jackhammer初始化</initRoutines>          
+          <initRoutines>Jackhammer初始化</initRoutines>
           <initParam>
             <skill_0>
               <skillname>气锤地雷</skillname>
@@ -6169,7 +6211,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
         </cycle>
       </attr_0>
     </lifecycle>
-  </item>  
+  </item>
   <item>
     <id>8090</id>
     <name>M1918A2</name>
@@ -6200,7 +6242,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     <equipped>
       <dressup>枪-长枪-M1918A2</dressup>
     </equipped>
-  </item>  
+  </item>
   <item>
     <id>8091</id>
     <name>ZB-26</name>
@@ -6232,7 +6274,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     <equipped>
       <dressup>枪-长枪-ZB-26</dressup>
     </equipped>
-  </item>  
+  </item>
   <item>
     <id>8092</id>
     <name>XM25</name>
@@ -6261,14 +6303,14 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
     <equipped>
       <dressup>枪-长枪-XM25</dressup>
-    </equipped>    
+    </equipped>
     <skill>
       <skillname>投影召唤</skillname>
       <description>召唤自机的投影，嘲讽敌人。</description>
       <cd>2000</cd>
       <mp>15</mp>
     </skill>
-    <level>32</level>    
+    <level>32</level>
     <lifecycle>
       <attr_0>
         <init>
@@ -6279,7 +6321,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
         </cycle>
       </attr_0>
     </lifecycle>
-  </item>  
+  </item>
   <item>
     <id>8093</id>
     <name>G11</name>
@@ -6291,7 +6333,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     <price>378866</price>
     <description>H&amp;K G11是德国研发的革命性无壳弹药突击步枪，采用独特的4.73×33mm无壳弹药和创新的旋转枪机结构，极大减轻了枪械整体重量，并实现了枪身的高度紧凑化设计。
 其标志性的“超高速三点射”模式，可达到瞬时2000发/分钟的射速，使三发子弹在射手尚未感受到明显后坐力之前便已连续射出，形成紧密重叠的弹道，显著提升中远程精确命中率，将狙击枪的精度与自动武器的压制火力完美融合。
-虽因政治因素未能量产，但G11无疑代表了步枪技术的巅峰成就。</description>    
+虽因政治因素未能量产，但G11无疑代表了步枪技术的巅峰成就。</description>
     <skill>
       <skillname>突击者之眼</skillname>
       <description>激发浮动枪机与旋转膛室的极限性能，以2000发/分钟的瞬时射速在0.03秒内连续打出三发高速无壳穿刺弹，三弹弹道重合、精准命中目标要害，瞬间穿刺，造成致命伤害。
@@ -6321,7 +6363,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
     <equipped>
       <dressup>枪-长枪-G11</dressup>
-    </equipped>    
+    </equipped>
     <lifecycle>
       <attr_0>
         <init>
@@ -6329,7 +6371,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
         </init>
       </attr_0>
     </lifecycle>
-  </item>  
+  </item>
   <item>
     <id>8094</id>
     <name>G111</name>
@@ -6343,7 +6385,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     铁枪会基于H&amp;K G11技术平台的实验改进型号，对原版射击模式进行了重新设计。标准射击模式固定为三发连射，以提高单次射击的有效杀伤。
 该系统集成了实验性磁轨加速系统，用以应对重护甲目标的威胁。枪管结构可通过机械变形切换至磁轨发射模式，需预先蓄力后发射高动能弹丸，弹丸威力与武器强化等级呈线性关系。
 通过固定三点射和磁轨加速技术的结合，G111在保持常规作战效能的同时，具备了摧毁重护甲单位的专门能力。技术验证表明该设计能有效穿透现有护甲防护系统。
-</description>
+    </description>
     <skill>
       <skillname>突击者之怒</skillname>
       <description>激活磁轨加速系统，枪管机械变形为磁轨发射模式。按下变形键开始蓄力，蓄力完成后射击发射高动能弹丸，威力随武器强化等级线性提升。
@@ -6373,7 +6415,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
     <equipped>
       <dressup>枪-长枪-G111</dressup>
-    </equipped>    
+    </equipped>
     <lifecycle>
       <attr_0>
         <init>
@@ -6384,7 +6426,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
         </cycle>
       </attr_0>
     </lifecycle>
-  </item>  
+  </item>
   <item>
     <id>8095</id>
     <name>G1111</name>
@@ -6411,7 +6453,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <bulletsize>40</bulletsize>
       <power>5432</power>
       <impact>20</impact>
-    </data>    
+    </data>
     <skill>
       <skillname>铁枪之锋</skillname>
       <description>【铁枪之锋】
@@ -6420,10 +6462,10 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <mp>50</mp>
     </skill>
     <equipped>
-      <dressup>枪-长枪-G1111</dressup>      
+      <dressup>枪-长枪-G1111</dressup>
       <damagetype>魔法</damagetype>
       <magictype>能</magictype>
-    </equipped>    
+    </equipped>
     <lifecycle>
       <attr_0>
         <init>
@@ -6466,13 +6508,13 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <impact>10</impact>
     </data>
     <equipped>
-      <dressup>枪-长枪-僵尸割草机</dressup>      
+      <dressup>枪-长枪-僵尸割草机</dressup>
       <hp>125</hp>
       <mp>40</mp>
-      <defence>50</defence>      
+      <defence>50</defence>
       <damagetype>破击</damagetype>
       <magictype>生化</magictype>
-    </equipped>    
+    </equipped>
     <lifecycle>
       <attr_0>
         <init>
@@ -6521,12 +6563,12 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <impact>10</impact>
     </data>
     <equipped>
-      <dressup>枪-长枪-混凝土切割机</dressup>      
+      <dressup>枪-长枪-混凝土切割机</dressup>
       <hp>240</hp>
       <defence>60</defence>
       <damagetype>破击</damagetype>
       <magictype>装甲</magictype>
-    </equipped>      
+    </equipped>
     <skill>
       <skillname>混凝土切割机超载打击</skillname>
       <description>启动超载模式，将设备调谐至临界共振点，诱发切割轮盘进入剧烈共振状态。
@@ -6537,7 +6579,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <cd>30000</cd>
       <duration>5</duration>
       <mp>75</mp>
-    </skill>  
+    </skill>
     <lifecycle>
       <attr_0>
         <init>
@@ -6588,12 +6630,12 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <impact>10</impact>
     </data>
     <equipped>
-      <dressup>枪-长枪-MACSIII</dressup>      
+      <dressup>枪-长枪-MACSIII</dressup>
       <hp>160</hp>
-      <defence>100</defence>      
+      <defence>100</defence>
       <damagetype>魔法</damagetype>
       <magictype>热</magictype>
-    </equipped>      
+    </equipped>
     <skill>
       <skillname>MACSIII超载打击</skillname>
       <description>消耗一枚强化石强制执行被锁定的高级协议，发动一次毁灭性挥砍。
@@ -6603,7 +6645,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <cd>30000</cd>
       <duration>5</duration>
       <mp>100</mp>
-    </skill>  
+    </skill>
     <lifecycle>
       <attr_0>
         <init>
@@ -6651,10 +6693,10 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <impact>25</impact>
     </data>
     <equipped>
-      <dressup>枪-长枪-AR57</dressup>      
+      <dressup>枪-长枪-AR57</dressup>
       <damagetype>破击</damagetype>
       <magictype>装甲</magictype>
-    </equipped>      
+    </equipped>
     <lifecycle>
       <attr_0>
         <init>
