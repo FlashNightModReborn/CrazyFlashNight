@@ -2063,7 +2063,7 @@
     <type>武器</type>
     <use>刀</use>
     <actiontype>长枪</actiontype>
-    <weight>1</weight>
+    <weight>6750</weight>
     <price>9999999</price>
     <skill>
       <skillname>狼跳</skillname>
@@ -3109,7 +3109,7 @@
       <mp>60</mp>
       <defence>99</defence>
     </equipped>
-      <lifecycle>
+    <lifecycle>
       <attr_0>
         <init>
           <initRoutines>通用特效刀口初始化</initRoutines>
@@ -4387,7 +4387,7 @@
       <dressup>刀-工兵铲</dressup>
     </equipped>
   </item>
-    <item>
+  <item>
     <id>8104</id>
     <name>光玉的剑</name>
     <displayname>光玉的剑</displayname>
