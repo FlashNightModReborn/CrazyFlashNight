@@ -801,7 +801,7 @@
     "equipment": {
       "head": null,
       "body": "白色短袖校服",
-      "hand": "弗莱迪手套",
+      "hand": "小型拳套",
       "leg": "红色百褶短裙",
       "foot": "黑色白底皮鞋",
       "neck": "空手小加成项链",
@@ -4260,7 +4260,7 @@
   {
     "level": 18,
     "name": "跟踪狂滚出去",
-    "id": 5640,
+    "id": 5642,
     "height": 170,
     "face": 1,
     "hair": 4,
@@ -4277,6 +4277,84 @@
       "secondary2": null,
       "melee": "兰博2",
       "grenade": null
+    }
+  },
+  {
+    "level": 15,
+    "name": "地上拳王",
+    "id": 5643,
+    "height": 180,
+    "face": 1,
+    "hair": 40,
+    "gender": 1,
+    "equipment": {
+      "head": null,
+      "body": null,
+      "hand": "大型拳套",
+      "leg": "天山黑侠裤子",
+      "foot": "天山黑侠棕色皮鞋",
+      "neck": "空手小加成项链",
+      "primary": null,
+      "secondary1": null,
+      "secondary2": null,
+      "melee": null,
+      "grenade": null
+    }
+  },
+  {
+    "level": 26,
+    "name": "半感染者",
+    "id": 5645,
+    "height": 199,
+    "face": 0,
+    "hair": 26,
+    "gender": 0,
+    "equipment": {
+      "head": "般若赤鬼半覆面",
+      "body": "剑圣胸甲",
+      "hand": "黑光重锤",
+      "leg": "LEE战服下装",
+      "foot": "LEE战靴",
+      "neck": "空手中加成项链",
+      "primary": null,
+      "secondary1": null,
+      "secondary2": null,
+      "melee": null,
+      "grenade": null
+    }
+  },
+  {
+    "level": 100,
+    "name": "泰坦",
+    "id": 5646,
+    "height": 218,
+    "face": 1,
+    "hair": 0,
+    "gender": 1,
+    "equipment": {
+      "head": "觉醒者.L33T墨镜",
+      "body": "黄金骑士牙狼胸甲",
+      "hand": "末日铁拳",
+      "leg": "黄金骑士牙狼腿甲",
+      "foot": "黄金骑士牙狼战鞋",
+      "neck": "空手大加成项链",
+      "primary": "",
+      "secondary1": "",
+      "secondary2": "",
+      "melee": "",
+      "grenade": null
+    },
+    "enhancement": {
+      "头部装备": 13,
+      "上装装备": 10,
+      "手部装备": 13,
+      "下装装备": 10,
+      "脚部装备": 10,
+      "颈部装备": 13,
+      "长枪": 10,
+      "手枪": 10,
+      "手枪2": 10,
+      "刀": 10
     }
   }
 ]
