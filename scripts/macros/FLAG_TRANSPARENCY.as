@@ -1,1 +1,26 @@
-﻿var FLAG_TRANSPARENCY:Number = 1 << 3;
+﻿/**
+ * FLAG_TRANSPARENCY - 透明子弹类型标志位
+ * 
+ * 位掩码值：1 << 3 = 8 (二进制: 00001000)
+ * 位置：第3位
+ * 
+ * 功能用途：
+ * • 标识透明类型子弹，这些子弹是创建开销最小的子弹类型
+ * • 创建方式：透明子弹使用浅拷贝而不是attachMovie创建，避免深度管理
+ * • 生命周期：使用专用的透明子弹生命周期管理器，简化处理逻辑
+ * • 视觉效果：透明子弹通常不可见或半透明，减少视觉干扰
+ * • 性能优化：跳过某些视觉相关的处理，提升性能
+ * • 普通子弹分类：透明子弹可归类为普通类型子弹
+ * 
+ * 使用示例：
+ * • 检测：(bullet.flags & FLAG_TRANSPARENCY) != 0
+ * • 设置：bullet.flags |= FLAG_TRANSPARENCY
+ * • 清除：bullet.flags &= ~FLAG_TRANSPARENCY
+ * 
+ * 应用场景：
+ * • 子弹工厂的创建方式选择（浅拷贝 vs attachMovie）
+ * • 生命周期管理器的类型选择
+ * • 普通子弹类型的分类计算
+ * • 视觉效果和渲染优化处理
+ */
+var FLAG_TRANSPARENCY:Number = 1 << 3;  // 透明标志位 - 位值: 8 (第3位)

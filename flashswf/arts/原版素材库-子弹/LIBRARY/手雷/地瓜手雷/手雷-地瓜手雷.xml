@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/地瓜手雷/手雷-地瓜手雷" itemID="6724eb77-00004b04" linkageExportForAS="true" linkageIdentifier="手雷-地瓜手雷" lastModified="1730474622" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="手雷-地瓜手雷">
+      <layers>
+        <DOMLayer name="Layer 1" color="#97E216" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="手雷/无AS链接/Symbol 13" name="枪口位置" centerPoint3DX="-18.75" centerPoint3DY="-2.2">
+                  <matrix>
+                    <Matrix a="2.5" d="1.24200439453125" tx="-31.25" ty="-14.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="手雷/素材/地瓜手雷素材" selected="true" centerPoint3DX="-53.35" centerPoint3DY="-55.1">
+                  <matrix>
+                    <Matrix a="-0.022735595703125" b="1.08966064453125" c="1.08966064453125" d="0.022735595703125" tx="-33.2" ty="-20.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="30.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,127 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/燃烧弹/燃烧弹手雷" itemID="68963356-0000313b" linkageExportForAS="true" linkageIdentifier="燃烧弹手雷" lastModified="1754675603" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="燃烧弹手雷" currentFrame="2">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#F31BF0">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#DE72FA" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+
+if(子弹敌我属性值 == undefined)
+{
+   子弹敌我属性值 = true;
+}
+if(发射者名 == undefined)
+{
+   发射者名 = _root.控制目标;
+}
+
+子弹属性 = _root.子弹属性初始化(this,"烈火燃烧",发射者名);
+子弹属性.声音 = "";
+子弹属性.霰弹值 = 1;
+子弹属性.子弹散射度 = 0;
+子弹属性.发射效果 = "";
+子弹属性.子弹种类 = "烈火燃烧";
+子弹属性.子弹威力 = 子弹威力 ? 子弹威力 : 100;
+子弹属性.子弹速度 = 0;
+子弹属性.击中地图效果 = "";
+子弹属性.Z轴攻击范围 = 80;
+子弹属性.击倒率 = 1;
+子弹属性.击中后子弹的效果 = "";
+子弹属性.子弹敌我属性 = 子弹敌我属性值;
+子弹属性.伤害类型 = this.伤害类型 ? this.伤害类型 : "物理";
+子弹属性.魔法伤害属性 = this.魔法伤害属性 ? this.魔法伤害属性 : "";
+子弹属性.shootX = this._x;
+子弹属性.shootY = Z轴坐标;
+子弹属性.shootZ = Z轴坐标;
+子弹属性.发射者 = 发射者名;
+_root.子弹区域shoot传递(子弹属性);
+stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#4566FB" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="手雷/无AS链接/Symbol 13" name="area" centerPoint3DX="-3.65" centerPoint3DY="-2.85">
+                  <matrix>
+                    <Matrix a="0.989578247070313" d="1.01498413085938" tx="-16.15" ty="-15.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   垂直速度 = -5;
+   起始Y = _parent.Z轴坐标;
+   this.onEnterFrame = function()
+   {
+      _parent._y += 垂直速度;
+      垂直速度 += _root.重力加速度;
+      if(_parent._y >= 起始Y)
+      {
+         _parent._y = 起始Y;
+         delete this.onEnterFrame;
+         _parent.gotoAndPlay("消失");
+      }
+   };
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#9767E0">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="手雷/燃烧弹/燃烧弹旋转动画" centerPoint3DX="-8.75" centerPoint3DY="-0.4">
+                  <matrix>
+                    <Matrix a="0.849990844726563" d="0.849990844726563" tx="-29.2" ty="-20.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.05" y="23.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

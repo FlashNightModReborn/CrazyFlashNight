@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/战术核弹手雷/手雷-战术核弹手雷" itemID="689366f4-00003299" linkageExportForAS="true" linkageIdentifier="手雷-战术核弹手雷" lastModified="1754501533" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="手雷-战术核弹手雷">
+      <layers>
+        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="其他/Symbol 13 副本" name="枪口位置" centerPoint3DX="27.6" centerPoint3DY="3.75">
+                  <matrix>
+                    <Matrix a="0" b="-1.18170166015625" c="0.805496215820313" d="0" tx="10.15" ty="20.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#BBC5DB">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="手雷/战术核弹手雷/战术核弹素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.58329772949219" b="-0.056182861328125" c="0.055694580078125" d="-1.57003784179688" tx="75.95" ty="62.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

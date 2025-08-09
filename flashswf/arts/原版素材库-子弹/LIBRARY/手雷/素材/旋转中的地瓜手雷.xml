@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/素材/旋转中的地瓜手雷" itemID="6724f204-000079db" lastModified="1730474500">
+  <timeline>
+    <DOMTimeline name="旋转中的地瓜手雷">
+      <layers>
+        <DOMLayer name="Layer 1" color="#BEFAD4" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="手雷/素材/地瓜手雷素材" selected="true" centerPoint3DX="18" centerPoint3DY="31.5">
+                  <matrix>
+                    <Matrix a="-0.999069213867188" b="-0.043121337890625" c="0.043121337890625" d="-0.999069213867188" tx="34.35" ty="62.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.85" y="30.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="手雷/素材/地瓜手雷素材" centerPoint3DX="19.05" centerPoint3DY="30.2">
+                  <matrix>
+                    <Matrix a="0.965927124023438" b="0.258804321289063" c="-0.258804321289063" d="0.965927124023438" tx="8.6" ty="-3.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.85" y="30.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="手雷/素材/地瓜手雷素材" centerPoint3DX="17.5" centerPoint3DY="31.5">
+                  <matrix>
+                    <Matrix a="-0.965927124023438" b="-0.258804321289063" c="0.258804321289063" d="-0.965927124023438" tx="27.15" ty="65.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.85" y="30.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

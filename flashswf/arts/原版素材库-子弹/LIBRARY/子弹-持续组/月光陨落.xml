@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-持续组/月光陨落" itemID="669d34d7-00001774" linkageExportForAS="true" linkageIdentifier="月光陨落" lastModified="1721578711">
   <timeline>
-    <DOMTimeline name="月光陨落">
+    <DOMTimeline name="月光陨落" currentFrame="9">
       <layers>
-        <DOMLayer name="Script Layer" color="#AACF7A" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#AACF7A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -28,7 +28,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#A779B9">
+        <DOMLayer name="Layer 2" color="#A779B9" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -65,7 +65,7 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="8" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 5231" blendMode="add" centerPoint3DX="160.6" centerPoint3DY="-90.7">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 5231" selected="true" blendMode="add" centerPoint3DX="160.6" centerPoint3DY="-90.7">
                   <matrix>
                     <Matrix a="-0.6578369140625" d="0.6578369140625" tx="160.6" ty="-90.7"/>
                   </matrix>

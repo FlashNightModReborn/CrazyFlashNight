@@ -12,8 +12,17 @@
           <DOMFolderItem name="诺亚" itemID="6551e7c0-00001580"/>
           <DOMFolderItem name="其他" itemID="656cb4b0-0000042a"/>
           <DOMFolderItem name="其他武器" itemID="6551e8df-000015b7"/>
-          <DOMFolderItem name="手雷" itemID="689365e6-00002ce7"/>
-          <DOMFolderItem name="手雷/高爆手雷" itemID="6893651b-00002cce" isExpanded="true"/>
+          <DOMFolderItem name="手雷" itemID="689365e6-00002ce7" isExpanded="true"/>
+          <DOMFolderItem name="手雷/BBPLAYER炸弹" itemID="66d5f180-00001b06"/>
+          <DOMFolderItem name="手雷/鞭炮" itemID="66a5e01d-000014f1" isExpanded="true"/>
+          <DOMFolderItem name="手雷/地瓜手雷" itemID="6896ec0b-00003d51" isExpanded="true"/>
+          <DOMFolderItem name="手雷/高爆手雷" itemID="6893651b-00002cce"/>
+          <DOMFolderItem name="手雷/冷爆弹手雷" itemID="6896eab3-0000339f"/>
+          <DOMFolderItem name="手雷/普通手雷" itemID="66a5e023-000014f2"/>
+          <DOMFolderItem name="手雷/燃烧弹" itemID="66d71372-0000192e" isExpanded="true"/>
+          <DOMFolderItem name="手雷/素材" itemID="6896ec18-00003d56"/>
+          <DOMFolderItem name="手雷/无AS链接" itemID="6896e872-0000330b"/>
+          <DOMFolderItem name="手雷/战术核弹手雷" itemID="6896ea94-0000339a"/>
           <DOMFolderItem name="特效-动画与文字组" itemID="669d3a20-000017ae"/>
           <DOMFolderItem name="特效-击中效果组" itemID="669d39ad-000017a2"/>
           <DOMFolderItem name="特效-枪火组" itemID="669d3996-000017a1"/>
@@ -172,8 +181,8 @@
           <Include href="弹壳/霰弹弹壳.xml" itemID="6634e7c1-0000196a" lastModified="1714811989"/>
           <Include href="弹壳/重机枪弹壳.xml" itemID="66357b12-00000b67" lastModified="1714811998"/>
           <Include href="导弹.xml" loadImmediate="false" itemID="671dc67e-000007ce" lastModified="1730004606"/>
-          <Include href="地雷激光扫描线.xml" itemIcon="1" loadImmediate="false" itemID="687af4b5-000005e2" lastModified="1752890259"/>
           <Include href="等离子光片.xml" loadImmediate="false" itemID="6883540e-00000e06" lastModified="1753438466"/>
+          <Include href="地雷激光扫描线.xml" itemIcon="1" loadImmediate="false" itemID="687af4b5-000005e2" lastModified="1752890259"/>
           <Include href="联弹/白色手里剑/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000250" lastModified="1705503817"/>
           <Include href="联弹/白色手里剑/Symbol 23.xml" loadImmediate="false" itemID="6577efbc-00000251" lastModified="1705503796"/>
           <Include href="联弹/白色手里剑/Symbol 573.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000416" lastModified="1705503893"/>
@@ -213,13 +222,52 @@
           <Include href="气锤上叶片.xml" itemIcon="1" loadImmediate="false" itemID="6879a7cf-00000602" lastModified="1752803279"/>
           <Include href="气锤下叶片.xml" itemIcon="1" loadImmediate="false" itemID="6879a7dd-00000607" lastModified="1752803293"/>
           <Include href="升级动画.xml" itemID="669d33ea-0000172e" lastModified="1721578474"/>
+          <Include href="手雷/BBPLAYER炸弹/BBPLAYER手雷.xml" itemID="6896eacb-000033ae" lastModified="1754720971"/>
+          <Include href="手雷/BBPLAYER炸弹/BBPLAYER图形.xml" loadImmediate="false" itemID="66d5f305-000025e4" lastModified="1725297448"/>
+          <Include href="手雷/BBPLAYER炸弹/BBPLAYER旋转动画.xml" loadImmediate="false" itemID="66d5f2c4-00001b31" lastModified="1725297495"/>
+          <Include href="手雷/BBPLAYER炸弹/BBPLAYER炸弹.xml" itemID="66d5f280-00001b26" lastModified="1725297566"/>
+          <Include href="手雷/BBPLAYER炸弹/手雷-BBPLAYER炸弹.xml" itemID="66d5f1f5-00001b14" lastModified="1725297416"/>
+          <Include href="手雷/BBPLAYER炸弹/图标-BBPLAYER手雷.xml" itemID="6896eaf3-000033c7" lastModified="1754721070"/>
+          <Include href="手雷/鞭炮/Symbol 3951.xml" loadImmediate="false" itemID="668e7c1e-00000fbe" lastModified="1720533000"/>
+          <Include href="手雷/鞭炮/鞭炮.xml" itemID="66a5d97f-00001456" lastModified="1754667324"/>
+          <Include href="手雷/鞭炮/鞭炮旋转动画.xml" loadImmediate="false" itemID="66a5e6b0-000016d7" lastModified="1722343865"/>
+          <Include href="手雷/鞭炮/手雷-鞭炮.xml" itemID="66a5dbb6-0000149f" lastModified="1725297154"/>
+          <Include href="手雷/鞭炮/图标-鞭炮.xml" itemID="66913d79-0000404d" lastModified="1720794494"/>
+          <Include href="手雷/地瓜手雷/地瓜手雷.xml" itemID="6724e9b8-00003bf5" lastModified="1754673396"/>
+          <Include href="手雷/地瓜手雷/手雷-地瓜手雷.xml" itemID="6724eb77-00004b04" lastModified="1730474622"/>
+          <Include href="手雷/地瓜手雷/图标-地瓜手雷.xml" itemID="6724e82b-00003828" lastModified="1730474436"/>
           <Include href="手雷/高爆手雷/Symbol 1540.xml" loadImmediate="false" itemID="66424ac1-00000e36" lastModified="1746217044"/>
           <Include href="手雷/高爆手雷/高爆手雷.xml" itemID="6893661b-00002cea" lastModified="1754669901"/>
           <Include href="手雷/高爆手雷/手雷-高爆手雷.xml" itemID="681527f2-00004946" lastModified="1754490230"/>
-          <Include href="手雷/高爆手雷/手雷-战术核弹手雷.xml" itemID="689366f4-00003299" lastModified="1754501533"/>
           <Include href="手雷/高爆手雷/图标-高爆手雷.xml" itemID="681527a8-00004353" lastModified="1754490765"/>
-          <Include href="手雷/高爆手雷/图标-战术核弹手雷.xml" itemID="68936744-00003490" lastModified="1754490887"/>
-          <Include href="手雷/高爆手雷/战术核弹手雷.xml" itemID="68936621-00002cfc" lastModified="1754673197"/>
+          <Include href="手雷/冷爆弹手雷/冷爆弹手雷.xml" itemID="6896e541-00002761" lastModified="1754719581"/>
+          <Include href="手雷/冷爆弹手雷/冷爆弹手雷图像.xml" itemIcon="1" loadImmediate="false" itemID="6896e457-00002372" lastModified="1754719319"/>
+          <Include href="手雷/冷爆弹手雷/手雷-冷爆弹手雷.xml" itemID="6896e189-000020c5" lastModified="1754719402"/>
+          <Include href="手雷/冷爆弹手雷/图标冷爆弹手雷.xml" itemID="6896e4aa-00002380" lastModified="1754719474"/>
+          <Include href="手雷/普通手雷/Symbol 3796.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000f61" lastModified="1720533000"/>
+          <Include href="手雷/普通手雷/普通手雷.xml" itemID="66a5d97c-00001455" lastModified="1754668895"/>
+          <Include href="手雷/普通手雷/普通手雷旋转动画.xml" loadImmediate="false" itemID="66a5dfe6-000014e3" lastModified="1722148709"/>
+          <Include href="手雷/普通手雷/手雷-普通手雷.xml" itemID="66a5da75-0000145a" lastModified="1754668883"/>
+          <Include href="手雷/普通手雷/手雷-自制燃烧弹.xml" itemID="66a5da78-0000145b" lastModified="1723814221"/>
+          <Include href="手雷/普通手雷/图标-普通手雷.xml" itemID="66a5ea72-000017d8" lastModified="1722149490"/>
+          <Include href="手雷/燃烧弹/燃烧弹.xml" itemID="66d71398-00001953" lastModified="1754675597"/>
+          <Include href="手雷/燃烧弹/燃烧弹手雷.xml" itemID="68963356-0000313b" lastModified="1754675603"/>
+          <Include href="手雷/燃烧弹/燃烧弹图形.xml" loadImmediate="false" itemID="66d71380-00001938" lastModified="1725371525"/>
+          <Include href="手雷/燃烧弹/燃烧弹旋转动画.xml" loadImmediate="false" itemID="66d7138b-00001943" lastModified="1725371465"/>
+          <Include href="手雷/燃烧弹/手雷-燃烧弹.xml" itemID="66d713a2-00001961" lastModified="1725371633"/>
+          <Include href="手雷/燃烧弹/图标-燃烧弹.xml" itemID="6896334a-0000312b" lastModified="1754675544"/>
+          <Include href="手雷/素材/Symbol 24.xml" itemIcon="1" loadImmediate="false" itemID="6896ec18-00003d66" lastModified="1701508661"/>
+          <Include href="手雷/素材/Symbol 25.xml" loadImmediate="false" itemID="6896ec18-00003d65" lastModified="1701508661"/>
+          <Include href="手雷/素材/地瓜手雷素材.xml" loadImmediate="false" itemID="6724f246-00008154" lastModified="1730474566"/>
+          <Include href="手雷/素材/图标影子.xml" itemIcon="1" loadImmediate="false" itemID="6724ea07-00003fb3" lastModified="1730472455"/>
+          <Include href="手雷/素材/旋转中的地瓜手雷.xml" loadImmediate="false" itemID="6724f204-000079db" lastModified="1730474500"/>
+          <Include href="手雷/无AS链接/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="6896e872-0000333c" lastModified="1720533000"/>
+          <Include href="手雷/无AS链接/Symbol 13.xml" loadImmediate="false" itemID="6896e872-0000333b" lastModified="1720533000"/>
+          <Include href="手雷/无AS链接/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005c2" lastModified="1720533000"/>
+          <Include href="手雷/战术核弹手雷/手雷-战术核弹手雷.xml" itemID="689366f4-00003299" lastModified="1754501533"/>
+          <Include href="手雷/战术核弹手雷/图标-战术核弹手雷.xml" itemID="68936744-00003490" lastModified="1754490887"/>
+          <Include href="手雷/战术核弹手雷/战术核弹手雷.xml" itemID="68936621-00002cfc" lastModified="1754673197"/>
+          <Include href="手雷/战术核弹手雷/战术核弹素材.xml" itemIcon="1" loadImmediate="false" itemID="6893663f-00002d0f" lastModified="1754491166"/>
           <Include href="特效-动画与文字组/升级动画2.xml" itemID="669d3460-00001749" lastModified="1721578592"/>
           <Include href="特效-动画与文字组/药剂动画.xml" itemID="669d3408-00001735" lastModified="1722876442"/>
           <Include href="特效-动画与文字组/药剂动画-2.xml" itemID="669d346d-0000174c" lastModified="1722876464"/>
@@ -554,8 +602,7 @@
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 663.xml" itemIcon="1" loadImmediate="false" itemID="668b9cdd-000001df" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 664.xml" loadImmediate="false" itemID="668b9cdd-000001e0" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 1217.xml" itemIcon="1" loadImmediate="false" itemID="668b9f53-000001d0" lastModified="1720426265"/>
-          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1754644488"/>
-          <Include href="战术核弹素材.xml" itemIcon="1" loadImmediate="false" itemID="6893663f-00002d0f" lastModified="1754491166"/>
+          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1754721423"/>
           <Include href="子弹-持续组/电球.xml" itemID="669d343b-00001740" lastModified="1722876120"/>
           <Include href="子弹-持续组/火焰.xml" itemID="669d3404-00001734" lastModified="1754557467"/>
           <Include href="子弹-持续组/声波.xml" itemID="669d34bf-0000176e" lastModified="1722875808"/>
