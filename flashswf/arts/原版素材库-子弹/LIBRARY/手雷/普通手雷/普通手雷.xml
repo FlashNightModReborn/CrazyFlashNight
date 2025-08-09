@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/普通手雷/普通手雷" itemID="66a5d97c-00001455" linkageExportForAS="true" linkageIdentifier="普通手雷" lastModified="1754668895">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/普通手雷/普通手雷" itemID="66a5d97c-00001455" linkageExportForAS="true" linkageIdentifier="普通手雷" lastModified="1754725686">
   <timeline>
-    <DOMTimeline name="普通手雷">
+    <DOMTimeline name="普通手雷" currentFrame="2">
       <layers>
         <DOMLayer name="Labels Layer" color="#94D4F8">
           <frames>
@@ -30,7 +30,7 @@
 霰弹值 = 1;
 子弹散射度 = 0;
 发射效果 = "";
-子弹种类 = "火焰集束爆炸声";
+子弹种类 = "火焰集束手雷爆炸";
 if(!子弹威力)
 {
    子弹威力 = 500;

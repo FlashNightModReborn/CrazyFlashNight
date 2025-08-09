@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/BBPLAYER炸弹/BBPLAYER手雷" itemID="6896eacb-000033ae" linkageExportForAS="true" linkageIdentifier="BBPLAYER手雷" lastModified="1754720971" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/BBPLAYER炸弹/BBPLAYER手雷" itemID="6896eacb-000033ae" linkageExportForAS="true" linkageIdentifier="BBPLAYER手雷" lastModified="1754726073" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="BBPLAYER手雷" currentFrame="2">
       <layers>
@@ -30,19 +30,19 @@
 霰弹值 = 1;
 子弹散射度 = 0;
 发射效果 = "";
-子弹种类 = "火焰集束爆炸声";
+子弹种类 = "火焰集束手雷爆炸";
 if(!子弹威力)
 {
-   子弹威力 = 1000;
+   子弹威力 = 10000;
 }
 else
 {
-   子弹威力 *= 0.7;
+   子弹威力 *= 1;
 }
 子弹速度 = 0;
 击中地图效果 = "";
 Z轴攻击范围 = 60;
-击倒率 = 1;
+击倒率 = 0.1;
 击中后子弹的效果 = "";
 子弹敌我属性 = 子弹敌我属性值;
 shootX = this._x;

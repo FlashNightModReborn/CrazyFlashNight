@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/BBPLAYER炸弹/BBPLAYER炸弹" itemID="66d5f280-00001b26" linkageExportForAS="true" linkageIdentifier="BBPLAYER炸弹" lastModified="1725297566" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/BBPLAYER炸弹/BBPLAYER炸弹" itemID="66d5f280-00001b26" linkageExportForAS="true" linkageIdentifier="BBPLAYER炸弹" lastModified="1754725648" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="BBPLAYER炸弹" currentFrame="2">
       <layers>
@@ -30,7 +30,7 @@
 霰弹值 = 1;
 子弹散射度 = 0;
 发射效果 = "";
-子弹种类 = "火焰集束爆炸声";
+子弹种类 = "火焰集束手雷爆炸";
 if(!子弹威力)
 {
    子弹威力 = 1000;

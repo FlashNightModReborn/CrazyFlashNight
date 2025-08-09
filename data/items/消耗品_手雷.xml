@@ -3,7 +3,7 @@
 预留ID区间： 18606-18700 -->
 <root>
   <item>
-    <id>18605</id>
+    <id>18606</id>
     <name>战术核弹手雷</name>
     <displayname>战术核弹手雷</displayname>
     <icon>战术核弹手雷</icon>
@@ -31,6 +31,36 @@
     </data>
     <equipped>
       <dressup>手雷-战术核弹手雷</dressup>
+    </equipped>
+  </item>
+  <item>
+    <id>18605</id>
+    <name>BBPLAYER手雷</name>
+    <displayname>BBPLAYER手雷</displayname>
+    <icon>BBPLAYER手雷</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <weight>1</weight>
+    <price>10000</price>
+    <description>来源神秘的手雷。尽管攻击范围较小，但伤害可观。</description>
+    <level>35</level>
+    <data>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>10</interval>
+      <velocity>23</velocity>
+      <bullet>BBPLAYER手雷</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>BBPLAYER手雷</clipname>
+      <bulletsize>50</bulletsize>
+      <power>10000</power>
+      <impact>1</impact>
+    </data>
+    <equipped>
+      <dressup>手雷-BBPLAYER炸弹</dressup>
     </equipped>
   </item>
   <item>

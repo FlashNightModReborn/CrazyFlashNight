@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/BBPLAYER炸弹/图标-BBPLAYER手雷" itemID="6896eaf3-000033c7" linkageExportForAS="true" linkageIdentifier="图标-BBPLAYER手雷" lastModified="1754721070">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/BBPLAYER炸弹/图标-BBPLAYER手雷" itemID="6896eaf3-000033c7" linkageExportForAS="true" linkageIdentifier="图标-BBPLAYER手雷" lastModified="1754726087">
   <timeline>
-    <DOMTimeline name="图标-BBPLAYER手雷">
+    <DOMTimeline name="图标-BBPLAYER手雷" currentFrame="1">
       <layers>
         <DOMLayer name="Script Layer" color="#69C4E2">
           <frames>
@@ -29,7 +29,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#AB17C6" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="Layer 3" color="#AB17C6" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -48,16 +48,16 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#DDDE29">
+        <DOMLayer name="Layer 4" color="#DDDE29" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="手雷/BBPLAYER炸弹/BBPLAYER图形" centerPoint3DX="41.85" centerPoint3DY="-34.3">
+                <DOMSymbolInstance libraryItemName="手雷/BBPLAYER炸弹/BBPLAYER图形" selected="true" centerPoint3DX="44.2" centerPoint3DY="-30.95">
                   <matrix>
-                    <Matrix a="0.537277221679688" b="9.1552734375e-005" c="-9.1552734375e-005" d="0.537277221679688" tx="-6.45" ty="-4.3"/>
+                    <Matrix a="0.289962768554688" b="4.57763671875e-005" c="-4.57763671875e-005" d="0.289962768554688" tx="-4.1" ty="-0.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

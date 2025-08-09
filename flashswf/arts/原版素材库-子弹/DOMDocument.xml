@@ -13,14 +13,14 @@
           <DOMFolderItem name="其他" itemID="656cb4b0-0000042a"/>
           <DOMFolderItem name="其他武器" itemID="6551e8df-000015b7"/>
           <DOMFolderItem name="手雷" itemID="689365e6-00002ce7" isExpanded="true"/>
-          <DOMFolderItem name="手雷/BBPLAYER炸弹" itemID="66d5f180-00001b06"/>
+          <DOMFolderItem name="手雷/BBPLAYER炸弹" itemID="66d5f180-00001b06" isExpanded="true"/>
           <DOMFolderItem name="手雷/鞭炮" itemID="66a5e01d-000014f1" isExpanded="true"/>
           <DOMFolderItem name="手雷/地瓜手雷" itemID="6896ec0b-00003d51" isExpanded="true"/>
           <DOMFolderItem name="手雷/高爆手雷" itemID="6893651b-00002cce"/>
-          <DOMFolderItem name="手雷/冷爆弹手雷" itemID="6896eab3-0000339f"/>
-          <DOMFolderItem name="手雷/普通手雷" itemID="66a5e023-000014f2"/>
+          <DOMFolderItem name="手雷/冷爆弹手雷" itemID="6896eab3-0000339f" isExpanded="true"/>
+          <DOMFolderItem name="手雷/普通手雷" itemID="66a5e023-000014f2" isExpanded="true"/>
           <DOMFolderItem name="手雷/燃烧弹" itemID="66d71372-0000192e" isExpanded="true"/>
-          <DOMFolderItem name="手雷/素材" itemID="6896ec18-00003d56"/>
+          <DOMFolderItem name="手雷/素材" itemID="6896ec18-00003d56" isExpanded="true"/>
           <DOMFolderItem name="手雷/无AS链接" itemID="6896e872-0000330b"/>
           <DOMFolderItem name="手雷/战术核弹手雷" itemID="6896ea94-0000339a"/>
           <DOMFolderItem name="特效-动画与文字组" itemID="669d3a20-000017ae"/>
@@ -181,8 +181,8 @@
           <Include href="弹壳/霰弹弹壳.xml" itemID="6634e7c1-0000196a" lastModified="1714811989"/>
           <Include href="弹壳/重机枪弹壳.xml" itemID="66357b12-00000b67" lastModified="1714811998"/>
           <Include href="导弹.xml" loadImmediate="false" itemID="671dc67e-000007ce" lastModified="1730004606"/>
-          <Include href="等离子光片.xml" loadImmediate="false" itemID="6883540e-00000e06" lastModified="1753438466"/>
           <Include href="地雷激光扫描线.xml" itemIcon="1" loadImmediate="false" itemID="687af4b5-000005e2" lastModified="1752890259"/>
+          <Include href="等离子光片.xml" loadImmediate="false" itemID="6883540e-00000e06" lastModified="1753438466"/>
           <Include href="联弹/白色手里剑/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000250" lastModified="1705503817"/>
           <Include href="联弹/白色手里剑/Symbol 23.xml" loadImmediate="false" itemID="6577efbc-00000251" lastModified="1705503796"/>
           <Include href="联弹/白色手里剑/Symbol 573.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000416" lastModified="1705503893"/>
@@ -222,18 +222,18 @@
           <Include href="气锤上叶片.xml" itemIcon="1" loadImmediate="false" itemID="6879a7cf-00000602" lastModified="1752803279"/>
           <Include href="气锤下叶片.xml" itemIcon="1" loadImmediate="false" itemID="6879a7dd-00000607" lastModified="1752803293"/>
           <Include href="升级动画.xml" itemID="669d33ea-0000172e" lastModified="1721578474"/>
-          <Include href="手雷/BBPLAYER炸弹/BBPLAYER手雷.xml" itemID="6896eacb-000033ae" lastModified="1754720971"/>
+          <Include href="手雷/BBPLAYER炸弹/BBPLAYER手雷.xml" itemID="6896eacb-000033ae" lastModified="1754726073"/>
           <Include href="手雷/BBPLAYER炸弹/BBPLAYER图形.xml" loadImmediate="false" itemID="66d5f305-000025e4" lastModified="1725297448"/>
           <Include href="手雷/BBPLAYER炸弹/BBPLAYER旋转动画.xml" loadImmediate="false" itemID="66d5f2c4-00001b31" lastModified="1725297495"/>
-          <Include href="手雷/BBPLAYER炸弹/BBPLAYER炸弹.xml" itemID="66d5f280-00001b26" lastModified="1725297566"/>
+          <Include href="手雷/BBPLAYER炸弹/BBPLAYER炸弹.xml" itemID="66d5f280-00001b26" lastModified="1754725648"/>
           <Include href="手雷/BBPLAYER炸弹/手雷-BBPLAYER炸弹.xml" itemID="66d5f1f5-00001b14" lastModified="1725297416"/>
-          <Include href="手雷/BBPLAYER炸弹/图标-BBPLAYER手雷.xml" itemID="6896eaf3-000033c7" lastModified="1754721070"/>
+          <Include href="手雷/BBPLAYER炸弹/图标-BBPLAYER手雷.xml" itemID="6896eaf3-000033c7" lastModified="1754726087"/>
           <Include href="手雷/鞭炮/Symbol 3951.xml" loadImmediate="false" itemID="668e7c1e-00000fbe" lastModified="1720533000"/>
-          <Include href="手雷/鞭炮/鞭炮.xml" itemID="66a5d97f-00001456" lastModified="1754667324"/>
+          <Include href="手雷/鞭炮/鞭炮.xml" itemID="66a5d97f-00001456" lastModified="1754725668"/>
           <Include href="手雷/鞭炮/鞭炮旋转动画.xml" loadImmediate="false" itemID="66a5e6b0-000016d7" lastModified="1722343865"/>
           <Include href="手雷/鞭炮/手雷-鞭炮.xml" itemID="66a5dbb6-0000149f" lastModified="1725297154"/>
           <Include href="手雷/鞭炮/图标-鞭炮.xml" itemID="66913d79-0000404d" lastModified="1720794494"/>
-          <Include href="手雷/地瓜手雷/地瓜手雷.xml" itemID="6724e9b8-00003bf5" lastModified="1754673396"/>
+          <Include href="手雷/地瓜手雷/地瓜手雷.xml" itemID="6724e9b8-00003bf5" lastModified="1754725676"/>
           <Include href="手雷/地瓜手雷/手雷-地瓜手雷.xml" itemID="6724eb77-00004b04" lastModified="1730474622"/>
           <Include href="手雷/地瓜手雷/图标-地瓜手雷.xml" itemID="6724e82b-00003828" lastModified="1730474436"/>
           <Include href="手雷/高爆手雷/Symbol 1540.xml" loadImmediate="false" itemID="66424ac1-00000e36" lastModified="1746217044"/>
@@ -245,7 +245,7 @@
           <Include href="手雷/冷爆弹手雷/手雷-冷爆弹手雷.xml" itemID="6896e189-000020c5" lastModified="1754719402"/>
           <Include href="手雷/冷爆弹手雷/图标冷爆弹手雷.xml" itemID="6896e4aa-00002380" lastModified="1754719474"/>
           <Include href="手雷/普通手雷/Symbol 3796.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000f61" lastModified="1720533000"/>
-          <Include href="手雷/普通手雷/普通手雷.xml" itemID="66a5d97c-00001455" lastModified="1754668895"/>
+          <Include href="手雷/普通手雷/普通手雷.xml" itemID="66a5d97c-00001455" lastModified="1754725686"/>
           <Include href="手雷/普通手雷/普通手雷旋转动画.xml" loadImmediate="false" itemID="66a5dfe6-000014e3" lastModified="1722148709"/>
           <Include href="手雷/普通手雷/手雷-普通手雷.xml" itemID="66a5da75-0000145a" lastModified="1754668883"/>
           <Include href="手雷/普通手雷/手雷-自制燃烧弹.xml" itemID="66a5da78-0000145b" lastModified="1723814221"/>
@@ -648,7 +648,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="原版素材库-子弹" selected="true" centerPoint3DX="66.7" centerPoint3DY="8.8">
+                                        <DOMSymbolInstance libraryItemName="原版素材库-子弹" centerPoint3DX="66.7" centerPoint3DY="8.8">
                                              <transformationPoint>
                                                   <Point/>
                                              </transformationPoint>
@@ -973,6 +973,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3971842" publishTime="1754725699"/>
+          <PublishItem publishSize="3971797" publishTime="1754725426"/>
           <PublishItem publishSize="3943844" publishTime="1754669970"/>
           <PublishItem publishSize="3943844" publishTime="1754669926"/>
           <PublishItem publishSize="3946890" publishTime="1754645015"/>
@@ -991,7 +993,5 @@
           <PublishItem publishSize="3921357" publishTime="1754551576"/>
           <PublishItem publishSize="3922259" publishTime="1754550915"/>
           <PublishItem publishSize="3922885" publishTime="1754550691"/>
-          <PublishItem publishSize="3922729" publishTime="1754550474"/>
-          <PublishItem publishSize="3921512" publishTime="1754550157"/>
      </publishHistory>
 </DOMDocument>

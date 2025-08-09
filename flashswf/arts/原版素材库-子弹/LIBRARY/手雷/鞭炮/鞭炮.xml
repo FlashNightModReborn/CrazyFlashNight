@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/鞭炮/鞭炮" itemID="66a5d97f-00001456" linkageExportForAS="true" linkageIdentifier="鞭炮" lastModified="1754667324" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/鞭炮/鞭炮" itemID="66a5d97f-00001456" linkageExportForAS="true" linkageIdentifier="鞭炮" lastModified="1754725668" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="鞭炮" currentFrame="2">
       <layers>
@@ -30,7 +30,7 @@
 霰弹值 = 1;
 子弹散射度 = 0;
 发射效果 = "";
-子弹种类 = "火焰集束爆炸声";
+子弹种类 = "火焰集束手雷爆炸";
 if(!子弹威力)
 {
    子弹威力 = 100;
@@ -67,7 +67,7 @@ this.removeMovieClip();
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="手雷/无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="-1.3">
+                <DOMSymbolInstance libraryItemName="手雷/无AS链接/Symbol 13" name="area" centerPoint3DX="-1.3">
                   <matrix>
                     <Matrix d="0.999984741210938" tx="-13.8" ty="-12.5"/>
                   </matrix>
