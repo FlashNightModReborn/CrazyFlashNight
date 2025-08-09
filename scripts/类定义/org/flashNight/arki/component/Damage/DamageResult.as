@@ -5,72 +5,72 @@
  * 它包含了伤害值、伤害颜色、伤害大小、伤害效果等信息，并提供了触发伤害显示的功能。
  */
 class org.flashNight.arki.component.Damage.DamageResult {
-    
+
     /**
      * 存储所有伤害值的数组。
      * @type {Array}
      */
     public var totalDamageList:Array;
-    
+
     /**
      * 伤害显示的颜色。
      * @type {String}
      */
     public var damageColor:String;
-    
+
     /**
      * 伤害显示的字体大小。
      * @type {Number}
      */
     public var damageSize:Number;
-    
+
     /**
      * 伤害显示的附加效果。
      * @type {String}
      */
     public var damageEffects:String;
-    
+
     /**
      * 最终的散射值，用于计算伤害的散射效果。
      * @type {Number}
      */
     public var finalScatterValue:Number;
-    
+
     /**
      * 闪避状态，用于显示是否成功闪避伤害。
      * @type {String}
      */
     public var dodgeStatus:String;
-    
+
     /**
      * 实际使用的霰弹值。
      * @type {Number}
      */
     public var actualScatterUsed:Number;
-    
+
     /**
      * 伤害显示的次数。
      * @type {Number}
      */
     public var displayCount:Number;
-    
+
     /**
      * 用于显示伤害的函数。
      * @type {Function}
      */
     public var displayFunction:Function;
-    
+
     /**
      * 静态实例，表示一个默认的伤害结果。
      * @type {DamageResult}
      */
-    
+
     // 用于计算复用
     public static var IMPACT:DamageResult = new DamageResult();
 
     // 只用于传递无伤害的情况，注意不可更改
     public static var NULL:DamageResult = new DamageResult();
-    
+
     /**
      * DamageResult 类的构造函数。
      * 初始化所有属性为默认值。
@@ -78,7 +78,7 @@ class org.flashNight.arki.component.Damage.DamageResult {
     public function DamageResult() {
         this.reset();
     }
-    
+
     /**
      * 重置所有属性为默认值。
      */
@@ -94,8 +94,7 @@ class org.flashNight.arki.component.Damage.DamageResult {
         this.displayFunction = _root.打击数字特效;
     }
 
-    public static function getIMPACT():DamageResult
-    {
+    public static function getIMPACT():DamageResult {
         var r:DamageResult = DamageResult.IMPACT;
 
         r.totalDamageList = [];
@@ -110,7 +109,7 @@ class org.flashNight.arki.component.Damage.DamageResult {
 
         return r;
     }
-    
+
     /**
      * 添加一个伤害值到伤害列表中。
      * @param {Number} damage - 要添加的伤害值。
@@ -119,7 +118,7 @@ class org.flashNight.arki.component.Damage.DamageResult {
         var list = this.totalDamageList;
         list[list.length] = damage;
     }
-    
+
     /**
      * 设置伤害显示的颜色。
      * @param {String} color - 伤害显示的颜色。
@@ -127,7 +126,7 @@ class org.flashNight.arki.component.Damage.DamageResult {
     public function setDamageColor(color:String):Void {
         this.damageColor = color;
     }
-    
+
     /**
      * 添加一个伤害效果到伤害效果字符串中。
      * @param {String} effect - 要添加的伤害效果。
@@ -138,35 +137,34 @@ class org.flashNight.arki.component.Damage.DamageResult {
 
     /**
      * 兼容联弹处理逻辑，将伤害结果推入堆栈准备显示
-     * 
+     *
      * @param remainingDamage 待处理的伤害数值
      * @param damageSize 伤害数字大小
-     * @return 
+     * @return
      */
     public function calculateScatterDamage(remainingDamage:Number):Void {
         // 设置显示次数为实际使用的霰弹值
         this.displayCount = this.actualScatterUsed;
-        
+
         var actualScatterUsed:Number = this.actualScatterUsed;
-        
+
         if (actualScatterUsed > 1) {
             // 分割总伤害为多个散射伤害
             for (var i:Number = 0; i < actualScatterUsed - 1; i++) {
                 // 计算波动伤害（保留原随机逻辑）
-                var fluctuatedDamage:Number = (remainingDamage / (actualScatterUsed - i)) 
-                    * (100 + _root.随机偏移(50 / actualScatterUsed)) / 100;
-                
+                var fluctuatedDamage:Number = (remainingDamage / (actualScatterUsed - i)) * (100 + _root.随机偏移(50 / actualScatterUsed)) / 100;
+
                 // 处理非法值并添加伤害
                 fluctuatedDamage = isNaN(fluctuatedDamage) ? 0 : fluctuatedDamage;
                 this.addDamageValue(Math.floor(fluctuatedDamage));
                 remainingDamage -= fluctuatedDamage;
             }
         }
-        
+
         // 添加最后的剩余伤害
         this.addDamageValue(isNaN(remainingDamage) ? 0 : Math.floor(remainingDamage));
     }
-    
+
     /**
      * 触发伤害显示功能，将伤害值显示在指定的坐标位置。
      * @param {Number} targetX - 伤害显示的X坐标。
@@ -196,7 +194,8 @@ class org.flashNight.arki.component.Damage.DamageResult {
             var damage:Number = list[i];
             var displayNumber:String;
 
-            if (damage <= 0) {
+            //if (damage <= 0) {
+            if (damage < 0) {
                 displayNumber = fontStart + 'MISS' + fontEnd;
             } else {
                 // 使用位运算优化 Math.floor
