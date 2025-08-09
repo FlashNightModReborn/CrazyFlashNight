@@ -24,7 +24,7 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
     }
     
     /**
-     * 设置默认值
+     * 设置默认值（基础部分，不依赖flags）
      * @param Obj {Object} 子弹对象
      * @param shooter {Object} 发射者对象
      */
@@ -34,6 +34,16 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
         Obj.命中率 = (isNaN(Obj.命中率)) ? shooter.命中率 : Obj.命中率;
         Obj.最小霰弹值 = (isNaN(Obj.最小霰弹值)) ? 1 : Obj.最小霰弹值;
         
+        Obj.shooter = shooter;
+        Obj.是否为敌人 = shooter.是否为敌人;
+        Obj.zAttackRangeSq = Obj.Z轴攻击范围 * Obj.Z轴攻击范围;
+    }
+    
+    /**
+     * 设置依赖flags标志位的默认值
+     * @param Obj {Object} 子弹对象 - 必须已经通过BulletTypesetter.setTypeFlags设置了flags属性
+     */
+    public static function setFlagDependentDefaults(Obj:Object):Void {
         // === 宏展开 + 位掩码组合优化：手雷与爆炸类型的统一检测 ===
         //
         // 优化目标：
@@ -70,9 +80,7 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
         
         // 单次位运算替代传统的双重检测：(isGrenade || isExplosive)
         Obj.远距离不消失 = (Obj.flags & GRENADE_EXPLOSIVE_MASK) != 0;
-        Obj.shooter = shooter;
-        Obj.是否为敌人 = shooter.是否为敌人;
-        Obj.zAttackRangeSq = Obj.Z轴攻击范围 * Obj.Z轴攻击范围;
+        // _root.发布消息(Obj.子弹种类, Obj.远距离不消失);
     }
     
     /**

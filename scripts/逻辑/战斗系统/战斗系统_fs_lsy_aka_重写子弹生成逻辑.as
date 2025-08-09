@@ -95,21 +95,24 @@ _root.子弹区域shoot传递 = function(Obj){
     // 计算射击角度
     var shootingAngle:Number = ShootingAngleCalculator.calculate(Obj, shooter);
 
-    // 1. 设置默认值
+    // 1. 设置默认值（基础部分，不依赖flags）
     BulletInitializer.setDefaults(Obj, shooter);
 
-    // 2. 继承发射者属性
-    BulletInitializer.inheritShooterAttributes(Obj, shooter);
-
-    // 3. 计算击退速度
-    BulletInitializer.calculateKnockback(Obj);
-
-    // 4. 初始化子弹属性（包含从XML加载的额外属性）
+    // 2. 初始化子弹属性（包含从XML加载的额外属性）
     BulletInitializer.initializeBulletProperties(Obj);
     
-    // 5. 设置子弹类型标志（必须在initializeBulletProperties之后调用）
+    // 3. 设置子弹类型标志（必须在initializeBulletProperties之后调用）
     // 因为部分标志位（如FLAG_GRENADE）需要从XML中获取，确保所有属性都已加载
     BulletTypesetter.setTypeFlags(Obj);
+    
+    // 4. 设置依赖flags标志位的默认值（必须在setTypeFlags之后调用）
+    BulletInitializer.setFlagDependentDefaults(Obj);
+
+    // 5. 继承发射者属性
+    BulletInitializer.inheritShooterAttributes(Obj, shooter);
+
+    // 6. 计算击退速度
+    BulletInitializer.calculateKnockback(Obj);
 
     // 创建子弹
     var bulletInstance = BulletFactory.createBullet(Obj, shooter, shootingAngle);
@@ -320,7 +323,7 @@ _root.子弹生命周期 = function()
             this.霰弹值 = 1;
             EffectSystem.Effect(this.击中地图效果, this._x, this._y);
             if(this.hitMark) {
-                _root.发布消息("子弹击中标记", this.hitMark, this._x, this._y);
+                // _root.发布消息("子弹击中标记", this.hitMark, this._x, this._y);
                 EffectSystem.Effect(this.hitMark, this._x, this._y, shooter._xscale / 2);
             }
 
