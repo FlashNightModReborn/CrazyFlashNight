@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="原版素材库-子弹" itemID="668b9f9e-000001f3" linkageExportForAS="true" linkageIdentifier="原版素材库-子弹" lastModified="1754721423" lastUniqueIdentifier="226">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="原版素材库-子弹" itemID="668b9f9e-000001f3" linkageExportForAS="true" linkageIdentifier="原版素材库-子弹" lastModified="1754777791" lastUniqueIdentifier="227">
   <timeline>
-    <DOMTimeline name="原版素材库-子弹" currentFrame="5">
+    <DOMTimeline name="原版素材库-子弹">
       <layers>
         <DOMLayer name="as" color="#9933CC" locked="true" autoNamed="false">
           <frames>
@@ -2576,7 +2576,7 @@
                 </DOMStaticText>
                 <DOMStaticText fontRenderingMode="standard" width="78.5" height="15.55" isSelectable="false">
                   <matrix>
-                    <Matrix tx="129.95" ty="69.45"/>
+                    <Matrix tx="129.95" ty="54.1"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -3051,6 +3051,33 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
+                <DOMSymbolInstance libraryItemName="子弹-普通与穿刺组/反器材子弹" selected="true" centerPoint3DX="99.65" centerPoint3DY="76.8">
+                  <matrix>
+                    <Matrix tx="91.3" ty="76.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMStaticText fontRenderingMode="standard" width="78.5" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="127.45" ty="70.35"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>反器材子弹</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
               </elements>
             </DOMFrame>
             <DOMFrame index="3" duration="4" keyMode="9728">
@@ -3273,7 +3300,7 @@
                     <Point x="-3.8" y="-2.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="手雷/BBPLAYER炸弹/手雷-BBPLAYER炸弹" selected="true" centerPoint3DX="198.6" centerPoint3DY="440.45">
+                <DOMSymbolInstance libraryItemName="手雷/BBPLAYER炸弹/手雷-BBPLAYER炸弹" centerPoint3DX="198.6" centerPoint3DY="440.45">
                   <matrix>
                     <Matrix tx="204.35" ty="440.2"/>
                   </matrix>
@@ -3281,7 +3308,7 @@
                     <Point x="-5.75" y="0.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="手雷/BBPLAYER炸弹/BBPLAYER手雷" selected="true" centerPoint3DX="191.55" centerPoint3DY="370.6">
+                <DOMSymbolInstance libraryItemName="手雷/BBPLAYER炸弹/BBPLAYER手雷" centerPoint3DX="191.55" centerPoint3DY="370.6">
                   <matrix>
                     <Matrix tx="196.4" ty="373.9"/>
                   </matrix>
@@ -3289,7 +3316,7 @@
                     <Point x="-4.85" y="-3.3"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="手雷/BBPLAYER炸弹/图标-BBPLAYER手雷" selected="true" centerPoint3DX="190.75" centerPoint3DY="312.7">
+                <DOMSymbolInstance libraryItemName="手雷/BBPLAYER炸弹/图标-BBPLAYER手雷" centerPoint3DX="190.75" centerPoint3DY="312.7">
                   <matrix>
                     <Matrix tx="190.75" ty="312.7"/>
                   </matrix>
@@ -3297,7 +3324,7 @@
                     <Point x="4.25" y="-5.4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMStaticText selected="true" fontRenderingMode="standard" width="115.5" height="15.55" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="115.5" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="146.9" ty="262.9"/>
                   </matrix>
@@ -4578,60 +4605,8 @@
         </DOMLayer>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
-            </DOMFrame>
-            <DOMFrame index="1" duration="6" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="手雷/鞭炮/图标-鞭炮" centerPoint3DX="67" centerPoint3DY="65.5">
-                  <matrix>
-                    <Matrix tx="67" ty="65.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="-0.15" y="0.3"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="手雷/鞭炮/手雷-鞭炮" centerPoint3DX="53.45" centerPoint3DY="205.9">
-                  <matrix>
-                    <Matrix tx="81.1" ty="206.25"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="-27.65" y="-0.35"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="手雷/鞭炮/鞭炮" centerPoint3DX="65.85" centerPoint3DY="136.5">
-                  <matrix>
-                    <Matrix tx="74.6" ty="136.9"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="-8.75" y="-0.4"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="手雷/普通手雷/手雷-普通手雷" centerPoint3DX="176.15" centerPoint3DY="211.6">
-                  <matrix>
-                    <Matrix tx="174.15" ty="213.65"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="2.45" y="-2.5"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="手雷/普通手雷/图标-普通手雷" centerPoint3DX="165.95" centerPoint3DY="56.1">
-                  <matrix>
-                    <Matrix tx="165.95" ty="56.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point y="2.35"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="手雷/普通手雷/普通手雷" centerPoint3DX="175.75" centerPoint3DY="147.8">
-                  <matrix>
-                    <Matrix tx="174.8" ty="147.8"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="0.95"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
             </DOMFrame>
             <DOMFrame index="7" duration="18" keyMode="9728">
               <elements/>
@@ -4656,7 +4631,7 @@
  131!2361 131|2355 192!2355 192|2424 192!2424 192[2423 242 2421 290!2421 290[2419 344 2374 344!2374 344[2361 344 2330 343!2330 343[2328 329 2324 315!2324 315[2356 318 2369 318!2369 318[2394 318 2395 289!2395 289[2397 250 2398 216!2398
  216|2328 216!2328 216|2338 107!2338 107|2400 107!2272 52|2154 139!2154 139|2154 164!2154 164|2308 164!2308 164|2308 190!2308 190|2154 190!2154 190|2154 301!2154 301[2154 348 2105 348!2105 348[2089 348 2050 347!2050 347[2048 333 2045
  315!2045 315[2071 318 2100 319!2100 319[2125 319 2125 293!2125 293|2125 190!2125 190|1961 190!1961 190|1961 164!1961 164|2125 164!2125 164|2125 125!2125 125|2225 51!2225 51|1998 51!1998 51|1998 25!1998 25|2272 25!2272 25|2272 52!1825
- 209|1825 183!1825 183|1929 183!1929 183|1929 209!1929 209|1825 209!1789 71|1506 71!1506 71|1506 172!1506 172[1506 293 1460 353!1460 353[1451 342 1440 329!1440 329[1478 279 1478 177!1478 177|1478 46!1478 46|1630 46!1630 46[1619 31 1606
+ 183|1929 183!1929 183|1929 209!1929 209|1825 209!1825 209|1825 183!1789 71|1506 71!1506 71|1506 172!1506 172[1506 293 1460 353!1460 353[1451 342 1440 329!1440 329[1478 279 1478 177!1478 177|1478 46!1478 46|1630 46!1630 46[1619 31 1606
  16!1606 16|1627 0!1627 0[1644 16 1658 35!1658 35|1643 46!1643 46|1789 46!1789 46|1789 71!1646 153|1675 153!1675 153|1675 198!1675 198|1771 198!1771 198|1771 223!1771 223|1675 223!1675 223|1675 260!1675 260|1788 260!1788 260|1788 286
 !1788 286|1675 286!1675 286|1675 351!1675 351|1646 351!1646 351|1646 286!1646 286|1513 286!1513 286|1513 260!1513 260|1646 260!1646 260|1646 223!1646 223|1539 223!1539 223|1539 197!1539 197[1558 171 1574 140!1574 140|1522 140!1522 140
 |1522 114!1522 114|1586 114!1586 114[1595 96 1603 75!1603 75|1631 83!1631 83[1624 99 1617 114!1617 114|1771 114!1771 114|1771 140!1771 140|1604 140!1604 140[1588 171 1571 198!1571 198|1646 198!1646 198|1646 153!1433 105|1383 105!1383
@@ -5121,9 +5096,9 @@
                     <Point x="0.3" y="0.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="子弹-普通与穿刺组/加强普通子弹" centerPoint3DX="84" centerPoint3DY="79.3">
+                <DOMSymbolInstance libraryItemName="子弹-普通与穿刺组/加强普通子弹" centerPoint3DX="84" centerPoint3DY="62.2">
                   <matrix>
-                    <Matrix tx="72.35" ty="79.3"/>
+                    <Matrix tx="72.35" ty="62.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="11.65"/>
@@ -5220,7 +5195,56 @@
               </elements>
             </DOMFrame>
             <DOMFrame index="3" duration="4" keyMode="9728">
-              <elements/>
+              <elements>
+                <DOMSymbolInstance libraryItemName="手雷/鞭炮/图标-鞭炮" centerPoint3DX="67" centerPoint3DY="65.5">
+                  <matrix>
+                    <Matrix tx="67" ty="65.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15" y="0.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="手雷/鞭炮/手雷-鞭炮" centerPoint3DX="53.45" centerPoint3DY="205.9">
+                  <matrix>
+                    <Matrix tx="81.1" ty="206.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-27.65" y="-0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="手雷/鞭炮/鞭炮" centerPoint3DX="65.85" centerPoint3DY="136.5">
+                  <matrix>
+                    <Matrix tx="74.6" ty="136.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-8.75" y="-0.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="手雷/普通手雷/手雷-普通手雷" centerPoint3DX="176.15" centerPoint3DY="211.6">
+                  <matrix>
+                    <Matrix tx="174.15" ty="213.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.45" y="-2.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="手雷/普通手雷/图标-普通手雷" centerPoint3DX="165.95" centerPoint3DY="56.1">
+                  <matrix>
+                    <Matrix tx="165.95" ty="56.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="2.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="手雷/普通手雷/普通手雷" centerPoint3DX="175.75" centerPoint3DY="147.8">
+                  <matrix>
+                    <Matrix tx="174.8" ty="147.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
             <DOMFrame index="7" duration="7" keyMode="9728">
               <elements>

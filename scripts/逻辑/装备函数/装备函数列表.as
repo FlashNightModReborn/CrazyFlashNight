@@ -31,3 +31,5 @@
 
 #include "../逻辑/装备函数/P90.as"
 #include "../逻辑/装备函数/AR57.as"
+
+#include "../逻辑/装备函数/GM6_LYNX.as"

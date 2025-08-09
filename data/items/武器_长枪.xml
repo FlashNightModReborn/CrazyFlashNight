@@ -2320,7 +2320,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <diffusion>6</diffusion>
       <interval>200</interval>
       <velocity>20</velocity>
-      <bullet>加强普通子弹</bullet>
+      <bullet>反器材子弹</bullet>
       <sound>EFT-ASH12.wav</sound>
       <muzzle>反器材枪火</muzzle>
       <bullethit>火花</bullethit>
@@ -2579,7 +2579,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <diffusion>4</diffusion>
       <interval>170</interval>
       <velocity>70</velocity>
-      <bullet>加强普通子弹</bullet>
+      <bullet>反器材子弹</bullet>
       <sound>fr506.wav</sound>
       <muzzle>反器材枪火</muzzle>
       <bullethit>火花</bullethit>
@@ -2612,7 +2612,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <diffusion>4</diffusion>
       <interval>135</interval>
       <velocity>70</velocity>
-      <bullet>加强普通子弹</bullet>
+      <bullet>反器材子弹</bullet>
       <sound>fr506.wav</sound>
       <muzzle>反器材枪火</muzzle>
       <bullethit>火花</bullethit>
@@ -2721,7 +2721,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <diffusion>2</diffusion>
       <interval>1350</interval>
       <velocity>75</velocity>
-      <bullet>加强普通子弹</bullet>
+      <bullet>反器材子弹</bullet>
       <sound>Gun_SniperRifle_Shot01.wav</sound>
       <muzzle>反器材枪火</muzzle>
       <bullethit>火花</bullethit>
@@ -6709,6 +6709,53 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
         </init>
         <cycle>
           <cycleRoutines>AR57周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
+  </item>
+  <item>
+    <id>17703</id>
+    <name>GM6_LYNX</name>
+    <displayname>GM6_LYNX</displayname>
+    <icon>GM6_LYNX</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>14</weight>
+    <price>136500</price>
+    <description>AR57独特的上置式弹匣与供弹结构，使其成为AR-15枪族中一个略显华而不实的异类。
+  在审判日前，这把武器更多被视为收藏家的玩物，而非战士的利器。
+  然而，铁枪会的工程师们却敏锐地察觉到了5.7毫米口径子弹的巨大潜力，并为其量身打造了一套新型弹药系统。
+  这次改进的目标并非修正其固有的设计缺陷，而是纯粹地将穿甲性能特化到了极致。
+  代价则是更高的后坐力和略显粗暴的射击手感。
+    </description>
+    <level>38</level>
+    <data>
+      <capacity>5</capacity>
+      <split>1</split>
+      <diffusion>6</diffusion>
+      <interval>430</interval>
+      <velocity>50</velocity>
+      <bullet>反器材子弹</bullet>
+      <sound>Gun_SniperRifle_Shot01.wav</sound>
+      <muzzle>反器材枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>狙击步枪通用弹药</clipname>
+      <bulletsize>40</bulletsize>
+      <power>4700</power>
+      <impact>1</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-GM6_LYNX</dressup>
+      <damagetype>破击</damagetype>
+      <magictype>精英</magictype>
+    </equipped>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>GM6_LYNX初始化</initRoutines>
+        </init>
+        <cycle>
+          <cycleRoutines>GM6_LYNX周期</cycleRoutines>
         </cycle>
       </attr_0>
     </lifecycle>

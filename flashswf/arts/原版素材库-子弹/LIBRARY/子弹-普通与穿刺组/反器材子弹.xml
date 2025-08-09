@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/加强普通子弹" itemID="669d3477-0000174e" linkageExportForAS="true" linkageIdentifier="加强普通子弹" lastModified="1721578615">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/反器材子弹" itemID="6897c7ca-0000260c" linkageExportForAS="true" linkageIdentifier="反器材子弹" lastModified="1754777931" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="加强普通子弹">
+    <DOMTimeline name="反器材子弹">
       <layers>
         <DOMLayer name="Labels Layer" color="#AF03E7">
           <frames>
@@ -31,7 +31,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#B3FD2D">
+        <DOMLayer name="Layer 3" color="#B3FD2D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -54,15 +54,15 @@ this.removeMovieClip();
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 694" selected="true" centerPoint3DX="25.75" centerPoint3DY="0.45">
+                <DOMSymbolInstance libraryItemName="子弹-普通与穿刺组/反器材子弹图像" centerPoint3DX="-10.7" centerPoint3DY="2.2">
                   <matrix>
-                    <Matrix a="1.66873168945313" d="1.66873168945313" tx="13.15" ty="-0.45"/>
+                    <Matrix tx="-34.2" ty="-0.45"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="23.5" y="2.65"/>
                   </transformationPoint>
                   <filters>
-                    <GlowFilter blurX="8" blurY="8" color="#FFFF99"/>
+                    <GlowFilter blurX="8" blurY="8" color="#FDE899"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>

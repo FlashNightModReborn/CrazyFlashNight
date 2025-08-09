@@ -168,8 +168,9 @@
           <Include href="G1111导弹组件.xml" loadImmediate="false" itemID="688ad72a-000003df" lastModified="1753929514"/>
           <Include href="GM6_LYNX/GM6 LYNX 枪管.xml" loadImmediate="false" itemID="689769d8-0000013f" lastModified="1754773578"/>
           <Include href="GM6_LYNX/GM6 盖子.xml" itemIcon="1" loadImmediate="false" itemID="68979771-000016cf" lastModified="1754771227"/>
-          <Include href="GM6_LYNX/GM6_LYNX.xml" itemID="68976bd3-00001695" lastModified="1754774399"/>
+          <Include href="GM6_LYNX/GM6_LYNX.xml" itemID="68976bd3-00001695" lastModified="1754778312"/>
           <Include href="GM6_LYNX/GM6大栓.xml" itemIcon="1" loadImmediate="false" itemID="6897b209-000016d3" lastModified="1754771977"/>
+          <Include href="GM6_LYNX/GM6枪管.xml" itemIcon="1" loadImmediate="false" itemID="6897bcd6-00001b6a" lastModified="1754774742"/>
           <Include href="GM6_LYNX/补间 15.xml" itemIcon="1" loadImmediate="false" itemID="6897b2d5-000016e1" lastModified="1754772245"/>
           <Include href="GM6_LYNX/补间 16.xml" itemIcon="1" loadImmediate="false" itemID="6897b2d5-000016e3" lastModified="1754772190"/>
           <Include href="GM6_LYNX/弹匣.xml" loadImmediate="false" itemID="68978eb6-00000192" lastModified="1754762934"/>
@@ -1256,6 +1257,8 @@
                     <SolidSwatchItem color="#C2A087" hue="17" saturation="79" brightness="155"/>
                     <SolidSwatchItem color="#AD95A3" hue="217" saturation="31" brightness="152"/>
                     <SolidSwatchItem color="#564D5C" hue="184" saturation="23" brightness="80"/>
+                    <SolidSwatchItem color="#6E645C" hue="17" saturation="21" brightness="96"/>
+                    <SolidSwatchItem color="#4E4F55" hue="154" saturation="11" brightness="77"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1338,6 +1341,12 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2170225" publishTime="1754778327"/>
+          <PublishItem publishSize="2170251" publishTime="1754777292"/>
+          <PublishItem publishSize="2170350" publishTime="1754777257"/>
+          <PublishItem publishSize="2170419" publishTime="1754777214"/>
+          <PublishItem publishSize="2170333" publishTime="1754777163"/>
+          <PublishItem publishSize="2170620" publishTime="1754774639"/>
           <PublishItem publishSize="2065781" publishTime="1754749205"/>
           <PublishItem publishSize="2065781" publishTime="1754748933"/>
           <PublishItem publishSize="2065644" publishTime="1754748893"/>
@@ -1352,11 +1361,5 @@
           <PublishItem publishSize="2055128" publishTime="1754220479"/>
           <PublishItem publishSize="2055136" publishTime="1754220379"/>
           <PublishItem publishSize="2058748" publishTime="1754220275"/>
-          <PublishItem publishSize="2058735" publishTime="1754220109"/>
-          <PublishItem publishSize="2058692" publishTime="1754219486"/>
-          <PublishItem publishSize="2039781" publishTime="1754205663"/>
-          <PublishItem publishSize="2039795" publishTime="1754201834"/>
-          <PublishItem publishSize="2039795" publishTime="1754201770"/>
-          <PublishItem publishSize="2039794" publishTime="1754201538"/>
      </publishHistory>
 </DOMDocument>
