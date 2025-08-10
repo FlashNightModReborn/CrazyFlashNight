@@ -23,7 +23,7 @@ _root.对话覆盖赋值到对话框 = function(内容数组){
 
 _root.getDialogueSpecialString = function(str){
 	if (str == "$PC") return _root.角色名;
-	if (str == "$PC_TITLE") return _root.玩家称号;
+	if (str == "$PC_TITLE") return _root.玩家称号 && _root.玩家称号 != "" ? _root.玩家称号 : "菜鸟";
 	if (str == "$PC_CHAR") return "玩家";
 	return str;
 };
