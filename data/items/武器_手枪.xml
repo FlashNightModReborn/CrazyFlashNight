@@ -1,7 +1,6 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!--已用ID：[207, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 286, 287, 290, 291, 293, 297, 302, 303, 305, 307, 525, 528, 529, 530, 531, 623, 677, 678, 679, 682, 683, 684, 688, 712, 750, 751, 849, 850, 851, 1521, 1522, 1700, 2501, 2529, 5703, 6002, 6008, 6024, 6025, 6032, 6064, 6072, 6078, 8000, 8001, 8004, 8006, 8026, 8027, 8034, 8035, 8036, 8037, 8038, 8039, 8040, 8041, 12012, 12016, 12022, 12028, 12030, 12038, 12112, 12116, 12122, 12128, 12130, 12138, 13002, 13003, 13008, 13009, 13012, 13014, 13015, 22003, 22009, 22010, 22012, 22013]
-预留ID区间：17501-17700-->
-<root>
+预留ID区间：17501-17700--><root>
   <item>
     <id>8218</id>
     <name>M93R</name>
@@ -14,6 +13,7 @@
     <description>基于M9手枪制造的冲锋手枪。</description>
     <level>21</level>
     <data>
+      <dressup>枪-手枪-M93R</dressup>
       <capacity>7</capacity>
       <split>3</split>
       <diffusion>3</diffusion>
@@ -29,9 +29,6 @@
       <power>690</power>
       <impact>50</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-M93R</dressup>
-    </equipped>
   </item>
   <item>
     <id>8217</id>
@@ -45,6 +42,7 @@
     <description>A国装备的M9手枪的改进型。</description>
     <level>12</level>
     <data>
+      <dressup>枪-手枪-M92F</dressup>
       <capacity>15</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
@@ -59,9 +57,6 @@
       <power>400</power>
       <impact>50</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-M92F</dressup>
-    </equipped>
   </item>
   <item>
     <id>8216</id>
@@ -75,6 +70,7 @@
     <description>S&amp;W公司制造的大口径转轮手枪，发射独有的.500S&amp;W马格南手枪弹。</description>
     <level>33</level>
     <data>
+      <dressup>枪-手枪-S&amp;W M500</dressup>
       <capacity>5</capacity>
       <split>1</split>
       <diffusion>2</diffusion>
@@ -88,11 +84,8 @@
       <bulletsize>50</bulletsize>
       <power>8500</power>
       <impact>1</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-S&amp;W M500</dressup>
       <slay>15</slay>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8215</id>
@@ -106,6 +99,7 @@
     <description>EGL国Webley&amp;Scott公司制造的转轮手枪。</description>
     <level>6</level>
     <data>
+      <dressup>枪-手枪-Webley</dressup>
       <capacity>6</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
@@ -119,11 +113,8 @@
       <bulletsize>25</bulletsize>
       <power>750</power>
       <impact>10</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-Webley</dressup>
       <slay>5</slay>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8214</id>
@@ -137,6 +128,7 @@
     <description>一把改造后的P99手枪。</description>
     <level>15</level>
     <data>
+      <dressup>枪-手枪-WaltherP99C</dressup>
       <capacity>30</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -151,9 +143,6 @@
       <power>450</power>
       <impact>150</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-WaltherP99C</dressup>
-    </equipped>
   </item>
   <item>
     <id>8213</id>
@@ -167,6 +156,7 @@
     <description>DEU国Walther公司制造的自动手枪。</description>
     <level>12</level>
     <data>
+      <dressup>枪-手枪-WaltherP99</dressup>
       <capacity>10</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
@@ -181,9 +171,6 @@
       <power>500</power>
       <impact>150</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-WaltherP99</dressup>
-    </equipped>
   </item>
   <item>
     <id>8212</id>
@@ -197,6 +184,7 @@
     <description>C国国产警用手枪。</description>
     <level>23</level>
     <data>
+      <dressup>枪-手枪-Type92G</dressup>
       <capacity>15</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
@@ -211,9 +199,6 @@
       <power>630</power>
       <impact>100</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-Type92G</dressup>
-    </equipped>
   </item>
   <item>
     <id>8211</id>
@@ -227,6 +212,7 @@
     <description>锯短的20号双管猎枪。</description>
     <level>8</level>
     <data>
+      <dressup>枪-手枪-HDBHshotgun</dressup>
       <capacity>2</capacity>
       <split>15</split>
       <diffusion>12</diffusion>
@@ -242,9 +228,6 @@
       <power>110</power>
       <impact>200</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-HDBHshotgun</dressup>
-    </equipped>
   </item>
   <item>
     <id>8210</id>
@@ -258,6 +241,7 @@
     <description>SOV联设计制造的冲锋手枪。</description>
     <level>18</level>
     <data>
+      <dressup>枪-手枪-APSstechkin</dressup>
       <capacity>20</capacity>
       <split>1</split>
       <diffusion>6</diffusion>
@@ -272,9 +256,6 @@
       <power>260</power>
       <impact>200</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-APSstechkin</dressup>
-    </equipped>
   </item>
   <item>
     <id>8209</id>
@@ -288,6 +269,7 @@
     <description>A国ruger公司出品的小口径防身转轮手枪。</description>
     <level>4</level>
     <data>
+      <dressup>枪-手枪-鲁格LCR</dressup>
       <capacity>6</capacity>
       <split>1</split>
       <diffusion>7</diffusion>
@@ -302,9 +284,6 @@
       <power>250</power>
       <impact>500</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-鲁格LCR</dressup>
-    </equipped>
   </item>
   <item>
     <id>8208</id>
@@ -318,6 +297,7 @@
     <description>A国在WWII后期投入使用的冲锋枪，用于取代价格昂贵的M1A1冲锋枪。</description>
     <level>10</level>
     <data>
+      <dressup>枪-手枪-M3SMG</dressup>
       <capacity>30</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
@@ -332,9 +312,6 @@
       <power>190</power>
       <impact>500</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-M3SMG</dressup>
-    </equipped>
   </item>
   <item>
     <id>8207</id>
@@ -348,6 +325,7 @@
     <description>USP手枪的9毫米型号。</description>
     <level>8</level>
     <data>
+      <dressup>枪-手枪-HKUSP9</dressup>
       <capacity>15</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -362,9 +340,6 @@
       <power>210</power>
       <impact>100</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-HKUSP9</dressup>
-    </equipped>
   </item>
   <item>
     <id>8206</id>
@@ -378,6 +353,7 @@
     <description>WWI以及WWII时期DEU国配备的军用自动手枪。</description>
     <level>1</level>
     <data>
+      <dressup>枪-手枪-LugerP08</dressup>
       <capacity>8</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
@@ -392,9 +368,6 @@
       <power>150</power>
       <impact>100</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-LugerP08</dressup>
-    </equipped>
   </item>
   <item>
     <id>8205</id>
@@ -408,6 +381,7 @@
     <description>keltec出品的大容量手枪，发射.22马格南手枪弹。</description>
     <level>18</level>
     <data>
+      <dressup>枪-手枪-PMR3</dressup>
       <capacity>30</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
@@ -422,9 +396,6 @@
       <power>600</power>
       <impact>200</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-PMR3</dressup>
-    </equipped>
   </item>
   <item>
     <id>8204</id>
@@ -438,6 +409,7 @@
     <description>SOV联制马卡洛夫手枪的改进型。</description>
     <level>2</level>
     <data>
+      <dressup>枪-手枪-PMM</dressup>
       <capacity>12</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
@@ -452,9 +424,6 @@
       <power>150</power>
       <impact>200</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-PMM</dressup>
-    </equipped>
   </item>
   <item>
     <id>8200</id>
@@ -468,6 +437,7 @@
     <description>大概在1964年左右，戈登·英格拉姆（Gordon B. Ingram）开始研制一种结构紧凑的小型冲锋枪，设计初衷是为飞行员、坦克乘员及汽车驾驶员提供一种便于携带的单兵自卫武器，也方便于秘密行动时隐蔽携带但火力迅猛的小型突击武器。他在1965年时设计了几个原型，在1966年至少有一种原型枪被A国陆军购买用于测试和评估。</description>
     <level>6</level>
     <data>
+      <dressup>枪-手枪-MAC10</dressup>
       <capacity>32</capacity>
       <split>1</split>
       <diffusion>15</diffusion>
@@ -482,9 +452,6 @@
       <power>75</power>
       <impact>500</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-MAC10</dressup>
-    </equipped>
   </item>
   <item>
     <id>8201</id>
@@ -499,6 +466,7 @@
 	MAC10专用的消音器在后半部分包裹有橡胶，用于充当护木握持。安装了消音器的MAC10的射击精度与易掌控度(相比原来)大幅提升，同时也没有失去便携的优点，因此这才是MAC10的完全状态。</description>
     <level>12</level>
     <data>
+      <dressup>枪-手枪-MAC10sil</dressup>
       <capacity>32</capacity>
       <split>1</split>
       <diffusion>8</diffusion>
@@ -513,9 +481,6 @@
       <power>110</power>
       <impact>500</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-MAC10sil</dressup>
-    </equipped>
   </item>
   <item>
     <id>8202</id>
@@ -529,6 +494,7 @@
     <description>一把经过高度改造的TMP，安装了集成式的前置战术套件与双发式镭射指示器。枪本身的来源不明，但机匣左侧铭刻着大写的四个字母：HUNK。</description>
     <level>30</level>
     <data>
+      <dressup>枪-手枪-TMPmerc</dressup>
       <capacity>250</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
@@ -542,11 +508,8 @@
       <bulletsize>50</bulletsize>
       <power>200</power>
       <impact>10</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-TMPmerc</dressup>
       <criticalhit>30</criticalhit>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8203</id>
@@ -560,6 +523,7 @@
     <description>一把诞生于上世纪CW末期A国电影的虚构枪械，设定上是由SV国研发的大口径手枪，发射独有的9.2mm大口径手枪弹。在不知何时被不知何人以不明的目的作为实际的武器制造出来，在审判日中流落至此。</description>
     <level>35</level>
     <data>
+      <dressup>枪-手枪-Podbyrin</dressup>
       <capacity>12</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -574,11 +538,8 @@
       <bulletsize>30</bulletsize>
       <power>1000</power>
       <impact>20</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-Podbyrin</dressup>
       <slay>10</slay>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>2529</id>
@@ -592,6 +553,7 @@
     <description>KING的专用改造版冲锋枪，参数怪异，使用难度高。</description>
     <level>60</level>
     <data>
+      <dressup>枪-手枪-极品UZI战术版</dressup>
       <capacity>35</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
@@ -606,428 +568,7 @@
       <power>350</power>
       <impact>3</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-极品UZI战术版</dressup>
-    </equipped>
   </item>
-  <!--
-  <item>
-    <id>12012</id>
-    <name>Glock18墨冰</name>
-    <displayname>Glock18墨冰</displayname>
-    <icon>Glock18墨冰</icon>
-    <type>武器</type>
-    <use>手枪</use>
-    <weight>2</weight>
-    <price>270000</price>
-    <description>格洛克18是由格洛克公司设计及生产的全自动手枪。格洛克18的标准弹匣为17发，亦有31或33发的大容量弹匣，但大容量弹匣少有普及。
-此武器经过特殊的改造，青白相间的涂装意味着如同冰川破片的威能。</description>
-    <level>40</level>
-    <data>
-      <capacity>33</capacity>
-      <split>1</split>
-      <diffusion>4</diffusion>
-      <interval>70</interval>
-      <velocity>20</velocity>
-      <bullet>冰冷普通子弹</bullet>
-      <bulletrename>冰冷子弹</bulletrename>
-      <sound>re_pistol_glock.wav</sound>
-      <muzzle>枪火</muzzle>
-      <bullethit>冰汽</bullethit>
-      <clipname>能量电池</clipname>
-      <bulletsize>25</bulletsize>
-      <power>360</power>
-      <impact>100</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-Glock18墨冰</dressup>
-      <damagetype>魔法</damagetype>
-      <magictype>冷</magictype>
-    </equipped>
-  </item>
-  <item>
-    <id>12016</id>
-    <name>MP40墨冰</name>
-    <displayname>MP40墨冰</displayname>
-    <icon>MP40墨冰</icon>
-    <type>武器</type>
-    <use>手枪</use>
-    <weight>4</weight>
-    <price>290000</price>
-    <description>Maschinenpistole40，常被称为“施迈瑟冲锋枪”，是一种为方便大量生产而设计，与传统枪械制造观念不同的冲锋枪，亦是第二次世界大战期间德国军队使用最广泛、性能最优良的冲锋枪。
-此武器经过特殊的改造，青白相间的涂装意味着如同冰川破片的威能。</description>
-    <level>44</level>
-    <data>
-      <capacity>64</capacity>
-      <split>1</split>
-      <diffusion>3</diffusion>
-      <interval>90</interval>
-      <velocity>35</velocity>
-      <bullet>冰冷普通子弹</bullet>
-      <bulletrename>冰冷子弹</bulletrename>
-      <sound>re_smg_mp40.wav</sound>
-      <muzzle>枪火</muzzle>
-      <bullethit>冰汽</bullethit>
-      <clipname>能量电池</clipname>
-      <bulletsize>25</bulletsize>
-      <power>220</power>
-      <impact>80</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-MP40墨冰</dressup>
-      <damagetype>魔法</damagetype>
-      <magictype>冷</magictype>
-      <criticalhit>10</criticalhit>
-    </equipped>
-  </item>
-  <item>
-    <id>12022</id>
-    <name>Beretta90TWO墨冰</name>
-    <displayname>Beretta90TWO墨冰</displayname>
-    <icon>Beretta90TWO墨冰</icon>
-    <type>武器</type>
-    <use>手枪</use>
-    <weight>1</weight>
-    <price>300000</price>
-    <description>伯莱塔公司M9系列手枪的改进型，于2006年推出。相较于原有92/96系列手枪有诸多改进，除了击锤部分以外基本为外形上的变更。
-此武器经过特殊的改造，青白相间的涂装意味着如同冰川破片的威能。</description>
-    <level>45</level>
-    <data>
-      <capacity>15</capacity>
-      <split>1</split>
-      <diffusion>5</diffusion>
-      <interval>90</interval>
-      <velocity>20</velocity>
-      <bullet>冰冷普通子弹</bullet>
-      <bulletrename>冰冷子弹</bulletrename>
-      <sound>p228-1.wav</sound>
-      <muzzle>枪火</muzzle>
-      <bullethit>冰汽</bullethit>
-      <clipname>能量电池</clipname>
-      <bulletsize>25</bulletsize>
-      <power>999</power>
-      <impact>20</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-Beretta90TWO墨冰</dressup>
-      <damagetype>魔法</damagetype>
-      <magictype>冷</magictype>
-    </equipped>
-  </item>
-  <item>
-    <id>12028</id>
-    <name>TTI2011墨冰</name>
-    <displayname>TTI2011墨冰</displayname>
-    <icon>TTI2011墨冰</icon>
-    <type>武器</type>
-    <use>手枪</use>
-    <weight>1</weight>
-    <price>320000</price>
-    <description>TTI 2011 Combat Master，为塔兰战术与sti首款合作的产品，其诞生也是塔兰战术在1911系竞赛枪械中涉足的重要标杆。
-此武器经过特殊的改造，青白相间的涂装意味着如同冰川破片的威能。</description>
-    <level>48</level>
-    <data>
-      <capacity>22</capacity>
-      <split>1</split>
-      <diffusion>3</diffusion>
-      <interval>140</interval>
-      <singleshoot>true</singleshoot>
-      <velocity>35</velocity>
-      <bullet>冰冷普通子弹</bullet>
-      <bulletrename>冰冷子弹</bulletrename>
-      <sound>TTI2011.wav</sound>
-      <muzzle>枪火</muzzle>
-      <bullethit>冰汽</bullethit>
-      <clipname>能量电池</clipname>
-      <bulletsize>25</bulletsize>
-      <power>1111</power>
-      <impact>5</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-TTI2011墨冰</dressup>
-      <damagetype>魔法</damagetype>
-      <magictype>冷</magictype>
-    </equipped>
-  </item>
-  <item>
-    <id>12030</id>
-    <name>MK23墨冰</name>
-    <displayname>MK23墨冰</displayname>
-    <icon>MK23墨冰</icon>
-    <type>武器</type>
-    <use>手枪</use>
-    <weight>1</weight>
-    <price>270000</price>
-    <description>MK23墨冰。
-此武器经过特殊的改造，青白相间的涂装意味着如同冰川破片的威能。</description>
-    <level>41</level>
-    <data>
-      <capacity>15</capacity>
-      <split>1</split>
-      <diffusion>5</diffusion>
-      <interval>77</interval>
-      <velocity>20</velocity>
-      <bullet>冰冷普通子弹</bullet>
-      <bulletrename>冰冷子弹</bulletrename>
-      <sound>re_SMG_uzi.wav</sound>
-      <muzzle>枪火</muzzle>
-      <bullethit>冰汽</bullethit>
-      <clipname>能量电池</clipname>
-      <bulletsize>25</bulletsize>
-      <power>810</power>
-      <impact>25</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-MK23墨冰</dressup>
-      <damagetype>魔法</damagetype>
-      <magictype>冷</magictype>
-    </equipped>
-  </item>
-  <item>
-    <id>12038</id>
-    <name>韦森686墨冰</name>
-    <displayname>韦森686墨冰</displayname>
-    <icon>韦森686墨冰</icon>
-    <type>武器</type>
-    <use>手枪</use>
-    <weight>1</weight>
-    <price>330000</price>
-    <description>史密斯韦森M686左轮手枪，由A国枪械公司史密斯韦森于1980年研发，1981年批量生产。
-    史密斯韦森是A国最大的手枪制造商，由A国人贺拉斯·史密斯与丹尼尔·韦森于1852年建立。总部位于马萨诸塞州春田。他们以制造左轮手枪闻名于世，曾在第二次世界大战中生产了110万支手枪以供应盟军需求。</description>
-    <level>50</level>
-    <data>
-      <capacity>6</capacity>
-      <split>1</split>
-      <diffusion>6</diffusion>
-      <interval>330</interval>
-      <singleshoot>true</singleshoot>
-      <velocity>30</velocity>
-      <bullet>冰冷普通子弹</bullet>
-      <bulletrename>冰冷子弹</bulletrename>
-      <sound>deagle-1.wav</sound>
-      <muzzle>枪火</muzzle>
-      <bullethit>冰汽</bullethit>
-      <clipname>能量电池</clipname>
-      <bulletsize>25</bulletsize>
-      <power>5000</power>
-      <impact>10</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-韦森686墨冰</dressup>
-      <damagetype>魔法</damagetype>
-      <magictype>冷</magictype>
-      <slay>3</slay>
-    </equipped>
-  </item>
-  <item>
-    <id>12112</id>
-    <name>Glock18狱火</name>
-    <displayname>Glock18狱火</displayname>
-    <icon>Glock18狱火</icon>
-    <type>武器</type>
-    <use>手枪</use>
-    <weight>2</weight>
-    <price>270000</price>
-    <description>格洛克18是由格洛克公司设计及生产的全自动手枪。格洛克18的标准弹匣为17发，亦有31或33发的大容量弹匣，但大容量弹匣少有普及。
-此武器经过特殊的改造，红黑相间的涂装意味着如同地狱烈火的威能。</description>
-    <level>40</level>
-    <data>
-      <capacity>33</capacity>
-      <split>1</split>
-      <diffusion>4</diffusion>
-      <interval>70</interval>
-      <velocity>20</velocity>
-      <bullet>烈焰普通子弹</bullet>
-      <bulletrename>烈焰子弹</bulletrename>
-      <sound>re_pistol_glock.wav</sound>
-      <muzzle>枪火</muzzle>
-      <bullethit>烈焰火花</bullethit>
-      <clipname>能量电池</clipname>
-      <bulletsize>25</bulletsize>
-      <power>360</power>
-      <impact>100</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-Glock18狱火</dressup>
-      <damagetype>魔法</damagetype>
-      <magictype>热</magictype>
-    </equipped>
-  </item>
-  <item>
-    <id>12116</id>
-    <name>MP40狱火</name>
-    <displayname>MP40狱火</displayname>
-    <icon>MP40狱火</icon>
-    <type>武器</type>
-    <use>手枪</use>
-    <weight>4</weight>
-    <price>290000</price>
-    <description>Maschinenpistole40，常被称为“施迈瑟冲锋枪”，是一种为方便大量生产而设计，与传统枪械制造观念不同的冲锋枪，亦是第二次世界大战期间德国军队使用最广泛、性能最优良的冲锋枪。
-此武器经过特殊的改造，红黑相间的涂装意味着如同地狱烈火的威能。</description>
-    <level>44</level>
-    <data>
-      <capacity>64</capacity>
-      <split>1</split>
-      <diffusion>3</diffusion>
-      <interval>90</interval>
-      <velocity>35</velocity>
-      <bullet>烈焰普通子弹</bullet>
-      <bulletrename>烈焰子弹</bulletrename>
-      <sound>re_smg_mp40.wav</sound>
-      <muzzle>枪火</muzzle>
-      <bullethit>烈焰火花</bullethit>
-      <clipname>能量电池</clipname>
-      <bulletsize>25</bulletsize>
-      <power>220</power>
-      <impact>80</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-MP40狱火</dressup>
-      <damagetype>魔法</damagetype>
-      <magictype>热</magictype>
-      <criticalhit>10</criticalhit>
-    </equipped>
-  </item>
-  <item>
-    <id>12122</id>
-    <name>Beretta90TWO狱火</name>
-    <displayname>Beretta90TWO狱火</displayname>
-    <icon>Beretta90TWO熔岩</icon>
-    <type>武器</type>
-    <use>手枪</use>
-    <weight>1</weight>
-    <price>300000</price>
-    <description>伯莱塔公司M9系列手枪的改进型，于2006年推出。相较于原有92/96系列手枪有诸多改进，除了击锤部分以外基本为外形上的变更。
-此武器经过特殊的改造，红黑相间的涂装意味着如同地狱烈火的威能。</description>
-    <level>45</level>
-    <data>
-      <capacity>15</capacity>
-      <split>1</split>
-      <diffusion>5</diffusion>
-      <interval>90</interval>
-      <velocity>20</velocity>
-      <bullet>烈焰普通子弹</bullet>
-      <bulletrename>烈焰子弹</bulletrename>
-      <sound>p228-1.wav</sound>
-      <muzzle>枪火</muzzle>
-      <bullethit>烈焰火花</bullethit>
-      <clipname>能量电池</clipname>
-      <bulletsize>25</bulletsize>
-      <power>999</power>
-      <impact>20</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-Beretta90TWO熔岩</dressup>
-      <damagetype>魔法</damagetype>
-      <magictype>热</magictype>
-    </equipped>
-  </item>
-  <item>
-    <id>12128</id>
-    <name>TTI2011狱火</name>
-    <displayname>TTI2011狱火</displayname>
-    <icon>TTI2011狱火</icon>
-    <type>武器</type>
-    <use>手枪</use>
-    <weight>1</weight>
-    <price>320000</price>
-    <description>TTI 2011 Combat Master，为塔兰战术与sti首款合作的产品，其诞生也是塔兰战术在1911系竞赛枪械中涉足的重要标杆。
-此武器经过特殊的改造，红黑相间的涂装意味着如同地狱烈火的威能。</description>
-    <level>48</level>
-    <data>
-      <capacity>22</capacity>
-      <split>1</split>
-      <diffusion>3</diffusion>
-      <interval>140</interval>
-      <singleshoot>true</singleshoot>
-      <velocity>35</velocity>
-      <bullet>烈焰普通子弹</bullet>
-      <bulletrename>烈焰子弹</bulletrename>
-      <sound>TTI2011.wav</sound>
-      <muzzle>枪火</muzzle>
-      <bullethit>烈焰火花</bullethit>
-      <clipname>能量电池</clipname>
-      <bulletsize>25</bulletsize>
-      <power>1111</power>
-      <impact>5</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-TTI2011狱火</dressup>
-      <damagetype>魔法</damagetype>
-      <magictype>热</magictype>
-    </equipped>
-  </item>
-  <item>
-    <id>12130</id>
-    <name>MK23狱火</name>
-    <displayname>MK23狱火</displayname>
-    <icon>MK23狱火</icon>
-    <type>武器</type>
-    <use>手枪</use>
-    <weight>1</weight>
-    <price>270000</price>
-    <description>MK23狱火。
-此武器经过特殊的改造，红黑相间的涂装意味着如同地狱烈火的威能。</description>
-    <level>41</level>
-    <data>
-      <capacity>15</capacity>
-      <split>1</split>
-      <diffusion>5</diffusion>
-      <interval>77</interval>
-      <velocity>20</velocity>
-      <bullet>烈焰普通子弹</bullet>
-      <bulletrename>烈焰子弹</bulletrename>
-      <sound>re_SMG_uzi.wav</sound>
-      <muzzle>枪火</muzzle>
-      <bullethit>烈焰火花</bullethit>
-      <clipname>能量电池</clipname>
-      <bulletsize>25</bulletsize>
-      <power>810</power>
-      <impact>25</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-MK23狱火</dressup>
-      <damagetype>魔法</damagetype>
-      <magictype>热</magictype>
-    </equipped>
-  </item>
-  <item>
-    <id>12138</id>
-    <name>韦森686狱火</name>
-    <displayname>韦森686狱火</displayname>
-    <icon>韦森686狱火</icon>
-    <type>武器</type>
-    <use>手枪</use>
-    <weight>1</weight>
-    <price>330000</price>
-    <description>史密斯韦森M686左轮手枪，由A国枪械公司史密斯韦森于1980年研发，1981年批量生产。
-    史密斯韦森是A国最大的手枪制造商，由A国人贺拉斯·史密斯与丹尼尔·韦森于1852年建立。总部位于马萨诸塞州春田。他们以制造左轮手枪闻名于世，曾在第二次世界大战中生产了110万支手枪以供应盟军需求。</description>
-    <level>50</level>
-    <data>
-      <capacity>6</capacity>
-      <split>1</split>
-      <diffusion>6</diffusion>
-      <interval>330</interval>
-      <singleshoot>true</singleshoot>
-      <velocity>30</velocity>
-      <bullet>烈焰普通子弹</bullet>
-      <bulletrename>烈焰子弹</bulletrename>
-      <sound>deagle-1.wav</sound>
-      <muzzle>枪火</muzzle>
-      <bullethit>烈焰火花</bullethit>
-      <clipname>能量电池</clipname>
-      <bulletsize>25</bulletsize>
-      <power>5000</power>
-      <impact>10</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-韦森686狱火</dressup>
-      <damagetype>魔法</damagetype>
-      <magictype>热</magictype>
-      <slay>3</slay>
-    </equipped>
-  </item>
-  -->
   <item>
     <id>682</id>
     <name>双管猎枪</name>
@@ -1040,6 +581,7 @@
     <description>末日前作为不少猎人狩猎用的枪械和平民的防身武器，末日后成为堕落城盗贼们的常用武器，堕落城对这个武器有一个很有“冷”的笑话，以前是打猎物，现在是打猎 人。</description>
     <level>10</level>
     <data>
+      <dressup>枪-手枪-双管猎枪</dressup>
       <capacity>2</capacity>
       <split>9</split>
       <diffusion>11</diffusion>
@@ -1055,9 +597,6 @@
       <power>220</power>
       <impact>10</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-双管猎枪</dressup>
-    </equipped>
   </item>
   <item>
     <id>683</id>
@@ -1071,6 +610,7 @@
     <description>毛瑟军用手枪，二战知名武器，尤其是在C国成为历史经典武器，哪怕现在是末日，你也能看到有幸存者拿着用，或者是在堕落城的古董武器店里看到这把武器的身影。</description>
     <level>2</level>
     <data>
+      <dressup>枪-手枪-毛瑟手枪</dressup>
       <capacity>8</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
@@ -1085,9 +625,6 @@
       <power>80</power>
       <impact>100</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-毛瑟手枪</dressup>
-    </equipped>
   </item>
   <item>
     <id>684</id>
@@ -1103,6 +640,7 @@
     </description>
     <level>18</level>
     <data>
+      <dressup>枪-手枪-MP5战术版</dressup>
       <capacity>60</capacity>
       <split>1</split>
       <diffusion>6</diffusion>
@@ -1116,11 +654,8 @@
       <bulletsize>30</bulletsize>
       <power>150</power>
       <impact>50</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-MP5战术版</dressup>
       <criticalhit>15</criticalhit>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>688</id>
@@ -1134,6 +669,7 @@
     <description>被破解的&lt;font color="#ff00ff"&gt;诺亚&lt;/font&gt;武器，加上蓝晶的科技加成，使其性能甚至远超过&lt;font color="#ff00ff"&gt;诺亚&lt;/font&gt;原版武器！</description>
     <level>60</level>
     <data>
+      <dressup>枪-手枪-改造式诺亚科技冲锋枪</dressup>
       <capacity>20</capacity>
       <split>3</split>
       <diffusion>6</diffusion>
@@ -1149,9 +685,6 @@
       <power>900</power>
       <impact>10</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-改造式诺亚科技冲锋枪</dressup>
-    </equipped>
   </item>
   <item>
     <id>712</id>
@@ -1166,6 +699,7 @@
 柯尔特M1873，西部精神的象征，牛仔的最爱，史上最传奇的手枪。	那位少女看到，那个和自己互不相识的牛仔竟然会为了自己而舍身与敌人战斗，如同电影中的英雄救美情节，那两把左轮高速移动，好似魔术般射出一连串的可以追踪敌人的子弹，弹无虚发;枪响后，寂静刻，伏尸中，二人过.....</description>
     <level>30</level>
     <data>
+      <dressup>枪-手枪-牛仔的左轮</dressup>
       <capacity>6</capacity>
       <split>1</split>
       <diffusion>8</diffusion>
@@ -1180,11 +714,8 @@
       <bulletsize>25</bulletsize>
       <power>770</power>
       <impact>10</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-牛仔的左轮</dressup>
       <slay>5</slay>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>6002</id>
@@ -1198,6 +729,7 @@
     <description>这是一支很紧凑、很轻巧的冲锋枪，全长只有280毫米，比手枪略大，空枪重1.3公斤，火力较强，是一支可单手发射、兼有冲锋枪和手枪双重功能的武器。</description>
     <level>7</level>
     <data>
+      <dressup>枪-手枪-TMP</dressup>
       <capacity>35</capacity>
       <split>1</split>
       <diffusion>6</diffusion>
@@ -1212,9 +744,6 @@
       <power>55</power>
       <impact>90</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-TMP</dressup>
-    </equipped>
   </item>
   <item>
     <id>6008</id>
@@ -1228,6 +757,7 @@
     <description>C国曾经大规模装备的手枪之一。但是因为性能不如新式手枪而淘汰。但是未日后C国库存的大量的54被发现后成为了未世里最常见的手枪之一。听说此枪杀伤极大，曾经一枪打死3人。</description>
     <level>10</level>
     <data>
+      <dressup>枪-手枪-中国54式手枪</dressup>
       <capacity>8</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
@@ -1242,9 +772,6 @@
       <power>600</power>
       <impact>100</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-中国54式手枪</dressup>
-    </equipped>
   </item>
   <item>
     <id>6024</id>
@@ -1258,6 +785,7 @@
     <description>MK23手枪。</description>
     <level>3</level>
     <data>
+      <dressup>枪-手枪-MK23手枪</dressup>
       <capacity>15</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
@@ -1272,9 +800,30 @@
       <power>40</power>
       <impact>100</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-MK23手枪</dressup>
-    </equipped>
+    <data_ice>
+      <dressup>枪-手枪-MK23墨冰</dressup>
+      <interval>77</interval>
+      <bullet>冰冷普通子弹</bullet>
+      <bulletrename>冰冷子弹</bulletrename>
+      <bullethit>冰汽</bullethit>
+      <clipname>能量电池</clipname>
+      <power>810</power>
+      <impact>25</impact>
+      <damagetype>魔法</damagetype>
+      <magictype>冷</magictype>
+    </data_ice>
+    <data_fire>
+      <dressup>枪-手枪-MK23狱火</dressup>
+      <interval>77</interval>
+      <bullet>烈焰普通子弹</bullet>
+      <bulletrename>烈焰子弹</bulletrename>
+      <bullethit>烈焰火花</bullethit>
+      <clipname>能量电池</clipname>
+      <power>810</power>
+      <impact>25</impact>
+      <damagetype>魔法</damagetype>
+      <magictype>热</magictype>
+    </data_fire>
   </item>
   <item>
     <id>6025</id>
@@ -1288,6 +837,7 @@
     <description>蝎式冲锋枪弹鼓版</description>
     <level>15</level>
     <data>
+      <dressup>枪-手枪-蝎式冲锋枪弹鼓版</dressup>
       <capacity>50</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -1302,9 +852,6 @@
       <power>85</power>
       <impact>50</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-蝎式冲锋枪弹鼓版</dressup>
-    </equipped>
   </item>
   <item>
     <id>6032</id>
@@ -1318,6 +865,7 @@
     <description>格洛克18是由格洛克公司设计及生产的全自动手枪。格洛克18的标准弹匣为17发，亦有31或33发的大容量弹匣，但大容量弹匣少有普及。</description>
     <level>50</level>
     <data>
+      <dressup>枪-手枪-Glock18战术版</dressup>
       <capacity>25</capacity>
       <split>4</split>
       <diffusion>7</diffusion>
@@ -1331,11 +879,8 @@
       <bulletsize>15</bulletsize>
       <power>200</power>
       <impact>100</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-Glock18战术版</dressup>
       <criticalhit>20</criticalhit>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>6064</id>
@@ -1349,6 +894,7 @@
     <description>土豪金改造版本！你值得拥有！</description>
     <level>50</level>
     <data>
+      <dressup>枪-手枪-MP7极品战术版</dressup>
       <capacity>60</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -1363,9 +909,6 @@
       <power>220</power>
       <impact>50</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-MP7极品战术版</dressup>
-    </equipped>
   </item>
   <item>
     <id>6072</id>
@@ -1380,6 +923,7 @@
     既然决定了双持枪械，那枪托的作用的确可有可无。</description>
     <level>55</level>
     <data>
+      <dressup>枪-手枪-短剑印花集</dressup>
       <capacity>50</capacity>
       <split>1</split>
       <diffusion>2</diffusion>
@@ -1393,11 +937,8 @@
       <bulletsize>60</bulletsize>
       <power>260</power>
       <impact>50</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-短剑印花集</dressup>
       <criticalhit>15</criticalhit>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>6078</id>
@@ -1412,6 +953,7 @@
       但是使用者务必注意以下几点，1.只有一发，注意换弹时机2.远距离作战时，可试着预判抛射</description>
     <level>12</level>
     <data>
+      <dressup>枪-长枪-M79式榴弹发射器</dressup>
       <capacity>1</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
@@ -1426,9 +968,6 @@
       <power>4700</power>
       <impact>0</impact>
     </data>
-    <equipped>
-      <dressup>枪-长枪-M79式榴弹发射器</dressup>
-    </equipped>
   </item>
   <item>
     <id>22003</id>
@@ -1442,6 +981,7 @@
     <description>TTI 2011 Combat Master，为塔兰战术与sti首款合作的产品，其诞生也是塔兰战术在1911系竞赛枪械中涉足的重要标杆。</description>
     <level>15</level>
     <data>
+      <dressup>枪-手枪-TTI 2011 Combat Master</dressup>
       <capacity>22</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
@@ -1457,9 +997,26 @@
       <power>300</power>
       <impact>5</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-TTI 2011 Combat Master</dressup>
-    </equipped>
+    <data_ice>
+      <dressup>枪-手枪-TTI2011墨冰</dressup>
+      <bullet>冰冷普通子弹</bullet>
+      <bulletrename>冰冷子弹</bulletrename>
+      <bullethit>冰汽</bullethit>
+      <clipname>能量电池</clipname>
+      <power>1111</power>
+      <damagetype>魔法</damagetype>
+      <magictype>冷</magictype>
+    </data_ice>
+    <data_fire>
+      <dressup>枪-手枪-TTI2011狱火</dressup>
+      <bullet>烈焰普通子弹</bullet>
+      <bulletrename>烈焰子弹</bulletrename>
+      <bullethit>烈焰火花</bullethit>
+      <clipname>能量电池</clipname>
+      <power>1111</power>
+      <damagetype>魔法</damagetype>
+      <magictype>热</magictype>
+    </data_fire>
   </item>
   <item>
     <id>22009</id>
@@ -1473,6 +1030,7 @@
     <description>glock 34是奥地利格洛克公司于1998年生产的手枪，为glock 17L 的竞赛版。 tti G34 在此基础上再作改良，使其更适于竞赛并更具现代化枪械的魅力。 改装了tti定制的轻量化套筒，采用哑光涂层，倾斜的防滑刻纹从枪管延伸到枪尾，在增大了操作性的同时装饰了枪身。</description>
     <level>15</level>
     <data>
+      <dressup>枪-手枪-TTI Glock 34</dressup>
       <capacity>25</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -1488,9 +1046,6 @@
       <power>205</power>
       <impact>15</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-TTI Glock 34</dressup>
-    </equipped>
   </item>
   <item>
     <id>22010</id>
@@ -1504,6 +1059,7 @@
     <description>TTI Glock 19在原版的基础上再作改良，使其更适于竞赛并更具现代化枪械的魅力。全枪高度定制，更加轻量化更加稳定，此版为银白色与Glock34搭配使用堪称一绝。</description>
     <level>15</level>
     <data>
+      <dressup>枪-手枪-TTI Glock 19</dressup>
       <capacity>25</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
@@ -1519,9 +1075,6 @@
       <power>185</power>
       <impact>10</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-TTI Glock 19</dressup>
-    </equipped>
   </item>
   <item>
     <id>22012</id>
@@ -1535,6 +1088,7 @@
     <description>退路</description>
     <level>20</level>
     <data>
+      <dressup>枪-手枪-退路</dressup>
       <capacity>99999</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -1550,9 +1104,6 @@
       <power>240</power>
       <impact>50</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-退路</dressup>
-    </equipped>
   </item>
   <item>
     <id>22013</id>
@@ -1566,6 +1117,7 @@
     <description>使用K点当作子弹的手枪。</description>
     <level>40</level>
     <data>
+      <dressup>枪-手枪-Killer 7</dressup>
       <capacity>99999</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -1582,9 +1134,6 @@
       <power>770</power>
       <impact>50</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-Killer 7</dressup>
-    </equipped>
   </item>
   <item>
     <id>13002</id>
@@ -1598,6 +1147,7 @@
     <description>QBZ192是QBZ191的短管突击步枪版本，具体用途还是为狭小室内作战准备，所以射程也理所应当的减少了，就算这样也依旧保留许多优点在里面，当然也会肯定比他的前辈QBZ95B-1会更好。</description>
     <level>29</level>
     <data>
+      <dressup>枪-长枪-QBZ-192</dressup>
       <capacity>50</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -1612,9 +1162,6 @@
       <power>255</power>
       <impact>30</impact>
     </data>
-    <equipped>
-      <dressup>枪-长枪-QBZ-192</dressup>
-    </equipped>
   </item>
   <item>
     <id>13003</id>
@@ -1630,6 +1177,7 @@
      A批滚出去，这是泰坦陨落的转换者！——From the 3102</description>
     <level>45</level>
     <data>
+      <dressup>枪-手枪-转换者</dressup>
       <capacity>25</capacity>
       <split>1</split>
       <diffusion>2</diffusion>
@@ -1644,9 +1192,6 @@
       <power>650</power>
       <impact>50</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-转换者</dressup>
-    </equipped>
   </item>
   <item>
     <id>13008</id>
@@ -1661,6 +1206,7 @@
     他结合了PP-2000和AK74M以及AK74U的外形设计，些许的看上去很是让人有点摸不到头脑，不过用起来还是见仁见智了。</description>
     <level>20</level>
     <data>
+      <dressup>枪-短枪-vactorPP-7400U</dressup>
       <capacity>40</capacity>
       <split>1</split>
       <diffusion>2</diffusion>
@@ -1675,9 +1221,6 @@
       <power>230</power>
       <impact>80</impact>
     </data>
-    <equipped>
-      <dressup>枪-短枪-vactorPP-7400U</dressup>
-    </equipped>
   </item>
   <item>
     <id>13009</id>
@@ -1692,6 +1235,7 @@
     他结合了PP-2000和AK74M以及AK74U的外形设计，些许的看上去很是让人有点摸不到头脑，不过用起来还是见仁见智了。</description>
     <level>20</level>
     <data>
+      <dressup>枪-短枪-vactorPP-7400U长枪托</dressup>
       <capacity>40</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
@@ -1706,9 +1250,6 @@
       <power>230</power>
       <impact>80</impact>
     </data>
-    <equipped>
-      <dressup>枪-短枪-vactorPP-7400U长枪托</dressup>
-    </equipped>
   </item>
   <item>
     <id>13012</id>
@@ -1723,6 +1264,7 @@
     是QBZ191的短管突击步枪版本，具体用途还是为狭小室内作战准备，所以射程也理所应当的减少了，就算这样也依旧保留许多优点在里面，当然也会肯定比他的前辈QBZ95B-1会更好。</description>
     <level>52</level>
     <data>
+      <dressup>枪-长枪-战术-QBZ-192</dressup>
       <capacity>90</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -1737,9 +1279,6 @@
       <power>355</power>
       <impact>30</impact>
     </data>
-    <equipped>
-      <dressup>枪-长枪-战术-QBZ-192</dressup>
-    </equipped>
   </item>
   <item>
     <id>13014</id>
@@ -1757,6 +1296,7 @@
     好消息是：他不知怎么的在现在的末世又被不知道是从哪里来的一群人给重新生产和销售了，代价是昂贵。</description>
     <level>35</level>
     <data>
+      <dressup>枪-手枪-SPAS12</dressup>
       <capacity>8</capacity>
       <split>11</split>
       <diffusion>14</diffusion>
@@ -1772,9 +1312,6 @@
       <power>110</power>
       <impact>15</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-SPAS12</dressup>
-    </equipped>
   </item>
   <item>
     <id>13015</id>
@@ -1792,6 +1329,7 @@
     它不仅仅只是被复产了，在同时，他也被进行了十分特殊的改造，双发开火，一发半自动接着快速再连一发，第一发自动把蛋壳退出去，第二发就像是泵动一样需要手动退了，同样的更加昂贵了。</description>
     <level>30</level>
     <data>
+      <dressup>枪-手枪-SPAS12-B2</dressup>
       <capacity>4</capacity>
       <split>20</split>
       <diffusion>14</diffusion>
@@ -1807,9 +1345,6 @@
       <power>350</power>
       <impact>15</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-SPAS12-B2</dressup>
-    </equipped>
   </item>
   <item>
     <id>849</id>
@@ -1823,6 +1358,7 @@
     <description>来自远方岛屿的左轮手枪。本应是摒弃甚至歧视热兵器的军团出现了近乎完全暴力化身的左轮手枪，子弹一式两发一发破甲一发夺命，让敌人的防御荡然无存。</description>
     <level>60</level>
     <data>
+      <dressup>枪-手枪-湛蓝玫瑰</dressup>
       <capacity>6</capacity>
       <split>1</split>
       <diffusion>6</diffusion>
@@ -1837,9 +1373,6 @@
       <power>8000</power>
       <impact>100</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-湛蓝玫瑰</dressup>
-    </equipped>
   </item>
   <item>
     <id>850</id>
@@ -1854,6 +1387,7 @@
     正常流程无法获得，无需反馈此武器的问题，也请勿推荐他人使用此武器进行流程。</description>
     <level>60</level>
     <data>
+      <dressup>枪-手枪-白象牙</dressup>
       <capacity>9999</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -1868,9 +1402,6 @@
       <power>850</power>
       <impact>100</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-白象牙</dressup>
-    </equipped>
   </item>
   <item>
     <id>851</id>
@@ -1885,6 +1416,7 @@
     正常流程无法获得，无需反馈此武器的问题，也请勿推荐他人使用此武器进行流程。</description>
     <level>60</level>
     <data>
+      <dressup>枪-手枪-黑檀木</dressup>
       <capacity>5000</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -1899,9 +1431,6 @@
       <power>2500</power>
       <impact>100</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-黑檀木</dressup>
-    </equipped>
   </item>
   <item>
     <id>8000</id>
@@ -1915,6 +1444,7 @@
     <description>OPDW17冲锋枪，由E联制造的PDW武器。外形上与P90相似，但使用口径更小弹体更长的E联制4.3x35mm冲锋枪弹药。</description>
     <level>25</level>
     <data>
+      <dressup>枪-手枪-OPDW17</dressup>
       <capacity>75</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
@@ -1929,9 +1459,6 @@
       <power>90</power>
       <impact>100</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-OPDW17</dressup>
-    </equipped>
   </item>
   <item>
     <id>8001</id>
@@ -1945,6 +1472,7 @@
     <description>在审判日发生时的战斗中，警察和C管部队普遍使用的9mm冲锋枪在面对丧尸群时虽然拥有良好的精度与击退能力，但终究还是缺乏决定性的杀伤能力，最终导致了地铁站镇压行动的失败。因此，在加入4XG之后，他们利用废城各个武器商店遗留下的资源将9mm冲锋枪改造为了发射5.56mm步枪弹的突击步枪。为了迎合操作习惯而保留了原有的外观，由于存货足够，这同时也成为了4XG内部制式的武器之一。*名称的来源是杂志上刊登的G国H厂的一款官方枪型。这一支的伸缩托坏了。</description>
     <level>28</level>
     <data>
+      <dressup>枪-手枪-短HK53</dressup>
       <capacity>30</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -1959,9 +1487,6 @@
       <power>60</power>
       <impact>20</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-短HK53</dressup>
-    </equipped>
   </item>
   <item>
     <id>8004</id>
@@ -1975,6 +1500,7 @@
     <description>一种在审判日之后才为人所知的神秘武器，以其超规格的威力闻名。发射独有的18.1x76mm弹药，威力无比但缺乏穿透性。经审判日后的一些枪匠推测，这种武器和弹药都由统合方面设计制造，但具体来源成谜。不过，其中大多数的来源都可以追溯到军阀的控制区。这一支的枪管短得吓人，用它的不是真正的高手就是纯粹的疯子。</description>
     <level>50</level>
     <data>
+      <dressup>枪-手枪-T181S</dressup>
       <capacity>30</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -1988,13 +1514,10 @@
       <bulletsize>100</bulletsize>
       <power>2000</power>
       <impact>10</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-T181S</dressup>
       <criticalhit>10</criticalhit>
       <hp>-250</hp>
       <mp>-100</mp>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8006</id>
@@ -2009,6 +1532,7 @@
 	“在面对人类目标时，这种武器的威力明显过大。但当面对那些危险生物时，威力永远不够。”</description>
     <level>30</level>
     <data>
+      <dressup>枪-手枪-FR506</dressup>
       <capacity>6</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
@@ -2022,11 +1546,8 @@
       <bulletsize>30</bulletsize>
       <power>1600</power>
       <impact>5</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-FR506</dressup>
       <slay>7</slay>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8026</id>
@@ -2043,6 +1564,7 @@
 	“斯卡雷特队全灭！”</description>
     <level>25</level>
     <data>
+      <dressup>枪-手枪-无枪托ZUX197</dressup>
       <capacity>5</capacity>
       <split>3</split>
       <diffusion>10</diffusion>
@@ -2058,9 +1580,6 @@
       <power>1200</power>
       <impact>9</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-无枪托ZUX197</dressup>
-    </equipped>
   </item>
   <item>
     <id>8027</id>
@@ -2077,6 +1596,7 @@
 	自动退壳，可更换弹巢，而且足够短方便携带。在出演的电影中是反派的爱用配枪。</description>
     <level>20</level>
     <data>
+      <dressup>枪-手枪-ASSKICKER</dressup>
       <capacity>12</capacity>
       <split>6</split>
       <diffusion>15</diffusion>
@@ -2092,9 +1612,6 @@
       <power>250</power>
       <impact>20</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-ASSKICKER</dressup>
-    </equipped>
   </item>
   <item>
     <id>8034</id>
@@ -2108,6 +1625,7 @@
     <description>伯莱塔公司M9系列手枪的改进型，于2006年推出。相较于原有92/96系列手枪有诸多改进，除了击锤部分以外基本为外形上的变更。</description>
     <level>15</level>
     <data>
+      <dressup>枪-手枪-Beretta90TWO</dressup>
       <capacity>15</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
@@ -2122,9 +1640,30 @@
       <power>400</power>
       <impact>100</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-Beretta90TWO</dressup>
-    </equipped>
+    <data_ice>
+      <dressup>枪-手枪-Beretta90TWO墨冰</dressup>
+      <interval>90</interval>
+      <bullet>冰冷普通子弹</bullet>
+      <bulletrename>冰冷子弹</bulletrename>
+      <bullethit>冰汽</bullethit>
+      <clipname>能量电池</clipname>
+      <power>999</power>
+      <impact>20</impact>
+      <damagetype>魔法</damagetype>
+      <magictype>冷</magictype>
+    </data_ice>
+    <data_fire>
+      <dressup>枪-手枪-Beretta90TWO熔岩</dressup>
+      <interval>90</interval>
+      <bullet>烈焰普通子弹</bullet>
+      <bulletrename>烈焰子弹</bulletrename>
+      <bullethit>烈焰火花</bullethit>
+      <clipname>能量电池</clipname>
+      <power>999</power>
+      <impact>20</impact>
+      <damagetype>魔法</damagetype>
+      <magictype>热</magictype>
+    </data_fire>
   </item>
   <item>
     <id>8035</id>
@@ -2138,6 +1677,7 @@
     <description>一度被部分枪械媒体神话的手枪，于上世纪40年代末由S国的SIG公司设计制造。零件均为手工制作，因此一支枪只有一套配套的零件而不能混用。虽然没有枪械媒体里吹的那么强大，但是作为一支上世纪战后时期的军用手枪能够打出近似于竞赛手枪的成绩也证明了其优秀的素质。</description>
     <level>20</level>
     <data>
+      <dressup>枪-手枪-SIGP210</dressup>
       <capacity>8</capacity>
       <split>1</split>
       <diffusion>1</diffusion>
@@ -2152,9 +1692,6 @@
       <power>700</power>
       <impact>10</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-SIGP210</dressup>
-    </equipped>
   </item>
   <item>
     <id>8036</id>
@@ -2168,6 +1705,7 @@
     <description>上世纪由G国设计师设计的军用手枪，一战后至二战期间D国军队均有装备。虽然外形很像，但它在内部结构到历史意义上确实与毛瑟公司的C96系列没有任何联系。</description>
     <level>5</level>
     <data>
+      <dressup>枪-手枪-BergmannM1910</dressup>
       <capacity>5</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
@@ -2182,9 +1720,6 @@
       <power>330</power>
       <impact>100</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-BergmannM1910</dressup>
-    </equipped>
   </item>
   <item>
     <id>8037</id>
@@ -2198,6 +1733,7 @@
     <description>A国在三战期间投入使用的新式手枪，与常规手枪设计完全不同，粗糙、不舒适且厚重，但能够在极度严苛的储存环境下保存下来，并在拆封后迅速投入使用。发射10mmauto手枪弹，威力有保证，但因为设计上的问题而精度欠佳。</description>
     <level>10</level>
     <data>
+      <dressup>枪-手枪-N99</dressup>
       <capacity>12</capacity>
       <split>1</split>
       <diffusion>10</diffusion>
@@ -2212,11 +1748,8 @@
       <bulletsize>30</bulletsize>
       <power>450</power>
       <impact>10</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-N99</dressup>
       <slay>5</slay>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8038</id>
@@ -2230,6 +1763,7 @@
     <description>由Z国FK BRNO公司设计的大威力手枪，多用于狩猎用途。</description>
     <level>25</level>
     <data>
+      <dressup>枪-手枪-FKBRNO</dressup>
       <capacity>15</capacity>
       <split>1</split>
       <diffusion>2</diffusion>
@@ -2244,11 +1778,8 @@
       <bulletsize>30</bulletsize>
       <power>840</power>
       <impact>10</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-FKBRNO</dressup>
       <slay>6</slay>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8039</id>
@@ -2262,6 +1793,7 @@
     <description>上世纪70年代由S国SIG公司开发的手枪，作为当时已装备S国部队的P210手枪的廉价替代。这一支是P220的现代化版本，发射10mmauto手枪弹，威力十足。</description>
     <level>30</level>
     <data>
+      <dressup>枪-手枪-SIGP220Elite</dressup>
       <capacity>8</capacity>
       <split>1</split>
       <diffusion>2</diffusion>
@@ -2276,11 +1808,8 @@
       <bulletsize>30</bulletsize>
       <power>1500</power>
       <impact>10</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-SIGP220Elite</dressup>
       <slay>6</slay>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8040</id>
@@ -2294,6 +1823,7 @@
     <description>如果你第一时间注意到的是它Glock的外形而不是那夸张的大小，那么多半要以肉身体验一次10mmauto手枪弹的威力。这支Glock手枪于三战后由Glock公司设计并发行，为三战后的战争格局与射击竞赛设计，因此具有比赛级的长身枪管。与它那些发射9mm帕弹或是其他小口径手枪弹的表亲相比，发射10mmauto手枪弹的Glock40就相当于Glock界的哥斯拉。</description>
     <level>35</level>
     <data>
+      <dressup>枪-手枪-Glock40</dressup>
       <capacity>15</capacity>
       <split>1</split>
       <diffusion>2</diffusion>
@@ -2308,9 +1838,6 @@
       <power>725</power>
       <impact>100</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-Glock40</dressup>
-    </equipped>
   </item>
   <item>
     <id>8041</id>
@@ -2324,6 +1851,7 @@
     <description>AMT公司设计制造的大口径手枪，发射.30卡宾弹。</description>
     <level>25</level>
     <data>
+      <dressup>枪-手枪-AMTAutomagIII</dressup>
       <capacity>8</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
@@ -2338,11 +1866,8 @@
       <bulletsize>30</bulletsize>
       <power>1700</power>
       <impact>5</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-AMTAutomagIII</dressup>
       <slay>6</slay>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8046</id>
@@ -2357,6 +1882,7 @@
 	值得一提的是，此枪生产商为A国Ruger公司，从结构到来源上都与WW2时期NZD国的鲁格p08没有任何关联。</description>
     <level>1</level>
     <data>
+      <dressup>枪-手枪-鲁格MK3</dressup>
       <capacity>10</capacity>
       <split>1</split>
       <diffusion>2</diffusion>
@@ -2372,9 +1898,6 @@
       <power>50</power>
       <impact>1000</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-鲁格MK3</dressup>
-    </equipped>
   </item>
   <item>
     <id>8051</id>
@@ -2388,6 +1911,7 @@
     <description>一支土制手枪，手感十分糟糕。</description>
     <level>1</level>
     <data>
+      <dressup>枪-手枪-土制转管手枪</dressup>
       <capacity>4</capacity>
       <split>1</split>
       <diffusion>15</diffusion>
@@ -2403,9 +1927,6 @@
       <power>400</power>
       <impact>50</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-土制转管手枪</dressup>
-    </equipped>
   </item>
   <item>
     <id>8056</id>
@@ -2420,6 +1941,7 @@
 	在审判日的战斗中，经验丰富的暴徒镇压专家们作为最后一道防线竖立于死者的行军队列前。直到被完全淹没，也没有任何一人后退。</description>
     <level>25</level>
     <data>
+      <dressup>枪-手枪-MP5A3</dressup>
       <capacity>30</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
@@ -2433,11 +1955,8 @@
       <bulletsize>50</bulletsize>
       <power>250</power>
       <impact>500</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-MP5A3</dressup>
       <criticalhit>10</criticalhit>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8065</id>
@@ -2452,6 +1971,7 @@
 	枪身某处铭刻着“零四”二字。</description>
     <level>5</level>
     <data>
+      <dressup>枪-手枪-超级矮个子</dressup>
       <capacity>3</capacity>
       <split>8</split>
       <diffusion>30</diffusion>
@@ -2467,9 +1987,6 @@
       <power>220</power>
       <impact>50</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-超级矮个子</dressup>
-    </equipped>
   </item>
   <item>
     <id>750</id>
@@ -2483,6 +2000,7 @@
     <description>感谢来自迪吧的大佬公开素材！</description>
     <level>20</level>
     <data>
+      <dressup>枪-手枪-恒宇银星</dressup>
       <capacity>8</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
@@ -2497,9 +2015,6 @@
       <power>480</power>
       <impact>30</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-恒宇银星</dressup>
-    </equipped>
   </item>
   <item>
     <id>751</id>
@@ -2513,6 +2028,7 @@
     <description>感谢来自迪吧的大佬公开素材！</description>
     <level>20</level>
     <data>
+      <dressup>枪-手枪-恒宇红星</dressup>
       <capacity>8</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
@@ -2527,9 +2043,6 @@
       <power>480</power>
       <impact>30</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-恒宇红星</dressup>
-    </equipped>
   </item>
   <item>
     <id>1521</id>
@@ -2544,6 +2057,7 @@
 这把枪的一处隐秘角落莫名地刻着“z羡慕嫉妒恨z”这一串意义不明的字符。</description>
     <level>25</level>
     <data>
+      <dressup>枪-手枪-御天敌V-1</dressup>
       <capacity>24</capacity>
       <split>2</split>
       <diffusion>2</diffusion>
@@ -2560,9 +2074,6 @@
       <power>300</power>
       <impact>10</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-御天敌V-1</dressup>
-    </equipped>
   </item>
   <item>
     <id>1522</id>
@@ -2577,6 +2088,7 @@
 这把枪的一处隐秘角落莫名地刻着“z羡慕嫉妒恨z”这一串意义不明的字符。</description>
     <level>28</level>
     <data>
+      <dressup>枪-手枪-爆炎蒸汽</dressup>
       <capacity>30</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
@@ -2591,12 +2103,9 @@
       <bulletsize>25</bulletsize>
       <power>280</power>
       <impact>40</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-爆炎蒸汽</dressup>
       <damagetype>魔法</damagetype>
       <magictype>热</magictype>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>266</id>
@@ -2610,6 +2119,7 @@
     <description>伯莱塔M9手枪，由ITA国的伯莱塔公司于1980年代研发，自1990年正式在A军服役。</description>
     <level>3</level>
     <data>
+      <dressup>枪-手枪-m9</dressup>
       <capacity>15</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
@@ -2624,9 +2134,6 @@
       <power>75</power>
       <impact>100</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-m9</dressup>
-    </equipped>
   </item>
   <item>
     <id>267</id>
@@ -2641,6 +2148,7 @@
     曾有某位知名枪械历史学家如此形容它：「世界上最佳的左轮手枪」。</description>
     <level>15</level>
     <data>
+      <dressup>枪-手枪-COLT PYTHON</dressup>
       <capacity>6</capacity>
       <split>1</split>
       <diffusion>8</diffusion>
@@ -2655,11 +2163,8 @@
       <bulletsize>25</bulletsize>
       <power>935</power>
       <impact>10</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-COLT PYTHON</dressup>
       <slay>3</slay>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>268</id>
@@ -2674,6 +2179,7 @@
     虽然火力和制止力强大、精度高及射程较其他手枪更远；不过也因价格比一般手枪昂贵，并且射击时所产生的巨大噪音与枪焰会对射手造成较大的心理压力及令其暴露位置，还对射击姿势要求较高等因素导致大部份军队及执法机关都认为沙漠之鹰不是实用的武器而拒绝采用。总之，这把枪只为经验丰富的射击达人又或是枪械大师量身订制。</description>
     <level>20</level>
     <data>
+      <dressup>枪-手枪-Desert Eagle</dressup>
       <capacity>8</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
@@ -2688,11 +2194,8 @@
       <bulletsize>30</bulletsize>
       <power>1200</power>
       <impact>10</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-Desert Eagle</dressup>
       <slay>6</slay>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>269</id>
@@ -2706,6 +2209,7 @@
     <description>格洛克18是由格洛克公司设计及生产的全自动手枪。格洛克18的标准弹匣为17发，亦有31或33发的大容量弹匣，但大容量弹匣少有普及。</description>
     <level>6</level>
     <data>
+      <dressup>枪-手枪-Glock 18</dressup>
       <capacity>33</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -2720,9 +2224,28 @@
       <power>30</power>
       <impact>100</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-Glock 18</dressup>
-    </equipped>
+    <data_ice>
+      <dressup>枪-手枪-Glock18墨冰</dressup>
+      <interval>70</interval>
+      <bullet>冰冷普通子弹</bullet>
+      <bulletrename>冰冷子弹</bulletrename>
+      <bullethit>冰汽</bullethit>
+      <clipname>能量电池</clipname>
+      <power>360</power>
+      <damagetype>魔法</damagetype>
+      <magictype>冷</magictype>
+    </data_ice>
+    <data_fire>
+      <dressup>枪-手枪-Glock18狱火</dressup>
+      <interval>70</interval>
+      <bullet>烈焰普通子弹</bullet>
+      <bulletrename>烈焰子弹</bulletrename>
+      <bullethit>烈焰火花</bullethit>
+      <clipname>能量电池</clipname>
+      <power>360</power>
+      <damagetype>魔法</damagetype>
+      <magictype>热</magictype>
+    </data_fire>
   </item>
   <item>
     <id>270</id>
@@ -2736,6 +2259,7 @@
     <description>由约翰·勃朗宁设计，雷明顿兰德公司生产的半自动手枪。于1911年服役至今。</description>
     <level>3</level>
     <data>
+      <dressup>枪-手枪-M1911</dressup>
       <capacity>8</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -2750,9 +2274,6 @@
       <power>140</power>
       <impact>100</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-M1911</dressup>
-    </equipped>
   </item>
   <item>
     <id>271</id>
@@ -2766,6 +2287,7 @@
     <description>莫斯伯格500泵动式霰弹枪，由A国O.F.莫斯伯格父子公司研制。</description>
     <level>13</level>
     <data>
+      <dressup>枪-手枪-Mossberg500</dressup>
       <capacity>8</capacity>
       <split>10</split>
       <diffusion>17</diffusion>
@@ -2782,9 +2304,6 @@
       <power>75</power>
       <impact>20</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-Mossberg500</dressup>
-    </equipped>
   </item>
   <item>
     <id>272</id>
@@ -2798,6 +2317,7 @@
     <description>MP5-PDW冲锋枪，MP5的个人防卫武器版本; 加装折叠枪托、可装上消音器的三叉型枪口及三连发，于1991年首次推出。</description>
     <level>8</level>
     <data>
+      <dressup>枪-手枪-Mp5 pdw</dressup>
       <capacity>40</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
@@ -2812,9 +2332,6 @@
       <power>60</power>
       <impact>80</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-Mp5 pdw</dressup>
-    </equipped>
   </item>
   <item>
     <id>273</id>
@@ -2829,6 +2346,7 @@
     P90是全名FN Project 1990的简写，意即FN 1990年计划。</description>
     <level>13</level>
     <data>
+      <dressup>枪-手枪-P90</dressup>
       <capacity>50</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -2843,9 +2361,6 @@
       <power>70</power>
       <impact>50</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-P90</dressup>
-    </equipped>
     <lifecycle>
       <attr_0>
         <init>
@@ -2870,6 +2385,7 @@
     这把手枪加装的消音器，或许也是在提醒使用者：末世中如果缺乏自保能力，任何的噪音都会遭来难以承受的灾祸。</description>
     <level>1</level>
     <data>
+      <dressup>枪-手枪-PPK</dressup>
       <capacity>9</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
@@ -2884,9 +2400,6 @@
       <power>30</power>
       <impact>100</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-PPK</dressup>
-    </equipped>
   </item>
   <item>
     <id>275</id>
@@ -2901,6 +2414,7 @@
     乌兹是一款结构简单易于生产的冲锋枪，该武器以其设计者乌兹·盖尔的名称来命名，虽然当时他表明并不希望以其名字作武器名称，但这请求被IL国政府驳回。</description>
     <level>7</level>
     <data>
+      <dressup>枪-手枪-UZI</dressup>
       <capacity>33</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -2915,9 +2429,6 @@
       <power>50</power>
       <impact>100</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-UZI</dressup>
-    </equipped>
   </item>
   <item>
     <id>286</id>
@@ -2932,6 +2443,7 @@
     90年代末期研发，于2001年服役至今。</description>
     <level>11</level>
     <data>
+      <dressup>枪-手枪-MP7</dressup>
       <capacity>50</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -2946,9 +2458,6 @@
       <power>65</power>
       <impact>70</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-MP7</dressup>
-    </equipped>
   </item>
   <item>
     <id>287</id>
@@ -2963,6 +2472,7 @@
     史密斯韦森是A国最大的手枪制造商，由A国人贺拉斯·史密斯与丹尼尔·韦森于1852年建立。总部位于马萨诸塞州春田。他们以制造左轮手枪闻名于世，曾在第二次世界大战中生产了110万支手枪以供应盟军需求。</description>
     <level>10</level>
     <data>
+      <dressup>枪-手枪-韦森686</dressup>
       <capacity>6</capacity>
       <split>1</split>
       <diffusion>6</diffusion>
@@ -2977,11 +2487,30 @@
       <bulletsize>25</bulletsize>
       <power>820</power>
       <impact>10</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-韦森686</dressup>
       <slay>3</slay>
-    </equipped>
+    </data>
+    <data_ice>
+      <dressup>枪-手枪-韦森686墨冰</dressup>
+      <interval>330</interval>
+      <bullet>冰冷普通子弹</bullet>
+      <bulletrename>冰冷子弹</bulletrename>
+      <bullethit>冰汽</bullethit>
+      <clipname>能量电池</clipname>
+      <power>5000</power>
+      <damagetype>魔法</damagetype>
+      <magictype>冷</magictype>
+    </data_ice>
+    <data_fire>
+      <dressup>枪-手枪-韦森686狱火</dressup>
+      <interval>330</interval>
+      <bullet>烈焰普通子弹</bullet>
+      <bulletrename>烈焰子弹</bulletrename>
+      <bullethit>烈焰火花</bullethit>
+      <clipname>能量电池</clipname>
+      <power>5000</power>
+      <damagetype>魔法</damagetype>
+      <magictype>热</magictype>
+    </data_fire>
   </item>
   <item>
     <id>290</id>
@@ -2996,6 +2525,7 @@
     P90是全名FN Project 1990的简写，意即FN 1990年计划。</description>
     <level>21</level>
     <data>
+      <dressup>枪-手枪-P90战术版</dressup>
       <capacity>100</capacity>
       <split>1</split>
       <diffusion>6</diffusion>
@@ -3009,11 +2539,8 @@
       <bulletsize>30</bulletsize>
       <power>90</power>
       <impact>50</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-P90战术版</dressup>
       <criticalhit>10</criticalhit>
-    </equipped>
+    </data>
     <lifecycle>
       <attr_0>
         <init>
@@ -3041,6 +2568,7 @@
     一把由SWIT国人设计，FR人提供技术的A国枪？</description>
     <level>5</level>
     <data>
+      <dressup>枪-手枪-KRISS</dressup>
       <capacity>33</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
@@ -3055,9 +2583,6 @@
       <power>35</power>
       <impact>90</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-KRISS</dressup>
-    </equipped>
   </item>
   <item>
     <id>293</id>
@@ -3072,6 +2597,7 @@
     既然决定了双持枪械，那枪托的作用的确可有可无。</description>
     <level>23</level>
     <data>
+      <dressup>枪-手枪-KRISS轻量化突击版</dressup>
       <capacity>50</capacity>
       <split>1</split>
       <diffusion>2</diffusion>
@@ -3085,11 +2611,8 @@
       <bulletsize>60</bulletsize>
       <power>180</power>
       <impact>50</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-KRISS轻量化突击版</dressup>
       <criticalhit>15</criticalhit>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>297</id>
@@ -3105,6 +2628,7 @@
     90年代末期研发，于2001年服役至今。</description>
     <level>25</level>
     <data>
+      <dressup>枪-手枪-加强版MP7</dressup>
       <capacity>75</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -3118,11 +2642,8 @@
       <bulletsize>60</bulletsize>
       <power>220</power>
       <impact>50</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-加强版MP7</dressup>
       <criticalhit>15</criticalhit>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>302</id>
@@ -3136,6 +2657,7 @@
     <description>单手持霰弹枪，将霰弹进行到底。</description>
     <level>40</level>
     <data>
+      <dressup>枪-手枪-战术版莫斯伯格590</dressup>
       <capacity>9</capacity>
       <split>10</split>
       <diffusion>15</diffusion>
@@ -3152,9 +2674,6 @@
       <power>500</power>
       <impact>15</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-战术版莫斯伯格590</dressup>
-    </equipped>
   </item>
   <item>
     <id>303</id>
@@ -3169,6 +2688,7 @@
     经过技术的修复，现在已完全恢复了发射火箭的强大功能，连续发射的火箭的强大火力足以让敌人灰飞烟灭。</description>
     <level>50</level>
     <data>
+      <dressup>枪-手枪-战术版MGL</dressup>
       <capacity>5</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
@@ -3185,9 +2705,6 @@
       <power>3000</power>
       <impact>0</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-战术版MGL</dressup>
-    </equipped>
   </item>
   <item>
     <id>677</id>
@@ -3202,6 +2719,7 @@
 曾有某位知名枪械历史学家如此形容它：「世界上最佳的左轮手枪」。</description>
     <level>33</level>
     <data>
+      <dressup>枪-手枪-COLT PYTHON</dressup>
       <capacity>6</capacity>
       <split>1</split>
       <diffusion>8</diffusion>
@@ -3216,11 +2734,8 @@
       <bulletsize>25</bulletsize>
       <power>890</power>
       <impact>10</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-COLT PYTHON</dressup>
       <slay>5</slay>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>678</id>
@@ -3235,6 +2750,7 @@
 虽然火力和制止力强大、精度高及射程较其他手枪更远；不过也因价格比一般手枪昂贵，并且射击时所产生的巨大噪音与枪焰会对射手造成较大的心理压力及令其暴露位置，还对射击姿势要求较高等因素导致大部份军队及执法机关都认为沙漠之鹰不是实用的武器而拒绝采用。总之，这把枪只为经验丰富的射击达人又或是枪械大师量身订制。</description>
     <level>45</level>
     <data>
+      <dressup>枪-手枪-Desert Eagle</dressup>
       <capacity>8</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
@@ -3249,11 +2765,8 @@
       <bulletsize>30</bulletsize>
       <power>1300</power>
       <impact>10</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-Desert Eagle</dressup>
       <slay>8</slay>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>679</id>
@@ -3268,6 +2781,7 @@
 史密斯韦森是A国最大的手枪制造商，由A国人贺拉斯·史密斯与丹尼尔·韦森于1852年建立。总部位于马萨诸塞州春田。他们以制造左轮手枪闻名于世，曾在第二次世界大战中生产了110万支手枪以供应盟军需求。</description>
     <level>22</level>
     <data>
+      <dressup>枪-手枪-韦森686</dressup>
       <capacity>6</capacity>
       <split>1</split>
       <diffusion>6</diffusion>
@@ -3282,11 +2796,8 @@
       <bulletsize>25</bulletsize>
       <power>750</power>
       <impact>10</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-韦森686</dressup>
       <slay>5</slay>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>305</id>
@@ -3300,6 +2811,7 @@
     <description>滚筒式冲锋枪。</description>
     <level>30</level>
     <data>
+      <dressup>枪-手枪-LS06</dressup>
       <capacity>50</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
@@ -3314,9 +2826,6 @@
       <power>170</power>
       <impact>38</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-LS06</dressup>
-    </equipped>
   </item>
   <item>
     <id>307</id>
@@ -3330,6 +2839,7 @@
     <description>子弹可穿透敌人的利器。</description>
     <level>32</level>
     <data>
+      <dressup>枪-手枪-穿刺LS06</dressup>
       <capacity>50</capacity>
       <split>1</split>
       <diffusion>6</diffusion>
@@ -3344,9 +2854,6 @@
       <power>170</power>
       <impact>80</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-穿刺LS06</dressup>
-    </equipped>
   </item>
   <item>
     <id>525</id>
@@ -3360,6 +2867,7 @@
     <description>轻量化后可以单手持的量子能量枪</description>
     <level>60</level>
     <data>
+      <dressup>枪-手枪-轻量化量子能量枪</dressup>
       <capacity>60</capacity>
       <split>1</split>
       <diffusion>6</diffusion>
@@ -3374,11 +2882,8 @@
       <bulletsize>60</bulletsize>
       <power>800</power>
       <impact>10</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-轻量化量子能量枪</dressup>
       <damagetype>魔法</damagetype>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>528</id>
@@ -3392,6 +2897,7 @@
     <description>可升级极品UZI战术版</description>
     <level>23</level>
     <data>
+      <dressup>枪-手枪-UZI战术版</dressup>
       <capacity>80</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -3405,11 +2911,8 @@
       <bulletsize>30</bulletsize>
       <power>160</power>
       <impact>30</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-UZI战术版</dressup>
       <criticalhit>15</criticalhit>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>529</id>
@@ -3423,6 +2926,7 @@
     <description>合成诛神短枪必备武器之一</description>
     <level>35</level>
     <data>
+      <dressup>枪-手枪-极品UZI战术版</dressup>
       <capacity>100</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
@@ -3436,11 +2940,8 @@
       <bulletsize>30</bulletsize>
       <power>230</power>
       <impact>60</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-极品UZI战术版</dressup>
       <criticalhit>30</criticalhit>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>530</id>
@@ -3454,6 +2955,7 @@
     <description>逆天短枪</description>
     <level>45</level>
     <data>
+      <dressup>枪-手枪-钛合金P90</dressup>
       <capacity>50</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -3468,9 +2970,6 @@
       <power>170</power>
       <impact>50</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-钛合金P90</dressup>
-    </equipped>
     <lifecycle>
       <attr_0>
         <init>
@@ -3494,6 +2993,7 @@
     <description>枪管里射出来的是糖果哦。</description>
     <level>0</level>
     <data>
+      <dressup>枪-手枪-圣诞糖果枪</dressup>
       <capacity>50</capacity>
       <split>1</split>
       <diffusion>6</diffusion>
@@ -3509,9 +3009,6 @@
       <power>260</power>
       <impact>10</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-圣诞糖果枪</dressup>
-    </equipped>
   </item>
   <item>
     <id>531</id>
@@ -3525,6 +3022,7 @@
     <description>遇佛杀佛，遇神诛神</description>
     <level>50</level>
     <data>
+      <dressup>枪-手枪-诛神短枪</dressup>
       <capacity>60</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -3540,9 +3038,6 @@
       <power>300</power>
       <impact>60</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-诛神短枪</dressup>
-    </equipped>
   </item>
   <item>
     <id>623</id>
@@ -3556,6 +3051,7 @@
     <description>来自远古的力量，星际最强神装</description>
     <level>60</level>
     <data>
+      <dressup>枪-手枪-远古诛神短枪</dressup>
       <capacity>90</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -3570,9 +3066,6 @@
       <power>650</power>
       <impact>60</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-远古诛神短枪</dressup>
-    </equipped>
   </item>
   <item>
     <id>2501</id>
@@ -3590,6 +3083,7 @@
 &lt;font color="#FFCC00"&gt;【麻醉模式】&lt;/font&gt;发射单体麻醉子弹，使可击倒的敌人倒地并暂时停止行动。西比拉系统为犯罪指数高于100且低于300的目标所设计的模式。&lt;BR&gt;&lt;font color="#FFCC00"&gt;【击杀模式】&lt;/font&gt;发射入体触发式微波子弹，击入敌方体内时将发射微波加热体液，造成极高内爆伤害，并产生电磁伤害。对无法击穿体表的高防御力单位只有低额物理伤害。西比拉系统为犯罪指数高于300的目标所设计的模式。&lt;BR&gt;&lt;font color="#FFCC00"&gt;【分解模式】&lt;/font&gt;消耗更多能量并发射高能等离子球，造成大范围真实伤害。西比拉系统为高威胁非生物敌人所设计的模式。</description>
     <level>35</level>
     <data>
+      <dressup>枪-手枪-dominator</dressup>
       <capacity>50</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
@@ -3606,9 +3100,6 @@
       <power>30</power>
       <impact>0</impact>
     </data>
-    <equipped>
-      <dressup>枪-手枪-dominator</dressup>
-    </equipped>
   </item>
   <item>
     <id>1700</id>
@@ -3622,6 +3113,7 @@
     <description>Maschinenpistole40，常被称为“施迈瑟冲锋枪”，是一种为方便大量生产而设计，与传统枪械制造观念不同的冲锋枪，亦是第二次世界大战期间德国军队使用最广泛、性能最优良的冲锋枪。</description>
     <level>16</level>
     <data>
+      <dressup>枪-手枪-MP40</dressup>
       <capacity>64</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
@@ -3636,11 +3128,28 @@
       <bulletsize>25</bulletsize>
       <power>150</power>
       <impact>80</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-MP40</dressup>
       <criticalhit>10</criticalhit>
-    </equipped>
+    </data>
+    <data_ice>
+      <dressup>枪-手枪-MP40墨冰</dressup>
+      <bullet>冰冷普通子弹</bullet>
+      <bulletrename>冰冷子弹</bulletrename>
+      <bullethit>冰汽</bullethit>
+      <clipname>能量电池</clipname>
+      <power>220</power>
+      <damagetype>魔法</damagetype>
+      <magictype>冷</magictype>
+    </data_ice>
+    <data_fire>
+      <dressup>枪-手枪-MP40狱火</dressup>
+      <bullet>烈焰普通子弹</bullet>
+      <bulletrename>烈焰子弹</bulletrename>
+      <bullethit>烈焰火花</bullethit>
+      <clipname>能量电池</clipname>
+      <power>220</power>
+      <damagetype>魔法</damagetype>
+      <magictype>热</magictype>
+    </data_fire>
   </item>
   <item>
     <id>5703</id>
@@ -3656,6 +3165,7 @@
 从质量和特点来看，应是黑洞军工依设计图所产。</description>
     <level>25</level>
     <data>
+      <dressup>枪-手枪-STI2011</dressup>
       <capacity>8</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
@@ -3669,11 +3179,8 @@
       <bulletsize>30</bulletsize>
       <power>1000</power>
       <impact>10</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-STI2011</dressup>
       <slay>6</slay>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>5704</id>
@@ -3689,7 +3196,21 @@
     尽管为实现极致便携性而在射速和容量上有所取舍，但Stinger仍能在关键时刻瞬间倾泻致命火力风暴。
     该武器预留了一定的拓展升级空间，每级强化度可以提供3%的暴击率加成</description>
     <level>35</level>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>XM556_H_Stinger初始化</initRoutines>
+          <initParam>
+            <criticalhitUpgrade>3</criticalhitUpgrade>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>XM556_H_Stinger周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
     <data>
+      <dressup>枪-手枪-XM556-H-Stinger</dressup>
       <capacity>25</capacity>
       <split>5</split>
       <diffusion>8</diffusion>
@@ -3704,26 +3225,10 @@
       <bulletsize>30</bulletsize>
       <power>40</power>
       <impact>2</impact>
-    </data>
-    <lifecycle>
-      <attr_0>
-        <init>
-          <initRoutines>XM556_H_Stinger初始化</initRoutines>
-          <initParam>
-            <criticalhitUpgrade>3</criticalhitUpgrade>
-          </initParam>
-        </init>
-        <cycle>
-          <cycleRoutines>XM556_H_Stinger周期</cycleRoutines>
-        </cycle>
-      </attr_0>
-    </lifecycle>
-    <equipped>
-      <dressup>枪-手枪-XM556-H-Stinger</dressup>
       <criticalhit>3</criticalhit>
       <evasion>-20</evasion>
       <accuracy>-20</accuracy>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>5705</id>
@@ -3737,6 +3242,7 @@
     <description>占位用</description>
     <level>35</level>
     <data>
+      <dressup>枪-手枪-XM556-OC-Overlord</dressup>
       <capacity>2500</capacity>
       <split>5</split>
       <diffusion>8</diffusion>
@@ -3751,12 +3257,9 @@
       <bulletsize>30</bulletsize>
       <power>40</power>
       <impact>2</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-XM556-OC-Overlord</dressup>
       <evasion>-20</evasion>
       <accuracy>-20</accuracy>
-    </equipped>
+    </data>
     <lifecycle>
       <attr_0>
         <init>
@@ -3784,6 +3287,7 @@
     </description>
     <level>35</level>
     <data>
+      <dressup>枪-手枪-ashcore</dressup>
       <capacity>23</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
@@ -3797,12 +3301,9 @@
       <bulletsize>5</bulletsize>
       <power>1400</power>
       <impact>10</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-ashcore</dressup>
       <damagetype>魔法</damagetype>
       <magictype>能</magictype>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>5707</id>
@@ -3820,6 +3321,7 @@
     </description>
     <level>35</level>
     <data>
+      <dressup>枪-手枪-Kel-Tec-P50</dressup>
       <capacity>50</capacity>
       <split>1</split>
       <diffusion>6</diffusion>
@@ -3833,14 +3335,11 @@
       <bulletsize>30</bulletsize>
       <power>170</power>
       <impact>35</impact>
-    </data>
-    <equipped>
-      <dressup>枪-手枪-Kel-Tec-P50</dressup>
       <damagetype>破击</damagetype>
       <magictype>装甲</magictype>
       <criticalhit>12</criticalhit>
       <accuracy>-20</accuracy>
-    </equipped>
+    </data>
     <lifecycle>
       <attr_0>
         <init>

@@ -94,7 +94,7 @@ class org.flashNight.arki.item.ItemUtil{
             音效 = "ammopickup1.wav";
             if (use == "颈部装备"){
                 var 控制对象 = TargetCacheManager.findHero();
-                控制对象.称号 = itemData.equipped.title;
+                控制对象.称号 = itemData.data.title;
                 _root.玩家称号 = 控制对象.称号;
             }
         }

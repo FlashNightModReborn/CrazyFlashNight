@@ -14,7 +14,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>100000</price>
     <description>先进防护服，融合了幻影装甲的技术。</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>男变装-先进防护服手甲</dressup>
       <hp>500</hp>
       <mp>350</mp>
@@ -23,7 +23,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <knifepower>0</knifepower>
       <punch>0</punch>
       <defence>700</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>15615</id>
@@ -37,7 +37,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <description>先进防护服，融合了幻影装甲的技术。</description>
     <level>60</level>
     <helmet>true</helmet>
-    <equipped>
+    <data>
       <dressup>男变装-先进防护服头甲</dressup>
       <hp>600</hp>
       <mp>350</mp>
@@ -46,7 +46,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <knifepower>0</knifepower>
       <punch>0</punch>
       <defence>700</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>15614</id>
@@ -59,7 +59,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>100000</price>
     <description>先进防护服，融合了幻影装甲的技术。</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>男变装-先进防护服鞋</dressup>
       <hp>500</hp>
       <mp>350</mp>
@@ -68,7 +68,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <knifepower>0</knifepower>
       <punch>0</punch>
       <defence>700</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>15613</id>
@@ -81,7 +81,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>100000</price>
     <description>先进防护服，融合了幻影装甲的技术。</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>变装-先进防护服下装</dressup>
       <hp>500</hp>
       <mp>350</mp>
@@ -90,7 +90,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <knifepower>0</knifepower>
       <punch>0</punch>
       <defence>730</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>15612</id>
@@ -103,7 +103,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>100000</price>
     <description>先进防护服，融合了幻影装甲的技术。</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>变装-先进防护服上装</dressup>
       <hp>500</hp>
       <mp>350</mp>
@@ -112,7 +112,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <knifepower>0</knifepower>
       <punch>0</punch>
       <defence>730</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>15611</id>
@@ -136,17 +136,16 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <mp>100</mp>
     </skill>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>男变装-末日铁拳</dressup>
       <hp>500</hp>
       <mp>300</mp>
       <damage>0</damage>
       <punch>350</punch>
       <defence>600</defence>
-      <bullet>0</bullet>
       <rout>0.15</rout>
       <toughness>100</toughness>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>2003</id>
@@ -160,7 +159,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <description>Revenge is all I have left.</description>
     <level>66</level>
     <helmet>true</helmet>
-    <equipped>
+    <data>
       <dressup>男变装-约翰威克的头</dressup>
       <hp>200</hp>
       <mp>200</mp>
@@ -174,7 +173,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
         <全属性>60</全属性>
       </magicdefence>
       <lazymiss>50</lazymiss>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>15610</id>
@@ -187,7 +186,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>100000</price>
     <description>自由骑士铠甲。</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>男变装-自由骑士手甲</dressup>
       <hp>350</hp>
       <mp>350</mp>
@@ -196,7 +195,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <knifepower>250</knifepower>
       <punch>0</punch>
       <defence>600</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>15609</id>
@@ -210,7 +209,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <description>自由骑士铠甲。</description>
     <level>60</level>
     <helmet>true</helmet>
-    <equipped>
+    <data>
       <dressup>男变装-自由骑士头甲</dressup>
       <hp>370</hp>
       <mp>500</mp>
@@ -219,7 +218,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <knifepower>180</knifepower>
       <punch>0</punch>
       <defence>700</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>15608</id>
@@ -232,7 +231,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>100000</price>
     <description>自由骑士铠甲。</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>男变装-自由骑士鞋</dressup>
       <hp>370</hp>
       <mp>500</mp>
@@ -241,7 +240,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <knifepower>180</knifepower>
       <punch>0</punch>
       <defence>700</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>15607</id>
@@ -254,7 +253,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>100000</price>
     <description>自由骑士铠甲。</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>变装-自由骑士下装</dressup>
       <hp>500</hp>
       <mp>350</mp>
@@ -263,7 +262,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <knifepower>150</knifepower>
       <punch>0</punch>
       <defence>800</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>15606</id>
@@ -276,7 +275,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>100000</price>
     <description>自由骑士铠甲。</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>变装-自由骑士上装</dressup>
       <hp>370</hp>
       <mp>350</mp>
@@ -285,7 +284,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <knifepower>250</knifepower>
       <punch>0</punch>
       <defence>700</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>15605</id>
@@ -304,7 +303,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <cd>5000</cd>
       <mp>100</mp>
     </skill>
-    <equipped>
+    <data>
       <dressup>男变装-黑犀手甲</dressup>
       <hp>500</hp>
       <mp>500</mp>
@@ -313,7 +312,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <knifepower>0</knifepower>
       <punch>230</punch>
       <defence>500</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>15604</id>
@@ -327,7 +326,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <description>黑犀铠甲。</description>
     <level>60</level>
     <helmet>true</helmet>
-    <equipped>
+    <data>
       <dressup>男变装-黑犀头甲</dressup>
       <hp>500</hp>
       <mp>500</mp>
@@ -336,7 +335,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <knifepower>0</knifepower>
       <punch>120</punch>
       <defence>800</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>15603</id>
@@ -349,7 +348,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>100000</price>
     <description>黑犀铠甲。</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>男变装-黑犀鞋</dressup>
       <hp>500</hp>
       <mp>500</mp>
@@ -358,7 +357,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <knifepower>0</knifepower>
       <punch>120</punch>
       <defence>800</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>15602</id>
@@ -371,7 +370,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>100000</price>
     <description>黑犀铠甲。</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>变装-黑犀下装</dressup>
       <hp>600</hp>
       <mp>500</mp>
@@ -380,7 +379,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <knifepower>0</knifepower>
       <punch>100</punch>
       <defence>1000</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>15601</id>
@@ -393,7 +392,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>100000</price>
     <description>黑犀铠甲。</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>变装-黑犀上装</dressup>
       <hp>500</hp>
       <mp>500</mp>
@@ -402,96 +401,8 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <knifepower>0</knifepower>
       <punch>220</punch>
       <defence>830</defence>
-    </equipped>
+    </data>
   </item>
-  <!--
-  <item>
-    <id>11088</id>
-    <name>四阶外置能量战纹</name>
-    <displayname>四阶外置能量战纹</displayname>
-    <icon>盗贼纹身装</icon>
-    <type>防具</type>
-    <use>上装装备</use>
-    <weight>1</weight>
-    <price>533000</price>
-    <description>附着于皮肤上的奇异纹路，据说由&lt;font color="#ff00ff"&gt;诺亚方舟&lt;/font&gt;的技术所创造。在制作上似乎利用了纳米材料和生物技术。此物只在皮肤与空气大面积接触时被激活，因而只能在防弹衣之间二者择其一。虽然代价巨大，但倘若激活，这些纹路也能赋予使用者与代价相匹配的肌肉活性和耐受力，以及远超猛兽的爆发力。</description>
-    <level>50</level>
-    <equipped>
-      <dressup>变装-盗贼纹身装</dressup>
-      <hp>359</hp>
-      <mp>359</mp>
-      <force>100</force>
-      <punch>70</punch>
-      <knifepower>100</knifepower>
-      <damage>100</damage>
-      <defence>5</defence>
-      <bullet>0</bullet>
-    </equipped>
-  </item>
-  <item>
-    <id>11013</id>
-    <name>四阶黑色重甲</name>
-    <displayname>四阶黑色重甲</displayname>
-    <icon>黑色重甲</icon>
-    <type>防具</type>
-    <use>上装装备</use>
-    <weight>70</weight>
-    <price>535600</price>
-    <description>由铁板和钢块在烧炼后反复敲槌锻打而组成的厚重铠甲。盔甲的正面看起来能够抵挡任何攻击，无惧丧尸和战斗中袭来的流弹。但它也有着沉重的代价，穿戴者必须付出巨大的力气才能在战场上行动。而既然是以压迫灵与肉的方式来提供身躯的短暂庇护，那还是尽快寻找更合适的选择为妙。</description>
-    <level>50</level>
-    <equipped>
-      <dressup>变装-黑色重甲</dressup>
-      <hp>800</hp>
-      <mp>0</mp>
-      <damage>0</damage>
-      <defence>1250</defence>
-      <bullet>0</bullet>
-    </equipped>
-  </item>
-  <item>
-    <id>10588</id>
-    <name>三阶外置能量战纹</name>
-    <displayname>三阶外置能量战纹</displayname>
-    <icon>盗贼纹身装</icon>
-    <type>防具</type>
-    <use>上装装备</use>
-    <weight>1</weight>
-    <price>378000</price>
-    <description>附着于皮肤上的奇异纹路，据说由&lt;font color="#ff00ff"&gt;诺亚方舟&lt;/font&gt;的技术所创造。在制作上似乎利用了纳米材料和生物技术。此物只在皮肤与空气大面积接触时被激活，因而只能在防弹衣之间二者择其一。虽然代价巨大，但倘若激活，这些纹路也能赋予使用者与代价相匹配的肌肉活性和耐受力，以及远超猛兽的爆发力。</description>
-    <level>45</level>
-    <equipped>
-      <dressup>变装-盗贼纹身装</dressup>
-      <hp>259</hp>
-      <mp>259</mp>
-      <force>85</force>
-      <punch>60</punch>
-      <knifepower>90</knifepower>
-      <damage>80</damage>
-      <defence>5</defence>
-      <bullet>0</bullet>
-    </equipped>
-  </item>
-  <item>
-    <id>10513</id>
-    <name>三阶黑色重甲</name>
-    <displayname>三阶黑色重甲</displayname>
-    <icon>黑色重甲</icon>
-    <type>防具</type>
-    <use>上装装备</use>
-    <weight>60</weight>
-    <price>384000</price>
-    <description>由铁板和钢块在烧炼后反复敲槌锻打而组成的厚重铠甲。盔甲的正面看起来能够抵挡任何攻击，无惧丧尸和战斗中袭来的流弹。但它也有着沉重的代价，穿戴者必须付出巨大的力气才能在战场上行动。而既然是以压迫灵与肉的方式来提供身躯的短暂庇护，那还是尽快寻找更合适的选择为妙。</description>
-    <level>45</level>
-    <equipped>
-      <dressup>变装-黑色重甲</dressup>
-      <hp>600</hp>
-      <mp>0</mp>
-      <damage>0</damage>
-      <defence>1000</defence>
-      <bullet>0</bullet>
-    </equipped>
-  </item>
--->
   <item>
     <id>9009</id>
     <name>芬里尔鞋</name>
@@ -503,7 +414,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>100000</price>
     <description>芬里尔机甲。</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>男变装-芬里尔鞋</dressup>
       <hp>500</hp>
       <mp>500</mp>
@@ -516,7 +427,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
         <毒>25</毒>
         <电>35</电>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>9008</id>
@@ -529,7 +440,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>100000</price>
     <description>芬里尔机甲。</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>男变装-芬里尔手甲</dressup>
       <hp>500</hp>
       <mp>500</mp>
@@ -542,7 +453,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
         <冲>30</冲>
         <波>30</波>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>9007</id>
@@ -555,7 +466,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>100000</price>
     <description>芬里尔机甲。</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>变装-芬里尔下装</dressup>
       <hp>500</hp>
       <mp>500</mp>
@@ -566,7 +477,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <magicdefence>
         <全属性>15</全属性>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>9006</id>
@@ -580,7 +491,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <description>芬里尔机甲。</description>
     <skill>&lt;font color="#66ccff"&gt;【喷气背包】&lt;/font&gt;装载有用于升空的喷气背包，停止喷气时自动充气，按飞行键使用。</skill>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>变装-芬里尔上装</dressup>
       <hp>500</hp>
       <mp>500</mp>
@@ -591,7 +502,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <magicdefence>
         <全属性>15</全属性>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>9005</id>
@@ -605,7 +516,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <description>芬里尔机甲。</description>
     <level>60</level>
     <helmet>true</helmet>
-    <equipped>
+    <data>
       <dressup>男变装-芬里尔头甲</dressup>
       <hp>500</hp>
       <mp>500</mp>
@@ -618,7 +529,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
         <冷>30</冷>
         <波>30</波>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8023</id>
@@ -632,13 +543,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <description>虽然在名称标记上是试作型，但实质上却是作为正式型号投入使用，开发理念上与正式型号也完全不同。原本的正式型号拥有与使用者更高的融合度，但因为在开发中事故频发而遭到放弃。试作型极端的重量似乎也是由于大部分装甲与器官并未与使用者完全融合导致。
 这一部分实质上是一个能量输出结构，可以将存储的能量或者说【内力】从此处喷射而出。如果不是装甲自身重量过多的话，使用这个功能来进行低空飞行也并非不可能。</description>
     <level>48</level>
-    <equipped>
+    <data>
       <dressup>男变装-试作型原种共生鞋</dressup>
       <hp>700</hp>
       <mp>100</mp>
       <punch>100</punch>
       <defence>800</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <毒>20</毒>
         <蚀>5</蚀>
@@ -647,7 +557,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
         <冲>5</冲>
         <波>5</波>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8022</id>
@@ -662,13 +572,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <description>在必要时，这种装甲也能迅速提升着装者自身的战斗能力，使低改造程度甚至无改造的人员具备与尖端改造士兵战斗的能力。
 由于装甲自身重量的问题，这种装甲从一开始就没打算让使用者携带使用其他武器。作为替代的，装甲自身拥有大量可选择的固定武器以供使用。</description>
     <level>48</level>
-    <equipped>
+    <data>
       <dressup>男变装-试作型原种共生手套</dressup>
       <hp>700</hp>
       <mp>100</mp>
       <punch>150</punch>
       <defence>700</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <毒>20</毒>
         <蚀>5</蚀>
@@ -677,7 +586,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
         <冲>5</冲>
         <波>5</波>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8021</id>
@@ -691,13 +600,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <description>即便是在缺乏能量的状态下，装甲也能为使用者提供完善的环境防护与生理活动支持，包括但不限于造氧、耐压、滤毒、内循环和解毒等功能。作为一种应急装甲，这种战斗服能为使用者提供极强的防护与损伤再生能力，可以非常有效地保护二线或是非战斗人员的安全。
 装甲的内部藏有大量类似于肌肉的结构，但更多是作为运输和释放能量的管道使用，本身也具有十分优秀的防护能力。</description>
     <level>48</level>
-    <equipped>
+    <data>
       <dressup>变装-试作型原种共生下装</dressup>
       <hp>700</hp>
       <mp>100</mp>
       <punch>50</punch>
       <defence>900</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <毒>20</毒>
         <蚀>5</蚀>
@@ -706,7 +614,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
         <冲>5</冲>
         <波>5</波>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8020</id>
@@ -720,13 +628,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <description>着装状态下，装甲本身不需要任何额外的维护。只需要定期为装甲补充能量，装甲自身可以完成对装甲整体乃至使用者身体结构的修复。另一方面，这种装甲所需要的能量来源可以是任何形式。换句话来说，从简单的可燃性燃料到战场上的死尸都能为装甲活动提供能量。
 包裹使用者的装甲本身可以作为一种拟似【虚构器官】使用，能够让使用者在一定程度上拥有“超能力”。</description>
     <level>48</level>
-    <equipped>
+    <data>
       <dressup>变装-试作型原种共生上装</dressup>
       <hp>700</hp>
       <mp>300</mp>
       <force>100</force>
       <defence>750</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <毒>20</毒>
         <蚀>5</蚀>
@@ -735,7 +642,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
         <冲>5</冲>
         <波>5</波>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8019</id>
@@ -750,13 +657,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
 装甲的控制单元与使用者的大脑直接连接，使使用者可以与装甲共享情报以及在一定程度上融为一体。</description>
     <level>48</level>
     <helmet>true</helmet>
-    <equipped>
+    <data>
       <dressup>男变装-试作型原种共生头盔</dressup>
       <hp>700</hp>
       <mp>100</mp>
       <punch>100</punch>
       <defence>800</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <毒>20</毒>
         <蚀>5</蚀>
@@ -765,7 +671,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
         <冲>5</冲>
         <波>5</波>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>2002</id>
@@ -779,7 +685,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <description> &lt;font color="#FF0000"&gt;“好！好！好！”&lt;/font&gt;</description>
     <level>81</level>
     <helmet>true</helmet>
-    <equipped>
+    <data>
       <dressup>男变装-大圣头甲</dressup>
       <hp>9981</hp>
       <mp>9981</mp>
@@ -792,7 +698,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
         <全属性>81</全属性>
       </magicdefence>
       <toughness>200</toughness>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>2001</id>
@@ -805,7 +711,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>9981</price>
     <description> &lt;font color="#FF0000"&gt;“好！好！好！”&lt;/font&gt;</description>
     <level>81</level>
-    <equipped>
+    <data>
       <dressup>变装-大圣下装</dressup>
       <hp>9981</hp>
       <mp>9981</mp>
@@ -818,7 +724,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
         <全属性>81</全属性>
       </magicdefence>
       <toughness>200</toughness>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>2000</id>
@@ -832,7 +738,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>9981</price>
     <description> &lt;font color="#FF0000"&gt;“好！好！好！”&lt;/font&gt;</description>
     <level>81</level>
-    <equipped>
+    <data>
       <dressup>男变装-大圣手甲</dressup>
       <hp>9981</hp>
       <mp>9981</mp>
@@ -847,7 +753,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
         <全属性>81</全属性>
       </magicdefence>
       <toughness>200</toughness>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1999</id>
@@ -860,7 +766,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>9981</price>
     <description> &lt;font color="#FF0000"&gt;“好！好！好！”&lt;/font&gt;</description>
     <level>81</level>
-    <equipped>
+    <data>
       <dressup>变装-大圣上装</dressup>
       <hp>9981</hp>
       <mp>9981</mp>
@@ -873,7 +779,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
         <全属性>81</全属性>
       </magicdefence>
       <toughness>200</toughness>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1998</id>
@@ -886,7 +792,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>9981</price>
     <description> &lt;font color="#FF0000"&gt;“好！好！好！”&lt;/font&gt;</description>
     <level>81</level>
-    <equipped>
+    <data>
       <dressup>男变装-大圣鞋</dressup>
       <hp>9981</hp>
       <mp>9981</mp>
@@ -899,7 +805,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
         <全属性>81</全属性>
       </magicdefence>
       <toughness>200</toughness>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>646</id>
@@ -912,14 +818,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>200000</price>
     <description>漆黑噤默</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>男变装-噤默皮鞋</dressup>
       <hp>200</hp>
       <mp>180</mp>
       <damage>20</damage>
       <defence>400</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>645</id>
@@ -932,17 +837,16 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>200000</price>
     <description>漆黑噤默</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>变装-噤默礼裤</dressup>
       <hp>200</hp>
       <mp>180</mp>
       <damage>20</damage>
       <defence>400</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <全属性>10</全属性>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>644</id>
@@ -955,14 +859,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>200000</price>
     <description>漆黑噤默</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>男变装-噤默手套</dressup>
       <hp>200</hp>
       <mp>180</mp>
       <damage>20</damage>
       <defence>400</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>643</id>
@@ -975,17 +878,16 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>200000</price>
     <description>漆黑噤默</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>变装-噤默礼服</dressup>
       <hp>200</hp>
       <mp>180</mp>
       <damage>20</damage>
       <defence>400</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <全属性>10</全属性>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>642</id>
@@ -998,14 +900,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>200000</price>
     <description>漆黑噤默</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>男变装-噤默面具</dressup>
       <hp>200</hp>
       <mp>180</mp>
       <damage>120</damage>
       <defence>400</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>618</id>
@@ -1018,14 +919,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>1</price>
     <description>来自卡加利的恩赐，仿造传说中的黄金骑士铸造的一身神圣铠甲</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>男变装-牙狼铠战鞋</dressup>
       <hp>500</hp>
       <mp>500</mp>
       <damage>200</damage>
       <defence>1500</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>617</id>
@@ -1038,14 +938,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>1</price>
     <description>来自卡加利的恩赐，仿造传说中的黄金骑士铸造的一身神圣铠甲</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>变装-牙狼铠</dressup>
       <hp>500</hp>
       <mp>500</mp>
       <damage>200</damage>
       <defence>1500</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>616</id>
@@ -1059,14 +958,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>1</price>
     <description>来自卡加利的恩赐，仿造传说中的黄金骑士铸造的一身神圣铠甲</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>男变装-远古诛神手套</dressup>
       <hp>500</hp>
       <mp>500</mp>
       <damage>200</damage>
       <defence>1500</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>615</id>
@@ -1079,14 +977,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>1</price>
     <description>来自卡加利的恩赐，仿造传说中的黄金骑士铸造的一身神圣铠甲</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>变装-牙狼铠</dressup>
       <hp>500</hp>
       <mp>500</mp>
       <damage>200</damage>
       <defence>1500</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>614</id>
@@ -1100,14 +997,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <description>来自卡加利的恩赐，仿造传说中的黄金骑士铸造的一身神圣铠甲</description>
     <level>60</level>
     <helmet>true</helmet>
-    <equipped>
+    <data>
       <dressup>男变装-牙狼铠头盔</dressup>
       <hp>500</hp>
       <mp>500</mp>
       <damage>200</damage>
       <defence>1500</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>607</id>
@@ -1120,18 +1016,17 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>1</price>
     <description>最新试验级诺亚兵器的白色战甲，战斗力非凡。</description>
     <level>50</level>
-    <equipped>
+    <data>
       <dressup>男变装-远古忍者鞋</dressup>
       <hp>350</hp>
       <mp>300</mp>
       <damage>60</damage>
       <knifepower>60</knifepower>
       <defence>600</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <基础>10</基础>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>606</id>
@@ -1144,18 +1039,17 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>1</price>
     <description>最新试验级诺亚兵器的白色战甲，战斗力非凡。</description>
     <level>50</level>
-    <equipped>
+    <data>
       <dressup>变装-远古忍者腿甲</dressup>
       <hp>350</hp>
       <mp>300</mp>
       <damage>60</damage>
       <knifepower>60</knifepower>
       <defence>600</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <基础>15</基础>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>605</id>
@@ -1168,18 +1062,17 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>1</price>
     <description>最新试验级诺亚兵器的白色战甲，战斗力非凡。</description>
     <level>50</level>
-    <equipped>
+    <data>
       <dressup>男变装-远古忍者手套</dressup>
       <hp>350</hp>
       <mp>300</mp>
       <damage>60</damage>
       <knifepower>60</knifepower>
       <defence>600</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <基础>10</基础>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>604</id>
@@ -1192,18 +1085,17 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>1</price>
     <description>最新试验级诺亚兵器的白色战甲，战斗力非凡。</description>
     <level>50</level>
-    <equipped>
+    <data>
       <dressup>变装-远古忍者甲</dressup>
       <hp>350</hp>
       <mp>300</mp>
       <damage>60</damage>
       <knifepower>60</knifepower>
       <defence>600</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <基础>15</基础>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>603</id>
@@ -1217,18 +1109,17 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <description>最新试验级诺亚兵器的白色战甲，战斗力非凡。</description>
     <level>50</level>
     <helmet>true</helmet>
-    <equipped>
+    <data>
       <dressup>男变装-远古忍者盔</dressup>
       <hp>350</hp>
       <mp>300</mp>
       <damage>60</damage>
       <knifepower>60</knifepower>
       <defence>600</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <基础>10</基础>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>602</id>
@@ -1241,14 +1132,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>20000</price>
     <description>&lt;font color="#ff00ff"&gt;诺亚指挥官&lt;/font&gt;战甲，强度高重量轻。</description>
     <level>45</level>
-    <equipped>
+    <data>
       <dressup>男变装-方舟武士鞋</dressup>
       <hp>200</hp>
       <mp>180</mp>
       <knifepower>100</knifepower>
       <defence>385</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>601</id>
@@ -1261,14 +1151,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>20000</price>
     <description>&lt;font color="#ff00ff"&gt;诺亚指挥官&lt;/font&gt;战甲，强度高重量轻。</description>
     <level>45</level>
-    <equipped>
+    <data>
       <dressup>变装-方舟武士腿甲</dressup>
       <hp>200</hp>
       <mp>180</mp>
       <knifepower>85</knifepower>
       <defence>385</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>600</id>
@@ -1281,14 +1170,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>20000</price>
     <description>&lt;font color="#ff00ff"&gt;诺亚指挥官&lt;/font&gt;战甲，强度高重量轻。</description>
     <level>45</level>
-    <equipped>
+    <data>
       <dressup>男变装-方舟武士手套</dressup>
       <hp>200</hp>
       <mp>180</mp>
       <knifepower>85</knifepower>
       <defence>385</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>599</id>
@@ -1301,14 +1189,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>20000</price>
     <description>&lt;font color="#ff00ff"&gt;诺亚指挥官&lt;/font&gt;战甲，强度高重量轻。</description>
     <level>45</level>
-    <equipped>
+    <data>
       <dressup>变装-方舟武士甲</dressup>
       <hp>200</hp>
       <mp>180</mp>
       <knifepower>85</knifepower>
       <defence>385</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>598</id>
@@ -1322,14 +1209,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <description>&lt;font color="#ff00ff"&gt;诺亚指挥官&lt;/font&gt;战甲，强度高重量轻。</description>
     <level>45</level>
     <helmet>true</helmet>
-    <equipped>
+    <data>
       <dressup>男变装-方舟武士盔</dressup>
       <hp>200</hp>
       <mp>180</mp>
       <knifepower>75</knifepower>
       <defence>385</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>593</id>
@@ -1342,15 +1228,14 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>100000</price>
     <description>&lt;font color="#ff00ff"&gt;百兽之王&lt;/font&gt;，无与伦比。虽不擅长持械，但空手格斗的能力可称天下无敌。</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>男变装-兽王战甲鞋</dressup>
       <hp>370</hp>
       <mp>500</mp>
       <damage>0</damage>
       <punch>250</punch>
       <defence>700</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>592</id>
@@ -1363,15 +1248,14 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>100000</price>
     <description>&lt;font color="#ff00ff"&gt;百兽之王&lt;/font&gt;，无与伦比。虽不擅长持械，但空手格斗的能力可称天下无敌。</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>变装-兽王战甲腿甲</dressup>
       <hp>600</hp>
       <mp>360</mp>
       <damage>0</damage>
       <punch>150</punch>
       <defence>880</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>591</id>
@@ -1391,16 +1275,15 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <mp>0</mp>
     </skill>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>男变装-兽王战甲手套</dressup>
       <hp>300</hp>
       <mp>150</mp>
       <damage>0</damage>
       <punch>500</punch>
       <defence>370</defence>
-      <bullet>0</bullet>
       <vampirism>2</vampirism>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>590</id>
@@ -1413,15 +1296,14 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>100000</price>
     <description>&lt;font color="#ff00ff"&gt;百兽之王&lt;/font&gt;，无与伦比。虽不擅长持械，但空手格斗的能力可称天下无敌。</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>变装-兽王战甲</dressup>
       <hp>370</hp>
       <mp>360</mp>
       <damage>0</damage>
       <punch>350</punch>
       <defence>700</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>589</id>
@@ -1434,15 +1316,14 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>100000</price>
     <description>&lt;font color="#ff00ff"&gt;百兽之王&lt;/font&gt;，无与伦比。虽不擅长持械，但空手格斗的能力可称天下无敌。</description>
     <level>60</level>
-    <equipped>
+    <data>
       <dressup>男变装-兽王战甲盔</dressup>
       <hp>370</hp>
       <mp>500</mp>
       <damage>0</damage>
       <punch>250</punch>
       <defence>700</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>588</id>
@@ -1455,15 +1336,14 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>100000</price>
     <description>&lt;font color="#ff00ff"&gt;百兽之王&lt;/font&gt;，无与伦比。相比于持械，更擅长空手攻击。</description>
     <level>40</level>
-    <equipped>
+    <data>
       <dressup>男变装-兽王虎甲鞋</dressup>
       <hp>230</hp>
       <mp>230</mp>
       <damage>0</damage>
       <punch>100</punch>
       <defence>350</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>587</id>
@@ -1476,15 +1356,14 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>100000</price>
     <description>&lt;font color="#ff00ff"&gt;百兽之王&lt;/font&gt;，无与伦比。相比于持械，更擅长空手攻击。</description>
     <level>40</level>
-    <equipped>
+    <data>
       <dressup>变装-兽王虎甲腿甲</dressup>
       <hp>230</hp>
       <mp>230</mp>
       <damage>0</damage>
       <punch>50</punch>
       <defence>390</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>586</id>
@@ -1504,16 +1383,15 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <mp>0</mp>
     </skill>
     <level>40</level>
-    <equipped>
+    <data>
       <dressup>男变装-兽王虎甲手套</dressup>
       <hp>230</hp>
       <mp>230</mp>
       <damage>0</damage>
       <punch>200</punch>
       <defence>360</defence>
-      <bullet>0</bullet>
       <vampirism>1</vampirism>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>585</id>
@@ -1526,15 +1404,14 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>100000</price>
     <description>&lt;font color="#ff00ff"&gt;百兽之王&lt;/font&gt;，无与伦比。相比于持械，更擅长空手攻击。</description>
     <level>40</level>
-    <equipped>
+    <data>
       <dressup>变装-兽王虎甲</dressup>
       <hp>230</hp>
       <mp>230</mp>
       <damage>0</damage>
       <punch>150</punch>
       <defence>350</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>584</id>
@@ -1548,15 +1425,14 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <description>&lt;font color="#ff00ff"&gt;百兽之王&lt;/font&gt;，无与伦比。相比于持械，更擅长空手攻击。</description>
     <level>40</level>
     <helmet>true</helmet>
-    <equipped>
+    <data>
       <dressup>男变装-兽王虎甲盔</dressup>
       <hp>230</hp>
       <mp>230</mp>
       <damage>0</damage>
       <punch>100</punch>
       <defence>350</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>560</id>
@@ -1569,18 +1445,17 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>150000</price>
     <description>根据异形女王骨甲改造而来，比钢坚硬能够缓冲伤害</description>
     <level>48</level>
-    <equipped>
+    <data>
       <dressup>男变装-异形女王鞋</dressup>
       <hp>360</hp>
       <mp>280</mp>
       <damage>0</damage>
       <punch>150</punch>
       <defence>550</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <蚀>20</蚀>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>559</id>
@@ -1593,18 +1468,17 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>150000</price>
     <description>根据异形女王骨甲改造而来，比钢坚硬能够缓冲伤害</description>
     <level>48</level>
-    <equipped>
+    <data>
       <dressup>变装-异形女王腿甲</dressup>
       <hp>390</hp>
       <mp>360</mp>
       <damage>0</damage>
       <punch>100</punch>
       <defence>580</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <蚀>20</蚀>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>558</id>
@@ -1624,7 +1498,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <mp>0</mp>
     </skill>
     <level>48</level>
-    <equipped>
+    <data>
       <dressup>男变装-异形女王手套</dressup>
       <hp>200</hp>
       <mp>100</mp>
@@ -1632,11 +1506,10 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <punch>220</punch>
       <poison>500</poison>
       <defence>350</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <蚀>10</蚀>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>557</id>
@@ -1649,18 +1522,17 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>150000</price>
     <description>根据异形女王骨甲改造而来，比钢坚硬能够缓冲伤害</description>
     <level>48</level>
-    <equipped>
+    <data>
       <dressup>变装-异形女王甲</dressup>
       <hp>300</hp>
       <mp>120</mp>
       <damage>0</damage>
       <punch>250</punch>
       <defence>500</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <蚀>20</蚀>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>556</id>
@@ -1674,18 +1546,17 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <description>根据异形女王骨甲改造而来，比钢坚硬能够缓冲伤害</description>
     <level>48</level>
     <helmet>true</helmet>
-    <equipped>
+    <data>
       <dressup>男变装-异形女王盔</dressup>
       <hp>360</hp>
       <mp>280</mp>
       <damage>0</damage>
       <punch>150</punch>
       <defence>550</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <蚀>20</蚀>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>555</id>
@@ -1698,18 +1569,17 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>130000</price>
     <description>根据异形尸体改造而来，坚固而且韧性十足</description>
     <level>40</level>
-    <equipped>
+    <data>
       <dressup>男变装-异形骨鞋</dressup>
       <hp>300</hp>
       <mp>150</mp>
       <damage>0</damage>
       <punch>50</punch>
       <defence>380</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <蚀>15</蚀>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>554</id>
@@ -1722,18 +1592,17 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>130000</price>
     <description>根据异形尸体改造而来，坚固而且韧性十足</description>
     <level>40</level>
-    <equipped>
+    <data>
       <dressup>变装-异形骨腿甲</dressup>
       <hp>360</hp>
       <mp>150</mp>
       <damage>0</damage>
       <punch>30</punch>
       <defence>420</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <蚀>20</蚀>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>553</id>
@@ -1753,7 +1622,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <mp>0</mp>
     </skill>
     <level>40</level>
-    <equipped>
+    <data>
       <dressup>男变装-异形骨手套</dressup>
       <hp>200</hp>
       <mp>100</mp>
@@ -1761,11 +1630,10 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <punch>120</punch>
       <poison>90</poison>
       <defence>300</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <蚀>5</蚀>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>552</id>
@@ -1778,18 +1646,17 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>130000</price>
     <description>根据异形尸体改造而来，坚固而且韧性十足</description>
     <level>40</level>
-    <equipped>
+    <data>
       <dressup>变装-异形骨甲</dressup>
       <hp>300</hp>
       <mp>150</mp>
       <damage>0</damage>
       <punch>80</punch>
       <defence>380</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <蚀>15</蚀>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>551</id>
@@ -1803,18 +1670,17 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <description>根据异形尸体改造而来，坚固而且韧性十足</description>
     <level>40</level>
     <helmet>true</helmet>
-    <equipped>
+    <data>
       <dressup>男变装-异形骨盔</dressup>
       <hp>300</hp>
       <mp>150</mp>
       <damage>0</damage>
       <punch>50</punch>
       <defence>380</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <蚀>15</蚀>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>497</id>
@@ -1827,17 +1693,16 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>1000</price>
     <description>钛合金装甲</description>
     <level>45</level>
-    <equipped>
+    <data>
       <dressup>男变装-钛合金61式装甲鞋</dressup>
       <hp>500</hp>
       <mp>150</mp>
       <damage>80</damage>
       <defence>500</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <毒>15</毒>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>496</id>
@@ -1850,18 +1715,17 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>200000</price>
     <description>钛合金装甲</description>
     <level>45</level>
-    <equipped>
+    <data>
       <dressup>变装-钛合金61式腿甲</dressup>
       <hp>500</hp>
       <mp>150</mp>
       <damage>100</damage>
       <defence>500</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <基础>5</基础>
         <毒>15</毒>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>495</id>
@@ -1874,17 +1738,16 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>200000</price>
     <description>钛合金装甲</description>
     <level>45</level>
-    <equipped>
+    <data>
       <dressup>男变装-钛合金61式手甲</dressup>
       <hp>500</hp>
       <mp>150</mp>
       <damage>80</damage>
       <defence>500</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <毒>15</毒>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>494</id>
@@ -1898,18 +1761,17 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <description>钛合金装甲</description>
     <skill>&lt;font color="#66ccff"&gt;【喷气背包】&lt;/font&gt;装载有用于升空的喷气背包，停止喷气时自动充气，按飞行键使用。</skill>
     <level>45</level>
-    <equipped>
+    <data>
       <dressup>变装-钛合金61式胸甲</dressup>
       <hp>500</hp>
       <mp>150</mp>
       <damage>100</damage>
       <defence>500</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <基础>5</基础>
         <毒>15</毒>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>493</id>
@@ -1923,17 +1785,16 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <description>钛合金装甲</description>
     <level>45</level>
     <helmet>true</helmet>
-    <equipped>
+    <data>
       <dressup>男变装-钛合金61式头部装甲</dressup>
       <hp>500</hp>
       <mp>150</mp>
       <damage>80</damage>
       <defence>500</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <毒>30</毒>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>458</id>
@@ -1946,18 +1807,17 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>10000</price>
     <description>炎魔降世，谁与争锋</description>
     <level>40</level>
-    <equipped>
+    <data>
       <dressup>男变装-炎魔鞋</dressup>
       <hp>200</hp>
       <mp>160</mp>
       <damage>75</damage>
       <defence>450</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <热>15</热>
         <冷>10</冷>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>457</id>
@@ -1970,18 +1830,17 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>10000</price>
     <description>炎魔降世，谁与争锋</description>
     <level>40</level>
-    <equipped>
+    <data>
       <dressup>变装-炎魔腿甲</dressup>
       <hp>200</hp>
       <mp>160</mp>
       <damage>75</damage>
       <defence>450</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <热>20</热>
         <冷>10</冷>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>456</id>
@@ -1994,20 +1853,19 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>10000</price>
     <description>炎魔降世，谁与争锋</description>
     <level>40</level>
-    <equipped>
+    <data>
       <dressup>男变装-炎魔手套</dressup>
       <hp>180</hp>
       <mp>100</mp>
       <damage>20</damage>
       <defence>360</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <热>15</热>
         <冷>10</冷>
       </magicdefence>
       <damagetype>魔法</damagetype>
       <magictype>热</magictype>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>455</id>
@@ -2020,18 +1878,17 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>10000</price>
     <description>炎魔降世，谁与争锋</description>
     <level>40</level>
-    <equipped>
+    <data>
       <dressup>变装-炎魔甲</dressup>
       <hp>200</hp>
       <mp>160</mp>
       <damage>75</damage>
       <defence>450</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <热>20</热>
         <冷>10</冷>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>454</id>
@@ -2044,18 +1901,17 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>10000</price>
     <description>炎魔降世，谁与争锋</description>
     <level>40</level>
-    <equipped>
+    <data>
       <dressup>男变装-炎魔盔</dressup>
       <hp>200</hp>
       <mp>160</mp>
       <damage>75</damage>
       <defence>450</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <热>20</热>
         <冷>10</冷>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>443</id>
@@ -2068,14 +1924,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>1</price>
     <description>融入了不同世界技术的奇异造型的装备。</description>
     <level>50</level>
-    <equipped>
+    <data>
       <dressup>男变装-诛神战鞋</dressup>
       <hp>360</hp>
       <mp>360</mp>
       <damage>135</damage>
       <defence>750</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>442</id>
@@ -2088,17 +1943,16 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>1</price>
     <description>融入了不同世界技术的奇异造型的装备。</description>
     <level>50</level>
-    <equipped>
+    <data>
       <dressup>变装-诛神腿甲</dressup>
       <hp>360</hp>
       <mp>360</mp>
       <damage>135</damage>
       <defence>750</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <全属性>5</全属性>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>441</id>
@@ -2112,14 +1966,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>1</price>
     <description>融入了不同世界技术的奇异造型的装备。</description>
     <level>50</level>
-    <equipped>
+    <data>
       <dressup>男变装-诛神手套</dressup>
       <hp>360</hp>
       <mp>360</mp>
       <damage>135</damage>
       <defence>750</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>440</id>
@@ -2132,17 +1985,16 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>1</price>
     <description>融入了不同世界技术的奇异造型的装备。</description>
     <level>50</level>
-    <equipped>
+    <data>
       <dressup>变装-诛神胸甲</dressup>
       <hp>360</hp>
       <mp>360</mp>
       <damage>135</damage>
       <defence>750</defence>
-      <bullet>0</bullet>
       <magicdefence>
         <全属性>5</全属性>
       </magicdefence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>439</id>
@@ -2155,13 +2007,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <price>1</price>
     <description>融入了不同世界技术的奇异造型的装备。</description>
     <level>50</level>
-    <equipped>
+    <data>
       <dressup>男变装-诛神头盔</dressup>
       <hp>360</hp>
       <mp>360</mp>
       <damage>135</damage>
       <defence>750</defence>
-      <bullet>0</bullet>
-    </equipped>
+    </data>
   </item>
 </root>

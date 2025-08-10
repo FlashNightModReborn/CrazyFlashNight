@@ -31,19 +31,19 @@ _root.根据物品名查找属性 = function(物品名, 属性号){
  * #### 扩展属性
  * - **itemArr[7]** : 友好度 (String|Number) —— 从 itemData.data.friend 获取，未定义时为 0，可能为数字或字符串（如“淬毒”、“净化”），用于药剂的群体效果与特殊效果交互。
  * 命名有待继续讨论。
- * - **itemArr[8]** : 防御值 (Number) —— 从 itemData.equipped.defence 获取，未定义时为 0，提升角色的防御力。
- * - **itemArr[9]** : 物品等级 (Number) —— 从 itemData.level 获取，未定义时为 0，限制装备或使用的等级需求。
+ * - **itemArr[8]** : 防御值 (Number) —— 从 itemData.data.defence 获取，未定义时为 0，提升角色的防御力。
+ * - **itemArr[9]** : 物品等级 (Number) —— 从 itemData.level 获取，未定义时为 0，限制装备或使用的等级需求。原则上，不可装备的物品不适用该值。
  * 
  * #### 血量与魔法值
  * - 若物品用途为 "药剂"：
  *   - **itemArr[10]** : 影响血量 (Number) —— 从 itemData.data.affecthp 获取，未定义时为 0，用于恢复或减少 HP。
  *   - **itemArr[11]** : 影响魔法值 (Number) —— 从 itemData.data.affectmp 获取，未定义时为 0，用于恢复或减少 MP。
  * - 否则（装备类物品）：
- *   - **itemArr[10]** : 装备提供的血量 (Number) —— 从 itemData.equipped.hp 获取，未定义时为 0，增加角色的最大 HP。
- *   - **itemArr[11]** : 装备提供的魔法值 (Number) —— 从 itemData.equipped.mp 获取，未定义时为 0，增加角色的最大 MP。
+ *   - **itemArr[10]** : 装备提供的血量 (Number) —— 从 itemData.data.hp 获取，未定义时为 0，增加角色的最大 HP。
+ *   - **itemArr[11]** : 装备提供的魔法值 (Number) —— 从 itemData.data.mp 获取，未定义时为 0，增加角色的最大 MP。
  * 
  * #### 子弹与武器参数
- * - **itemArr[12]** : 附带的子弹数 (Number) —— 从 itemData.equipped.bullet 获取，未定义时为 0，表示装备时附带的初始弹药量。
+ * - **itemArr[12]** : 附带的子弹数 (Number) —— 从 itemData.data.bullet 获取，未定义时为 0，表示装备时附带的初始弹药量。
  * 
  * #### 武器/装备相关参数
  * 根据物品用途 (itemData.use) 的不同，接下来的两个下标值处理如下：
@@ -96,6 +96,7 @@ _root.根据物品名查找属性 = function(物品名, 属性号){
 _root.根据物品名查找全部属性 = function(物品名) {
     var itemArr = new Array();
     var itemData = _root.物品属性列表[物品名];
+    var equipData = itemData.data;
     
     // 基本信息
     itemArr[0] = 物品名;
@@ -108,7 +109,7 @@ _root.根据物品名查找全部属性 = function(物品名) {
     
     // 扩展属性
     itemArr[7] = itemData.data.friend == undefined ? 0 : itemData.data.friend;
-    itemArr[8] = itemData.equipped.defence == undefined ? 0 : itemData.equipped.defence;
+    itemArr[8] = equipData.defence == undefined ? 0 : equipData.defence;
     itemArr[9] = itemData.level == undefined ? 0 : itemData.level;
     
     // 血量和魔法值，根据物品用途分开处理
@@ -116,12 +117,12 @@ _root.根据物品名查找全部属性 = function(物品名) {
         itemArr[10] = itemData.data.affecthp == undefined ? 0 : itemData.data.affecthp;
         itemArr[11] = itemData.data.affectmp == undefined ? 0 : itemData.data.affectmp;
     } else {
-        itemArr[10] = itemData.equipped.hp == undefined ? 0 : itemData.equipped.hp;
-        itemArr[11] = itemData.equipped.mp == undefined ? 0 : itemData.equipped.mp;
+        itemArr[10] = equipData.hp == undefined ? 0 : equipData.hp;
+        itemArr[11] = equipData.mp == undefined ? 0 : equipData.mp;
     }
     
     // 附带子弹数
-    itemArr[12] = itemData.equipped.bullet == undefined ? 0 : itemData.equipped.bullet;
+    itemArr[12] = equipData.bullet == undefined ? 0 : equipData.bullet;
     
     // 根据不同物品用途配置武器或装备的特殊参数
     switch (itemData.use) {
@@ -130,45 +131,45 @@ _root.根据物品名查找全部属性 = function(物品名) {
         case "手雷":
             itemArr[13] = 0;
             itemArr[14] = [
-                itemData.data.capacity    == undefined ? 0 : itemData.data.capacity,   // 弹夹容量
-                itemData.data.split       == undefined ? 0 : itemData.data.split,      // 霰弹分裂数
-                itemData.data.diffusion   == undefined ? 0 : itemData.data.diffusion,  // 散射度
-                itemData.data.singleshoot == undefined ? 0 : itemData.data.singleshoot,// 单发射击值
+                equipData.capacity    == undefined ? 0 : equipData.capacity,   // 弹夹容量
+                equipData.split       == undefined ? 0 : equipData.split,      // 霰弹分裂数
+                equipData.diffusion   == undefined ? 0 : equipData.diffusion,  // 散射度
+                equipData.singleshoot == undefined ? 0 : equipData.singleshoot,// 单发射击值
                 false,                                                          // 预留标志位
-                itemData.data.interval    == undefined ? 0 : itemData.data.interval,   // 射击间隔
-                itemData.data.velocity    == undefined ? 0 : itemData.data.velocity,   // 子弹速度
-                itemData.data.bullet      == undefined ? 0 : itemData.data.bullet,     // 子弹类型
-                itemData.data.sound       == undefined ? 0 : itemData.data.sound,      // 音效
-                itemData.data.muzzle      == undefined ? 0 : itemData.data.muzzle,     // 枪口火焰
-                itemData.data.bullethit   == undefined ? 0 : itemData.data.bullethit,  // 子弹命中效果
-                itemData.data.clipname    == undefined ? 0 : itemData.data.clipname,   // 弹夹名称
-                itemData.data.bulletsize  == undefined ? 0 : itemData.data.bulletsize, // 子弹尺寸
-                itemData.data.power       == undefined ? 0 : itemData.data.power,      // 伤害数值
-                itemData.data.impact      == undefined ? 0 : itemData.data.impact      // 击倒力
+                equipData.interval    == undefined ? 0 : equipData.interval,   // 射击间隔
+                equipData.velocity    == undefined ? 0 : equipData.velocity,   // 子弹速度
+                equipData.bullet      == undefined ? 0 : equipData.bullet,     // 子弹类型
+                equipData.sound       == undefined ? 0 : equipData.sound,      // 音效
+                equipData.muzzle      == undefined ? 0 : equipData.muzzle,     // 枪口火焰
+                equipData.bullethit   == undefined ? 0 : equipData.bullethit,  // 子弹命中效果
+                equipData.clipname    == undefined ? 0 : equipData.clipname,   // 弹夹名称
+                equipData.bulletsize  == undefined ? 0 : equipData.bulletsize, // 子弹尺寸
+                equipData.power       == undefined ? 0 : equipData.power,      // 伤害数值
+                equipData.impact      == undefined ? 0 : equipData.impact      // 击倒力
             ];
             break;
         case "刀":
-            itemArr[13] = itemData.data.power == undefined ? 0 : itemData.data.power;
+            itemArr[13] = equipData.power == undefined ? 0 : equipData.power;
             itemArr[14] = [0, 0, 0, false, 0, 0, 0, "", "", "", "", "", 0, 0, 0, ""];
             break;
         case "颈部装备":
             itemArr[13] = 0;
             itemArr[14] = [
-                itemData.equipped.title == undefined ? 0 : itemData.equipped.title,
+                equipData.title == undefined ? 0 : equipData.title,
                 0, 0, false, 0, 0, 0, "", "", "", "", "", 0, 0, 0, ""
             ];
             break;
         default:
-            itemArr[13] = itemData.equipped.damage == undefined ? 0 : itemData.equipped.damage;
+            itemArr[13] = equipData.damage == undefined ? 0 : equipData.damage;
             itemArr[14] = [0, 0, 0, false, 0, 0, 0, "", "", "", "", "", 0, 0, 0, ""];
     }
     
     // 其他装备附加属性
-    itemArr[15] = itemData.equipped.dressup == undefined ? "" : itemData.equipped.dressup;
-    itemArr[16] = itemData.equipped.punch == undefined ? 0 : itemData.equipped.punch;
-    itemArr[17] = itemData.equipped.toughness == undefined ? 0 : itemData.equipped.toughness;
-    itemArr[18] = itemData.equipped.accuracy == undefined ? 0 : itemData.equipped.accuracy;
-    itemArr[19] = itemData.equipped.evasion == undefined ? 0 : itemData.equipped.evasion;
+    itemArr[15] = equipData.dressup == undefined ? "" : equipData.dressup;
+    itemArr[16] = equipData.punch == undefined ? 0 : equipData.punch;
+    itemArr[17] = equipData.toughness == undefined ? 0 : equipData.toughness;
+    itemArr[18] = equipData.accuracy == undefined ? 0 : equipData.accuracy;
+    itemArr[19] = equipData.evasion == undefined ? 0 : equipData.evasion;
     
     return itemArr;
 }

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!--已用ID：[392, 393, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425, 426, 427, 428, 429, 430, 431, 445, 453, 472, 498, 499, 519, 523, 563, 564, 565, 595, 608, 609, 620, 622, 626, 630, 631, 632, 634, 635, 636, 637, 638, 639, 640, 641, 649, 650, 651, 652, 657, 676, 681, 685, 689, 690, 702, 703, 749, 799, 800, 832, 845, 846, 847, 848, 852, 853, 854, 855, 857, 900, 1501, 1502, 1503, 1504, 1505, 1506, 1509, 1510, 1511, 1512, 1513, 1514, 1515, 1516, 1517, 1518, 1519, 1520, 1525, 1554, 1555, 1556, 1557, 1558, 1559, 1560, 1561, 5002, 5500, 5509, 5510, 6000, 6009, 6010, 6011, 6012, 6013, 6014, 6015, 6016, 6028, 6029, 6061, 6062, 6069, 6070, 8010, 8011, 8029, 8030, 8031, 8032, 9001, 12018, 12020, 12118, 12120, 13007, 13013, 22000]
 预留ID区间：17302-17500-->
 <root>
@@ -21,14 +21,12 @@
     <description>水之黑犀铠甲的主要作战兵器。</description>
     <level>60</level>
     <data>
-      <power>1000</power>
-    </data>
-    <equipped>
       <dressup>刀-流星枪</dressup>
+      <power>1000</power>
       <hp>300</hp>
       <mp>0</mp>
       <defence>200</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>401</id>
@@ -49,14 +47,12 @@
     <description>虽然在末日的洗礼下变得斑驳，但是往日的军刀仍然凭借自己较长的刀身和易于把握的刀柄而适合新手使用。通常其作为过渡型武器，为上进的冒险者提供暂时的方便。</description>
     <level>9</level>
     <data>
-      <power>90</power>
-    </data>
-    <equipped>
       <dressup>刀-破旧军刀</dressup>
+      <power>90</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>402</id>
@@ -77,14 +73,12 @@
 即便如此，幸存者群体中也有不少人会在团队作战中使用双面斧，无论是曾经锋利处染上的血迹，还是此前与一众武器迥异的粗粝像素，都证明了自己的厉害之处。</description>
     <level>10</level>
     <data>
-      <power>100</power>
-    </data>
-    <equipped>
       <dressup>刀-双面斧</dressup>
+      <power>100</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>403</id>
@@ -104,14 +98,12 @@
     <description>末日来临后或许再也没有棒球比赛了，而棒球棒作为其仅存的见证者，依然能为保护幸存者提供一份力。</description>
     <level>6</level>
     <data>
-      <power>64</power>
-    </data>
-    <equipped>
       <dressup>刀-棒球棒</dressup>
+      <power>64</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>404</id>
@@ -133,14 +125,24 @@
 实际上，相比于其他武器，匕首可能夺取了更多人的生命，因其易于获得，且放血、切割皮肤的能力依旧不错。</description>
     <level>1</level>
     <data>
-      <power>37</power>
-    </data>
-    <equipped>
       <dressup>刀-匕首</dressup>
+      <power>37</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
+    <data_ice>
+      <dressup>刀-墨冰匕首</dressup>
+      <power>400</power>
+      <damagetype>魔法</damagetype>
+      <magictype>冷</magictype>
+    </data_ice>
+    <data_fire>
+      <dressup>刀-狱火匕首</dressup>
+      <power>400</power>
+      <damagetype>魔法</damagetype>
+      <magictype>热</magictype>
+    </data_fire>
   </item>
   <item>
     <id>405</id>
@@ -161,16 +163,14 @@
     <description>这种工具曾经用来拆除建筑，现在一般用来拆除人体。</description>
     <level>11</level>
     <data>
-      <power>110</power>
-    </data>
-    <equipped>
       <dressup>刀-拆迁铁锤</dressup>
+      <power>110</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
       <evasion>-10</evasion>
       <accuracy>-5</accuracy>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>406</id>
@@ -192,14 +192,12 @@
 非常好武器，爱来自闪客快打3！</description>
     <level>3</level>
     <data>
-      <power>45</power>
-    </data>
-    <equipped>
       <dressup>刀-锤子</dressup>
+      <power>45</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>407</id>
@@ -220,15 +218,27 @@
 那串二进制数字呢？</description>
     <level>13</level>
     <data>
-      <power>136</power>
-    </data>
-    <equipped>
       <dressup>刀-大剑</dressup>
+      <power>136</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
       <accuracy>20</accuracy>
-    </equipped>
+    </data>
+    <data_ice>
+      <dressup>刀-墨冰大剑</dressup>
+      <power>450</power>
+      <damagetype>魔法</damagetype>
+      <magictype>冷</magictype>
+      <accuracy>50</accuracy>
+    </data_ice>
+    <data_fire>
+      <dressup>刀-狱火大剑</dressup>
+      <power>450</power>
+      <damagetype>魔法</damagetype>
+      <magictype>热</magictype>
+      <accuracy>50</accuracy>
+    </data_fire>
   </item>
   <item>
     <id>408</id>
@@ -249,14 +259,12 @@
     <description>明亮的刀身在血光中格外显眼，这就是单刀给敌人留下的印象。只要运用得当，这种武器的长度和适用性足以帮助使用者砍杀大量护甲脆弱的对手。</description>
     <level>12</level>
     <data>
-      <power>120</power>
-    </data>
-    <equipped>
       <dressup>刀-单刀</dressup>
+      <power>120</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>10</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>409</id>
@@ -278,14 +286,12 @@
 也因此，当冲突中有一方出现拿着这种斧头的壮汉，另一方就会变得胆怯起来。</description>
     <level>9</level>
     <data>
-      <power>90</power>
-    </data>
-    <equipped>
       <dressup>刀-单刃斧头</dressup>
+      <power>90</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>410</id>
@@ -306,14 +312,12 @@
     <description>虽然有着形似欧洲迅捷剑的护手，但有限的攻击范围与其相差甚远，使用者需要注意与敌人的距离，才能发挥最佳效果。</description>
     <level>5</level>
     <data>
-      <power>50</power>
-    </data>
-    <equipped>
       <dressup>刀-短棒</dressup>
+      <power>50</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>411</id>
@@ -335,14 +339,12 @@
 非常好武器，爱来自闪客快打3！</description>
     <level>8</level>
     <data>
-      <power>72</power>
-    </data>
-    <equipped>
       <dressup>刀-短斧</dressup>
+      <power>72</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>412</id>
@@ -358,14 +360,12 @@
 在生产出更精致且轻盈的短刀前，&lt;font color="#000000"&gt;黑铁会死士&lt;/font&gt;用的砍刀往往十分粗糙，且容易脱手。而在那几经易主之后，结局多是进入商店售出。</description>
     <level>11</level>
     <data>
-      <power>70</power>
-    </data>
-    <equipped>
       <dressup>刀-砍刀</dressup>
+      <power>70</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>413</id>
@@ -387,14 +387,12 @@
 此警棍的设计理念来自拐，是冲绳地方的传统武器；作为A国警察练习配用的制止警棍，也流行在C国南部与东南A洲。</description>
     <level>6</level>
     <data>
-      <power>64</power>
-    </data>
-    <equipped>
       <dressup>刀-美式警棍</dressup>
+      <power>64</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>414</id>
@@ -415,14 +413,12 @@
 据说有一种足够宽敞的绿色水管，里面藏着蘑菇和食人花，还有穿行其中的管道工。</description>
     <level>2</level>
     <data>
-      <power>39</power>
-    </data>
-    <equipped>
       <dressup>刀-水管</dressup>
+      <power>39</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>415</id>
@@ -445,14 +441,12 @@
 对了，这里是C国。</description>
     <level>12</level>
     <data>
-      <power>160</power>
-    </data>
-    <equipped>
       <dressup>刀-中国战刀</dressup>
+      <power>160</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>20</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>416</id>
@@ -475,14 +469,12 @@
 在尼泊尔，当士兵获得战功后会被赐予一把刻上了其名字的廓尔喀刀，而A兵团也延续了这个传统。</description>
     <level>9</level>
     <data>
-      <power>70</power>
-    </data>
-    <equipped>
       <dressup>刀-战术狗腿刀</dressup>
+      <power>70</power>
       <hp>0</hp>
       <mp>20</mp>
       <defence>20</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>417</id>
@@ -504,14 +496,12 @@
 刀身修长的虎彻适合爆发式的进攻招式，其锐利可以斩断护甲脆弱的敌人，并对坚固的装甲造成打击。这种武器非常少见，拥有者往往十分爱惜，频繁擦拭刀身就是他们给人留下的最深刻的印象，仅次于他们发起进攻的模样。</description>
     <level>12</level>
     <data>
-      <power>100</power>
-    </data>
-    <equipped>
       <dressup>刀-虎彻</dressup>
+      <power>100</power>
       <hp>0</hp>
       <mp>20</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>418</id>
@@ -532,14 +522,12 @@
 宽大的刀身和十字架的刻印，在宗教意味上赋予了米色的西洋重剑以镇魔之意——事实上的确如此，西洋重剑超长的攻击距离会令末日的邪祟难以触及到使用者，只能面临身首异处的结局。自然，这种武器只能由力大无穷者使用，毕竟优秀的武器在选择主人这方面总是十分执拗。</description>
     <level>11</level>
     <data>
-      <power>140</power>
-    </data>
-    <equipped>
       <dressup>刀-西洋重剑</dressup>
+      <power>140</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>60</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>419</id>
@@ -562,14 +550,12 @@
 外形酷似电锯的光刀狮子獠牙状的刀刃由精密材料组成，闪耀着令人胆寒的光芒。只要你有挥舞它的力气，你就可以相信它的破坏力足以压制敌人，一如所有草原上位于肉食者顶层的狮子。</description>
     <level>28</level>
     <data>
-      <power>299</power>
-    </data>
-    <equipped>
       <dressup>刀-光刀狮子</dressup>
+      <power>299</power>
       <hp>50</hp>
       <mp>0</mp>
       <defence>50</defence>
-    </equipped>
+    </data>
     <lifecycle>
       <attr_0>
         <init>
@@ -598,14 +584,12 @@
 天秤衡量世间万物，以审判者自居。当一边托起尸骨时，另一边总要托起等价的事物。最终你看到了，光剑天秤——这一天秤的具象化造物——用了昂贵的材料和不明来源的高科技制成，也拥有了斩杀无数敌人的能力。切记，当你杀死的敌人远远多于光剑本身时，要思考你到底在另一边的托盘上放了什么，如果仅仅是你的欲望，恐怕天秤也会失衡而翻倒在地。</description>
     <level>13</level>
     <data>
-      <power>100</power>
-    </data>
-    <equipped>
       <dressup>刀-光剑天秤</dressup>
+      <power>100</power>
       <hp>100</hp>
       <mp>100</mp>
       <defence>99</defence>
-    </equipped>
+    </data>
     <lifecycle>
       <attr_0>
         <init>
@@ -641,14 +625,12 @@
 与人们对牛的横冲直撞的印象一致，光斧金牛激进的进攻态势下，敌人们会随着恐怖红光的落下而消逝。重压之下没有幸存者，但末日重压下持有光斧金牛的人或许可以走得更远。</description>
     <level>25</level>
     <data>
-      <power>199</power>
-    </data>
-    <equipped>
       <dressup>刀-光斧金牛</dressup>
+      <power>199</power>
       <hp>90</hp>
       <mp>90</mp>
       <defence>20</defence>
-    </equipped>
+    </data>
     <lifecycle>
       <attr_0>
         <init>
@@ -684,14 +666,12 @@
 短小且迸发绿光的刀刃极其适合短兵相接，这就是光刃摩羯的用处。它隐于世间，如摩羯的鱼身潜入水中；它暴起一刺，如摩羯的羊角攻向敌人。</description>
     <level>18</level>
     <data>
-      <power>199</power>
-    </data>
-    <equipped>
       <dressup>刀-光刃摩羯</dressup>
+      <power>199</power>
       <hp>1</hp>
       <mp>199</mp>
       <defence>1</defence>
-    </equipped>
+    </data>
     <lifecycle>
       <attr_0>
         <init>
@@ -720,14 +700,12 @@
 即使如此，对于堕落城的众人来说，没有她的演唱会从不圆满，而不圆满的演唱会则意味着他们再无存活下去的心理寄托。</description>
     <level>12</level>
     <data>
-      <power>90</power>
-    </data>
-    <equipped>
       <dressup>刀-桔色电子吉他</dressup>
+      <power>90</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>30</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>424</id>
@@ -742,14 +720,12 @@
     &lt;font color="#00ffff"&gt;头顶军官帽，身着白衣黑裙的少女&lt;/font&gt;抓了抓领带，又想起了自己被人从&lt;font color="#ffffe0"&gt;军阀&lt;/font&gt;的埋伏中救出的那一天。自己最信任的键盘，只需开启机关就可以化作收割一切的镰刀；自己最可以依靠的姐妹也不可能坐视不理。把镰刀上的血清理干净后，她望着营救者远去的背影，一如既往地沉默着。</description>
     <level>12</level>
     <data>
-      <power>90</power>
-    </data>
-    <equipped>
       <dressup>刀-电子音乐键盘</dressup>
+      <power>90</power>
       <hp>0</hp>
       <mp>30</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>425</id>
@@ -764,14 +740,12 @@
 虽然与摇滚三姐妹的三妹是同款吉他，但它似乎更为热情奔放，与桔色的那一个带来的略微阴暗的氛围完全不同。也许当摇滚三姐妹中&lt;font color="#ff0000"&gt;最蛮横的那个&lt;/font&gt;想要改变的时候，就会换上这把吉他，以更加热情的外表示人吧。在末日中用这种乐器打击敌人，似乎过于异想天开了。不过它的确意外的结实，或许也是不错的兵器。</description>
     <level>12</level>
     <data>
-      <power>90</power>
-    </data>
-    <equipped>
       <dressup>刀-红色电子吉他</dressup>
+      <power>90</power>
       <hp>30</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>426</id>
@@ -787,14 +761,12 @@
 然而，极致的暴力作为天秤其中一端的砝码登场，那么，摆放在天秤另一端的又将是怎样恐怖的代价呢？</description>
     <level>50</level>
     <data>
-      <power>999</power>
-    </data>
-    <equipped>
       <dressup>刀-血色光剑天秤</dressup>
+      <power>999</power>
       <hp>-999</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
     <lifecycle>
       <attr_0>
         <init>
@@ -823,14 +795,12 @@
 与一般的虎彻不同，镜之虎彻的护手是金色的，与菱形交替覆盖刀柄的也是白色而非蓝色。尽管除此之外的外形没什么区别，但镜之虎彻在实战中有着一般虎彻难以望其项背的破坏力。它散发的白光一如阳光下镜面反射光一般，展现了敌人的躯体，并告诉他们：这就是你们最后完整的模样。</description>
     <level>21</level>
     <data>
-      <power>250</power>
-    </data>
-    <equipped>
       <dressup>刀-镜之虎彻</dressup>
+      <power>250</power>
       <hp>0</hp>
       <mp>240</mp>
       <defence>20</defence>
-    </equipped>
+    </data>
     <lifecycle>
       <attr_0>
         <init>
@@ -864,14 +834,12 @@
 刀身弯曲，通体金色且散发金光的金蛇剑很难被人看作是趁手武器。然而，当使用者把它用于实战时，才会意识到刀尖的分叉就像蛇吐出的舌头，在那之后就会刺杀敌人。全身金光又是自傲者的展示，毕竟强大的武器和强大的人都不需要掩饰自己。</description>
     <level>20</level>
     <data>
-      <power>250</power>
-    </data>
-    <equipped>
       <dressup>刀-金蛇剑</dressup>
+      <power>250</power>
       <hp>74</hp>
       <mp>74</mp>
       <defence>2</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>429</id>
@@ -893,14 +861,12 @@
 刀背青蓝，锲有罗盘一般外饰的斩马刀在末世保有自己的作用。获取它的冒险者已经遭遇了无数强敌，但是这把武器依然能够给这些敌人造成重创。它没有失去往日的威风，即使是在无数先进科技存在的末世。</description>
     <level>16</level>
     <data>
-      <power>180</power>
-    </data>
-    <equipped>
       <dressup>刀-斩马刀</dressup>
+      <power>180</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>99</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>430</id>
@@ -922,14 +888,12 @@
 黑色刀背、白光与多镂空的三个孔是烈焰斩马刀区别于斩马刀的外形特征，但除此之外，使用者还会惊叹于其攻击时带来的爆炸性的火焰效果。它就是从地狱中走来的骑士的武器。</description>
     <level>32</level>
     <data>
-      <power>320</power>
-    </data>
-    <equipped>
       <dressup>刀-烈焰斩马刀</dressup>
+      <power>320</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>260</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>431</id>
@@ -947,14 +911,12 @@
 江月年年望相似。</description>
     <level>12</level>
     <data>
-      <power>222</power>
-    </data>
-    <equipped>
       <dressup>刀-秋月</dressup>
+      <power>222</power>
       <hp>33</hp>
       <mp>33</mp>
       <defence>12</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>392</id>
@@ -968,16 +930,14 @@
     <description>用冰魄矿石打造而成，独一无二。</description>
     <level>30</level>
     <data>
-      <power>250</power>
-    </data>
-    <equipped>
       <dressup>刀-冰魄斩</dressup>
+      <power>250</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
       <damagetype>魔法</damagetype>
       <magictype>冷</magictype>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>393</id>
@@ -991,16 +951,14 @@
     <description>冰魄斩升级而得，每一斩都寒意逼人。</description>
     <level>35</level>
     <data>
-      <power>350</power>
-    </data>
-    <equipped>
       <dressup>刀-冰魄神斩</dressup>
+      <power>350</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
       <damagetype>魔法</damagetype>
       <magictype>冷</magictype>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>453</id>
@@ -1014,16 +972,14 @@
     <description>烈炎矿石精炼而成</description>
     <level>35</level>
     <data>
-      <power>200</power>
-    </data>
-    <equipped>
       <dressup>刀-烈焰斩</dressup>
+      <power>200</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>180</defence>
       <damagetype>魔法</damagetype>
       <magictype>热</magictype>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>472</id>
@@ -1037,16 +993,14 @@
     <description>炎魔降世，谁与争锋</description>
     <level>40</level>
     <data>
-      <power>330</power>
-    </data>
-    <equipped>
       <dressup>刀-炎魔斩new</dressup>
+      <power>330</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>220</defence>
       <damagetype>魔法</damagetype>
       <magictype>热</magictype>
-    </equipped>
+    </data>
     <lifecycle>
       <description>使用变形键可在锯齿剑形态与链锯剑形态下进行切换，锯齿剑形态下可使用主动战技 突刺 ，mp消耗25，cd 5s，刀光直线前进。链锯剑形态下可使用主动战技 弧光斩 ，mp消耗50，cd 8s，刀光可追踪。战技期间刀光出现的概率大幅增加</description>
       <attr_0>
@@ -1089,26 +1043,26 @@
         </cycle>
         <bullet>
           <bullet_1>
-            <sound />
+            <sound/>
             <split>1</split>
             <power>100%</power>
             <diffusion>5</diffusion>
             <bullet>炎魔刀光</bullet>
-            <muzzle />
+            <muzzle/>
             <velocity>6</velocity>
-            <bullethit />
+            <bullethit/>
             <range>300</range>
             <impact>5</impact>
           </bullet_1>
           <bullet_2>
-            <sound />
+            <sound/>
             <split>1</split>
             <power>100%</power>
             <diffusion>5</diffusion>
             <bullet>炎魔刀光追踪</bullet>
-            <muzzle />
+            <muzzle/>
             <velocity>6</velocity>
-            <bullethit />
+            <bullethit/>
             <range>300</range>
             <impact>5</impact>
           </bullet_2>
@@ -1138,14 +1092,12 @@
     </skill>
     <level>25</level>
     <data>
-      <power>265</power>
-    </data>
-    <equipped>
       <dressup>刀-上古青萍元气剑</dressup>
+      <power>265</power>
       <hp>10</hp>
       <mp>45</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>499</id>
@@ -1169,15 +1121,13 @@
     </skill>
     <level>25</level>
     <data>
-      <power>265</power>
-    </data>
-    <equipped>
       <dressup>刀-上古饮血大太刀</dressup>
+      <power>265</power>
       <hp>45</hp>
       <mp>10</mp>
       <defence>0</defence>
       <vampirism>10</vampirism>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>519</id>
@@ -1192,14 +1142,12 @@
     <description>传说中雷神的武器</description>
     <level>33</level>
     <data>
-      <power>390</power>
-    </data>
-    <equipped>
       <dressup>刀-雷神之锤</dressup>
+      <power>390</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>523</id>
@@ -1215,16 +1163,14 @@
 非常好武器，爱来自闪客快打3！</description>
     <level>60</level>
     <data>
-      <power>500</power>
-    </data>
-    <equipped>
       <dressup>刀-绝地武士佩剑</dressup>
+      <power>500</power>
       <hp>80</hp>
       <mp>80</mp>
       <defence>0</defence>
       <lazymiss>20</lazymiss>
       <damagetype>魔法</damagetype>
-    </equipped>
+    </data>
     <lifecycle>
       <attr_0>
         <init>
@@ -1251,15 +1197,13 @@
     <description>由异形尾骨加上地球科技打造而成！</description>
     <level>40</level>
     <data>
-      <power>360</power>
-    </data>
-    <equipped>
       <dressup>刀-异形毒刺</dressup>
+      <power>360</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
       <poison>150</poison>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>565</id>
@@ -1273,15 +1217,13 @@
     <description>由异形女王尾骨加上地球科技打造而成！</description>
     <level>48</level>
     <data>
-      <power>560</power>
-    </data>
-    <equipped>
       <dressup>刀-异形女王毒刺</dressup>
+      <power>560</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
       <poison>600</poison>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>595</id>
@@ -1301,14 +1243,12 @@
     </skill>
     <level>30</level>
     <data>
-      <power>300</power>
-    </data>
-    <equipped>
       <dressup>刀-黑铁的剑</dressup>
+      <power>300</power>
       <hp>20</hp>
       <mp>100</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
     <lifecycle>
       <attr_0>
         <init>
@@ -1346,14 +1286,12 @@
     </skill>
     <level>18</level>
     <data>
-      <power>200</power>
-    </data>
-    <equipped>
       <dressup>刀-忍者佩剑</dressup>
+      <power>200</power>
       <hp>0</hp>
       <mp>10</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>609</id>
@@ -1368,15 +1306,13 @@
     <description>&lt;font color="#ff00ff"&gt;诺亚指挥官&lt;/font&gt;手持兵器！</description>
     <level>40</level>
     <data>
-      <power>500</power>
-    </data>
-    <equipped>
       <dressup>刀-忍者执剑</dressup>
+      <power>500</power>
       <hp>0</hp>
       <mp>10</mp>
       <defence>0</defence>
       <rout>0.15</rout>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>563</id>
@@ -1391,14 +1327,12 @@
     <description>遇佛杀佛，遇神诛神</description>
     <level>35</level>
     <data>
-      <power>500</power>
-    </data>
-    <equipped>
       <dressup>刀-诛神短剑</dressup>
+      <power>500</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>445</id>
@@ -1412,14 +1346,12 @@
     <description>遇佛杀佛，遇神诛神</description>
     <level>50</level>
     <data>
-      <power>780</power>
-    </data>
-    <equipped>
       <dressup>刀-诛神剑</dressup>
+      <power>780</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>620</id>
@@ -1433,14 +1365,12 @@
     <description>来自远古的力量，星际最强神装</description>
     <level>60</level>
     <data>
-      <power>1200</power>
-    </data>
-    <equipped>
       <dressup>刀-远古诛神剑</dressup>
+      <power>1200</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>622</id>
@@ -1455,14 +1385,12 @@
     <description>来自远古的力量，星际最强神装</description>
     <level>55</level>
     <data>
-      <power>900</power>
-    </data>
-    <equipped>
       <dressup>刀-远古诛神短剑</dressup>
+      <power>900</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>631</id>
@@ -1483,143 +1411,13 @@
     <description>在末日的废土上，武器不仅仅是生存的工具，更是力量的象征。黑铁重剑是&lt;font color="#000000"&gt;黑铁会壮汉们&lt;/font&gt;所钟爱的庞然大物，它承载着他们的坚韧和不屈意志。这把特大剑成为了黑铁会巨汉的标志，也是在废土世界中肆意斩杀敌人的象征。</description>
     <level>15</level>
     <data>
-      <power>150</power>
-    </data>
-    <equipped>
       <dressup>刀-黑铁重剑</dressup>
+      <power>150</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>60</defence>
-    </equipped>
-  </item>
-  <!--
-  <item>
-    <id>12018</id>
-    <name>墨冰匕首</name>
-    <displayname>墨冰匕首</displayname>
-    <icon>墨冰匕首</icon>
-    <type>武器</type>
-    <use>刀</use>
-    <actiontype>短兵</actiontype>
-    <weight>0.4</weight>
-    <price>200000</price>
-    <skill>
-      <skillname>滑步</skillname>
-      <description>手持该武器时可以使用滑步。</description>
-      <cd>2000</cd>
-      <mp>5</mp>
-    </skill>
-    <description>末日常用的武器。
-实际上，相比于其他武器，匕首可能夺取了更多人的生命，因其易于获得，且放血、切割皮肤的能力依旧不错。
-此武器经过特殊的改造，青白相间的涂装意味着如同冰川破片的威能。</description>
-    <level>40</level>
-    <data>
-      <power>400</power>
     </data>
-    <equipped>
-      <dressup>刀-墨冰匕首</dressup>
-      <damagetype>魔法</damagetype>
-      <magictype>冷</magictype>
-      <hp>0</hp>
-      <mp>0</mp>
-      <defence>0</defence>
-    </equipped>
   </item>
-  <item>
-    <id>12020</id>
-    <name>墨冰大剑</name>
-    <displayname>墨冰大剑</displayname>
-    <icon>墨冰大剑</icon>
-    <type>武器</type>
-    <use>刀</use>
-    <weight>2</weight>
-    <price>450000</price>
-    <skill>
-      <skillname>追踪五连</skillname>
-      <description>手持该武器可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人。战技启动时，按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
-      <cd>6000</cd>
-      <mp>50</mp>
-    </skill>
-    <description>在一众末日后流行的武器中，匀称修长的大剑无疑是最能给幸存者带来安全感的那一个。长武器中相对较轻的重量让它的攻击速度很快，&lt;font color="#ff0000"&gt;且基本不会拖累使用者的行动速度&lt;/font&gt;，而其攻击距离则为幸存者们提供了更多安全保障。
-此武器经过特殊的改造，青白相间的涂装意味着如同冰川破片的威能。</description>
-    <level>45</level>
-    <data>
-      <power>450</power>
-    </data>
-    <equipped>
-      <dressup>刀-墨冰大剑</dressup>
-      <damagetype>魔法</damagetype>
-      <magictype>冷</magictype>
-      <hp>0</hp>
-      <mp>0</mp>
-      <defence>0</defence>
-      <accuracy>50</accuracy>
-    </equipped>
-  </item>
-  <item>
-    <id>12118</id>
-    <name>狱火匕首</name>
-    <displayname>狱火匕首</displayname>
-    <icon>狱火匕首</icon>
-    <type>武器</type>
-    <use>刀</use>
-    <actiontype>短兵</actiontype>
-    <weight>0.4</weight>
-    <price>200000</price>
-    <skill>
-      <skillname>滑步</skillname>
-      <description>手持该武器时可以使用滑步。</description>
-      <cd>2000</cd>
-      <mp>5</mp>
-    </skill>
-    <description>末日常用的武器。
-实际上，相比于其他武器，匕首可能夺取了更多人的生命，因其易于获得，且放血、切割皮肤的能力依旧不错。
-此武器经过特殊的改造，红黑相间的涂装意味着如同地狱烈火的威能。</description>
-    <level>40</level>
-    <data>
-      <power>400</power>
-    </data>
-    <equipped>
-      <dressup>刀-狱火匕首</dressup>
-      <damagetype>魔法</damagetype>
-      <magictype>热</magictype>
-      <hp>0</hp>
-      <mp>0</mp>
-      <defence>0</defence>
-    </equipped>
-  </item>
-  <item>
-    <id>12120</id>
-    <name>狱火大剑</name>
-    <displayname>狱火大剑</displayname>
-    <icon>狱火大剑</icon>
-    <type>武器</type>
-    <use>刀</use>
-    <weight>2</weight>
-    <price>450000</price>
-    <skill>
-      <skillname>追踪五连</skillname>
-      <description>手持该武器可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人。战技启动时，按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
-      <cd>6000</cd>
-      <mp>50</mp>
-    </skill>
-    <description>在一众末日后流行的武器中，匀称修长的大剑无疑是最能给幸存者带来安全感的那一个。长武器中相对较轻的重量让它的攻击速度很快，&lt;font color="#ff0000"&gt;且基本不会拖累使用者的行动速度&lt;/font&gt;，而其攻击距离则为幸存者们提供了更多安全保障。
-此武器经过特殊的改造，红黑相间的涂装意味着如同地狱烈火的威能。</description>
-    <level>45</level>
-    <data>
-      <power>450</power>
-    </data>
-    <equipped>
-      <dressup>刀-狱火大剑</dressup>
-      <damagetype>魔法</damagetype>
-      <magictype>热</magictype>
-      <hp>0</hp>
-      <mp>0</mp>
-      <defence>0</defence>
-      <accuracy>50</accuracy>
-    </equipped>
-  </item>
-  -->
   <item>
     <id>676</id>
     <name>扳手</name>
@@ -1633,14 +1431,12 @@
     <description>扳手。</description>
     <level>1</level>
     <data>
-      <power>20</power>
-    </data>
-    <equipped>
       <dressup>刀-扳手</dressup>
+      <power>20</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>20</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>681</id>
@@ -1661,14 +1457,12 @@
     <description>幸存者的自制武器，用铁钉加成的球棒更有威胁。</description>
     <level>10</level>
     <data>
-      <power>100</power>
-    </data>
-    <equipped>
       <dressup>刀-铁钉球棒</dressup>
+      <power>100</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>685</id>
@@ -1682,14 +1476,12 @@
     <description>在随处可见的房屋废墟附近，突然遇见丧尸，这是末日下幸存者最无奈，也是最后的武器了。</description>
     <level>7</level>
     <data>
-      <power>40</power>
-    </data>
-    <equipped>
       <dressup>刀-砖头</dressup>
+      <power>40</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>6000</id>
@@ -1711,14 +1503,12 @@
 末日之后，这把武士刀无论是对废土之中游荡的怪物，又或是居心否侧的人类，都极具威胁性。</description>
     <level>36</level>
     <data>
-      <power>360</power>
-    </data>
-    <equipped>
       <dressup>刀-热能武士刀</dressup>
+      <power>360</power>
       <defence>0</defence>
       <damagetype>魔法</damagetype>
       <magictype>热</magictype>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>6009</id>
@@ -1739,14 +1529,12 @@
     <description>爪子刀是印尼、马来亚等地流行的一种个人随身刀具，适合防身。又演化出了花式的功能。起源于巴厘岛，它的起源可以从苏门答腊岛追溯到马来西亚和爪哇，它的源泉来自于流传在当地的宗教，它的形状是寄托了神秘力量的国王灵魂的化身虎爪。后来由于印度教的传入，而更换为印度教的比玛和哈奴曼神的爪的形状，后来逐渐变了样子。为了在战场时使用，最早的KARAMBIT非常大，但随着历史的演变，就逐渐变为用于自卫的小型化武器。</description>
     <level>3</level>
     <data>
-      <power>50</power>
-    </data>
-    <equipped>
       <dressup>刀-爪刀</dressup>
+      <power>50</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>6010</id>
@@ -1767,14 +1555,12 @@
     <description>消防斧是一种清理着火或易燃材料，切断火势蔓延的工具，还可以劈开被烧变形的门窗，解救被困的人。在末日下理所应当成为幸存者们的武器。</description>
     <level>10</level>
     <data>
-      <power>115</power>
-    </data>
-    <equipped>
       <dressup>刀-消防斧</dressup>
+      <power>115</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>6011</id>
@@ -1795,14 +1581,12 @@
     <description>本是当代人还原的古代兵器，最终却成为了这片末日废土之中的防身之物。</description>
     <level>9</level>
     <data>
-      <power>80</power>
-    </data>
-    <equipped>
       <dressup>刀-唐朝直刀</dressup>
+      <power>80</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>10</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>6012</id>
@@ -1823,14 +1607,12 @@
     <description>七星剑起源于中国古代的七宿文化，象征着对天空和宇宙的崇敬与敬畏。它不仅是勇气的象征，也是自信的体现，鼓励人们在面对困难时勇敢前行，坚持信念和目标。</description>
     <level>9</level>
     <data>
-      <power>80</power>
-    </data>
-    <equipped>
       <dressup>刀-唐朝七星剑</dressup>
+      <power>80</power>
       <hp>0</hp>
       <mp>20</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>6013</id>
@@ -1851,14 +1633,12 @@
     <description>折刀是一种能够折叠起来的刀具，它具有便于携带、方便、安全等特点。现代时代，各种新颖和先进的技术和材料被应用到折刀上，使得折刀更加美观和实用。末日时代，成为求生的工具</description>
     <level>5</level>
     <data>
-      <power>58</power>
-    </data>
-    <equipped>
       <dressup>刀-快开小折刀</dressup>
+      <power>58</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>6014</id>
@@ -1879,14 +1659,12 @@
     <description>疯狗刀由于近乎完美，有着非常惊人的切割能力和耐用性以及用户为导向的设计细节和精湛的工艺，极低的年产量和优异的性能受到世界各地的爱好者的尊重和追捧。</description>
     <level>7</level>
     <data>
-      <power>70</power>
-    </data>
-    <equipped>
       <dressup>刀-maddog疯狗刀</dressup>
+      <power>70</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>6015</id>
@@ -1907,14 +1685,12 @@
     <description>具有可怕的穿刺力与强大的切割力。此刀手柄非常长，或许看似比例失调，但此刀的重心在刀颈处，两侧重量非常平衡。长手柄可以让你用任何手形使用刀而不会觉得手柄短，非常适合手型较大或戴手套的人使用。</description>
     <level>10</level>
     <data>
-      <power>108</power>
-    </data>
-    <equipped>
       <dressup>刀-stridermantrack匕首</dressup>
+      <power>108</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>6016</id>
@@ -1935,14 +1711,12 @@
     <description>是军队中普遍使用的近身武器，作用与刀类似，但是比刀威力稍大，作用范围广。</description>
     <level>8</level>
     <data>
-      <power>85</power>
-    </data>
-    <equipped>
       <dressup>刀-CF手斧</dressup>
+      <power>85</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>6028</id>
@@ -1966,14 +1740,12 @@
 ”来吧，享受地狱的乐趣！“——Eternal</description>
     <level>18</level>
     <data>
-      <power>240</power>
-    </data>
-    <equipped>
       <dressup>刀-永恒之刃</dressup>
+      <power>240</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>6029</id>
@@ -1994,14 +1766,12 @@
     <description>鬼剑士的巨剑</description>
     <level>15</level>
     <data>
-      <power>150</power>
-    </data>
-    <equipped>
       <dressup>刀-鬼剑士的巨剑</dressup>
+      <power>150</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>50</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>6061</id>
@@ -2022,12 +1792,10 @@
     <description>以现代冶炼技术精制的复古武器，酒保从堕落城带来的精品好货。</description>
     <level>19</level>
     <data>
-      <power>220</power>
-    </data>
-    <equipped>
       <dressup>刀-汉剑</dressup>
+      <power>220</power>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>6062</id>
@@ -2048,12 +1816,10 @@
     <description>以现代冶炼技术精制的复古武器，酒保从堕落城带来的精品好货。</description>
     <level>27</level>
     <data>
-      <power>300</power>
-    </data>
-    <equipped>
       <dressup>刀-玳瑁长柄剑</dressup>
+      <power>300</power>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>6069</id>
@@ -2075,10 +1841,8 @@
     &lt;font color="#FF0000"&gt;“那块铁，挽着些儿就死，磕着些儿就亡，挨挨儿皮破，擦擦儿筋伤！”&lt;/font&gt;。</description>
     <level>342</level>
     <data>
-      <power>1350</power>
-    </data>
-    <equipped>
       <dressup>刀-如意金箍棒</dressup>
+      <power>1350</power>
       <hp>5000</hp>
       <mp>5000</mp>
       <defence>5000</defence>
@@ -2086,7 +1850,7 @@
       <evasion>100</evasion>
       <lazymiss>100</lazymiss>
       <rout>25</rout>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>6070</id>
@@ -2106,15 +1870,13 @@
     <description>&lt;font color="#DCDCDC"&gt;铉龙宝尺傲尘寰，淬火千回刃未残。&lt;/font&gt;</description>
     <level>45</level>
     <data>
-      <power>460</power>
-    </data>
-    <equipped>
       <dressup>刀-铉龙尺</dressup>
+      <power>460</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
       <accuracy>50</accuracy>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>630</id>
@@ -2130,14 +1892,12 @@
 然而由于宝刀过于华丽珍贵，使用者难免小心翼翼更倾向于防守，稍减金龙的锋芒。</description>
     <level>22</level>
     <data>
-      <power>200</power>
-    </data>
-    <equipped>
       <dressup>刀-龙破军霜</dressup>
+      <power>200</power>
       <hp>50</hp>
       <mp>50</mp>
       <defence>200</defence>
-    </equipped>
+    </data>
     <lifecycle>
       <attr_0>
         <init>
@@ -2159,14 +1919,14 @@
         </skill>
         <bullet>
           <bullet_0>
-            <sound />
+            <sound/>
             <split>1</split>
             <power>50%</power>
             <diffusion>0</diffusion>
             <bullet>凶斩刀光特效</bullet>
-            <muzzle />
+            <muzzle/>
             <velocity>0</velocity>
-            <bullethit />
+            <bullethit/>
             <range>200</range>
             <impact>1</impact>
           </bullet_0>
@@ -2189,14 +1949,12 @@
     </description>
     <level>13</level>
     <data>
-      <power>133</power>
-    </data>
-    <equipped>
       <dressup>刀-主唱光剑</dressup>
+      <power>133</power>
       <hp>100</hp>
       <mp>0</mp>
       <defence>10</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>690</id>
@@ -2215,14 +1973,12 @@
     </skill>
     <level>13</level>
     <data>
-      <power>166</power>
-    </data>
-    <equipped>
       <dressup>刀-键盘镰刀</dressup>
+      <power>166</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>702</id>
@@ -2236,14 +1992,12 @@
     <description>炎魔降世，谁与争锋</description>
     <level>40</level>
     <data>
-      <power>380</power>
-    </data>
-    <equipped>
       <dressup>刀-炎魔斩alter</dressup>
+      <power>380</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>220</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>703</id>
@@ -2258,16 +2012,14 @@
     <description>以天网时期遗留下的电感切割机，改造得到的便携武器，由黑市中一位代号为&lt;font color="#000000" size="15"&gt;f&lt;/font&gt;&lt;font color="#FFFFFF" size="15"&gt;s&lt;/font&gt;的武器收藏家设计制造。通过约束工业级的电感震荡出力形成刀刃，使其具备出色的穿透和切割能力。不过毕竟不是军用武器，偶然需要电容组放电卸载负荷尖峰，副产品则是威力强大的闪电。</description>
     <level>15</level>
     <data>
-      <power>90</power>
-    </data>
-    <equipped>
       <dressup>刀-电感切割刃</dressup>
+      <power>90</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
       <damagetype>魔法</damagetype>
       <magictype>电</magictype>
-    </equipped>
+    </data>
     <lifecycle>
       <attr_0>
         <init>
@@ -2287,14 +2039,14 @@
         </cycle>
         <bullet>
           <bullet_0>
-            <sound />
+            <sound/>
             <split>1</split>
             <power>445%</power>
             <diffusion>0</diffusion>
             <bullet>诛神闪电</bullet>
-            <muzzle />
+            <muzzle/>
             <velocity>0</velocity>
-            <bullethit />
+            <bullethit/>
             <range>300</range>
             <impact>1</impact>
           </bullet_0>
@@ -2315,14 +2067,12 @@
     <description>我曾经见过他在一家酒吧杀了三个人，用一支铅笔，用一支他妈该死的铅笔。</description>
     <level>1</level>
     <data>
-      <power>25</power>
-    </data>
-    <equipped>
       <dressup>刀-pencil</dressup>
+      <power>25</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>13007</id>
@@ -2342,10 +2092,8 @@
     &lt;font color="#ff0000"&gt;There will be blood!&lt;/font&gt;</description>
     <level>100</level>
     <data>
-      <power>20000</power>
-    </data>
-    <equipped>
       <dressup>刀-高频村雨</dressup>
+      <power>20000</power>
       <hp>8500</hp>
       <mp>8000</mp>
       <defence>8500</defence>
@@ -2353,7 +2101,7 @@
       <evasion>99</evasion>
       <lazymiss>99</lazymiss>
       <rout>1</rout>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>13013</id>
@@ -2373,15 +2121,13 @@
     Library of Ruina, Project Moon.</description>
     <level>32</level>
     <data>
-      <power>400</power>
-    </data>
-    <equipped>
       <dressup>刀-杜兰达尔</dressup>
+      <power>400</power>
       <hp>185</hp>
       <mp>185</mp>
       <defence>0</defence>
       <evasion>10</evasion>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>9001</id>
@@ -2396,13 +2142,11 @@
     <description>一把高能激光剑。</description>
     <level>25</level>
     <data>
-      <power>210</power>
-    </data>
-    <equipped>
       <dressup>刀-激光剑</dressup>
+      <power>210</power>
       <damagetype>魔法</damagetype>
       <magictype>电</magictype>
-    </equipped>
+    </data>
     <lifecycle>
       <attr_0>
         <init>
@@ -2431,14 +2175,12 @@
 龙剑由每代隼流忍者的首领，即被称为龙之一族的龙之血脉传承者持有，而真龙剑由于其强大的力量，同时也会对精神带来强烈的冲击，一般人持有真龙剑会直接导致发狂，只有意志坚毅者才可以挥动龙剑。这也许是龙之超忍只在最后时刻使用真龙剑的缘由。</description>
     <level>30</level>
     <data>
-      <power>360</power>
-    </data>
-    <equipped>
       <dressup>刀-龍劍</dressup>
+      <power>360</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>845</id>
@@ -2454,14 +2196,12 @@
 	&lt;font size="30"&gt;“玩DGP玩的！”&lt;/font&gt;</description>
     <level>30</level>
     <data>
-      <power>400</power>
-    </data>
-    <equipped>
       <dressup>刀-武神之刃</dressup>
+      <power>400</power>
       <hp>200</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>846</id>
@@ -2476,14 +2216,12 @@
 	本是来自遥远岛屿的对抗恶魔队伍的制式装备，但经某人之手改装成了极致暴力与炙热的美丽存在。沉重的斩击配上刀刀烈火的炙烤，给予敌人难以想象的痛苦。力大无穷的人拿上这把刀，恐怕用“所向披靡”这种形容词也会相形见惭。</description>
     <level>30</level>
     <data>
-      <power>450</power>
-    </data>
-    <equipped>
       <dressup>刀-绯红女皇</dressup>
+      <power>450</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>847</id>
@@ -2497,14 +2235,12 @@
     <description>传奇恶魔剑士斯巴达留给儿子的两件遗物之一，灌输了斯巴达本人的力量。传闻两千年前斯巴达爱上了人类从而倒戈，凭此剑在内的三把魔剑独自一人杀退魔界大军并封印了魔界大门，而后便杳无音信。但是近来这把剑似乎出现在某个白发红衣的男子手里。</description>
     <level>30</level>
     <data>
-      <power>500</power>
-    </data>
-    <equipped>
       <dressup>刀-叛逆之刃</dressup>
+      <power>500</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>848</id>
@@ -2519,14 +2255,12 @@
     <skill>&lt;font color="#FFCC00"&gt;【主动战技】&lt;/font&gt;&lt;font color=" #FFCC00"&gt;【Overdrive】&lt;/font&gt;释放内在魔力，快速打出四连剑气击穿敌人。</skill>
     <level>60</level>
     <data>
-      <power>950</power>
-    </data>
-    <equipped>
       <dressup>刀-魔剑但丁</dressup>
+      <power>950</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>852</id>
@@ -2540,14 +2274,12 @@
     <description>仿造唐菖蒲Di Sword而制作的伪品，全合成金属的材质外加各种固定架构使其克服了物理结构上的脆弱性。除了异常沉重以外，终究因为是物理上的仿品而没有任何特殊效果。现常被拿来当晾衣架使用</description>
     <level>25</level>
     <data>
-      <power>400</power>
-    </data>
-    <equipped>
       <dressup>刀-仿·唐菖蒲Di Sword</dressup>
+      <power>400</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>853</id>
@@ -2561,14 +2293,12 @@
     <description>Giga Lo Maniacs的其中一把Di Sword。两支锋利剑刃合二为一构成的大型双手剑，中间分开的剑虽然看着帅气，但从物理结构来说很脆很而不实用。其与罗马剑（Gladius）有着相似之处，代表了原持有者外刚柔内心脆弱的一面。唐菖蒲的别名“剑兰”亦源于此。</description>
     <level>25</level>
     <data>
-      <power>200</power>
-    </data>
-    <equipped>
       <dressup>刀-唐菖蒲Di Sword</dressup>
+      <power>200</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>854</id>
@@ -2582,14 +2312,12 @@
     <description>Giga Lo Maniax混沌之子症候群的其中一把Di Sword，似乎具有加速效果。原持有者似乎能够直接看出人的心中一切想法，因而使得她持剑战斗迅疾如风。她存在的意义终究只是为了让那位人成为当事人，而当那位意识到所作所为的愚蠢时，她曾经的存在意义也被剥夺了。</description>
     <level>40</level>
     <data>
-      <power>500</power>
-    </data>
-    <equipped>
       <dressup>刀-眼Di Sword (Real boot) </dressup>
+      <power>500</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>855</id>
@@ -2603,14 +2331,12 @@
     <description>Giga Lo Maniax混沌之子症候群的其中一把Di Sword，似乎具有加速效果。由于并没有实体化，所以无法攻击到任何东西，但最起码这玩意儿长得帅。</description>
     <level>15</level>
     <data>
-      <power>0</power>
-    </data>
-    <equipped>
       <dressup>刀-眼Di Sword (未Real boot) </dressup>
+      <power>0</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>857</id>
@@ -2631,14 +2357,12 @@
     </skill>
     <level>60</level>
     <data>
-      <power>600</power>
-    </data>
-    <equipped>
       <dressup>刀-阎魔刀</dressup>
+      <power>600</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>900</id>
@@ -2652,14 +2376,12 @@
     <description>npc专用，你用就是买家秀</description>
     <level>60</level>
     <data>
-      <power>500</power>
-    </data>
-    <equipped>
       <dressup>刀-光子粉碎刃</dressup>
+      <power>500</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>5002</id>
@@ -2674,13 +2396,11 @@
     <description>剑刃加农测试版。</description>
     <level>25</level>
     <data>
-      <power>220</power>
-    </data>
-    <equipped>
       <dressup>刀-剑刃加农</dressup>
+      <power>220</power>
       <damagetype>魔法</damagetype>
       <magictype>电</magictype>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8010</id>
@@ -2696,17 +2416,15 @@
 	当然，到你手上的这把已经解决了能源供应问题，所以顺带的棍形刀鞘也不需要了。</description>
     <level>35</level>
     <data>
-      <power>260</power>
-    </data>
-    <equipped>
       <dressup>刀-周波匕首</dressup>
+      <power>260</power>
       <hp>0</hp>
       <mp>300</mp>
       <defence>50</defence>
       <evasion>5</evasion>
       <damagetype>魔法</damagetype>
       <magictype>冲</magictype>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8011</id>
@@ -2723,17 +2441,15 @@
 	另外，这一支的剑鞘弄丢了，因此如果你要是把它用没电了可就有得乐了。</description>
     <level>45</level>
     <data>
-      <power>360</power>
-    </data>
-    <equipped>
       <dressup>刀-周波剑棍</dressup>
+      <power>360</power>
       <hp>0</hp>
       <mp>150</mp>
       <defence>200</defence>
       <evasion>5</evasion>
       <damagetype>魔法</damagetype>
       <magictype>冲</magictype>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8029</id>
@@ -2748,14 +2464,12 @@
     <description>死者之手。</description>
     <level>50</level>
     <data>
-      <power>550</power>
-    </data>
-    <equipped>
       <dressup>刀-死者之手</dressup>
+      <power>550</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>200</defence>
-    </equipped>
+    </data>
     <lifecycle>
       <attr_0>
         <init>
@@ -2788,16 +2502,14 @@
     <description>过去大战中的某位英雄遗留下来的武器。</description>
     <level>60</level>
     <data>
-      <power>1000</power>
-    </data>
-    <equipped>
       <dressup>刀-Z军刀</dressup>
+      <power>1000</power>
       <hp>0</hp>
       <mp>1000</mp>
       <evasion>20</evasion>
       <lazymiss>40</lazymiss>
       <damagetype>魔法</damagetype>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8031</id>
@@ -2812,15 +2524,13 @@
     <description>使用超合金战刀断裂的刀刃临时制作的武器。</description>
     <level>30</level>
     <data>
-      <power>405</power>
-    </data>
-    <equipped>
       <dressup>刀-超合金战刀刃</dressup>
+      <power>405</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>100</defence>
       <evasion>-10</evasion>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8032</id>
@@ -2835,15 +2545,13 @@
     <description>超合金战刀经过修复后的样貌。</description>
     <level>40</level>
     <data>
-      <power>545</power>
-    </data>
-    <equipped>
       <dressup>刀-超合金战刀修复版</dressup>
+      <power>545</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>200</defence>
       <evasion>-5</evasion>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8066</id>
@@ -2867,13 +2575,11 @@
 	在审判日来临之后，这些刀具也流落到尘都各区幸存者的手中，继续着其在“局部斗争”中的服役。</description>
     <level>15</level>
     <data>
-      <power>150</power>
-    </data>
-    <equipped>
       <dressup>刀-兰博2</dressup>
+      <power>150</power>
       <evasion>5</evasion>
       <criticalhit>10</criticalhit>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>636</id>
@@ -2889,14 +2595,12 @@
 &lt;font size="30"&gt;“我超，原！”&lt;/font&gt;</description>
     <level>40</level>
     <data>
-      <power>320</power>
-    </data>
-    <equipped>
       <dressup>刀-狼的末路</dressup>
+      <power>320</power>
       <hp>50</hp>
       <mp>50</mp>
       <defence>80</defence>
-    </equipped>
+    </data>
     <skill>
       <skillname>狼跳</skillname>
       <description>手持该武器时可以使用狼跳。</description>
@@ -2918,14 +2622,12 @@
 &lt;font size="30"&gt;“我超，原！”&lt;/font&gt;</description>
     <level>20</level>
     <data>
-      <power>200</power>
-    </data>
-    <equipped>
       <dressup>刀-西风大剑</dressup>
+      <power>200</power>
       <hp>50</hp>
       <mp>150</mp>
       <defence>20</defence>
-    </equipped>
+    </data>
     <skill>
       <skillname>回旋斩击</skillname>
       <description>手持该武器时可以使用回旋斩击。</description>
@@ -2950,17 +2652,15 @@
     <skill>&lt;font color="#FFCC00"&gt;【主动战技】&lt;/font&gt;手持该武器时可释放天蓝斩术。&lt;BR&gt;&lt;font color="#FFCC00"&gt;【战技信息】&lt;/font&gt;冷却5秒。</skill>
     <level>60</level>
     <data>
-      <power>700</power>
-    </data>
-    <equipped>
       <dressup>刀-天狼的大剑</dressup>
+      <power>700</power>
       <hp>-300</hp>
       <defence>-700</defence>
       <accuracy>75</accuracy>
       <evasion>50</evasion>
       <lazymiss>75</lazymiss>
       <rout>0.12</rout>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>5509</id>
@@ -2975,11 +2675,9 @@
     对了，这个装备正常流程内无法获取，也无法使用。所以无需反馈此装备的相关问题，也请勿推荐他人使用此装备进行流程~</description>
     <level>101</level>
     <data>
+      <dressup>刀-一把奇怪的尤克里里</dressup>
       <power>0</power>
     </data>
-    <equipped>
-      <dressup>刀-一把奇怪的尤克里里</dressup>
-    </equipped>
   </item>
   <item>
     <id>5510</id>
@@ -2995,11 +2693,9 @@
     对了，这个装备正常流程内无法获取，也无法使用。所以无需反馈此装备的相关问题，也请勿推荐他人使用此装备进行流程~</description>
     <level>101</level>
     <data>
+      <dressup>刀-应援棒</dressup>
       <power>0</power>
     </data>
-    <equipped>
-      <dressup>刀-应援棒</dressup>
-    </equipped>
   </item>
   <item>
     <id>626</id>
@@ -3021,14 +2717,12 @@
     据说最初挥舞他的人，是为了守护而战斗。</description>
     <level>30</level>
     <data>
-      <power>200</power>
-    </data>
-    <equipped>
       <dressup>刀-斩月</dressup>
+      <power>200</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>199</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>634</id>
@@ -3049,14 +2743,12 @@
     <description>不知从哪里发现的，泛着金光的厚重长剑，握在手里让人从心底涌出澎湃的勇气。</description>
     <level>24</level>
     <data>
-      <power>240</power>
-    </data>
-    <equipped>
       <dressup>刀-勇气灵剑</dressup>
+      <power>240</power>
       <hp>120</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>635</id>
@@ -3079,14 +2771,12 @@
     Library of Ruina, Project Moon.</description>
     <level>40</level>
     <data>
-      <power>360</power>
-    </data>
-    <equipped>
       <dressup>刀-轮盘重工</dressup>
+      <power>360</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>240</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>632</id>
@@ -3101,14 +2791,12 @@
 这种大剑深受&lt;font color="#000000"&gt;黑铁会黑龙堂主&lt;/font&gt;的喜爱，而为其量身订制的巨大光剑也是黑龙堂力量的象征，作为守护黑龙堂的最后一道防线。</description>
     <level>25</level>
     <data>
-      <power>210</power>
-    </data>
-    <equipped>
       <dressup>刀-十文字大剑</dressup>
+      <power>210</power>
       <hp>60</hp>
       <mp>60</mp>
       <defence>99</defence>
-    </equipped>
+    </data>
     <lifecycle>
       <attr_0>
         <init>
@@ -3142,14 +2830,12 @@
 &lt;font size="20"&gt;&lt;font face="ms mincho"&gt;“竜神の剣を喰らえ！”&lt;/font&gt;&lt;/font&gt;</description>
     <level>24</level>
     <data>
-      <power>240</power>
-    </data>
-    <equipped>
       <dressup>刀-龍一文字</dressup>
+      <power>240</power>
       <hp>0</hp>
       <mp>60</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>639</id>
@@ -3173,15 +2859,13 @@
 血刀的斩击将会吞噬敌人的血液，将部分化作生命力传向使用者，使持握者在战斗中保持更长时间的活力。此外，使用者的攻击性会随着刀刃挥斩而变得越发凶暴，直至战斗停歇。</description>
     <level>20</level>
     <data>
-      <power>200</power>
-    </data>
-    <equipped>
       <dressup>刀-血刀</dressup>
+      <power>200</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>20</defence>
       <vampirism>1</vampirism>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>640</id>
@@ -3203,14 +2887,12 @@
     <description>通体漆黑的刀身没有多余的装饰，只有银白色的刃部与之形成鲜明对比；柄部包覆着坚固的皮革，以提供更好的握持。刀刃外侧和内侧分别呈外弧和内弧形状，这种设计使刀刃更具功能性与战术性。刀身中部开有三道细长槽孔，既减轻了刀的重量，又增加了它的机动性。</description>
     <level>13</level>
     <data>
-      <power>140</power>
-    </data>
-    <equipped>
       <dressup>刀-战术黑刀</dressup>
+      <power>140</power>
       <hp>0</hp>
       <mp>60</mp>
       <defence>30</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>641</id>
@@ -3230,16 +2912,14 @@
     <description>这把武器是以这些地铁站尽头那尊&lt;font color="#b22222"&gt;庞然大物&lt;/font&gt;的巨斧为原型参考制造的致命武器。庞大的斧头嵌在坚固的柄身上，斧上的锯齿状刃齿狰狞，柄身握持手感舒适稳定；而斧头上的锯齿状刃齿使它在攻击时能够切割更多的血肉。然而，由于沉重的质量与怪异的重心，导致以人类之躯使用它需要高度的力量和技巧，尤其是对距离与攻击时机的掌控。&lt;font color="#ff0000"&gt;巨大的重量很容易影响力量不够强大的使用者的行动速度。&lt;/font&gt;</description>
     <level>10</level>
     <data>
-      <power>100</power>
-    </data>
-    <equipped>
       <dressup>刀-巨尸长斧</dressup>
+      <power>100</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
       <evasion>-20</evasion>
       <accuracy>-10</accuracy>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>649</id>
@@ -3260,14 +2940,12 @@
     <description>据说，古代的某位领主向所有臣民发出悬赏：打造一把足以杀死龙的剑。领主将这项任务委托给名为高特的铁匠。但铁匠已经厌倦了为贵族制作华而不实的武器。然而，决心制造屠龙之刃的他创造了巨大却因太过沉重而让人无法使用的斩龙剑。后来，某位当代铁匠根据这段传说，对其进行了仿制。 </description>
     <level>36</level>
     <data>
-      <power>400</power>
-    </data>
-    <equipped>
       <dressup>刀-斩龙剑</dressup>
+      <power>400</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>240</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>650</id>
@@ -3291,14 +2969,12 @@
     Rnfmabj, Children of the City.</description>
     <level>32</level>
     <data>
-      <power>200</power>
-    </data>
-    <equipped>
       <dressup>刀-指令意志</dressup>
+      <power>200</power>
       <hp>150</hp>
       <mp>150</mp>
       <defence>150</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>651</id>
@@ -3312,14 +2988,12 @@
     <description>非常好武器，爱来自FromSoftware。</description>
     <level>36</level>
     <data>
-      <power>200</power>
-    </data>
-    <equipped>
       <dressup>刀-月光大剑</dressup>
+      <power>200</power>
       <hp>100</hp>
       <mp>600</mp>
       <defence>100</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>657</id>
@@ -3340,14 +3014,12 @@
     <description>故乡的樱花开了。</description>
     <level>36</level>
     <data>
-      <power>360</power>
-    </data>
-    <equipped>
       <dressup>刀-樱舞</dressup>
+      <power>360</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>749</id>
@@ -3362,14 +3034,12 @@
     <description>石中剑，也被称为选王之剑。据说，只有具备成王资质的天生王者，才能得到这柄剑的认可，将其挥舞自如。</description>
     <level>30</level>
     <data>
-      <power>300</power>
-    </data>
-    <equipped>
       <dressup>刀-石中剑</dressup>
+      <power>300</power>
       <hp>150</hp>
       <mp>150</mp>
       <defence>150</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>799</id>
@@ -3391,14 +3061,12 @@
 对于不懂乐器的人而言，确实难以分清这究竟是贝斯还是吉他。</description>
     <level>13</level>
     <data>
-      <power>128</power>
-    </data>
-    <equipped>
       <dressup>刀-黑暗吉他</dressup>
+      <power>128</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>800</id>
@@ -3419,14 +3087,12 @@
     <description>据说，这种武器深受黑铁会的喜爱，但很少人知道原因。</description>
     <level>20</level>
     <data>
-      <power>227</power>
-    </data>
-    <equipped>
       <dressup>刀-方钢锤</dressup>
+      <power>227</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>832</id>
@@ -3447,14 +3113,12 @@
     <description>复古典雅，适合收藏，也适合屠杀。</description>
     <level>15</level>
     <data>
-      <power>150</power>
-    </data>
-    <equipped>
       <dressup>刀-白金石斧</dressup>
+      <power>150</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1501</id>
@@ -3476,14 +3140,12 @@
 它不仅仅是一把武器，更是一种象征力量和霸气的工具。成为那些在废土中追求威慑力和实力的生存者的首选。</description>
     <level>25</level>
     <data>
-      <power>260</power>
-    </data>
-    <equipped>
       <dressup>刀-长墨白铁</dressup>
+      <power>260</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>25</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1502</id>
@@ -3506,14 +3168,12 @@
 然而，贩卖人口的利益对人的诱惑实在是太大了。于是，黑铁会内总有火光，又一批新制长枪出厂了，又一批奴隶进来了。不过，堕落城的芸芸众生，谁又能忍住这个诱惑了？</description>
     <level>15</level>
     <data>
-      <power>150</power>
-    </data>
-    <equipped>
       <dressup>刀-狸灰直刃</dressup>
+      <power>150</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1503</id>
@@ -3535,14 +3195,12 @@
 流畅的刀身勾勒出深远的历史。刀柄的设计注重舒适握持，日式美学的元素也呈现出些微的大和氛围。其修长的刀身和锋利的刀刃在杀戮场上表现卓越，而作为日本武士精神的传承。它承载了历史的厚重，成为在末日世界中追求高雅和致命的战士们的信仰之物。</description>
     <level>20</level>
     <data>
-      <power>200</power>
-    </data>
-    <equipped>
       <dressup>刀-苍面银牙</dressup>
+      <power>200</power>
       <hp>0</hp>
       <mp>50</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1504</id>
@@ -3564,14 +3222,12 @@
 “这才叫中体西用！”</description>
     <level>25</level>
     <data>
-      <power>250</power>
-    </data>
-    <equipped>
       <dressup>刀-西洋重剑枪</dressup>
+      <power>250</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>25</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1505</id>
@@ -3593,14 +3249,12 @@
 和它的近亲一样，当你能够通过这把武器刃处的反光注意到自己的脸时，你多半要死了。</description>
     <level>20</level>
     <data>
-      <power>210</power>
-    </data>
-    <equipped>
       <dressup>刀-黑铁重剑枪</dressup>
+      <power>210</power>
       <hp>0</hp>
       <mp>50</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1506</id>
@@ -3622,14 +3276,12 @@
 除了斧身上的斑驳之外，手持它的战士偶尔也会诉说这把武器的传奇，当然，或许堕落城某处的京观更为直观。</description>
     <level>25</level>
     <data>
-      <power>286</power>
-    </data>
-    <equipped>
       <dressup>刀-黑铁巨斧</dressup>
+      <power>286</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1509</id>
@@ -3651,14 +3303,12 @@
 这柄长矛的杆由硬木制成，即便在末日之中，你也可以拥抱传统。</description>
     <level>10</level>
     <data>
-      <power>110</power>
-    </data>
-    <equipped>
       <dressup>刀-硬木长矛</dressup>
+      <power>110</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1510</id>
@@ -3680,14 +3330,12 @@
 这柄长矛的杆由铁块制成，既然是末日之中，还是选择变革较好。</description>
     <level>15</level>
     <data>
-      <power>165</power>
-    </data>
-    <equipped>
       <dressup>刀-铁杆长矛</dressup>
+      <power>165</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1511</id>
@@ -3709,14 +3357,12 @@
 抛开故事不谈，基于古老的金龙刃原型制备的”金龙刃一型“是实打实的现代武器，虽然看起来像是戏剧所用的道具，但破坏性远超想象。原理角度而言，金龙刃一型无疑进行了纳米机器人改造，并且或许有着一定程度的内置设备，具有利用纳米机器人进行破坏性活动的能力。</description>
     <level>32</level>
     <data>
-      <power>436</power>
-    </data>
-    <equipped>
       <dressup>刀-金龙刃一型</dressup>
+      <power>436</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1512</id>
@@ -3738,14 +3384,12 @@
 金龙刃二型则在一型的基础上改造而来，在外观上略有不同。二型的物理结构和纳米机器人阵列特性，使得其杀伤力超越了一型，已经能够破坏大部分现代单兵护甲。</description>
     <level>36</level>
     <data>
-      <power>500</power>
-    </data>
-    <equipped>
       <dressup>刀-金龙刃二型</dressup>
+      <power>500</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1513</id>
@@ -3766,14 +3410,12 @@
     <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
     <level>36</level>
     <data>
-      <power>500</power>
-    </data>
-    <equipped>
       <dressup>刀-三戈戟一型</dressup>
+      <power>500</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1514</id>
@@ -3794,14 +3436,12 @@
     <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
     <level>36</level>
     <data>
-      <power>500</power>
-    </data>
-    <equipped>
       <dressup>刀-三戈戟二型</dressup>
+      <power>500</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1515</id>
@@ -3822,14 +3462,12 @@
     <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
     <level>36</level>
     <data>
-      <power>500</power>
-    </data>
-    <equipped>
       <dressup>刀-凤嘴刀</dressup>
+      <power>500</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1516</id>
@@ -3850,14 +3488,12 @@
     <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
     <level>36</level>
     <data>
-      <power>500</power>
-    </data>
-    <equipped>
       <dressup>刀-马槊</dressup>
+      <power>500</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1517</id>
@@ -3878,14 +3514,12 @@
     <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
     <level>36</level>
     <data>
-      <power>500</power>
-    </data>
-    <equipped>
       <dressup>刀-三尖两刃刀</dressup>
+      <power>500</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1518</id>
@@ -3908,13 +3542,11 @@
 然而，由于这柄武器自身恐怖的重量，能流畅使起这柄大锤的人，本身也和怪物无异。</description>
     <level>45</level>
     <data>
-      <power>700</power>
-    </data>
-    <equipped>
       <dressup>刀-猎杀巨物大锤</dressup>
+      <power>700</power>
       <hp>0</hp>
       <mp>0</mp>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1519</id>
@@ -3937,10 +3569,8 @@
 即便如此，操纵重力的威能也总能在使用者生命危急之时爆发出巨大的力量。</description>
     <level>32</level>
     <data>
-      <power>250</power>
-    </data>
-    <equipped>
       <dressup>刀-重力操纵之剑</dressup>
+      <power>250</power>
       <hp>0</hp>
       <mp>0</mp>
       <evasion>-50</evasion>
@@ -3948,7 +3578,7 @@
       <lazymiss>25</lazymiss>
       <damagetype>魔法</damagetype>
       <magictype>冲</magictype>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1520</id>
@@ -3964,16 +3594,14 @@
     激光剑的最终进化。</description>
     <level>60</level>
     <data>
-      <power>600</power>
-    </data>
-    <equipped>
       <dressup>刀-审判日夜闪</dressup>
+      <power>600</power>
       <hp>100</hp>
       <mp>100</mp>
       <defence>0</defence>
       <lazymiss>25</lazymiss>
       <damagetype>魔法</damagetype>
-    </equipped>
+    </data>
     <lifecycle>
       <attr_0>
         <init>
@@ -4009,15 +3637,13 @@
 这把匕首的一处隐秘角落莫名地刻着“z羡慕嫉妒恨z”这一串意义不明的字符。</description>
     <level>20</level>
     <data>
-      <power>150</power>
-    </data>
-    <equipped>
       <dressup>刀-剧毒银刃</dressup>
+      <power>150</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
       <poison>50</poison>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1554</id>
@@ -4038,14 +3664,12 @@
     <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
     <level>36</level>
     <data>
-      <power>500</power>
-    </data>
-    <equipped>
       <dressup>刀-方天画戟一型</dressup>
+      <power>500</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1555</id>
@@ -4066,14 +3690,12 @@
     <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
     <level>36</level>
     <data>
-      <power>500</power>
-    </data>
-    <equipped>
       <dressup>刀-方天画戟二型</dressup>
+      <power>500</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1556</id>
@@ -4094,16 +3716,14 @@
     <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
     <level>36</level>
     <data>
-      <power>500</power>
-    </data>
-    <equipped>
       <dressup>刀-寒天画戟</dressup>
+      <power>500</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
       <damagetype>魔法</damagetype>
       <magictype>冷</magictype>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1557</id>
@@ -4124,14 +3744,12 @@
     <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
     <level>36</level>
     <data>
-      <power>500</power>
-    </data>
-    <equipped>
       <dressup>刀-蛇矛一型</dressup>
+      <power>500</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1558</id>
@@ -4152,14 +3770,12 @@
     <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
     <level>36</level>
     <data>
-      <power>500</power>
-    </data>
-    <equipped>
       <dressup>刀-蛇矛二型</dressup>
+      <power>500</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1559</id>
@@ -4180,15 +3796,13 @@
     <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
     <level>36</level>
     <data>
-      <power>500</power>
-    </data>
-    <equipped>
       <dressup>刀-剧毒蛇矛</dressup>
+      <power>500</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
       <poison>150</poison>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1560</id>
@@ -4209,14 +3823,12 @@
     <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
     <level>36</level>
     <data>
-      <power>500</power>
-    </data>
-    <equipped>
       <dressup>刀-狼牙长棒</dressup>
+      <power>500</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>1561</id>
@@ -4239,14 +3851,12 @@
 可即便如此，却也有着能够释放电流，召唤怪物的威能。</description>
     <level>36</level>
     <data>
-      <power>500</power>
-    </data>
-    <equipped>
       <dressup>刀-终极战斗仪</dressup>
+      <power>500</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8047</id>
@@ -4261,11 +3871,9 @@
     <description>一种常见于审判日前社会混混手里的武器，但在审判日后是人人都会需要的救命工具。</description>
     <level>1</level>
     <data>
+      <dressup>刀-折叠小刀</dressup>
       <power>10</power>
     </data>
-    <equipped>
-      <dressup>刀-折叠小刀</dressup>
-    </equipped>
   </item>
   <item>
     <id>8048</id>
@@ -4279,11 +3887,9 @@
     <description>没什么好说的，就是一块板砖。</description>
     <level>1</level>
     <data>
+      <dressup>刀-砖头</dressup>
       <power>20</power>
     </data>
-    <equipped>
-      <dressup>刀-砖头</dressup>
-    </equipped>
   </item>
   <item>
     <id>8100</id>
@@ -4304,13 +3910,11 @@
     <description>电击休克是最有效的控制手段，如果不够就加大功率。</description>
     <level>35</level>
     <data>
-      <power>240</power>
-    </data>
-    <equipped>
       <dressup>刀-诺亚镇暴棍</dressup>
+      <power>240</power>
       <damagetype>魔法</damagetype>
       <magictype>电</magictype>
-    </equipped>
+    </data>
   </item>
   <item>
     <id>8101</id>
@@ -4331,11 +3935,9 @@
     <description>虽然趁手，但还是在它断掉以前找个别的武器吧。</description>
     <level>5</level>
     <data>
+      <dressup>刀-木制球棒</dressup>
       <power>45</power>
     </data>
-    <equipped>
-      <dressup>刀-木制球棒</dressup>
-    </equipped>
   </item>
   <item>
     <id>8102</id>
@@ -4356,11 +3958,9 @@
     <description>只适合在审判日前给社区保安用。</description>
     <level>4</level>
     <data>
+      <dressup>刀-甩棍</dressup>
       <power>35</power>
     </data>
-    <equipped>
-      <dressup>刀-甩棍</dressup>
-    </equipped>
   </item>
   <item>
     <id>8103</id>
@@ -4381,11 +3981,9 @@
     <description>拿来给自己挖坑都费劲。</description>
     <level>6</level>
     <data>
+      <dressup>刀-工兵铲</dressup>
       <power>51</power>
     </data>
-    <equipped>
-      <dressup>刀-工兵铲</dressup>
-    </equipped>
   </item>
   <item>
     <id>8104</id>
@@ -4405,14 +4003,12 @@
     </skill>
     <level>30</level>
     <data>
-      <power>300</power>
-    </data>
-    <equipped>
       <dressup>刀-光玉的剑</dressup>
+      <power>300</power>
       <hp>20</hp>
       <mp>100</mp>
       <defence>0</defence>
-    </equipped>
+    </data>
     <lifecycle>
       <attr_0>
         <init>

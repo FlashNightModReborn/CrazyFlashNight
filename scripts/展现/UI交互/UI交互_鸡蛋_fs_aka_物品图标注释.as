@@ -31,11 +31,13 @@ _root.物品图标注释 = function(name, value) {
         文本数据.push(物品数据.weight + "kg");
         文本数据.push("<BR>");
     }
+    // 获取装备数据
+    var 物品装备数据 = 物品数据.data;
     switch (物品数据.use) {
         case "刀":
             文本数据.push("锋利度：");
-            文本数据.push(物品数据.data.power);
-            文本数据.push("<FONT COLOR=\'#FFCC00\'>(+" + (_root.强化计算(物品数据.data.power, 强化等级) - 物品数据.data.power) + ")</FONT>");
+            文本数据.push(物品装备数据.power);
+            文本数据.push("<FONT COLOR=\'#FFCC00\'>(+" + (_root.强化计算(物品装备数据.power, 强化等级) - 物品装备数据.power) + ")</FONT>");
             文本数据.push("<BR>");
             break;
         case "手雷":
@@ -43,144 +45,144 @@ _root.物品图标注释 = function(name, value) {
             文本数据.push(物品数据.level);
             文本数据.push("<BR>");
             文本数据.push("威力：");
-            文本数据.push(物品数据.data.power);
+            文本数据.push(物品装备数据.power);
             文本数据.push("<BR>");
             break;
         case "长枪":
         case "手枪":
             文本数据.push("使用弹夹：");
-            文本数据.push(ItemUtil.getItemData(物品数据.data.clipname).displayname);
+            文本数据.push(ItemUtil.getItemData(物品装备数据.clipname).displayname);
             文本数据.push("<BR>");
             文本数据.push("子弹类型：");
-            if (物品数据.data.bulletrename) {
-                文本数据.push(物品数据.data.bulletrename);
+            if (物品装备数据.bulletrename) {
+                文本数据.push(物品装备数据.bulletrename);
             } else {
-                文本数据.push(物品数据.data.bullet);
+                文本数据.push(物品装备数据.bullet);
             }
             文本数据.push("<BR>");
             文本数据.push("弹夹容量：");
-            var notMuti:Boolean = (物品数据.data.bullet.indexOf("纵向") >= 0);
+            var notMuti:Boolean = (物品装备数据.bullet.indexOf("纵向") >= 0);
 
-            var magazineCapacity:Number = notMuti ? 物品数据.data.split : 1;
+            var magazineCapacity:Number = notMuti ? 物品装备数据.split : 1;
 
-            文本数据.push(物品数据.data.capacity * magazineCapacity);
+            文本数据.push(物品装备数据.capacity * magazineCapacity);
             文本数据.push("<BR>");
             文本数据.push("子弹威力：");
-            文本数据.push(物品数据.data.power);
-            文本数据.push("<FONT COLOR=\'#FFCC00\'>(+" + (_root.强化计算(物品数据.data.power, 强化等级) - 物品数据.data.power) + ")</FONT>");
+            文本数据.push(物品装备数据.power);
+            文本数据.push("<FONT COLOR=\'#FFCC00\'>(+" + (_root.强化计算(物品装备数据.power, 强化等级) - 物品装备数据.power) + ")</FONT>");
             文本数据.push("<BR>");
-            if (物品数据.data.split > 1) {
+            if (物品装备数据.split > 1) {
                 文本数据.push(notMuti ? "点射弹数：" : "弹丸数量：");
-                文本数据.push(物品数据.data.split);
+                文本数据.push(物品装备数据.split);
                 文本数据.push("<BR>");
             }
             文本数据.push("射速：");
-            文本数据.push(Math.floor(10000 / 物品数据.data.interval) * 0.1 * magazineCapacity);
+            文本数据.push(Math.floor(10000 / 物品装备数据.interval) * 0.1 * magazineCapacity);
             文本数据.push("发/秒<BR>");
-            文本数据.push("冲击力：" + Math.floor(500 / 物品数据.data.impact));
+            文本数据.push("冲击力：" + Math.floor(500 / 物品装备数据.impact));
             文本数据.push("<BR>");
 
     }
-    if (物品数据.equipped.force !== undefined && 物品数据.equipped.force !== 0) {
+    if (物品装备数据.force !== undefined && 物品装备数据.force !== 0) {
         文本数据.push("内力加成：");
-        文本数据.push(物品数据.equipped.force);
-        文本数据.push("<FONT COLOR=\'#FFCC00\'>(+" + (_root.强化计算(物品数据.equipped.force, 强化等级) - 物品数据.equipped.force) + ")</FONT>");
+        文本数据.push(物品装备数据.force);
+        文本数据.push("<FONT COLOR=\'#FFCC00\'>(+" + (_root.强化计算(物品装备数据.force, 强化等级) - 物品装备数据.force) + ")</FONT>");
         文本数据.push("<BR>");
     }
-    if (物品数据.equipped.damage !== undefined && 物品数据.equipped.damage !== 0) {
+    if (物品装备数据.damage !== undefined && 物品装备数据.damage !== 0) {
         文本数据.push("伤害加成：");
-        文本数据.push(物品数据.equipped.damage);
-        文本数据.push("<FONT COLOR=\'#FFCC00\'>(+" + (_root.强化计算(物品数据.equipped.damage, 强化等级) - 物品数据.equipped.damage) + ")</FONT>");
+        文本数据.push(物品装备数据.damage);
+        文本数据.push("<FONT COLOR=\'#FFCC00\'>(+" + (_root.强化计算(物品装备数据.damage, 强化等级) - 物品装备数据.damage) + ")</FONT>");
         文本数据.push("<BR>");
     }
-    if (物品数据.equipped.punch !== undefined && 物品数据.equipped.punch !== 0) {
+    if (物品装备数据.punch !== undefined && 物品装备数据.punch !== 0) {
         文本数据.push("空手加成：");
-        文本数据.push(物品数据.equipped.punch);
-        文本数据.push("<FONT COLOR=\'#FFCC00\'>(+" + (_root.强化计算(物品数据.equipped.punch, 强化等级) - 物品数据.equipped.punch) + ")</FONT>");
+        文本数据.push(物品装备数据.punch);
+        文本数据.push("<FONT COLOR=\'#FFCC00\'>(+" + (_root.强化计算(物品装备数据.punch, 强化等级) - 物品装备数据.punch) + ")</FONT>");
         文本数据.push("<BR>");
     }
-    if (物品数据.equipped.knifepower !== undefined && 物品数据.equipped.knifepower !== 0) {
+    if (物品装备数据.knifepower !== undefined && 物品装备数据.knifepower !== 0) {
         文本数据.push("冷兵器加成：");
-        文本数据.push(物品数据.equipped.knifepower);
-        文本数据.push("<FONT COLOR=\'#FFCC00\'>(+" + (_root.强化计算(物品数据.equipped.knifepower, 强化等级) - 物品数据.equipped.knifepower) + ")</FONT>");
+        文本数据.push(物品装备数据.knifepower);
+        文本数据.push("<FONT COLOR=\'#FFCC00\'>(+" + (_root.强化计算(物品装备数据.knifepower, 强化等级) - 物品装备数据.knifepower) + ")</FONT>");
         文本数据.push("<BR>");
     }
-    if (物品数据.equipped.gunpower !== undefined && 物品数据.equipped.gunpower !== 0) {
+    if (物品装备数据.gunpower !== undefined && 物品装备数据.gunpower !== 0) {
         文本数据.push("枪械加成：");
-        文本数据.push(物品数据.equipped.gunpower);
-        文本数据.push("<FONT COLOR=\'#FFCC00\'>(+" + (_root.强化计算(物品数据.equipped.gunpower, 强化等级) - 物品数据.equipped.gunpower) + ")</FONT>");
+        文本数据.push(物品装备数据.gunpower);
+        文本数据.push("<FONT COLOR=\'#FFCC00\'>(+" + (_root.强化计算(物品装备数据.gunpower, 强化等级) - 物品装备数据.gunpower) + ")</FONT>");
         文本数据.push("<BR>");
     }
-    if (物品数据.equipped.criticalhit !== undefined) {
-        if (!isNaN(Number(物品数据.equipped.criticalhit))) {
+    if (物品装备数据.criticalhit !== undefined) {
+        if (!isNaN(Number(物品装备数据.criticalhit))) {
             文本数据.push("<FONT COLOR=\'#DD4455\'>" + "暴击：" + "</FONT>");
-            文本数据.push("<FONT COLOR=\'#DD4455\'>" + 物品数据.equipped.criticalhit + "%概率造成1.5倍伤害" + "</FONT>");
-        } else if (物品数据.equipped.criticalhit == "满血暴击") {
+            文本数据.push("<FONT COLOR=\'#DD4455\'>" + 物品装备数据.criticalhit + "%概率造成1.5倍伤害" + "</FONT>");
+        } else if (物品装备数据.criticalhit == "满血暴击") {
             文本数据.push("<FONT COLOR=\'#DD4455\'>" + "暴击：对满血敌人造成1.5倍伤害" + "</FONT>");
         }
         文本数据.push("<BR>");
     }
-    if (物品数据.equipped.slay !== undefined && 物品数据.equipped.slay !== 0) {
+    if (物品装备数据.slay !== undefined && 物品装备数据.slay !== 0) {
         文本数据.push("斩杀线：");
-        文本数据.push(物品数据.equipped.slay + "%血量");
+        文本数据.push(物品装备数据.slay + "%血量");
         文本数据.push("<BR>");
     }
-    if (物品数据.equipped.accuracy !== undefined && 物品数据.equipped.accuracy !== 0) {
+    if (物品装备数据.accuracy !== undefined && 物品装备数据.accuracy !== 0) {
         文本数据.push("命中加成：");
-        文本数据.push(物品数据.equipped.accuracy + "%");
+        文本数据.push(物品装备数据.accuracy + "%");
         文本数据.push("<BR>");
     }
-    if (物品数据.equipped.evasion !== undefined && 物品数据.equipped.evasion !== 0) {
+    if (物品装备数据.evasion !== undefined && 物品装备数据.evasion !== 0) {
         文本数据.push("挡拆加成：");
-        文本数据.push(物品数据.equipped.evasion + "%");
+        文本数据.push(物品装备数据.evasion + "%");
         文本数据.push("<BR>");
     }
-    if (物品数据.equipped.toughness !== undefined && 物品数据.equipped.toughness !== 0) {
+    if (物品装备数据.toughness !== undefined && 物品装备数据.toughness !== 0) {
         文本数据.push("韧性加成：");
-        文本数据.push(物品数据.equipped.toughness + "%");
+        文本数据.push(物品装备数据.toughness + "%");
         文本数据.push("<BR>");
     }
-    if (物品数据.equipped.lazymiss !== undefined && 物品数据.equipped.lazymiss !== 0) {
+    if (物品装备数据.lazymiss !== undefined && 物品装备数据.lazymiss !== 0) {
         文本数据.push("高危回避：");
-        文本数据.push(物品数据.equipped.lazymiss + "");
+        文本数据.push(物品装备数据.lazymiss + "");
         文本数据.push("<BR>");
     }
-    if (物品数据.equipped.poison !== undefined && 物品数据.equipped.poison !== 0) {
+    if (物品装备数据.poison !== undefined && 物品装备数据.poison !== 0) {
         文本数据.push("<FONT COLOR=\'#66dd00\'>剧毒性</FONT>：");
-        文本数据.push(物品数据.equipped.poison + "");
+        文本数据.push(物品装备数据.poison + "");
         文本数据.push("<BR>");
     }
-    if (物品数据.equipped.vampirism !== undefined && 物品数据.equipped.vampirism !== 0) {
+    if (物品装备数据.vampirism !== undefined && 物品装备数据.vampirism !== 0) {
         文本数据.push("<FONT COLOR=\'#bb00aa\'>吸血</FONT>：");
-        文本数据.push(物品数据.equipped.vampirism + "%");
+        文本数据.push(物品装备数据.vampirism + "%");
         文本数据.push("<BR>");
     }
-    if (物品数据.equipped.rout !== undefined && 物品数据.equipped.rout !== 0) {
+    if (物品装备数据.rout !== undefined && 物品装备数据.rout !== 0) {
         文本数据.push("<FONT COLOR=\'#FF3333\'>击溃</FONT>：");
-        文本数据.push(物品数据.equipped.rout + "%");
+        文本数据.push(物品装备数据.rout + "%");
         文本数据.push("<BR>");
     }
     // 检查是否存在伤害类型信息
-    if (物品数据.equipped.damagetype !== undefined && 物品数据.equipped.damagetype !== 0) {
+    if (物品装备数据.damagetype !== undefined && 物品装备数据.damagetype !== 0) {
         // 如果是“魔法”类型，并且指定了具体的魔法属性
-        if (物品数据.equipped.damagetype == "魔法" && 物品数据.equipped.magictype !== undefined && 物品数据.equipped.magictype !== 0) {
+        if (物品装备数据.damagetype == "魔法" && 物品装备数据.magictype !== undefined && 物品装备数据.magictype !== 0) {
             文本数据.push("<FONT COLOR=\'#0099FF\'>伤害属性：");
-            文本数据.push(物品数据.equipped.magictype + "");
+            文本数据.push(物品装备数据.magictype + "");
             文本数据.push("</FONT><BR>");
         }
         // ========== 新增：“破击”类型的显示逻辑 ==========
         // 如果是“破击”类型，并且指定了触发的魔法属性
-        else if (物品数据.equipped.damagetype == "破击" && 物品数据.equipped.magictype !== undefined && 物品数据.equipped.magictype !== 0) {
-            if (ArrayUtil.includes(_root.敌人函数.魔法伤害种类, 物品数据.equipped.magictype)) {
+        else if (物品装备数据.damagetype == "破击" && 物品装备数据.magictype !== undefined && 物品装备数据.magictype !== 0) {
+            if (ArrayUtil.includes(_root.敌人函数.魔法伤害种类, 物品装备数据.magictype)) {
                 // 比伤害类型淡一些的蓝色
                 文本数据.push("<FONT COLOR=\'#66bcf5\'>附加伤害：");
                 // 伤害数字可以考虑用这个图标：✨
-                文本数据.push(物品数据.equipped.magictype);
+                文本数据.push(物品装备数据.magictype);
             } else {
                 // 使用“破击”的专属颜色，更醒目
                 文本数据.push("<FONT COLOR=\'#CC6600\'>破击类型：");
                 // 将“破击”和其关联的属性一同显示，例如：“破击 (生化)”
-                文本数据.push(物品数据.equipped.magictype);
+                文本数据.push(物品装备数据.magictype);
             }
             文本数据.push("</FONT><BR>");
         }
@@ -188,12 +190,12 @@ _root.物品图标注释 = function(name, value) {
         else {
             // 其他所有情况（如 真伤，或没有指定属性的魔法/破击）
             文本数据.push("<FONT COLOR=\'#0099FF\'>伤害类型：");
-            文本数据.push(物品数据.equipped.damagetype == "魔法" ? "能量" : 物品数据.equipped.damagetype + "");
+            文本数据.push(物品装备数据.damagetype == "魔法" ? "能量" : 物品装备数据.damagetype + "");
             文本数据.push("</FONT><BR>");
         }
     }
-    if (物品数据.equipped.magicdefence !== undefined && 物品数据.equipped.magicdefence !== 0) {
-        var 魔法抗性对象 = 物品数据.equipped.magicdefence;
+    if (物品装备数据.magicdefence !== undefined && 物品装备数据.magicdefence !== 0) {
+        var 魔法抗性对象 = 物品装备数据.magicdefence;
         if (魔法抗性对象) {
             for (var key in 魔法抗性对象) {
                 var 抗性种类 = key == "基础" ? "能量" : key;
@@ -201,34 +203,34 @@ _root.物品图标注释 = function(name, value) {
             }
         }
     }
-    if (物品数据.equipped.defence !== undefined && 物品数据.equipped.defence !== 0) {
+    if (物品装备数据.defence !== undefined && 物品装备数据.defence !== 0) {
         文本数据.push("防御：");
-        文本数据.push(物品数据.equipped.defence);
-        文本数据.push("<FONT COLOR=\'#FFCC00\'>(+" + (_root.强化计算(物品数据.equipped.defence, 强化等级) - 物品数据.equipped.defence) + ")</FONT>");
+        文本数据.push(物品装备数据.defence);
+        文本数据.push("<FONT COLOR=\'#FFCC00\'>(+" + (_root.强化计算(物品装备数据.defence, 强化等级) - 物品装备数据.defence) + ")</FONT>");
         文本数据.push("<BR>");
     }
-    if (物品数据.equipped.hp !== undefined && 物品数据.equipped.hp !== 0) {
-        文本数据.push("<FONT COLOR=\'#00FF00\'>HP：" + 物品数据.equipped.hp + "</FONT>");
-        文本数据.push("<FONT COLOR=\'#FFCC00\'>(+" + (_root.强化计算(物品数据.equipped.hp, 强化等级) - 物品数据.equipped.hp) + ")</FONT>");
+    if (物品装备数据.hp !== undefined && 物品装备数据.hp !== 0) {
+        文本数据.push("<FONT COLOR=\'#00FF00\'>HP：" + 物品装备数据.hp + "</FONT>");
+        文本数据.push("<FONT COLOR=\'#FFCC00\'>(+" + (_root.强化计算(物品装备数据.hp, 强化等级) - 物品装备数据.hp) + ")</FONT>");
         文本数据.push("<BR>");
     }
-    if (物品数据.equipped.mp !== undefined && 物品数据.equipped.mp !== 0) {
-        文本数据.push("<FONT COLOR=\'#00FFFF\'>MP：" + 物品数据.equipped.mp + "</FONT>");
-        文本数据.push("<FONT COLOR=\'#FFCC00\'>(+" + (_root.强化计算(物品数据.equipped.mp, 强化等级) - 物品数据.equipped.mp) + ")</FONT>");
+    if (物品装备数据.mp !== undefined && 物品装备数据.mp !== 0) {
+        文本数据.push("<FONT COLOR=\'#00FFFF\'>MP：" + 物品装备数据.mp + "</FONT>");
+        文本数据.push("<FONT COLOR=\'#FFCC00\'>(+" + (_root.强化计算(物品装备数据.mp, 强化等级) - 物品装备数据.mp) + ")</FONT>");
         文本数据.push("<BR>");
     }
 
     if (物品数据.use == "药剂") {
-        if (!isNaN(物品数据.data.affecthp) && 物品数据.data.affecthp != 0)
-            文本数据.push("<FONT COLOR=\'#00FF00\'>HP+" + 物品数据.data.affecthp + "</FONT><BR>");
-        if (!isNaN(物品数据.data.affectmp) && 物品数据.data.affectmp != 0)
-            文本数据.push("<FONT COLOR=\'#00FFFF\'>MP+" + 物品数据.data.affectmp + "</FONT><BR>");
-        if (物品数据.data.friend == 1) {
+        if (!isNaN(物品装备数据.affecthp) && 物品装备数据.affecthp != 0)
+            文本数据.push("<FONT COLOR=\'#00FF00\'>HP+" + 物品装备数据.affecthp + "</FONT><BR>");
+        if (!isNaN(物品装备数据.affectmp) && 物品装备数据.affectmp != 0)
+            文本数据.push("<FONT COLOR=\'#00FFFF\'>MP+" + 物品装备数据.affectmp + "</FONT><BR>");
+        if (物品装备数据.friend == 1) {
             文本数据.push("<FONT COLOR=\'#FFCC00\'>全体友方有效</FONT><BR>");
-        } else if (物品数据.data.friend == "淬毒") {
-            文本数据.push("<FONT COLOR=\'#66dd00\'>剧毒性: " + (isNaN(物品数据.data.poison) ? 0 : 物品数据.data.poison) + "</FONT><BR>");
-        } else if (物品数据.data.friend == "净化") {
-            文本数据.push("净化度: " + (isNaN(物品数据.data.clean) ? 0 : 物品数据.data.clean) + "<BR>");
+        } else if (物品装备数据.friend == "淬毒") {
+            文本数据.push("<FONT COLOR=\'#66dd00\'>剧毒性: " + (isNaN(物品装备数据.poison) ? 0 : 物品装备数据.poison) + "</FONT><BR>");
+        } else if (物品装备数据.friend == "净化") {
+            文本数据.push("净化度: " + (isNaN(物品装备数据.clean) ? 0 : 物品装备数据.clean) + "<BR>");
         }
     }
     if (物品数据.actiontype !== undefined) {

@@ -470,32 +470,32 @@ _root.刷新人物装扮 = function(目标) {
         //_root.发布调试消息("false");
 
         //加载dressup
-        目标人物.面具 = 头部装备数据.equipped.dressup;
+        目标人物.面具 = 头部装备数据.data.dressup;
 
-        var 上装装备装扮 = 上装装备数据.equipped.dressup;
+        var 上装装备装扮 = 上装装备数据.data.dressup;
         目标人物.身体 = 目标人物.性别 + 上装装备装扮 + "身体";
         目标人物.上臂 = 目标人物.性别 + 上装装备装扮 + "上臂";
         目标人物.左下臂 = 目标人物.性别 + 上装装备装扮 + "左下臂";
         目标人物.右下臂 = 目标人物.性别 + 上装装备装扮 + "右下臂";
 
-        var 手部装备装扮 = 手部装备数据.equipped.dressup;
+        var 手部装备装扮 = 手部装备数据.data.dressup;
         目标人物.左手 = 手部装备装扮 + "左手";
         目标人物.右手 = 手部装备装扮 + "右手";
 
-        var 下装装备装扮 = 下装装备数据.equipped.dressup;
+        var 下装装备装扮 = 下装装备数据.data.dressup;
         目标人物.屁股 = 目标人物.性别 + 下装装备装扮 + "屁股";
         目标人物.左大腿 = 目标人物.性别 + 下装装备装扮 + "左大腿";
         目标人物.右大腿 = 目标人物.性别 + 下装装备装扮 + "右大腿";
         目标人物.小腿 = 目标人物.性别 + 下装装备装扮 + "小腿";
-        目标人物.脚 = 脚部装备数据.equipped.dressup;
-        目标人物.刀_装扮 = 刀数据.equipped.dressup;
-        目标人物.长枪_装扮 = 长枪数据.equipped.dressup;
-        目标人物.手枪_装扮 = 手枪数据.equipped.dressup;
-        目标人物.手枪2_装扮 = 手枪2数据.equipped.dressup;
-        目标人物.手雷_装扮 = 手雷数据.equipped.dressup;
+        目标人物.脚 = 脚部装备数据.data.dressup;
+        目标人物.刀_装扮 = 刀数据.data.dressup;
+        目标人物.长枪_装扮 = 长枪数据.data.dressup;
+        目标人物.手枪_装扮 = 手枪数据.data.dressup;
+        目标人物.手枪2_装扮 = 手枪2数据.data.dressup;
+        目标人物.手雷_装扮 = 手雷数据.data.dressup;
 
             //_root.发布调试消息("人物 = " + 目标); 
-            //_root.发布调试消息("面具 = " + 目标人物.面具 + " " + 头部装备 + " " + 头部装备数据.equipped.dressup);
+            //_root.发布调试消息("面具 = " + 目标人物.面具 + " " + 头部装备 + " " + 头部装备数据.data.dressup);
         /*
            _root.发布调试消息("上臂 = " + 目标人物.上臂);
            _root.发布调试消息("左下臂 = " + 目标人物.左下臂);
@@ -605,7 +605,7 @@ _root.刷新人物装扮 = function(目标) {
 
     for (var 迭代器 in 装备数据) {
         var 装备迭代器 = 装备数据[迭代器];
-        var 装备0号数据 = 装备迭代器[0].equipped;
+        var 装备0号数据 = 装备迭代器[0].data;
         var 装备0号伤害种类 = 装备0号数据.damagetype;
 
         if (装备0号数据.damage != undefined) {
