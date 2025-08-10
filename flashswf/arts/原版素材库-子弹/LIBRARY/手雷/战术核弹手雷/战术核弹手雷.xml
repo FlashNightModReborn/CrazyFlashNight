@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/战术核弹手雷/战术核弹手雷" itemID="68936621-00002cfc" linkageExportForAS="true" linkageIdentifier="战术核弹手雷" lastModified="1754673197" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/战术核弹手雷/战术核弹手雷" itemID="68936621-00002cfc" linkageExportForAS="true" linkageIdentifier="战术核弹手雷" lastModified="1754837086" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="战术核弹手雷" currentFrame="2">
       <layers>
@@ -44,8 +44,9 @@ if(发射者名 == undefined)
 子弹属性.子弹威力 = 子弹威力 ? 子弹威力 : 100000;
 子弹属性.子弹速度 = 0;
 子弹属性.击中地图效果 = "";
-子弹属性.Z轴攻击范围 = 500;
+子弹属性.Z轴攻击范围 = 300;
 子弹属性.击倒率 = 0.001;
+子弹属性.命中率 = 1000;
 子弹属性.击中后子弹的效果 = "";
 子弹属性.子弹敌我属性 = 子弹敌我属性值;
 子弹属性.伤害类型 = "物理";
