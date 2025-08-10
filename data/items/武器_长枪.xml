@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!--已用ID：[251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 276, 278, 279, 280, 281, 282, 283, 284, 285, 288, 289, 292, 294, 295, 296, 298, 299, 300, 301, 304, 306, 308, 394, 395, 444, 451, 452, 459, 460, 520, 524, 566, 567, 619, 627, 633, 647, 648, 686, 687, 691, 701, 711, 715, 752, 753, 754, 755, 899, 1523, 1524, 1701, 2596, 2608, 3201, 5001, 5701, 5702, 6001, 6003, 6004, 6005, 6006, 6007, 6017, 6023, 6030, 6031, 6033, 6063, 6071, 6073, 6074, 6075, 6076, 6077, 8002, 8003, 8005, 8007, 8009, 8024, 8025, 8028, 8033, 8042, 9002, 12002, 12004, 12006, 12008, 12010, 12014, 12024, 12026, 12032, 12034, 12036, 12102, 12104, 12106, 12108, 12110, 12114, 12124, 12126, 12132, 12134, 12136, 13000, 13001, 13004, 13005, 13006, 13010, 13011, 13016, 22001, 22002, 22004, 22005, 22006, 22007, 22008]
-预留ID区间：17703-17900--><root>
+预留ID区间：17703-17900-->
+<root>
   <item>
     <id>17702</id>
     <name>XM556-Preview</name>
@@ -5860,4 +5861,59 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       </attr_0>
     </lifecycle>
   </item>
+  <item>
+  <id>17704</id>
+  <name>XM214-CageFrame</name>
+  <displayname>XM214-CageFrame</displayname>
+  <icon>XM214-CageFrame</icon>
+  <type>武器</type>
+  <use>长枪</use>
+  <weight>50</weight>
+  <price>230000</price>
+  <description>火神机枪。
+    最早在VN战时期采用，因此被称作「喷火神龙」，最初装备在直升机上；后来更多军用载具都配备了M134。
+    相传在洛圣都，射击技术过硬的银行抢匪可以随身携带并且用这把枪连续发射9999颗子弹。</description>
+  <skill>
+    <skillname>旋转抡枪</skillname>
+    <description>手持该武器时可以旋转抡枪。</description>
+    <cd>5000</cd>
+    <mp>0</mp>
+  </skill>
+  <level>31</level>
+  <data>
+    <capacity>60</capacity>
+    <split>5</split>
+    <diffusion>7</diffusion>
+    <interval>150</interval>
+    <velocity>50</velocity>
+    <bullet>纵向机枪联弹-加强普通子弹</bullet>
+    <bulletrename>加强普通子弹</bulletrename>
+    <sound>m134_6连发_2.wav</sound>
+    <muzzle>战斗步枪枪火</muzzle>
+    <bullethit>火花</bullethit>
+    <clipname>机枪通用弹药</clipname>
+    <bulletsize>25</bulletsize>
+    <power>230</power>
+    <impact>2</impact>
+    <dressup>枪-长枪-XM214-CageFrame</dressup>
+    <evasion>-30</evasion>
+    <accuracy>-15</accuracy>
+  </data>
+  <lifecycle>
+    <attr_0>
+      <init>
+        <initRoutines>XM214初始化</initRoutines>
+        <initParam>
+          <maxSpinCount>29</maxSpinCount>
+          <spinUpAmount>5</spinUpAmount>
+          <spinSpeedFactor>0.1</spinSpeedFactor>
+          <spinDownRate>0.33</spinDownRate>
+        </initParam>
+      </init>
+      <cycle>
+        <cycleRoutines>XM214周期</cycleRoutines>
+      </cycle>
+    </attr_0>
+  </lifecycle>
+</item>
 </root>
