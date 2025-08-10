@@ -1,0 +1,64 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/wa90/Symbol 6" itemID="60abe6b3-00000030" symbolType="graphic" lastModified="1700386216">
+  <timeline>
+    <DOMTimeline name="Symbol 6">
+      <layers>
+        <DOMLayer name="Layer_1" color="#00FFFF" current="true" isSelected="true" heightLiteral="18">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/wa90/消音器" symbolType="graphic" centerPoint3DX="2717.7" centerPoint3DY="445.6" loop="loop">
+                  <matrix>
+                    <Matrix a="-4.10675048828125" d="4.34800720214844" tx="3043.35" ty="390.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="79.25" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/wa90/wa管" selected="true" symbolType="graphic" centerPoint3DX="1729.6" centerPoint3DY="484.25" loop="loop">
+                  <matrix>
+                    <Matrix a="6.9171142578125" d="6.9171142578125" tx="999.15" ty="337.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="116.8" y="21.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/wa90/Graphic/shape 4006" symbolType="graphic" centerPoint3DX="574.1" centerPoint3DY="448" loop="loop">
+                  <matrix>
+                    <Matrix a="-3.29765319824219" d="4.34800720214844" tx="574.6" ty="448"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/wa90/瞄具" symbolType="graphic" centerPoint3DX="908.75" centerPoint3DY="69.25" loop="loop">
+                  <matrix>
+                    <Matrix a="6.96405029296875" d="6.96405029296875" tx="388.3" ty="-48.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="74.65" y="16.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/wa90/Symbol 4" symbolType="graphic" centerPoint3DX="879.5" centerPoint3DY="229.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-3.88763427734375" d="4.34800720214844" tx="1094.65" ty="140.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.4" y="20.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/wa90/Symbol 5" symbolType="graphic" centerPoint3DX="811.1" centerPoint3DY="451.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-4.34800720214844" d="4.34800720214844" tx="1144.35" ty="288.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="76.65" y="37.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

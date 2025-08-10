@@ -1,0 +1,73 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/wa90/P50/图标-Kel-Tec-P50" itemID="688f460b-0000768a" linkageExportForAS="true" linkageIdentifier="图标-Kel-Tec-P50" lastModified="1754224051" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="图标-Kel-Tec-P50">
+      <layers>
+        <DOMLayer name="Action Layer" color="#FFFF00" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[stop ();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Mask Layer 2" color="#FFFF00" locked="true" outline="true" useOutlineView="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/未命名文件夹 1/shape 85" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Masked Layer 3 - 2" color="#FFFF00" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/wa90/P50/Kel-Tec-P50" centerPoint3DX="14.55" centerPoint3DY="4.1">
+                  <matrix>
+                    <Matrix a="0.119171142578125" b="-0.119171142578125" c="0.119171142578125" d="0.119171142578125" tx="-1.95" ty="2.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="61.7" y="80.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#FFFF00" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/未命名文件夹 1/shape 770" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/wa90/P50/Kel-Tec-P50" selected="true" centerPoint3DX="9.05" centerPoint3DY="-86">
+                  <matrix>
+                    <Matrix a="0.212646484375" d="0.212646484375" tx="-5.95" ty="2.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="58.8" y="127.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

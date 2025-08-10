@@ -1,0 +1,1150 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/XM556/XM556-OC-Overlord 动画" itemID="686f22d9-00000552" lastModified="1752243091" lastUniqueIdentifier="57">
+  <timeline>
+    <DOMTimeline name="XM556-OC-Overlord 动画" currentFrame="22">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="能量腔荧光" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1829"/>
+                  <Point x="0.3602" y="0.2648"/>
+                  <Point x="0.4949" y="0.4949"/>
+                  <Point x="0.6362" y="0.7363"/>
+                  <Point x="0.7744" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/能量腔荧光" centerPoint3DX="81.2" centerPoint3DY="87.5">
+                  <matrix>
+                    <Matrix tx="59.05" ty="72.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.15" y="14.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="12" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.152361894777696" y="0.0920785908283803"/>
+                  <Point x="0.295010709799621" y="0.290163370610663"/>
+                  <Point x="0.410716855897249" y="0.468452084494514"/>
+                  <Point x="0.57556680296064" y="0.722492208832317"/>
+                  <Point x="0.736800084518747" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/能量腔荧光" centerPoint3DX="81.2" centerPoint3DY="87.5">
+                  <matrix>
+                    <Matrix tx="59.05" ty="72.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.15" y="14.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.25"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.2857"/>
+                  <Point x="0.3912" y="0.2415"/>
+                  <Point x="0.5084" y="0.5084"/>
+                  <Point x="0.619" y="0.7603"/>
+                  <Point x="0.75" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/能量腔荧光" centerPoint3DX="81.2" centerPoint3DY="87.5">
+                  <matrix>
+                    <Matrix tx="59.05" ty="72.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.15" y="14.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.264295638485569" y="0.607885868050894"/>
+                  <Point x="0.585390806081305" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/能量腔荧光" centerPoint3DX="81.2" centerPoint3DY="87.5">
+                  <matrix>
+                    <Matrix tx="59.05" ty="72.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.15" y="14.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.9296875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.2857"/>
+                  <Point x="0.3912" y="0.2415"/>
+                  <Point x="0.5084" y="0.5084"/>
+                  <Point x="0.619" y="0.7603"/>
+                  <Point x="0.75" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/能量腔荧光" centerPoint3DX="81.2" centerPoint3DY="87.5">
+                  <matrix>
+                    <Matrix tx="59.05" ty="72.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.15" y="14.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.103000833916789" y="0.110681761776723"/>
+                  <Point x="0.180905477857659" y="0.254276239540469"/>
+                  <Point x="0.2626" y="0.40451488952895"/>
+                  <Point x="0.4285" y="0.709646499227196"/>
+                  <Point x="0.625" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/能量腔荧光" selected="true" centerPoint3DX="81.2" centerPoint3DY="87.5">
+                  <matrix>
+                    <Matrix tx="59.05" ty="72.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.15" y="14.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.98046875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.078676021092201" y="0.105107719591947"/>
+                  <Point x="0.144804049741882" y="0.228542530139351"/>
+                  <Point x="0.21344" y="0.356432100866605"/>
+                  <Point x="0.3904" y="0.686201738359897"/>
+                  <Point x="0.6" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/能量腔荧光" centerPoint3DX="81.2" centerPoint3DY="87.5">
+                  <matrix>
+                    <Matrix tx="59.05" ty="72.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.15" y="14.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.87890625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="4" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.00559009919752721" y="0.0124483284024609"/>
+                  <Point x="0.0111883437652899" y="0.0249309673550985"/>
+                  <Point x="0.0168000000000002" y="0.0374421109505188"/>
+                  <Point x="0.238" y="0.530664918622538"/>
+                  <Point x="0.5" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/能量腔荧光" centerPoint3DX="81.2" centerPoint3DY="87.5">
+                  <matrix>
+                    <Matrix tx="59.05" ty="72.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.15" y="14.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.75"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/能量腔荧光" centerPoint3DX="81.2" centerPoint3DY="87.5">
+                  <matrix>
+                    <Matrix tx="59.05" ty="72.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.15" y="14.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="能量指示灯" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.2276"/>
+                  <Point x="0.349" y="0.2729"/>
+                  <Point x="0.4886" y="0.4886"/>
+                  <Point x="0.6667" y="0.7637"/>
+                  <Point x="0.7857" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/能量指示灯" centerPoint3DX="42.1" centerPoint3DY="95.55">
+                  <matrix>
+                    <Matrix tx="24.05" ty="89.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.05" y="5.6"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="4" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1972"/>
+                  <Point x="0.3685" y="0.2741"/>
+                  <Point x="0.5081" y="0.5081"/>
+                  <Point x="0.6565" y="0.7568"/>
+                  <Point x="0.8354" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/能量指示灯" centerPoint3DX="42.1" centerPoint3DY="95.55">
+                  <matrix>
+                    <Matrix tx="24.05" ty="89.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.05" y="5.6"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.313545791440987" y="0.536618660648367"/>
+                  <Point x="0.669152997522936" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/能量指示灯" centerPoint3DX="42.1" centerPoint3DY="95.55">
+                  <matrix>
+                    <Matrix tx="24.05" ty="89.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.05" y="5.6"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1972"/>
+                  <Point x="0.3685" y="0.2741"/>
+                  <Point x="0.5081" y="0.5081"/>
+                  <Point x="0.6565" y="0.7568"/>
+                  <Point x="0.8354" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/能量指示灯" centerPoint3DX="42.1" centerPoint3DY="95.55">
+                  <matrix>
+                    <Matrix tx="24.05" ty="89.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.05" y="5.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="6" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.126635868297136" y="0.116791353635568"/>
+                  <Point x="0.241775911075213" y="0.280127894989617"/>
+                  <Point x="0.344134064398448" y="0.42939752522344"/>
+                  <Point x="0.542000510512029" y="0.717888754084856"/>
+                  <Point x="0.780533577962969" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/能量指示灯" centerPoint3DX="42.1" centerPoint3DY="95.55">
+                  <matrix>
+                    <Matrix tx="24.05" ty="89.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.05" y="5.6"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.9296875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/能量指示灯" centerPoint3DX="42.1" centerPoint3DY="95.55">
+                  <matrix>
+                    <Matrix tx="24.05" ty="89.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.05" y="5.6"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 9" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="6" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1992"/>
+                  <Point x="0.3769" y="0.2698"/>
+                  <Point x="0.5183" y="0.5"/>
+                  <Point x="0.6717" y="0.7496"/>
+                  <Point x="0.8191" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/枪口能量" centerPoint3DX="188.55" centerPoint3DY="92.25">
+                  <matrix>
+                    <Matrix tx="184.6" ty="84"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.95" y="8.25"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="6" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1992"/>
+                  <Point x="0.3769" y="0.2698"/>
+                  <Point x="0.5183" y="0.5"/>
+                  <Point x="0.6717" y="0.7496"/>
+                  <Point x="0.8191" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/枪口能量" centerPoint3DX="199.05" centerPoint3DY="92.25">
+                  <matrix>
+                    <Matrix tx="195.1" ty="84"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.95" y="8.25"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="7" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1829"/>
+                  <Point x="0.3679" y="0.274"/>
+                  <Point x="0.5075" y="0.5075"/>
+                  <Point x="0.6504" y="0.7466"/>
+                  <Point x="0.7398" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/枪口能量" centerPoint3DX="212.55" centerPoint3DY="92.25">
+                  <matrix>
+                    <Matrix tx="208.6" ty="84"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.95" y="8.25"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1829"/>
+                  <Point x="0.3679" y="0.274"/>
+                  <Point x="0.5075" y="0.5075"/>
+                  <Point x="0.6504" y="0.7466"/>
+                  <Point x="0.7398" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/枪口能量" centerPoint3DX="204.55" centerPoint3DY="92.25">
+                  <matrix>
+                    <Matrix tx="200.6" ty="84"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.95" y="8.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="6" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.125399346772071" y="0.116985401861267"/>
+                  <Point x="0.243136910398683" y="0.27758484926565"/>
+                  <Point x="0.343333542131145" y="0.424469953872973"/>
+                  <Point x="0.533866814881316" y="0.703879566114541"/>
+                  <Point x="0.653066776979744" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/枪口能量" selected="true" centerPoint3DX="205.7" centerPoint3DY="92.25">
+                  <matrix>
+                    <Matrix tx="201.75" ty="84"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.95" y="8.25"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.9296875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/枪口能量" centerPoint3DX="212.55" centerPoint3DY="92.25">
+                  <matrix>
+                    <Matrix tx="208.6" ty="84"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.95" y="8.25"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="线圈前端" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/线圈前端" centerPoint3DX="157.45" centerPoint3DY="92.35">
+                  <matrix>
+                    <Matrix d="0.378616333007813" tx="138.7" ty="83.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.75" y="22.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="6" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1992"/>
+                  <Point x="0.3769" y="0.2698"/>
+                  <Point x="0.5183" y="0.5"/>
+                  <Point x="0.6717" y="0.7496"/>
+                  <Point x="0.8191" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/线圈前端" centerPoint3DX="172.45" centerPoint3DY="92.35">
+                  <matrix>
+                    <Matrix tx="153.7" ty="69.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.75" y="22.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="6" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1992"/>
+                  <Point x="0.3769" y="0.2698"/>
+                  <Point x="0.5183" y="0.5"/>
+                  <Point x="0.6717" y="0.7496"/>
+                  <Point x="0.8191" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/线圈前端" centerPoint3DX="181.7" centerPoint3DY="92.35">
+                  <matrix>
+                    <Matrix tx="162.95" ty="69.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.75" y="22.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="7" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1829"/>
+                  <Point x="0.3679" y="0.274"/>
+                  <Point x="0.5075" y="0.5075"/>
+                  <Point x="0.6504" y="0.7466"/>
+                  <Point x="0.7398" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/线圈前端" selected="true" centerPoint3DX="196.45" centerPoint3DY="92.35">
+                  <matrix>
+                    <Matrix tx="177.7" ty="69.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.75" y="22.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="8" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1829"/>
+                  <Point x="0.3679" y="0.274"/>
+                  <Point x="0.5075" y="0.5075"/>
+                  <Point x="0.6504" y="0.7466"/>
+                  <Point x="0.7398" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/线圈前端" centerPoint3DX="188.45" centerPoint3DY="92.35">
+                  <matrix>
+                    <Matrix tx="169.7" ty="69.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.75" y="22.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/线圈前端" centerPoint3DX="196.45" centerPoint3DY="92.35">
+                  <matrix>
+                    <Matrix tx="177.7" ty="69.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.75" y="22.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 12" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/枪管彩光" centerPoint3DX="178.05" centerPoint3DY="92.65">
+                  <matrix>
+                    <Matrix d="-1" tx="172.7" ty="101.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.35" y="8.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="10" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.2215"/>
+                  <Point x="0.3656" y="0.2731"/>
+                  <Point x="0.5048" y="0.5048"/>
+                  <Point x="0.6748" y="0.7877"/>
+                  <Point x="0.8313" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/枪管彩光" centerPoint3DX="178.05" centerPoint3DY="92.65">
+                  <matrix>
+                    <Matrix d="-1" tx="172.7" ty="101.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.35" y="8.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.33248610854819" y="0.607659764372039"/>
+                  <Point x="0.657880598735499" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/枪管彩光" centerPoint3DX="184.8" centerPoint3DY="92.65">
+                  <matrix>
+                    <Matrix d="-1" tx="179.45" ty="101.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.35" y="8.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 11" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="15" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.2215"/>
+                  <Point x="0.3656" y="0.2731"/>
+                  <Point x="0.5048" y="0.5048"/>
+                  <Point x="0.6748" y="0.7877"/>
+                  <Point x="0.8313" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/线圈中级" centerPoint3DX="175.6" centerPoint3DY="92.2">
+                  <matrix>
+                    <Matrix tx="167.4" ty="69.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/线圈中级" centerPoint3DX="184.6" centerPoint3DY="92.2">
+                  <matrix>
+                    <Matrix tx="176.4" ty="69.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 10" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="7" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.2215"/>
+                  <Point x="0.3656" y="0.2731"/>
+                  <Point x="0.5048" y="0.5048"/>
+                  <Point x="0.6748" y="0.7877"/>
+                  <Point x="0.8313" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/枪管彩光" centerPoint3DX="165" centerPoint3DY="92.65">
+                  <matrix>
+                    <Matrix tx="159.65" ty="83.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.35" y="8.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="8" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.023977292886881" y="0.0384642954181219"/>
+                  <Point x="0.0477765989307741" y="0.0767392671011469"/>
+                  <Point x="0.0715" y="0.114402552209123"/>
+                  <Point x="0.39025" y="0.620330496433758"/>
+                  <Point x="0.6836875" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/枪管彩光" centerPoint3DX="170.5" centerPoint3DY="92.65">
+                  <matrix>
+                    <Matrix tx="165.15" ty="83.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.35" y="8.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/枪管彩光" centerPoint3DX="178" centerPoint3DY="92.65">
+                  <matrix>
+                    <Matrix tx="172.65" ty="83.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.35" y="8.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="线圈中级" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1829"/>
+                  <Point x="0.3602" y="0.2648"/>
+                  <Point x="0.4949" y="0.4949"/>
+                  <Point x="0.6362" y="0.7363"/>
+                  <Point x="0.7744" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/线圈中级" centerPoint3DX="151.6" centerPoint3DY="92.2">
+                  <matrix>
+                    <Matrix tx="143.4" ty="69.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="9" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0403567373867544" y="0.0595647398515673"/>
+                  <Point x="0.0791316046875877" y="0.119618530548014"/>
+                  <Point x="0.116075345802199" y="0.178285745103935"/>
+                  <Point x="0.363350249065215" y="0.571003664589007"/>
+                  <Point x="0.605200154450557" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/线圈中级" centerPoint3DX="160.85" centerPoint3DY="92.2">
+                  <matrix>
+                    <Matrix tx="152.65" ty="69.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/线圈中级" centerPoint3DX="175.6" centerPoint3DY="92.2">
+                  <matrix>
+                    <Matrix tx="167.4" ty="69.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="7" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.2215"/>
+                  <Point x="0.3656" y="0.2731"/>
+                  <Point x="0.5048" y="0.5048"/>
+                  <Point x="0.6748" y="0.7877"/>
+                  <Point x="0.8313" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/线圈中级" selected="true" centerPoint3DX="164.15" centerPoint3DY="91.85">
+                  <matrix>
+                    <Matrix tx="155.95" ty="69.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="8" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.023977292886881" y="0.0384642954181219"/>
+                  <Point x="0.0477765989307741" y="0.0767392671011469"/>
+                  <Point x="0.0715" y="0.114402552209123"/>
+                  <Point x="0.39025" y="0.620330496433758"/>
+                  <Point x="0.6836875" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/线圈中级" centerPoint3DX="169.2" centerPoint3DY="92">
+                  <matrix>
+                    <Matrix tx="161" ty="69.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/线圈中级" centerPoint3DX="175.6" centerPoint3DY="92.2">
+                  <matrix>
+                    <Matrix tx="167.4" ty="69.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="枪管彩光" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/枪管彩光" centerPoint3DX="165" centerPoint3DY="92.65">
+                  <matrix>
+                    <Matrix tx="159.65" ty="83.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.35" y="8.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.25"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/枪管彩光" centerPoint3DX="165" centerPoint3DY="92.65">
+                  <matrix>
+                    <Matrix tx="159.65" ty="83.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.35" y="8.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/枪管彩光" centerPoint3DX="165" centerPoint3DY="92.65">
+                  <matrix>
+                    <Matrix tx="159.65" ty="83.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.35" y="8.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.30078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/枪管彩光" centerPoint3DX="165" centerPoint3DY="92.65">
+                  <matrix>
+                    <Matrix tx="159.65" ty="83.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.35" y="8.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/枪管彩光" centerPoint3DX="165" centerPoint3DY="92.65">
+                  <matrix>
+                    <Matrix tx="159.65" ty="83.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.35" y="8.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="XM556-OC-Overlord枪身" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1829"/>
+                  <Point x="0.3602" y="0.2648"/>
+                  <Point x="0.4949" y="0.4949"/>
+                  <Point x="0.6362" y="0.7363"/>
+                  <Point x="0.7744" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/XM556-OC-Overlord枪身" centerPoint3DX="85.95" centerPoint3DY="76.1">
+                  <transformationPoint>
+                    <Point x="85.95" y="75.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="10" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.152361894777696" y="0.0920785908283803"/>
+                  <Point x="0.295010709799621" y="0.290163370610663"/>
+                  <Point x="0.410716855897249" y="0.468452084494514"/>
+                  <Point x="0.57556680296064" y="0.722492208832317"/>
+                  <Point x="0.736800084518747" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/XM556-OC-Overlord枪身" centerPoint3DX="85.95" centerPoint3DY="76.1">
+                  <transformationPoint>
+                    <Point x="85.95" y="75.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.319639471608877" y="0.652855002772828"/>
+                  <Point x="0.652409872152921" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/XM556-OC-Overlord枪身" centerPoint3DX="85.95" centerPoint3DY="76.1">
+                  <transformationPoint>
+                    <Point x="85.95" y="75.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/XM556-OC-Overlord枪身" selected="true" centerPoint3DX="85.95" centerPoint3DY="76.1">
+                  <transformationPoint>
+                    <Point x="85.95" y="75.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/XM556-OC-Overlord枪身" centerPoint3DX="85.95" centerPoint3DY="76.1">
+                  <transformationPoint>
+                    <Point x="85.95" y="75.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/xm556oc激光模组" selected="true" centerPoint3DX="124.05" centerPoint3DY="90">
+                  <matrix>
+                    <Matrix a="0.0680389404296875" tx="104.4" ty="88"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="288.8" y="2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/xm556oc激光模组" selected="true" centerPoint3DX="469" centerPoint3DY="92.05">
+                  <matrix>
+                    <Matrix tx="180.25" ty="90.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="288.75" y="2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

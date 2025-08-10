@@ -66,38 +66,40 @@ class org.flashNight.arki.component.Damage.CrumbleDamageHandle extends BaseDamag
         var MIN_MAX_HP:Number = CrumbleDamageHandle.MIN_MAX_HP;
 
         // 检查子弹是否具有击溃属性，且目标的满血值仍有削减空间
-        if (bullet.击溃 > 0) {
-            if (target.hp满血值 > MIN_MAX_HP) {
-                // 计算击溃伤害值（基于目标的满血值和子弹的击溃比例）
-                var crumbleAmount:Number = (target.hp满血值 * bullet.击溃 / 100) >> 0;
+        // if (bullet.击溃 > 0) {
+        // 外部已经防御击溃为正，且当前无动态击溃的需求
+        
+        if (target.hp满血值 > MIN_MAX_HP) {
+            // 计算击溃伤害值（基于目标的满血值和子弹的击溃比例）
+            var crumbleAmount:Number = (target.hp满血值 * bullet.击溃 / 100) >> 0;
 
-                // 如果计算出的伤害小于1，则没有效果，直接返回
-                if (crumbleAmount < 1) {
-                    return;
-                }
-
-                // 确保扣减后的满血值不会低于下限
-                // 能扣减的最大量是 "当前满血值 - 下限"
-                var maxCrumble:Number = target.hp满血值 - MIN_MAX_HP;
-                if (crumbleAmount > maxCrumble) {
-                    crumbleAmount = maxCrumble;
-                }
-
-                // 将击溃伤害添加到子弹的额外效果伤害中
-                bullet.additionalEffectDamage += crumbleAmount;
-
-                // 减少满血值并增加损伤值
-                target.hp满血值 -= crumbleAmount;
-                target.损伤值 += crumbleAmount;
-
-                // 在伤害结果中添加击溃效果的视觉提示
-                result.addDamageEffect('<font color="#FF3333" size="20"> 溃</font>');
-            } else {
-                // 在伤害结果中添加击溃效果的视觉提示
-                result.addDamageEffect('<font color="#FF3333" size="20"> 溃</font>');
+            // 如果计算出的伤害小于1，则没有效果，直接返回
+            if (crumbleAmount < 1) {
+                return;
             }
-        }
+
+            // 确保扣减后的满血值不会低于下限
+            // 能扣减的最大量是 "当前满血值 - 下限"
+            var maxCrumble:Number = target.hp满血值 - MIN_MAX_HP;
+            if (crumbleAmount > maxCrumble) {
+                crumbleAmount = maxCrumble;
+            }
+
+            // 将击溃伤害添加到子弹的额外效果伤害中
+            bullet.additionalEffectDamage += crumbleAmount;
+
+            // 减少满血值并增加损伤值
+            target.hp满血值 -= crumbleAmount;
+            target.损伤值 += crumbleAmount;
+
+
+        } 
+
+        // 在伤害结果中添加击溃效果的视觉提示
+        result.addDamageEffect('<font color="#FF3333" size="20"> 溃</font>');
+        
     }
+    // }
 
     /**
      * 返回类的字符串表示。

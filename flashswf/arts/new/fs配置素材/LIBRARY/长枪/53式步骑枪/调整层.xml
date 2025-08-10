@@ -1,0 +1,92 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/53式步骑枪/调整层" itemID="659eb6ee-000005a7" lastModified="1704953093" lastUniqueIdentifier="7">
+  <timeline>
+    <DOMTimeline name="调整层">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/53式步骑枪/枪机" centerPoint3DX="202.6" centerPoint3DY="8.95">
+                  <matrix>
+                    <Matrix a="0.337493896484375" d="0.337493896484375" tx="131.3" ty="0.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="211.7" y="25.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/53式步骑枪/枪身" selected="true" centerPoint3DX="193.5" centerPoint3DY="46.15">
+                  <matrix>
+                    <Matrix a="0.337493896484375" d="0.337493896484375" ty="11.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="573.65" y="102.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/53式步骑枪/枪管" centerPoint3DX="351" centerPoint3DY="14.05">
+                  <matrix>
+                    <Matrix a="0.337493896484375" d="0.337493896484375" tx="273"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="231.25" y="42.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMGroup>
+                  <members>
+                    <DOMSymbolInstance libraryItemName="长枪/53式步骑枪/弹仓" centerPoint3DX="175.25" centerPoint3DY="41.65">
+                      <matrix>
+                        <Matrix a="0.337478637695313" d="0.337478637695313" tx="126.7" ty="30.8"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="143.85" y="32.15"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMShape selected="true" isDrawingObject="true">
+                      <matrix>
+                        <Matrix tx="9.85" ty="-2.7"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="193.1" y="35.85"/>
+                      </transformationPoint>
+                      <fills>
+                        <FillStyle index="1">
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.001708984375" d="0.001708984375" tx="193.15" ty="35.85"/>
+                            </matrix>
+                            <GradientEntry color="#FFFFFF" ratio="0"/>
+                            <GradientEntry ratio="1"/>
+                          </RadialGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!3880 699[3873 692 3863 692!3863 692[3852 692 3845 699!3845 699[3837 707 3837 717!3837 717[3837 728 3845 735!3845 735[3852 743 3863 743!3863 743[3873 743 3880 735!3880 735[3888 728 3888 717!3888 717[3888 707 3880 699"/>
+                        <Edge cubics="!3863 743(;3876,743 3888,731 3888,717q3863 743Q3873 743q3880 735Q3888 728q3888 717);"/>
+                        <Edge cubics="!3888 717(;3888,703 3876,692 3863,692q3888 717Q3888 707q3880 699Q3873 692q3863 692);"/>
+                        <Edge cubics="!3863 692(;3848,692 3837,703 3837,717q3863 692Q3852 692q3845 699Q3837 707q3837 717);"/>
+                        <Edge cubics="!3837 717(;3837,731 3848,743 3863,743q3837 717Q3837 728q3845 735Q3852 743q3863 743);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

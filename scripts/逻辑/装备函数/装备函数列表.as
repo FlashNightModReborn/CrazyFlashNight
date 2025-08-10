@@ -18,6 +18,7 @@
 #include "../逻辑/装备函数/G11.as"
 #include "../逻辑/装备函数/G111.as"
 #include "../逻辑/装备函数/G1111.as"
+#include "../逻辑/装备函数/XM214-CageFrame.as"
 #include "../逻辑/装备函数/M134.as"
 #include "../逻辑/装备函数/M134暴力版.as"
 #include "../逻辑/装备函数/wa90变形款.as"

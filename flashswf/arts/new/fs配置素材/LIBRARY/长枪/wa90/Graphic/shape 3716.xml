@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/wa90/Graphic/shape 3716" itemID="5e86cc7d-00000e85" symbolType="graphic" lastModified="1585892477">
+  <timeline>
+    <DOMTimeline name="shape 3716">
+      <layers>
+        <DOMLayer name="Layer_1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.450408935546875" d="0.00701904296875" tx="368.95" ty="5.75"/>
+                        </matrix>
+                        <GradientEntry color="#FF0000" alpha="0.6" ratio="0"/>
+                        <GradientEntry color="#FF0000" alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!14759 230|0 230!0 230|0 0!0 0|14759 0!14759 0|14759 230"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

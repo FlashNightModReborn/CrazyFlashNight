@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/火药燃气液压打桩机/火药燃气打桩机" itemID="65519486-00001f36" linkageExportForAS="true" linkageIdentifier="枪-长枪-火药燃气液压打桩机" lastModified="1746783541" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="火药燃气打桩机" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;48&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="436.6" centerPoint3DY="18.95">
+                  <matrix>
+                    <Matrix tx="424.1" ty="6.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/火药燃气打桩机动画" name="动画" selected="true" centerPoint3DX="-22.15" centerPoint3DY="44.4">
+                  <matrix>
+                    <Matrix a="-3.89251708984375" d="3.89251708984375" tx="407.8" ty="-4.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="110.45" y="12.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

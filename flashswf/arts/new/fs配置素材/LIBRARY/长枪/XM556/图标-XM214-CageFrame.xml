@@ -1,0 +1,73 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/XM556/图标-XM214-CageFrame" itemID="68985a6e-0000056f" linkageExportForAS="true" linkageIdentifier="图标-XM214-CageFrame" lastModified="1754815111" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="图标-XM214-CageFrame" currentFrame="1">
+      <layers>
+        <DOMLayer name="Action Layer" color="#FFFF00" locked="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[stop ();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Mask Layer 2" color="#FFFF00" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/未命名文件夹 1/shape 85" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Masked Layer 3 - 2" color="#FFFF00" parentLayerIndex="1" locked="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/XM214-CageFrame" selected="true" centerPoint3DX="-218.2" centerPoint3DY="201.85">
+                  <matrix>
+                    <Matrix a="0.15802001953125" b="-0.135025024414063" c="0.135025024414063" d="0.15802001953125" tx="-16.65" ty="5.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="994.1" y="72.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/未命名文件夹 1/shape 770" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/XM214-CageFrame" selected="true" centerPoint3DX="6.9" centerPoint3DY="-89">
+                  <matrix>
+                    <Matrix a="0.212646484375" d="0.212646484375" tx="-8.1" ty="-0.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1014.6" y="65.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

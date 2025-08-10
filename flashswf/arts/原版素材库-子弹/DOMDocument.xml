@@ -284,7 +284,7 @@
           <Include href="特效-击中效果组/无声火花.xml" itemID="669d3422-0000173a" lastModified="1723624130"/>
           <Include href="特效-击中效果组/小烟雾.xml" itemID="669d3400-00001733" lastModified="1721648498"/>
           <Include href="特效-击中效果组/原版空手攻击火花.xml" loadImmediate="false" itemID="67ed511c-0000056e" lastModified="1743606056"/>
-          <Include href="特效-击中效果组/战术巴雷特击中特效.xml" itemID="669d344b-00001744" lastModified="1721648514"/>
+          <Include href="特效-击中效果组/战术巴雷特击中特效.xml" itemID="669d344b-00001744" lastModified="1754801434"/>
           <Include href="特效-枪火组/巴雷特枪火.xml" itemID="669d3444-00001742" lastModified="1721648720"/>
           <Include href="特效-枪火组/冲锋枪枪火.xml" itemID="68942165-00001ac6" lastModified="1754551062"/>
           <Include href="特效-枪火组/发射器枪火.xml" itemID="68942898-00001da9" lastModified="1754629326"/>
@@ -601,7 +601,7 @@
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 663.xml" itemIcon="1" loadImmediate="false" itemID="668b9cdd-000001df" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 664.xml" loadImmediate="false" itemID="668b9cdd-000001e0" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 1217.xml" itemIcon="1" loadImmediate="false" itemID="668b9f53-000001d0" lastModified="1720426265"/>
-          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1754777791"/>
+          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1754798280"/>
           <Include href="子弹-持续组/电球.xml" itemID="669d343b-00001740" lastModified="1722876120"/>
           <Include href="子弹-持续组/火焰.xml" itemID="669d3404-00001734" lastModified="1754557467"/>
           <Include href="子弹-持续组/声波.xml" itemID="669d34bf-0000176e" lastModified="1722875808"/>
@@ -624,11 +624,12 @@
           <Include href="子弹-普通与穿刺组/巴雷特子弹.xml" itemID="669d3447-00001743" lastModified="1721578567"/>
           <Include href="子弹-普通与穿刺组/穿刺子弹.xml" itemID="669d3454-00001746" lastModified="1721578580"/>
           <Include href="子弹-普通与穿刺组/等离子穿刺子弹.xml" itemID="68834f39-00000a66" lastModified="1753439176"/>
-          <Include href="子弹-普通与穿刺组/反器材子弹.xml" itemID="6897c7ca-0000260c" lastModified="1754777931"/>
+          <Include href="子弹-普通与穿刺组/反器材普通子弹.xml" itemID="689818c8-0000266d" lastModified="1754798280"/>
           <Include href="子弹-普通与穿刺组/反器材子弹图像.xml" itemIcon="1" loadImmediate="false" itemID="6897c822-0000261c" lastModified="1754778046"/>
           <Include href="子弹-普通与穿刺组/加强普通子弹.xml" itemID="669d3477-0000174e" lastModified="1721578615"/>
           <Include href="子弹-普通与穿刺组/能量子弹.xml" itemID="669d33e2-0000172c" lastModified="1721578466"/>
           <Include href="子弹-普通与穿刺组/普通弩箭.xml" itemID="669d3432-0000173e" lastModified="1722661273"/>
+          <Include href="子弹-普通与穿刺组/山猫反器材普通子弹.xml" itemID="689818c0-0000266c" lastModified="1754798272"/>
           <Include href="子弹-普通与穿刺组/糖果子弹.xml" itemID="669d3450-00001745" lastModified="1721578576"/>
           <Include href="子弹-普通与穿刺组/铁枪磁轨弹.xml" itemID="68786a09-00004fe9" lastModified="1752807102"/>
           <Include href="子弹-普通与穿刺组/铁枪磁轨弹动画.xml" itemIcon="1" loadImmediate="false" itemID="6879b5cc-00001095" lastModified="1752807115"/>
@@ -976,6 +977,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3971836" publishTime="1754798317"/>
+          <PublishItem publishSize="3971792" publishTime="1754798068"/>
+          <PublishItem publishSize="3971428" publishTime="1754778053"/>
           <PublishItem publishSize="3971433" publishTime="1754777966"/>
           <PublishItem publishSize="3971417" publishTime="1754777872"/>
           <PublishItem publishSize="3971409" publishTime="1754777805"/>
@@ -993,8 +997,5 @@
           <PublishItem publishSize="3946103" publishTime="1754643999"/>
           <PublishItem publishSize="3946106" publishTime="1754643565"/>
           <PublishItem publishSize="3948389" publishTime="1754628749"/>
-          <PublishItem publishSize="3948388" publishTime="1754628742"/>
-          <PublishItem publishSize="3945007" publishTime="1754622912"/>
-          <PublishItem publishSize="3946328" publishTime="1754622531"/>
      </publishHistory>
 </DOMDocument>

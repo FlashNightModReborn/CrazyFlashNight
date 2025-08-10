@@ -1,0 +1,34 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/XM556/能量光效" itemID="686e3447-00000413" lastModified="1752052807">
+  <timeline>
+    <DOMTimeline name="能量光效">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#25D5E1"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!22 21S1|21 2!21 2|11 0!11 0|1 12!1 12|0 14!0 14|1 14!1 14[1 15 2 15!2 15|5 16!5 16[13 18 22 21"/>
+                    <Edge cubics="!11 0(;11,0 21,2 21,2q11 0 21 2);"/>
+                    <Edge cubics="!0 14(;0,14 1,12 1,12q0 14 1 12);"/>
+                    <Edge cubics="!0 14(;0,14 1,14 1,14q0 14 1 14);"/>
+                    <Edge cubics="!2 15(;2,15 5,16 5,16q2 15 5 16);"/>
+                    <Edge cubics="!5 16(;10,17 16,19 22,21q5 16Q13 18q22 21);"/>
+                    <Edge cubics="!1 14(;1,15 1,15 2,15q1 14Q1 15q2 15);"/>
+                    <Edge cubics="!11 0(;11,0 1,12 1,12q11 0 1 12);"/>
+                    <Edge cubics="!22 21(;22,21 21,2 21,2q22 21 21 2);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

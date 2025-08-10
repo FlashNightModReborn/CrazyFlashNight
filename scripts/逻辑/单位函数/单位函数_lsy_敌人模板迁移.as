@@ -6,6 +6,7 @@ import org.flashNight.aven.Coordinator.*;
 import org.flashNight.arki.unit.*;
 import org.flashNight.naki.RandomNumberEngine.*
 import org.flashNight.neur.ScheduleTimer.*;
+import org.flashNight.arki.component.Damage.*;
 
 //容纳敌人函数的对象
 _root.敌人函数 = new Object();
@@ -386,7 +387,7 @@ _root.敌人函数.应用影子色彩 = function(target:MovieClip) {
         _root.重置色彩(target);
     }
 }
-_root.敌人函数.魔法伤害种类 = ["电", "热", "冷", "波", "蚀", "毒", "冲", "基础"];
+_root.敌人函数.魔法伤害种类 = MagicDamageTypes.getMagicDamageTypesArray();
 
 _root.初始化敌人模板 = function() {
     //以下14个是原版敌人的必要函数
