@@ -820,7 +820,7 @@ _root.刷新人物装扮 = function(目标) {
     }
 
 
-    目标人物.命中率 = Math.max(目标人物.命中率 * (1 + 目标人物.命中加成 / 100), _root.命中率极限);
+    目标人物.命中率 = Math.max(目标人物.基础命中率 * (1 + 目标人物.命中加成 / 100), _root.命中率极限);
     目标人物.韧性系数 = 目标人物.韧性系数 * (1 + 韧性加成 / 100);
     目标人物.remainingImpactForce = 0;
 
@@ -1763,25 +1763,26 @@ _root.主角函数.根据模式重新读取武器加成 = function(模式) {
         this.魔法伤害属性 = this.基础魔法伤害属性 ? this.基础魔法伤害属性 : undefined;
     }
     if (this[模式 + "毒"]) {
-        this.毒 = isNaN(this.基础毒) ? 0 : this.基础毒 + this[模式 + "毒"];
+        this.毒 = (isNaN(this.基础毒) ? 0 : this.基础毒) + this[模式 + "毒"];
     } else {
         this.毒 = isNaN(this.基础毒) ? 0 : this.基础毒;
     }
     if (this[模式 + "吸血"]) {
-        this.吸血 = isNaN(this.基础吸血) ? 0 : this.基础吸血 + this[模式 + "吸血"];
+        this.吸血 = (isNaN(this.基础吸血) ? 0 : this.基础吸血) + this[模式 + "吸血"];
     } else {
         this.吸血 = isNaN(this.基础吸血) ? 0 : this.基础吸血;
     }
     if (this[模式 + "击溃"]) {
-        this.击溃 = isNaN(this.基础击溃) ? 0 : this.基础击溃 + this[模式 + "击溃"];
+        this.击溃 = (isNaN(this.基础击溃) ? 0 : this.基础击溃) + this[模式 + "击溃"];
     } else {
         this.击溃 = isNaN(this.基础击溃) ? 0 : this.基础击溃;
     }
     if (this[模式 + "命中加成"]) {
-        this.命中加成 = isNaN(this.基础命中加成) ? 0 : this.基础命中加成 + this[模式 + "命中加成"];
+        this.命中加成 = (isNaN(this.基础命中加成) ? 0 : this.基础命中加成) + this[模式 + "命中加成"];
     } else {
         this.命中加成 = isNaN(this.基础命中加成) ? 0 : this.基础命中加成;
     }
+    this.命中率 = Math.max(this.基础命中率 * (1 + this.命中加成 / 100), _root.命中率极限);
 }
 
 _root.主角函数.按键控制攻击模式 = function() {
@@ -2662,7 +2663,8 @@ _root.初始化玩家模板 = function() {
 
     //新加属性
     重量 = 0;
-    命中率 = 10;
+    基础命中率 = 10;
+    命中率 = 基础命中率;
     韧性系数 = 1;
     血包数量 = 3;
     血包使用间隔 = 8 * _root.帧计时器.帧率;
@@ -2820,7 +2822,8 @@ _root.初始化佣兵NPC模板 = function() {
 
     //新加属性
     重量 = 0;
-    命中率 = 10;
+    基础命中率 = 10;
+    命中率 = 基础命中率;
     韧性系数 = 1;
 
     操控编号 = -1;
