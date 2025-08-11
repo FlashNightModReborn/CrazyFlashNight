@@ -1493,7 +1493,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <diffusion>6</diffusion>
       <interval>200</interval>
       <velocity>20</velocity>
-      <bullet>反器材子弹</bullet>
+      <bullet>反器材普通子弹</bullet>
       <sound>EFT-ASH12.wav</sound>
       <muzzle>反器材枪火</muzzle>
       <bullethit>火花</bullethit>
@@ -1736,7 +1736,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <diffusion>4</diffusion>
       <interval>170</interval>
       <velocity>70</velocity>
-      <bullet>反器材子弹</bullet>
+      <bullet>反器材普通子弹</bullet>
       <sound>fr506.wav</sound>
       <muzzle>反器材枪火</muzzle>
       <bullethit>火花</bullethit>
@@ -1767,7 +1767,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <diffusion>4</diffusion>
       <interval>135</interval>
       <velocity>70</velocity>
-      <bullet>反器材子弹</bullet>
+      <bullet>反器材普通子弹</bullet>
       <sound>fr506.wav</sound>
       <muzzle>反器材枪火</muzzle>
       <bullethit>火花</bullethit>
@@ -1870,7 +1870,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <diffusion>2</diffusion>
       <interval>1350</interval>
       <velocity>75</velocity>
-      <bullet>反器材子弹</bullet>
+      <bullet>反器材普通子弹</bullet>
       <sound>Gun_SniperRifle_Shot01.wav</sound>
       <muzzle>反器材枪火</muzzle>
       <bullethit>火花</bullethit>
@@ -5825,11 +5825,12 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     <use>长枪</use>
     <weight>14</weight>
     <price>136500</price>
-    <description>AR57独特的上置式弹匣与供弹结构，使其成为AR-15枪族中一个略显华而不实的异类。
-  在审判日前，这把武器更多被视为收藏家的玩物，而非战士的利器。
-  然而，铁枪会的工程师们却敏锐地察觉到了5.7毫米口径子弹的巨大潜力，并为其量身打造了一套新型弹药系统。
-  这次改进的目标并非修正其固有的设计缺陷，而是纯粹地将穿甲性能特化到了极致。
-  代价则是更高的后坐力和略显粗暴的射击手感。
+    <description>铁枪会出品，一款基于机动快反理念特化的半自动反器材平台，专为近距离非对称部署而设计。
+    犊牛式布局结合长行程后坐缓冲与枪管后锁机构，配置 5 发直列弹匣，携行便利，入位前推即战。
+    其前身为末日巨企富豪的私改品，搭载可增殖纳米机器人群，确认杀戮价值增殖补弹，实现复利式的欲望满足。
+    铁枪会保留其威胁评估协议与1-3发击杀补弹机制，但将无限超装能力重定向为养护功能，超装上限削弱至双倍弹容。
+    战术配置选择全息 + 3×快切与激光指示一体化配置，强调快速索引与贴近校准，以超额火力执行CQB任务。
+    高训练度目标的教科书式战术响应与标准化反狙击程序，在面对近距离反器材级技术冲击时系统性失效。
     </description>
     <level>38</level>
     <data>
@@ -5839,7 +5840,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <diffusion>6</diffusion>
       <interval>430</interval>
       <velocity>50</velocity>
-      <bullet>反器材子弹</bullet>
+      <bullet>山猫反器材普通子弹</bullet>
       <sound>Gun_SniperRifle_Shot01.wav</sound>
       <muzzle>反器材枪火</muzzle>
       <bullethit>火花</bullethit>
@@ -5862,58 +5863,58 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </lifecycle>
   </item>
   <item>
-  <id>17704</id>
-  <name>XM214-CageFrame</name>
-  <displayname>XM214-CageFrame</displayname>
-  <icon>XM214-CageFrame</icon>
-  <type>武器</type>
-  <use>长枪</use>
-  <weight>50</weight>
-  <price>230000</price>
-  <description>火神机枪。
+    <id>17704</id>
+    <name>XM214-CageFrame</name>
+    <displayname>XM214-CageFrame</displayname>
+    <icon>XM214-CageFrame</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>50</weight>
+    <price>230000</price>
+    <description>火神机枪。
     最早在VN战时期采用，因此被称作「喷火神龙」，最初装备在直升机上；后来更多军用载具都配备了M134。
     相传在洛圣都，射击技术过硬的银行抢匪可以随身携带并且用这把枪连续发射9999颗子弹。</description>
-  <skill>
-    <skillname>旋转抡枪</skillname>
-    <description>手持该武器时可以旋转抡枪。</description>
-    <cd>5000</cd>
-    <mp>0</mp>
-  </skill>
-  <level>31</level>
-  <data>
-    <capacity>60</capacity>
-    <split>5</split>
-    <diffusion>7</diffusion>
-    <interval>150</interval>
-    <velocity>50</velocity>
-    <bullet>纵向机枪联弹-加强普通子弹</bullet>
-    <bulletrename>加强普通子弹</bulletrename>
-    <sound>m134_6连发_2.wav</sound>
-    <muzzle>战斗步枪枪火</muzzle>
-    <bullethit>火花</bullethit>
-    <clipname>机枪通用弹药</clipname>
-    <bulletsize>25</bulletsize>
-    <power>230</power>
-    <impact>2</impact>
-    <dressup>枪-长枪-XM214-CageFrame</dressup>
-    <evasion>-30</evasion>
-    <accuracy>-15</accuracy>
-  </data>
-  <lifecycle>
-    <attr_0>
-      <init>
-        <initRoutines>XM214初始化</initRoutines>
-        <initParam>
-          <maxSpinCount>29</maxSpinCount>
-          <spinUpAmount>5</spinUpAmount>
-          <spinSpeedFactor>0.1</spinSpeedFactor>
-          <spinDownRate>0.33</spinDownRate>
-        </initParam>
-      </init>
-      <cycle>
-        <cycleRoutines>XM214周期</cycleRoutines>
-      </cycle>
-    </attr_0>
-  </lifecycle>
-</item>
+    <skill>
+      <skillname>旋转抡枪</skillname>
+      <description>手持该武器时可以旋转抡枪。</description>
+      <cd>5000</cd>
+      <mp>0</mp>
+    </skill>
+    <level>31</level>
+    <data>
+      <capacity>60</capacity>
+      <split>5</split>
+      <diffusion>7</diffusion>
+      <interval>150</interval>
+      <velocity>50</velocity>
+      <bullet>纵向机枪联弹-加强普通子弹</bullet>
+      <bulletrename>加强普通子弹</bulletrename>
+      <sound>m134_6连发_2.wav</sound>
+      <muzzle>战斗步枪枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>机枪通用弹药</clipname>
+      <bulletsize>25</bulletsize>
+      <power>230</power>
+      <impact>2</impact>
+      <dressup>枪-长枪-XM214-CageFrame</dressup>
+      <evasion>-30</evasion>
+      <accuracy>-15</accuracy>
+    </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>XM214初始化</initRoutines>
+          <initParam>
+            <maxSpinCount>29</maxSpinCount>
+            <spinUpAmount>5</spinUpAmount>
+            <spinSpeedFactor>0.1</spinSpeedFactor>
+            <spinDownRate>0.33</spinDownRate>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>XM214周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
+  </item>
 </root>

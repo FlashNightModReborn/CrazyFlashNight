@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-持续组/火焰" itemID="669d3404-00001734" linkageExportForAS="true" linkageIdentifier="火焰" lastModified="1754557467">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-持续组/火焰" itemID="669d3404-00001734" linkageExportForAS="true" linkageIdentifier="火焰" lastModified="1754905791">
   <timeline>
-    <DOMTimeline name="火焰" currentFrame="2">
+    <DOMTimeline name="火焰" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;55&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#84FA15">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#D252AC" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#D252AC">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -49,7 +49,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#F231A3">
+        <DOMLayer name="Layer 3" color="#F231A3" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -128,53 +128,24 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#D32EED">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
-            <DOMFrame index="0" duration="16" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4833" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-26.6" ty="-47.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <GlowFilter blurX="15" blurY="15" color="#FF6600" strength="0.5"/>
-                    <BlurFilter blurX="15" blurY="15"/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
+            <DOMFrame index="0" duration="54" keyMode="9728">
+              <elements/>
             </DOMFrame>
-            <DOMFrame index="16" duration="17" keyMode="9728">
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#D32EED" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="48" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4833" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4833" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix tx="-26.6" ty="-47.5"/>
+                    <Matrix tx="13.25" ty="-234.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <BlurFilter blurX="15" blurY="15"/>
-                    <GlowFilter blurX="15" blurY="15" color="#FF6600" strength="0.5"/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="33" duration="15" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4833" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="0.79998779296875" d="-0.79998779296875" tx="-9.25" ty="36.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <GlowFilter blurX="15" blurY="15" color="#FF9900" strength="0.5"/>
-                    <BlurFilter blurX="15" blurY="15"/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

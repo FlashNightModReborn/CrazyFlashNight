@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#333333" width="1024" height="576" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="88.2079048186946" nextSceneIdentifier="2" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#333333" width="1024" height="576" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" viewAngle3D="88.2079048186946" nextSceneIdentifier="2" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="2.音效文件夹" itemID="68368bd3-000028d2"/>
           <DOMFolderItem name="2.音效文件夹/爆炸" itemID="68368bd3-000028d3"/>
@@ -162,6 +162,8 @@
           <Include href="Symbol 721.xml" itemIcon="1" loadImmediate="false" itemID="65a50f67-00000570" lastModified="1705316192"/>
           <Include href="Symbol 722.xml" loadImmediate="false" itemID="65a50f67-00000571" lastModified="1705316192"/>
           <Include href="Symbol 1540.xml" loadImmediate="false" itemID="6577faef-0000173e" lastModified="1746217049"/>
+          <Include href="补间 1.xml" itemIcon="1" loadImmediate="false" itemID="6899bd1a-00001556" lastModified="1754905882"/>
+          <Include href="补间 2.xml" itemIcon="1" loadImmediate="false" itemID="6899bd1a-00001558" lastModified="1754905882"/>
           <Include href="弹壳/步枪弹壳.xml" itemID="6634970f-00000eef" lastModified="1714742965"/>
           <Include href="弹壳/加强弹壳.xml" itemID="66357ced-00000b76" lastModified="1714781421"/>
           <Include href="弹壳/加强榴弹弹壳.xml" itemID="66384119-00001761" lastModified="1752978353"/>
@@ -181,8 +183,8 @@
           <Include href="弹壳/霰弹弹壳.xml" itemID="6634e7c1-0000196a" lastModified="1714811989"/>
           <Include href="弹壳/重机枪弹壳.xml" itemID="66357b12-00000b67" lastModified="1714811998"/>
           <Include href="导弹.xml" loadImmediate="false" itemID="671dc67e-000007ce" lastModified="1730004606"/>
-          <Include href="地雷激光扫描线.xml" itemIcon="1" loadImmediate="false" itemID="687af4b5-000005e2" lastModified="1752890259"/>
           <Include href="等离子光片.xml" loadImmediate="false" itemID="6883540e-00000e06" lastModified="1753438466"/>
+          <Include href="地雷激光扫描线.xml" itemIcon="1" loadImmediate="false" itemID="687af4b5-000005e2" lastModified="1752890259"/>
           <Include href="联弹/白色手里剑/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000250" lastModified="1705503817"/>
           <Include href="联弹/白色手里剑/Symbol 23.xml" loadImmediate="false" itemID="6577efbc-00000251" lastModified="1705503796"/>
           <Include href="联弹/白色手里剑/Symbol 573.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000416" lastModified="1705503893"/>
@@ -516,7 +518,7 @@
           <Include href="无AS链接/Symbol 4829.xml" loadImmediate="false" itemID="668e7c1e-000011a9" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4830.xml" loadImmediate="false" itemID="668e7c1e-000011aa" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4831.xml" loadImmediate="false" itemID="668e7c1e-000011ab" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 4833.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000011ad" lastModified="1720533000"/>
+          <Include href="无AS链接/Symbol 4833.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000011ad" lastModified="1754906208"/>
           <Include href="无AS链接/Symbol 4962.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000011e6" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4963.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000011e7" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4964.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000011e8" lastModified="1720533000"/>
@@ -603,7 +605,7 @@
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 1217.xml" itemIcon="1" loadImmediate="false" itemID="668b9f53-000001d0" lastModified="1720426265"/>
           <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1754798280"/>
           <Include href="子弹-持续组/电球.xml" itemID="669d343b-00001740" lastModified="1722876120"/>
-          <Include href="子弹-持续组/火焰.xml" itemID="669d3404-00001734" lastModified="1754557467"/>
+          <Include href="子弹-持续组/火焰.xml" itemID="669d3404-00001734" lastModified="1754905791"/>
           <Include href="子弹-持续组/声波.xml" itemID="669d34bf-0000176e" lastModified="1722875808"/>
           <Include href="子弹-持续组/声波1.xml" itemID="669d3436-0000173f" lastModified="1722876068"/>
           <Include href="子弹-持续组/旋转冲击.xml" itemID="669d3440-00001741" lastModified="1752806839"/>
@@ -977,6 +979,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3979738" publishTime="1754905940"/>
+          <PublishItem publishSize="3973627" publishTime="1754881660"/>
           <PublishItem publishSize="3973644" publishTime="1754836936"/>
           <PublishItem publishSize="3971836" publishTime="1754798317"/>
           <PublishItem publishSize="3971792" publishTime="1754798068"/>
@@ -995,7 +999,5 @@
           <PublishItem publishSize="3946890" publishTime="1754644890"/>
           <PublishItem publishSize="3946889" publishTime="1754644660"/>
           <PublishItem publishSize="3946817" publishTime="1754644557"/>
-          <PublishItem publishSize="3946103" publishTime="1754643999"/>
-          <PublishItem publishSize="3946106" publishTime="1754643565"/>
      </publishHistory>
 </DOMDocument>

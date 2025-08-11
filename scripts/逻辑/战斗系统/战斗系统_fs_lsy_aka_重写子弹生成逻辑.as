@@ -278,6 +278,7 @@ _root.子弹生命周期 = function()
                 // 一次位运算替代两次否定和逻辑与：!(this.flags & FLAG_MELEE) && !(this.flags & FLAG_EXPLOSIVE)
                 dispatcher.publish((this.flags & MELEE_EXPLOSIVE_MASK) === 0 ?
                     "kill" : "death", hitTarget);
+                shooter.dispatcher.publish("enemyKilled", hitTarget, this);
             }
 
             damageResult.triggerDisplay(hitTarget._x, hitTarget._y);

@@ -70,4 +70,39 @@ class org.flashNight.arki.unit.UnitUtil {
     public static function getHeightPercentage(heightCM:Number):Number {
         return (heightCM * 100 / STANDARD_HEIGHT) | 0;
     }
+    
+    /**
+     * 判定单位的精英等级
+     * @param unit 目标单位对象
+     * @return Number 精英等级：-1=凡俗, 0=普通, 1=精英, 2=首领
+     */
+    public static function getEliteLevel(unit:MovieClip):Number {
+        // 如果单位无效，返回0（普通）
+        if (!unit) {
+            return 0;
+        }
+        
+        // 获取魔法抗性表
+        var resistTbl:Object = unit.魔法抗性;
+        if (!resistTbl) {
+            return 0;
+        }
+        
+        var level:Number = 0;
+        
+        // 检查各种精英标签，取最高值
+        if (resistTbl.凡俗 != undefined && resistTbl.凡俗 > 0) {
+            level = Math.max(level, -1);
+        }
+        
+        if (resistTbl.精英 != undefined && resistTbl.精英 > 0) {
+            level = Math.max(level, 1);
+        }
+        
+        if (resistTbl.首领 != undefined && resistTbl.首领 > 0) {
+            level = Math.max(level, 2);
+        }
+        
+        return level;
+    }
 }
