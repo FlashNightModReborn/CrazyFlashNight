@@ -1,0 +1,81 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/GM6_LYNX/GM6j击杀特效" itemID="689a23d9-000032a1" linkageExportForAS="true" linkageIdentifier="GM6j击杀特效" lastModified="1754934495" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="GM6j击杀特效" currentFrame="10">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="31" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.3801"/>
+                  <Point x="0.6905" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/GM6_LYNX/GM6击杀标志" name="动画" selected="true" centerPoint3DX="5.15" centerPoint3DY="-158.7">
+                  <matrix>
+                    <Matrix tx="-40.15" ty="-210.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.3" y="51.9"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/GM6_LYNX/GM6击杀标志" name="动画" selected="true" centerPoint3DX="5.15" centerPoint3DY="-158.7">
+                  <matrix>
+                    <Matrix tx="-40.15" ty="-210.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.3" y="51.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/GM6_LYNX/GM6击杀标志" name="动画" centerPoint3DX="5.15" centerPoint3DY="-246.25">
+                  <matrix>
+                    <Matrix tx="-40.15" ty="-298.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.3" y="51.9"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="30" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

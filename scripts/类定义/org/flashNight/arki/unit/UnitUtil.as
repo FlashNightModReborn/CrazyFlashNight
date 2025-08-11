@@ -74,7 +74,7 @@ class org.flashNight.arki.unit.UnitUtil {
     /**
      * 判定单位的精英等级
      * @param unit 目标单位对象
-     * @return Number 精英等级：-1=凡俗, 0=普通, 1=精英, 2=首领
+     * @return Number 精英等级：0=普通其他, 1=精英, 2=首领
      */
     public static function getEliteLevel(unit:MovieClip):Number {
         // 如果单位无效，返回0（普通）
@@ -87,22 +87,16 @@ class org.flashNight.arki.unit.UnitUtil {
         if (!resistTbl) {
             return 0;
         }
+
         
-        var level:Number = 0;
-        
-        // 检查各种精英标签，取最高值
-        if (resistTbl.凡俗 != undefined && resistTbl.凡俗 > 0) {
-            level = Math.max(level, -1);
+        if (!isNaN(resistTbl.精英)) {
+            return 1; // 精英直接返回1
         }
         
-        if (resistTbl.精英 != undefined && resistTbl.精英 > 0) {
-            level = Math.max(level, 1);
+        if (!isNaN(resistTbl.首领)) {
+            return 2; // 首领直接返回2
         }
         
-        if (resistTbl.首领 != undefined && resistTbl.首领 > 0) {
-            level = Math.max(level, 2);
-        }
-        
-        return level;
+        return 0;
     }
 }

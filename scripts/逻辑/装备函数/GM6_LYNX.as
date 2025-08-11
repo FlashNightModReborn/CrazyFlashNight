@@ -3,10 +3,17 @@
 // 1–15：展开；15–23：射击；非“长枪”则收起
 // =======================================================
 import org.flashNight.arki.unit.*;
+import org.flashNight.arki.component.Effect.*;      // 特效组件
+import org.flashNight.sara.util.*;
 
 _root.装备生命周期函数.GM6_LYNX初始化 = function(ref, param) {
     var actor:MovieClip = ref.自机;
     var rig:MovieClip = actor.长枪_引用;
+
+    ref.basicReward = (param.basicReward != undefined) ? param.basicReward : 1; // 基础奖励
+    ref.eliteReward = (param.eliteReward != undefined) ? param.eliteReward : 3; // 精英奖励
+    ref.bossReward = (param.bossReward != undefined) ? param.bossReward : 5; // 首领奖励
+    ref.rewarMax = (param.rewarMax != undefined) ? param.rewarMax : 5; // 最大奖励
 
     // ---- 帧区间 ----
     ref.OPEN_START = (param.openStart != undefined) ? param.openStart : 1;
@@ -69,12 +76,32 @@ _root.装备生命周期函数.GM6_LYNX初始化 = function(ref, param) {
 
 
         if (bullet.子弹种类 === "山猫反器材普通子弹") {
-            var eliteLevel = UnitUtil.getEliteLevel(hitTarget);
-            var rewardBulletCount = Math.min(0, eliteLevel) + 1; // 普通单位掉落1发，精英掉落2发，首领掉落3发
+            var eliteLevel:Number = UnitUtil.getEliteLevel(hitTarget);
+            var level:Number = Math.max(0, eliteLevel);
+            var rewardBulletCount:Number;
+
+            switch (level) {
+                case 1: // 精英
+                    rewardBulletCount = ref.eliteReward;
+                    break;
+                case 2: // 首领
+                    rewardBulletCount = ref.bossReward;
+                    break;
+                default:
+                    rewardBulletCount = ref.basicReward; // 超过最大奖励
+            }
+
+            //_root.发布消息(eliteLevel, level, rewardBulletCount);
+            var ic:MovieClip = hitTarget.人物文字信息;
+            var effect:MovieClip = EffectSystem.Effect("GM6j击杀特效", hitTarget._x, hitTarget._y - hitTarget._height);
+            // _root.发布消息("GM6_LYNX击杀特效", effect, hitTarget._x, hitTarget._y - hitTarget._height);
+            
+            effect._xscale = effect._yscale = 20;
+            effect.动画.gotoAndPlay(level + 1); // 根据精英等级播放不同动画
             var fireCount:Number = (actor["长枪射击次数"][actor["长枪"]] -= rewardBulletCount);
             var cap:Number = actor["长枪弹匣容量"];
-            if(fireCount + cap < 0) {
-                fireCount = -cap; // 最多溢出一倍
+            if(fireCount + ref.rewarMax < 0) {
+                fireCount = -ref.rewarMax; // 限制最小值
                 actor["长枪射击次数"][actor["长枪"]] = fireCount;
             }
             var bulletDisplayCount = cap - fireCount;

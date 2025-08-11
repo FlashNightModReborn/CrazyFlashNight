@@ -605,7 +605,7 @@
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 1217.xml" itemIcon="1" loadImmediate="false" itemID="668b9f53-000001d0" lastModified="1720426265"/>
           <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1754798280"/>
           <Include href="子弹-持续组/电球.xml" itemID="669d343b-00001740" lastModified="1722876120"/>
-          <Include href="子弹-持续组/火焰.xml" itemID="669d3404-00001734" lastModified="1754922184"/>
+          <Include href="子弹-持续组/火焰.xml" itemID="669d3404-00001734" lastModified="1754922735"/>
           <Include href="子弹-持续组/声波.xml" itemID="669d34bf-0000176e" lastModified="1722875808"/>
           <Include href="子弹-持续组/声波1.xml" itemID="669d3436-0000173f" lastModified="1722876068"/>
           <Include href="子弹-持续组/旋转冲击.xml" itemID="669d3440-00001741" lastModified="1752806839"/>
@@ -647,13 +647,21 @@
           <Include href="自瞄准星特效/火力支援新瞄准镜.xml" loadImmediate="false" itemID="671399a0-00002828" lastModified="1729337760"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="场景 1">
+          <DOMTimeline name="场景 1" currentFrame="53">
                <layers>
                     <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
                          <frames>
-                              <DOMFrame index="0" keyMode="9728">
+                              <DOMFrame index="0" duration="54" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="原版素材库-子弹" selected="true" centerPoint3DX="66.7" centerPoint3DY="8.8">
+                                        <DOMSymbolInstance libraryItemName="原版素材库-子弹" centerPoint3DX="66.7" centerPoint3DY="8.8">
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="子弹-持续组/火焰" selected="true" centerPoint3DX="369.65" centerPoint3DY="296.1">
+                                             <matrix>
+                                                  <Matrix a="2.79560852050781" d="2.79560852050781" tx="306.95" ty="297.85"/>
+                                             </matrix>
                                              <transformationPoint>
                                                   <Point/>
                                              </transformationPoint>
@@ -994,6 +1002,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4074360" publishTime="1754922198"/>
+          <PublishItem publishSize="4074361" publishTime="1754922189"/>
           <PublishItem publishSize="4113464" publishTime="1754922075"/>
           <PublishItem publishSize="4113465" publishTime="1754922030"/>
           <PublishItem publishSize="4112615" publishTime="1754921296"/>
@@ -1012,7 +1022,5 @@
           <PublishItem publishSize="3971428" publishTime="1754778053"/>
           <PublishItem publishSize="3971433" publishTime="1754777966"/>
           <PublishItem publishSize="3971417" publishTime="1754777872"/>
-          <PublishItem publishSize="3971409" publishTime="1754777805"/>
-          <PublishItem publishSize="3971844" publishTime="1754726097"/>
      </publishHistory>
 </DOMDocument>

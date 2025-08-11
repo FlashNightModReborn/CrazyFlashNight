@@ -37,7 +37,7 @@
           <DOMFolderItem name="长枪" itemID="68982df5-00002672" isExpanded="true"/>
           <DOMFolderItem name="长枪/53式步骑枪" itemID="659ea370-00000ca4"/>
           <DOMFolderItem name="长枪/g11" itemID="6878f46b-000007fd"/>
-          <DOMFolderItem name="长枪/GM6_LYNX" itemID="68979216-000016b1"/>
+          <DOMFolderItem name="长枪/GM6_LYNX" itemID="68979216-000016b1" isExpanded="true"/>
           <DOMFolderItem name="长枪/Jackhammer" itemID="6870de51-00000afb"/>
           <DOMFolderItem name="长枪/M1918A2" itemID="6872364e-00003591"/>
           <DOMFolderItem name="长枪/NEGEV" itemID="686a7a3e-0000131c"/>
@@ -47,7 +47,8 @@
           <DOMFolderItem name="长枪/wa90/Graphic" itemID="5e86cc75-00001260"/>
           <DOMFolderItem name="长枪/wa90/P50" itemID="689057d2-0000a3f3"/>
           <DOMFolderItem name="长枪/XM25" itemID="6874cd16-000007b9"/>
-          <DOMFolderItem name="长枪/XM556" itemID="686bba3f-000040b0" isExpanded="true"/>
+          <DOMFolderItem name="长枪/XM214" itemID="689a24d4-000032b3"/>
+          <DOMFolderItem name="长枪/XM556" itemID="686bba3f-000040b0"/>
           <DOMFolderItem name="长枪/ZB-26" itemID="68728189-000006c7"/>
           <DOMFolderItem name="长枪/火药燃气液压打桩机" itemID="655175a5-000006e2"/>
           <DOMFolderItem name="长枪/火药燃气液压打桩机/未命名文件夹 1" itemID="6551ede1-000021a3"/>
@@ -133,16 +134,7 @@
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="ashcore/ashcore.xml" itemID="688340fd-00000819" lastModified="1753436006"/>
           <Include href="ashcore/图标-ashcore.xml" itemID="68835078-00000a95" lastModified="1753436313"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1754825329"/>
-          <Include href="G1111导弹目镜.xml" loadImmediate="false" itemID="688b32d8-000007b7" lastModified="1753953749"/>
-          <Include href="G1111导弹延长镜头组.xml" loadImmediate="false" itemID="688b30d2-000007a9" lastModified="1753952466"/>
-          <Include href="g1111导弹制导器.xml" loadImmediate="false" itemID="688b2bb8-00000786" lastModified="1753953880"/>
-          <Include href="G1111导弹组件.xml" loadImmediate="false" itemID="688ad72a-000003df" lastModified="1753929514"/>
-          <Include href="MACSIII火焰1.xml" itemIcon="1" loadImmediate="false" itemID="68865cb2-00006fb4" lastModified="1753636018"/>
-          <Include href="MACSIII火焰2.xml" itemIcon="1" loadImmediate="false" itemID="68865cd0-00006fb9" lastModified="1753636048"/>
-          <Include href="MACSIII火焰3.xml" itemIcon="1" loadImmediate="false" itemID="68865cd8-00006fbd" lastModified="1753636056"/>
-          <Include href="MACSIII火焰4.xml" itemIcon="1" loadImmediate="false" itemID="68865ce0-00006fc1" lastModified="1753636064"/>
-          <Include href="MACSIII火焰5.xml" itemIcon="1" loadImmediate="false" itemID="68865ce9-00006fc5" lastModified="1753636073"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1754934741"/>
           <Include href="q.xml" loadImmediate="false" itemID="6898491a-00000406" lastModified="1754812780"/>
           <Include href="sprite/Symbol 35.xml" itemID="6577b699-00000971" lastModified="1718635260"/>
           <Include href="sprite/Symbol 36.xml" loadImmediate="false" itemID="6577b699-00000972" lastModified="1719476235"/>
@@ -173,7 +165,6 @@
           <Include href="光玉的剑相关/光玉剑身.xml" itemIcon="1" loadImmediate="false" itemID="68668bbe-000033cc" lastModified="1751550910"/>
           <Include href="光玉的剑相关/图标-光玉的剑.xml" itemID="68673eb7-0000160f" lastModified="1751596727"/>
           <Include href="后板.xml" loadImmediate="false" itemID="688f4744-00007a61" lastModified="1754220356"/>
-          <Include href="环.xml" loadImmediate="false" itemID="689834a0-000003ce" lastModified="1754806158"/>
           <Include href="基础枪管.xml" loadImmediate="false" itemID="6887450b-000006ec" lastModified="1753695499"/>
           <Include href="吉他喷火/shape 470.xml" itemIcon="1" loadImmediate="false" itemID="561602f4-000001d7" lastModified="1444283124"/>
           <Include href="吉他喷火/shape 471.xml" itemIcon="1" loadImmediate="false" itemID="561602f4-000001d8" lastModified="1444283124"/>
@@ -264,9 +255,7 @@
           <Include href="龙破军霜/刀-龙破军霜.xml" itemID="65f704da-0000226e" lastModified="1721580528"/>
           <Include href="龙破军霜/龙破军霜.xml" itemIcon="1" loadImmediate="false" itemID="65f704e6-00002270" lastModified="1710690852"/>
           <Include href="龙破军霜/图标-龙破军霜.xml" itemID="65f704b4-00002269" lastModified="1710687412"/>
-          <Include href="末端枪口.xml" loadImmediate="false" itemID="689834f7-000003d8" lastModified="1754805496"/>
           <Include href="全息投影仪.xml" loadImmediate="false" itemID="688cd676-00001058" lastModified="1754060997"/>
-          <Include href="上枪管.xml" loadImmediate="false" itemID="68983105-000003a9" lastModified="1754804485"/>
           <Include href="生存战素材/Symbol 9.xml" itemIcon="1" loadImmediate="false" itemID="65c24a9a-00000cc3" lastModified="1699960314"/>
           <Include href="特效素材/打击伤害数字.xml" itemID="656983a5-000002a1" lastModified="1706446521"/>
           <Include href="特效与子弹/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="65e08f36-00001ff1" lastModified="1702237154"/>
@@ -360,6 +349,7 @@
           <Include href="炎魔斩/炎魔斩刀光/炎魔刀光.xml" itemID="656ef17f-00001da9" lastModified="1719299610"/>
           <Include href="炎魔斩/炎魔斩刀光/炎魔刀光动画.xml" loadImmediate="false" itemID="6559d4ae-000002e0" lastModified="1701756876"/>
           <Include href="炎魔斩/炎魔斩刀光/炎魔刀光追踪.xml" itemID="656ef176-00001d9e" lastModified="1719299681"/>
+          <Include href="炎魔斩纹路.xml" loadImmediate="false" itemID="6678d078-000005ae" lastModified="1719193720"/>
           <Include href="长枪/53式步骑枪/53式步骑枪.xml" itemID="659e146e-000007c4" lastModified="1704953208"/>
           <Include href="长枪/53式步骑枪/弹仓.xml" loadImmediate="false" itemID="659e932d-00000b3c" lastModified="1704891181"/>
           <Include href="长枪/53式步骑枪/枪管.xml" loadImmediate="false" itemID="659ea149-00000b60" lastModified="1704953006"/>
@@ -375,6 +365,10 @@
           <Include href="长枪/g11/G111磁轨熄灭状态.xml" itemIcon="1" loadImmediate="false" itemID="68784f50-0000358c" lastModified="1752715088"/>
           <Include href="长枪/g11/g111动作件.xml" loadImmediate="false" itemID="6875ffba-00000a39" lastModified="1752564416"/>
           <Include href="长枪/g11/G1111.xml" itemID="687633d0-00000c36" lastModified="1754118161"/>
+          <Include href="长枪/g11/G1111导弹目镜.xml" loadImmediate="false" itemID="688b32d8-000007b7" lastModified="1753953749"/>
+          <Include href="长枪/g11/G1111导弹延长镜头组.xml" loadImmediate="false" itemID="688b30d2-000007a9" lastModified="1753952466"/>
+          <Include href="长枪/g11/g1111导弹制导器.xml" loadImmediate="false" itemID="688b2bb8-00000786" lastModified="1753953880"/>
+          <Include href="长枪/g11/G1111导弹组件.xml" loadImmediate="false" itemID="688ad72a-000003df" lastModified="1753929514"/>
           <Include href="长枪/g11/G1111轮盘.xml" loadImmediate="false" itemID="687662df-000003bc" lastModified="1752589023"/>
           <Include href="长枪/g11/G1111前部件.xml" itemIcon="1" loadImmediate="false" itemID="6878c489-000003b4" lastModified="1752745561"/>
           <Include href="长枪/g11/G1111枪口.xml" itemIcon="1" loadImmediate="false" itemID="6878c2f3-000003ad" lastModified="1752746157"/>
@@ -392,7 +386,10 @@
           <Include href="长枪/GM6_LYNX/GM6 LYNX 枪管.xml" loadImmediate="false" itemID="689769d8-0000013f" lastModified="1754773578"/>
           <Include href="长枪/GM6_LYNX/GM6 盖子.xml" itemIcon="1" loadImmediate="false" itemID="68979771-000016cf" lastModified="1754771227"/>
           <Include href="长枪/GM6_LYNX/GM6_LYNX.xml" itemID="68976bd3-00001695" lastModified="1754778312"/>
+          <Include href="长枪/GM6_LYNX/GM6j击杀特效.xml" itemID="689a23d9-000032a1" lastModified="1754934495"/>
           <Include href="长枪/GM6_LYNX/GM6大栓.xml" itemIcon="1" loadImmediate="false" itemID="6897b209-000016d3" lastModified="1754771977"/>
+          <Include href="长枪/GM6_LYNX/GM6击杀标志.xml" loadImmediate="false" itemID="689a22bf-00003270" lastModified="1754933829"/>
+          <Include href="长枪/GM6_LYNX/GM6击杀图标.xml" loadImmediate="false" itemID="689a22e9-00003289" lastModified="1754931962"/>
           <Include href="长枪/GM6_LYNX/GM6枪管.xml" itemIcon="1" loadImmediate="false" itemID="6897bcd6-00001b6a" lastModified="1754774742"/>
           <Include href="长枪/GM6_LYNX/补间 15.xml" itemIcon="1" loadImmediate="false" itemID="6897b2d5-000016e1" lastModified="1754772245"/>
           <Include href="长枪/GM6_LYNX/补间 16.xml" itemIcon="1" loadImmediate="false" itemID="6897b2d5-000016e3" lastModified="1754772190"/>
@@ -448,7 +445,11 @@
           <Include href="长枪/wa90/消音器.xml" itemIcon="1" loadImmediate="false" itemID="60abd2e4-0000291f" lastModified="1621887798"/>
           <Include href="长枪/XM25/XM25.xml" itemID="687467dd-000003a8" lastModified="1753091233"/>
           <Include href="长枪/XM25/图标-XM25.xml" itemID="6874cca8-0000047d" lastModified="1752485104"/>
-          <Include href="长枪/XM556/XM214-CageFrame.xml" itemID="68985a4b-0000055b" lastModified="1754815051"/>
+          <Include href="长枪/XM214/XM214-CageFrame.xml" itemID="68985a4b-0000055b" lastModified="1754931773"/>
+          <Include href="长枪/XM214/环.xml" loadImmediate="false" itemID="689834a0-000003ce" lastModified="1754931459"/>
+          <Include href="长枪/XM214/末端枪口.xml" loadImmediate="false" itemID="689834f7-000003d8" lastModified="1754931481"/>
+          <Include href="长枪/XM214/上枪管.xml" loadImmediate="false" itemID="68983105-000003a9" lastModified="1754931415"/>
+          <Include href="长枪/XM214/图标-XM214-CageFrame.xml" itemID="68985a6e-0000056f" lastModified="1754815111"/>
           <Include href="长枪/XM556/XM556-H-Stinger.xml" itemID="686cf53f-0000469e" lastModified="1752399202"/>
           <Include href="长枪/XM556/XM556-Microgun.xml" itemID="686bd9c0-000044e9" lastModified="1754748922"/>
           <Include href="长枪/XM556/XM556-OC-Overlord.xml" itemID="686ded67-0000038a" lastModified="1754186892"/>
@@ -462,17 +463,20 @@
           <Include href="长枪/XM556/能量指示灯.xml" loadImmediate="false" itemID="686e3435-0000040f" lastModified="1752149591"/>
           <Include href="长枪/XM556/枪管彩光.xml" loadImmediate="false" itemID="686e2ca0-000003bf" lastModified="1752050848"/>
           <Include href="长枪/XM556/枪口能量.xml" loadImmediate="false" itemID="686f2f28-000005df" lastModified="1752149661"/>
-          <Include href="长枪/XM556/图标-XM214-CageFrame.xml" itemID="68985a6e-0000056f" lastModified="1754815111"/>
           <Include href="长枪/XM556/图标-XM556-H-Stinger.xml" itemID="686d0486-000046e2" lastModified="1751975088"/>
           <Include href="长枪/XM556/图标-XM556-OC-Overlord.xml" itemID="68706156-000009f8" lastModified="1752195443"/>
           <Include href="长枪/XM556/图标XM556-Microgun.xml" itemID="686bd9b1-000044e8" lastModified="1754748929"/>
           <Include href="长枪/XM556/线圈前端.xml" loadImmediate="false" itemID="686f1216-00000532" lastModified="1752131345"/>
           <Include href="长枪/XM556/线圈中级.xml" loadImmediate="false" itemID="686f1f34-0000053c" lastModified="1752130775"/>
-          <Include href="长枪/XM556/炎魔斩纹路.xml" loadImmediate="false" itemID="6678d078-000005ae" lastModified="1719193720"/>
           <Include href="长枪/ZB-26/ZB-26.xml" itemID="68725316-0000359d" lastModified="1752334536"/>
           <Include href="长枪/ZB-26/图标-ZB-26.xml" itemID="68727da4-000003bb" lastModified="1752333778"/>
           <Include href="长枪/火药燃气液压打桩机/MACSIII.xml" itemID="6884cbed-0000480a" lastModified="1753676447"/>
           <Include href="长枪/火药燃气液压打桩机/MACSIII活性锯片.xml" loadImmediate="false" itemID="68863881-000003ec" lastModified="1753636075"/>
+          <Include href="长枪/火药燃气液压打桩机/MACSIII火焰1.xml" itemIcon="1" loadImmediate="false" itemID="68865cb2-00006fb4" lastModified="1753636018"/>
+          <Include href="长枪/火药燃气液压打桩机/MACSIII火焰2.xml" itemIcon="1" loadImmediate="false" itemID="68865cd0-00006fb9" lastModified="1753636048"/>
+          <Include href="长枪/火药燃气液压打桩机/MACSIII火焰3.xml" itemIcon="1" loadImmediate="false" itemID="68865cd8-00006fbd" lastModified="1753636056"/>
+          <Include href="长枪/火药燃气液压打桩机/MACSIII火焰4.xml" itemIcon="1" loadImmediate="false" itemID="68865ce0-00006fc1" lastModified="1753636064"/>
+          <Include href="长枪/火药燃气液压打桩机/MACSIII火焰5.xml" itemIcon="1" loadImmediate="false" itemID="68865ce9-00006fc5" lastModified="1753636073"/>
           <Include href="长枪/火药燃气液压打桩机/MACSIII锯片.xml" loadImmediate="false" itemID="6881fc3a-000005a4" lastModified="1753352189"/>
           <Include href="长枪/火药燃气液压打桩机/打桩机子弹.xml" itemID="6551eea5-000021cc" lastModified="1702259181"/>
           <Include href="长枪/火药燃气液压打桩机/改造打草机锯片.xml" loadImmediate="false" itemID="6881a79d-00000539" lastModified="1753330525"/>
@@ -1270,6 +1274,8 @@
                     <SolidSwatchItem color="#2A2F30" hue="128" saturation="14" brightness="43"/>
                     <SolidSwatchItem color="#565959" hue="120" saturation="4" brightness="83"/>
                     <SolidSwatchItem color="#111415" hue="130" saturation="27" brightness="18"/>
+                    <SolidSwatchItem color="#410C13" hue="234" saturation="167" brightness="36"/>
+                    <SolidSwatchItem color="#8C151A" hue="239" saturation="177" brightness="76"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1352,6 +1358,18 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2258965" publishTime="1754934503"/>
+          <PublishItem publishSize="2258983" publishTime="1754933845"/>
+          <PublishItem publishSize="2258983" publishTime="1754933833"/>
+          <PublishItem publishSize="2249825" publishTime="1754933692"/>
+          <PublishItem publishSize="2249825" publishTime="1754933625"/>
+          <PublishItem publishSize="2249837" publishTime="1754933227"/>
+          <PublishItem publishSize="2249837" publishTime="1754933144"/>
+          <PublishItem publishSize="2249838" publishTime="1754932950"/>
+          <PublishItem publishSize="2250099" publishTime="1754932802"/>
+          <PublishItem publishSize="2250099" publishTime="1754932792"/>
+          <PublishItem publishSize="2249989" publishTime="1754932619"/>
+          <PublishItem publishSize="2249989" publishTime="1754932316"/>
           <PublishItem publishSize="2190522" publishTime="1754815114"/>
           <PublishItem publishSize="2190419" publishTime="1754815055"/>
           <PublishItem publishSize="2195599" publishTime="1754814227"/>
@@ -1360,17 +1378,5 @@
           <PublishItem publishSize="2170225" publishTime="1754778327"/>
           <PublishItem publishSize="2170251" publishTime="1754777292"/>
           <PublishItem publishSize="2170350" publishTime="1754777257"/>
-          <PublishItem publishSize="2170419" publishTime="1754777214"/>
-          <PublishItem publishSize="2170333" publishTime="1754777163"/>
-          <PublishItem publishSize="2170620" publishTime="1754774639"/>
-          <PublishItem publishSize="2065781" publishTime="1754749205"/>
-          <PublishItem publishSize="2065781" publishTime="1754748933"/>
-          <PublishItem publishSize="2065644" publishTime="1754748893"/>
-          <PublishItem publishSize="2066209" publishTime="1754293171"/>
-          <PublishItem publishSize="2066199" publishTime="1754290253"/>
-          <PublishItem publishSize="2066196" publishTime="1754290245"/>
-          <PublishItem publishSize="2056321" publishTime="1754232509"/>
-          <PublishItem publishSize="2056332" publishTime="1754231057"/>
-          <PublishItem publishSize="2056329" publishTime="1754224061"/>
      </publishHistory>
 </DOMDocument>

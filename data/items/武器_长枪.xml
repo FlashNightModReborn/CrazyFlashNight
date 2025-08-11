@@ -5855,6 +5855,12 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <attr_0>
         <init>
           <initRoutines>GM6_LYNX初始化</initRoutines>
+          <initParam>
+            <basicReward>1</basicReward>
+            <eliteReward>3</eliteReward>
+            <bossReward>5</bossReward>
+            <rewarMax>5</rewarMax>
+          </initParam>
         </init>
         <cycle>
           <cycleRoutines>GM6_LYNX周期</cycleRoutines>

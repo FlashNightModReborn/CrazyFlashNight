@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1754825329" lastUniqueIdentifier="215">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1754934741" lastUniqueIdentifier="219">
   <timeline>
-    <DOMTimeline name="fs配置素材" currentFrame="20" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="14" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
         <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
@@ -185,7 +185,7 @@
                     <Point x="74.25" y="-42"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="长枪/XM556/XM214-CageFrame" centerPoint3DX="-10.75" centerPoint3DY="276.4">
+                <DOMSymbolInstance libraryItemName="长枪/XM214/XM214-CageFrame" centerPoint3DX="-10.75" centerPoint3DY="276.4">
                   <matrix>
                     <Matrix tx="-110.2" ty="269.6"/>
                   </matrix>
@@ -193,12 +193,28 @@
                     <Point x="99.2" y="6.8"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="长枪/XM556/图标-XM214-CageFrame" centerPoint3DX="331.9" centerPoint3DY="276.65">
+                <DOMSymbolInstance libraryItemName="长枪/XM214/图标-XM214-CageFrame" centerPoint3DX="331.9" centerPoint3DY="276.65">
                   <matrix>
                     <Matrix tx="331.9" ty="276.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="61.45" y="-42.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/GM6_LYNX/GM6j击杀特效" centerPoint3DX="427" centerPoint3DY="321.8">
+                  <matrix>
+                    <Matrix tx="381.7" ty="269.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.3" y="51.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/GM6_LYNX/GM6击杀标志" name="动画" centerPoint3DX="326.65" centerPoint3DY="97.55">
+                  <matrix>
+                    <Matrix tx="281.35" ty="45.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.3" y="51.9"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
