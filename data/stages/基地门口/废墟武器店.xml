@@ -157,8 +157,6 @@
                 <y>392</y>
                 <Identifier>装备箱</Identifier>
                 <Parameters>
-                    <最小主线进度>5</最小主线进度>
-                    <最大主线进度>5</最大主线进度>
                     <掉落物>
                         <名字>m9</名字>
                     </掉落物>
@@ -167,7 +165,7 @@
             <Instance id="1">
                 <x>560</x>
                 <y>260</y>
-                <Identifier>资源箱</Identifier>
+                <Identifier>纸箱</Identifier>
                 <Parameters>
                     <掉落物>
                         <名字>手枪通用弹药</名字>
@@ -246,6 +244,7 @@
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>只要在他拔枪之前快速解决掉他就赢了！如果他拔枪，只要避免和他同一直线就能避开子弹！好，来吧！</Text>
             </Dialogue>
+            <Guidance>引导-打开箱子2</Guidance>
         </Event>
         <Wave>
             <SubWave id="0">
