@@ -5824,7 +5824,7 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     <type>武器</type>
     <use>长枪</use>
     <weight>14</weight>
-    <price>136500</price>
+    <price>607027</price>
     <description>铁枪会出品，一款基于机动快反理念特化的半自动反器材平台，专为近距离非对称部署而设计。
     犊牛式布局结合长行程后坐缓冲与枪管后锁机构，配置 5 发直列弹匣，携行便利，入位前推即战。
     其前身为末日巨企富豪的私改品，搭载可增殖纳米机器人群，确认杀戮价值增殖补弹，实现复利式的欲望满足。
@@ -5876,23 +5876,20 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     <icon>XM214-CageFrame</icon>
     <type>武器</type>
     <use>长枪</use>
-    <weight>50</weight>
-    <price>230000</price>
-    <description>火神机枪。
-    最早在VN战时期采用，因此被称作「喷火神龙」，最初装备在直升机上；后来更多军用载具都配备了M134。
-    相传在洛圣都，射击技术过硬的银行抢匪可以随身携带并且用这把枪连续发射9999颗子弹。</description>
-    <skill>
-      <skillname>旋转抡枪</skillname>
-      <description>手持该武器时可以旋转抡枪。</description>
-      <cd>5000</cd>
-      <mp>0</mp>
-    </skill>
-    <level>31</level>
+    <weight>28</weight>
+    <price>848660</price>
+    <description>原型为A国通用电气主导的实验性单兵武器系统，未通过实用性评估，仅留下封存图纸与少量样机。
+    铁枪会在原型基础上重构动力传输与热管理设计，加装 CageFrame 电子战控制装置，定型为单兵作战平台。
+    口径较低但射速潜力惊人，初始锁定 2000 转/分，持续射击按梯度攀升至 4000 转/分峰值，停火后自动回落。
+    护笼式握把兼作天线阵列与力学骨架，承担扭矩承载与导热，提供链路稳压，能在电子战中提供硬件技术支持。
+    精英非对称作战的核心装备，结合电子战突破能力与超高火力密度，用以在关键节点强行撕开敌方战术缺口。
+    </description>
+    <level>28</level>
     <data>
-      <capacity>60</capacity>
-      <split>5</split>
+      <capacity>360</capacity>
+      <split>1</split>
       <diffusion>7</diffusion>
-      <interval>150</interval>
+      <interval>15</interval>
       <velocity>50</velocity>
       <bullet>纵向机枪联弹-加强普通子弹</bullet>
       <bulletrename>加强普通子弹</bulletrename>
@@ -5901,11 +5898,14 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <bullethit>火花</bullethit>
       <clipname>机枪通用弹药</clipname>
       <bulletsize>25</bulletsize>
-      <power>230</power>
+      <power>52</power>
       <impact>2</impact>
       <dressup>枪-长枪-XM214-CageFrame</dressup>
-      <evasion>-30</evasion>
-      <accuracy>-15</accuracy>
+      <evasion>-10</evasion>
+      <accuracy>-25</accuracy>
+      <criticalhit>10</criticalhit>      
+      <damagetype>破击</damagetype>
+      <magictype>电子体</magictype>
     </data>
     <lifecycle>
       <attr_0>
