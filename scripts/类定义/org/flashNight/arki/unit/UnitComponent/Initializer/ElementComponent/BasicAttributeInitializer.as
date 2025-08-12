@@ -55,6 +55,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BasicA
         target.防御力 = DEFAULT_DEFENSE;
         target.躲闪率 = DEFAULT_DODGE_RATE;
         target.击中效果 = target.击中效果 || DEFAULT_HIT_EFFECT;
+        target.threat = isNaN(target.threat) ? 0 : target.threat;
     }
     
     /**

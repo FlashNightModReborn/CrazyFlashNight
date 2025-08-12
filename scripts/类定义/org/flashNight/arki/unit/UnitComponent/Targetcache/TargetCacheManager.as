@@ -1112,6 +1112,22 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     // 预定义过滤器回退方法（游戏逻辑专用）
     // ========================================================================
 
+
+    /**
+     * 查找最近的构成威胁的敌人（威胁值 >= 阈值），如果没有则回退到最近敌人
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} threatThreshold - 威胁阈值
+     * @param {Number} searchLimit - 最大搜索步数（可选）
+     * @return {Object} 最近的威胁敌人，如果没有则返回最近敌人
+     */
+    public static function findNearestThreateningEnemyWithFallback(t:Object, interval:Number, threatThreshold:Number, searchLimit:Number):Object {
+        var threatFilter:Function = function(u:Object, target:Object, distance:Number):Boolean {
+            return u.threat != undefined && u.threat >= threatThreshold;
+        };
+        return findNearestEnemyWithFallback(t, interval, threatFilter, searchLimit, undefined);
+    }
+
     /**
      * 查找最近的低血量敌人，如果没有则回退到最近敌人
      * @param {Object} t - 目标单位
