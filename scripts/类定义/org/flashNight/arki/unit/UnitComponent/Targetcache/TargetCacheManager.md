@@ -177,14 +177,38 @@ enemy_0 vs enemy_0
 ✅ 短参数名兼容性-数字 VICTORY
 
 ⚔️ 第九波：性能基准战斗测试...
-📊 基础查询性能: 1000次调用耗时 21ms
+📊 基础查询性能: 1000次调用耗时 38ms
 ✅ 基础查询性能达标 VICTORY
-📊 复杂查询性能: 1500次调用耗时 54ms
+📊 复杂查询性能: 1500次调用耗时 91ms
 ✅ 复杂查询性能合理 VICTORY
-📊 外观层开销: Manager=206ms, Provider=181ms, 开销=14%
+📊 外观层开销: Manager=371ms, Provider=324ms, 开销=15%
 ✅ 外观层开销合理 VICTORY
-📊 大规模数据性能: 200次调用耗时 13ms
+📊 大规模数据性能: 200次调用耗时 17ms
 ✅ 大规模数据性能合理 VICTORY
+
+⚔️ 第十波：过滤器查询战斗测试...
+✅ 基础过滤查询-无低血量敌人时返回null VICTORY (object is null)
+✅ 简化过滤查询一致性 VICTORY
+✅ 友军过滤查询-确实受伤 VICTORY
+✅ 友军过滤查询-确实是友军 VICTORY
+✅ 全体过滤查询-名称匹配 VICTORY
+✅ 预定义过滤器-低血量敌人查询正常执行 VICTORY
+✅ 预定义过滤器-受伤友军 VICTORY (object exists)
+✅ 预定义过滤器-确实受伤 VICTORY
+✅ 预定义过滤器-确实是友军 VICTORY
+✅ 预定义过滤器-类型查询 VICTORY (object exists)
+✅ 预定义过滤器-类型匹配 VICTORY
+✅ 小范围过滤查询-距离确实很近 VICTORY
+✅ 永不匹配过滤器返回null VICTORY (object is null)
+✅ 永远匹配过滤器与直接查询一致 VICTORY
+✅ null过滤器处理 VICTORY (object is null)
+✅ 零searchLimit返回null VICTORY (object is null)
+📊 过滤查询性能: 100次调用耗时 9ms
+✅ 过滤查询性能合理 VICTORY
+📊 复杂过滤查询性能: 50次调用耗时 4ms
+✅ 复杂过滤查询性能合理 VICTORY
+✅ 过滤查询与手动过滤一致性 VICTORY
+✅ Manager与Cache过滤查询一致性 VICTORY
 
 ⚔️ 第十波：集成战斗测试...
 ✅ 工作流1-找到附近敌人 VICTORY
@@ -196,7 +220,7 @@ enemy_0 vs enemy_0
 ✅ 完整工作流集成测试成功
 ✅ 跨组件集成-新单位被正确处理 VICTORY
 ✅ 跨组件集成-单位移除正确处理 VICTORY
-📊 真实场景模拟: 10轮战斗耗时 3ms
+📊 真实场景模拟: 10轮战斗耗时 5ms
 ✅ 真实场景性能合理 VICTORY
 ✅ 高压下系统统计正常 VICTORY (object exists)
 ✅ 高压下缓存命中率合理 VICTORY
@@ -206,11 +230,11 @@ enemy_0 vs enemy_0
 ✅ 大规模数据-敌人计数合理 VICTORY
 ✅ 大规模数据-友军计数合理 VICTORY
 ✅ 大规模数据-处理时间合理 VICTORY
-📊 大规模数据压力: 301个单位，处理耗时 4ms
-📊 并发访问压力: 20次突发请求耗时 5ms
+📊 大规模数据压力: 301个单位，处理耗时 9ms
+📊 并发访问压力: 20次突发请求耗时 6ms
 ✅ 并发访问性能合理 VICTORY
 ✅ 高并发下系统健康 VICTORY
-📊 内存压力测试: 20次循环耗时 13ms
+📊 内存压力测试: 20次循环耗时 24ms
 ✅ 内存压力测试完成 VICTORY
 ✅ 内存压力后系统恢复正常 VICTORY
 
@@ -235,39 +259,41 @@ enemy_0 vs enemy_0
 ================================================================================
 🏆 TargetCacheManager 外观层战斗报告
 ================================================================================
-⚔️ 总战斗数: 186
-🏆 胜利次数: 186 ✅
+⚔️ 总模拟数: 206
+🏆 通过次数: 206 ✅
 💥 失败次数: 0 ❌
-🎯 胜率: 100%
-⏱️ 总战斗时间: 532ms
-📋 API覆盖数: 186 个方法
+🎯 胜通过: 100%
+⏱️ 测试用时: 961ms
+📋 API覆盖数: 206 个方法
 
-⚡ 性能战报:
-  basicQueries: 0.021ms/次 (1000次测试)
-  complexQueries: 0.036ms/次 (1500次测试)
-  facadeOverhead: 开销 14% (10000次测试)
-  largeScale: 0.065ms/次 (200次测试)
-  realWorldSimulation: 0.3ms/次 (10次测试)
-  massiveDataStress: 301个单位，4ms
-  concurrentAccess: N/Ams/次 (20次突发)
-  memoryStress: N/Ams/次 (20次循环)
+⚡ 测试报告:
+  basicQueries: 0.038ms/次 (1000次测试)
+  complexQueries: 0.061ms/次 (1500次测试)
+  facadeOverhead: 开销 15% (10000次测试)
+  largeScale: 0.085ms/次 (200次测试)
+  filteredQuery: 0.09ms/次 (100次测试)
+  complexFilteredQuery: 0.08ms/次 (50次测试)
+  realWorldSimulation: 0.5ms/次 (10次测试)
+  massiveDataStress: 301个单位，9ms
+  concurrentAccess: 0.3ms/次 (20次突发)
+  memoryStress: 1.2ms/次 (20次循环)
 
 🎯 TargetCacheManager外观层当前状态:
 === TargetCacheProvider ARC增强版状态报告 ===
 
 性能统计:
-  总请求次数: 23081
+  总请求次数: 23250
   缓存命中率: 99.78%
-  缓存命中: 23031
-  缓存未命中: 50
-  缓存创建: 30
+  缓存命中: 23199
+  缓存未命中: 51
+  缓存创建: 31
   缓存更新: 20
 
 
-🎉🎊 完美胜利！TargetCacheManager 外观层战斗力爆表！ 🎊🎉
-🏆 所有 186 项战斗测试全部通过！
+🎉🎊 完全通过！TargetCacheManager 外观层完美验收！ 🎊🎉
+🏆 所有 206 项测试全部通过！
 ⚡ 性能表现优异，API设计完美！
 🛡️ 外观模式实现卓越，用户体验极佳！
 ================================================================================
-🏁 TargetCacheManager 终极战斗测试完成！
+🏁 TargetCacheManager 终极测试完成！
 ================================================================================

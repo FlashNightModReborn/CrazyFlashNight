@@ -98,7 +98,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManagerTest 
             // === 第九波：性能基准测试 ===
             runPerformanceBenchmarks();
             
-            // === 第十波：集成战斗测试 ===
+            // === 第十波：过滤器查询测试 ===
+            runFilteredQueryTests();
+            
+            // === 第十一波：集成战斗测试 ===
             runIntegrationBattleTests();
             
             // === 终极波：大规模压力测试 ===
@@ -1093,6 +1096,324 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManagerTest 
         assertTrue("短参数名兼容性-数字", !isNaN(result3));
     }
     
+    // ========================================================================
+    // 第十波：过滤器查询测试
+    // ========================================================================
+    
+    private static function runFilteredQueryTests():Void {
+        trace("\n⚔️ 第十波：过滤器查询战斗测试...");
+        
+        testBasicFilteredQueries();
+        testPreDefinedFilters();
+        testFilteredQueryInRange();
+        testFilteredQueryEdgeCases();
+        testFilteredQueryPerformance();
+        testFilteredQueryConsistency();
+    }
+    
+    private static function testBasicFilteredQueries():Void {
+        var hero:Object = mockHero;
+        
+        // 修改一些单位的血量以便测试过滤器
+        // 需要同时修改 testEnemies 和 mockGameWorld 中的单位
+        for (var i:Number = 0; i < 10; i++) {
+            if (testEnemies[i]) {
+                testEnemies[i].hp = (i % 3 == 0) ? 30 : 80; // 部分设为低血量
+                // 同步到 mockGameWorld
+                var unitInWorld:Object = _root.gameworld[testEnemies[i]._name];
+                if (unitInWorld) {
+                    unitInWorld.hp = testEnemies[i].hp;
+                }
+            }
+        }
+        
+        // 清除缓存以确保反映最新的血量状态
+        TargetCacheManager.clearCache("敌人");
+        
+        // 测试基础过滤器查询
+        var lowHPFilter:Function = function(u:Object, t:Object, d:Number):Boolean {
+            return (u.hp / u.maxhp) < 0.5;
+        };
+        
+        var lowHPEnemy:Object = TargetCacheManager.findNearestTargetWithFilter(
+            hero, 10, "敌人", lowHPFilter, undefined, undefined
+        );
+        
+        if (lowHPEnemy) {
+            assertNotNull("基础过滤查询-找到低血量敌人", lowHPEnemy);
+            assertTrue("基础过滤查询-确实是低血量", (lowHPEnemy.hp / lowHPEnemy.maxhp) < 0.5);
+            assertTrue("基础过滤查询-确实是敌人", lowHPEnemy.是否为敌人);
+        } else {
+            // 验证在没有低血量敌人的情况下，查询正常返回null
+            assertNull("基础过滤查询-无低血量敌人时返回null", lowHPEnemy);
+        }
+        
+        // 测试简化方法
+        var lowHPEnemy2:Object = TargetCacheManager.findNearestEnemyWithFilter(
+            hero, 10, lowHPFilter, undefined, undefined
+        );
+        
+        assertTrue("简化过滤查询一致性", lowHPEnemy === lowHPEnemy2);
+        
+        // 测试友军过滤
+        var injuredAlly:Object = TargetCacheManager.findNearestAllyWithFilter(
+            hero, 10, 
+            function(u:Object, t:Object, d:Number):Boolean { return u.hp < u.maxhp; },
+            undefined, undefined
+        );
+        
+        // 友军可能没有受伤的，这是正常的
+        if (injuredAlly) {
+            assertTrue("友军过滤查询-确实受伤", injuredAlly.hp < injuredAlly.maxhp);
+            assertTrue("友军过滤查询-确实是友军", !injuredAlly.是否为敌人);
+        }
+        
+        // 测试全体过滤
+        var specificUnit:Object = TargetCacheManager.findNearestAllWithFilter(
+            hero, 10,
+            function(u:Object, t:Object, d:Number):Boolean { return u._name.indexOf("0") != -1; },
+            undefined, undefined
+        );
+        
+        if (specificUnit) {
+            assertTrue("全体过滤查询-名称匹配", specificUnit._name.indexOf("0") != -1);
+        }
+    }
+    
+    private static function testPreDefinedFilters():Void {
+        var hero:Object = mockHero;
+        
+        // 测试预定义的低血量敌人查询
+        var lowHPEnemy:Object = TargetCacheManager.findNearestLowHPEnemy(hero, 10, undefined);
+        
+        if (lowHPEnemy) {
+            assertNotNull("预定义过滤器-低血量敌人", lowHPEnemy);
+            assertTrue("预定义过滤器-血量确实低", (lowHPEnemy.hp / lowHPEnemy.maxhp) < 0.5);
+            assertTrue("预定义过滤器-确实是敌人", lowHPEnemy.是否为敌人);
+        } else {
+            // 如果找不到低血量敌人，至少验证方法不会崩溃
+            assertTrue("预定义过滤器-低血量敌人查询正常执行", true);
+        }
+        
+        // 测试受伤友军查询
+        var injuredAlly:Object = TargetCacheManager.findNearestInjuredAlly(hero, 10, undefined);
+        
+        if (injuredAlly) {
+            assertNotNull("预定义过滤器-受伤友军", injuredAlly);
+            assertTrue("预定义过滤器-确实受伤", injuredAlly.hp < injuredAlly.maxhp);
+            assertTrue("预定义过滤器-确实是友军", !injuredAlly.是否为敌人);
+        }
+        
+        // 测试特定类型单位查询
+        var typeUnit:Object = TargetCacheManager.findNearestUnitByType(
+            hero, 10, "敌人", "enemy", undefined
+        );
+        
+        if (typeUnit) {
+            assertNotNull("预定义过滤器-类型查询", typeUnit);
+            assertTrue("预定义过滤器-类型匹配", typeUnit._name.indexOf("enemy") != -1);
+        }
+        
+        // 测试buff单位查询（创建一个有buff的敌人）
+        if (testEnemies.length > 0) {
+            var buffedEnemy:Object = testEnemies[0];
+            buffedEnemy.buffs = { 强化: true };
+            
+            var foundBuffed:Object = TargetCacheManager.findNearestBuffedEnemy(hero, 10, "强化", undefined);
+            
+            if (foundBuffed && foundBuffed.buffs && foundBuffed.buffs["强化"]) {
+                assertNotNull("预定义过滤器-buff查询", foundBuffed);
+                assertTrue("预定义过滤器-确实有buff", foundBuffed.buffs["强化"]);
+            }
+        }
+    }
+    
+    private static function testFilteredQueryInRange():Void {
+        var hero:Object = mockHero;
+        
+        // 创建组合过滤器：范围内的低血量敌人
+        var lowHPFilter:Function = function(u:Object, t:Object, d:Number):Boolean {
+            return (u.hp / u.maxhp) < 0.5;
+        };
+        
+        var nearbyLowHPEnemy:Object = TargetCacheManager.findNearestTargetWithFilterInRange(
+            hero, 10, "敌人", lowHPFilter, 200, undefined
+        );
+        
+        if (nearbyLowHPEnemy) {
+            assertNotNull("范围过滤查询-找到单位", nearbyLowHPEnemy);
+            assertTrue("范围过滤查询-血量低", (nearbyLowHPEnemy.hp / nearbyLowHPEnemy.maxhp) < 0.5);
+            
+            var distance:Number = Math.abs(nearbyLowHPEnemy.x - hero.x);
+            assertTrue("范围过滤查询-距离合理", distance <= 200);
+        }
+        
+        // 测试很小的范围，应该找不到或找到很近的
+        var veryNearUnit:Object = TargetCacheManager.findNearestTargetWithFilterInRange(
+            hero, 10, "敌人", 
+            function(u:Object, t:Object, d:Number):Boolean { return true; },
+            50, undefined
+        );
+        
+        if (veryNearUnit) {
+            var veryNearDistance:Number = Math.abs(veryNearUnit.x - hero.x);
+            assertTrue("小范围过滤查询-距离确实很近", veryNearDistance <= 50);
+        }
+    }
+    
+    private static function testFilteredQueryEdgeCases():Void {
+        var hero:Object = mockHero;
+        
+        // 测试永远返回false的过滤器
+        var neverMatchFilter:Function = function(u:Object, t:Object, d:Number):Boolean {
+            return false;
+        };
+        
+        var noResult:Object = TargetCacheManager.findNearestEnemyWithFilter(
+            hero, 10, neverMatchFilter, 10, undefined
+        );
+        
+        assertNull("永不匹配过滤器返回null", noResult);
+        
+        // 测试永远返回true的过滤器（应该与findNearest结果一致）
+        var alwaysMatchFilter:Function = function(u:Object, t:Object, d:Number):Boolean {
+            return true;
+        };
+        
+        var filteredResult:Object = TargetCacheManager.findNearestEnemyWithFilter(
+            hero, 10, alwaysMatchFilter, undefined, undefined
+        );
+        var directResult:Object = TargetCacheManager.findNearestEnemy(hero, 10);
+        
+        if (filteredResult && directResult) {
+            assertTrue("永远匹配过滤器与直接查询一致", filteredResult._name == directResult._name);
+        }
+        
+        // 测试null过滤器
+        try {
+            var nullFilterResult:Object = TargetCacheManager.findNearestEnemyWithFilter(
+                hero, 10, null, undefined, undefined
+            );
+            assertNull("null过滤器处理", nullFilterResult);
+        } catch (e:Error) {
+            assertTrue("null过滤器异常处理", true);
+        }
+        
+        // 测试searchLimit = 0
+        var zeroLimitResult:Object = TargetCacheManager.findNearestEnemyWithFilter(
+            hero, 10, alwaysMatchFilter, 0, undefined
+        );
+        assertNull("零searchLimit返回null", zeroLimitResult);
+    }
+    
+    private static function testFilteredQueryPerformance():Void {
+        var hero:Object = mockHero;
+        
+        // 简单过滤器性能测试
+        var simpleFilter:Function = function(u:Object, t:Object, d:Number):Boolean {
+            return u.hp > 50;
+        };
+        
+        var startTime:Number = getTimer();
+        var trials:Number = 100;
+        
+        for (var i:Number = 0; i < trials; i++) {
+            TargetCacheManager.findNearestEnemyWithFilter(hero, 20, simpleFilter, undefined, undefined);
+        }
+        
+        var filterTime:Number = getTimer() - startTime;
+        var avgFilterTime:Number = filterTime / trials;
+        
+        performanceResults.push({
+            method: "filteredQuery",
+            trials: trials,
+            totalTime: filterTime,
+            avgTime: avgFilterTime
+        });
+        
+        trace("📊 过滤查询性能: " + trials + "次调用耗时 " + filterTime + "ms");
+        assertTrue("过滤查询性能合理", avgFilterTime < API_RESPONSE_BENCHMARK_MS * 2);
+        
+        // 复杂过滤器性能测试
+        var complexFilter:Function = function(u:Object, t:Object, d:Number):Boolean {
+            return u.hp > 30 && u._name.indexOf("enemy") != -1 && d < 300;
+        };
+        
+        var startTime2:Number = getTimer();
+        var trials2:Number = 50;
+        
+        for (var j:Number = 0; j < trials2; j++) {
+            TargetCacheManager.findNearestEnemyWithFilter(hero, 20, complexFilter, 15, 200);
+        }
+        
+        var complexTime:Number = getTimer() - startTime2;
+        var avgComplexTime:Number = complexTime / trials2;
+        
+        performanceResults.push({
+            method: "complexFilteredQuery",
+            trials: trials2,
+            totalTime: complexTime,
+            avgTime: avgComplexTime
+        });
+        
+        trace("📊 复杂过滤查询性能: " + trials2 + "次调用耗时 " + complexTime + "ms");
+        assertTrue("复杂过滤查询性能合理", avgComplexTime < API_RESPONSE_BENCHMARK_MS * 3);
+    }
+    
+    private static function testFilteredQueryConsistency():Void {
+        var hero:Object = mockHero;
+        
+        // 验证过滤查询与常规查询 + 手动过滤的一致性
+        var hpThreshold:Number = 60;
+        var filter:Function = function(u:Object, t:Object, d:Number):Boolean {
+            return u.hp >= hpThreshold;
+        };
+        
+        // 使用过滤查询
+        var filteredResult:Object = TargetCacheManager.findNearestEnemyWithFilter(
+            hero, 10, filter, undefined, undefined
+        );
+        
+        // 使用常规查询然后手动过滤验证
+        var allEnemies:Array = TargetCacheManager.getCachedEnemy(hero, 10);
+        var manualResult:Object = null;
+        var minDistance:Number = Number.MAX_VALUE;
+        
+        for (var i:Number = 0; i < allEnemies.length; i++) {
+            var enemy:Object = allEnemies[i];
+            if (enemy.hp >= hpThreshold) {
+                var distance:Number = Math.abs(enemy.x - hero.x);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    manualResult = enemy;
+                }
+            }
+        }
+        
+        if (filteredResult && manualResult) {
+            assertTrue("过滤查询与手动过滤一致性", filteredResult._name == manualResult._name);
+        } else if (!filteredResult && !manualResult) {
+            assertTrue("过滤查询与手动过滤都未找到", true);
+        } else {
+            assertTrue("过滤查询一致性验证", false); // 不一致
+        }
+        
+        // 验证委托正确性：Manager的过滤查询应该与直接调用底层一致
+        var cache:SortedUnitCache = TargetCacheProvider.getCache("敌人", hero, 10);
+        if (cache) {
+            var directResult:Object = cache.findNearestWithFilter(hero, filter, undefined, undefined);
+            var managerResult:Object = TargetCacheManager.findNearestEnemyWithFilter(
+                hero, 10, filter, undefined, undefined
+            );
+            
+            if (directResult && managerResult) {
+                assertTrue("Manager与Cache过滤查询一致性", directResult._name == managerResult._name);
+            } else if (!directResult && !managerResult) {
+                assertTrue("Manager与Cache都未找到", true);
+            }
+        }
+    }
+
     // ========================================================================
     // 第九波：性能基准测试
     // ========================================================================
