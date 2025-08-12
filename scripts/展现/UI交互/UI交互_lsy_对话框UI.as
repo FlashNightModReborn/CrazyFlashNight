@@ -31,6 +31,12 @@ _root.对话框UI.清理外部立绘缓存 = function(保留数量){
 
 
 
+_root.对话框UI.立绘大小写字典 = {
+    Boy: "boy",
+    King: "king",
+    Pig: "pig"
+}
+
 
 _root.对话框UI.刷新内容 = function(){
     var dialogueInfo = 本轮对话内容[对话进度];
@@ -46,11 +52,13 @@ _root.对话框UI.刷新内容 = function(){
         if (人物称号 == null){
             人物称号 = "";
         }
-        头像图标帧名 = dialogueInfo[2];
-        if (头像图标帧名 == null || 头像图标帧名 == ""){
-            头像图标帧名 = "无头像";
+        this.头像图标帧名 = dialogueInfo[2];
+        if (this.头像图标帧名 == null || this.头像图标帧名 == ""){
+            this.头像图标帧名 = "无头像";
+        }else if(_root.对话框UI.立绘大小写字典[this.头像图标帧名]){
+            this.头像图标帧名 = _root.对话框UI.立绘大小写字典[this.头像图标帧名]; // 解决大小写不一致问题
         }
-        if (头像图标帧名 == "主角模板" && 上句人物名字 != 人物名字){
+        if (this.头像图标帧名 == "主角模板" && 上句人物名字 != 人物名字){
             肖像.肖像.gotoAndStop("刷新");
         }
         对话内容 = dialogueInfo[3];
@@ -58,7 +66,7 @@ _root.对话框UI.刷新内容 = function(){
         if (人物表情 == null) 人物表情 = "普通";
         对话对象 = dialogueInfo[5];
         // 直接加载立绘 / 从外部文件导入立绘
-        if(_root.对话框UI.loadPortraitDict[头像图标帧名] != null){
+        if(_root.对话框UI.loadPortraitDict[this.头像图标帧名] != null){
             刷新外部导入立绘();
         }else {
             刷新立绘();
@@ -94,11 +102,11 @@ _root.对话框UI.刷新立绘 = function(){
 
 _root.对话框UI.刷新外部导入立绘 = function(){
     this.肖像._visible = false;
-    var portraitInfo = _root.对话框UI.loadPortraitDict[头像图标帧名];
+    var portraitInfo = _root.对话框UI.loadPortraitDict[this.头像图标帧名];
     if(portraitInfo.instance == null){
-        portraitInfo.instance = this.外部立绘层.createEmptyMovieClip(头像图标帧名, portraitInfo.depth);
-        _root.对话框UI.loadPortraitList.push(头像图标帧名);
-        portraitInfo.instance.loadMovie("flashswf/portraits/" + 头像图标帧名 + ".swf");
+        portraitInfo.instance = this.外部立绘层.createEmptyMovieClip(this.头像图标帧名, portraitInfo.depth);
+        _root.对话框UI.loadPortraitList.push(this.头像图标帧名);
+        portraitInfo.instance.loadMovie("flashswf/portraits/" + this.头像图标帧名 + ".swf");
     }
     if(this.当前立绘 !== portraitInfo.instance) this.当前立绘._visible = false;
     portraitInfo.instance._visible = true;
