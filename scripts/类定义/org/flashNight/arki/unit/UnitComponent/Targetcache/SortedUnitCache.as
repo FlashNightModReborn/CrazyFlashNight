@@ -295,6 +295,41 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
     }
 
     // ========================================================================
+    // 私有辅助方法
+    // ========================================================================
+    
+    /**
+     * 查找目标X坐标在有序数组中的插入位置
+     * 
+     * 该方法使用二分查找算法，在已按X轴排序的数组中查找指定X坐标的插入位置。
+     * 返回的索引表示：如果要将该X坐标插入到数组中，应该插入的位置。
+     * 
+     * @param {Number} targetX - 目标X坐标
+     * @return {Number} 插入位置索引
+     */
+    private function _findInsertIndex(targetX:Number):Number {
+        var len:Number = this.leftValues.length;
+        if (len == 0) return 0;
+        
+        if (targetX <= this.leftValues[0]) return 0;
+        if (targetX > this.leftValues[len - 1]) return len;
+        
+        var left:Number = 0;
+        var right:Number = len - 1;
+        
+        while (left < right) {
+            var mid:Number = (left + right) >> 1;
+            if (this.leftValues[mid] < targetX) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        
+        return left;
+    }
+
+    // ========================================================================
     // 最近单位查询方法
     // ========================================================================
     
@@ -353,6 +388,125 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
         if (dl == Number.MAX_VALUE && dr == Number.MAX_VALUE) return null;
         
         return (dl <= dr) ? leftObj : rightObj;
+    }
+
+    // ========================================================================
+    // 带过滤器的最近单位查询方法 (v2.0 - 健壮版)
+    // ========================================================================
+
+    /**
+     * 查找满足过滤条件的最近单位（邻域扩张算法）
+     * 
+     * 该方法首先使用高效的 findNearest() 查找候选者。如果候选者满足过滤条件，则立即返回。
+     * 否则，它会从目标单位在有序数组中的位置开始，向两侧交替搜索，直到找到满足条件的单位、
+     * 达到搜索步数限制或超出搜索距离阈值。
+     *
+     * @param {Object} target - 目标单位，查询的中心点。
+     * @param {Function} filter - 过滤函数。接收 (unit, target, absDx) 三个参数，必须返回 {Boolean}。
+     *                          - `unit`: 被检查的单位。
+     *                          - `target`: 查询发起方。
+     *                          - `absDx`: 已计算好的unit和target在X轴上的距离绝对值。
+     * @param {Number} searchLimit - (可选) 最大邻域搜索数量。默认 30。
+     * @param {Number} distanceThreshold - (可选) 最大搜索距离。如果下一个最近单位的距离超过此值，
+     *                                     搜索将提前停止。默认为自适应阈值的5倍。
+     * @return {Object} 满足条件的最近单位对象；如果找不到，则返回 null。
+     */
+    public function findNearestWithFilter(target:Object, filter:Function, searchLimit:Number, distanceThreshold:Number):Object {
+        // --- 0. 性能优化：局部变量缓存 ---
+        var data:Array = this.data;
+        var leftValues:Array = this.leftValues;
+        var listLength:Number = data.length;
+
+        // --- 1. 参数验证与默认值 ---
+        if (searchLimit == undefined) searchLimit = 30;
+        if (distanceThreshold == undefined) {
+            // 复用自适应阈值，提供一个合理的动态范围
+            distanceThreshold = AdaptiveThresholdOptimizer.getThreshold() * 5;
+        }
+
+        if (listLength == 0 || filter == null || searchLimit <= 0) {
+            return null;
+        }
+
+        // --- 2. 快速路径检查 ---
+        var nearestCandidate:Object = findNearest(target);
+        var fastPathChecked:Boolean = false;
+        if (nearestCandidate) {
+            var targetX_fast:Number = target.aabbCollider.left;
+            var candidateX:Number = nearestCandidate.aabbCollider.left;
+            var dx_fast:Number = candidateX - targetX_fast;
+            var absDx_fast:Number = dx_fast < 0 ? -dx_fast : dx_fast;
+
+            fastPathChecked = true; // 标记快速路径已检查
+            if (filter(nearestCandidate, target, absDx_fast) == true) {
+                return nearestCandidate;
+            }
+        }
+
+        // --- 3. 邻域扩张搜索 ---
+        var targetX:Number = target.aabbCollider.left;
+        var startIndex:Number = this.nameIndex[target._name];
+        
+        // 初始化左右指针
+        var leftPtr:Number;
+        var rightPtr:Number;
+        
+        if (startIndex == undefined) {
+            // 【关键修复】目标不在缓存，_findInsertIndex返回的是右侧第一个候选者的索引。
+            startIndex = _findInsertIndex(targetX);
+            leftPtr = startIndex - 1;
+            rightPtr = startIndex; // 右指针直接指向插入点
+        } else {
+            // 目标在缓存中，从其两侧开始
+            leftPtr = startIndex - 1;
+            rightPtr = startIndex + 1;
+        }
+
+        // 计算剩余检查次数：如果快速路径已检查，则减去1
+        var remainingChecks:Number = fastPathChecked ? (searchLimit - 1) : searchLimit;
+        var checkedCount:Number = 0;
+
+        // --- 4. 扩张循环 ---
+        while (checkedCount < remainingChecks && (leftPtr >= 0 || rightPtr < listLength)) {
+            var leftUnit:Object = (leftPtr >= 0) ? data[leftPtr] : null;
+            var rightUnit:Object = (rightPtr < listLength) ? data[rightPtr] : null;
+
+            var dxLeft:Number = leftUnit ? (targetX - leftValues[leftPtr]) : Number.MAX_VALUE;
+            var dxRight:Number = rightUnit ? (leftValues[rightPtr] - targetX) : Number.MAX_VALUE;
+            
+            // 【安全阀】距离阈值早停机制
+            if (dxLeft > distanceThreshold && dxRight > distanceThreshold) {
+                break; // 左右两边都太远了，停止搜索
+            }
+
+            var unitToCheck:Object;
+            var distance:Number;
+
+            // 【确定性】优先检查距离更近的单位，距离相等时优先检查左侧
+            if (dxLeft <= dxRight) {
+                unitToCheck = leftUnit;
+                distance = dxLeft;
+                leftPtr--;
+            } else {
+                unitToCheck = rightUnit;
+                distance = dxRight;
+                rightPtr++;
+            }
+            
+            // 避免重复检查快速路径已经检查过的候选者
+            if (unitToCheck && unitToCheck == nearestCandidate) {
+                // 跳过已经在快速路径中检查过的单位，不计入checkedCount
+                continue;
+            }
+            
+            checkedCount++;
+            
+            if (unitToCheck && filter(unitToCheck, target, distance) == true) {
+                return unitToCheck; // 找到满足条件的最近单位
+            }
+        }
+
+        return null; // 搜索结束，未找到
     }
 
     // ========================================================================

@@ -133,13 +133,13 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCacheTest.runAll();
 ✅ getTargetsFromIndex性能达标 PASS
 📊 findNearest性能: 500次调用耗时 2ms
 ✅ findNearest性能达标 PASS
-📊 findFarthest性能: 500次调用耗时 1ms
+📊 findFarthest性能: 500次调用耗时 2ms
 ✅ findFarthest性能达标 PASS
-📊 findInRange性能: 500次调用耗时 5ms
+📊 findInRange性能: 500次调用耗时 7ms
 ✅ findInRange性能达标 PASS
 📊 getCountInRange性能: 500次调用耗时 4ms
 ✅ getCountInRange性能达标 PASS
-📊 getCountByHP性能: 500次调用耗时 12ms
+📊 getCountByHP性能: 500次调用耗时 23ms
 ✅ getCountByHP性能达标 PASS
 📊 缓存优化测试: 100次相似查询耗时 1ms
 ✅ 缓存优化有效 PASS
@@ -177,34 +177,61 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCacheTest.runAll();
 ✅ 快速查询压力测试通过 PASS
 ⚡ 快速查询测试: 200次混合查询耗时 4ms
 ✅ 内存压力测试通过 PASS
-🧠 内存使用测试: 20次缓存创建/销毁耗时 62ms
+🧠 内存使用测试: 20次缓存创建/销毁耗时 84ms
 ✅ 极端场景处理 PASS
 🔥 极端场景测试: 3/3 通过
 
 🧮 执行算法优化验证...
 ✅ 二分查找优化有效 PASS
-🔍 二分查找测试: 100次查询耗时 1ms
+🔍 二分查找测试: 100次查询耗时 2ms
 🌡️ 缓存优化: 冷查询=0ms, 热查询平均=0ms
-✅ 缓存优化效果 PASS
+✅ 缓存优化效果(计时器下限) PASS
 ✅ 小数组线性扫描优化 PASS
-📏 线性扫描测试: 100次小数组查询耗时 0ms
+📏 线性扫描测试: 100次小数组查询耗时 1ms
+
+🔍 执行带过滤器的最近单位查询测试...
+✅ 基础过滤查询返回结果 PASS (object is not null)
+✅ 结果满足过滤条件 PASS
+✅ 结果不是目标自身 PASS
+✅ 快速路径返回结果 PASS (object is not null)
+✅ 快速路径与findNearest结果一致 PASS (expected="unit_24", actual="unit_24")
+✅ 过滤器恒为false时返回null PASS (object is null)
+✅ searchLimit 性能回归守卫 PASS (expected=10, actual=10)
+✅ 目标在缓存中查询返回结果 PASS (object is not null)
+✅ 结果满足过滤条件 PASS
+✅ 结果不是目标自身 PASS
+✅ 外部目标左侧查询返回结果 PASS (object is not null)
+✅ 返回左侧满足条件的单位 PASS (expected="unit_8", actual="unit_8")
+✅ 外部目标右侧查询返回结果 PASS (object is not null)
+✅ 返回右侧满足条件的单位 PASS (expected="unit_10", actual="unit_10")
+✅ 等距情况返回结果 PASS (object is not null)
+✅ 等距情况优先选择左侧 PASS (expected="unit_L", actual="unit_L")
+✅ 大距离阈值能找到远处单位 PASS (object is not null)
+✅ searchLimit限制时返回null PASS (object is null)
+✅ 严格遵循searchLimit PASS (expected=15, actual=15)
+✅ 空缓存返回null PASS (object is null)
+✅ null过滤器返回null PASS (object is null)
+✅ 零searchLimit返回null PASS (object is null)
+✅ 负searchLimit返回null PASS (object is null)
+✅ 单元素缓存满足条件 PASS (object is not null)
+✅ 单元素缓存不满足条件 PASS (object is null)
 
 ================================================================================
 📊 测试结果汇总
 ================================================================================
-总测试数: 148
-通过: 148 ✅
+总测试数: 173
+通过: 173 ✅
 失败: 0 ❌
 成功率: 100%
-总耗时: 423ms
+总耗时: 618ms
 
 ⚡ 性能基准报告:
   getTargetsFromIndex: 0.008ms/次 (500次测试)
   findNearest: 0.004ms/次 (500次测试)
-  findFarthest: 0.002ms/次 (500次测试)
-  findInRange: 0.01ms/次 (500次测试)
+  findFarthest: 0.004ms/次 (500次测试)
+  findInRange: 0.014ms/次 (500次测试)
   getCountInRange: 0.008ms/次 (500次测试)
-  getCountByHP: 0.024ms/次 (500次测试)
+  getCountByHP: 0.046ms/次 (500次测试)
 
 🎯 缓存当前状态:
 === SortedUnitCache Status ===
