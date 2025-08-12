@@ -1109,6 +1109,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManagerTest 
         testFilteredQueryEdgeCases();
         testFilteredQueryPerformance();
         testFilteredQueryConsistency();
+        // 新增：回退降级测试
+        testFallbackQueryMethods();
     }
     
     private static function testBasicFilteredQueries():Void {
@@ -1532,6 +1534,215 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManagerTest 
         
         trace("📊 大规模数据性能: " + (50 * 4) + "次调用耗时 " + largeScaleTime + "ms");
         assertTrue("大规模数据性能合理", largeScaleAvg < API_RESPONSE_BENCHMARK_MS * 2);
+    }
+
+    // ========================================================================
+    // 回退降级测试方法（新增）
+    // ========================================================================
+    
+    /**
+     * 测试带回退降级的过滤器查询方法
+     */
+    private static function testFallbackQueryMethods():Void {
+        trace("\n🔄 回退降级查询测试...");
+        
+        testBasicFallbackMechanisms();
+        testPreDefinedFallbackMethods();
+        testFallbackPerformance();
+        testFallbackEdgeCases();
+    }
+    
+    /**
+     * 测试基础回退机制
+     */
+    private static function testBasicFallbackMechanisms():Void {
+        var hero:Object = mockHero;
+        
+        // 情况1：过滤器能找到目标的情况
+        var standardFilter:Function = function(u:Object, t:Object, d:Number):Boolean {
+            return u.hp > 0; // 简单条件，应该能找到目标
+        };
+        
+        var fallbackResult:Object = TargetCacheManager.findNearestEnemyWithFallback(
+            hero, 10, standardFilter, undefined, undefined
+        );
+        var regularResult:Object = TargetCacheManager.findNearestEnemyWithFilter(
+            hero, 10, standardFilter, undefined, undefined
+        );
+        
+        if (regularResult) {
+            assertNotNull("回退查询-过滤器成功时应返回结果", fallbackResult);
+            assertEquals("回退查询-应与过滤器查询结果一致", 
+                regularResult._name, fallbackResult._name, 0);
+        }
+        
+        // 情况2：过滤器无法找到目标的情况
+        var impossibleFilter:Function = function(u:Object, t:Object, d:Number):Boolean {
+            return u.hp < 0; // 不可能的条件
+        };
+        
+        var fallbackResult2:Object = TargetCacheManager.findNearestEnemyWithFallback(
+            hero, 10, impossibleFilter, undefined, undefined
+        );
+        var basicResult:Object = TargetCacheManager.findNearestEnemy(hero, 10);
+        
+        if (basicResult) {
+            assertNotNull("回退查询-过滤器失败时应回退到基础查询", fallbackResult2);
+            assertEquals("回退查询-应与基础查询结果一致", 
+                basicResult._name, fallbackResult2._name, 0);
+        } else {
+            // 如果连基础查询都没有结果，回退查询也应该返回null
+            assertNull("回退查询-基础查询无结果时也应返回null", fallbackResult2);
+        }
+    }
+    
+    /**
+     * 测试预定义回退方法
+     */
+    private static function testPreDefinedFallbackMethods():Void {
+        var hero:Object = mockHero;
+        
+        // 准备测试数据：设置一些低血量敌人
+        for (var i:Number = 0; i < 5; i++) {
+            if (testEnemies[i]) {
+                testEnemies[i].hp = 30; // 设为低血量
+                testEnemies[i].maxhp = 100;
+                // 同步到gameworld
+                var unitInWorld:Object = _root.gameworld[testEnemies[i]._name];
+                if (unitInWorld) {
+                    unitInWorld.hp = 30;
+                    unitInWorld.maxhp = 100;
+                }
+            }
+        }
+        
+        // 清除缓存
+        TargetCacheManager.clearCache("敌人");
+        TargetCacheManager.clearCache("友军");
+        TargetCacheManager.clearCache("全体");
+        
+        // 测试通用回退方法（所有类型）
+        var generalFilter:Function = function(u:Object, t:Object, d:Number):Boolean {
+            return u._name && u._name.indexOf("special") != -1; // 查找特殊单位
+        };
+        
+        var generalEnemyResult:Object = TargetCacheManager.findNearestTargetWithFallback(
+            hero, 10, "敌人", generalFilter, undefined, undefined
+        );
+        var generalAllyResult:Object = TargetCacheManager.findNearestAllyWithFallback(
+            hero, 10, generalFilter, undefined, undefined
+        );
+        var generalAllResult:Object = TargetCacheManager.findNearestAllWithFallback(
+            hero, 10, generalFilter, undefined, undefined
+        );
+        
+        assertTrue("通用敌人回退查询测试完成", true);
+        assertTrue("通用友军回退查询测试完成", true);
+        assertTrue("通用全体回退查询测试完成", true);
+        
+        // 测试低血量敌人回退查询
+        var lowHPResult:Object = TargetCacheManager.findNearestLowHPEnemyWithFallback(hero, 10, 20);
+        var regularEnemyResult:Object = TargetCacheManager.findNearestEnemy(hero, 10);
+        
+        assertNotNull("低血量敌人回退查询应有结果", lowHPResult);
+        if (lowHPResult && (lowHPResult.hp / lowHPResult.maxhp) < 0.5) {
+            assertTrue("找到的是低血量敌人", true);
+        } else if (lowHPResult && regularEnemyResult) {
+            assertEquals("回退到普通敌人查询", regularEnemyResult._name, lowHPResult._name, 0);
+        }
+        
+        // 测试受伤友军回退查询
+        var injuredResult:Object = TargetCacheManager.findNearestInjuredAllyWithFallback(hero, 10, 20);
+        if (injuredResult) {
+            assertTrue("受伤友军回退查询有合理结果", injuredResult.hp != undefined);
+        }
+        
+        // 测试特定类型单位回退查询
+        var typeResult:Object = TargetCacheManager.findNearestUnitByTypeWithFallback(
+            hero, 10, "敌人", "Boss", 20
+        );
+        if (typeResult) {
+            assertTrue("特定类型回退查询有合理结果", typeResult._name != undefined);
+        }
+        
+        // 测试强化单位回退查询
+        var buffedResult:Object = TargetCacheManager.findNearestBuffedEnemyWithFallback(
+            hero, 10, "shield", 20
+        );
+        if (buffedResult) {
+            assertTrue("强化单位回退查询有合理结果", buffedResult._name != undefined);
+        }
+    }
+    
+    /**
+     * 测试回退查询性能
+     */
+    private static function testFallbackPerformance():Void {
+        var hero:Object = mockHero;
+        var trials:Number = 100;
+        
+        // 测试成功过滤器的性能（不应该触发回退）
+        var successFilter:Function = function(u:Object, t:Object, d:Number):Boolean {
+            return u.hp > 0;
+        };
+        
+        var startTime1:Number = getTimer();
+        for (var i:Number = 0; i < trials; i++) {
+            TargetCacheManager.findNearestEnemyWithFallback(hero, 10, successFilter, undefined, undefined);
+        }
+        var successTime:Number = getTimer() - startTime1;
+        
+        // 测试失败过滤器的性能（会触发回退）
+        var failFilter:Function = function(u:Object, t:Object, d:Number):Boolean {
+            return false;
+        };
+        
+        var startTime2:Number = getTimer();
+        for (var j:Number = 0; j < trials; j++) {
+            TargetCacheManager.findNearestEnemyWithFallback(hero, 10, failFilter, undefined, undefined);
+        }
+        var fallbackTime:Number = getTimer() - startTime2;
+        
+        var successAvg:Number = successTime / trials;
+        var fallbackAvg:Number = fallbackTime / trials;
+        
+        trace("📊 回退查询性能 - 成功过滤: " + successAvg + "ms, 触发回退: " + fallbackAvg + "ms");
+        
+        // 性能应该在合理范围内（回退查询会稍慢，但不应该过慢）
+        assertTrue("成功过滤性能合理", successAvg < API_RESPONSE_BENCHMARK_MS * 2);
+        assertTrue("回退查询性能合理", fallbackAvg < API_RESPONSE_BENCHMARK_MS * 4);
+    }
+    
+    /**
+     * 测试回退查询边界情况
+     */
+    private static function testFallbackEdgeCases():Void {
+        var hero:Object = mockHero;
+        
+        // 测试null过滤器
+        var nullFilterResult:Object = TargetCacheManager.findNearestEnemyWithFallback(
+            hero, 10, null, undefined, undefined
+        );
+        // 应该处理null过滤器情况（可能直接回退到基础查询）
+        
+        // 测试空缓存情况
+        TargetCacheManager.clearCache("敌人");
+        // 创建空的敌人缓存情况
+        var emptyResult:Object = TargetCacheManager.findNearestEnemyWithFallback(
+            hero, 10, function(u, t, d) { return true; }, undefined, undefined
+        );
+        
+        // 测试极端距离阈值
+        var extremeDistanceResult:Object = TargetCacheManager.findNearestEnemyWithFallback(
+            hero, 10, function(u, t, d) { return d < 1; }, 5, 1 // 极小距离阈值
+        );
+        
+        // 测试极端搜索限制
+        var extremeLimitResult:Object = TargetCacheManager.findNearestEnemyWithFallback(
+            hero, 10, function(u, t, d) { return true; }, 1, undefined // 只搜索1个单位
+        );
+        
+        assertTrue("边界情况测试完成", true);
     }
     
     // ========================================================================

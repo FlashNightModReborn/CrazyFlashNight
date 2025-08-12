@@ -1027,6 +1027,153 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     }
 
     // ========================================================================
+    // 带回退降级的过滤器查询方法（新增核心功能）
+    // ========================================================================
+
+    /**
+     * 查找满足过滤条件的最近单位，如果没有满足的则回退到基础查询
+     * @param {Object} target - 目标单位
+     * @param {Number} updateInterval - 更新间隔(帧数)
+     * @param {String} requestType - 请求类型
+     * @param {Function} filter - 过滤函数，接收 (unit, target, absDx) 三个参数
+     * @param {Number} searchLimit - 最大搜索步数（可选，默认30）
+     * @param {Number} distanceThreshold - 距离阈值（可选，默认自适应）
+     * @return {Object} 满足条件的最近单位，如果过滤器查询失败则返回基础查询结果
+     */
+    public static function findNearestTargetWithFallback(
+        target:Object,
+        updateInterval:Number,
+        requestType:String,
+        filter:Function,
+        searchLimit:Number,
+        distanceThreshold:Number
+    ):Object {
+        var cache:SortedUnitCache = _provider.getCache(requestType, target, updateInterval);
+        if (!cache) return null;
+        
+        // 首先尝试过滤器查询
+        var filteredResult:Object = cache.findNearestWithFilter(target, filter, searchLimit, distanceThreshold);
+        
+        // 如果过滤器查询找到了结果，直接返回
+        if (filteredResult != null) {
+            return filteredResult;
+        }
+        
+        // 如果过滤器查询没有找到结果，回退到基础查询
+        return cache.findNearest(target);
+    }
+
+    /**
+     * 查找满足过滤条件的最近敌人，如果没有满足的则回退到基础查询
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Function} filter - 过滤函数
+     * @param {Number} searchLimit - 最大搜索步数（可选）
+     * @param {Number} distanceThreshold - 距离阈值（可选）
+     * @return {Object} 满足条件的最近敌人，如果过滤器查询失败则返回最近敌人
+     */
+    public static function findNearestEnemyWithFallback(
+        t:Object, interval:Number, filter:Function, searchLimit:Number, distanceThreshold:Number
+    ):Object {
+        return findNearestTargetWithFallback(t, interval, "敌人", filter, searchLimit, distanceThreshold);
+    }
+
+    /**
+     * 查找满足过滤条件的最近友军，如果没有满足的则回退到基础查询
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Function} filter - 过滤函数
+     * @param {Number} searchLimit - 最大搜索步数（可选）
+     * @param {Number} distanceThreshold - 距离阈值（可选）
+     * @return {Object} 满足条件的最近友军，如果过滤器查询失败则返回最近友军
+     */
+    public static function findNearestAllyWithFallback(
+        t:Object, interval:Number, filter:Function, searchLimit:Number, distanceThreshold:Number
+    ):Object {
+        return findNearestTargetWithFallback(t, interval, "友军", filter, searchLimit, distanceThreshold);
+    }
+
+    /**
+     * 查找满足过滤条件的最近全体单位，如果没有满足的则回退到基础查询
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Function} filter - 过滤函数
+     * @param {Number} searchLimit - 最大搜索步数（可选）
+     * @param {Number} distanceThreshold - 距离阈值（可选）
+     * @return {Object} 满足条件的最近全体单位，如果过滤器查询失败则返回最近单位
+     */
+    public static function findNearestAllWithFallback(
+        t:Object, interval:Number, filter:Function, searchLimit:Number, distanceThreshold:Number
+    ):Object {
+        return findNearestTargetWithFallback(t, interval, "全体", filter, searchLimit, distanceThreshold);
+    }
+
+    // ========================================================================
+    // 预定义过滤器回退方法（游戏逻辑专用）
+    // ========================================================================
+
+    /**
+     * 查找最近的低血量敌人，如果没有则回退到最近敌人
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} searchLimit - 最大搜索步数（可选）
+     * @return {Object} 最近的低血量敌人，如果没有则返回最近敌人
+     */
+    public static function findNearestLowHPEnemyWithFallback(t:Object, interval:Number, searchLimit:Number):Object {
+        var lowHPFilter:Function = function(u:Object, target:Object, distance:Number):Boolean {
+            return (u.hp / u.maxhp) < 0.5;
+        };
+        return findNearestEnemyWithFallback(t, interval, lowHPFilter, searchLimit, undefined);
+    }
+
+    /**
+     * 查找最近的受伤友军，如果没有则回退到最近友军
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} searchLimit - 最大搜索步数（可选）
+     * @return {Object} 最近的受伤友军，如果没有则返回最近友军
+     */
+    public static function findNearestInjuredAllyWithFallback(t:Object, interval:Number, searchLimit:Number):Object {
+        var injuredFilter:Function = function(u:Object, target:Object, distance:Number):Boolean {
+            return u.hp < u.maxhp;
+        };
+        return findNearestAllyWithFallback(t, interval, injuredFilter, searchLimit, undefined);
+    }
+
+    /**
+     * 查找最近的特定类型单位，如果没有则回退到最近单位
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {String} requestType - 请求类型("敌人"、"友军"或"全体")
+     * @param {String} unitType - 单位类型标识
+     * @param {Number} searchLimit - 最大搜索步数（可选）
+     * @return {Object} 最近的指定类型单位，如果没有则返回最近单位
+     */
+    public static function findNearestUnitByTypeWithFallback(
+        t:Object, interval:Number, requestType:String, unitType:String, searchLimit:Number
+    ):Object {
+        var typeFilter:Function = function(u:Object, target:Object, distance:Number):Boolean {
+            return u.unitType == unitType || u._name.indexOf(unitType) != -1;
+        };
+        return findNearestTargetWithFallback(t, interval, requestType, typeFilter, searchLimit, undefined);
+    }
+
+    /**
+     * 查找最近的强化单位，如果没有则回退到最近敌人
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {String} buffName - buff名称
+     * @param {Number} searchLimit - 最大搜索步数（可选）
+     * @return {Object} 最近的强化敌人，如果没有则返回最近敌人
+     */
+    public static function findNearestBuffedEnemyWithFallback(t:Object, interval:Number, buffName:String, searchLimit:Number):Object {
+        var buffFilter:Function = function(u:Object, target:Object, distance:Number):Boolean {
+            return u.buffs && u.buffs[buffName] != undefined;
+        };
+        return findNearestEnemyWithFallback(t, interval, buffFilter, searchLimit, undefined);
+    }
+
+    // ========================================================================
     // 【重构兼容】更新缓存方法（保持向后兼容）
     // ========================================================================
     

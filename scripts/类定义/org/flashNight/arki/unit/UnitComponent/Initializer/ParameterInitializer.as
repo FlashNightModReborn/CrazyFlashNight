@@ -13,6 +13,10 @@
         if (isNaN(target.remainingImpactForce)) target.remainingImpactForce = 0;
         if (isNaN(target.lastHitTime)) target.lastHitTime = _root.帧计时器.当前帧数;
 
+        if(isNaN(target.threat)) target.threat = 10;
+        if(isNaN(target.threatThreshold)) target.threatThreshold = 5;
+        
+
         var ic:MovieClip = target.新版人物文字信息;
 
         if (isNaN(target.previousActualHpWidth)) target.previousActualHpWidth = ic.头顶血槽.血槽底._width;
