@@ -154,7 +154,7 @@
                 <y>812</y>
                 <QuantityMax>1</QuantityMax>
             </Point>
-            <Point id="2">
+            <Point id="3">
                 <x>1800</x>
                 <y>584</y>
                 <QuantityMax>1</QuantityMax>
@@ -196,6 +196,9 @@
                         <Quantity>2</Quantity>
                         <Level>26</Level>
                         <SpawnIndex>1</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种57</Type>
@@ -300,6 +303,9 @@
                         <InstanceName>键盘</InstanceName>
                         <x>409</x>
                         <y>450</y>
+                        <Parameters>
+                            <threat>30</threat>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种54</Type>
@@ -316,6 +322,9 @@
                         <Level>26</Level>
                         <x>620</x>
                         <y>590</y>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种57</Type>
@@ -338,6 +347,9 @@
                         <Quantity>2</Quantity>
                         <Level>26</Level>
                         <SpawnIndex>1</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种57</Type>
@@ -441,6 +453,9 @@
                         <InstanceName>键盘</InstanceName>
                         <x>625</x>
                         <y>436</y>
+                        <Parameters>
+                            <threat>30</threat>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种57</Type>
@@ -456,6 +471,9 @@
                         <Quantity>1</Quantity>
                         <Level>26</Level>
                         <SpawnIndex>back</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种54</Type>
@@ -463,6 +481,9 @@
                         <Quantity>2</Quantity>
                         <Level>24</Level>
                         <SpawnIndex>0</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种56</Type>
@@ -470,6 +491,9 @@
                         <Quantity>2</Quantity>
                         <Level>24</Level>
                         <SpawnIndex>1</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种57</Type>
@@ -484,6 +508,9 @@
                         <Quantity>2</Quantity>
                         <Level>24</Level>
                         <SpawnIndex>3</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种13</Type>
@@ -581,6 +608,9 @@
                         <InstanceName>键盘</InstanceName>
                         <x>409</x>
                         <y>450</y>
+                        <Parameters>
+                            <threat>30</threat>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种54</Type>
@@ -589,6 +619,9 @@
                         <Level>26</Level>
                         <x>545</x>
                         <y>596</y>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种56</Type>
@@ -597,6 +630,9 @@
                         <Level>26</Level>
                         <x>656</x>
                         <y>471</y>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种54</Type>
@@ -604,6 +640,9 @@
                         <Quantity>3</Quantity>
                         <Level>26</Level>
                         <SpawnIndex>0</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种56</Type>
@@ -611,6 +650,9 @@
                         <Quantity>3</Quantity>
                         <Level>26</Level>
                         <SpawnIndex>1</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种57</Type>
@@ -618,6 +660,9 @@
                         <Quantity>3</Quantity>
                         <Level>26</Level>
                         <SpawnIndex>2</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种13</Type>
