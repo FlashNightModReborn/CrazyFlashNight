@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/保险柜/保险柜" itemID="6837c8d0-00001906" linkageExportForAS="true" linkageIdentifier="保险柜" lastModified="1748833395" lastUniqueIdentifier="18">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/保险柜/保险柜" itemID="6837c8d0-00001906" linkageExportForAS="true" linkageIdentifier="保险柜" lastModified="1754994216" lastUniqueIdentifier="37">
   <timeline>
-    <DOMTimeline name="保险柜" currentFrame="98">
+    <DOMTimeline name="保险柜" currentFrame="100">
       <layers>
         <DOMLayer name="Labels Layer" color="#D4A0A9">
           <frames>
@@ -37,7 +37,7 @@
             </DOMFrame>
             <DOMFrame index="57" duration="39" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.地图元件.资源箱破碎脚本(this);
+                <script><![CDATA[_root.地图元件.资源箱开启脚本(this);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -235,7 +235,7 @@ this.removeMovieClip();
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="箱子素材/保险柜/保险柜锁盘" selected="true" centerPoint3DX="5.5" centerPoint3DY="-25.6">
+                <DOMSymbolInstance libraryItemName="箱子素材/保险柜/保险柜锁盘" centerPoint3DX="5.5" centerPoint3DY="-25.6">
                   <matrix>
                     <Matrix tx="-5.1" ty="-36.25"/>
                   </matrix>

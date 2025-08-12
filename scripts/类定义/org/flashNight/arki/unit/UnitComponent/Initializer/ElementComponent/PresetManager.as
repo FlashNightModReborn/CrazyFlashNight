@@ -48,7 +48,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Preset
             col: 4
         });
 
-        // 资源箱预设
+        // 装备箱预设
         PresetManager.registerPreset("装备箱", {
             hitPoint: 30,
             maxFrame: 12,
@@ -71,8 +71,16 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Preset
             row: 0,
             col: 0
         });
+
+        // 隐藏资源点预设
+        PresetManager.registerPreset("隐藏资源点", {
+            hitPoint: 1,
+            maxFrame: 1,
+            row: 0,
+            col: 0
+        });
         
-        // 纸箱预设
+        // 投影召唤器预设
         PresetManager.registerPreset("投影召唤器", {
             hitPoint: 100,
             maxFrame: 12

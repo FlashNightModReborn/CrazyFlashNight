@@ -174,21 +174,10 @@ _root.地图元件.初始化投影召唤器 = function(target:MovieClip) {
     };
 }
 
-
-_root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {
+_root.地图元件.资源箱开启脚本 = function(target:MovieClip) {
     target._visible = true;
 
-    var source:MovieClip = _root.gameworld[target.产生源];
-
-    if (target.是否为敌人 && source) {
-        _root.敌人死亡计数 += 1;
-        source.僵尸型敌人场上实际人数--;
-        source.僵尸型敌人总个数--;
-    }
-
-    // _root.发布消息("资源箱破碎: " + target._name);
-
-    // 在此处临时测试资源箱弹出物品栏
+    // 如果有物品栏则弹出，否则爆出物品
     if (target.row > 0 && target.col > 0) {
         _root.地图元件.掉落物转换为物品栏(target);
     } else {
@@ -196,6 +185,22 @@ _root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {
         target.掉落物品 = _root.敌人函数.掉落物品;
         target.掉落物判定();
     }
+}
+
+_root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {
+    target._visible = true;
+
+    // var source:MovieClip = _root.gameworld[target.产生源];
+    // if (target.是否为敌人 && source) {
+    //     _root.敌人死亡计数 += 1;
+    //     source.僵尸型敌人场上实际人数--;
+    //     source.僵尸型敌人总个数--;
+    // }
+
+    // 不尝试弹出物品栏直接爆出物品
+    target.掉落物判定 = _root.敌人函数.掉落物判定;
+    target.掉落物品 = _root.敌人函数.掉落物品;
+    target.掉落物判定();
 }
 
 

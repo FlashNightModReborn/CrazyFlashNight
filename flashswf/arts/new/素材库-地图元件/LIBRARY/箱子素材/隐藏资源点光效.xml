@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/隐藏资源点光效" itemID="66a8fe1f-00001f7b" lastModified="1722424406">
   <timeline>
-    <DOMTimeline name="隐藏资源点光效" currentFrame="72">
+    <DOMTimeline name="隐藏资源点光效" currentFrame="63">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
@@ -17,7 +17,15 @@
         </DOMLayer>
         <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
-            <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+            <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-100">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.666666666666667"/>
+                  <Point x="0.666666666666667" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
               <elements>
                 <DOMSymbolInstance libraryItemName="箱子素材/光效" symbolType="graphic" loop="loop">
                   <matrix>
@@ -32,7 +40,15 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="20" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+            <DOMFrame index="20" duration="20" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="100">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333"/>
+                  <Point x="0.666666666666667" y="0.333333333333333"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
               <elements>
                 <DOMSymbolInstance libraryItemName="箱子素材/光效" symbolType="graphic" loop="loop">
                   <matrix>

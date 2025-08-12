@@ -72,14 +72,16 @@ Z轴坐标 = this._y;
                   </strokes>
                   <edges>
                     <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!1340 -4169|1448 -4361"/>
-                    <Edge fillStyle0="1" strokeStyle="1" edges="!1448 -4361|-706 -6537"/>
-                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!-706 -6537|-598 -6129"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!1448 -4361|1448 1039"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!1448 1039|1340 631"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!1340 631|-598 -1329!-598 -1329|-598 -6129"/>
                     <Edge fillStyle0="1" strokeStyle="1" edges="!-598 -6129|1340 -4169"/>
-                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!1340 631|1448 1039"/>
-                    <Edge fillStyle0="2" strokeStyle="1" edges="!1448 1039|1448 -4361!1340 -4169|1340 631"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!1340 -4169|1340 631"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!-706 -6537|-598 -6129"/>
                     <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!-706 -1137|-598 -1329"/>
-                    <Edge fillStyle0="2" strokeStyle="1" edges="!-598 -1329|-598 -6129!-706 -6537|-706 -1137"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!-598 -1329|1340 631!1448 1039|-706 -1137"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!-706 -6537|-706 -1137"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!1448 1039|-706 -1137"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!1448 -4361|-706 -6537"/>
                   </edges>
                 </DOMShape>
                 <DOMSymbolInstance libraryItemName="出生点-大机关门/Symbol 9" symbolType="graphic" loop="loop">
@@ -317,20 +319,20 @@ Z轴坐标 = this._y;
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="4" edges="!1340 -469|1340 -269"/>
                     <Edge fillStyle1="3" edges="!1340 -269|1340 -29"/>
-                    <Edge fillStyle1="5" edges="!1340 -29|1340 291"/>
+                    <Edge fillStyle0="5" fillStyle1="3" edges="!1340 -29|-598 -1989"/>
+                    <Edge fillStyle1="3" edges="!-598 -1989|-598 -2229"/>
+                    <Edge fillStyle0="4" fillStyle1="3" edges="!-598 -2229|1340 -269"/>
+                    <Edge fillStyle1="4" edges="!1340 -469|1340 -269"/>
+                    <Edge fillStyle1="1" edges="!-598 -2429|-598 -6429!-598 -6429|1340 -4469!1340 -4469|1340 -469"/>
                     <Edge fillStyle1="2" edges="!1340 291|1340 631"/>
                     <Edge fillStyle1="2" strokeStyle="1" edges="!1340 631|-598 -1329"/>
                     <Edge fillStyle1="2" edges="!-598 -1329|-598 -1669"/>
-                    <Edge fillStyle1="5" edges="!-598 -1669|-598 -1989"/>
-                    <Edge fillStyle1="3" edges="!-598 -1989|-598 -2229"/>
+                    <Edge fillStyle0="5" fillStyle1="2" edges="!-598 -1669|1340 291"/>
+                    <Edge fillStyle1="5" edges="!1340 -29|1340 291"/>
                     <Edge fillStyle1="4" edges="!-598 -2229|-598 -2429"/>
-                    <Edge fillStyle1="1" edges="!-598 -2429|-598 -6429!-598 -6429|1340 -4469!1340 -4469|1340 -469"/>
                     <Edge fillStyle0="1" fillStyle1="4" edges="!-598 -2429|1340 -469"/>
-                    <Edge fillStyle0="3" fillStyle1="5" edges="!-598 -1989|1340 -29"/>
-                    <Edge fillStyle0="3" fillStyle1="4" edges="!1340 -269|-598 -2229"/>
-                    <Edge fillStyle0="2" fillStyle1="5" edges="!1340 291|-598 -1669"/>
+                    <Edge fillStyle1="5" edges="!-598 -1669|-598 -1989"/>
                   </edges>
                 </DOMShape>
               </elements>

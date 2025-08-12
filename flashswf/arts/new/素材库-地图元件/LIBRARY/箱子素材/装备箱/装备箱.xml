@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/装备箱/装备箱" itemID="683db66e-00001406" linkageExportForAS="true" linkageIdentifier="装备箱" lastModified="1748952692" lastUniqueIdentifier="12">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="箱子素材/装备箱/装备箱" itemID="683db66e-00001406" linkageExportForAS="true" linkageIdentifier="装备箱" lastModified="1754993985" lastUniqueIdentifier="18">
   <timeline>
-    <DOMTimeline name="装备箱" currentFrame="20">
+    <DOMTimeline name="装备箱" currentFrame="135">
       <layers>
         <DOMLayer name="Labels Layer" color="#D4A0A9">
           <frames>
@@ -70,7 +70,7 @@ _root.地图元件.地图元件破碎动画(this.element, "装备箱盖子碎片
             </DOMFrame>
             <DOMFrame index="23" duration="29" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.地图元件.资源箱破碎脚本(this);]]></script>
+                <script><![CDATA[_root.地图元件.资源箱开启脚本(this);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
