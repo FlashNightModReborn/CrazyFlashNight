@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="保护仪器/仪器屏幕2" itemID="685a2b59-000001f2" lastModified="1750739854" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="仪器屏幕2">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="保护仪器/仪器屏幕2本体" centerPoint3DX="297.45" centerPoint3DY="111.75">
+                  <transformationPoint>
+                    <Point x="297.45" y="111.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="保护仪器/仪器屏幕2扫描" centerPoint3DX="147.25" centerPoint3DY="113.45">
+                  <matrix>
+                    <Matrix tx="26.75" ty="29.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="120.5" y="83.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

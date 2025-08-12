@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="保护仪器/保护仪器素材" itemID="689b0198-0000028d" lastModified="1754988952" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="保护仪器素材">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="保护仪器/仪器屏幕" selected="true" centerPoint3DX="349.1" centerPoint3DY="207.7">
+                  <matrix>
+                    <Matrix tx="177.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="171.75" y="207.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="台座" selected="true" centerPoint3DX="324.75" centerPoint3DY="762.2">
+                  <matrix>
+                    <Matrix a="0.34661865234375" ty="611.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="936.9" y="151.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="保护仪器/仪器屏幕2" selected="true" centerPoint3DX="352.05" centerPoint3DY="493.4">
+                  <matrix>
+                    <Matrix tx="54.6" ty="381.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="297.45" y="111.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

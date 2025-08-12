@@ -19,6 +19,7 @@ class org.flashNight.arki.scene.StageEvent {
     public var enemy:Array; // 生成单位
     public var followingEvent:Object; // 下个事件
     public var guidance:String; // 引导界面
+    public var message:String; // 发布消息
     public var stageprogress:Object; // 关卡状态
     public var performance:Array; // 关卡演出
     public var sound:Array; // 播放声音
@@ -39,6 +40,7 @@ class org.flashNight.arki.scene.StageEvent {
         enemy = ObjectUtil.toArray(data.Enemy);
         followingEvent = data.FollowingEvent;
         guidance = data.Guidance;
+        message = data.Message;
         stageprogress = data.StageProgress;
         // 
         dialogue = ObjectUtil.toArray(data.Dialogue);
@@ -67,6 +69,9 @@ class org.flashNight.arki.scene.StageEvent {
 
         // 加载引导界面
         if(typeof this.guidance === "string" && this.guidance.length > 0) _root.加载引导界面(this.guidance);
+
+        // 发布消息
+        if(typeof this.message === "string" && this.message.length > 0) _root.最上层发布文字提示(this.message);
 
         // 关卡状态
         if(stageprogress === "Finish"){

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-诺亚新敌人" itemID="65aa1bb3-000004bb" linkageExportForAS="true" linkageIdentifier="素材库-诺亚新敌人" lastModified="1747144506" lastUniqueIdentifier="14">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-诺亚新敌人" itemID="65aa1bb3-000004bb" linkageExportForAS="true" linkageIdentifier="素材库-诺亚新敌人" lastModified="1755003775" lastUniqueIdentifier="15">
   <timeline>
-    <DOMTimeline name="素材库-诺亚新敌人">
+    <DOMTimeline name="素材库-诺亚新敌人" currentFrame="2">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -105,6 +105,14 @@
                   </matrix>
                   <transformationPoint>
                     <Point x="1.8" y="-70.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="保护仪器/特殊友军-保护仪器" selected="true" centerPoint3DX="1444.25" centerPoint3DY="205.35">
+                  <matrix>
+                    <Matrix tx="1047.95" ty="298.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="396.3" y="-93.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

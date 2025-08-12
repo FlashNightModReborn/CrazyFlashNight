@@ -1,0 +1,110 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="保护仪器/保护仪器爆炸" itemID="689b02cd-00000a57" lastModified="1755003037" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="保护仪器爆炸" currentFrame="28">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="28" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+_parent.死亡检测({remainMovie:true});]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="28" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="保护仪器/dkghkg" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="2.12228393554688" d="2.12228393554688" tx="549.8" ty="545.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-220.7" y="-224.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="保护仪器/仪器屏幕" centerPoint3DX="81.4" centerPoint3DY="48.45">
+                  <matrix>
+                    <Matrix a="0.233154296875" d="0.233154296875" tx="41.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="171.75" y="207.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="台座" centerPoint3DX="75.7" centerPoint3DY="177.7">
+                  <matrix>
+                    <Matrix a="0.080810546875" d="0.233154296875" ty="142.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="936.75" y="150.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="保护仪器/仪器屏幕2" centerPoint3DX="82.1" centerPoint3DY="115.05">
+                  <matrix>
+                    <Matrix a="0.233154296875" d="0.233154296875" tx="12.75" ty="89"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="297.45" y="111.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="保护仪器/仪器屏幕" centerPoint3DX="92.65" centerPoint3DY="65.35">
+                  <matrix>
+                    <Matrix a="0.201919555664063" b="0.1165771484375" c="-0.1165771484375" d="0.201919555664063" tx="82.1" ty="3.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="171.95" y="207.75"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.73"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="台座" centerPoint3DX="75.7" centerPoint3DY="177.7">
+                  <matrix>
+                    <Matrix a="0.080810546875" d="0.233154296875" ty="142.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="936.75" y="150.95"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.73"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="保护仪器/仪器屏幕2" centerPoint3DX="82.1" centerPoint3DY="120.15">
+                  <matrix>
+                    <Matrix a="0.225204467773438" b="-0.0603485107421875" c="0.0603485107421875" d="0.225204467773438" tx="8.35" ty="112.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="297.5" y="111.9"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.73"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

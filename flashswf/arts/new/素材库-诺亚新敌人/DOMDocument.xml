@@ -1,6 +1,6 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#666666" width="1280" height="720" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" guidesLocked="true" guidesSnapTo="false" guidesVisible="false" snapAlign="false" objectsSnapTo="false" timelineLabelWidth="299" viewAngle3D="100.925968316201" vanishingPoint3DX="640" vanishingPoint3DY="360" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
      <folders>
-          <DOMFolderItem name="1.特效文件夹" itemID="67386f30-0000195c" isExpanded="true"/>
+          <DOMFolderItem name="1.特效文件夹" itemID="67386f30-0000195c"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系" itemID="67387043-00001af2"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/火焰喷射" itemID="67387043-00001af3" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/火焰喷射/Graphic" itemID="67387043-00001af4"/>
@@ -10,7 +10,8 @@
           <DOMFolderItem name="1.特效文件夹/07.青绿色系/墨绿轨迹" itemID="67386f30-0000195e" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/07.青绿色系/墨绿轨迹/Graphic" itemID="67386f30-0000195f"/>
           <DOMFolderItem name="area框" itemID="65ae673b-00003707"/>
-          <DOMFolderItem name="兵工厂特殊单位" itemID="66b8b270-0000090d" isExpanded="true"/>
+          <DOMFolderItem name="保护仪器" itemID="689b3b59-00000aaa" isExpanded="true"/>
+          <DOMFolderItem name="兵工厂特殊单位" itemID="66b8b270-0000090d"/>
           <DOMFolderItem name="兵工厂特殊单位/雕像特效" itemID="66baf4ee-00000f77"/>
           <DOMFolderItem name="兵工厂特殊单位/烟气喷射循环单位" itemID="5d2075ea-000010eb"/>
           <DOMFolderItem name="兵工厂特殊单位/中枢特效" itemID="66baf4f4-00000f7c"/>
@@ -86,7 +87,7 @@
           <DOMFolderItem name="怪物通用模板/血条与名称" itemID="6613e946-00000616" isExpanded="true"/>
           <DOMFolderItem name="黑铁精英敌人" itemID="6613ec71-00000d24"/>
           <DOMFolderItem name="黑铁精英敌人/重锤" itemID="6613ec71-00000d25" isExpanded="true"/>
-          <DOMFolderItem name="黑铁人马" itemID="6613c3cb-0000045a" isExpanded="true"/>
+          <DOMFolderItem name="黑铁人马" itemID="6613c3cb-0000045a"/>
           <DOMFolderItem name="黑铁人马/1.冷兵器" itemID="660e7967-0000190a"/>
           <DOMFolderItem name="黑铁人马/1.冷兵器/长柄" itemID="660e7967-0000190b"/>
           <DOMFolderItem name="黑铁人马/1.冷兵器/长柄/5.黑铁重剑枪" itemID="660e7967-0000190c"/>
@@ -250,6 +251,14 @@
           <Include href="area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="673849ac-00002027" lastModified="1705929037"/>
           <Include href="area框/索敌框载体.xml" loadImmediate="false" itemID="661d2b89-00000c4b" lastModified="1705929009"/>
           <Include href="area框/索敌框载体 副本.xml" loadImmediate="false" itemID="673849ad-00002089" lastModified="1705929009"/>
+          <Include href="保护仪器/dkghkg.xml" itemIcon="1" loadImmediate="false" itemID="4b5fabc5-00000109" lastModified="1702111957"/>
+          <Include href="保护仪器/保护仪器爆炸.xml" loadImmediate="false" itemID="689b02cd-00000a57" lastModified="1755003037"/>
+          <Include href="保护仪器/保护仪器素材.xml" loadImmediate="false" itemID="689b0198-0000028d" lastModified="1754988952"/>
+          <Include href="保护仪器/特殊友军-保护仪器.xml" itemID="689b38d5-000002b8" lastModified="1755006117"/>
+          <Include href="保护仪器/仪器屏幕.xml" loadImmediate="false" itemID="685a2b2d-000001ee" lastModified="1750739757"/>
+          <Include href="保护仪器/仪器屏幕2.xml" loadImmediate="false" itemID="685a2b59-000001f2" lastModified="1750739854"/>
+          <Include href="保护仪器/仪器屏幕2本体.xml" loadImmediate="false" itemID="685a2b80-000001f6" lastModified="1750739840"/>
+          <Include href="保护仪器/仪器屏幕2扫描.xml" loadImmediate="false" itemID="685a2b8e-000001fa" lastModified="1750740430"/>
           <Include href="兵工厂特殊单位/底座.xml" itemIcon="1" loadImmediate="false" itemID="66ba40bd-00000e9a" lastModified="1723483165"/>
           <Include href="兵工厂特殊单位/雕像结束.xml" loadImmediate="false" itemID="66ba3f3a-00000c6a" lastModified="1723525948"/>
           <Include href="兵工厂特殊单位/雕像素材.xml" itemIcon="1" loadImmediate="false" itemID="66ba3ede-00000c3d" lastModified="1723482343"/>
@@ -284,6 +293,7 @@
           <Include href="兵工厂特殊单位/中枢特效/能量线2.xml" loadImmediate="false" itemID="66bb0349-0000189b" lastModified="1723532593"/>
           <Include href="兵工厂特殊单位/中枢特效/能量线3.xml" loadImmediate="false" itemID="66bb03cb-0000189f" lastModified="1723532600"/>
           <Include href="兵工厂特殊单位/中枢正常.xml" loadImmediate="false" itemID="66b8befc-00000970" lastModified="1723531284"/>
+          <Include href="补间 3.xml" itemIcon="1" loadImmediate="false" itemID="685a2d64-00000213" lastModified="1750740324"/>
           <Include href="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/回旋风刃.xml" itemID="653dce6b-000011a9" lastModified="1731818940"/>
           <Include href="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 375.xml" loadImmediate="false" itemID="653dcca3-00001048" lastModified="1698427020"/>
           <Include href="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 376.xml" itemIcon="1" loadImmediate="false" itemID="653dcca3-00001049" lastModified="1698427020"/>
@@ -1001,11 +1011,13 @@
           <Include href="闪6特工/人物服装/元件 2.xml" loadImmediate="false" itemID="669a95c0-00000bd1" lastModified="1721406912"/>
           <Include href="闪6特工/人物服装/元件 3.xml" loadImmediate="false" itemID="669a967a-00000bf0" lastModified="1721407098"/>
           <Include href="思考标签.xml" loadImmediate="false" itemID="68145f67-0000024d" lastModified="1746165689"/>
-          <Include href="素材库-诺亚新敌人.xml" itemID="65aa1bb3-000004bb" lastModified="1747144506"/>
+          <Include href="素材库-诺亚新敌人.xml" itemID="65aa1bb3-000004bb" lastModified="1755003775"/>
+          <Include href="台座.xml" loadImmediate="false" itemID="685a2a6d-000001e3" lastModified="1750739728"/>
           <Include href="通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="661d2b89-00000c4d" lastModified="1705928955"/>
           <Include href="通用ai元件/行走ai载体 副本.xml" loadImmediate="false" itemID="673849ad-0000208b" lastModified="1705928955"/>
           <Include href="通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="661d2b89-00000c4c" lastModified="1705929134"/>
           <Include href="通用ai元件/逻辑ai详情元件 副本.xml" loadImmediate="false" itemID="673849ad-0000208a" lastModified="1705929134"/>
+          <Include href="图像.xml" loadImmediate="false" itemID="685a2d14-00000208" lastModified="1750740244"/>
           <Include href="爪豪发光点.xml" loadImmediate="false" itemID="68039ded-0000390c" lastModified="1745068556"/>
      </symbols>
      <timelines>
@@ -1018,7 +1030,7 @@
                                         <script><![CDATA[stop();]]></script>
                                    </Actionscript>
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="素材库-诺亚新敌人" centerPoint3DX="83.5" centerPoint3DY="25.8">
+                                        <DOMSymbolInstance libraryItemName="素材库-诺亚新敌人" selected="true" centerPoint3DX="83.5" centerPoint3DY="25.8">
                                              <transformationPoint>
                                                   <Point x="2.4" y="1.5"/>
                                              </transformationPoint>
@@ -1371,6 +1383,13 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1670152" publishTime="1755005925"/>
+          <PublishItem publishSize="1670161" publishTime="1755005816"/>
+          <PublishItem publishSize="1670150" publishTime="1755005785"/>
+          <PublishItem publishSize="1670150" publishTime="1755005769"/>
+          <PublishItem publishSize="1670143" publishTime="1755005657"/>
+          <PublishItem publishSize="1670133" publishTime="1755005050"/>
+          <PublishItem publishSize="1670210" publishTime="1755004686"/>
           <PublishItem publishSize="1560727" publishTime="1746456388"/>
           <PublishItem publishSize="1566388" publishTime="1745068019"/>
           <PublishItem publishSize="1564247" publishTime="1740496350"/>
@@ -1384,12 +1403,5 @@
           <PublishItem publishSize="1677216" publishTime="1732460622"/>
           <PublishItem publishSize="1682601" publishTime="1732384222"/>
           <PublishItem publishSize="1682575" publishTime="1732384132"/>
-          <PublishItem publishSize="1682574" publishTime="1732383986"/>
-          <PublishItem publishSize="1682940" publishTime="1731832192"/>
-          <PublishItem publishSize="1682945" publishTime="1731832094"/>
-          <PublishItem publishSize="1682945" publishTime="1731832069"/>
-          <PublishItem publishSize="1682900" publishTime="1731831354"/>
-          <PublishItem publishSize="1682185" publishTime="1731827167"/>
-          <PublishItem publishSize="1682189" publishTime="1731827112"/>
      </publishHistory>
 </DOMDocument>

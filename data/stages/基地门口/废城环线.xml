@@ -608,12 +608,32 @@
                 <Text>明白！</Text>
             </Dialogue>
         </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>保护仪器</Parameter>
+            <Message>仪器被破坏了！</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
                     <Duration>12</Duration>
                 </WaveInformation>
                 <EnemyGroup>
+                    <Enemy>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <x>1700</x>
+                        <y>650</y>
+                        <spritename>特殊友军-保护仪器</spritename>
+                        <Name>仪器</Name>
+                        <InstanceName>保护仪器</InstanceName>
+                        <IsHostile>false</IsHostile>
+                        <parameters>
+                            <threat>30</threat>
+                        </parameters>
+                    </Enemy>
                     <Enemy>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
@@ -706,6 +726,9 @@
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种400</Type>
@@ -713,6 +736,9 @@
                         <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种401</Type>
@@ -720,6 +746,9 @@
                         <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种7</Type>
@@ -757,6 +786,9 @@
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种400</Type>
@@ -764,6 +796,9 @@
                         <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种401</Type>
@@ -771,6 +806,9 @@
                         <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种7</Type>
@@ -778,6 +816,9 @@
                         <Quantity>3</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种424</Type>
@@ -785,6 +826,9 @@
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>1</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种424</Type>
@@ -792,6 +836,9 @@
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>2</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -822,6 +869,9 @@
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种424</Type>
@@ -829,6 +879,9 @@
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种400</Type>
@@ -836,6 +889,9 @@
                         <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>1</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种401</Type>
@@ -843,6 +899,9 @@
                         <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>2</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
