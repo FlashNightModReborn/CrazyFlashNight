@@ -203,35 +203,32 @@ _root.主角模板ai函数.攻击 = function(x轴攻击范围, y轴攻击范围,
 
 _root.主角模板ai函数.寻找攻击目标 = function()
 {
-	_root.寻找攻击目标基础函数(this._parent);
+	var self = _parent;
+	var chaseTarget = self.攻击目标;
 	
-	/*
-	if (_parent.攻击目标 == "无")
-	{
-		var 最近的距离:Number = Infinity;
-		var 最近的敌人名:String = undefined;
-		for (var 待选目标 in 游戏世界)
-		{
-			var 待检测目标 = 游戏世界[待选目标];
-			var 满足筛选条件:Boolean = (_parent.是否为敌人 and !待检测目标.是否为敌人 and 待检测目标.hp > 0) or (!_parent.是否为敌人 and 待检测目标.是否为敌人 and 待检测目标.hp > 0);
-			if (满足筛选条件)
-			{
-				var d = Math.abs(待检测目标._x - _parent._x);
-				if (d < 最近的距离)
-				{
-					最近的距离 = d;
-					最近的敌人名 = 待检测目标._name;
-				}
-			}
-		}
-
-
-		if (最近的敌人名) {
-			_parent.dispatcher.publish("aggroSet", _parent, 游戏世界[最近的敌人名]);
+	// 如果当前没有攻击目标或攻击目标为"无"，使用单位缓存池管理器搜索
+	if (!chaseTarget || chaseTarget == "无") {
+		var target = TargetCacheManager.findNearestThreateningEnemyWithFallback(self, 1, self.threatThreshold);
+		if (target) {
+			// 使用事件发布式管理通知目标锁定
+			self.dispatcher.publish("aggroSet", self, target);
 		} else {
-			_parent.dispatcher.publish("aggroClear", _parent);
+			// 没有找到目标，清除仇恨
+			self.dispatcher.publish("aggroClear", self);
 		}
-	} */
+	} else {
+		// 验证当前攻击目标是否仍然有效
+		var currentTarget = _root.gameworld[chaseTarget];
+		if (!currentTarget || currentTarget.hp <= 0) {
+			// 目标无效，清除仇恨并重新搜索
+			self.dispatcher.publish("aggroClear", self);
+		} else {
+			// 目标仍然有效，维持仇恨
+			self.dispatcher.publish("aggroSet", self, currentTarget);
+		}
+	}
+
+    // _root.发布消息(self, self.攻击目标);
 };
 
 _root.主角模板ai函数.技能攻击 = function()
