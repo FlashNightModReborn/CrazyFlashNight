@@ -1,6 +1,16 @@
 <?xml version='1.0' encoding='utf-8'?>
 <root>
     <Infrastructure>
+        <Name>铁枪图腾</Name>
+        <Level id="0">
+            <Description>第一防线的一座未经授权的信号增幅器，据说是铁枪会的秘密网络信标。</Description>
+            <Price>100000</Price>
+        </Level>
+        <Level id="1">
+            <Description>图腾已上线。铁枪会的技术支援已接入第一防线，现在你可以通过那里的终端使用他们的武器合成服务了。</Description>
+        </Level>
+    </Infrastructure>
+    <Infrastructure>
         <Name>自行车</Name>
         <Level id="0">
             <Description>null</Description>
@@ -26,7 +36,7 @@
 解锁中等距离阵营与区域的地图快速传送功能，例如堕落城。</Description>
         </Level>
     </Infrastructure>
-     <Infrastructure>
+    <Infrastructure>
         <Name>越野车</Name>
         <Level id="0">
             <Description>null</Description>
