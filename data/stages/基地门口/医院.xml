@@ -11,10 +11,35 @@
                 <Loop>true</Loop>
             </BGM>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1350</x>
+                <y>260</y>
+                <BiasX>150</BiasX>
+                <BiasY>20</BiasY>
+                <QuantityMax>6</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1300</x>
+                <y>580</y>
+                <BiasX>300</BiasX>
+                <BiasY>10</BiasY>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Trigger id="0">
+            <Xmin>1350</Xmin>
+        </Trigger>
+        <Event>
+            <EventName>TriggerPressed</EventName>
+            <Parameter>0</Parameter>
+            <StageProgress>ForceFinishWave</StageProgress>
+        </Event>
         <Wave>
-            <SubWave id="0">
+            <SubWave id="1">
                 <WaveInformation>
-                    <Duration>8</Duration>
+                    <Duration>0</Duration>
+                    <FinishRequirement>-1</FinishRequirement>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
@@ -65,71 +90,40 @@
                         <x>930</x>
                         <y>580</y>
                     </Enemy>
-                    <Enemy>
-                        <Type>兵种9</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <x>1330</x>
-                        <y>380</y>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种10</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <x>1430</x>
-                        <y>580</y>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种39</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <x>1030</x>
-                        <y>350</y>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种9</Type>
-                        <Interval>1200</Interval>
-                        <Quantity>3</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>right</SpawnIndex>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种10</Type>
-                        <Interval>1200</Interval>
-                        <Quantity>3</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>right</SpawnIndex>
-                    </Enemy>
                 </EnemyGroup>
             </SubWave>
             <SubWave id="1">
                 <WaveInformation>
-                    <Duration>0</Duration>
+                    <Duration>8</Duration>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
                         <Type>兵种9</Type>
-                        <Interval>1200</Interval>
-                        <Quantity>3</Quantity>
+                        <Interval>500</Interval>
+                        <Quantity>4</Quantity>
                         <Level>25</Level>
-                        <SpawnIndex>right</SpawnIndex>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>
+                            <方向>左</方向>
+                            <登场动画>下落</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种10</Type>
-                        <Interval>1200</Interval>
-                        <Quantity>3</Quantity>
+                        <Interval>750</Interval>
+                        <Quantity>4</Quantity>
                         <Level>25</Level>
-                        <SpawnIndex>right</SpawnIndex>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>
+                            <登场动画>下落</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种39</Type>
-                        <Interval>1500</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>25</Level>
-                        <SpawnIndex>right</SpawnIndex>
+                        <SpawnIndex>1</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种400</Type>
@@ -144,6 +138,41 @@
                         <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种9</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>25</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>
+                            <登场动画>下落</登场动画>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种10</Type>
+                        <Interval>1200</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>25</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>
+                            <方向>左</方向>
+                            <登场动画>下落</登场动画>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种39</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>25</Level>
+                        <SpawnIndex>1</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种424</Type>

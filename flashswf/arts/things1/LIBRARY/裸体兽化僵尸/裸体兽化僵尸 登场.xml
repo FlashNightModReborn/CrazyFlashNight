@@ -1,0 +1,892 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="裸体兽化僵尸/裸体兽化僵尸 登场" itemID="689b6f69-00000bbd" lastModified="1755019123" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="裸体兽化僵尸 登场" currentFrame="15">
+      <layers>
+        <DOMLayer name="label" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="16" name="下落" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#D5D53B">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (_parent.登场动画)
+{
+	gotoAndPlay(_parent.登场动画);
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#4AFC8C">
+          <frames>
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2035" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.349990844726563" d="0.349990844726563" tx="-9.7" ty="-107.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.8"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-75">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2035" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.247482299804688" b="-0.247482299804688" c="-0.247482299804688" d="0.247482299804688" tx="-19.05" ty="-31.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2035" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.27691650390625" b="-0.214035034179688" c="-0.214035034179688" d="0.27691650390625" tx="-10.8" ty="44.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2035" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.349990844726563" d="0.349990844726563" tx="-15.95" ty="39.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#94B99F">
+          <frames>
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2034" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.300582885742188" b="0.178146362304688" c="0.178146362304688" d="0.300582885742188" tx="3.6" ty="-146.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.8"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-75">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2034" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3385009765625" b="-0.086578369140625" c="-0.086578369140625" d="0.3385009765625" tx="18" ty="-50.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2034" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2755126953125" b="0.214889526367188" c="0.214889526367188" d="0.2755126953125" tx="-1.6" ty="-0.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2034" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.300582885742188" b="0.178146362304688" c="0.178146362304688" d="0.300582885742188" tx="-2.65" ty="0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#B184D5">
+          <frames>
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2033" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.339950561523438" b="-0.082061767578125" c="-0.082061767578125" d="0.339950561523438" tx="10.75" ty="-120.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.8"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-75">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2033" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.182357788085938" b="-0.29840087890625" c="-0.29840087890625" d="0.182357788085938" tx="4.95" ty="-27.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2033" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.347610473632813" b="-0.0382080078125" c="-0.0382080078125" d="0.347610473632813" tx="7.3" ty="24"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2033" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.339950561523438" b="-0.082061767578125" c="-0.082061767578125" d="0.339950561523438" tx="4.5" ty="25.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#7A80E3">
+          <frames>
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2032" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.349990844726563" d="0.349990844726563" tx="8.35" ty="-109.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.8"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-75">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2032" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.247482299804688" b="-0.247482299804688" c="-0.247482299804688" d="0.247482299804688" tx="-4.7" ty="-20.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2032" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.27691650390625" b="-0.214035034179688" c="-0.214035034179688" d="0.27691650390625" tx="-8.1" ty="49.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2032" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.349990844726563" d="0.349990844726563" tx="8.35" ty="32.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#7178D8">
+          <frames>
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2026" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.338058471679688" b="-0.090576171875" c="-0.090576171875" d="0.338058471679688" tx="27.75" ty="-59.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.8"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-75">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2026" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.338058471679688" b="-0.090576171875" c="-0.090576171875" d="0.338058471679688" tx="37.75" ty="44.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2026" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.349990844726563" d="0.349990844726563" tx="70.4" ty="57.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2026" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.349990844726563" d="0.349990844726563" tx="60.4" ty="57.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#5EF94D">
+          <frames>
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2018" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.300750732421875" b="-0.178970336914063" c="-0.178970336914063" d="0.300750732421875" tx="53.65" ty="-132.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.8"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-75">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2018" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.216659545898438" b="-0.27484130859375" c="-0.27484130859375" d="0.216659545898438" tx="61.9" ty="-18.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2018" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.339218139648438" b="0.0861053466796875" c="0.0861053466796875" d="0.339218139648438" tx="46.1" ty="-1.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2018" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.349945068359375" b="-0.004608154296875" c="-0.004608154296875" d="0.349945068359375" tx="48.05" ty="-24.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#C3D47D">
+          <frames>
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2025" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.298263549804688" b="-0.183059692382813" c="-0.183059692382813" d="0.298263549804688" tx="36.2" ty="-128.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.8"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-75">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2025" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.298263549804688" b="-0.183059692382813" c="-0.183059692382813" d="0.298263549804688" tx="46.2" ty="-24.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2025" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.31719970703125" b="-0.147811889648438" c="-0.147811889648438" d="0.31719970703125" tx="35.65" ty="21"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2025" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.349822998046875" b="-0.0094146728515625" c="-0.0094146728515625" d="0.349822998046875" tx="32.15" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#A8AA9D">
+          <frames>
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2024" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.341110229492188" b="-0.0767364501953125" c="-0.0767364501953125" d="0.341110229492188" tx="25.8" ty="-101.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.8"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-75">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2024" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.341110229492188" b="-0.0767364501953125" c="-0.0767364501953125" d="0.341110229492188" tx="35.8" ty="3.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2024" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.16241455078125" b="0.30963134765625" c="0.30963134765625" d="0.16241455078125" tx="20.9" ty="37.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2024" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.333786010742188" b="0.104095458984375" c="0.104095458984375" d="0.333786010742188" tx="36.95" ty="19.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#B6D874">
+          <frames>
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2021" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.34515380859375" b="-0.0561676025390625" c="-0.0561676025390625" d="0.34515380859375" tx="56.9" ty="-73.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.8"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-75">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2021" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.306747436523438" b="-0.167892456054688" c="-0.167892456054688" d="0.306747436523438" tx="47.25" ty="44.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2021" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.34515380859375" b="-0.0561676025390625" c="-0.0561676025390625" d="0.34515380859375" tx="75.15" ty="49.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2021" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.34515380859375" b="-0.0561676025390625" c="-0.0561676025390625" d="0.34515380859375" tx="65.15" ty="49.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#13C3BB">
+          <frames>
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2023" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.308364868164063" b="-0.165374755859375" c="-0.165374755859375" d="0.308364868164063" tx="20.4" ty="-145.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.8"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-75">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2023" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.101119995117188" b="-0.334991455078125" c="-0.334991455078125" d="0.101119995117188" tx="29.4" ty="-37.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2023" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.263259887695313" b="-0.230499267578125" c="-0.230499267578125" d="0.263259887695313" tx="19.1" ty="4.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2023" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.349258422851563" b="-0.021392822265625" c="-0.021392822265625" d="0.349258422851563" tx="9.7" ty="-10.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#B97F7B">
+          <frames>
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2022" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.17755126953125" b="-0.301498413085938" c="-0.301498413085938" d="0.17755126953125" tx="38.85" ty="-123.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.8"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-75">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2022" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.17755126953125" b="-0.301498413085938" c="-0.301498413085938" d="0.17755126953125" tx="48.85" ty="-19.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2022" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.225814819335938" b="-0.267257690429688" c="-0.267257690429688" d="0.225814819335938" tx="42.95" ty="21.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2022" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.348663330078125" b="-0.0293121337890625" c="-0.0293121337890625" d="0.348663330078125" tx="36.2" ty="-13.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#EB7E8D">
+          <frames>
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2031" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.32147216796875" b="0.137252807617188" c="0.137252807617188" d="0.32147216796875" tx="10.95" ty="-144.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.8"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-75">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2031" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.324356079101563" b="-0.130264282226563" c="-0.130264282226563" d="0.324356079101563" tx="22.2" ty="-44"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2031" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.338287353515625" b="-0.0879974365234375" c="-0.0879974365234375" d="0.338287353515625" tx="16.25" ty="12.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2031" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.32147216796875" b="0.137252807617188" c="0.137252807617188" d="0.32147216796875" tx="10.95" ty="-2.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#9DF166">
+          <frames>
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2030" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.347412109375" b="0.0413360595703125" c="0.0413360595703125" d="0.347412109375" tx="20.3" ty="-123.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.8"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-75">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2030" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.274887084960938" b="-0.216415405273438" c="-0.216415405273438" d="0.274887084960938" tx="13.6" ty="-22.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2030" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.336456298828125" b="-0.095947265625" c="-0.095947265625" d="0.336456298828125" tx="7.35" ty="38.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2030" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.347412109375" b="0.0413360595703125" c="0.0413360595703125" d="0.347412109375" tx="20.3" ty="18.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#7BFE42">
+          <frames>
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2020" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.346664428710938" b="-0.0453338623046875" c="-0.0453338623046875" d="0.346664428710938" tx="39.9" ty="-130.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.8"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-75">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2020" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.311782836914063" b="-0.158172607421875" c="-0.158172607421875" d="0.311782836914063" tx="49.55" ty="-18.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2020" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3231201171875" b="-0.133514404296875" c="-0.133514404296875" d="0.3231201171875" tx="46.4" ty="21.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2020" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.346588134765625" b="0.045928955078125" c="0.045928955078125" d="0.346588134765625" tx="39.9" ty="-9.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#D60FE5" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2019" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.308990478515625" b="0.162857055664063" c="0.162857055664063" d="0.308990478515625" tx="31.6" ty="-108.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.8"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-75">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2019" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3455810546875" b="0.0506744384765625" c="0.0506744384765625" d="0.3455810546875" tx="34.9" ty="3.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2019" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.051422119140625" b="0.345489501953125" c="0.345489501953125" d="0.051422119140625" tx="30.55" ty="38.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2019" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.308990478515625" b="0.162857055664063" c="0.162857055664063" d="0.308990478515625" tx="39.85" ty="14.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 20" color="#96DADD" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2" centerPoint3DX="102.2" centerPoint3DY="144.15">
+                  <matrix>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="15.55" ty="57.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

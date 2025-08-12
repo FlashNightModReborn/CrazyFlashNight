@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-忍者BOSS" itemID="67bc37e9-00000615" linkageExportForAS="true" linkageIdentifier="敌人-忍者BOSS" lastModified="1747736416" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-忍者BOSS" itemID="67bc37e9-00000615" linkageExportForAS="true" linkageIdentifier="敌人-忍者BOSS" lastModified="1755018874" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="敌人-忍者BOSS" currentFrame="28">
+    <DOMTimeline name="敌人-忍者BOSS">
       <layers>
         <DOMLayer name="Labels Layer" color="#A27C85">
           <frames>
@@ -295,7 +295,7 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="方舟武士 登场" name="man" centerPoint3DX="155.9" centerPoint3DY="-97.05">
+                <DOMSymbolInstance libraryItemName="方舟武士/方舟武士 登场" name="man" centerPoint3DX="155.9" centerPoint3DY="-97.05">
                   <matrix>
                     <Matrix a="-0.97003173828125" d="0.97003173828125" tx="85.75" ty="-166.55"/>
                   </matrix>

@@ -80,6 +80,8 @@ class org.flashNight.arki.scene.StageEvent {
             _root.gameworld.dispatcher.publish("StageFailed");
         }else if(stageprogress === "NextStage"){
             _root.gameworld.dispatcher.publish("NextStage");
+        }else if(stageprogress === "ForceFinishWave"){
+            _root.gameworld.dispatcher.publish("ForceFinishWave");
         }
 
         //最后执行回调函数

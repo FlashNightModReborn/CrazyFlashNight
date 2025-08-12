@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-裸体兽化僵尸1" itemID="67bc37ef-00000618" linkageExportForAS="true" linkageIdentifier="敌人-裸体兽化僵尸1" lastModified="1747127543">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-裸体兽化僵尸1" itemID="67bc37ef-00000618" linkageExportForAS="true" linkageIdentifier="敌人-裸体兽化僵尸1" lastModified="1755018855" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="敌人-裸体兽化僵尸1" currentFrame="91">
+    <DOMTimeline name="敌人-裸体兽化僵尸1">
       <layers>
         <DOMLayer name="Labels Layer" color="#CD7B53">
           <frames>
@@ -61,16 +61,13 @@
             <DOMFrame index="88" duration="7" name="倒地" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="95" name="被投" labelType="name" keyMode="9728">
+            <DOMFrame index="95" duration="9" name="被投" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="96" duration="8" keyMode="9728">
+            <DOMFrame index="104" duration="9" name="血腥死" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="104" name="血腥死" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="105" duration="15" keyMode="9728">
+            <DOMFrame index="113" duration="7" name="登场" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="120" name="消失" labelType="name" keyMode="9728">
@@ -141,7 +138,7 @@ if(!身高)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#43A998">
+        <DOMLayer name="Layer 5" color="#43A998" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
@@ -251,7 +248,7 @@ if(!身高)
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 2063" name="man" centerPoint3DX="27.75" centerPoint3DY="-4.85">
+                <DOMSymbolInstance libraryItemName="裸体兽化僵尸/Symbol 2063" name="man" centerPoint3DX="27.75" centerPoint3DY="-4.85">
                   <matrix>
                     <Matrix tx="-19.05" ty="-57.85"/>
                   </matrix>
@@ -272,7 +269,7 @@ if(!身高)
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 2065" name="man" centerPoint3DX="44.3" centerPoint3DY="-8.85">
+                <DOMSymbolInstance libraryItemName="裸体兽化僵尸/Symbol 2065" name="man" centerPoint3DX="44.3" centerPoint3DY="-8.85">
                   <matrix>
                     <Matrix tx="-18.05" ty="-58.35"/>
                   </matrix>
@@ -287,7 +284,7 @@ if(!身高)
             </DOMFrame>
             <DOMFrame index="19" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 2068" name="man" centerPoint3DX="72.35" centerPoint3DY="0.65">
+                <DOMSymbolInstance libraryItemName="裸体兽化僵尸/Symbol 2068" name="man" centerPoint3DX="72.35" centerPoint3DY="0.65">
                   <matrix>
                     <Matrix tx="-18.05" ty="-58.35"/>
                   </matrix>
@@ -305,7 +302,7 @@ if(!身高)
             </DOMFrame>
             <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 2074" name="man" centerPoint3DX="82.25" centerPoint3DY="3.3">
+                <DOMSymbolInstance libraryItemName="裸体兽化僵尸/Symbol 2074" name="man" centerPoint3DX="82.25" centerPoint3DY="3.3">
                   <matrix>
                     <Matrix tx="6.45" ty="-63.5"/>
                   </matrix>
@@ -323,7 +320,7 @@ if(!身高)
             </DOMFrame>
             <DOMFrame index="61" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 2063" name="man" centerPoint3DX="27.75" centerPoint3DY="-4.85">
+                <DOMSymbolInstance libraryItemName="裸体兽化僵尸/Symbol 2063" name="man" centerPoint3DX="27.75" centerPoint3DY="-4.85">
                   <matrix>
                     <Matrix tx="-19.05" ty="-57.85"/>
                   </matrix>
@@ -348,7 +345,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="71" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 2075" name="man" centerPoint3DX="64.35" centerPoint3DY="6.75">
+                <DOMSymbolInstance libraryItemName="裸体兽化僵尸/Symbol 2075" name="man" centerPoint3DX="64.35" centerPoint3DY="6.75">
                   <matrix>
                     <Matrix tx="10.5" ty="-62"/>
                   </matrix>
@@ -369,7 +366,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 2076" name="man" selected="true" centerPoint3DX="42.5" centerPoint3DY="63.2">
+                <DOMSymbolInstance libraryItemName="裸体兽化僵尸/Symbol 2076" name="man" centerPoint3DX="42.5" centerPoint3DY="63.2">
                   <matrix>
                     <Matrix tx="0.4" ty="-1.55"/>
                   </matrix>
@@ -390,7 +387,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="88" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 2077" name="man" selected="true" centerPoint3DX="483.3" centerPoint3DY="277.9">
+                <DOMSymbolInstance libraryItemName="裸体兽化僵尸/Symbol 2077" name="man" selected="true" centerPoint3DX="483.3" centerPoint3DY="277.9">
                   <matrix>
                     <Matrix tx="409.1" ty="177.8"/>
                   </matrix>
@@ -410,7 +407,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="95" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 2078" name="man" centerPoint3DX="46.8" centerPoint3DY="49.5">
+                <DOMSymbolInstance libraryItemName="裸体兽化僵尸/Symbol 2078" name="man" centerPoint3DX="46.8" centerPoint3DY="49.5">
                   <matrix>
                     <Matrix d="1.00039672851563"/>
                   </matrix>
@@ -429,9 +426,9 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="104" duration="16" keyMode="9728">
+            <DOMFrame index="104" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 2115" centerPoint3DX="172.85" centerPoint3DY="18.55">
+                <DOMSymbolInstance libraryItemName="裸体兽化僵尸/Symbol 2115" centerPoint3DX="172.85" centerPoint3DY="18.55">
                   <matrix>
                     <Matrix tx="8.5" ty="-72"/>
                   </matrix>
@@ -445,6 +442,21 @@ onClipEvent(unload){
 }
 ]]></script>
                   </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="113" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="裸体兽化僵尸/裸体兽化僵尸 登场" name="man" selected="true" centerPoint3DX="27.75" centerPoint3DY="-4.85">
+                  <matrix>
+                    <Matrix tx="-19.05" ty="-57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>
                   </filters>

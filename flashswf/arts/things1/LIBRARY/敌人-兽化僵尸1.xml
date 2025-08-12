@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-兽化僵尸1" itemID="67bc37e5-00000613" linkageExportForAS="true" linkageIdentifier="敌人-兽化僵尸1" lastModified="1747127429">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-兽化僵尸1" itemID="67bc37e5-00000613" linkageExportForAS="true" linkageIdentifier="敌人-兽化僵尸1" lastModified="1755017809" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="敌人-兽化僵尸1" currentFrame="83">
+    <DOMTimeline name="敌人-兽化僵尸1" currentFrame="9">
       <layers>
         <DOMLayer name="Labels Layer" color="#A6BB6A">
           <frames>
@@ -67,10 +67,10 @@
             <DOMFrame index="96" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="104" name="血腥死" labelType="name" keyMode="9728">
+            <DOMFrame index="104" duration="8" name="血腥死" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="105" duration="15" keyMode="9728">
+            <DOMFrame index="112" duration="8" name="登场" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="120" name="消失" labelType="name" keyMode="9728">
@@ -126,7 +126,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#FF02F6" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#FF02F6" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
@@ -226,7 +226,7 @@
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1086" name="man" centerPoint3DX="27.75" centerPoint3DY="-4.85">
+                <DOMSymbolInstance libraryItemName="强化兽化僵尸/Symbol 1086" name="man" centerPoint3DX="27.75" centerPoint3DY="-4.85">
                   <matrix>
                     <Matrix tx="-19.05" ty="-57.85"/>
                   </matrix>
@@ -247,7 +247,7 @@
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1088" name="man" centerPoint3DX="45.1" centerPoint3DY="-5.75">
+                <DOMSymbolInstance libraryItemName="强化兽化僵尸/Symbol 1088" name="man" centerPoint3DX="45.1" centerPoint3DY="-5.75">
                   <matrix>
                     <Matrix tx="-18.05" ty="-58.35"/>
                   </matrix>
@@ -262,7 +262,7 @@
             </DOMFrame>
             <DOMFrame index="19" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1091" name="man" centerPoint3DX="72.35" centerPoint3DY="5.75">
+                <DOMSymbolInstance libraryItemName="强化兽化僵尸/Symbol 1091" name="man" centerPoint3DX="72.35" centerPoint3DY="5.75">
                   <matrix>
                     <Matrix tx="-18.05" ty="-58.35"/>
                   </matrix>
@@ -280,7 +280,7 @@
             </DOMFrame>
             <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1097" name="man" centerPoint3DX="82.25" centerPoint3DY="5.05">
+                <DOMSymbolInstance libraryItemName="强化兽化僵尸/Symbol 1097" name="man" centerPoint3DX="82.25" centerPoint3DY="5.05">
                   <matrix>
                     <Matrix tx="6.45" ty="-63.5"/>
                   </matrix>
@@ -298,7 +298,7 @@
             </DOMFrame>
             <DOMFrame index="61" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1086" name="man" centerPoint3DX="27.75" centerPoint3DY="-4.85">
+                <DOMSymbolInstance libraryItemName="强化兽化僵尸/Symbol 1086" name="man" centerPoint3DX="27.75" centerPoint3DY="-4.85">
                   <matrix>
                     <Matrix tx="-19.05" ty="-57.85"/>
                   </matrix>
@@ -323,7 +323,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="71" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1098" name="man" centerPoint3DX="71.35" centerPoint3DY="-0.55">
+                <DOMSymbolInstance libraryItemName="强化兽化僵尸/Symbol 1098" name="man" centerPoint3DX="71.35" centerPoint3DY="-0.55">
                   <matrix>
                     <Matrix tx="10.5" ty="-62"/>
                   </matrix>
@@ -344,7 +344,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1099" name="man" centerPoint3DX="44.75" centerPoint3DY="63.2">
+                <DOMSymbolInstance libraryItemName="强化兽化僵尸/Symbol 1099" name="man" centerPoint3DX="44.75" centerPoint3DY="63.2">
                   <matrix>
                     <Matrix tx="0.4" ty="-1.55"/>
                   </matrix>
@@ -365,7 +365,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="88" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1100" name="man" centerPoint3DX="472.4" centerPoint3DY="261.95">
+                <DOMSymbolInstance libraryItemName="强化兽化僵尸/Symbol 1100" name="man" centerPoint3DX="472.4" centerPoint3DY="261.95">
                   <matrix>
                     <Matrix tx="400.6" ty="173.75"/>
                   </matrix>
@@ -385,7 +385,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="95" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1101" name="man" centerPoint3DX="46.8" centerPoint3DY="49.5">
+                <DOMSymbolInstance libraryItemName="强化兽化僵尸/Symbol 1101" name="man" centerPoint3DX="46.8" centerPoint3DY="49.5">
                   <matrix>
                     <Matrix d="1.00039672851563"/>
                   </matrix>
@@ -404,9 +404,9 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="104" duration="16" keyMode="9728">
+            <DOMFrame index="104" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1172" centerPoint3DX="173.1" centerPoint3DY="18.3">
+                <DOMSymbolInstance libraryItemName="Symbol 1172" selected="true" centerPoint3DX="173.1" centerPoint3DY="18.3">
                   <matrix>
                     <Matrix tx="8.5" ty="-72"/>
                   </matrix>
@@ -423,6 +423,18 @@ onClipEvent(unload){
                   <filters>
                     <AdjustColorFilter/>
                   </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="112" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="强化兽化僵尸/强化兽化僵尸 登场" name="man" selected="true" centerPoint3DX="27.75" centerPoint3DY="-4.85">
+                  <matrix>
+                    <Matrix tx="-19.05" ty="-57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

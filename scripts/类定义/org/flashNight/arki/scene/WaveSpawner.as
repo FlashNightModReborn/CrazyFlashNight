@@ -101,6 +101,8 @@ class org.flashNight.arki.scene.WaveSpawner {
         // 订阅frameUpdate事件，以控制刷怪和计时
         // gameworld.dispatcher.subscribeGlobal("frameUpdate", this.tick, this);
 
+        gameworld.dispatcher.subscribe("ForceFinishWave", this.forceFinishWave, this);
+
         // 开始刷怪
         startWave();
     }
@@ -133,9 +135,9 @@ class org.flashNight.arki.scene.WaveSpawner {
         if(subWaveInfo == null) _root.发布消息("敌人波次数据异常！");
 
         _root.d_波次.text = _root.获得翻译("波次") + (currentWave + 1) + " / " + totalWave + "";
-        if(totalWave > 1){
-            _root.最上层发布文字提示(_root.获得翻译("战斗开始！剩余波数：") + (totalWave - (currentWave + 1)) + "！");
-        }
+        // if(totalWave > 1){
+        //     _root.最上层发布文字提示(_root.获得翻译("战斗开始！剩余波数：") + (totalWave - (currentWave + 1)) + "！");
+        // }
 
         finishRequirement = isNaN(subWaveInfo[0].FinishRequirement) ? 0 : subWaveInfo[0].FinishRequirement;
         countDownTime = 0;
@@ -231,6 +233,10 @@ class org.flashNight.arki.scene.WaveSpawner {
             isFinished = true;
             stageManager.clearStage();
         }
+    }
+
+    public function forceFinishWave():Void{
+        finishRequirement = 999;
     }
 
 
