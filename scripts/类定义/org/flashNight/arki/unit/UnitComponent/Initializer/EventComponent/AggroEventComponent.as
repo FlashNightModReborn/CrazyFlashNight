@@ -11,30 +11,58 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.AggroEve
         if (!dispatcher) return;
 
         dispatcher.subscribeSingle("aggroSet", AggroEventComponent.onAggroSet, target);
+        dispatcher.subscribeSingle("aggroClear", AggroEventComponent.onAggroClear, target);
     }
 
     /**
-     * 处理设置仇恨目标的请求
-     * @param target  受击单位（被设置仇恨的对象）
-     * @param shooter 施加仇恨的来源（通常是射手）
-     * @param bullet  触发来源的子弹（可选，用于策略扩展）
+     * 处理设置仇恨目标的事件
+     * @param sender 发布事件的单位（谁的仇恨目标发生了变化）
+     * @param newTarget 新的攻击目标对象
      */
-    public static function onAggroSet(target:MovieClip, shooter:MovieClip, bullet:MovieClip):Void {
-        // 基础校验：地图元素不参与仇恨、无 shooter 直接忽略
-        if (target.element || !shooter) return;
+    public static function onAggroSet(sender:MovieClip, newTarget:MovieClip):Void {
+        // 基础校验：地图元素不参与仇恨、无 newTarget 直接忽略
+        if (sender.element || !newTarget) return;
 
-        var dispatcher:EventDispatcher = target.dispatcher;
+        var dispatcher:EventDispatcher = sender.dispatcher;
         if (!dispatcher) return;
 
         // 计算新老值
         // 说明：用 String() 保守转换，避免出现 undefined/Number 的类型噪音
-        var prevAggro:String = String(target.攻击目标);
-        var newAggro:String  = String(shooter._name);
+        var prevAggro:String = String(sender.攻击目标);
+        var newAggro:String  = String(newTarget._name);
 
         // 若无变化则早退，避免无意义写入与广播
         if (prevAggro === newAggro) return;
 
         // 真正落地赋值
-        target.攻击目标 = newAggro;
+        sender.攻击目标 = newAggro;
+
+        // 可以在这里添加额外的逻辑，比如UI更新、音效播放等
+        // 例如：notifyUIOfAggroChange(sender, newTarget);
+    }
+
+    /**
+     * 处理清除仇恨目标的事件
+     * @param sender 发布事件的单位（谁的仇恨目标被清除了）
+     */
+    public static function onAggroClear(sender:MovieClip):Void {
+        // 基础校验：地图元素不参与仇恨
+        if (sender.element) return;
+
+        var dispatcher:EventDispatcher = sender.dispatcher;
+        if (!dispatcher) return;
+
+        // 计算新老值
+        var prevAggro:String = String(sender.攻击目标);
+        var newAggro:String  = "无";
+
+        // 若无变化则早退，避免无意义写入与广播
+        if (prevAggro === newAggro) return;
+
+        // 真正落地赋值
+        sender.攻击目标 = "无";
+
+        // 可以在这里添加额外的逻辑，比如UI更新、音效播放等
+        // 例如：notifyUIOfAggroClear(sender);
     }
 }

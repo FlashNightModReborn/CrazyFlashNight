@@ -57,7 +57,7 @@ _root.敌人ai函数.思考 = function()
 		}
 		else
 		{
-			_parent.攻击目标 = _root.集中攻击目标;
+			_parent.dispatcher.publish("aggroSet", _parent, _root.gameworld[_root.集中攻击目标]);
 			gotoAndPlay("攻击");
 		}
 	}
@@ -142,7 +142,7 @@ _root.敌人ai函数.攻击 = function(x轴攻击范围, y轴攻击范围, x轴�
 		_parent.状态改变(_parent.攻击模式 + "攻击");
 		if (攻击对象.hp <= 0)
 		{
-			_parent.攻击目标 = "无";
+			_parent.dispatcher.publish("aggroClear", _parent);
 		}
 	}
 }
@@ -154,7 +154,11 @@ _root.敌人ai函数.寻找攻击目标 = function() {
         var enemy = TargetCacheManager.findNearestEnemy(_parent, 5);
         
         // 设置攻击目标
-        _parent.攻击目标 = (enemy) ? enemy._name : "无";
+        if (enemy) {
+            _parent.dispatcher.publish("aggroSet", _parent, enemy);
+        } else {
+            _parent.dispatcher.publish("aggroClear", _parent);
+        }
     }
 };
 
@@ -202,7 +206,7 @@ _root.初始化敌人ai = function(){
 	if(_parent.佣兵数据){
 		this.思考 = _root.敌人ai函数.思考_佣兵;
 		_parent.命令 = "停止";
-		_parent.攻击目标 = "无";
+		_parent.dispatcher.publish("aggroClear", _parent);
 		_parent.移动目标 = "无";
 		return;
 	}

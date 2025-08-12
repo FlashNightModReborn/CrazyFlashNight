@@ -13,6 +13,10 @@ _root.寻找攻击目标基础函数 = function(target:Object)
    	if (target.攻击目标 == "无" or _root.gameworld[target.攻击目标].hp <= 0) 
 	{
         var enemy:Object = TargetCacheManager.findNearestEnemy(target, 30);
-        target.攻击目标 = (enemy) ? enemy._name : "无";
+        if (enemy) {
+            target.dispatcher.publish("aggroSet", target, enemy);
+        } else {
+            target.dispatcher.publish("aggroClear", target);
+        }
     }
 };

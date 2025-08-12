@@ -40,7 +40,7 @@ class org.flashNight.arki.unit.UnitAI.PickupEnemyBehavior extends EnemyBehavior{
                 // 最大拾取范围为最近敌人的距离与800中的最小值
                 if(distance > 0 && distance < maxdistance) maxdistance = distance;
                 data.target = target_enemy;
-                self.攻击目标 = target_enemy._name;
+                self.dispatcher.publish("aggroSet", self, target_enemy);
                 self.拾取目标 = null;
             }
         }else{
@@ -48,7 +48,7 @@ class org.flashNight.arki.unit.UnitAI.PickupEnemyBehavior extends EnemyBehavior{
         }
         if (data.target.hp <= 0){
             data.target = null;
-            self.攻击目标 = "无";
+            self.dispatcher.publish("aggroClear", self);
         }
         // 寻找地上的可拾取物
         // 单位为己方单位时，判定背包是否已满，若背包已满则本张图无法再触发拾取
@@ -67,7 +67,7 @@ class org.flashNight.arki.unit.UnitAI.PickupEnemyBehavior extends EnemyBehavior{
             if(target_item.area != null && (可拾取物距离表[0].距离 < maxdistance)){
                 // 将拾取目标更新为target，并进入拾取状态
                 data.target = target_item;
-                self.攻击目标 = "无";
+                self.dispatcher.publish("aggroClear", self);
                 self.拾取目标 = target_item._name;
                 this.superMachine.ChangeState("ChasingPickup");
                 return;

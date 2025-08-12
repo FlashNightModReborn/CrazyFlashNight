@@ -2475,7 +2475,7 @@ _root.主角函数.按距离索敌 = function(距离, 是否强行重新索敌, 
                 this.索敌目标列表 = _root.反转数组(this.索敌目标列表);
             }
             敌人 = this.索敌目标列表[0].敌人;
-            this.攻击目标 = 敌人._name;
+            this.dispatcher.publish("aggroSet", this, 敌人);
             return 敌人;
         } else {
             return false;
@@ -2689,7 +2689,7 @@ _root.初始化玩家模板 = function() {
 
     //_root.发布调试消息(重量 + " " + 命中率 + " " + 韧性系数 + " " + 躲闪率);
     //_root.发布调试消息(_root.gameworld[this._name].名字 + " hp:" + _root.gameworld[this._name].hp满血值 + "/" + _root.gameworld[this._name].hp + " mp:" + _root.gameworld[this._name].mp满血值 + "/" + _root.gameworld[this._name].mp + " atk" + _root.gameworld[this._name].伤害加成);
-    攻击目标 = "无";
+    dispatcher.publish("aggroClear", this);
     x轴攻击范围 = 100;
     y轴攻击范围 = 20;
     x轴保持距离 = 50;

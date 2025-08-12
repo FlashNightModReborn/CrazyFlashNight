@@ -93,7 +93,7 @@ _root.主角模板ai函数.思考 = function() {
     
     // ────────────── 4. 攻击目标选择与行为决策 ──────────────
     // 重置攻击目标后进行搜索
-    _parent.攻击目标 = "无";
+    _parent.dispatcher.publish("aggroClear", _parent);
     寻找攻击目标();
     
     // 根据是否为敌人以及是否有集中目标来决定后续动作
@@ -106,7 +106,7 @@ _root.主角模板ai函数.思考 = function() {
                 play();
             }
         } else {
-            _parent.攻击目标 = _root.集中攻击目标;
+            _parent.dispatcher.publish("aggroSet", _parent, _root.gameworld[_root.集中攻击目标]);
             gotoAndStop("攻击");
             play();
         }
@@ -196,7 +196,7 @@ _root.主角模板ai函数.攻击 = function(x轴攻击范围, y轴攻击范围,
 		}
 		if (攻击对象.hp <= 0 or 攻击对象.hp == undefined)
 		{
-			_parent.攻击目标 = "无";
+			_parent.dispatcher.publish("aggroClear", _parent);
 		}
 	}
 };
@@ -226,7 +226,11 @@ _root.主角模板ai函数.寻找攻击目标 = function()
 		}
 
 
-		_parent.攻击目标 = 最近的敌人名 ? 最近的敌人名 : "无";
+		if (最近的敌人名) {
+			_parent.dispatcher.publish("aggroSet", _parent, 游戏世界[最近的敌人名]);
+		} else {
+			_parent.dispatcher.publish("aggroClear", _parent);
+		}
 	} */
 };
 

@@ -65,14 +65,14 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
             var target = TargetCacheManager.findNearestEnemy(self, 1); 
             if(target){
                 data.target = target;
-                self.攻击目标 = target._name;
+                self.dispatcher.publish("aggroSet", self, target);
             }
         }else{
             data.target = _root.gameworld[chaseTarget];
         }
         if (data.target.hp <= 0){
             data.target = null;
-            self.攻击目标 = "无";
+            self.dispatcher.publish("aggroClear", self);
         }
         //
         var newstate:String = data.target ? "Chasing" : "Following";
@@ -113,7 +113,11 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
             self.右行 = false;
             self.上行 = false;
             self.下行 = false;
-            self.攻击目标 = data.target.hp <= 0 ? "无" : data.target._name;
+            if (data.target.hp <= 0) {
+                self.dispatcher.publish("aggroClear", self);
+            } else {
+                self.dispatcher.publish("aggroSet", self, data.target);
+            }
             if (data.diff_x < 0){
                 self.方向改变("左");
             }else if(data.diff_x > 0){
@@ -174,7 +178,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
     public function idle_enter():Void{
         // 丢失攻击目标
         data.target = null;
-        data.self.攻击目标 = "无";
+        data.self.dispatcher.publish("aggroClear", data.self);
         data.self.左行 = false;
         data.self.右行 = false;
         data.self.上行 = false;
@@ -188,7 +192,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
     public function wander_enter():Void{
         // 丢失攻击目标
         data.target = null;
-        data.self.攻击目标 = "无";
+        data.self.dispatcher.publish("aggroClear", data.self);
         data.updateSelf(); // 更新自身坐标
 
         var self = data.self;

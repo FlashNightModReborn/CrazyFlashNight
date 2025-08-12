@@ -52,7 +52,7 @@ onClipEvent(load){
    转向速度下限 = 5;
    锁定延迟 = -4;
    锁定范围 = 2000;
-   攻击目标 = "无";
+   dispatcher.publish("aggroClear", this);
    瞄准许可 = false;
    初始_x = _parent._x + _parent._parent._x;
    初始_y = _parent._y + _parent._parent._y;
@@ -98,7 +98,7 @@ onClipEvent(load){
                if(d_min > d)
                {
                   d_min = d;
-                  攻击目标 = 敌人名;
+                  dispatcher.publish("aggroSet", this, _root.gameworld[敌人名]);
                   敌人_z = _root.gameworld[eval("each")].Z轴坐标;
                   锁定坐标.x = 敌人_x;
                   锁定坐标.y = 敌人_y - 30;

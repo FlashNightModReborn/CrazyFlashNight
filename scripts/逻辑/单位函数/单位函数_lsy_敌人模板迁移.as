@@ -522,7 +522,7 @@ _root.初始化敌人模板 = function() {
     this.允许拾取 = this.允许拾取 ? true : false;
 
     //以下是自动初始化的必要参数
-    this.攻击目标 = "无";
+    this.dispatcher.publish("aggroClear", this);
     this.攻击模式 = "空手";
     this.格斗架势 = false;
     this.浮空 = false;
@@ -688,7 +688,7 @@ _root.敌人函数.跳转到招式 = _root.主角函数.跳转到招式;
    mp满血值装备加层 = 0;
    }
 
-   攻击目标 = "无";
+   dispatcher.publish("aggroClear", this);
    x轴攻击范围 = 100;
    y轴攻击范围 = 20;
    x轴保持距离 = 50;
