@@ -21,8 +21,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.AggroEve
      */
     public static function onAggroSet(sender:MovieClip, newTarget:MovieClip):Void {
         // 基础校验：地图元素不参与仇恨、无 newTarget 直接忽略
-        if (sender.element || !newTarget) return;
-
+        if (newTarget.element || !newTarget) {
+            _root.发布消息(newTarget, newTarget.element ? "地图元素不参与仇恨" : "无新的攻击目标");
+            return;
+        }
         var dispatcher:EventDispatcher = sender.dispatcher;
         if (!dispatcher) return;
 
@@ -36,6 +38,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.AggroEve
 
         // 真正落地赋值
         sender.攻击目标 = newAggro;
+
+        _root.发布消息(sender, "仇恨目标已设置为：" + newAggro, newTarget.element);
 
         // 可以在这里添加额外的逻辑，比如UI更新、音效播放等
         // 例如：notifyUIOfAggroChange(sender, newTarget);

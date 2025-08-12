@@ -1,5 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://ns.adobe.com/xfl/2008/" name="生存战-迷之盔甲君" itemID="65c24b22-00000ce9" linkageExportForAS="true" linkageIdentifier="生存战-迷之盔甲君" lastModified="1740850734">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="生存战-迷之盔甲君" itemID="65c24b22-00000ce9" linkageExportForAS="true" linkageIdentifier="生存战-迷之盔甲君" lastModified="1740850734">
   <timeline>
     <DOMTimeline name="生存战-迷之盔甲君" currentFrame="2">
       <layers>
@@ -24,7 +23,7 @@
 _root.初始化NPC(this);
 this.swapDepths(this._y);
 Z轴坐标 = this._y;
-]]>                </script>
+                ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -100,7 +99,7 @@ on(rollOver){
 on(rollOut){
    gotoAndStop(2);
 }
-]]>                    </script>
+                    ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
