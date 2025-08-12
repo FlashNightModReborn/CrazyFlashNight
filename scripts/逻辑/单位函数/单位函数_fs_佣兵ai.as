@@ -208,7 +208,9 @@ _root.主角模板ai函数.寻找攻击目标 = function()
 	
 	// 如果当前没有攻击目标或攻击目标为"无"，使用单位缓存池管理器搜索
 	if (!chaseTarget || chaseTarget == "无") {
-		var target = TargetCacheManager.findNearestThreateningEnemyWithFallback(self, 1, self.threatThreshold);
+        // 在1到威胁阈值中选取一个随机值，通过该威胁值索敌
+        var threshold = self.threatThreshold > 1 ? LinearCongruentialEngine.instance.randomIntegerStrict(1, threshold) : self.threatThreshold;
+        var target = TargetCacheManager.findNearestThreateningEnemy(self, 1, threshold); 
 		if (target) {
 			// 使用事件发布式管理通知目标锁定
 			self.dispatcher.publish("aggroSet", self, target);

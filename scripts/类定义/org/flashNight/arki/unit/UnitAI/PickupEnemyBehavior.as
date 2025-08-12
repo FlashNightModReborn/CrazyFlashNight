@@ -32,8 +32,10 @@ class org.flashNight.arki.unit.UnitAI.PickupEnemyBehavior extends EnemyBehavior{
         // 寻找攻击目标
         var chaseTarget = self.攻击目标;
         if (!chaseTarget || chaseTarget == "无"){
+            // 在1到威胁阈值中选取一个随机值，通过该威胁值索敌
+            var threshold = self.threatThreshold > 1 ? LinearCongruentialEngine.instance.randomIntegerStrict(1, threshold) : self.threatThreshold;
+            var target_enemy = TargetCacheManager.findNearestThreateningEnemy(self, 1, threshold); 
             // 先检索敌人距离
-            var target_enemy = TargetCacheManager.findNearestThreateningEnemyWithFallback(self, 1, self.threatThreshold); 
             var distance:Number = Math.abs(target_enemy._x - data.x);
             
             if(target_enemy){

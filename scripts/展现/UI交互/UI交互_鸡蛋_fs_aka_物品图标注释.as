@@ -32,7 +32,129 @@ _root.物品图标注释 = function(name, value) {
         文本数据.push("<BR>");
     }
     // 获取装备数据
-    var 物品装备数据 = 物品数据.data;
+    _root.物品装备信息注释(文本数据, 物品数据, value.tier);
+
+    //避免回车换两行
+    文本数据.push(物品数据.description.split("\r\n").join("<BR>"));
+    文本数据.push("<BR>");
+
+    //是否为剧情碎片                                                                                                 
+    if (物品数据.use == "情报") {
+        文本数据.push("<FONT COLOR=\'#FFCC00\'>详细信息可在物品栏的情报界面查阅</FONT><BR>");
+    }
+
+
+    //合成材料
+    if (物品数据.synthesis != null) {
+        var 合成表 = ItemUtil.getRequirementFromTask(_root.改装清单对象[物品数据.synthesis].materials);
+        if (合成表.length > 0) {
+            文本数据.push("合成材料：<BR>");
+            for (var i = 0; i < 合成表.length; i++) {
+                文本数据.push(ItemUtil.getItemData(合成表[i].name).displayname + "：" + 合成表[i].value);
+                文本数据.push("<BR>");
+            }
+        }
+    }
+
+    //刀技乘数
+    if (物品数据.use === "刀") {
+        var templist = [_root.技能函数.凶斩伤害乘数表,
+            _root.技能函数.瞬步斩伤害乘数表,
+            _root.技能函数.龙斩刀伤乘数表,
+            _root.技能函数.拔刀术伤害乘数表];
+        var namelist = ["凶斩", "瞬步斩", "龙斩", "拔刀术"];
+        for (var i = 0; i < templist.length; i++) {
+            var temp = templist[i][物品数据.name];
+            if (temp > 1) {
+                var tempPercent = String((temp - 1) * 100);
+                文本数据.push('<font color="#FFCC00">【技能加成】</font>使用' + namelist[i] + "享受" + tempPercent + "%锋利度增益<BR>");
+            }
+        }
+
+    }
+
+    //战技信息
+    var 战技 = 物品数据.skill;
+    if (战技 != null) {
+        if (战技.description) {
+            文本数据.push('<font color="#FFCC00">【主动战技】</font>');
+            文本数据.push(战技.description);
+            文本数据.push('<BR><font color="#FFCC00">【战技信息】</font>');
+            if (战技.information) {
+                文本数据.push(战技.information);
+            } else {
+                //自动生成战技信息
+                var cd = 战技.cd / 1000;
+                文本数据.push("冷却" + cd + "秒");
+                if (战技.hp && 战技.hp != 0) {
+                    文本数据.push("，消耗" + 战技.hp + "HP");
+                }
+                if (战技.mp && 战技.mp != 0) {
+                    文本数据.push("，消耗" + 战技.mp + "MP");
+                }
+                文本数据.push("。");
+            }
+        } else {
+            文本数据.push(战技);
+        }
+        文本数据.push("<BR>");
+    }
+
+    //生命周期信息
+
+    var 生命周期 = 物品数据.lifecycle;
+    if (生命周期 != null) {
+        if (生命周期.description) {
+            文本数据.push('<font color="#FFCC00">【词条信息】</font>');
+            文本数据.push(生命周期.description);
+            文本数据.push("<BR>");
+        }
+    }
+
+    if (强化等级 > 1 && 物品数据.type == "武器" || 物品数据.type == "防具") {
+        文本数据.push("<FONT COLOR=\'#FFCC00\'>");
+        文本数据.push("强化等级：");
+        文本数据.push(强化等级);
+        文本数据.push("</FONT>");
+    } else if (value > 1) {
+        文本数据.push("数量：");
+        文本数据.push(value);
+    }
+
+    var 完整文本 = 文本数据.join('');
+    var 字数 = 完整文本.length;
+    var 每字平均宽度 = 0.5; // 根据实际情况调整
+    var 最大宽度 = 500; // 根据实际情况调整
+    var 计算宽度 = Math.max(150, Math.min(字数 * 每字平均宽度, 最大宽度));
+
+    // 调用注释函数，传递计算出的宽度和文本内容
+    _root.注释(计算宽度, 完整文本);
+};
+
+
+_root.物品装备信息注释 = function(文本数据:Array, 物品数据:Object, tier:String):Void{
+    var 物品装备数据;
+    if(tier != null){
+        switch (tier){
+            case "二阶":
+                物品装备数据 = 物品数据.data_2;
+                break;
+            case "三阶":
+                物品装备数据 = 物品数据.data_3;
+                break;
+            case "四阶":
+                物品装备数据 = 物品数据.data_4;
+                break;
+            case "墨冰":
+                物品装备数据 = 物品数据.data_ice;
+                break;
+            case "狱火":
+                物品装备数据 = 物品数据.data_fire;
+                break;
+        }
+    }
+    if(物品装备数据 == null) 物品装备数据 = 物品数据.data;
+
     switch (物品数据.use) {
         case "刀":
             文本数据.push("锋利度：");
@@ -238,103 +360,7 @@ _root.物品图标注释 = function(name, value) {
         文本数据.push(物品数据.actiontype);
         文本数据.push("<BR>");
     }
-
-    //避免回车换两行
-    文本数据.push(物品数据.description.split("\r\n").join("<BR>"));
-    文本数据.push("<BR>");
-
-    //是否为剧情碎片                                                                                                 
-    if (物品数据.use == "情报") {
-        文本数据.push("<FONT COLOR=\'#FFCC00\'>详细信息可在物品栏的情报界面查阅</FONT><BR>");
-    }
-
-
-    //合成材料
-    if (物品数据.synthesis != null) {
-        var 合成表 = ItemUtil.getRequirementFromTask(_root.改装清单对象[物品数据.synthesis].materials);
-        if (合成表.length > 0) {
-            文本数据.push("合成材料：<BR>");
-            for (var i = 0; i < 合成表.length; i++) {
-                文本数据.push(ItemUtil.getItemData(合成表[i].name).displayname + "：" + 合成表[i].value);
-                文本数据.push("<BR>");
-            }
-        }
-    }
-
-    //刀技乘数
-    if (物品数据.use === "刀") {
-        var templist = [_root.技能函数.凶斩伤害乘数表,
-            _root.技能函数.瞬步斩伤害乘数表,
-            _root.技能函数.龙斩刀伤乘数表,
-            _root.技能函数.拔刀术伤害乘数表];
-        var namelist = ["凶斩", "瞬步斩", "龙斩", "拔刀术"];
-        for (var i = 0; i < templist.length; i++) {
-            var temp = templist[i][物品数据.name];
-            if (temp > 1) {
-                var tempPercent = String((temp - 1) * 100);
-                文本数据.push('<font color="#FFCC00">【技能加成】</font>使用' + namelist[i] + "享受" + tempPercent + "%锋利度增益<BR>");
-            }
-        }
-
-    }
-
-    //战技信息
-    var 战技 = 物品数据.skill;
-    if (战技 != null) {
-        if (战技.description) {
-            文本数据.push('<font color="#FFCC00">【主动战技】</font>');
-            文本数据.push(战技.description);
-            文本数据.push('<BR><font color="#FFCC00">【战技信息】</font>');
-            if (战技.information) {
-                文本数据.push(战技.information);
-            } else {
-                //自动生成战技信息
-                var cd = 战技.cd / 1000;
-                文本数据.push("冷却" + cd + "秒");
-                if (战技.hp && 战技.hp != 0) {
-                    文本数据.push("，消耗" + 战技.hp + "HP");
-                }
-                if (战技.mp && 战技.mp != 0) {
-                    文本数据.push("，消耗" + 战技.mp + "MP");
-                }
-                文本数据.push("。");
-            }
-        } else {
-            文本数据.push(战技);
-        }
-        文本数据.push("<BR>");
-    }
-
-    //生命周期信息
-
-    var 生命周期 = 物品数据.lifecycle;
-    if (生命周期 != null) {
-        if (生命周期.description) {
-            文本数据.push('<font color="#FFCC00">【词条信息】</font>');
-            文本数据.push(生命周期.description);
-            文本数据.push("<BR>");
-        }
-    }
-
-    if (强化等级 > 1 && 物品数据.type == "武器" || 物品数据.type == "防具") {
-        文本数据.push("<FONT COLOR=\'#FFCC00\'>");
-        文本数据.push("强化等级：");
-        文本数据.push(强化等级);
-        文本数据.push("</FONT>");
-    } else if (value > 1) {
-        文本数据.push("数量：");
-        文本数据.push(value);
-    }
-
-    var 完整文本 = 文本数据.join('');
-    var 字数 = 完整文本.length;
-    var 每字平均宽度 = 0.5; // 根据实际情况调整
-    var 最大宽度 = 500; // 根据实际情况调整
-    var 计算宽度 = Math.max(150, Math.min(字数 * 每字平均宽度, 最大宽度));
-
-    // 调用注释函数，传递计算出的宽度和文本内容
-    _root.注释(计算宽度, 完整文本);
-};
+}
 
 
 //技能图标

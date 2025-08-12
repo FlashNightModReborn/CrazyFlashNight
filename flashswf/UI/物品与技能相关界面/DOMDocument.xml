@@ -132,7 +132,7 @@
           <Include href="新版仓库界面.xml" itemID="676f9b88-0000028e" lastModified="1752747706"/>
           <Include href="新版商店界面.xml" itemID="676cf8b9-00000359" lastModified="1752753966"/>
           <Include href="新版通用勾选框.xml" loadImmediate="false" itemID="677d58e7-00000cb8" lastModified="1736268332"/>
-          <Include href="新版物品栏界面.xml" itemID="67699dcd-00000abf" lastModified="1752747691"/>
+          <Include href="新版物品栏界面.xml" itemID="67699dcd-00000abf" lastModified="1754890039"/>
           <Include href="资源箱界面.xml" itemID="684482b6-000002a2" lastModified="1749387337"/>
           <Include href="资源箱界面网格.xml" loadImmediate="false" itemID="6844832f-000002a5" lastModified="1749359714"/>
      </symbols>
@@ -255,7 +255,7 @@
 ]]></script>
                                              </Actionscript>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="新版物品栏界面" name="物品栏界面" centerPoint3DX="133.05" centerPoint3DY="160.95">
+                                        <DOMSymbolInstance libraryItemName="新版物品栏界面" name="物品栏界面" selected="true" centerPoint3DX="133.05" centerPoint3DY="160.95">
                                              <matrix>
                                                   <Matrix a="0.999984741210938" d="0.999984741210938" tx="15.05" ty="-5"/>
                                              </matrix>
@@ -550,12 +550,60 @@
                     <SolidSwatchItem color="#FFCCFF" hue="200" saturation="239" brightness="216"/>
                     <SolidSwatchItem color="#FFFFFF" brightness="240"/>
                     <SolidSwatchItem color="#FF0000" alpha="0.498039215686275" saturation="239" brightness="120"/>
-                    <SolidSwatchItem alpha="0.749019607843137"/>
+                    <SolidSwatchItem alpha="0.745098039215686"/>
                     <SolidSwatchItem alpha="0.498039215686275"/>
-                    <SolidSwatchItem alpha="0.698039215686274"/>
+                    <SolidSwatchItem alpha="0.694117647058824"/>
+                    <SolidSwatchItem color="#242421" hue="40" saturation="11" brightness="33"/>
                </swatches>
           </swatchList>
      </swatchLists>
+     <extendedSwatchLists>
+          <swatchList>
+               <swatches>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#FFFFFF" ratio="0"/>
+                         <GradientEntry ratio="1"/>
+                    </LinearGradientSwatchItem>
+                    <RadialGradientSwatchItem>
+                         <GradientEntry color="#FFFFFF" ratio="0"/>
+                         <GradientEntry ratio="1"/>
+                    </RadialGradientSwatchItem>
+                    <RadialGradientSwatchItem>
+                         <GradientEntry color="#FF0000" ratio="0"/>
+                         <GradientEntry ratio="1"/>
+                    </RadialGradientSwatchItem>
+                    <RadialGradientSwatchItem>
+                         <GradientEntry color="#00FF00" ratio="0"/>
+                         <GradientEntry ratio="1"/>
+                    </RadialGradientSwatchItem>
+                    <RadialGradientSwatchItem>
+                         <GradientEntry color="#0000FF" ratio="0"/>
+                         <GradientEntry ratio="1"/>
+                    </RadialGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#0066FD" ratio="0"/>
+                         <GradientEntry color="#FFFFFF" ratio="0.376470588235294"/>
+                         <GradientEntry color="#FFFFFF" ratio="0.47843137254902"/>
+                         <GradientEntry color="#996600" ratio="0.501960784313725"/>
+                         <GradientEntry color="#FFCC00" ratio="0.666666666666667"/>
+                         <GradientEntry color="#FFFFFF" ratio="1"/>
+                    </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#FF0000" ratio="0"/>
+                         <GradientEntry color="#FFFF00" ratio="0.164705882352941"/>
+                         <GradientEntry color="#00FF00" ratio="0.364705882352941"/>
+                         <GradientEntry color="#00FFFF" ratio="0.498039215686275"/>
+                         <GradientEntry color="#0000FF" ratio="0.666666666666667"/>
+                         <GradientEntry color="#FF00FF" ratio="0.831372549019608"/>
+                         <GradientEntry color="#FF0000" ratio="1"/>
+                    </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#31322C" ratio="0"/>
+                         <GradientEntry color="#111111" ratio="1"/>
+                    </LinearGradientSwatchItem>
+               </swatches>
+          </swatchList>
+     </extendedSwatchLists>
      <persistentData>
           <PD n="TestMovieChecked" v="FlashPro"/>
      </persistentData>

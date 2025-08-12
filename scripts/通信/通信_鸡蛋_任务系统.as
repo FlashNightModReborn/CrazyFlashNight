@@ -310,7 +310,7 @@ _root.isTaskFinished = function(index):Boolean {
 
 
 
-_root.计算难度等级 = function(等级描述) {
+_root.计算难度等级 = function(等级描述:String) {
     if (等级描述 === "简单")
         return 1;
     if (等级描述 === "冒险")
@@ -321,7 +321,7 @@ _root.计算难度等级 = function(等级描述) {
         return 2.5;
     return 1;
 }
-_root.获取难度等级 = function(等级) {
+_root.获取难度等级 = function(等级:Number) {
     if (等级 == 1)
         return "简单";
     if (等级 == 1.5)
@@ -331,6 +331,9 @@ _root.获取难度等级 = function(等级) {
     if (等级 == 2.5)
         return "地狱";
     return "";
+}
+_root.难度是否达到 = function(等级描述:String):Boolean{
+    return _root.难度等级 >= _root.计算难度等级(等级描述);
 }
 
 _root.点击npc后检测任务 = function(npc名字, 目标) {
