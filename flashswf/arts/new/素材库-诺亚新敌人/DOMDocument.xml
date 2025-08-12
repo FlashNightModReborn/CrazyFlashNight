@@ -254,7 +254,7 @@
           <Include href="保护仪器/dkghkg.xml" itemIcon="1" loadImmediate="false" itemID="4b5fabc5-00000109" lastModified="1702111957"/>
           <Include href="保护仪器/保护仪器爆炸.xml" loadImmediate="false" itemID="689b02cd-00000a57" lastModified="1755003037"/>
           <Include href="保护仪器/保护仪器素材.xml" loadImmediate="false" itemID="689b0198-0000028d" lastModified="1754988952"/>
-          <Include href="保护仪器/特殊友军-保护仪器.xml" itemID="689b38d5-000002b8" lastModified="1755006117"/>
+          <Include href="保护仪器/特殊友军-保护仪器.xml" itemID="689b38d5-000002b8" lastModified="1755008079"/>
           <Include href="保护仪器/仪器屏幕.xml" loadImmediate="false" itemID="685a2b2d-000001ee" lastModified="1750739757"/>
           <Include href="保护仪器/仪器屏幕2.xml" loadImmediate="false" itemID="685a2b59-000001f2" lastModified="1750739854"/>
           <Include href="保护仪器/仪器屏幕2本体.xml" loadImmediate="false" itemID="685a2b80-000001f6" lastModified="1750739840"/>
@@ -806,8 +806,8 @@
           <Include href="怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="65ae694d-0000373f" lastModified="1705929037"/>
           <Include href="怪物通用模板/area框/索敌框载体.xml" loadImmediate="false" itemID="65ae6931-0000373d" lastModified="1705929009"/>
           <Include href="怪物通用模板/死亡消失元件/Symbol 39.xml" loadImmediate="false" itemID="6570b322-000003ec" lastModified="1701884437"/>
-          <Include href="怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="65ae68fb-00003739" lastModified="1705928955"/>
           <Include href="怪物通用模板/通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="65ae68f0-00003738" lastModified="1705929134"/>
+          <Include href="怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="65ae68fb-00003739" lastModified="1705928955"/>
           <Include href="怪物通用模板/通用模板，替换掉人物层即可.xml" loadImmediate="false" itemID="65ae884b-00000554" lastModified="1714404535"/>
           <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="65ae6c3a-000037f7" lastModified="1705929879"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="661d2b89-00000c5f" lastModified="1701884437"/>
@@ -1013,10 +1013,10 @@
           <Include href="思考标签.xml" loadImmediate="false" itemID="68145f67-0000024d" lastModified="1746165689"/>
           <Include href="素材库-诺亚新敌人.xml" itemID="65aa1bb3-000004bb" lastModified="1755003775"/>
           <Include href="台座.xml" loadImmediate="false" itemID="685a2a6d-000001e3" lastModified="1750739728"/>
-          <Include href="通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="661d2b89-00000c4d" lastModified="1705928955"/>
-          <Include href="通用ai元件/行走ai载体 副本.xml" loadImmediate="false" itemID="673849ad-0000208b" lastModified="1705928955"/>
           <Include href="通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="661d2b89-00000c4c" lastModified="1705929134"/>
           <Include href="通用ai元件/逻辑ai详情元件 副本.xml" loadImmediate="false" itemID="673849ad-0000208a" lastModified="1705929134"/>
+          <Include href="通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="661d2b89-00000c4d" lastModified="1705928955"/>
+          <Include href="通用ai元件/行走ai载体 副本.xml" loadImmediate="false" itemID="673849ad-0000208b" lastModified="1705928955"/>
           <Include href="图像.xml" loadImmediate="false" itemID="685a2d14-00000208" lastModified="1750740244"/>
           <Include href="爪豪发光点.xml" loadImmediate="false" itemID="68039ded-0000390c" lastModified="1745068556"/>
      </symbols>
@@ -1383,6 +1383,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1670206" publishTime="1755007409"/>
           <PublishItem publishSize="1670152" publishTime="1755005925"/>
           <PublishItem publishSize="1670161" publishTime="1755005816"/>
           <PublishItem publishSize="1670150" publishTime="1755005785"/>
@@ -1402,6 +1403,5 @@
           <PublishItem publishSize="1677867" publishTime="1732461265"/>
           <PublishItem publishSize="1677216" publishTime="1732460622"/>
           <PublishItem publishSize="1682601" publishTime="1732384222"/>
-          <PublishItem publishSize="1682575" publishTime="1732384132"/>
      </publishHistory>
 </DOMDocument>

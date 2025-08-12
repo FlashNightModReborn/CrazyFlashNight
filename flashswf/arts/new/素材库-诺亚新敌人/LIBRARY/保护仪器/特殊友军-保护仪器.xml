@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="保护仪器/特殊友军-保护仪器" itemID="689b38d5-000002b8" linkageExportForAS="true" linkageIdentifier="特殊友军-保护仪器" lastModified="1755006117" lastUniqueIdentifier="47">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="保护仪器/特殊友军-保护仪器" itemID="689b38d5-000002b8" linkageExportForAS="true" linkageIdentifier="特殊友军-保护仪器" lastModified="1755008079" lastUniqueIdentifier="47">
   <timeline>
     <DOMTimeline name="特殊友军-保护仪器">
       <layers>
@@ -49,6 +49,12 @@ function 状态改变(状态)
 	{
 		gotoAndStop("结束");
 	}
+}
+
+function 方向改变(){
+}
+
+function 被击移动(){
 }
 gotoAndStop("正常");
 ]]></script>
