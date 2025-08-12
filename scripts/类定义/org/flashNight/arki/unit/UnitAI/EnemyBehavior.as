@@ -62,7 +62,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         var self = data.self;
         var chaseTarget = self.攻击目标;
         if (!chaseTarget || chaseTarget == "无"){
-            var target = TargetCacheManager.findNearestEnemy(self, 1); 
+            var target = TargetCacheManager.findNearestThreateningEnemyWithFallback(self, 1, self.threatThreshold); 
             if(target){
                 data.target = target;
                 self.dispatcher.publish("aggroSet", self, target);
