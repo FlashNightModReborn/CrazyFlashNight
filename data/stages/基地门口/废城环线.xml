@@ -576,6 +576,13 @@
                     <方向>左</方向>
                 </Parameters>
             </Point>
+            <Point id="3">
+                <x>1000</x>
+                <y>550</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>3</QuantityMax>
+                <Hide>true</Hide>
+            </Point>
         </SpawnPoint>
         <Event>
             <EventName>Start</EventName>
@@ -899,6 +906,69 @@
                         <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>2</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="3">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种44</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>25</Level>
+                        <IsHostile>null</IsHostile>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种49</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>25</Level>
+                        <IsHostile>null</IsHostile>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种425</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种424</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种400</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>25</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种401</Type>
+                        <Interval>2200</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>25</Level>
+                        <SpawnIndex>3</SpawnIndex>
                         <Parameters>
                             <threatThreshold>15</threatThreshold>
                         </Parameters>
