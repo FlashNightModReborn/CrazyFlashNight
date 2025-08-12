@@ -20,6 +20,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventInitializer {
 
         UpdateEventComponent.initialize(target);
         RespawnEventComponent.initialize(target);
+        
+        // 初始化仇恨事件组件
+        AggroEventComponent.initialize(target);
+
 
         // 发布特殊单位出生事件
         if(target.publishStageEvent === true){

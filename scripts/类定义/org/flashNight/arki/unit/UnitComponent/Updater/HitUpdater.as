@@ -14,8 +14,8 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
         // 刷新目标的冲击力数据
         ImpactHandler.refreshImpactForce(hitTarget);
         
-        // 记录攻击来源
-        hitTarget.攻击目标 = shooter._name;
+        // 播报仇恨转锁
+        hitTarget.dispatcher.publish("aggroSet", hitTarget, shooter, bullet);
         
         // ────────────── 方向判断及效果 ──────────────
         // 利用布尔运算确定初始受击方向，考虑了两个因素：
