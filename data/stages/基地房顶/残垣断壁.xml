@@ -474,6 +474,18 @@
                         <Parameters>
                             <threatThreshold>15</threatThreshold>
                         </Parameters>
+                        <DifficultyMax>修罗</DifficultyMax>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种267</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>26</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                        <DifficultyMin>地狱</DifficultyMin>
                     </Enemy>
                     <Enemy>
                         <Type>兵种54</Type>
@@ -633,6 +645,19 @@
                         <Parameters>
                             <threatThreshold>15</threatThreshold>
                         </Parameters>
+                        <DifficultyMax>修罗</DifficultyMax>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种264</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>26</Level>
+                        <x>656</x>
+                        <y>471</y>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                        <DifficultyMin>地狱</DifficultyMin>
                     </Enemy>
                     <Enemy>
                         <Type>兵种54</Type>
