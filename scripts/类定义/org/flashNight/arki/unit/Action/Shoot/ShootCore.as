@@ -2,6 +2,7 @@
 
 import org.flashNight.naki.DataStructures.*;
 import org.flashNight.neur.Event.*;
+import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 
 class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
@@ -84,8 +85,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         if (!man.射击许可标签) {
             // _root.发布消息("主角函数.射击许可", "不允许射击");
             core[shootStateName] = false;
-            // 内联帧计时器移除任务方法
-            _root.帧计时器.taskManager.removeTask(core[config.taskName]);
+            // 移除现有射击任务
+            EnhancedCooldownWheel.I().removeTask(core[config.taskName]);
             return false;
         }
 
@@ -138,11 +139,19 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             var magazineRemaining:Number = bulletAttr.ammoCost * (core[magazineCapName] - core[shootCountName][core[attackMode]]);
             dispatcher.publish("updateBullet", core, shootStateName, magazineRemaining, config.playerBulletField);
             if (shootSpeed > 300) {
-                // 延迟任务：结束后摇状态
-                // 内联帧计时器添加或更新任务方法
-                _root.帧计时器.taskManager.addOrUpdateTask(core, "结束射击后摇", function(target:Object):Void {
+                // 使用增强型时间轮调度后摇解除任务（若存在则重置）
+                var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+                if (!core.taskLabel) {
+                    core.taskLabel = {};
+                    _global.ASSetPropFlags(core, ["taskLabel"], 1, false);
+                }
+                var existingId:Number = core.taskLabel["结束射击后摇"];
+                if (existingId) {
+                    wheel.removeTask(existingId);
+                }
+                core.taskLabel["结束射击后摇"] = wheel.addDelayedTask(300, function(target:Object):Void {
                     target.射击最大后摇中 = false;
-                }, 300, [core]);
+                }, core);
             }
         }
 
@@ -150,8 +159,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         if (core[shootStateName]) {
             return true;
         }
-        // 内联帧计时器移除任务方法
-        _root.帧计时器.taskManager.removeTask(core[config.taskName]);
+        // 移除现有射击任务
+        EnhancedCooldownWheel.I().removeTask(core[config.taskName]);
         return false;
     }
 
@@ -221,27 +230,32 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
         // 调用持续射击核心逻辑
         if (ShootCore.continuousShoot(core, attackMode, interval, params)) {
-            // 内联帧计时器添加生命周期任务方法
-            core[params.taskName] = _root.帧计时器.taskManager.addLifecycleTask(
-                core, 
-                "开始射击", 
-                ShootCore.continuousShoot, 
-                interval, 
-                [core, attackMode, interval, params]  // 额外参数打包成数组
+            // 使用增强型时间轮添加持续射击任务
+            core[params.taskName] = EnhancedCooldownWheel.I().addTask(
+                ShootCore.continuousShoot,
+                interval,
+                0,
+                core,
+                attackMode,
+                interval,
+                params
             );
 
             // 若射击间隔较长，添加后摇解除任务
             if (interval > 300) {
-                // 内联帧计时器添加或更新任务方法
-                _root.帧计时器.taskManager.addOrUpdateTask(
-                    core,
-                    "结束射击后摇",
-                    function(自机:MovieClip):Void {
-                        自机.射击最大后摇中 = false;
-                    },
-                    300,
-                    [core]
-                );
+                // 使用增强型时间轮调度后摇解除任务（若存在则重置）
+                if (!core.taskLabel) {
+                    core.taskLabel = {};
+                    _global.ASSetPropFlags(core, ["taskLabel"], 1, false);
+                }
+                var existId:Number = core.taskLabel["结束射击后摇"];
+                var timer:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+                if (existId) {
+                    timer.removeTask(existId);
+                }
+                core.taskLabel["结束射击后摇"] = timer.addDelayedTask(300, function(自机:MovieClip):Void {
+                    自机.射击最大后摇中 = false;
+                }, core);
             }
         }
     }
