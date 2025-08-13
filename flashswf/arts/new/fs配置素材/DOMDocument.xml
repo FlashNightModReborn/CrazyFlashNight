@@ -134,7 +134,7 @@
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="ashcore/ashcore.xml" itemID="688340fd-00000819" lastModified="1753436006"/>
           <Include href="ashcore/图标-ashcore.xml" itemID="68835078-00000a95" lastModified="1753436313"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1754934741"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1755055452"/>
           <Include href="q.xml" loadImmediate="false" itemID="6898491a-00000406" lastModified="1754812780"/>
           <Include href="sprite/Symbol 35.xml" itemID="6577b699-00000971" lastModified="1718635260"/>
           <Include href="sprite/Symbol 36.xml" loadImmediate="false" itemID="6577b699-00000972" lastModified="1719476235"/>
@@ -256,6 +256,14 @@
           <Include href="龙破军霜/龙破军霜.xml" itemIcon="1" loadImmediate="false" itemID="65f704e6-00002270" lastModified="1710690852"/>
           <Include href="龙破军霜/图标-龙破军霜.xml" itemID="65f704b4-00002269" lastModified="1710687412"/>
           <Include href="全息投影仪.xml" loadImmediate="false" itemID="688cd676-00001058" lastModified="1754060997"/>
+          <Include href="热量1.xml" itemIcon="1" loadImmediate="false" itemID="689c051c-00001ee1" lastModified="1755055388"/>
+          <Include href="热量2.xml" itemIcon="1" loadImmediate="false" itemID="689c0522-00001ee6" lastModified="1755055394"/>
+          <Include href="热量3.xml" itemIcon="1" loadImmediate="false" itemID="689c0526-00001eea" lastModified="1755055399"/>
+          <Include href="热量4.xml" itemIcon="1" loadImmediate="false" itemID="689c052c-00001eee" lastModified="1755055404"/>
+          <Include href="热量5.xml" itemIcon="1" loadImmediate="false" itemID="689c0531-00001ef2" lastModified="1755055409"/>
+          <Include href="热量6.xml" itemIcon="1" loadImmediate="false" itemID="689c0536-00001ef6" lastModified="1755055414"/>
+          <Include href="热量7.xml" itemIcon="1" loadImmediate="false" itemID="689c053c-00001efa" lastModified="1755055420"/>
+          <Include href="热量8.xml" itemIcon="1" loadImmediate="false" itemID="689c0541-00001efe" lastModified="1755055425"/>
           <Include href="生存战素材/Symbol 9.xml" itemIcon="1" loadImmediate="false" itemID="65c24a9a-00000cc3" lastModified="1699960314"/>
           <Include href="特效素材/打击伤害数字.xml" itemID="656983a5-000002a1" lastModified="1706446521"/>
           <Include href="特效与子弹/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="65e08f36-00001ff1" lastModified="1702237154"/>
@@ -445,8 +453,8 @@
           <Include href="长枪/wa90/消音器.xml" itemIcon="1" loadImmediate="false" itemID="60abd2e4-0000291f" lastModified="1621887798"/>
           <Include href="长枪/XM25/XM25.xml" itemID="687467dd-000003a8" lastModified="1753091233"/>
           <Include href="长枪/XM25/图标-XM25.xml" itemID="6874cca8-0000047d" lastModified="1752485104"/>
-          <Include href="长枪/XM214/XM214-CageFrame.xml" itemID="68985a4b-0000055b" lastModified="1755048615"/>
-          <Include href="长枪/XM214/环.xml" loadImmediate="false" itemID="689834a0-000003ce" lastModified="1755050163"/>
+          <Include href="长枪/XM214/XM214-CageFrame.xml" itemID="68985a4b-0000055b" lastModified="1755055594"/>
+          <Include href="长枪/XM214/环.xml" loadImmediate="false" itemID="689834a0-000003ce" lastModified="1755055509"/>
           <Include href="长枪/XM214/末端枪口.xml" loadImmediate="false" itemID="689834f7-000003d8" lastModified="1754931481"/>
           <Include href="长枪/XM214/上枪管.xml" loadImmediate="false" itemID="68983105-000003a9" lastModified="1754931415"/>
           <Include href="长枪/XM214/图标-XM214-CageFrame.xml" itemID="68985a6e-0000056f" lastModified="1754815111"/>
@@ -1276,6 +1284,8 @@
                     <SolidSwatchItem color="#111415" hue="130" saturation="27" brightness="18"/>
                     <SolidSwatchItem color="#410C13" hue="234" saturation="167" brightness="36"/>
                     <SolidSwatchItem color="#8C151A" hue="239" saturation="177" brightness="76"/>
+                    <SolidSwatchItem color="#FF0000" alpha="0.0980392156862745" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF0000" alpha="0.0470588235294118" saturation="239" brightness="120"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1358,25 +1368,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
-          <PublishItem publishSize="2258491" publishTime="1755049790"/>
-          <PublishItem publishSize="2258487" publishTime="1755049653"/>
-          <PublishItem publishSize="2258625" publishTime="1755049463"/>
-          <PublishItem publishSize="2260263" publishTime="1755049265"/>
-          <PublishItem publishSize="2260263" publishTime="1755049208"/>
-          <PublishItem publishSize="2260839" publishTime="1755049005"/>
-          <PublishItem publishSize="2252028" publishTime="1755047536"/>
-          <PublishItem publishSize="2258965" publishTime="1754934503"/>
-          <PublishItem publishSize="2258983" publishTime="1754933845"/>
-          <PublishItem publishSize="2258983" publishTime="1754933833"/>
-          <PublishItem publishSize="2249825" publishTime="1754933692"/>
-          <PublishItem publishSize="2249825" publishTime="1754933625"/>
-          <PublishItem publishSize="2249837" publishTime="1754933227"/>
-          <PublishItem publishSize="2249837" publishTime="1754933144"/>
-          <PublishItem publishSize="2249838" publishTime="1754932950"/>
-          <PublishItem publishSize="2250099" publishTime="1754932802"/>
-          <PublishItem publishSize="2250099" publishTime="1754932792"/>
-          <PublishItem publishSize="2249989" publishTime="1754932619"/>
-          <PublishItem publishSize="2249989" publishTime="1754932316"/>
-          <PublishItem publishSize="2190522" publishTime="1754815114"/>
+          <PublishItem publishSize="2262378" publishTime="1755055514"/>
+          <PublishItem publishSize="2262388" publishTime="1755055236"/>
+          <PublishItem publishSize="2262401" publishTime="1755055130"/>
+          <PublishItem publishSize="2262401" publishTime="1755054919"/>
+          <PublishItem publishSize="2262394" publishTime="1755054816"/>
+          <PublishItem publishSize="2263184" publishTime="1755054680"/>
+          <PublishItem publishSize="2265166" publishTime="1755054641"/>
+          <PublishItem publishSize="2265166" publishTime="1755054635"/>
+          <PublishItem publishSize="2259051" publishTime="1755053926"/>
+          <PublishItem publishSize="2259054" publishTime="1755053885"/>
+          <PublishItem publishSize="2257559" publishTime="1755053699"/>
+          <PublishItem publishSize="2257559" publishTime="1755053618"/>
+          <PublishItem publishSize="2258681" publishTime="1755052332"/>
+          <PublishItem publishSize="2265779" publishTime="1755052216"/>
+          <PublishItem publishSize="2266850" publishTime="1755052170"/>
+          <PublishItem publishSize="2266850" publishTime="1755052102"/>
+          <PublishItem publishSize="2267040" publishTime="1755051890"/>
+          <PublishItem publishSize="2267038" publishTime="1755051799"/>
+          <PublishItem publishSize="2264532" publishTime="1755051629"/>
+          <PublishItem publishSize="2258792" publishTime="1755051313"/>
      </publishHistory>
 </DOMDocument>

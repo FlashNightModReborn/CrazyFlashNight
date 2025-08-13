@@ -5903,7 +5903,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <dressup>枪-长枪-XM214-CageFrame</dressup>
       <evasion>-10</evasion>
       <accuracy>-25</accuracy>
-      <criticalhit>35</criticalhit>      
       <damagetype>破击</damagetype>
       <magictype>电子体</magictype>
     </data>
@@ -5912,10 +5911,14 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
         <init>
           <initRoutines>XM214初始化</initRoutines>
           <initParam>
-            <maxSpinCount>29</maxSpinCount>
-            <spinUpAmount>5</spinUpAmount>
-            <spinSpeedFactor>0.1</spinSpeedFactor>
-            <spinDownRate>0.33</spinDownRate>
+            <maxVisualSpinSpeed>8</maxVisualSpinSpeed>
+            <minShotgunVal>5</minShotgunVal>
+            <maxShotgunVal>12</maxShotgunVal>
+            <shotgunDecayDelay>10</shotgunDecayDelay>
+            <shotgunIncrement>1</shotgunIncrement>
+            <maxBulletCapacity>360</maxBulletCapacity>
+            <weaponAttributeValue>150</weaponAttributeValue>
+            <flickerCycle>3</flickerCycle>
           </initParam>
         </init>
         <cycle>
