@@ -80,6 +80,7 @@
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>了解。</Text>
             </Dialogue>
+            <Message>任务目标：接应友军并保护仪器</Message>
         </Event>
         <Event>
             <EventName>WaveFinished</EventName>
@@ -763,6 +764,9 @@
                         <Quantity>3</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
