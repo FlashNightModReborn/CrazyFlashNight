@@ -737,24 +737,44 @@
                         <Interval>1000</Interval>
                         <Quantity>4</Quantity>
                         <Level>45</Level>
+                        <Parameters>
+                            <魔法抗性>
+                                <电子体>0</电子体>
+                            </魔法抗性>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种74</Type>
                         <Interval>1000</Interval>
                         <Quantity>4</Quantity>
                         <Level>45</Level>
+                        <Parameters>
+                            <魔法抗性>
+                                <电子体>0</电子体>
+                            </魔法抗性>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种372</Type>
                         <Interval>900</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
+                        <Parameters>
+                            <魔法抗性>
+                                <电子体>0</电子体>
+                            </魔法抗性>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种373</Type>
                         <Interval>900</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
+                        <Parameters>
+                            <魔法抗性>
+                                <电子体>0</电子体>
+                            </魔法抗性>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种360</Type>
@@ -762,6 +782,11 @@
                         <Quantity>1</Quantity>
                         <Level>40</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <魔法抗性>
+                                <电子体>0</电子体>
+                            </魔法抗性>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -775,18 +800,33 @@
                         <Interval>900</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
+                        <Parameters>
+                            <魔法抗性>
+                                <电子体>0</电子体>
+                            </魔法抗性>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种373</Type>
                         <Interval>900</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
+                        <Parameters>
+                            <魔法抗性>
+                                <电子体>0</电子体>
+                            </魔法抗性>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种347</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
+                        <Parameters>
+                            <魔法抗性>
+                                <电子体>0</电子体>
+                            </魔法抗性>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -801,6 +841,11 @@
                         <Quantity>1</Quantity>
                         <Level>45</Level>
                         <IsHostile>null</IsHostile>
+                        <Parameters>
+                            <魔法抗性>
+                                <电子体>25</电子体>
+                            </魔法抗性>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种364</Type>
@@ -808,30 +853,55 @@
                         <Quantity>1</Quantity>
                         <Level>45</Level>
                         <IsHostile>null</IsHostile>
+                        <Parameters>
+                            <魔法抗性>
+                                <电子体>35</电子体>
+                            </魔法抗性>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种372</Type>
                         <Interval>3000</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
+                        <Parameters>
+                            <魔法抗性>
+                                <电子体>0</电子体>
+                            </魔法抗性>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种373</Type>
                         <Interval>3000</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
+                        <Parameters>
+                            <魔法抗性>
+                                <电子体>0</电子体>
+                            </魔法抗性>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种70</Type>
                         <Interval>4000</Interval>
                         <Quantity>4</Quantity>
                         <Level>45</Level>
+                        <Parameters>
+                            <魔法抗性>
+                                <电子体>0</电子体>
+                            </魔法抗性>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="5">
                         <Type>兵种74</Type>
                         <Interval>4000</Interval>
                         <Quantity>4</Quantity>
                         <Level>45</Level>
+                        <Parameters>
+                            <魔法抗性>
+                                <电子体>0</电子体>
+                            </魔法抗性>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -846,6 +916,11 @@
                         <Quantity>2</Quantity>
                         <Level>45</Level>
                         <IsHostile>null</IsHostile>
+                        <Parameters>
+                            <魔法抗性>
+                                <电子体>25</电子体>
+                            </魔法抗性>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种364</Type>
@@ -853,30 +928,55 @@
                         <Quantity>2</Quantity>
                         <Level>45</Level>
                         <IsHostile>null</IsHostile>
+                        <Parameters>
+                            <魔法抗性>
+                                <电子体>35</电子体>
+                            </魔法抗性>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种372</Type>
                         <Interval>3000</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
+                        <Parameters>
+                            <魔法抗性>
+                                <电子体>0</电子体>
+                            </魔法抗性>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种373</Type>
                         <Interval>3000</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
+                        <Parameters>
+                            <魔法抗性>
+                                <电子体>0</电子体>
+                            </魔法抗性>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="5">
                         <Type>兵种70</Type>
                         <Interval>4000</Interval>
                         <Quantity>4</Quantity>
                         <Level>45</Level>
+                        <Parameters>
+                            <魔法抗性>
+                                <电子体>0</电子体>
+                            </魔法抗性>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="6">
                         <Type>兵种74</Type>
                         <Interval>4000</Interval>
                         <Quantity>4</Quantity>
                         <Level>45</Level>
+                        <Parameters>
+                            <魔法抗性>
+                                <电子体>0</电子体>
+                            </魔法抗性>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
