@@ -26,6 +26,8 @@
         if (isNaN(target.icY)) target.icY = ic._y;
         if (target.状态 == "登场") ic._visible = false;
 
+        target.updateEventComponentID = null;
+
         if(_root.控制目标 === target._name) {
             if(_root.帧计时器.当前帧数 > lastInitFrame) {
 
