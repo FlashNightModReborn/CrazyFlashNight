@@ -113,6 +113,24 @@
                 <Text>···谢谢。</Text>
             </Dialogue>
         </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>键盘</Parameter>
+            <Message>重要人员损失！</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>吉他</Parameter>
+            <Message>重要人员损失！</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>主唱</Parameter>
+            <Message>重要人员损失！</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -124,6 +142,7 @@
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
+                        <InstanceName>吉他</InstanceName>
                         <x>350</x>
                         <y>380</y>
                     </Enemy>
@@ -132,6 +151,7 @@
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
+                        <InstanceName>键盘</InstanceName>
                         <x>400</x>
                         <y>450</y>
                     </Enemy>
@@ -140,6 +160,7 @@
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
+                        <InstanceName>主唱</InstanceName>
                         <x>520</x>
                         <y>400</y>
                     </Enemy>
