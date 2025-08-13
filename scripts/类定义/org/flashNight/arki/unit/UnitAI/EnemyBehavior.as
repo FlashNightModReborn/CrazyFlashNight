@@ -134,9 +134,9 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
                 self.下行 = data.diff_z > 0;
                 self.左行 = data.x > data.tx + data.xdistance;
                 self.右行 = data.x < data.tx - data.xdistance;
-            }else if (data.state != self.攻击模式 + "跑"){
+            }else if (data.state != self.攻击模式 + "跑" && data.absdiff_x > data.run_threshold_x && data.absdiff_z > data.run_threshold_z){
                 //每偶数次action判定是否起跑
-                if(data.absdiff_x > data.run_threshold_x & data.absdiff_z > data.run_threshold_z){
+                if(LinearCongruentialEngine.instance.randomCheckHalf()){
                     self.状态改变(self.攻击模式 + "跑");
                 }
             }

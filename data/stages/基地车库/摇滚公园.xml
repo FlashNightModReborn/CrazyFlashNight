@@ -94,9 +94,14 @@ Reward的必要参数：
                     <stainedTarget>element</stainedTarget>
                     <redOffset>0</redOffset>
                     <掉落物>
-                        <名字>K点</名字>
+                        <名字>强化石</名字>
                         <最小数量>1</最小数量>
                         <最大数量>10</最大数量>
+                    </掉落物>
+                    <掉落物>
+                        <名字>资料</名字>
+                        <最小数量>1</最小数量>
+                        <最大数量>5</最大数量>
                     </掉落物>
                 </Parameters>
             </Instance>

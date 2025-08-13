@@ -249,6 +249,7 @@ class org.flashNight.arki.scene.WaveSpawner {
     }
 
     public function forceFinishWave():Void{
+        // 强制下一波命令，通过把finishRequirement改为999简单实现
         finishRequirement = 999;
     }
 

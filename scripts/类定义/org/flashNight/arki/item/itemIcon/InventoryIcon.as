@@ -24,27 +24,27 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
         var type = itemData.type;
         var use = itemData.use;
         // 检查是否为金钱或K点，是则点击直接获得
-        if(name === "金钱"){
-            _root.金钱 += value;
-            _root.发布消息("获得金钱" + value + "。");
+        if(this.name === "金钱"){
+            _root.金钱 += this.value;
+            _root.发布消息("获得金钱" + this.value + "。");
             collection.remove(index);
             return;
-        }else if(name === "K点"){
-            _root.虚拟币 += value;
-            _root.发布消息("获得K点" + value + "。");
+        }else if(this.name === "K点"){
+            _root.虚拟币 += this.value;
+            _root.发布消息("获得K点" + this.value + "。");
             collection.remove(index);
             return;
         }
         // 检查是否为材料或情报，是则点击直接加入对应的收集品栏
         if(type === "收集品"){
             if(use === "材料"){
-                _root.收集品栏.材料.add(name,value);
+                _root.收集品栏.材料.add(this.name, this.value);
+                _root.发布消息("获得[材料]" + this.name + "*" + this.value + "。");
                 collection.remove(index);
-                _root.发布消息("获得[材料]" + name + "*" + value + "。");
             }else if(use === "情报"){
-                _root.收集品栏.情报.add(name,value);
+                _root.收集品栏.情报.add(this.name, this.value);
+                _root.发布消息("获得[情报]" + this.name + "*" + this.value + "。");
                 collection.remove(index);
-                _root.发布消息("获得[情报]" + name + "*" + value + "。");
             }
             return;
         }

@@ -13,10 +13,10 @@
         </BasicInformation>
         <SpawnPoint>
             <Point id="0">
-                <x>1350</x>
-                <y>260</y>
+                <x>1400</x>
+                <y>255</y>
                 <BiasX>150</BiasX>
-                <BiasY>20</BiasY>
+                <BiasY>25</BiasY>
                 <QuantityMax>6</QuantityMax>
             </Point>
             <Point id="1">
@@ -134,7 +134,7 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种401</Type>
-                        <Interval>1500</Interval>
+                        <Interval>2000</Interval>
                         <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>right</SpawnIndex>
