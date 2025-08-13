@@ -467,7 +467,6 @@ _root.创建佣兵实体对象 = function(佣兵数据, X, Y)
 		var 随机对话内容 = _root.佣兵随机对话[随机对话编号].Text + "   (" + _root.佣兵随机对话[随机对话编号].Personality + ":" + _root.佣兵随机对话[随机对话编号].Value + ")";
 		佣兵对象.默认对话[0][i] = [佣兵数据[1], "佣兵", "主角模板", 随机对话内容, _root.佣兵随机对话[随机对话编号].Expression, 佣兵对象];
 	}
-	StaticInitializer.initializeUnit(佣兵对象);
 
 	var nx:Number = 佣兵对象.人物文字信息._x;
 	var ny:Number = 佣兵对象.人物文字信息._y;

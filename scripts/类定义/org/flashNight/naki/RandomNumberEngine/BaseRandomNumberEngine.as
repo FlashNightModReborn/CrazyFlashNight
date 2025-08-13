@@ -154,7 +154,7 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
     // 从数组中获取一个随机元素
     // @param array: 待选数组
     // @return 数组中的随机元素
-    public function getRandomArrayElement(array:Array):Object {
+    public function getRandomArrayElement(array:Array) {
         if (array.length == 0) {
             return null; // 如果数组为空，返回null
         }

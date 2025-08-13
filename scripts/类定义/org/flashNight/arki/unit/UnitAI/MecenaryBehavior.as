@@ -8,8 +8,10 @@ import org.flashNight.arki.unit.UnitAI.UnitAIData;
 
 class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
 
-    public static var IDLE_TIME:Number = 30; // 停止状态每30次action（120帧）切换状态
-    public static var WALK_TIME:Number = 8; // 移动状态每8次action（32帧）判断一次是否切换状态
+    public static var IDLE_MIN_TIME:Number = 10; // 停止状态最短10次action（40帧）切换状态
+    public static var IDLE_MAX_TIME:Number = 40; // 停止状态最长40次action（160帧）切换状态
+    public static var WALK_MIN_TIME:Number = 8; // 移动状态最短8次action（32帧）切换状态
+    public static var WALK_MAX_TIME:Number = 40; // 移动状态最长40次action（160帧）切换状态
 
     public function MecenaryBehavior(_data:UnitAIData){
         super(_data);
@@ -20,16 +22,16 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
         // 思考状态，结算进入状态函数后一定会跳转至其他状态
         this.AddStatus("Thinking",new FSM_Status(null, this.think, null));
         // 空闲状态
-        this.AddStatus("Idle",new FSM_Status(null, this.sleep_enter, null));
+        this.AddStatus("Idle",new FSM_Status(null, this.idle_enter, null));
         // 移动状态
-        this.AddStatus("Walking",new FSM_Status(this.walk, null, null));
+        this.AddStatus("Walking",new FSM_Status(this.walk, this.walk_enter, null));
 
         //过渡线
         this.pushGateTransition("Idle","Thinking",function(){
-            return this.actionCount >= MecenaryBehavior.IDLE_TIME;
+            return this.actionCount >= data.think_threshold;
         });
         this.pushGateTransition("Walking","Thinking",function(){
-            return this.actionCount % MecenaryBehavior.WALK_TIME == 0 && LinearCongruentialEngine.instance.randomCheckHalf();
+            return this.actionCount >= data.think_threshold;
         });
 
         // 检测到思考标签时结束睡眠状态进入思考状态
@@ -39,7 +41,7 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
 
 
     // 具体执行函数
-    //思考
+    // 思考
     public function think():Void{
         data.updateSelf(); // 更新自身坐标
         //search target
@@ -53,7 +55,7 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
                     出生点列表.push(出生点);
                 }
             }
-            data.target = MovieClip(engine.getRandomArrayElement(出生点列表));
+            data.target = engine.getRandomArrayElement(出生点列表);
             data.updateTarget();
             if(data.absdiff_x < 100 && data.absdiff_z < 50){
                 newstate = "Idle"; // 若离目标门太近则先进入Idle
@@ -65,7 +67,7 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
         this.superMachine.ChangeState(newstate);
     }
 
-    //跟随
+    // 移动
     public function walk():Void{
         data.updateSelf(); // 更新自身坐标
         data.updateTarget(); // 更新目标出生点坐标
@@ -93,5 +95,19 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
                 self.下行 = data.diff_z > 0;
             }
         }
+    }
+
+    // 进入移动状态
+    public function walk_enter():Void{
+        data.think_threshold = LinearCongruentialEngine.instance.randomIntegerStrict(WALK_MIN_TIME, WALK_MAX_TIME);
+    }
+
+    // 进入停止状态
+    public function idle_enter():Void{
+        data.self.左行 = false;
+        data.self.右行 = false;
+        data.self.上行 = false;
+        data.self.下行 = false;
+        data.think_threshold = LinearCongruentialEngine.instance.randomIntegerStrict(IDLE_MIN_TIME, IDLE_MAX_TIME);
     }
 }

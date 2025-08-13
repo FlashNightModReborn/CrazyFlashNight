@@ -55,6 +55,11 @@
                 </Parameters>
             </Instance>
         </Instances>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>3</Parameter>
+            <Message>不要忘了搜索沿路的箱子！</Message>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -381,7 +386,7 @@
         <Instances>
             <Instance id="0">
                 <x>1450</x>
-                <y>500</y>
+                <y>400</y>
                 <Identifier>装备箱</Identifier>
                 <Parameters>
                     <掉落物>
@@ -400,7 +405,7 @@
                 <CaseSwitch expression="_root.难度是否达到" params="修罗">
                     <Case casevalue="true">
                         <x>1540</x>
-                        <y>530</y>
+                        <y>370</y>
                         <Identifier>装备箱</Identifier>
                         <Parameters>
                             <掉落物>
@@ -494,7 +499,7 @@
         <Instances>
             <Instance id="0">
                 <x>1450</x>
-                <y>550</y>
+                <y>450</y>
                 <Identifier>生存箱</Identifier>
                 <Parameters>
                     <掉落物>
