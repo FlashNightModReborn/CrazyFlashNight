@@ -410,4 +410,27 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
         // 【注意】EventCoordinator.getEventListenerStats已经正确处理了统计逻辑
         return EventCoordinator.getEventListenerStats(this._target);
     }
+    
+    /**
+     * 调试用toString方法
+     * @return 包含实例状态信息的字符串
+     */
+    public function toString():String {
+        var targetInfo:String = this._target ? 
+            ("target=" + this._target._name + "(" + this._target + ")") : 
+            "target=null";
+        
+        var statusInfo:String = this._destroyed ? "DESTROYED" : "ACTIVE";
+        
+        var handlerInfo:String = this._unloadHandlerID ? 
+            ("unloadHandler=" + this._unloadHandlerID) : 
+            "unloadHandler=null";
+        
+        var eventStats:Object = this.getTargetEventStats();
+        var statsInfo:String = "events=" + eventStats.totalEvents + 
+                              ",handlers=" + eventStats.totalHandlers;
+        
+        return "[LifecycleEventDispatcher " + statusInfo + " " + targetInfo + " " + 
+               handlerInfo + " " + statsInfo + "]";
+    }
 }
