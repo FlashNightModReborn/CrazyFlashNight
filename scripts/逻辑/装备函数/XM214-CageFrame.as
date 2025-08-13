@@ -1,4 +1,9 @@
 ﻿import org.flashNight.neur.Event.*;
+import flash.geom.ColorTransform;
+import flash.filters.*;
+import org.flashNight.naki.DataStructures.*;
+import org.flashNight.arki.render.*;
+import org.flashNight.sara.util.*;
 
 /* ---------------------------------------------------------
  * XM214_CageFrame  初始化 (重构版)
@@ -120,5 +125,10 @@ _root.装备生命周期函数.XM214周期 = function(ref:Object, param:Object)
         ref.gunFrame = 1; // 重置动画帧变量，以便下次转动时从头开始
     }
 
-    // 原有的 isFiring 标记不再需要用于动画计算，逻辑大大简化
+    var ring1:MovieClip = gun.环1;
+    var ring2:MovieClip = gun.环2;
+    var ringFrame:Number = ref.shotgunValue - ref.MIN_SHOTGUN_VAL + 1;
+    // _root.发布消息(ringFrame)
+    ring1.gotoAndStop(ringFrame);
+    ring2.gotoAndStop(ringFrame);
 };
