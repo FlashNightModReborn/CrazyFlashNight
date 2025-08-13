@@ -665,6 +665,12 @@
                 <Text>干得不错。</Text>
             </Dialogue>
         </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>tomboy</Parameter>
+            <Message>重要人员损失！</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -697,9 +703,10 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种387</Type>
-                        <Interval>2000</Interval>
+                        <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>50</Level>
+                        <InstanceName>tomboy</InstanceName>
                         <x>1216</x>
                         <y>638</y>
                     </Enemy>
