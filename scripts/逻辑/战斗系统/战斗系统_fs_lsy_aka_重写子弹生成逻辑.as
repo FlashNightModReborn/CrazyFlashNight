@@ -279,6 +279,9 @@ _root.子弹生命周期 = function()
                 dispatcher.publish((this.flags & MELEE_EXPLOSIVE_MASK) === 0 ?
                     "kill" : "death", hitTarget);
                 shooter.dispatcher.publish("enemyKilled", hitTarget, this);
+
+                // 如果在 enemyKilled 内发布 kill/death 事件
+                // 可能导致原本订阅目标死亡事件的组件失去触发机会
             }
 
             damageResult.triggerDisplay(hitTarget._x, hitTarget._y);

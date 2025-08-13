@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.gesh.string.StringUtils;
 
 _root.UI系统 = {};
 _root.UI系统.血条刷新显示 = function() 
@@ -30,8 +31,8 @@ _root.UI系统.蓝条刷新显示 = function()
 	if (isNaN(蓝条数字当前MP) || isNaN(蓝条数字最大MP)) return;
 
     // 格式化当前MP和最大MP为五位数，前面补零
-    var 格式化当前MP = _root.常用工具函数.补零到宽度(蓝条数字当前MP, 5);
-    var 格式化最大MP = _root.常用工具函数.补零到宽度(蓝条数字最大MP, 5);
+    var 格式化当前MP = StringUtils.padStart(String(Math.floor(蓝条数字当前MP)), 5, "0");
+    var 格式化最大MP = StringUtils.padStart(String(Math.floor(蓝条数字最大MP)), 5, "0");
     var 蓝量比 = 蓝条数字当前MP / 蓝条数字最大MP; // 计算MP百分比
 	var 蓝条格数 = 100;
 
@@ -84,7 +85,7 @@ _root.UI系统.经验刷新显示 = function()
     // _root.发布消息("经验百分比.text", 经验百分比.text); // 发布经验值消息
     
     // 格式化当前等级为三位数，前面补零
-    var 格式化当前等级 = _root.常用工具函数.补零到宽度(_root.等级, 3);
+    var 格式化当前等级 = StringUtils.padStart(String(_root.等级), 3, "0");
 
     // _root.发布消息("格式化当前等级", 格式化当前等级); // 发布经验值消息
     this.玩家等级.text = 格式化当前等级;
