@@ -267,8 +267,7 @@ class org.flashNight.arki.scene.StageManager {
         isCleared = true;
 
         gameworld.关卡结束 = true;
-        _root.d_波次._visible = false;
-        _root.d_剩余敌人数._visible = false;
+        _root.无限过图计时器.刷新计时器("隐藏");
         gameworld.dispatcher.publish("Clear");
 
         // 加载结束动画
@@ -303,8 +302,7 @@ class org.flashNight.arki.scene.StageManager {
         gameworld.关卡结束 = false;
         _root.关卡结束界面.关卡失败();
         
-        _root.d_波次._visible = false;
-        _root.d_剩余敌人数._visible = false;
+        _root.无限过图计时器.刷新计时器("隐藏");
         gameworld.dispatcher.publish("StageFailed");
 
         gameworld.通关箭头._visible = false;

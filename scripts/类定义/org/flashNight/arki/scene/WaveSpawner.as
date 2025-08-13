@@ -134,11 +134,6 @@ class org.flashNight.arki.scene.WaveSpawner {
         var subWaveInfo = waveInfo[currentWave];
         if(subWaveInfo == null) _root.发布消息("敌人波次数据异常！");
 
-        _root.d_波次.text = _root.获得翻译("波次") + (currentWave + 1) + " / " + totalWave + "";
-        // if(totalWave > 1){
-        //     _root.最上层发布文字提示(_root.获得翻译("战斗开始！剩余波数：") + (totalWave - (currentWave + 1)) + "！");
-        // }
-
         finishRequirement = isNaN(subWaveInfo[0].FinishRequirement) ? 0 : subWaveInfo[0].FinishRequirement;
         countDownTime = 0;
         if(currentWave < currentWave - 1 || Number(subWaveInfo[0].Duration) > 0){
@@ -146,7 +141,25 @@ class org.flashNight.arki.scene.WaveSpawner {
         }else{
             waveTime = 0;
         }
-        _root.d_倒计时显示._visible = waveTime > 0;
+
+        var 计时器状态 = "隐藏";
+        if(waveTime > 0){
+            计时器状态 = "计时";
+            var min = Math.floor(waveTime / 60);
+            var sec = waveTime % 60;
+            var min_str = min < 10 ? "0" + min.toString() : min.toString();
+            var sec_str = sec < 10 ? "0" + sec.toString() : sec.toString();
+            _root.无限过图计时器.计时text.text = min_str + ":" + sec_str;
+        }
+        else if(totalWave > 1){
+            计时器状态 = "波次";
+        }
+        _root.无限过图计时器.当前波次text.text = currentWave + 1;
+        _root.无限过图计时器.总波次text.text = totalWave;
+        _root.帧计时器.添加单次任务(function():Void {
+            _root.无限过图计时器.刷新计时器(计时器状态);
+        }, 100);
+        
 
         // 对于本轮要生成的出生点，记录其生成所需时长
         var hideSpawnPoints = {};
@@ -212,7 +225,7 @@ class org.flashNight.arki.scene.WaveSpawner {
             var sec = total_sec % 60;
             var min_str = min < 10 ? "0" + min.toString() : min.toString();
             var sec_str = sec < 10 ? "0" + sec.toString() : sec.toString();
-            _root.d_倒计时显示.text = min_str + ":" + sec_str;
+            _root.无限过图计时器.计时text.text = min_str + ":" + sec_str;
         }
         
         var emenyCount = getEnemyCount();
