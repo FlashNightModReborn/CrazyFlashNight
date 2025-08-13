@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Ammunitions &amp;#038 Magazines/Ammunitions/12.7 × 99mm .50 BMG/12.7 × 99mm .50 BMG" itemID="6688f486-00000fa4" symbolType="graphic" lastModified="1582075391">
+  <timeline>
+    <DOMTimeline name="12.7 × 99mm .50 BMG">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Ammunitions &amp;#038 Magazines/Ammunitions/12.7 × 99mm .50 BMG/12.7 × 99mm .50 BMG Bullet" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="10.55" ty="0.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3" y="0.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Ammunitions &amp;#038 Magazines/Ammunitions/12.7 × 99mm .50 BMG/12.7 × 99mm .50 BMG Case" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point x="6.1" y="1.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

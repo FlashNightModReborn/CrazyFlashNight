@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/武器库" itemID="668aa006-0000507c" linkageExportForAS="true" linkageIdentifier="基地场景-武器库" lastModified="1752589480" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/武器库" itemID="668aa006-0000507c" linkageExportForAS="true" linkageIdentifier="基地场景-武器库" lastModified="1755078770" lastUniqueIdentifier="15">
   <timeline>
     <DOMTimeline name="武器库">
       <layers>
@@ -13,13 +13,78 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="合成按钮" color="#9933CC" autoNamed="false">
+        <DOMLayer name="合成按钮" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/通用按钮" name="装备合成" centerPoint3DX="773.9" centerPoint3DY="172.35">
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" name="装备合成" centerPoint3DX="768.05" centerPoint3DY="162.05">
                   <matrix>
-                    <Matrix tx="728.1" ty="161.15"/>
+                    <Matrix tx="722.25" ty="150.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	_root.改装系统.加载改装清单("饰品合成");
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("饰品合成");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" name="装备合成" centerPoint3DX="664.2" centerPoint3DY="68.15">
+                  <matrix>
+                    <Matrix tx="618.4" ty="56.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	_root.改装系统.加载改装清单("武器合成");
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("武器合成");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" name="装备合成" centerPoint3DX="969.35" centerPoint3DY="391.1">
+                  <matrix>
+                    <Matrix tx="923.55" ty="379.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	_root.改装系统.加载改装清单("基础防具");
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("基础防具");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" name="装备合成" centerPoint3DX="969.35" centerPoint3DY="357.65">
+                  <matrix>
+                    <Matrix tx="923.55" ty="346.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	_root.改装系统.加载改装清单("进阶防具");
+}
+onClipEvent (load) {
+	if(_root.等级 < 25) this._visible = false;
+	显示文字 = _root.获得翻译("进阶防具");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" name="装备合成" selected="true" centerPoint3DX="849.55" centerPoint3DY="237.6">
+                  <matrix>
+                    <Matrix tx="803.75" ty="226.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -29,23 +94,7 @@ _root.配置场景环境信息();]]></script>
 	_root.改装系统.加载改装清单("默认");
 }
 onClipEvent (load) {
-	显示文字 = _root.获得翻译("装备合成");
-}]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/通用按钮" name="属性武器合成" centerPoint3DX="774.95" centerPoint3DY="210.35">
-                  <matrix>
-                    <Matrix tx="729.15" ty="199.15"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[on (release) {
-	_root.改装系统.加载改装清单("属性武器");
-}
-onClipEvent (load) {
-	显示文字 = _root.获得翻译("升阶与涂装");
+	显示文字 = _root.获得翻译("其他合成");
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -129,11 +178,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#7E77A1" current="true" isSelected="true">
+        <DOMLayer name="Layer 7" color="#7E77A1">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/ShopGirl-NPC" selected="true" centerPoint3DX="500.75" centerPoint3DY="445.6">
+                <DOMSymbolInstance libraryItemName="NPC/ShopGirl-NPC" centerPoint3DX="500.75" centerPoint3DY="445.6">
                   <matrix>
                     <Matrix tx="412.45" ty="321.55"/>
                   </matrix>

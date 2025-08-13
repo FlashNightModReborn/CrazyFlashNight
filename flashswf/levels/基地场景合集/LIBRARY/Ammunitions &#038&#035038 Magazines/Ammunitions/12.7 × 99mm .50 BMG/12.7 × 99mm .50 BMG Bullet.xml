@@ -1,0 +1,101 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Ammunitions &amp;#038 Magazines/Ammunitions/12.7 × 99mm .50 BMG/12.7 × 99mm .50 BMG Bullet" itemID="6688f486-00000fa5" symbolType="graphic" lastModified="1598666588">
+  <timeline>
+    <DOMTimeline name="12.7 × 99mm .50 BMG Bullet">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="-0.000946044921875" c="0.003692626953125" d="0" tx="3" ty="0.8"/>
+                        </matrix>
+                        <GradientEntry color="#876738" ratio="0.156862745098039"/>
+                        <GradientEntry color="#BF9D74" ratio="0.274509803921569"/>
+                        <GradientEntry color="#AD8754" ratio="0.376470588235294"/>
+                        <GradientEntry color="#AD8952" ratio="0.490196078431373"/>
+                        <GradientEntry color="#EAD49F" ratio="0.552941176470588"/>
+                        <GradientEntry color="#F7EED1" ratio="0.745098039215686"/>
+                        <GradientEntry color="#C1BDA4" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal" weight="0.2">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="3">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!33 31|34 31!34 31[89 33 121 16!121 16[89 -2 34 0!34 0|33 0"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="2" edges="!33 0|33 6!33 6|33 9!33 9|33 12!33 12|33 15!33 15|33 18!33 18|33 21!33 21|33 24!33 24|33 31!26 30|26 24!26 24|26 21!26 21|26 18!26 18|26 15!26 15|26 12!26 12|26 9!26 9|26 6!26 6|26 1"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!26 1|0 1!0 1|0 30!0 30|26 30"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!26 1|26 0"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!26 0|33 0"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="3" edges="!26 15|33 15!26 12|33 12!26 9|33 9!26 6|33 6!26 24|33 24!26 21|33 21!26 18|33 18"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!26 31|33 31"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!26 31|26 30"/>
+                    <Edge cubics="!34 31(;71,32 100,27 121,16q34 31Q89 33q121 16);"/>
+                    <Edge cubics="!34 0(;71,-1 100,4 121,16q34 0Q89 -2q121 16);"/>
+                    <Edge cubics="!33 0(;33,0 26,0 26,0q33 0 26 0);"/>
+                    <Edge cubics="!34 0(;34,0 33,0 33,0q34 0 33 0);"/>
+                    <Edge cubics="!33 31(;33,31 34,31 34,31q33 31 34 31);"/>
+                    <Edge cubics="!26 31(;26,31 33,31 33,31q26 31 33 31);"/>
+                    <Edge cubics="!26 15(;26,15 33,15 33,15q26 15 33 15);"/>
+                    <Edge cubics="!26 18(;26,18 33,18 33,18q26 18 33 18);"/>
+                    <Edge cubics="!33 18(;33,18 33,15 33,15q33 18 33 15);"/>
+                    <Edge cubics="!26 18(;26,18 26,15 26,15q26 18 26 15);"/>
+                    <Edge cubics="!26 12(;26,12 33,12 33,12q26 12 33 12);"/>
+                    <Edge cubics="!26 15(;26,15 26,12 26,12q26 15 26 12);"/>
+                    <Edge cubics="!33 15(;33,15 33,12 33,12q33 15 33 12);"/>
+                    <Edge cubics="!26 21(;26,21 33,21 33,21q26 21 33 21);"/>
+                    <Edge cubics="!33 21(;33,21 33,18 33,18q33 21 33 18);"/>
+                    <Edge cubics="!26 21(;26,21 26,18 26,18q26 21 26 18);"/>
+                    <Edge cubics="!26 24(;26,24 33,24 33,24q26 24 33 24);"/>
+                    <Edge cubics="!33 24(;33,24 33,21 33,21q33 24 33 21);"/>
+                    <Edge cubics="!26 24(;26,24 26,21 26,21q26 24 26 21);"/>
+                    <Edge cubics="!33 31(;33,31 33,24 33,24q33 31 33 24);"/>
+                    <Edge cubics="!26 9(;26,9 33,9 33,9q26 9 33 9);"/>
+                    <Edge cubics="!26 12(;26,12 26,9 26,9q26 12 26 9);"/>
+                    <Edge cubics="!33 12(;33,12 33,9 33,9q33 12 33 9);"/>
+                    <Edge cubics="!26 6(;26,6 33,6 33,6q26 6 33 6);"/>
+                    <Edge cubics="!33 6(;33,6 33,0 33,0q33 6 33 0);"/>
+                    <Edge cubics="!26 9(;26,9 26,6 26,6q26 9 26 6);"/>
+                    <Edge cubics="!33 9(;33,9 33,6 33,6q33 9 33 6);"/>
+                    <Edge cubics="!0 30(;0,30 26,30 26,30q0 30 26 30);"/>
+                    <Edge cubics="!26 30(;26,30 26,24 26,24q26 30 26 24);"/>
+                    <Edge cubics="!26 31(;26,31 26,30 26,30q26 31 26 30);"/>
+                    <Edge cubics="!26 1(;26,1 0,1 0,1q26 1 0 1);"/>
+                    <Edge cubics="!26 1(;26,1 26,0 26,0q26 1 26 0);"/>
+                    <Edge cubics="!26 6(;26,6 26,1 26,1q26 6 26 1);"/>
+                    <Edge cubics="!0 1(;0,1 0,30 0,30q0 1 0 30);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

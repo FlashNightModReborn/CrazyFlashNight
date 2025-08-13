@@ -1,0 +1,44 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Sniper rifles/Barret M107A1 Anti-Material rifle/Barret M107A1 Rear iron sight mount" itemID="615712c8-00007bc8" symbolType="graphic" lastModified="1633096392">
+  <timeline>
+    <DOMTimeline name="Barret M107A1 Rear iron sight mount">
+      <layers>
+        <DOMLayer name="Layer_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#2D2D2D"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.6">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!0 57S1|38 57"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!38 57S5|38 37!38 37|33 10!33 10[32 7 29 4!29 4[25 0 18 0!18 0[11 0 6 4!6 4[3 7 3 12!3 12|0 57"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="Pins/Pin2.5" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.6" ty="0.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.3" y="0.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

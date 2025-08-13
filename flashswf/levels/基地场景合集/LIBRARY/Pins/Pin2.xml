@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Pins/Pin2" itemID="609349e3-00001547" symbolType="graphic" lastModified="1620265443">
+  <timeline>
+    <DOMTimeline name="Pin2">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#AEAEAE"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.2">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!0 7[0 10 2 12!2 12[4 14 7 14!7 14[10 14 12 12!12 12[14 10 14 7!14 7[14 4 12 2!12 2[10 0 7 0!7 0[4 0 2 2!2 2[0 4 0 7"/>
+                    <Edge cubics="!2 2(;1,3 0,5 0,7q2 2Q0 4q0 7);"/>
+                    <Edge cubics="!0 7(;0,9 1,11 2,12q0 7Q0 10q2 12);"/>
+                    <Edge cubics="!7 0(;5,0 3,1 2,2q7 0Q4 0q2 2);"/>
+                    <Edge cubics="!12 2(12,2;11,1 9,0 7,0q12 2Q10 0q7 0);"/>
+                    <Edge cubics="!14 7(;14,5 13,3 12,2q14 7Q14 4q12 2);"/>
+                    <Edge cubics="!12 12(;13,11 14,9 14,7q12 12Q14 10q14 7);"/>
+                    <Edge cubics="!7 14(;9,14 11,13 12,12q7 14Q10 14q12 12);"/>
+                    <Edge cubics="!2 12(;3,13 5,14 7,14q2 12Q4 14q7 14);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

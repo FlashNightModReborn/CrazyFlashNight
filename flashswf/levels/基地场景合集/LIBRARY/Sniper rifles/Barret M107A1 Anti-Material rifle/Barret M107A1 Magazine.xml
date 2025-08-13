@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Sniper rifles/Barret M107A1 Anti-Material rifle/Barret M107A1 Magazine" itemID="615712bf-00007bc3" symbolType="graphic" lastModified="1633096383">
+  <timeline>
+    <DOMTimeline name="Barret M107A1 Magazine">
+      <layers>
+        <DOMLayer name="Layer_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Ammunitions &amp;#038 Magazines/Ammunitions/12.7 × 99mm .50 BMG/12.7 × 99mm .50 BMG" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.25" y="1.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Sniper rifles/Barret M107A1 Anti-Material rifle/Barret M107A1 Magazine chassis" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point x="8.7" y="8.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,68 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Sniper rifles/Barret M107A1 Anti-Material rifle/Barret M107A1 Stock butt recoil pad" itemID="615712cc-00007bca" symbolType="graphic" lastModified="1633096396">
+  <timeline>
+    <DOMTimeline name="Barret M107A1 Stock butt recoil pad">
+      <layers>
+        <DOMLayer name="Layer_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="-0.0042724609375" c="0.0028076171875" d="0" tx="67.65" ty="1"/>
+                        </matrix>
+                        <GradientEntry color="#191919" ratio="0.00784313725490196"/>
+                        <GradientEntry color="#202020" ratio="0.0862745098039216"/>
+                        <GradientEntry color="#202020" ratio="0.227450980392157"/>
+                        <GradientEntry color="#191919" ratio="0.258823529411765"/>
+                        <GradientEntry color="#1D1D1D" ratio="0.309803921568627"/>
+                        <GradientEntry color="#1D1D1D" ratio="0.462745098039216"/>
+                        <GradientEntry color="#101010" ratio="0.580392156862745"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.00103759765625" b="-0.0021820068359375" c="0.0025177001953125" d="0.0012054443359375" tx="65.6" ty="43.3"/>
+                        </matrix>
+                        <GradientEntry color="#101010" ratio="0.345098039215686"/>
+                        <GradientEntry color="#1D1D1D" ratio="0.670588235294118"/>
+                        <GradientEntry color="#191919" ratio="0.894117647058824"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.6">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!100 187|100 0!100 0|38 0!38 0[-14 4 6 57!6 57[36 122 34 187"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!34 187|100 187"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!34 187[32 215 25 243!25 243[21 271 33 279!33 279|67 297!67 297|100 297!100 297|100 187"/>
+                    <Edge cubics="!38 0(;3,3 -7,22 6,57q38 0Q-14 4q6 57);"/>
+                    <Edge cubics="!67 297(;67,297 87,297 87,297q67 297 87 297);"/>
+                    <Edge cubics="!67 297(;67,297 33,279 33,279q67 297 33 279);"/>
+                    <Edge cubics="!25 243(;22,262 25,274 33,279q25 243Q21 271q33 279);"/>
+                    <Edge cubics="!87 297(;87,297 87,187 87,187q87 297 87 187);"/>
+                    <Edge cubics="!87 187(;87,187 87,0 87,0q87 187 87 0);"/>
+                    <Edge cubics="!6 57(;26,101 35,145 34,187q6 57Q36 122q34 187);"/>
+                    <Edge cubics="!34 187(;33,207 30,225 25,243q34 187 25 243);"/>
+                    <Edge cubics="!38 0(;38,0 87,0 87,0q38 0 87 0);"/>
+                    <Edge cubics="!34 187(;34,187 87,187 87,187q34 187 87 187);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

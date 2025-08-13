@@ -1,0 +1,103 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Sniper rifles/Barret M107A1 Anti-Material rifle/Barret M107A1 Muzzle adapter" itemID="615712c2-00007bc5" symbolType="graphic" lastModified="1633096386">
+  <timeline>
+    <DOMTimeline name="Barret M107A1 Muzzle adapter">
+      <layers>
+        <DOMLayer name="Layer_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#1D1D1D"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.002410888671875" c="-0.00152587890625" d="0" tx="1.65" ty="2.35"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#1A1A1A" ratio="0.12156862745098"/>
+                        <GradientEntry color="#3E3E3E" ratio="0.329411764705882"/>
+                        <GradientEntry color="#454545" ratio="0.376470588235294"/>
+                        <GradientEntry color="#1A1A1A" ratio="0.67843137254902"/>
+                        <GradientEntry color="#0C0C0C" ratio="0.886274509803922"/>
+                        <GradientEntry ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="none" weight="0.4">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal" weight="0.2">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="3">
+                      <SolidStroke scaleMode="normal" weight="0.4">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="4">
+                      <SolidStroke scaleMode="normal" caps="none" weight="0.8">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!58 0|58 8"/>
+                    <Edge fillStyle1="2" strokeStyle="3" edges="!58 8|58 87"/>
+                    <Edge strokeStyle="1" edges="!58 87|58 95"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!35 79|35 87"/>
+                    <Edge fillStyle0="2" strokeStyle="4" edges="!35 87|58 87"/>
+                    <Edge fillStyle0="1" strokeStyle="2" edges="!29 89[29 91 27 93!27 93[25 95 23 95!23 95[21 95 19 93!19 93[17 91 17 89!17 89[17 88 18 87!18 87[18 86 19 85!19 85[21 83 23 83!23 83[25 83 27 85!27 85[28 86 29 87!29 87[29 88 29 89"/>
+                    <Edge strokeStyle="1" edges="!8 101|0 101"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!35 87|35 101"/>
+                    <Edge fillStyle1="1" strokeStyle="3" edges="!35 101|8 101"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!35 79|8 79"/>
+                    <Edge fillStyle0="1" strokeStyle="4" edges="!8 79|8 101"/>
+                    <Edge fillStyle1="2" strokeStyle="4" edges="!8 79|8 8!8 8|58 8"/>
+                    <Edge cubics="!8 8(;8,8 58,8 58,8q8 8 58 8);"/>
+                    <Edge cubics="!58 8(;58,8 58,87 58,87q58 8 58 87);"/>
+                    <Edge cubics="!35 101(;35,101 8,101 8,101q35 101 8 101);"/>
+                    <Edge cubics="!35 79(;35,79 8,79 8,79q35 79 8 79);"/>
+                    <Edge cubics="!8 101(;8,101 0,101 0,101q8 101 0 101);"/>
+                    <Edge cubics="!19 85(;20,84 22,83 23,83q19 85Q21 83q23 83);"/>
+                    <Edge cubics="!23 83(;24,83 26,84 27,85q23 83Q25 83q27 85);"/>
+                    <Edge cubics="!19 93(;18,92 17,90 17,89q19 93Q17 91q17 89);"/>
+                    <Edge cubics="!29 89(;29,90 28,92 27,93q29 89Q29 91q27 93);"/>
+                    <Edge cubics="!27 93(;26,94 24,95 23,95q27 93Q25 95q23 95);"/>
+                    <Edge cubics="!23 95(;22,95 20,94 19,93q23 95Q21 95q19 93);"/>
+                    <Edge cubics="!27 85(;28,86 28,86 29,87q27 85Q28 86q29 87);"/>
+                    <Edge cubics="!18 87(;18,86 18,86 19,85q18 87Q18 86q19 85);"/>
+                    <Edge cubics="!29 87(;29,88 29,88 29,89q29 87Q29 88q29 89);"/>
+                    <Edge cubics="!17 89(;17,88 17,88 18,87q17 89Q17 88q18 87);"/>
+                    <Edge cubics="!35 87(;35,87 35,101 35,101q35 87 35 101);"/>
+                    <Edge cubics="!35 79(;35,79 35,87 35,87q35 79 35 87);"/>
+                    <Edge cubics="!35 87(;35,87 58,87 58,87q35 87 58 87);"/>
+                    <Edge cubics="!8 79(;8,79 8,8 8,8q8 79 8 8);"/>
+                    <Edge cubics="!58 0(;58,0 58,8 58,8q58 0 58 8);"/>
+                    <Edge cubics="!8 101(;8,101 8,79 8,79q8 101 8 79);"/>
+                    <Edge cubics="!58 87(;58,87 58,95 58,95q58 87 58 95);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

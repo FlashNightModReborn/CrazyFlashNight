@@ -1,0 +1,135 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Sniper rifles/Barret M107A1 Anti-Material rifle/Barret M107A1 Anti-Material rifle" itemID="615712a8-00007bbb" symbolType="graphic" lastModified="1633096360" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="Barret M107A1 Anti-Material rifle">
+      <layers>
+        <DOMLayer name="Layer_3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Sniper rifles/Barret M107A1 Anti-Material rifle/Barret M107A1 Bolt handle" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="64.95" ty="3.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.9" y="1.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Sniper rifles/Barret M107A1 Anti-Material rifle/Barret M107A1 Body" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point x="55.95" y="13.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Sniper rifles/Barret M107A1 Anti-Material rifle/Barret M107A1 Magazine" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="48.25" ty="10.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="8.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMGroup locked="true">
+                  <members>
+                    <DOMShape locked="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#141414"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="1" edges="!1389 146|727 146!727 146|727 70!727 70|1389 70!1389 70|1389 146"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMSymbolInstance libraryItemName="Sniper rifles/Barret M107A1 Anti-Material rifle/Barret M107A1 Bolt" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="32.3" ty="2.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.15" y="3.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Sniper rifles/Barret M107A1 Anti-Material rifle/Barret M107A1 Barrel" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="87.3" ty="3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.15" y="3.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#191919"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="0.002288818359375" c="-0.011199951171875" d="0" tx="78.15" ty="6.35"/>
+                            </matrix>
+                            <GradientEntry ratio="0"/>
+                            <GradientEntry color="#1A1A1A" ratio="0.12156862745098"/>
+                            <GradientEntry color="#3E3E3E" ratio="0.329411764705882"/>
+                            <GradientEntry color="#454545" ratio="0.376470588235294"/>
+                            <GradientEntry color="#1A1A1A" ratio="0.67843137254902"/>
+                            <GradientEntry color="#0C0C0C" ratio="0.886274509803922"/>
+                            <GradientEntry ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.8">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!1379 90|1379 76!1379 76|1746 76!1746 76|1746 90"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!1746 90|1746 165"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!1746 165|1746 179!1746 179|1379 179!1379 179|1379 165"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!1379 165|1379 90"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="!1746 90|1379 90"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!1746 165|1379 165"/>
+                        <Edge cubics="!1746 165(;1746,165 1379,165 1379,165q1746 165 1379 165);"/>
+                        <Edge cubics="!1746 90(;1746,90 1746,165 1746,165q1746 90 1746 165);"/>
+                        <Edge cubics="!1379 90(;1379,90 1379,165 1379,165q1379 90 1379 165);"/>
+                        <Edge cubics="!1746 90(;1746,90 1379,90 1379,90q1746 90 1379 90);"/>
+                        <Edge cubics="!1746 165(;1746,165 1746,179 1746,179q1746 165 1746 179);"/>
+                        <Edge cubics="!1746 76(;1746,76 1746,90 1746,90q1746 76 1746 90);"/>
+                        <Edge cubics="!1379 90(;1379,90 1379,76 1379,76q1379 90 1379 76);"/>
+                        <Edge cubics="!1379 179(;1379,179 1379,165 1379,165q1379 179 1379 165);"/>
+                        <Edge cubics="!1379 76(;1379,76 1746,76 1746,76q1379 76 1746 76);"/>
+                        <Edge cubics="!1746 179(;1746,179 1379,179 1379,179q1746 179 1379 179);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
