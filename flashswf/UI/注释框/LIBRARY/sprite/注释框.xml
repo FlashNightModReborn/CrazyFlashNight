@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 276" itemID="6597607e-0000078b" lastModified="1725636405">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/注释框" itemID="689d361b-000003ef" linkageExportForAS="true" linkageIdentifier="注释框" lastModified="1755133467">
   <timeline>
-    <DOMTimeline name="Symbol 276">
+    <DOMTimeline name="注释框">
       <layers>
-        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -12,11 +12,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#52A193">
+        <DOMLayer name="Layer 1" color="#52A193" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMDynamicText name="文本框" fontRenderingMode="device" width="56" height="60" isSelectable="false" renderAsHTML="true" lineType="multiline">
+                <DOMDynamicText name="文本框" selected="true" fontRenderingMode="device" width="56" height="60" isSelectable="false" renderAsHTML="true" lineType="multiline">
                   <matrix>
                     <Matrix tx="2" ty="2"/>
                   </matrix>
