@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/注释框" itemID="689d361b-000003ef" linkageExportForAS="true" linkageIdentifier="注释框" lastModified="1755146579" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/注释框" itemID="689d361b-000003ef" linkageExportForAS="true" linkageIdentifier="注释框" lastModified="1755157066" lastUniqueIdentifier="6">
   <timeline>
     <DOMTimeline name="注释框">
       <layers>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="物品图标定位" color="#FF800A" autoNamed="false">
+        <DOMLayer name="物品图标定位" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -28,13 +28,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="简介文本框" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="简介文本框" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMDynamicText name="简介文本框" fontRenderingMode="device" width="56" height="60" isSelectable="false" renderAsHTML="true" lineType="multiline">
                   <matrix>
-                    <Matrix tx="-197.15" ty="212"/>
+                    <Matrix tx="-198" ty="212"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -74,9 +74,9 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 274" name="简介背景" centerPoint3DX="-157.55" centerPoint3DY="41.5">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 274" name="简介背景" centerPoint3DX="-158.5" centerPoint3DY="41.5">
                   <matrix>
-                    <Matrix a="2.398193359375" d="5.56785583496094" tx="-199.05"/>
+                    <Matrix a="2.398193359375" d="5.56785583496094" tx="-200"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

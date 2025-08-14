@@ -426,13 +426,43 @@ _root.注释物品图标 = function(enable:Boolean, name:String, value:Object) {
             introductionString.push("<BR>");
         }
 
+        var tips:MovieClip = _root.注释框;
+        
+        var stringWidth:Number;
+        var baseNum:Number = 200;
+        var rate:Number = 3 / 5;
+        var baseScale:Number = 486.8;
+        var baseOffset:Number = 7.5;
+
+        switch(data.type) {
+            case "武器":
+            case "防具":
+                
+                stringWidth = baseNum;
+                background._width = baseNum;
+                background._x = -baseNum;
+                target._x = -baseNum + baseOffset;
+                target._xscale = target._yscale = baseScale;
+                text._x = -200;
+                text._y = 210;
+                break;
+            default:
+                stringWidth = 200 * rate;
+                background._width = 200 * rate;
+                background._x = -200 * rate;
+                target._x = -200 * rate + baseOffset * rate;
+                target._xscale = target._yscale = (baseScale * rate);
+                text._x = -baseNum * rate;
+                text._y = 10 - text._x;
+        }
+
         // 获取装备数据
         _root.物品装备信息注释(introductionString, data, value.tier);
 
         var introduction:String = introductionString.join('');
-        var targetWidth:Number = Math.max(150, Math.min(introduction.length * 2, 500));
 
-        _root.注释(200, introduction, "简介")
+
+        _root.注释(stringWidth, introduction, "简介")
 
         var iconString:String = "图标-" + data.icon;
 
@@ -472,7 +502,7 @@ _root.注释 = function(宽度, 内容, 框体) {
     var isAbbr:Boolean = !tips.简介背景._visible;
 
     if(isAbbr) {
-        // 简介背景隐藏时的定位逻辑（这部分是正确的）
+        // 简介背景隐藏时的定位逻辑
         tips._x = Math.min(Stage.width - background._width, Math.max(0, _root._xmouse - background._width));
         tips._y = Math.min(Stage.height - background._height, Math.max(0, _root._ymouse - background._height - 20));
     } else {
@@ -500,6 +530,8 @@ _root.注释 = function(宽度, 内容, 框体) {
         tips._y = Math.min(Stage.height - tips._height, Math.max(0, _root._ymouse - tips._height - 20));
 
         // --- 修改结束 ---
+        var icon:MovieClip = _root.注释框.物品图标定位;
+        rightBackground._height = Math.max(tips.文本框.textHeight, icon._height) + 10;
     }
 };
 
@@ -508,4 +540,7 @@ _root.注释结束 = function() {
     _root.注释物品图标(false);
 };
 
-_root.注释结束();
+_root.帧计时器.eventBus.subscribe("SceneChanged", function() {
+    _root.注释结束();
+}, null); 
+
