@@ -1,4 +1,18 @@
-﻿
+﻿import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
+
+// 辅助函数：安全移除升空任务
+function _清理升空任务(obj):Void {
+    if(obj.持续升空) {
+        EnhancedCooldownWheel.I().removeTask(obj.持续升空);
+        obj.持续升空 = null;
+    }
+}
+
+// 辅助函数：创建升空任务
+function _创建升空任务(obj, callback):Number {
+    return EnhancedCooldownWheel.I().addTask(callback, 33, true);
+}
+
 //传入的值分别为作用的对象、初始上升速度、升空的类型，可用于击飞/已起跳时/已升空时额外一次性提升高度等（类型传入0），或者喷气背包等从原地开始的多次可控的上升（类型传入1）
 //例如  fly(this,-垂直速度,0)
 _root.fly = function(Obj,flySpeed,type,left,right,up,down){
@@ -67,7 +81,7 @@ _root.fly = function(Obj,flySpeed,type,left,right,up,down){
 				Obj.temp_fly_frame+=1;
 				if(Obj.temp_fly_frame==9){
 					//clearInterval(Obj.持续升空);
-					_root.帧计时器.移除任务(Obj.持续升空);
+					_清理升空任务(Obj);
 				}
 			}else if(Obj._y <temp起始Y-3){
 				/*
@@ -89,7 +103,7 @@ _root.fly = function(Obj,flySpeed,type,left,right,up,down){
 				_root.fly_isFly1 = false;
 				_root.fly_isFly2 = false;
 				//clearInterval(Obj.持续升空);
-				_root.帧计时器.移除任务(Obj.持续升空);
+				_清理升空任务(Obj);
 				return;
 			}
 			if(Obj._y==undefined){
@@ -98,7 +112,7 @@ _root.fly = function(Obj,flySpeed,type,left,right,up,down){
 				_root.fly_isFly1 = false;
 				_root.fly_isFly2 = false;
 				//clearInterval(Obj.持续升空);
-				_root.帧计时器.移除任务(Obj.持续升空);
+				_清理升空任务(Obj);
 				return;
 			}
 			if(Obj.状态!="击倒"&&Obj.temp_fly_frame>=10){
@@ -107,7 +121,7 @@ _root.fly = function(Obj,flySpeed,type,left,right,up,down){
 				_root.fly_isFly1 = false;
 				_root.fly_isFly2 = false;
 				//clearInterval(Obj.持续升空);
-				_root.帧计时器.移除任务(Obj.持续升空);
+				_清理升空任务(Obj);
 				return;
 			}
 			/*
@@ -131,13 +145,13 @@ _root.fly = function(Obj,flySpeed,type,left,right,up,down){
 			*/
 		}
 		//clearInterval(Obj.持续升空);
-		_root.帧计时器.移除任务(Obj.持续升空);
+		_清理升空任务(Obj);
 		if(Obj.垂直速度>0 and Obj.垂直速度!=undefined){
 			Obj.垂直速度 = Obj.起跳速度;
 		}
 		Obj.hasChangedFlyType0 = false;
 		//Obj.持续升空 = setInterval(Obj.flyInFlying, 33);
-		Obj.持续升空 = _root.帧计时器.添加循环任务(Obj.flyInFlying, 33);
+		Obj.持续升空 = _创建升空任务(Obj, Obj.flyInFlying);
 
 			
 	}else if(type ==1){
@@ -186,7 +200,7 @@ _root.fly = function(Obj,flySpeed,type,left,right,up,down){
 						Obj.shadow._y =233.05;
 						Obj.shadow._rotation =0;
 						//_root.发布调试消息("测试测试/跳跃落地"+Obj.状态+"/"+Obj.额外重力加速度+"/"+Obj.upFlySpeed+"/"+Obj.飞行浮空+"/"+Obj._y+"/"+Obj.起始Y);
-						clearInterval(Obj.持续升空);
+						_清理升空任务(Obj);
 						return;
 					}else{
 						//_root.发布调试消息("测试测试/跳跃落地"+Obj.状态+"/"+Obj.额外重力加速度+"/"+Obj.flySpeed+"/"+Obj.垂直速度暂存);
@@ -232,9 +246,11 @@ _root.fly = function(Obj,flySpeed,type,left,right,up,down){
 				Obj.shadow._x =-15.2;
 				Obj.shadow._y =233.05;
 				Obj.shadow._rotation =0;
-				clearInterval(Obj.持续升空);
+				_清理升空任务(Obj);
 				for(i = 0;i<_root.主角的升空函数.length;i++){
-					clearInterval(_root.主角的升空函数[i]);
+					if(_root.主角的升空函数[i]) {
+						EnhancedCooldownWheel.I().removeTask(_root.主角的升空函数[i]);
+					}
 				}
 				_root.主角的升空函数 = [];
 				//if(Obj = _root.gameworld[_root.控制目标]){
@@ -342,14 +358,14 @@ _root.fly = function(Obj,flySpeed,type,left,right,up,down){
 			
 
 		}
-		clearInterval(Obj.持续升空);
+		_清理升空任务(Obj);
 		
 		//if(Obj = _root.gameworld[_root.控制目标]){
 			//clearInterval(_root.gameworld[_root.控制目标].持续升空);
 		//}
 		
 		
-		Obj.持续升空 = setInterval(Obj.flyOnGround, 33);
+		Obj.持续升空 = _创建升空任务(Obj, Obj.flyOnGround);
 		_root.主角的升空函数.push(Obj.持续升空);
 		
 		if(!Obj.shadow._visible and Obj.skillShadow._visible){
