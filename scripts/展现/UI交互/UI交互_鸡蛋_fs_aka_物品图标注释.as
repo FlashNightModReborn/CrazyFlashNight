@@ -443,8 +443,6 @@ _root.注释物品图标 = function(enable:Boolean, name:String, value:Object) {
 
 
         background._height = text._height + 220;
-        
-        _root.发布消息(text._height, background._height)
     } else {
         // 清理动态附加的图标
         if (target.icon) {
@@ -460,49 +458,54 @@ _root.注释物品图标 = function(enable:Boolean, name:String, value:Object) {
 
 _root.注释 = function(宽度, 内容, 框体) {
     框体 = 框体 || "";
-    var target:MovieClip = _root.注释框[框体 + "文本框"];
-    var background:MovieClip = _root.注释框[框体 + "背景"]
-    _root.注释框._visible = true;
+    var tips:MovieClip = _root.注释框;
+    var target:MovieClip = tips[框体 + "文本框"];
+    var background:MovieClip = tips[框体 + "背景"]
+    tips._visible = true;
     target.htmlText = 内容;
     target._width = 宽度;
 
-
-    /*
-       var 宽度增量:Number = target._width * 0.25;
-       var 黄金比例:Number = (1 + Math.sqrt(5)) / 2;
-       var 长宽比:Number = target.textHeight / target._width;
-       var 循环计数上限:Number = 50;
-       //_root.发布调试消息(target._width + "," + target.textHeight + "  " + target.textHeight / target._width);
-       // 调整宽度以适应内容
-
-
-       while ((target.textHeight >= Stage.height && 循环计数上限 > 0) || (长宽比 > 黄金比例 * 1.05))
-       {
-       if (长宽比 < 黄金比例 * 1.15)
-       {
-       宽度增量 = 5;//当接近黄金比例时放缓速度提高精度
-       }
-       else
-       {
-       宽度增量 = target._width * 0.25;
-       }
-       target._width += Math.min(宽度增量, Stage.width - target._width);// 增加当前宽度
-       长宽比 = target.textHeight / target._width;
-       循环计数上限 -= 1;
-       //_root.发布调试消息(target._width + "," + target.textHeight + "  " + 长宽比);
-
-       }
-       _root.发布调试消息(循环计数上限);
-
-     */
     background._width = target._width;
     background._height = target.textHeight + 10;
     target._height = target.textHeight + 10;
-    _root.注释框._x = Math.min(Stage.width - background._width, Math.max(0, _root._xmouse - background._width));
-    _root.注释框._y = Math.min(Stage.height - background._height, Math.max(0, _root._ymouse - background._height - 20));
+
+    var isAbbr:Boolean = !tips.简介背景._visible;
+
+    if(isAbbr) {
+        // 简介背景隐藏时的定位逻辑（这部分是正确的）
+        tips._x = Math.min(Stage.width - background._width, Math.max(0, _root._xmouse - background._width));
+        tips._y = Math.min(Stage.height - background._height, Math.max(0, _root._ymouse - background._height - 20));
+    } else {
+
+        // 为了代码清晰，明确获取左右两个背景的引用
+        var rightBackground:MovieClip = tips.背景;
+        var leftBackground:MovieClip = tips.简介背景;
+        
+        // 1. 计算鼠标的理想定位点（将注释框的右边缘对齐到鼠标指针）
+        var desiredX:Number = _root._xmouse - rightBackground._width;
+
+        // 2. 计算允许的最小X值
+        //    为了保证左背景不移出屏幕，注册点(tips._x)的最小值必须是左背景的宽度
+        var minX:Number = leftBackground._width;
+
+        // 3. 计算允许的最大X值
+        //    为了保证右背景不移出屏幕，注册点(tips._x)的最大值是舞台宽度减去右背景的宽度
+        var maxX:Number = Stage.width - rightBackground._width;
+
+        // 4. 应用约束：先在最大和最小边界内夹住理想值
+        //    这里的逻辑可以简化为一行，但分解开更易于理解
+        tips._x = Math.max(minX, Math.min(desiredX, maxX));
+
+        // Y轴定位逻辑保持不变
+        tips._y = Math.min(Stage.height - tips._height, Math.max(0, _root._ymouse - tips._height - 20));
+
+        // --- 修改结束 ---
+    }
 };
 
 _root.注释结束 = function() {
     _root.注释框._visible = false;
     _root.注释物品图标(false);
 };
+
+_root.注释结束();
