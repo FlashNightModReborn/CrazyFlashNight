@@ -90,6 +90,8 @@ _root.物品图标注释 = function(name, value) {
     var 最大宽度 = 500; // 根据实际情况调整
     var 计算宽度 = Math.max(150, Math.min(字数 * 每字平均宽度, 最大宽度));
 
+    _root.注释结束(); // 保底清理
+
     // 调用注释函数，传递计算出的宽度和文本内容
     if(完整文本.length > 64) {
         _root.注释框.文本框._visible = true;
@@ -98,6 +100,7 @@ _root.物品图标注释 = function(name, value) {
         _root.注释物品图标(true, name, value);
     } else {
         _root.注释物品图标(true, name, value, 完整文本);
+        _root.注释框.文本框.htmlText = "";
         _root.注释框.文本框._visible = false;
         _root.注释框.背景._visible = false;
     }
@@ -470,7 +473,7 @@ _root.注释物品图标 = function(enable:Boolean, name:String, value:Object, e
 
         var introduction:String = introductionString.join('');
 
-        if(extraString) introduction += extraString;
+        if(extraString) introduction += "<BR>" + extraString;
 
         _root.注释(stringWidth, introduction, "简介")
 
@@ -545,21 +548,9 @@ _root.注释 = function(宽度, 内容, 框体) {
             var icon:MovieClip = _root.注释框.物品图标定位;
             rightBackground._height = Math.max(tips.文本框.textHeight, icon._height) + 10;
         } else {
-            // 只有左边的简介背景存在，以他为对齐标准
-            // 1. 计算鼠标的理想定位点（将注释框的左边缘对齐到鼠标指针）
-            var desiredX:Number = _root._xmouse;
-            
-            // 2. 计算允许的最小X值（确保左背景不移出屏幕左侧）
-            var minX:Number = 0;
-            
-            // 3. 计算允许的最大X值（确保左背景不移出屏幕右侧）
-            var maxX:Number = Stage.width - leftBackground._width;
-            
             // 4. 应用约束：在边界内夹住理想值
-            tips._x = Math.max(minX, Math.min(desiredX, maxX));
-            
-            // Y轴定位逻辑与右背景情况一致
-            tips._y = Math.min(Stage.height - tips._height, Math.max(0, _root._ymouse - tips._height - 20));
+            tips._x = Math.min(Stage.width - leftBackground._width, Math.max(0, _root._xmouse - leftBackground._width)) + leftBackground._width;
+            tips._y = Math.min(Stage.height - leftBackground._height, Math.max(0, _root._ymouse - leftBackground._height - 20));
             
             // 调整左背景高度以适配内容
             leftBackground._height = tips.文本框.textHeight + 10;
@@ -570,6 +561,34 @@ _root.注释 = function(宽度, 内容, 框体) {
 _root.注释结束 = function() {
     _root.注释框._visible = false;
     _root.注释物品图标(false);
+    
+    // 清理文本框内容
+    if (_root.注释框.文本框) {
+        _root.注释框.文本框.htmlText = "";
+        _root.注释框.文本框._visible = false;
+    }
+    
+    if (_root.注释框.简介文本框) {
+        _root.注释框.简介文本框.htmlText = "";
+        _root.注释框.简介文本框._visible = false;
+    }
+    
+    // 清理背景可见性
+    if (_root.注释框.背景) {
+        _root.注释框.背景._visible = false;
+    }
+    
+    if (_root.注释框.简介背景) {
+        _root.注释框.简介背景._visible = false;
+    }
+    
+    // 清理物品图标定位和图标
+    if (_root.注释框.物品图标定位) {
+        _root.注释框.物品图标定位._visible = false;
+        if (_root.注释框.物品图标定位.icon) {
+            _root.注释框.物品图标定位.icon.removeMovieClip();
+        }
+    }
 };
 
 _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
