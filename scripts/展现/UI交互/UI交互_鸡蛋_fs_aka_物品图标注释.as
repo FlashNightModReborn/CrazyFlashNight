@@ -91,8 +91,17 @@ _root.物品图标注释 = function(name, value) {
     var 计算宽度 = Math.max(150, Math.min(字数 * 每字平均宽度, 最大宽度));
 
     // 调用注释函数，传递计算出的宽度和文本内容
-    _root.注释(计算宽度, 完整文本);
-    _root.注释物品图标(true, name, value);
+    if(完整文本.length > 64) {
+        _root.注释框.文本框._visible = true;
+        _root.注释框.背景._visible = true;
+        _root.注释(计算宽度, 完整文本);
+        _root.注释物品图标(true, name, value);
+    } else {
+        _root.注释物品图标(true, name, value, 完整文本);
+        _root.注释框.文本框._visible = false;
+        _root.注释框.背景._visible = false;
+    }
+
 };
 
 
@@ -371,8 +380,8 @@ _root.学习界面技能图标注释 = function(对应数组号) {
 };
 
 
-_root.注释物品图标 = function(enable:Boolean, name:String, value:Object) {
-    // 'target' MovieClip 作为您在舞台上放置的占位符
+_root.注释物品图标 = function(enable:Boolean, name:String, value:Object, extraString:String) {
+    // 'target' MovieClip 作为在舞台上放置的占位符
     // 它在 Flash IDE 中的位置和大小，应决定图标最终的显示效果
     var target:MovieClip = _root.注释框.物品图标定位;
     var background:MovieClip = _root.注释框.简介背景;
@@ -461,10 +470,13 @@ _root.注释物品图标 = function(enable:Boolean, name:String, value:Object) {
 
         var introduction:String = introductionString.join('');
 
+        if(extraString) introduction += extraString;
 
         _root.注释(stringWidth, introduction, "简介")
 
         var iconString:String = "图标-" + data.icon;
+
+        if(target.icon) target.icon.removeMovieClip();
 
         // 从库中将图标附加到 target MovieClip 上
         var icon:MovieClip = target.attachMovie(iconString, "icon", target.getNextHighestDepth());
@@ -506,32 +518,52 @@ _root.注释 = function(宽度, 内容, 框体) {
         tips._x = Math.min(Stage.width - background._width, Math.max(0, _root._xmouse - background._width));
         tips._y = Math.min(Stage.height - background._height, Math.max(0, _root._ymouse - background._height - 20));
     } else {
-
         // 为了代码清晰，明确获取左右两个背景的引用
         var rightBackground:MovieClip = tips.背景;
         var leftBackground:MovieClip = tips.简介背景;
-        
-        // 1. 计算鼠标的理想定位点（将注释框的右边缘对齐到鼠标指针）
-        var desiredX:Number = _root._xmouse - rightBackground._width;
 
-        // 2. 计算允许的最小X值
-        //    为了保证左背景不移出屏幕，注册点(tips._x)的最小值必须是左背景的宽度
-        var minX:Number = leftBackground._width;
+        if(tips.背景._visible) {
+            // 1. 计算鼠标的理想定位点（将注释框的右边缘对齐到鼠标指针）
+            var desiredX:Number = _root._xmouse - rightBackground._width;
 
-        // 3. 计算允许的最大X值
-        //    为了保证右背景不移出屏幕，注册点(tips._x)的最大值是舞台宽度减去右背景的宽度
-        var maxX:Number = Stage.width - rightBackground._width;
+            // 2. 计算允许的最小X值
+            //    为了保证左背景不移出屏幕，注册点(tips._x)的最小值必须是左背景的宽度
+            var minX:Number = leftBackground._width;
 
-        // 4. 应用约束：先在最大和最小边界内夹住理想值
-        //    这里的逻辑可以简化为一行，但分解开更易于理解
-        tips._x = Math.max(minX, Math.min(desiredX, maxX));
+            // 3. 计算允许的最大X值
+            //    为了保证右背景不移出屏幕，注册点(tips._x)的最大值是舞台宽度减去右背景的宽度
+            var maxX:Number = Stage.width - rightBackground._width;
 
-        // Y轴定位逻辑保持不变
-        tips._y = Math.min(Stage.height - tips._height, Math.max(0, _root._ymouse - tips._height - 20));
+            // 4. 应用约束：先在最大和最小边界内夹住理想值
+            //    这里的逻辑可以简化为一行，但分解开更易于理解
+            tips._x = Math.max(minX, Math.min(desiredX, maxX));
 
-        // --- 修改结束 ---
-        var icon:MovieClip = _root.注释框.物品图标定位;
-        rightBackground._height = Math.max(tips.文本框.textHeight, icon._height) + 10;
+            // Y轴定位逻辑保持不变
+            tips._y = Math.min(Stage.height - tips._height, Math.max(0, _root._ymouse - tips._height - 20));
+
+            // --- 修改结束 ---
+            var icon:MovieClip = _root.注释框.物品图标定位;
+            rightBackground._height = Math.max(tips.文本框.textHeight, icon._height) + 10;
+        } else {
+            // 只有左边的简介背景存在，以他为对齐标准
+            // 1. 计算鼠标的理想定位点（将注释框的左边缘对齐到鼠标指针）
+            var desiredX:Number = _root._xmouse;
+            
+            // 2. 计算允许的最小X值（确保左背景不移出屏幕左侧）
+            var minX:Number = 0;
+            
+            // 3. 计算允许的最大X值（确保左背景不移出屏幕右侧）
+            var maxX:Number = Stage.width - leftBackground._width;
+            
+            // 4. 应用约束：在边界内夹住理想值
+            tips._x = Math.max(minX, Math.min(desiredX, maxX));
+            
+            // Y轴定位逻辑与右背景情况一致
+            tips._y = Math.min(Stage.height - tips._height, Math.max(0, _root._ymouse - tips._height - 20));
+            
+            // 调整左背景高度以适配内容
+            leftBackground._height = tips.文本框.textHeight + 10;
+        }
     }
 };
 
