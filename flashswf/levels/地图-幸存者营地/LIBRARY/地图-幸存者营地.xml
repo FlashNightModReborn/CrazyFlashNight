@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-幸存者营地" itemID="65c7a0f5-0000109e" linkageExportForAS="true" linkageIdentifier="地图-幸存者营地" lastModified="1749724161" lastUniqueIdentifier="32">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-幸存者营地" itemID="65c7a0f5-0000109e" linkageExportForAS="true" linkageIdentifier="地图-幸存者营地" lastModified="1755154813" lastUniqueIdentifier="32">
   <timeline>
     <DOMTimeline name="地图-幸存者营地">
       <layers>
@@ -405,7 +405,7 @@ onClipEvent (load) {
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新地图素材/幸存者营地背景图" centerPoint3DX="2421.1" centerPoint3DY="693.25">
+                <DOMSymbolInstance libraryItemName="新地图素材/幸存者营地背景图" name="背景" selected="true" centerPoint3DX="2421.1" centerPoint3DY="693.25">
                   <matrix>
                     <Matrix tx="1732.05" ty="230.5"/>
                   </matrix>

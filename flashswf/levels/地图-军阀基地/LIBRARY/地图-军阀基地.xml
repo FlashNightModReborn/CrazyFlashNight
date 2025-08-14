@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-军阀基地" itemID="65c79a9b-00000eb4" linkageExportForAS="true" linkageIdentifier="地图-军阀基地" lastModified="1749721585" lastUniqueIdentifier="20">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-军阀基地" itemID="65c79a9b-00000eb4" linkageExportForAS="true" linkageIdentifier="地图-军阀基地" lastModified="1755154778" lastUniqueIdentifier="20">
   <timeline>
     <DOMTimeline name="地图-军阀基地">
       <layers>
@@ -14,7 +14,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#B26AFD" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#B26AFD" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -278,11 +278,11 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#7BF194" locked="true">
+        <DOMLayer name="Layer 7" color="#7BF194" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/新地图/Symbol 51879" name="背景" centerPoint3DX="1097.3" centerPoint3DY="373.7">
+                <DOMSymbolInstance libraryItemName="sprite/新地图/Symbol 51879" name="背景" selected="true" centerPoint3DX="1097.3" centerPoint3DY="373.7" exportAsBitmap="true">
                   <matrix>
                     <Matrix tx="-25" ty="-80"/>
                   </matrix>

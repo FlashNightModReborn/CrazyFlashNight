@@ -1,5 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://ns.adobe.com/xfl/2008/" name="gazer" itemID="6662916c-00000372" lastModified="1740634926" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="gazer" itemID="6662916c-00000372" lastModified="1740634926" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="gazer">
       <layers>
@@ -22,7 +21,7 @@
               <Actionscript>
                 <script><![CDATA[this.swapDepths(this._y);
 Z轴坐标 = this._y;
-]]>                </script>
+                ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -32,7 +31,7 @@ Z轴坐标 = this._y;
             <DOMFrame index="14" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[gotoAndPlay(2);
-]]>                </script>
+                ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -86,7 +85,7 @@ on(rollOver){
 on(rollOut){
    gotoAndPlay(1);
 }
-]]>                    </script>
+                    ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
@@ -108,7 +107,7 @@ on(rollOut){
                     <script><![CDATA[onClipEvent(load){
    gotoAndPlay(random(15));
 }
-]]>                    </script>
+                    ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
@@ -126,7 +125,7 @@ on(rollOut){
                     <script><![CDATA[onClipEvent(load){
    gotoAndPlay(random(15));
 }
-]]>                    </script>
+                    ]]></script>
                   </Actionscript>
                   <filters>
                     <GlowFilter color="#FFFFE0" strength="10"/>

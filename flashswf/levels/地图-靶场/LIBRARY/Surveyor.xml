@@ -1,5 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://ns.adobe.com/xfl/2008/" name="Surveyor" itemID="66532840-0000034c" lastModified="1740635452" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Surveyor" itemID="66532840-0000034c" lastModified="1740635452" lastUniqueIdentifier="4">
   <timeline>
     <DOMTimeline name="Surveyor">
       <layers>
@@ -22,7 +21,7 @@
               <Actionscript>
                 <script><![CDATA[this.swapDepths(this._y);
 Z轴坐标 = this._y;
-]]>                </script>
+                ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -32,7 +31,7 @@ Z轴坐标 = this._y;
             <DOMFrame index="14" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[gotoAndPlay(2);
-]]>                </script>
+                ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -86,7 +85,7 @@ on(rollOver){
 on(rollOut){
    gotoAndPlay(1);
 }
-]]>                    </script>
+                    ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>

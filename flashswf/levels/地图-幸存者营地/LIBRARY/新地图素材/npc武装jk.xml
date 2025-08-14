@@ -1,5 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://ns.adobe.com/xfl/2008/" name="新地图素材/npc武装jk" itemID="65b64071-00002d13" lastModified="1746437984" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新地图素材/npc武装jk" itemID="65b64071-00002d13" lastModified="1746437984" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="npc武装jk">
       <layers>
@@ -22,7 +21,7 @@
               <Actionscript>
                 <script><![CDATA[this.swapDepths(this._y);
 Z轴坐标 = this._y;
-]]>                </script>
+                ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -32,7 +31,7 @@ Z轴坐标 = this._y;
             <DOMFrame index="14" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[gotoAndPlay(2);
-]]>                </script>
+                ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -86,7 +85,7 @@ on(rollOver){
 on(rollOut){
    gotoAndPlay(1);
 }
-]]>                    </script>
+                    ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
