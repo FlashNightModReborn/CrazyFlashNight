@@ -45,6 +45,8 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
     public var idle_threshold:Number; // 由追击转入停止状态的临界动作次数
     public var wander_threshold:Number; // 由追击转入随机移动状态的临界动作次数
     public var think_threshold:Number // 返回思考的临界时长
+    
+    public var evade_distance:Number; // 个性化的远离安全距离
 
     public var standby:Boolean; // 是否处于待机状态
 

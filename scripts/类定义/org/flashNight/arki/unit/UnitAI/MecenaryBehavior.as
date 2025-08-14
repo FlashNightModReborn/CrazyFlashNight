@@ -64,6 +64,8 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
         if(newstate == null){
             newstate = engine.randomCheckHalf() ? "Idle" : "Walking"; // 否则有1/2的几率进入Walking，1/2的几率进入Idle
         }
+
+        _root.发布消息(data.self, "think");
         this.superMachine.ChangeState(newstate);
     }
 
