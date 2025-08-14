@@ -6,33 +6,6 @@ _root.物品图标注释 = function(name, value) {
 
     var 物品数据 = ItemUtil.getItemData(name);
     var 文本数据 = new Array();
-    文本数据.push("<B>");
-
-    var displayName = 物品数据.displayname;
-    if (value.tier)
-        displayName = "[" + value.tier + "]" + displayName;
-    文本数据.push(displayName);
-
-    文本数据.push("</B><BR>");
-    文本数据.push(物品数据.type);
-    文本数据.push("    ");
-    文本数据.push(物品数据.use);
-    文本数据.push("<BR>");
-    if (物品数据.type == "武器" || 物品数据.type == "防具") {
-        文本数据.push("等级限制：");
-        文本数据.push(物品数据.level);
-        文本数据.push("<BR>");
-    }
-    文本数据.push("$");
-    文本数据.push(物品数据.price);
-    文本数据.push("<BR>");
-    if (物品数据.weight != null && 物品数据.weight !== 0) {
-        文本数据.push("重量：");
-        文本数据.push(物品数据.weight + "kg");
-        文本数据.push("<BR>");
-    }
-    // 获取装备数据
-    _root.物品装备信息注释(文本数据, 物品数据, value.tier);
 
     //避免回车换两行
     文本数据.push(物品数据.description.split("\r\n").join("<BR>"));
@@ -111,16 +84,6 @@ _root.物品图标注释 = function(name, value) {
         }
     }
 
-    if (强化等级 > 1 && 物品数据.type == "武器" || 物品数据.type == "防具") {
-        文本数据.push("<FONT COLOR=\'#FFCC00\'>");
-        文本数据.push("强化等级：");
-        文本数据.push(强化等级);
-        文本数据.push("</FONT>");
-    } else if (value > 1) {
-        文本数据.push("数量：");
-        文本数据.push(value);
-    }
-
     var 完整文本 = 文本数据.join('');
     var 字数 = 完整文本.length;
     var 每字平均宽度 = 0.5; // 根据实际情况调整
@@ -129,13 +92,14 @@ _root.物品图标注释 = function(name, value) {
 
     // 调用注释函数，传递计算出的宽度和文本内容
     _root.注释(计算宽度, 完整文本);
+    _root.注释物品图标(true, name, value);
 };
 
 
-_root.物品装备信息注释 = function(文本数据:Array, 物品数据:Object, tier:String):Void{
+_root.物品装备信息注释 = function(文本数据:Array, 物品数据:Object, tier:String):Void {
     var 物品装备数据;
-    if(tier != null){
-        switch (tier){
+    if (tier != null) {
+        switch (tier) {
             case "二阶":
                 物品装备数据 = 物品数据.data_2;
                 break;
@@ -153,7 +117,8 @@ _root.物品装备信息注释 = function(文本数据:Array, 物品数据:Objec
                 break;
         }
     }
-    if(物品装备数据 == null) 物品装备数据 = 物品数据.data;
+    if (物品装备数据 == null)
+        物品装备数据 = 物品数据.data;
 
     switch (物品数据.use) {
         case "刀":
@@ -406,22 +371,112 @@ _root.学习界面技能图标注释 = function(对应数组号) {
 };
 
 
+_root.注释物品图标 = function(enable:Boolean, name:String, value:Object) {
+    // 'target' MovieClip 作为您在舞台上放置的占位符
+    // 它在 Flash IDE 中的位置和大小，应决定图标最终的显示效果
+    var target:MovieClip = _root.注释框.物品图标定位;
+    var background:MovieClip = _root.注释框.简介背景;
+    var text:MovieClip = _root.注释框.简介文本框;
 
-_root.注释 = function(宽度, 内容) {
+    if (enable) {
+
+        target._visible = true;
+        text._visible = true;
+        background._visible = true;
+
+        var data:Object = ItemUtil.getItemData(name);
+        var introductionString:Array = new Array();
+        introductionString.push("<B>");
+
+        var displayName = data.displayname;
+        if (value.tier)
+            displayName = "[" + value.tier + "]" + displayName;
+        introductionString.push(displayName);
+
+        introductionString.push("</B><BR>");
+        introductionString.push(data.type);
+        introductionString.push("    ");
+        introductionString.push(data.use);
+        introductionString.push("<BR>");
+        if (data.type == "武器" || data.type == "防具") {
+            introductionString.push("等级限制：");
+            introductionString.push(data.level);
+            introductionString.push("<BR>");
+        }
+        introductionString.push("$");
+        introductionString.push(data.price);
+        introductionString.push("<BR>");
+        if (data.weight != null && data.weight !== 0) {
+            introductionString.push("重量：");
+            introductionString.push(data.weight + "kg");
+            introductionString.push("<BR>");
+        }
+
+        var level:Number = value.level > 0 ? value.level : 1;
+
+        if (level > 1 && data.type == "武器" || data.type == "防具") {
+            introductionString.push("<FONT COLOR=\'#FFCC00\'>");
+            introductionString.push("强化等级：");
+            introductionString.push(level);
+            introductionString.push("</FONT>");
+            introductionString.push("<BR>");
+        } else if (value > 1) {
+            introductionString.push("数量：");
+            introductionString.push(value);
+            introductionString.push("<BR>");
+        }
+
+        // 获取装备数据
+        _root.物品装备信息注释(introductionString, data, value.tier);
+
+        var introduction:String = introductionString.join('');
+        var targetWidth:Number = Math.max(150, Math.min(introduction.length * 2, 500));
+
+        _root.注释(200, introduction, "简介")
+
+        var iconString:String = "图标-" + data.icon;
+
+        // 从库中将图标附加到 target MovieClip 上
+        var icon:MovieClip = target.attachMovie(iconString, "icon", target.getNextHighestDepth());
+        icon._xscale = icon._yscale = 150;
+        icon._x = icon._y = 19;
+
+
+        background._height = text._height + 220;
+        
+        _root.发布消息(text._height, background._height)
+    } else {
+        // 清理动态附加的图标
+        if (target.icon) {
+            target.icon.removeMovieClip();
+        }
+
+        target._visible = false;
+        text._visible = false;
+        background._visible = false;
+    }
+}
+
+
+_root.注释 = function(宽度, 内容, 框体) {
+    框体 = 框体 || "";
+    var target:MovieClip = _root.注释框[框体 + "文本框"];
+    var background:MovieClip = _root.注释框[框体 + "背景"]
     _root.注释框._visible = true;
-    _root.注释框.文本框.htmlText = 内容;
-    _root.注释框.文本框._width = 宽度;
+    target.htmlText = 内容;
+    target._width = 宽度;
+
 
     /*
-       var 宽度增量:Number = _root.注释框.文本框._width * 0.25;
+       var 宽度增量:Number = target._width * 0.25;
        var 黄金比例:Number = (1 + Math.sqrt(5)) / 2;
-       var 长宽比:Number = _root.注释框.文本框.textHeight / _root.注释框.文本框._width;
+       var 长宽比:Number = target.textHeight / target._width;
        var 循环计数上限:Number = 50;
-       //_root.发布调试消息(_root.注释框.文本框._width + "," + _root.注释框.文本框.textHeight + "  " + _root.注释框.文本框.textHeight / _root.注释框.文本框._width);
+       //_root.发布调试消息(target._width + "," + target.textHeight + "  " + target.textHeight / target._width);
        // 调整宽度以适应内容
 
 
-       while ((_root.注释框.文本框.textHeight >= Stage.height && 循环计数上限 > 0) || (长宽比 > 黄金比例 * 1.05))
+       while ((target.textHeight >= Stage.height && 循环计数上限 > 0) || (长宽比 > 黄金比例 * 1.05))
        {
        if (长宽比 < 黄金比例 * 1.15)
        {
@@ -429,24 +484,25 @@ _root.注释 = function(宽度, 内容) {
        }
        else
        {
-       宽度增量 = _root.注释框.文本框._width * 0.25;
+       宽度增量 = target._width * 0.25;
        }
-       _root.注释框.文本框._width += Math.min(宽度增量, Stage.width - _root.注释框.文本框._width);// 增加当前宽度
-       长宽比 = _root.注释框.文本框.textHeight / _root.注释框.文本框._width;
+       target._width += Math.min(宽度增量, Stage.width - target._width);// 增加当前宽度
+       长宽比 = target.textHeight / target._width;
        循环计数上限 -= 1;
-       //_root.发布调试消息(_root.注释框.文本框._width + "," + _root.注释框.文本框.textHeight + "  " + 长宽比);
+       //_root.发布调试消息(target._width + "," + target.textHeight + "  " + 长宽比);
 
        }
        _root.发布调试消息(循环计数上限);
 
      */
-    _root.注释框.背景._width = _root.注释框.文本框._width;
-    _root.注释框.背景._height = _root.注释框.文本框.textHeight + 10;
-    _root.注释框.文本框._height = _root.注释框.文本框.textHeight + 10;
-    _root.注释框._x = Math.min(Stage.width - _root.注释框._width, Math.max(0, _root._xmouse - _root.注释框._width));
-    _root.注释框._y = Math.min(Stage.height - _root.注释框._height, Math.max(0, _root._ymouse - _root.注释框._height - 20));
+    background._width = target._width;
+    background._height = target.textHeight + 10;
+    target._height = target.textHeight + 10;
+    _root.注释框._x = Math.min(Stage.width - background._width, Math.max(0, _root._xmouse - background._width));
+    _root.注释框._y = Math.min(Stage.height - background._height, Math.max(0, _root._ymouse - background._height - 20));
 };
 
 _root.注释结束 = function() {
     _root.注释框._visible = false;
+    _root.注释物品图标(false);
 };
