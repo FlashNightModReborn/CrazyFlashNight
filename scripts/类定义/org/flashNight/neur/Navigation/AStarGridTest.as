@@ -383,11 +383,17 @@ class org.flashNight.neur.Navigation.AStarGridTest
         var path:Array = nav.find(0, 0, 2, 0);
         assertNotNull(path, "应能绕开极高权重");
         
-        // 检查路径是否绕开了中间列
+        // 检查路径是否绕开了高权重格子(1,0)和(1,1)
         var avoidsHighWeight:Boolean = true;
         var i:Number = 0;
         while (i < path.length) {
-            if (path[i].x == 1) { avoidsHighWeight = false; break; }
+            var px:Number = path[i].x;
+            var py:Number = path[i].y;
+            // 只检查实际高权重的格子：(1,0)和(1,1)
+            if ((px == 1 && py == 0) || (px == 1 && py == 1)) { 
+                avoidsHighWeight = false; 
+                break; 
+            }
             i++;
         }
         assertTrue(avoidsHighWeight, "应绕开高权重区域");
@@ -458,7 +464,7 @@ class org.flashNight.neur.Navigation.AStarGridTest
         var walk:Array = [[1,1,1,1,1,1,1],
                           [1,0,0,0,0,0,1],
                           [1,0,1,1,1,0,1],
-                          [1,0,1,0,1,0,1],
+                          [1,0,1,1,1,0,1], // 把(3,3)改为可走
                           [1,0,1,1,1,0,1],
                           [1,0,0,0,0,0,1],
                           [1,1,1,1,1,1,1]];
@@ -586,7 +592,7 @@ class org.flashNight.neur.Navigation.AStarGridTest
         var name:String = "最大扩展限制测试";
         begin(name);
         
-        var nav:AStarGrid = new AStarGrid(10, 10, false, false);
+        var nav:AStarGrid = new AStarGrid(10, 10, true, false); // 改为允许对角线
         
         // 设置一个需要较多搜索的复杂路径
         var walk:Array = [];
@@ -595,7 +601,7 @@ class org.flashNight.neur.Navigation.AStarGridTest
             var row:Array = [];
             var x:Number = 0;
             while (x < 10) {
-                // 棋盘模式，留出路径
+                // 棋盘模式，但确保起点邻居可达
                 if ((x + y) % 2 == 0 || y == 9) {
                     row.push(1);
                 } else {
@@ -606,6 +612,9 @@ class org.flashNight.neur.Navigation.AStarGridTest
             walk.push(row);
             y++;
         }
+        // 确保起点(0,0)的邻居至少有一个可达
+        walk[0][1] = 1; // 确保(0,1)可走
+        walk[1][0] = 1; // 确保(1,0)可走
         nav.setWalkableMatrix(walk);
         
         // 限制很小的扩展次数
@@ -624,16 +633,21 @@ class org.flashNight.neur.Navigation.AStarGridTest
         var name:String = "超长路径测试";
         begin(name);
         
-        var nav:AStarGrid = new AStarGrid(20, 2, false, false);
+        // 创建一个蛇形通道强制绕行的场景 
+        var nav:AStarGrid = new AStarGrid(11, 5, false, false);
         
-        // 创建一个迫使路径很长的场景
-        var walk:Array = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-                          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]];
+        // 蛇形障碍模式：必须绕很多弯
+        var walk:Array = [[1,1,1,1,1,1,1,1,1,1,0],  // 第0行：横向通道，最后封死
+                          [0,0,0,0,0,0,0,0,0,1,1],  // 第1行：右端开口向下
+                          [1,1,1,1,1,1,1,1,1,1,0],  // 第2行：横向通道，左端封死
+                          [1,0,0,0,0,0,0,0,0,0,0],  // 第3行：左端开口向下
+                          [1,1,1,1,1,1,1,1,1,1,1]]; // 第4行：到达终点
         nav.setWalkableMatrix(walk);
         
-        var path:Array = nav.find(0, 0, 19, 1);
+        var path:Array = nav.find(0, 0, 10, 4);
         assertNotNull(path, "应找到超长路径");
-        assertTrue(path.length > 30, "路径应很长");
+        // 理论路径：右→右...→右→下→左→左...→左→下→右→右...→右，应该远超21步
+        assertTrue(path.length > 30, "蛇形路径应很长");
         
         end();
     }
