@@ -443,6 +443,7 @@ _root.注释物品图标 = function(enable:Boolean, name:String, value:Object, e
         var rate:Number = 3 / 5;
         var baseScale:Number = 486.8;
         var baseOffset:Number = 7.5;
+        var backgroundHeightOffset;
 
         switch(data.type) {
             case "武器":
@@ -455,6 +456,7 @@ _root.注释物品图标 = function(enable:Boolean, name:String, value:Object, e
                 target._xscale = target._yscale = baseScale;
                 text._x = -200;
                 text._y = 210;
+                backgroundHeightOffset = baseNum + 20;
                 break;
             default:
                 stringWidth = 200 * rate;
@@ -464,6 +466,7 @@ _root.注释物品图标 = function(enable:Boolean, name:String, value:Object, e
                 target._xscale = target._yscale = (baseScale * rate);
                 text._x = -baseNum * rate;
                 text._y = 10 - text._x;
+                backgroundHeightOffset = 20 + rate * baseNum;
         }
 
         // 获取装备数据
@@ -484,8 +487,7 @@ _root.注释物品图标 = function(enable:Boolean, name:String, value:Object, e
         icon._xscale = icon._yscale = 150;
         icon._x = icon._y = 19;
 
-
-        background._height = text._height + 220;
+        background._height = text._height + backgroundHeightOffset;
     } else {
         // 清理动态附加的图标
         if (target.icon) {
@@ -505,7 +507,10 @@ _root.注释 = function(宽度, 内容, 框体) {
         _root.注释框.文本框._visible = true;
         _root.注释框.背景._visible = true;
     }
-    
+
+    _root.注释框.文本框._y = 0;
+    _root.注释框.背景._y = 0;
+
     var tips:MovieClip = _root.注释框;
     var target:MovieClip = tips[框体 + "文本框"];
     var background:MovieClip = tips[框体 + "背景"]
@@ -543,21 +548,37 @@ _root.注释 = function(宽度, 内容, 框体) {
 
             // 4. 应用约束：先在最大和最小边界内夹住理想值
             //    这里的逻辑可以简化为一行，但分解开更易于理解
-            tips._x = Math.max(minX, Math.min(desiredX, maxX));
+
 
             // Y轴定位逻辑保持不变
             tips._y = Math.min(Stage.height - tips._height, Math.max(0, _root._ymouse - tips._height - 20));
+            var rightBottomeight:Number = tips._y + rightBackground._height;
 
-            // --- 修改结束 ---
-            var icon:MovieClip = _root.注释框.物品图标定位;
-            rightBackground._height = Math.max(tips.文本框.textHeight, icon._height) + 10;
+            // _root.发布消息(_root._ymouse, rightBottomeight)
+            var offset:Number = _root._ymouse - rightBottomeight - 20;
+
+            if(offset > 0) {
+                if(true) {
+                    
+                    _root.注释框.文本框._y = offset;
+                    _root.注释框.背景._y = offset;
+                } else {
+                    desiredX = _root._xmouse;
+                }
+                
+            } else {
+                var icon:MovieClip = _root.注释框.物品图标定位;
+                rightBackground._height = Math.max(tips.文本框.textHeight, icon._height) + 10;
+            }
+
+            tips._x = Math.max(minX, Math.min(desiredX, maxX));
         } else {
             // 4. 应用约束：在边界内夹住理想值
             tips._x = Math.min(Stage.width - leftBackground._width, Math.max(0, _root._xmouse - leftBackground._width)) + leftBackground._width;
             tips._y = Math.min(Stage.height - leftBackground._height, Math.max(0, _root._ymouse - leftBackground._height - 20));
             
             // 调整左背景高度以适配内容
-            leftBackground._height = tips.文本框.textHeight + 10;
+            leftBackground._height = tips.简介文本框.textHeight + 10;
         }
     }
 };

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/注释框" itemID="689d361b-000003ef" linkageExportForAS="true" linkageIdentifier="注释框" lastModified="1755157066" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/注释框" itemID="689d361b-000003ef" linkageExportForAS="true" linkageIdentifier="注释框" lastModified="1755232333" lastUniqueIdentifier="6">
   <timeline>
     <DOMTimeline name="注释框">
       <layers>
@@ -6,7 +6,9 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[this.swapDepths(_root.层级管理器.注释框);]]></script>
+                <script><![CDATA[this.swapDepths(_root.层级管理器.注释框);
+
+_root.注释结束();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
