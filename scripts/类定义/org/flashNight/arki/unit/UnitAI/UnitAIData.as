@@ -6,6 +6,7 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
     public var self:MovieClip;
     public var self_name:String;
     public var state:String;
+    public var createdFrame:Number;
 
     // 自身坐标
     public var x:Number;
@@ -71,6 +72,8 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
         // 根据自身的奔跑xy速度计算起跑距离
         this.run_threshold_x = self.跑X速度 * 8;
         this.run_threshold_z = self.跑Y速度 * 8;
+
+        this.createdFrame = _root.帧计时器.当前帧数;
     }
 
     public function updateSelf():Void{

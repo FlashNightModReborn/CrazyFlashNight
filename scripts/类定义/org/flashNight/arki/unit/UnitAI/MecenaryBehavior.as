@@ -3,6 +3,7 @@ import org.flashNight.neur.StateMachine.FSM_StateMachine;
 import org.flashNight.naki.RandomNumberEngine.*;
 import org.flashNight.arki.unit.UnitAI.BaseUnitBehavior;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
+import org.flashNight.arki.spatial.move.*;
 
 // 场景中佣兵与可雇佣敌人NPC的状态机，继承单位状态机基类
 
@@ -12,6 +13,9 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
     public static var IDLE_MAX_TIME:Number = 40; // 停止状态最长40次action（160帧）切换状态
     public static var WALK_MIN_TIME:Number = 8; // 移动状态最短8次action（32帧）切换状态
     public static var WALK_MAX_TIME:Number = 40; // 移动状态最长40次action（160帧）切换状态
+    public static var WANDER_MIN_TIME:Number = 15; // 漫游状态最短15次action（60帧）切换状态
+    public static var WANDER_MAX_TIME:Number = 50; // 漫游状态最长50次action（200帧）切换状态
+    public static var ALIVE_MAX_TIME:Number = 20 * 30; // 最大存活20s
 
     public function MecenaryBehavior(_data:UnitAIData){
         super(_data);
@@ -25,12 +29,17 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
         this.AddStatus("Idle",new FSM_Status(null, this.idle_enter, null));
         // 移动状态
         this.AddStatus("Walking",new FSM_Status(this.walk, this.walk_enter, null));
+        // 漫游状态
+        this.AddStatus("Wandering",new FSM_Status(null, this.wander_enter, null));
 
         //过渡线
         this.pushGateTransition("Idle","Thinking",function(){
             return this.actionCount >= data.think_threshold;
         });
         this.pushGateTransition("Walking","Thinking",function(){
+            return this.actionCount >= data.think_threshold;
+        });
+        this.pushGateTransition("Wandering","Thinking",function(){
             return this.actionCount >= data.think_threshold;
         });
 
@@ -43,6 +52,11 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
     // 具体执行函数
     // 思考
     public function think():Void{
+        var self:MovieClip = data.self;
+        if(_root.帧计时器.当前帧数 - data.createdFrame > ALIVE_MAX_TIME) {
+            self.删除可雇用单位();
+            return;
+        }
         data.updateSelf(); // 更新自身坐标
         //search target
         var newstate:String = null;
@@ -52,20 +66,29 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
             for (var 单位 in _root.gameworld){
                 var 出生点 = _root.gameworld[单位];
                 if (出生点.是否从门加载主角 && 单位 != "出生地"){
-                    出生点列表.push(出生点);
+                    if(!Mover.isReachable(self, 出生点, 10)) {
+                        出生点列表.push(出生点);
+                    } else {
+                        _root.发布消息(出生点,"unReachable");
+                    }
                 }
             }
-            data.target = engine.getRandomArrayElement(出生点列表);
-            data.updateTarget();
-            if(data.absdiff_x < 100 && data.absdiff_z < 50){
-                newstate = "Idle"; // 若离目标门太近则先进入Idle
+            if(出生点列表.length > 0){
+                data.target = engine.getRandomArrayElement(出生点列表);
+                data.updateTarget();
+                if(data.absdiff_x < 100 && data.absdiff_z < 50){
+                    newstate = "Idle"; // 若离目标门太近则先进入Idle
+                }
+            }else{
+                // 找不到目标时进入漫游状态
+                newstate = "Wandering";
             }
         }
         if(newstate == null){
             newstate = engine.randomCheckHalf() ? "Idle" : "Walking"; // 否则有1/2的几率进入Walking，1/2的几率进入Idle
         }
 
-        _root.发布消息(data.self, "think");
+        // _root.发布消息(self, "think");
         this.superMachine.ChangeState(newstate);
     }
 
@@ -111,5 +134,33 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
         data.self.上行 = false;
         data.self.下行 = false;
         data.think_threshold = LinearCongruentialEngine.instance.randomIntegerStrict(IDLE_MIN_TIME, IDLE_MAX_TIME);
+    }
+
+    // 进入漫游状态
+    public function wander_enter():Void{
+        data.target = null; // 清除目标
+        data.updateSelf(); // 更新自身坐标
+
+        var self = data.self;
+        var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
+
+        data.think_threshold = engine.randomIntegerStrict(WANDER_MIN_TIME, WANDER_MAX_TIME);
+
+        if(data.standby) {
+            // 待机状态下无法移动
+            self.左行 = false;
+            self.右行 = false;
+            self.上行 = false;
+            self.下行 = false;
+            return; 
+        }
+
+        var randy = engine.randomIntegerStrict(_root.Ymin, _root.Ymax);
+        var randx = engine.randomIntegerStrict(_root.Xmin, _root.Xmax);
+        
+        self.左行 = randx < data.x;
+        self.右行 = !self.左行;
+        self.上行 = randy < data.z;
+        self.下行 = randy > data.z;
     }
 }
