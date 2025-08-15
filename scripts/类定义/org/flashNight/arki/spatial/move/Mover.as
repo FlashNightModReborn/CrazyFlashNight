@@ -370,6 +370,7 @@ class org.flashNight.arki.spatial.move.Mover {
             return;
         }
 
+
         // 获取实体当前局部坐标
         var point:Vector = new Vector(entity._x, entity._y);
         

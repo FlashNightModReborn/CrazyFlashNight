@@ -7,6 +7,8 @@ import org.flashNight.arki.unit.Action.Shoot.*;
 import org.flashNight.neur.Event.*;
 import org.flashNight.naki.RandomNumberEngine.*
 import org.flashNight.arki.spatial.animation.*;
+import org.flashNight.arki.component.Effect.*;
+import org.flashNight.sara.util.*;
 
 // _root.玩家与佣兵区分装扮刷新 = false;
 _root.超重惩罚 = 0.25;
@@ -1393,6 +1395,14 @@ _root.主角函数.移动 = function(移动方向, 速度) {
 
     // 其他情况采用常规 2D 移动
     Mover.move2D(this, 移动方向, 速度);
+
+
+    if(_root.调试模式) {
+        var point:Vector = new Vector(this._x, this._y);
+        _root.collisionLayer.localToGlobal(point);
+        _root.gameworld.globalToLocal(point)
+        EffectSystem.Effect("调试用定位", point.x, point.y, 100, true);
+    }    
 };
 
 _root.主角函数.攻击时移动 = function(慢速度, 快速度) {

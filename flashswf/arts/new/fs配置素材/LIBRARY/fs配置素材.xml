@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1755055452" lastUniqueIdentifier="220">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1755233922" lastUniqueIdentifier="220">
   <timeline>
-    <DOMTimeline name="fs配置素材" currentFrame="14" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="51" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
         <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
@@ -34,7 +34,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="文件夹 3" color="#808080" layerType="folder"/>
-        <DOMLayer name="图层 4" color="#4F80FF" current="true" isSelected="true">
+        <DOMLayer name="图层 4" color="#4F80FF">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -520,7 +520,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="12" name="标题页" labelType="name" keyMode="9728">
               <elements>
@@ -835,12 +835,20 @@
                     <Point x="-90.8" y="-110.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="长枪/铁枪/图标-铁枪核心" selected="true" centerPoint3DX="95.25" centerPoint3DY="21.05">
+                <DOMSymbolInstance libraryItemName="长枪/铁枪/图标-铁枪核心" centerPoint3DX="95.25" centerPoint3DY="21.05">
                   <matrix>
                     <Matrix tx="95.25" ty="21.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="74.25" y="-42"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="调试用定位" selected="true" centerPoint3DX="-85.8" centerPoint3DY="-75.1">
+                  <matrix>
+                    <Matrix tx="-107.8" ty="-97.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22" y="22"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
