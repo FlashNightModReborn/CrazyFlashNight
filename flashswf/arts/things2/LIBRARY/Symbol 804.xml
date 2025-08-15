@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 804" itemID="65e1d4ea-000004ed" lastModified="1746446969">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 804" itemID="65e1d4ea-000004ed" lastModified="1755245672">
   <timeline>
     <DOMTimeline name="Symbol 804" currentFrame="329">
       <layers>
-        <DOMLayer name="Labels Layer" color="#D1C8B0">
+        <DOMLayer name="Labels Layer" color="#D1C8B0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -30,7 +30,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#8BF8AF">
+        <DOMLayer name="Script Layer" color="#8BF8AF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -107,14 +107,14 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#51A2D6">
+        <DOMLayer name="Layer 3" color="#51A2D6" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="121" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="121" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 76" centerPoint3DX="-10.3" centerPoint3DY="115.8">
+                <DOMSymbolInstance libraryItemName="Symbol 76" selected="true" centerPoint3DX="-10.3" centerPoint3DY="115.8">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="-22.8" ty="103.3"/>
                   </matrix>
@@ -122,34 +122,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -162,7 +171,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#BF34C0">
+        <DOMLayer name="Layer 4" color="#BF34C0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="121" keyMode="9728">
               <elements/>
@@ -177,34 +186,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -217,7 +235,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#67D4F4">
+        <DOMLayer name="Layer 5" color="#67D4F4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="120" keyMode="9728">
               <elements/>
@@ -250,34 +268,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -290,7 +317,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#C7F71A">
+        <DOMLayer name="Layer 6" color="#C7F71A" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="120" keyMode="9728">
               <elements/>
@@ -315,7 +342,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#D762F0">
+        <DOMLayer name="Layer 7" color="#D762F0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -397,7 +424,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#7CBDBC">
+        <DOMLayer name="Layer 8" color="#7CBDBC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -419,7 +446,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#FBDE1B">
+        <DOMLayer name="Layer 9" color="#FBDE1B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -501,7 +528,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#64B7A5">
+        <DOMLayer name="Layer 10" color="#64B7A5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -583,7 +610,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#F1917C">
+        <DOMLayer name="Layer 11" color="#F1917C" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -665,7 +692,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#D244DD">
+        <DOMLayer name="Layer 12" color="#D244DD" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -747,7 +774,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 13" color="#CD6D48">
+        <DOMLayer name="Layer 13" color="#CD6D48" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -829,7 +856,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 14" color="#3AC9D9">
+        <DOMLayer name="Layer 14" color="#3AC9D9" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -848,7 +875,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 15" color="#8AF3E6">
+        <DOMLayer name="Layer 15" color="#8AF3E6" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -930,7 +957,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 16" color="#7DC6D8">
+        <DOMLayer name="Layer 16" color="#7DC6D8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -949,7 +976,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 17" color="#8170CD">
+        <DOMLayer name="Layer 17" color="#8170CD" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1043,7 +1070,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 18" color="#BEA5D9">
+        <DOMLayer name="Layer 18" color="#BEA5D9" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1062,7 +1089,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 19" color="#BF01C9">
+        <DOMLayer name="Layer 19" color="#BF01C9" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1156,7 +1183,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 20" color="#F700F3">
+        <DOMLayer name="Layer 20" color="#F700F3" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1274,7 +1301,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 21" color="#DC6B9F">
+        <DOMLayer name="Layer 21" color="#DC6B9F" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -1356,7 +1383,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 22" color="#5757DF">
+        <DOMLayer name="Layer 22" color="#5757DF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -1438,7 +1465,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 23" color="#F99157">
+        <DOMLayer name="Layer 23" color="#F99157" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -1547,7 +1574,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 24" color="#F175EB">
+        <DOMLayer name="Layer 24" color="#F175EB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -1581,7 +1608,7 @@ _parent.动画完毕();
             </DOMFrame>
             <DOMFrame index="13" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 76" centerPoint3DX="123.15" centerPoint3DY="96.8">
+                <DOMSymbolInstance libraryItemName="Symbol 76" selected="true" centerPoint3DX="123.15" centerPoint3DY="96.8">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="110.65" ty="84.3"/>
                   </matrix>
@@ -1589,34 +1616,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -1629,7 +1665,7 @@ _parent.动画完毕();
             </DOMFrame>
             <DOMFrame index="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 76" centerPoint3DX="123.15" centerPoint3DY="96.8">
+                <DOMSymbolInstance libraryItemName="Symbol 76" selected="true" centerPoint3DX="123.15" centerPoint3DY="96.8">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="110.65" ty="84.3"/>
                   </matrix>
@@ -1637,34 +1673,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -1728,7 +1773,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 25" color="#FDD448">
+        <DOMLayer name="Layer 25" color="#FDD448" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -1770,34 +1815,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -1818,34 +1872,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -1866,34 +1929,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -1914,34 +1986,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -2005,7 +2086,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 26" color="#C0F0BE">
+        <DOMLayer name="Layer 26" color="#C0F0BE" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -2047,34 +2128,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -2095,34 +2185,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -2135,7 +2234,7 @@ _parent.动画完毕();
             </DOMFrame>
             <DOMFrame index="17" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 76" centerPoint3DX="56.95" centerPoint3DY="85.8">
+                <DOMSymbolInstance libraryItemName="Symbol 76" selected="true" centerPoint3DX="56.95" centerPoint3DY="85.8">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="44.45" ty="73.3"/>
                   </matrix>
@@ -2143,34 +2242,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -2183,7 +2291,7 @@ _parent.动画完毕();
             </DOMFrame>
             <DOMFrame index="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 76" centerPoint3DX="84.9" centerPoint3DY="51.8">
+                <DOMSymbolInstance libraryItemName="Symbol 76" selected="true" centerPoint3DX="84.9" centerPoint3DY="51.8">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="72.4" ty="39.3"/>
                   </matrix>
@@ -2191,34 +2299,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -2282,7 +2399,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 27" color="#859670">
+        <DOMLayer name="Layer 27" color="#859670" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -2348,34 +2465,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -2396,34 +2522,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -2487,7 +2622,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 28" color="#23D4A1">
+        <DOMLayer name="Layer 28" color="#23D4A1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -2596,7 +2731,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 29" color="#4945FB">
+        <DOMLayer name="Layer 29" color="#4945FB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -2654,7 +2789,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 30" color="#FA0DBD">
+        <DOMLayer name="Layer 30" color="#FA0DBD" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -2736,7 +2871,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 31" color="#E04868">
+        <DOMLayer name="Layer 31" color="#E04868" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -2770,7 +2905,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 32" color="#6AACED">
+        <DOMLayer name="Layer 32" color="#6AACED" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -2828,7 +2963,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 33" color="#12C3CF">
+        <DOMLayer name="Layer 33" color="#12C3CF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -2862,7 +2997,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 34" color="#C78378">
+        <DOMLayer name="Layer 34" color="#C78378" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -2920,7 +3055,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 35" color="#EDEBB3">
+        <DOMLayer name="Layer 35" color="#EDEBB3" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -2954,7 +3089,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 36" color="#8FE155">
+        <DOMLayer name="Layer 36" color="#8FE155" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3060,7 +3195,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 37" color="#DC4FA7">
+        <DOMLayer name="Layer 37" color="#DC4FA7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -3094,7 +3229,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 38" color="#F8CB23">
+        <DOMLayer name="Layer 38" color="#F8CB23" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3200,7 +3335,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 39" color="#4ABC91">
+        <DOMLayer name="Layer 39" color="#4ABC91" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -3267,7 +3402,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 40" color="#958FBC">
+        <DOMLayer name="Layer 40" color="#958FBC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3373,7 +3508,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 41" color="#E47B28">
+        <DOMLayer name="Layer 41" color="#E47B28" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -3440,7 +3575,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 42" color="#42BCFE">
+        <DOMLayer name="Layer 42" color="#42BCFE" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -3582,7 +3717,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 43" color="#AF4ADC">
+        <DOMLayer name="Layer 43" color="#AF4ADC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3688,7 +3823,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 44" color="#22E181">
+        <DOMLayer name="Layer 44" color="#22E181" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -3755,7 +3890,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 45" color="#68989E">
+        <DOMLayer name="Layer 45" color="#68989E" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -3798,7 +3933,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 46" color="#72A2F2">
+        <DOMLayer name="Layer 46" color="#72A2F2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -3952,7 +4087,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 47" color="#D09DC8">
+        <DOMLayer name="Layer 47" color="#D09DC8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -4019,7 +4154,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 48" color="#EAB13F">
+        <DOMLayer name="Layer 48" color="#EAB13F" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -4125,7 +4260,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 49" color="#CDF254">
+        <DOMLayer name="Layer 49" color="#CDF254" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -4207,7 +4342,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 50" color="#D3CFFC">
+        <DOMLayer name="Layer 50" color="#D3CFFC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -4289,7 +4424,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 51" color="#E38AB2">
+        <DOMLayer name="Layer 51" color="#E38AB2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -4371,7 +4506,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 52" color="#A28760">
+        <DOMLayer name="Layer 52" color="#A28760" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -4453,7 +4588,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 53" color="#C6B5A8">
+        <DOMLayer name="Layer 53" color="#C6B5A8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -4535,7 +4670,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 54" color="#7E0FFE">
+        <DOMLayer name="Layer 54" color="#7E0FFE" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -4578,7 +4713,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 55" color="#7CE74D">
+        <DOMLayer name="Layer 55" color="#7CE74D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="122" keyMode="9728">
               <elements/>
@@ -4624,7 +4759,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 56" color="#64DD7E">
+        <DOMLayer name="Layer 56" color="#64DD7E" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -4655,7 +4790,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 57" color="#F39CBC">
+        <DOMLayer name="Layer 57" color="#F39CBC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -4737,7 +4872,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 58" color="#83B3A1">
+        <DOMLayer name="Layer 58" color="#83B3A1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -4819,7 +4954,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 59" color="#D02CE8">
+        <DOMLayer name="Layer 59" color="#D02CE8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -4913,7 +5048,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 60" color="#6897E1">
+        <DOMLayer name="Layer 60" color="#6897E1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -5007,7 +5142,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 61" color="#8A6496">
+        <DOMLayer name="Layer 61" color="#8A6496" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -5101,7 +5236,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 62" color="#EAA2FE">
+        <DOMLayer name="Layer 62" color="#EAA2FE" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -5174,7 +5309,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 63" color="#5ADBE8">
+        <DOMLayer name="Layer 63" color="#5ADBE8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -5268,7 +5403,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 64" color="#80C8C8">
+        <DOMLayer name="Layer 64" color="#80C8C8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -5362,7 +5497,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 65" color="#45E8B0">
+        <DOMLayer name="Layer 65" color="#45E8B0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="122" keyMode="9728">
               <elements/>
@@ -5408,7 +5543,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 66" color="#7CD53F">
+        <DOMLayer name="Layer 66" color="#7CD53F" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="122" keyMode="9728">
               <elements/>
@@ -5454,7 +5589,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 67" color="#517EE0">
+        <DOMLayer name="Layer 67" color="#517EE0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -5556,34 +5691,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -5604,34 +5748,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -5644,7 +5797,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 68" color="#A2E077">
+        <DOMLayer name="Layer 68" color="#A2E077" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements>
@@ -5710,34 +5863,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -5758,34 +5920,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -5806,34 +5977,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -5854,34 +6034,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -5894,7 +6083,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 69" color="#FCEF02">
+        <DOMLayer name="Layer 69" color="#FCEF02" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="278" keyMode="9728">
               <elements/>
@@ -5909,34 +6098,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -5997,7 +6195,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 70" color="#B475F8">
+        <DOMLayer name="Layer 70" color="#B475F8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements>
@@ -6039,34 +6237,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -6087,34 +6294,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -6135,34 +6351,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -6183,34 +6408,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -6223,7 +6457,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 71" color="#C2A9DD">
+        <DOMLayer name="Layer 71" color="#C2A9DD" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="278" keyMode="9728">
               <elements/>
@@ -6238,34 +6472,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -6326,7 +6569,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 72" color="#A2DD45">
+        <DOMLayer name="Layer 72" color="#A2DD45" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -6381,7 +6624,7 @@ _parent.动画完毕();
             </DOMFrame>
             <DOMFrame index="134" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 76" centerPoint3DX="89.65" centerPoint3DY="93.8">
+                <DOMSymbolInstance libraryItemName="Symbol 76" selected="true" centerPoint3DX="89.65" centerPoint3DY="93.8">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="77.15" ty="81.3"/>
                   </matrix>
@@ -6389,34 +6632,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -6429,7 +6681,7 @@ _parent.动画完毕();
             </DOMFrame>
             <DOMFrame index="149" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 76" centerPoint3DX="67.7" centerPoint3DY="120.8">
+                <DOMSymbolInstance libraryItemName="Symbol 76" selected="true" centerPoint3DX="67.7" centerPoint3DY="120.8">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="55.2" ty="108.3"/>
                   </matrix>
@@ -6437,34 +6689,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -6495,7 +6756,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 73" color="#33E2C4">
+        <DOMLayer name="Layer 73" color="#33E2C4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="278" keyMode="9728">
               <elements/>
@@ -6510,34 +6771,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -6598,7 +6868,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 74" color="#C9F640">
+        <DOMLayer name="Layer 74" color="#C9F640" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -6704,7 +6974,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 75" color="#EBAD1E">
+        <DOMLayer name="Layer 75" color="#EBAD1E" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="247" keyMode="9728">
               <elements/>
@@ -6750,7 +7020,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 76" color="#FECC10">
+        <DOMLayer name="Layer 76" color="#FECC10" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -6772,7 +7042,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 77" color="#ED905B">
+        <DOMLayer name="Layer 77" color="#ED905B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -6794,7 +7064,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 78" color="#ECBF44">
+        <DOMLayer name="Layer 78" color="#ECBF44" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -6939,7 +7209,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 79" color="#F5D8E5">
+        <DOMLayer name="Layer 79" color="#F5D8E5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="251" keyMode="9728">
               <elements/>
@@ -7081,7 +7351,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 80" color="#65FB22">
+        <DOMLayer name="Layer 80" color="#65FB22" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="251" keyMode="9728">
               <elements/>
@@ -7223,7 +7493,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 81" color="#FC7B11">
+        <DOMLayer name="Layer 81" color="#FC7B11" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="129" keyMode="9728">
               <elements/>
@@ -7341,7 +7611,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 82" color="#AC64CC">
+        <DOMLayer name="Layer 82" color="#AC64CC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="251" keyMode="9728">
               <elements/>
@@ -7483,7 +7753,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 83" color="#A571B5">
+        <DOMLayer name="Layer 83" color="#A571B5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -7616,7 +7886,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 84" color="#BFA5CA">
+        <DOMLayer name="Layer 84" color="#BFA5CA" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements/>
@@ -7773,7 +8043,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 85" color="#EEAD3E">
+        <DOMLayer name="Layer 85" color="#EEAD3E" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="129" keyMode="9728">
               <elements/>
@@ -7891,7 +8161,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 86" color="#D3714D">
+        <DOMLayer name="Layer 86" color="#D3714D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements/>
@@ -7943,7 +8213,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 87" color="#A0E65A">
+        <DOMLayer name="Layer 87" color="#A0E65A" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="129" keyMode="9728">
               <elements/>
@@ -8061,7 +8331,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 88" color="#3AB2A0">
+        <DOMLayer name="Layer 88" color="#3AB2A0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements/>
@@ -8140,7 +8410,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 89" color="#C2B0D7">
+        <DOMLayer name="Layer 89" color="#C2B0D7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="129" keyMode="9728">
               <elements/>
@@ -8258,7 +8528,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 90" color="#EF8692">
+        <DOMLayer name="Layer 90" color="#EF8692" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
@@ -8340,7 +8610,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 91" color="#C8BB96">
+        <DOMLayer name="Layer 91" color="#C8BB96" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="129" keyMode="9728">
               <elements/>
@@ -8458,7 +8728,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 92" color="#E1C456">
+        <DOMLayer name="Layer 92" color="#E1C456" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
@@ -8612,7 +8882,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 93" color="#AD73C8">
+        <DOMLayer name="Layer 93" color="#AD73C8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -8847,7 +9117,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 94" color="#BA9BDD">
+        <DOMLayer name="Layer 94" color="#BA9BDD" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -8968,7 +9238,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 95" color="#57EF41">
+        <DOMLayer name="Layer 95" color="#57EF41" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="129" keyMode="9728">
               <elements/>
@@ -9185,7 +9455,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 96" color="#99C3E0">
+        <DOMLayer name="Layer 96" color="#99C3E0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="129" keyMode="9728">
               <elements/>
@@ -9342,7 +9612,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 97" color="#76FFD1">
+        <DOMLayer name="Layer 97" color="#76FFD1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -9514,7 +9784,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 98" color="#D241C4">
+        <DOMLayer name="Layer 98" color="#D241C4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -9686,7 +9956,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 99" color="#E27276">
+        <DOMLayer name="Layer 99" color="#E27276" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -9858,7 +10128,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 100" color="#DC04DD">
+        <DOMLayer name="Layer 100" color="#DC04DD" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="18" keyMode="9728">
               <elements/>
@@ -9991,7 +10261,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 101" color="#09B9D5">
+        <DOMLayer name="Layer 101" color="#09B9D5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="18" keyMode="9728">
               <elements/>
@@ -10148,7 +10418,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 102" color="#CFF624">
+        <DOMLayer name="Layer 102" color="#CFF624" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="129" keyMode="9728">
               <elements/>
@@ -10266,7 +10536,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 103" color="#0ABAD4">
+        <DOMLayer name="Layer 103" color="#0ABAD4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="18" keyMode="9728">
               <elements/>
@@ -10303,7 +10573,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 104" color="#CDF0B4">
+        <DOMLayer name="Layer 104" color="#CDF0B4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="129" keyMode="9728">
               <elements/>
@@ -10421,7 +10691,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 105" color="#DAE1F4">
+        <DOMLayer name="Layer 105" color="#DAE1F4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="18" keyMode="9728">
               <elements/>
@@ -10596,7 +10866,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 106" color="#56BE87">
+        <DOMLayer name="Layer 106" color="#56BE87" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="129" keyMode="9728">
               <elements/>
@@ -10765,7 +11035,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 107" color="#0DDACB">
+        <DOMLayer name="Layer 107" color="#0DDACB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -10813,34 +11083,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -10861,34 +11140,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -10909,34 +11197,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -10957,34 +11254,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -11005,34 +11311,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -11053,34 +11368,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -11228,7 +11552,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 108" color="#C194D2">
+        <DOMLayer name="Layer 108" color="#C194D2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="129" keyMode="9728">
               <elements/>
@@ -11397,7 +11721,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 109" color="#69BB61">
+        <DOMLayer name="Layer 109" color="#69BB61" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -11439,34 +11763,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -11487,34 +11820,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -11535,34 +11877,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -11575,7 +11926,7 @@ _parent.动画完毕();
             </DOMFrame>
             <DOMFrame index="27" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 76" centerPoint3DX="79.9" centerPoint3DY="77.8">
+                <DOMSymbolInstance libraryItemName="Symbol 76" selected="true" centerPoint3DX="79.9" centerPoint3DY="77.8">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="67.4" ty="65.3"/>
                   </matrix>
@@ -11583,34 +11934,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -11623,7 +11983,7 @@ _parent.动画完毕();
             </DOMFrame>
             <DOMFrame index="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 76" centerPoint3DX="37.1" centerPoint3DY="62.8">
+                <DOMSymbolInstance libraryItemName="Symbol 76" selected="true" centerPoint3DX="37.1" centerPoint3DY="62.8">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="24.6" ty="50.3"/>
                   </matrix>
@@ -11631,34 +11991,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -11671,7 +12040,7 @@ _parent.动画完毕();
             </DOMFrame>
             <DOMFrame index="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 76" centerPoint3DX="82.85" centerPoint3DY="164.35">
+                <DOMSymbolInstance libraryItemName="Symbol 76" selected="true" centerPoint3DX="82.85" centerPoint3DY="164.35">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="70.35" ty="151.85"/>
                   </matrix>
@@ -11679,34 +12048,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -11854,7 +12232,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 110" color="#DEF182">
+        <DOMLayer name="Layer 110" color="#DEF182" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="129" keyMode="9728">
               <elements/>
@@ -12023,7 +12401,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 111" color="#B9E33B">
+        <DOMLayer name="Layer 111" color="#B9E33B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -12065,34 +12443,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -12105,7 +12492,7 @@ _parent.动画完毕();
             </DOMFrame>
             <DOMFrame index="23" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 76" centerPoint3DX="92.15" centerPoint3DY="-2.75">
+                <DOMSymbolInstance libraryItemName="Symbol 76" selected="true" centerPoint3DX="92.15" centerPoint3DY="-2.75">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="79.65" ty="-15.25"/>
                   </matrix>
@@ -12113,34 +12500,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -12161,34 +12557,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -12209,34 +12614,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -12257,34 +12671,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -12305,34 +12728,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -12353,34 +12785,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -12528,7 +12969,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 112" color="#FFF148">
+        <DOMLayer name="Layer 112" color="#FFF148" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="129" keyMode="9728">
               <elements/>
@@ -12697,7 +13138,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 113" color="#5FFEB0">
+        <DOMLayer name="Layer 113" color="#5FFEB0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="18" keyMode="9728">
               <elements/>
@@ -12779,7 +13220,7 @@ _parent.动画完毕();
             </DOMFrame>
             <DOMFrame index="33" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 76" centerPoint3DX="29.9" centerPoint3DY="87.35">
+                <DOMSymbolInstance libraryItemName="Symbol 76" selected="true" centerPoint3DX="29.9" centerPoint3DY="87.35">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="17.4" ty="74.85"/>
                   </matrix>
@@ -12787,34 +13228,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -12962,7 +13412,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 114" color="#D7A86B">
+        <DOMLayer name="Layer 114" color="#D7A86B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="226" keyMode="9728">
               <elements/>
@@ -13020,7 +13470,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 115" color="#75AB66">
+        <DOMLayer name="Layer 115" color="#75AB66" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements/>
@@ -13050,34 +13500,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -13372,7 +13831,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 116" color="#61C2BA">
+        <DOMLayer name="Layer 116" color="#61C2BA" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="226" keyMode="9728">
               <elements/>
@@ -13430,7 +13889,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 117" color="#F540B4">
+        <DOMLayer name="Layer 117" color="#F540B4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="122" keyMode="9728">
               <elements/>
@@ -13719,7 +14178,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 118" color="#D177EC">
+        <DOMLayer name="Layer 118" color="#D177EC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="226" keyMode="9728">
               <elements/>
@@ -13777,7 +14236,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 119" color="#9FA289">
+        <DOMLayer name="Layer 119" color="#9FA289" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="129" keyMode="9728">
               <elements/>
@@ -13958,7 +14417,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 120" color="#7EA6E8">
+        <DOMLayer name="Layer 120" color="#7EA6E8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="226" keyMode="9728">
               <elements/>
@@ -14016,7 +14475,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 121" color="#BECA7D">
+        <DOMLayer name="Layer 121" color="#BECA7D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements/>
@@ -14272,7 +14731,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 122" color="#917588">
+        <DOMLayer name="Layer 122" color="#917588" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements/>
@@ -14624,7 +15083,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 123" color="#57AF80">
+        <DOMLayer name="Layer 123" color="#57AF80" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements/>
@@ -14781,7 +15240,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 124" color="#E13DE8">
+        <DOMLayer name="Layer 124" color="#E13DE8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements/>
@@ -14953,7 +15412,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 125" color="#5F8BA0">
+        <DOMLayer name="Layer 125" color="#5F8BA0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -14975,7 +15434,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 126" color="#E809E3">
+        <DOMLayer name="Layer 126" color="#E809E3" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="129" keyMode="9728">
               <elements/>
@@ -15216,7 +15675,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 127" color="#FC9CCC">
+        <DOMLayer name="Layer 127" color="#FC9CCC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -15253,7 +15712,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 128" color="#749583">
+        <DOMLayer name="Layer 128" color="#749583" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="226" keyMode="9728">
               <elements/>
@@ -15299,7 +15758,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 129" color="#C4B17D">
+        <DOMLayer name="Layer 129" color="#C4B17D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -15351,7 +15810,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 130" color="#D3ECF2">
+        <DOMLayer name="Layer 130" color="#D3ECF2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -15511,7 +15970,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 131" color="#C03ABC">
+        <DOMLayer name="Layer 131" color="#C03ABC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -15563,7 +16022,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 132" color="#6EA596">
+        <DOMLayer name="Layer 132" color="#6EA596" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -15723,7 +16182,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 133" color="#7475CE">
+        <DOMLayer name="Layer 133" color="#7475CE" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="24" keyMode="9728">
               <elements/>
@@ -15775,7 +16234,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 134" color="#B38376">
+        <DOMLayer name="Layer 134" color="#B38376" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -15899,7 +16358,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 135" color="#FC5D8A">
+        <DOMLayer name="Layer 135" color="#FC5D8A" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -15951,7 +16410,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 136" color="#6C83FB">
+        <DOMLayer name="Layer 136" color="#6C83FB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -16075,7 +16534,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 137" color="#CADF2A">
+        <DOMLayer name="Layer 137" color="#CADF2A" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="26" keyMode="9728">
               <elements/>
@@ -16127,7 +16586,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 138" color="#8F7E86">
+        <DOMLayer name="Layer 138" color="#8F7E86" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -16251,7 +16710,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 139" color="#757B93">
+        <DOMLayer name="Layer 139" color="#757B93" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -16303,7 +16762,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 140" color="#F97FAC">
+        <DOMLayer name="Layer 140" color="#F97FAC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -16427,7 +16886,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 141" color="#BAC879">
+        <DOMLayer name="Layer 141" color="#BAC879" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="28" keyMode="9728">
               <elements/>
@@ -16515,7 +16974,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 142" color="#A6DC14">
+        <DOMLayer name="Layer 142" color="#A6DC14" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="226" keyMode="9728">
               <elements/>
@@ -16537,7 +16996,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 143" color="#D85AC5">
+        <DOMLayer name="Layer 143" color="#D85AC5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements/>
@@ -16748,7 +17207,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 144" color="#CF67C5">
+        <DOMLayer name="Layer 144" color="#CF67C5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="226" keyMode="9728">
               <elements/>
@@ -16770,7 +17229,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 145" color="#DFCC73">
+        <DOMLayer name="Layer 145" color="#DFCC73" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements/>
@@ -16879,7 +17338,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 146" color="#5BBB7C">
+        <DOMLayer name="Layer 146" color="#5BBB7C" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="226" keyMode="9728">
               <elements/>
@@ -16937,7 +17396,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 147" color="#AAF172">
+        <DOMLayer name="Layer 147" color="#AAF172" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements/>
@@ -16982,34 +17441,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -17109,7 +17577,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 148" color="#9623EA">
+        <DOMLayer name="Layer 148" color="#9623EA" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements/>
@@ -17199,34 +17667,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -17368,7 +17845,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 149" color="#677DAC">
+        <DOMLayer name="Layer 149" color="#677DAC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements/>
@@ -17450,7 +17927,7 @@ _parent.动画完毕();
             </DOMFrame>
             <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 76" centerPoint3DX="109.75" centerPoint3DY="177.25">
+                <DOMSymbolInstance libraryItemName="Symbol 76" selected="true" centerPoint3DX="109.75" centerPoint3DY="177.25">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="97.25" ty="164.75"/>
                   </matrix>
@@ -17458,34 +17935,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -17627,7 +18113,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 150" color="#D79D8C">
+        <DOMLayer name="Layer 150" color="#D79D8C" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -17874,7 +18360,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 151" color="#B147BB">
+        <DOMLayer name="Layer 151" color="#B147BB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -18073,7 +18559,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 152" color="#F493A7">
+        <DOMLayer name="Layer 152" color="#F493A7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -18272,7 +18758,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 153" color="#E60D9F">
+        <DOMLayer name="Layer 153" color="#E60D9F" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements/>
@@ -18558,7 +19044,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 154" color="#9CC4A4">
+        <DOMLayer name="Layer 154" color="#9CC4A4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements/>
@@ -18796,7 +19282,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 155" color="#417EEB">
+        <DOMLayer name="Layer 155" color="#417EEB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements/>
@@ -18983,7 +19469,7 @@ _parent.动画完毕();
             </DOMFrame>
             <DOMFrame index="282" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 76" centerPoint3DX="-69.3" centerPoint3DY="104.8">
+                <DOMSymbolInstance libraryItemName="Symbol 76" selected="true" centerPoint3DX="-69.3" centerPoint3DY="104.8">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="-81.8" ty="92.3"/>
                   </matrix>
@@ -18991,34 +19477,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -19031,7 +19526,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 156" color="#AA2AD3">
+        <DOMLayer name="Layer 156" color="#AA2AD3" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements/>
@@ -19394,34 +19889,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -19434,7 +19938,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 157" color="#93F661" current="true" isSelected="true">
+        <DOMLayer name="Layer 157" color="#93F661" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements/>
@@ -19464,37 +19968,46 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "铁血飞弹";
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "铁血飞弹";
    if (_parent._parent.宠物属性.追踪飞弹){
 	   子弹种类 = "追踪铁血飞弹";
    }
-   子弹威力 = _parent._parent.空手攻击力 * 5;
-   子弹速度 = 30;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 0;
-   击中后子弹的效果 = "铁血弹爆炸";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 5;
+    子弹属性.子弹速度 = 30;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "铁血弹爆炸";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -19507,7 +20020,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 158" color="#8547BE">
+        <DOMLayer name="Layer 158" color="#8547BE" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="122" keyMode="9728">
               <elements/>
@@ -19855,34 +20368,43 @@ _parent.动画完毕();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 1;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -19895,7 +20417,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 159" color="#B66D89">
+        <DOMLayer name="Layer 159" color="#B66D89" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements/>
@@ -20007,7 +20529,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 160" color="#A66CA8">
+        <DOMLayer name="Layer 160" color="#A66CA8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -20149,7 +20671,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 161" color="#8C9B62">
+        <DOMLayer name="Layer 161" color="#8C9B62" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements/>
@@ -20348,7 +20870,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 162" color="#9DA3FE">
+        <DOMLayer name="Layer 162" color="#9DA3FE" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -20469,7 +20991,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 163" color="#14C4EB">
+        <DOMLayer name="Layer 163" color="#14C4EB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
@@ -20650,7 +21172,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 164" color="#89F381">
+        <DOMLayer name="Layer 164" color="#89F381" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -20861,7 +21383,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 165" color="#B0F191">
+        <DOMLayer name="Layer 165" color="#B0F191" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements/>
@@ -20919,7 +21441,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 166" color="#FEBA2F">
+        <DOMLayer name="Layer 166" color="#FEBA2F" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -21130,7 +21652,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 167" color="#26FF7A">
+        <DOMLayer name="Layer 167" color="#26FF7A" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="36" keyMode="9728">
               <elements/>
@@ -21197,7 +21719,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 168" color="#82E964">
+        <DOMLayer name="Layer 168" color="#82E964" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -21441,7 +21963,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 169" color="#B9B9C1">
+        <DOMLayer name="Layer 169" color="#B9B9C1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="257" keyMode="9728">
               <elements/>
@@ -21475,7 +21997,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 170" color="#80F03C">
+        <DOMLayer name="Layer 170" color="#80F03C" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="237" keyMode="9728">
               <elements/>
@@ -21533,7 +22055,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 171" color="#F930A5">
+        <DOMLayer name="Layer 171" color="#F930A5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="257" keyMode="9728">
               <elements/>
@@ -21567,7 +22089,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 172" color="#782AEC">
+        <DOMLayer name="Layer 172" color="#782AEC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="237" keyMode="9728">
               <elements/>
@@ -21613,7 +22135,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 173" color="#C3D7F3">
+        <DOMLayer name="Layer 173" color="#C3D7F3" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="36" keyMode="9728">
               <elements/>
@@ -21686,7 +22208,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 174" color="#FFACB8">
+        <DOMLayer name="Layer 174" color="#FFACB8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -21870,7 +22392,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 175" color="#98BB66">
+        <DOMLayer name="Layer 175" color="#98BB66" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="36" keyMode="9728">
               <elements/>
@@ -21943,7 +22465,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 176" color="#9580C9">
+        <DOMLayer name="Layer 176" color="#9580C9" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="184" keyMode="9728">
               <elements/>
@@ -22052,7 +22574,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 177" color="#960FEE">
+        <DOMLayer name="Layer 177" color="#960FEE" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="36" keyMode="9728">
               <elements/>
@@ -22125,7 +22647,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 178" color="#A19AE5">
+        <DOMLayer name="Layer 178" color="#A19AE5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="184" keyMode="9728">
               <elements/>
@@ -22234,7 +22756,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 179" color="#ABCA1D">
+        <DOMLayer name="Layer 179" color="#ABCA1D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="36" keyMode="9728">
               <elements/>
@@ -22307,7 +22829,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 180" color="#D58184">
+        <DOMLayer name="Layer 180" color="#D58184" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="36" keyMode="9728">
               <elements/>
@@ -22392,7 +22914,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 181" color="#A7F086">
+        <DOMLayer name="Layer 181" color="#A7F086" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="237" keyMode="9728">
               <elements/>
@@ -22465,7 +22987,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 182" color="#AEB29B">
+        <DOMLayer name="Layer 182" color="#AEB29B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="36" keyMode="9728">
               <elements/>
@@ -22553,7 +23075,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 183" color="#F082CF">
+        <DOMLayer name="Layer 183" color="#F082CF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="261" keyMode="9728">
               <elements/>
@@ -22635,7 +23157,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 184" color="#DF4A6B">
+        <DOMLayer name="Layer 184" color="#DF4A6B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="36" keyMode="9728">
               <elements/>
@@ -22795,7 +23317,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 185" color="#41DBDC">
+        <DOMLayer name="Layer 185" color="#41DBDC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="237" keyMode="9728">
               <elements/>
@@ -22841,7 +23363,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 186" color="#9A19F3">
+        <DOMLayer name="Layer 186" color="#9A19F3" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="37" keyMode="9728">
               <elements/>
@@ -22944,7 +23466,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 187" color="#E146A4">
+        <DOMLayer name="Layer 187" color="#E146A4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="237" keyMode="9728">
               <elements/>
@@ -22990,7 +23512,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 188" color="#B4F015">
+        <DOMLayer name="Layer 188" color="#B4F015" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements/>
@@ -23111,7 +23633,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 189" color="#884AD7">
+        <DOMLayer name="Layer 189" color="#884AD7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="237" keyMode="9728">
               <elements/>
@@ -23172,7 +23694,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 190" color="#E3D96D">
+        <DOMLayer name="Layer 190" color="#E3D96D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements/>
@@ -23230,7 +23752,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 191" color="#EC4FDB">
+        <DOMLayer name="Layer 191" color="#EC4FDB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="184" keyMode="9728">
               <elements/>
@@ -23378,7 +23900,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 192" color="#FB4DCB">
+        <DOMLayer name="Layer 192" color="#FB4DCB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -23586,7 +24108,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 193" color="#91CFC1">
+        <DOMLayer name="Layer 193" color="#91CFC1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="184" keyMode="9728">
               <elements/>
@@ -23734,7 +24256,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 194" color="#63D19A">
+        <DOMLayer name="Layer 194" color="#63D19A" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -24029,7 +24551,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 195" color="#C8B00C">
+        <DOMLayer name="Layer 195" color="#C8B00C" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -24324,7 +24846,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 196" color="#DB38EB">
+        <DOMLayer name="Layer 196" color="#DB38EB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -24670,7 +25192,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 197" color="#0BF2D4">
+        <DOMLayer name="Layer 197" color="#0BF2D4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -24989,7 +25511,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 198" color="#6DCDDF">
+        <DOMLayer name="Layer 198" color="#6DCDDF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -25353,7 +25875,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 199" color="#A1DFA7">
+        <DOMLayer name="Layer 199" color="#A1DFA7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -25732,7 +26254,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 200" color="#6786BA">
+        <DOMLayer name="Layer 200" color="#6786BA" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -26036,7 +26558,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 201" color="#CEC505">
+        <DOMLayer name="Layer 201" color="#CEC505" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="237" keyMode="9728">
               <elements/>
@@ -26082,7 +26604,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 202" color="#DBBC42">
+        <DOMLayer name="Layer 202" color="#DBBC42" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -26386,7 +26908,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 203" color="#E6B960">
+        <DOMLayer name="Layer 203" color="#E6B960" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="237" keyMode="9728">
               <elements/>
@@ -26432,7 +26954,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 204" color="#CB26C6">
+        <DOMLayer name="Layer 204" color="#CB26C6" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -26688,7 +27210,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 205" color="#CD8636">
+        <DOMLayer name="Layer 205" color="#CD8636" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="237" keyMode="9728">
               <elements/>
@@ -26722,7 +27244,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 206" color="#95DB37">
+        <DOMLayer name="Layer 206" color="#95DB37" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -26990,7 +27512,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 207" color="#B19BB3">
+        <DOMLayer name="Layer 207" color="#B19BB3" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="237" keyMode="9728">
               <elements/>
@@ -27024,7 +27546,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 208" color="#89CCDC">
+        <DOMLayer name="Layer 208" color="#89CCDC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -27292,7 +27814,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 209" color="#FD8CA9">
+        <DOMLayer name="Layer 209" color="#FD8CA9" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="237" keyMode="9728">
               <elements/>
@@ -27326,7 +27848,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 210" color="#F5CF41">
+        <DOMLayer name="Layer 210" color="#F5CF41" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -27654,7 +28176,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 211" color="#C1DC92">
+        <DOMLayer name="Layer 211" color="#C1DC92" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -27982,7 +28504,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 212" color="#7CE353">
+        <DOMLayer name="Layer 212" color="#7CE353" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -28247,7 +28769,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 213" color="#AF41C4">
+        <DOMLayer name="Layer 213" color="#AF41C4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -28500,7 +29022,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 214" color="#F4B522">
+        <DOMLayer name="Layer 214" color="#F4B522" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -28765,7 +29287,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 215" color="#DA63D7">
+        <DOMLayer name="Layer 215" color="#DA63D7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -29030,7 +29552,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 216" color="#E816D5">
+        <DOMLayer name="Layer 216" color="#E816D5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -29310,7 +29832,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 217" color="#E66AA8">
+        <DOMLayer name="Layer 217" color="#E66AA8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="249" keyMode="9728">
               <elements/>
@@ -29359,7 +29881,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 218" color="#B914E7">
+        <DOMLayer name="Layer 218" color="#B914E7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="161" keyMode="9728">
               <elements/>
@@ -29423,7 +29945,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 219" color="#94EE14">
+        <DOMLayer name="Layer 219" color="#94EE14" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -29838,7 +30360,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 220" color="#8EC1E5">
+        <DOMLayer name="Layer 220" color="#8EC1E5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements/>
@@ -30046,7 +30568,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 221" color="#F2FFEA">
+        <DOMLayer name="Layer 221" color="#F2FFEA" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -30182,7 +30704,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 222" color="#85EF5A">
+        <DOMLayer name="Layer 222" color="#85EF5A" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="60" keyMode="9728">
               <elements>
@@ -30245,7 +30767,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 0" color="#62E6E0">
+        <DOMLayer name="Sound Layer 0" color="#62E6E0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -30258,7 +30780,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 1" color="#B7AF9B">
+        <DOMLayer name="Sound Layer 1" color="#B7AF9B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
@@ -30271,7 +30793,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 2" color="#BF816D">
+        <DOMLayer name="Sound Layer 2" color="#BF816D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="68" keyMode="9728">
               <elements/>
@@ -30284,7 +30806,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 3" color="#CFFBF9">
+        <DOMLayer name="Sound Layer 3" color="#CFFBF9" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="107" keyMode="9728">
               <elements/>
@@ -30297,7 +30819,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 4" color="#F0AA69">
+        <DOMLayer name="Sound Layer 4" color="#F0AA69" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="119" keyMode="9728">
               <elements/>
@@ -30310,7 +30832,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 5" color="#92F7CD">
+        <DOMLayer name="Sound Layer 5" color="#92F7CD" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="157" keyMode="9728">
               <elements/>
@@ -30323,7 +30845,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 6" color="#602DF4">
+        <DOMLayer name="Sound Layer 6" color="#602DF4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="161" keyMode="9728">
               <elements/>
@@ -30336,7 +30858,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 7" color="#B72CF6">
+        <DOMLayer name="Sound Layer 7" color="#B72CF6" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="234" keyMode="9728">
               <elements/>
@@ -30349,7 +30871,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 8" color="#9FE70E">
+        <DOMLayer name="Sound Layer 8" color="#9FE70E" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="246" keyMode="9728">
               <elements/>
@@ -30362,7 +30884,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 9" color="#F4F3A0">
+        <DOMLayer name="Sound Layer 9" color="#F4F3A0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="276" keyMode="9728">
               <elements/>
@@ -30375,7 +30897,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 10" color="#F43BED">
+        <DOMLayer name="Sound Layer 10" color="#F43BED" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="310" keyMode="9728">
               <elements/>
@@ -30388,7 +30910,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 11" color="#DF24F2">
+        <DOMLayer name="Sound Layer 11" color="#DF24F2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="327" keyMode="9728">
               <elements/>

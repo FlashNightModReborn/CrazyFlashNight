@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 967" itemID="65e1d4ea-00000565" lastModified="1730303891" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 967" itemID="65e1d4ea-00000565" lastModified="1755246168" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="Symbol 967" currentFrame="35">
+    <DOMTimeline name="Symbol 967" currentFrame="27">
       <layers>
-        <DOMLayer name="Script Layer" color="#7CC46D" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#7CC46D">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -101,7 +101,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#A8AFC7" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 2" color="#A8AFC7" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -116,34 +116,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -164,34 +173,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -212,34 +230,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -260,34 +287,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -308,34 +344,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -348,7 +393,7 @@
             </DOMFrame>
             <DOMFrame index="23" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 76" centerPoint3DX="-43.05" centerPoint3DY="-25.9">
+                <DOMSymbolInstance libraryItemName="Symbol 76" selected="true" centerPoint3DX="-43.05" centerPoint3DY="-25.9">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="-55.55" ty="-38.4"/>
                   </matrix>
@@ -356,34 +401,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -404,34 +458,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -445,34 +508,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -493,34 +565,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -541,34 +622,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -589,34 +679,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -636,7 +735,7 @@
             </DOMFrame>
             <DOMFrame index="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 76" centerPoint3DX="11.95" centerPoint3DY="-32.9">
+                <DOMSymbolInstance libraryItemName="Symbol 76" selected="true" centerPoint3DX="11.95" centerPoint3DY="-32.9">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="-0.55" ty="-45.4"/>
                   </matrix>
@@ -644,34 +743,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -692,34 +800,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -732,7 +849,7 @@
             </DOMFrame>
             <DOMFrame index="13" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 76" centerPoint3DX="19.45" centerPoint3DY="-40.85">
+                <DOMSymbolInstance libraryItemName="Symbol 76" selected="true" centerPoint3DX="19.45" centerPoint3DY="-40.85">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="6.95" ty="-53.35"/>
                   </matrix>
@@ -740,34 +857,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -780,7 +906,7 @@
             </DOMFrame>
             <DOMFrame index="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 76" centerPoint3DX="11.95" centerPoint3DY="-41.9">
+                <DOMSymbolInstance libraryItemName="Symbol 76" selected="true" centerPoint3DX="11.95" centerPoint3DY="-41.9">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="-0.55" ty="-54.4"/>
                   </matrix>
@@ -788,34 +914,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -828,7 +963,7 @@
             </DOMFrame>
             <DOMFrame index="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 76" centerPoint3DX="11.95" centerPoint3DY="-30.9">
+                <DOMSymbolInstance libraryItemName="Symbol 76" selected="true" centerPoint3DX="11.95" centerPoint3DY="-30.9">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="-0.55" ty="-43.4"/>
                   </matrix>
@@ -836,34 +971,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -884,34 +1028,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -932,34 +1085,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -973,34 +1135,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -1013,7 +1184,7 @@
             </DOMFrame>
             <DOMFrame index="30" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 76" centerPoint3DX="11.95" centerPoint3DY="-34.9">
+                <DOMSymbolInstance libraryItemName="Symbol 76" selected="true" centerPoint3DX="11.95" centerPoint3DY="-34.9">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="-0.55" ty="-47.4"/>
                   </matrix>
@@ -1021,34 +1192,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -1061,7 +1241,7 @@
             </DOMFrame>
             <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 76" centerPoint3DX="11.95" centerPoint3DY="-33.9">
+                <DOMSymbolInstance libraryItemName="Symbol 76" selected="true" centerPoint3DX="11.95" centerPoint3DY="-33.9">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="-0.55" ty="-46.4"/>
                   </matrix>
@@ -1069,34 +1249,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -1117,34 +1306,43 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化子弹属性
+    子弹属性 = _root.子弹属性初始化(this);
+
+    // 设置基本属性
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 0;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";
+
+    // 击退速度设置为NaN（原代码中没有击退速度参数）
+    子弹属性.水平击退速度 = NaN;
+    子弹属性.垂直击退速度 = NaN;
+    子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "原体";
+
+    // 坐标转换
+    var myPoint = {x:this._x, y:this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    // 设置发射坐标和发射者信息
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 调用新的子弹发射函数
+    _root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
