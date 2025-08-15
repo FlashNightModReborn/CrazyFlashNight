@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-黄色铁血战士" itemID="67e3c934-00000976" linkageExportForAS="true" linkageIdentifier="敌人-黄色铁血战士" lastModified="1746448780">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-黄色铁血战士" itemID="67e3c934-00000976" linkageExportForAS="true" linkageIdentifier="敌人-黄色铁血战士" lastModified="1755245185">
   <timeline>
-    <DOMTimeline name="敌人-黄色铁血战士">
+    <DOMTimeline name="敌人-黄色铁血战士" currentFrame="88">
       <layers>
         <DOMLayer name="Labels Layer" color="#D15EDF" locked="true">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#6DE55D" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#6DE55D" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -460,7 +460,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 13" color="#6EF7C6">
+        <DOMLayer name="Layer 13" color="#6EF7C6" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -666,7 +666,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="88" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 951" name="man" centerPoint3DX="451.25" centerPoint3DY="273.2">
+                <DOMSymbolInstance libraryItemName="Symbol 951" name="man" selected="true" centerPoint3DX="451.25" centerPoint3DY="273.2">
                   <matrix>
                     <Matrix tx="409.1" ty="177.8"/>
                   </matrix>

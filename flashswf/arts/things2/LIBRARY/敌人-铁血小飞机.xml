@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-铁血小飞机" itemID="67e3c926-00000970" linkageExportForAS="true" linkageIdentifier="敌人-铁血小飞机" lastModified="1747135048" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="敌人-铁血小飞机">
+    <DOMTimeline name="敌人-铁血小飞机" currentFrame="27">
       <layers>
         <DOMLayer name="Labels Layer" color="#ED21FB" locked="true">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#B0E910" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#B0E910" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -347,7 +347,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#E3FD2F">
+        <DOMLayer name="Layer 9" color="#E3FD2F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -376,7 +376,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 965" name="man" centerPoint3DX="32.4" centerPoint3DY="179.65">
+                <DOMSymbolInstance libraryItemName="Symbol 965" name="man" selected="true" centerPoint3DX="32.4" centerPoint3DY="179.65">
                   <matrix>
                     <Matrix tx="-18.05" ty="67.65"/>
                   </matrix>
@@ -400,7 +400,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="19" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 966" name="man" centerPoint3DX="32.4" centerPoint3DY="179.65">
+                <DOMSymbolInstance libraryItemName="Symbol 966" name="man" selected="true" centerPoint3DX="32.4" centerPoint3DY="179.65">
                   <matrix>
                     <Matrix tx="-18.05" ty="67.65"/>
                   </matrix>
@@ -427,7 +427,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 967" name="man" centerPoint3DX="50.75" centerPoint3DY="101.1">
+                <DOMSymbolInstance libraryItemName="Symbol 967" name="man" selected="true" centerPoint3DX="50.75" centerPoint3DY="101.1">
                   <matrix>
                     <Matrix tx="6.45" ty="11.5"/>
                   </matrix>
@@ -465,7 +465,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="61" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 963" name="man" centerPoint3DX="31.4" centerPoint3DY="179.4">
+                <DOMSymbolInstance libraryItemName="Symbol 963" name="man" selected="true" centerPoint3DX="31.4" centerPoint3DY="179.4">
                   <matrix>
                     <Matrix tx="-19.05" ty="68.15"/>
                   </matrix>

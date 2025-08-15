@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-红色铁血战士" itemID="67e3c937-00000977" linkageExportForAS="true" linkageIdentifier="敌人-红色铁血战士" lastModified="1742981431">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-红色铁血战士" itemID="67e3c937-00000977" linkageExportForAS="true" linkageIdentifier="敌人-红色铁血战士" lastModified="1742981431" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="敌人-红色铁血战士" currentFrame="126">
       <layers>
@@ -565,7 +565,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 807" name="man" centerPoint3DX="367.8" centerPoint3DY="30.45">
+                <DOMSymbolInstance libraryItemName="Symbol 807" name="man" selected="true" centerPoint3DX="367.8" centerPoint3DY="30.45">
                   <matrix>
                     <Matrix tx="6.45" ty="-63.5"/>
                   </matrix>
