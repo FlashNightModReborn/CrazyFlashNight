@@ -4,6 +4,9 @@ import org.flashNight.naki.RandomNumberEngine.*;
 import org.flashNight.arki.unit.UnitAI.BaseUnitBehavior;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
 import org.flashNight.arki.spatial.move.*;
+import org.flashNight.sara.util.*;
+import org.flashNight.arki.render.*;
+import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 
 // 场景中佣兵与可雇佣敌人NPC的状态机，继承单位状态机基类
 
@@ -15,7 +18,8 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
     public static var WALK_MAX_TIME:Number = 40; // 移动状态最长40次action（160帧）切换状态
     public static var WANDER_MIN_TIME:Number = 15; // 漫游状态最短15次action（60帧）切换状态
     public static var WANDER_MAX_TIME:Number = 50; // 漫游状态最长50次action（200帧）切换状态
-    public static var ALIVE_MAX_TIME:Number = 20 * 30; // 最大存活20s
+    public static var ALIVE_MAX_TIME:Number = 30 * 30; // 最大存活30s
+    public static var STUCK_COUNT_MAX:Number = 3;
 
     public function MecenaryBehavior(_data:UnitAIData){
         super(_data);
@@ -53,6 +57,7 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
     // 思考
     public function think():Void{
         var self:MovieClip = data.self;
+
         if(_root.帧计时器.当前帧数 - data.createdFrame > ALIVE_MAX_TIME) {
             self.删除可雇用单位();
             return;
@@ -66,18 +71,26 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
             for (var 单位 in _root.gameworld){
                 var 出生点 = _root.gameworld[单位];
                 if (出生点.是否从门加载主角 && 单位 != "出生地"){
-                    if(!Mover.isReachable(self, 出生点, 10)) {
+                    if(Mover.isReachable(self, 出生点, 50, true)) {
                         出生点列表.push(出生点);
                     } else {
-                        _root.发布消息(出生点,"unReachable");
+                        // _root.发布消息(出生点,"unReachable");
                     }
+                    
                 }
             }
             if(出生点列表.length > 0){
                 data.target = engine.getRandomArrayElement(出生点列表);
                 data.updateTarget();
+                if(true) {
+                    var aabb:AABB = AABB.fromMovieClip(data.target, 0);
+                    AABBRenderer.renderAABB(AABBCollider.fromAABB(aabb), 0, "filled");
+                }
+                
                 if(data.absdiff_x < 100 && data.absdiff_z < 50){
                     newstate = "Idle"; // 若离目标门太近则先进入Idle
+                } else {
+                    newstate = engine.randomCheckHalf() ? "Idle" : "Walking"; // 避免佣兵停留时间太短，概率逗留
                 }
             }else{
                 // 找不到目标时进入漫游状态
@@ -85,22 +98,38 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
             }
         }
         if(newstate == null){
-            newstate = engine.randomCheckHalf() ? "Idle" : "Walking"; // 否则有1/2的几率进入Walking，1/2的几率进入Idle
+            newstate = engine.randomCheckHalf() ? "Idle" : "Walking"; // 兜底
         }
 
         // _root.发布消息(self, "think");
+
         this.superMachine.ChangeState(newstate);
     }
 
     // 移动
     public function walk():Void{
-        data.updateSelf(); // 更新自身坐标
-        data.updateTarget(); // 更新目标出生点坐标
+        // 更新目标出生点坐标,并且检查是否卡死
+        var sm = this.superMachine;
+        if(sm.actionCount % 4 == 0) {
+            var isStuck:Boolean = data.stuckProbeByDiffChange(true, 8, 3); 
+            
+            // 如果检测到卡死，切换到漫游状态以获得自行解困能力
+            if(isStuck){
+                this.superMachine.ChangeState("Wandering");
+                _root.发布消息(data.self, "检测到卡死，切换到漫游模式");
+                return;
+            }
+        } else {
+            data.updateTarget();
+        }
+
+        
         if(data.absdiff_x < 50 && data.absdiff_z < 25){
             data.self.删除可雇用单位();
             return;
         }
-        var sm = this.superMachine;
+
+
         if(sm.actionCount % 4 == 0){
             //每5次action判定移动方向
             var self = data.self;
