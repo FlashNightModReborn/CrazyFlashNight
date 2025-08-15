@@ -464,10 +464,14 @@ class org.flashNight.neur.Navigation.AStarGridTest
         var walk:Array = [[1,1,1,1,1,1,1],
                           [1,0,0,0,0,0,1],
                           [1,0,1,1,1,0,1],
-                          [1,0,1,1,1,0,1], // 把(3,3)改为可走
+                          [1,0,1,1,1,0,1], // 目标点(3,3)可走
                           [1,0,1,1,1,0,1],
                           [1,0,0,0,0,0,1],
                           [1,1,1,1,1,1,1]];
+        
+        // 关键修复：在螺旋墙上开一个门，连接内外区域
+        walk[2][1] = 1; // 在(1,2)位置开门
+        
         nav.setWalkableMatrix(walk);
         
         var path:Array = nav.find(0, 0, 3, 3);
@@ -592,37 +596,35 @@ class org.flashNight.neur.Navigation.AStarGridTest
         var name:String = "最大扩展限制测试";
         begin(name);
         
-        var nav:AStarGrid = new AStarGrid(10, 10, true, false); // 改为允许对角线
+        var nav:AStarGrid = new AStarGrid(10, 10, false, false); // 使用4向寻路更易构造长路径
         
-        // 设置一个需要较多搜索的复杂路径
+        // 创建一个"梳子"形状的迷宫，强制路径变长
         var walk:Array = [];
         var y:Number = 0;
         while (y < 10) {
-            var row:Array = [];
-            var x:Number = 0;
-            while (x < 10) {
-                // 棋盘模式，但确保起点邻居可达
-                if ((x + y) % 2 == 0 || y == 9) {
-                    row.push(1);
-                } else {
-                    row.push(0);
-                }
-                x++;
-            }
+            var row:Array = [1,1,1,1,1,1,1,1,1,1];
             walk.push(row);
             y++;
         }
-        // 确保起点(0,0)的邻居至少有一个可达
-        walk[0][1] = 1; // 确保(0,1)可走
-        walk[1][0] = 1; // 确保(1,0)可走
+
+        // 制造垂直的墙壁，形成梳子状迷宫
+        var x:Number = 1;
+        while (x < 9) {
+            y = 0;
+            while (y < 8) {
+                walk[y][x] = 0;
+                y++;
+            }
+            x += 2;
+        }
         nav.setWalkableMatrix(walk);
         
-        // 限制很小的扩展次数
-        var pathLimited:Array = nav.find(0, 0, 9, 9, 5);
+        // 限制很小的扩展次数，此时应找不到终点
+        var pathLimited:Array = nav.find(0, 0, 9, 0, 15);
         assertNull(pathLimited, "扩展限制应阻止找到路径");
         
-        // 不限制扩展次数
-        var pathUnlimited:Array = nav.find(0, 0, 9, 9);
+        // 不限制扩展次数，应该能找到一条很长的路径
+        var pathUnlimited:Array = nav.find(0, 0, 9, 0);
         assertNotNull(pathUnlimited, "无限制应找到路径");
         
         end();
@@ -940,7 +942,6 @@ class org.flashNight.neur.Navigation.AStarGridTest
     // ========== 断言 & 工具 ==========
     private static function begin(name:String):Void
     {
-        total++;
         log("— 用例开始：「"+name+"」");
         _currentName = name;
         _currentFailed = false;
@@ -954,6 +955,10 @@ class org.flashNight.neur.Navigation.AStarGridTest
             log("  用例完成（性能/记录型，不计入通过/失败）。");
             return;
         }
+        
+        // 只有非性能测试才计入total
+        total++;
+        
         if (_currentFailed) {
             failed++;
             log("  ⇒ 结果：失败");
