@@ -94,8 +94,6 @@ _root.物品图标注释 = function(name, value) {
 
     // 调用注释函数，传递计算出的宽度和文本内容
     if(完整文本.length > 64) {
-        _root.注释框.文本框._visible = true;
-        _root.注释框.背景._visible = true;
         _root.注释(计算宽度, 完整文本);
         _root.注释物品图标(true, name, value);
     } else {
@@ -502,10 +500,16 @@ _root.注释物品图标 = function(enable:Boolean, name:String, value:Object, e
 
 
 _root.注释 = function(宽度, 内容, 框体) {
-    框体 = 框体 || "";
+    if(!框体) {
+        框体 = "";
+        _root.注释框.文本框._visible = true;
+        _root.注释框.背景._visible = true;
+    }
+    
     var tips:MovieClip = _root.注释框;
     var target:MovieClip = tips[框体 + "文本框"];
     var background:MovieClip = tips[框体 + "背景"]
+
     tips._visible = true;
     target.htmlText = 内容;
     target._width = 宽度;
@@ -563,31 +567,19 @@ _root.注释结束 = function() {
     _root.注释物品图标(false);
     
     // 清理文本框内容
-    if (_root.注释框.文本框) {
-        _root.注释框.文本框.htmlText = "";
-        _root.注释框.文本框._visible = false;
-    }
-    
-    if (_root.注释框.简介文本框) {
-        _root.注释框.简介文本框.htmlText = "";
-        _root.注释框.简介文本框._visible = false;
-    }
+    _root.注释框.文本框.htmlText = "";
+    _root.注释框.文本框._visible = false;
+    _root.注释框.简介文本框.htmlText = "";
+    _root.注释框.简介文本框._visible = false;
     
     // 清理背景可见性
-    if (_root.注释框.背景) {
-        _root.注释框.背景._visible = false;
-    }
-    
-    if (_root.注释框.简介背景) {
-        _root.注释框.简介背景._visible = false;
-    }
+    _root.注释框.背景._visible = false;
+    _root.注释框.简介背景._visible = false;
     
     // 清理物品图标定位和图标
-    if (_root.注释框.物品图标定位) {
-        _root.注释框.物品图标定位._visible = false;
-        if (_root.注释框.物品图标定位.icon) {
-            _root.注释框.物品图标定位.icon.removeMovieClip();
-        }
+    _root.注释框.物品图标定位._visible = false;
+    if (_root.注释框.物品图标定位.icon) {
+        _root.注释框.物品图标定位.icon.removeMovieClip();
     }
 };
 
