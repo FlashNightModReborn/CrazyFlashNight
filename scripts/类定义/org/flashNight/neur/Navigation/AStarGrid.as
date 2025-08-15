@@ -75,7 +75,7 @@ class org.flashNight.neur.Navigation.AStarGrid
         while (i < _size)
         {
             _walk[i] = 1;
-            _weight[i] = 1;
+            _weight[i] = 0; // 默认无额外地形成本
             _g[i] = 0;
             _f[i] = 0;
             _parent[i] = -1;
@@ -159,7 +159,7 @@ class org.flashNight.neur.Navigation.AStarGrid
                 {
                     idx = y * _w + x;
                     var wv:Number = row[x];
-                    _weight[idx] = (wv >= 1) ? wv : 1;
+                    _weight[idx] = (wv >= 0) ? wv : 0;
                     x++;
                 }
                 y++;
@@ -171,7 +171,7 @@ class org.flashNight.neur.Navigation.AStarGrid
             while (i < _size)
             {
                 var v:Number = matrix[i];
-                _weight[i] = (v >= 1) ? v : 1;
+                _weight[i] = (v >= 0) ? v : 0;
                 i++;
             }
         }
@@ -186,7 +186,7 @@ class org.flashNight.neur.Navigation.AStarGrid
     public function setWeight(x:Number, y:Number, v:Number):Void
     {
         if (!inBounds(x, y)) return;
-        if (v < 1) v = 1;
+        if (v < 0) v = 0; // 权重不能为负
         _weight[y * _w + x] = v;
     }
 
@@ -208,6 +208,13 @@ class org.flashNight.neur.Navigation.AStarGrid
         // 清空开放堆状态（仅结构，不清空整个数组，使用 searchId 复用）
         _openHeap.splice(0, _openHeap.length);
         _openCount = 0;
+        
+        // 重要：清空开放表位置标记，避免上次搜索残留状态污染
+        var i:Number = 0;
+        while (i < _size) {
+            _openPos[i] = 0;
+            i++;
+        }
 
         // 增加搜索轮次标记
         _searchId++;
@@ -237,6 +244,11 @@ class org.flashNight.neur.Navigation.AStarGrid
 
             _closedMark[curIdx] = _searchId;
             expanded++;
+            
+            // 保险阈值：防止实现bug导致卡死，理论上永远不会触发
+            if (expanded > _size) {
+                return null;
+            }
 
             // 当前坐标
             cx = curIdx % _w;
@@ -268,10 +280,9 @@ class org.flashNight.neur.Navigation.AStarGrid
             dys = [ 0, 0, 1,-1 ];
         }
 
-        var i:Number = 0;
         var len:Number = dxs.length;
 
-        while (i < len)
+        for (var i:Number = 0; i < len; i++)
         {
             var nx:Number = cx + dxs[i];
             var ny:Number = cy + dys[i];
@@ -291,14 +302,14 @@ class org.flashNight.neur.Navigation.AStarGrid
                         var side2Walk:Number = _walk[ny * _w + cx];
                         if (side1Walk == 0 || side2Walk == 0)
                         {
-                            i++;
+                            // 跳过此方向，循环末尾会自动递增i
                             continue;
                         }
                     }
 
-                    // 计算移动代价
+                    // 计算移动代价（权重作为额外成本，而非倍率）
                     var stepCost:Number = diag ? COST_DIAGONAL : COST_STRAIGHT;
-                    var tentativeG:Number = _g[curIdx] + stepCost * _weight[nIdx];
+                    var tentativeG:Number = _g[curIdx] + stepCost + _weight[nIdx];
 
                     var pos:Number = _openPos[nIdx]; // 在堆中的位置（0=不在）
                     if (pos == 0)
@@ -323,7 +334,6 @@ class org.flashNight.neur.Navigation.AStarGrid
                     }
                 }
             }
-            i++;
         }
     }
 
@@ -365,9 +375,10 @@ class org.flashNight.neur.Navigation.AStarGrid
         }
         else if (_heuristicType == 1)
         {
-            // Diagonal / Octile
+            // Diagonal / Octile: 14*min + 10*(max-min) = 10*max + 4*min
             var mn:Number = (dx < dy) ? dx : dy;
-            return (dx + dy) * 10 + (mn * 4);
+            var mx:Number = (dx > dy) ? dx : dy;
+            return mx * 10 + mn * 4;
         }
         else
         {

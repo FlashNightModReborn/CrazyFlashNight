@@ -35,9 +35,45 @@ class org.flashNight.neur.Navigation.AStarGridTest
         test_no_path();
         test_resize_then_find();
         test_determinism();
+        
+        // 边界条件测试
+        test_boundary_coordinates();
+        test_single_cell_grid();
+        test_narrow_corridors();
+        test_maze_like_paths();
+        test_out_of_bounds_requests();
+        test_invalid_start_or_goal();
+        
+        // 权重和可达性测试
+        test_extreme_weights();
+        test_mixed_terrain_weights();
+        test_partial_blocked_grid();
+        test_spiral_obstacle_pattern();
+        
+        // 启发式函数测试
+        test_different_heuristics();
+        test_heuristic_consistency();
+        
+        // 对角线和卡角测试
+        test_diagonal_vs_straight_cost();
+        test_complex_corner_cutting();
+        test_tight_diagonal_passages();
+        
+        // 搜索限制测试
+        test_max_expand_limit();
+        test_very_long_paths();
+        
+        // 极端尺寸测试
+        test_large_grid_pathfinding();
+        test_grid_edge_cases();
 
-        // 性能烟雾（不以耗时判定成败，只记录）
-        if (doPerf) perf_smoke(seed);
+        // 性能和压力测试（不以耗时判定成败，只记录）
+        if (doPerf) {
+            perf_smoke(seed);
+            perf_stress_diagonal_heavy(seed);
+            perf_worst_case_scenarios(seed);
+            perf_memory_intensive(seed);
+        }
 
         log("==== [A* 测试结束] 通过: " + passed + "/" + total + "  失败: " + failed + " ====");
     }
@@ -209,6 +245,457 @@ class org.flashNight.neur.Navigation.AStarGridTest
         end();
     }
 
+    // ========== 边界条件测试 ==========
+    private static function test_boundary_coordinates():Void
+    {
+        var name:String = "边界坐标寻路测试";
+        begin(name);
+        
+        var nav:AStarGrid = new AStarGrid(5, 5, true, false);
+        
+        // 测试四个角落之间的路径
+        var path1:Array = nav.find(0, 0, 4, 4);
+        assertNotNull(path1, "左上到右下应有路径");
+        assertPoint(path1[0], 0, 0, "起点应为(0,0)");
+        assertPoint(path1[path1.length-1], 4, 4, "终点应为(4,4)");
+        
+        var path2:Array = nav.find(4, 0, 0, 4);
+        assertNotNull(path2, "右上到左下应有路径");
+        
+        var path3:Array = nav.find(0, 4, 4, 0);
+        assertNotNull(path3, "左下到右上应有路径");
+        
+        end();
+    }
+
+    private static function test_single_cell_grid():Void
+    {
+        var name:String = "单格网格测试";
+        begin(name);
+        
+        var nav:AStarGrid = new AStarGrid(1, 1, true, false);
+        var path:Array = nav.find(0, 0, 0, 0);
+        assertNotNull(path, "单格网格应返回路径");
+        assertEqual(path.length, 1, "单格路径长度应为1");
+        assertPoint(path[0], 0, 0, "单格路径应为起点");
+        
+        end();
+    }
+
+    private static function test_narrow_corridors():Void
+    {
+        var name:String = "狭窄通道测试";
+        begin(name);
+        
+        var nav:AStarGrid = new AStarGrid(7, 3, false, false);
+        var walk:Array = [[1,0,1,0,1,0,1],
+                          [1,1,1,1,1,1,1],
+                          [1,0,1,0,1,0,1]];
+        nav.setWalkableMatrix(walk);
+        
+        var path:Array = nav.find(0, 1, 6, 1);
+        assertNotNull(path, "应能通过狭窄通道");
+        assertEqual(path.length, 7, "通道路径长度应为7");
+        
+        // 测试所有路径点都在y=1这一行
+        var allInCorridor:Boolean = true;
+        var i:Number = 0;
+        while (i < path.length) {
+            if (path[i].y != 1) { allInCorridor = false; break; }
+            i++;
+        }
+        assertTrue(allInCorridor, "路径应完全在通道内");
+        
+        end();
+    }
+
+    private static function test_maze_like_paths():Void
+    {
+        var name:String = "迷宫式路径测试";
+        begin(name);
+        
+        var nav:AStarGrid = new AStarGrid(5, 5, false, false);
+        var walk:Array = [[1,1,0,1,1],
+                          [0,1,0,1,0],
+                          [1,1,1,1,1],
+                          [0,1,0,1,0],
+                          [1,1,0,1,1]];
+        nav.setWalkableMatrix(walk);
+        
+        var path:Array = nav.find(0, 0, 4, 4);
+        assertNotNull(path, "迷宫应有解");
+        assertTrue(path.length > 5, "迷宫路径应较长");
+        
+        end();
+    }
+
+    private static function test_out_of_bounds_requests():Void
+    {
+        var name:String = "越界请求测试";
+        begin(name);
+        
+        var nav:AStarGrid = new AStarGrid(3, 3, true, false);
+        
+        var path1:Array = nav.find(-1, 0, 2, 2);
+        assertNull(path1, "起点越界应返回null");
+        
+        var path2:Array = nav.find(0, 0, 5, 2);
+        assertNull(path2, "终点越界应返回null");
+        
+        var path3:Array = nav.find(-1, -1, 5, 5);
+        assertNull(path3, "起终点都越界应返回null");
+        
+        end();
+    }
+
+    private static function test_invalid_start_or_goal():Void
+    {
+        var name:String = "起终点不可达测试";
+        begin(name);
+        
+        var nav:AStarGrid = new AStarGrid(3, 3, false, false);
+        var walk:Array = [[0,1,1],
+                          [1,1,1],
+                          [1,1,0]];
+        nav.setWalkableMatrix(walk);
+        
+        var path1:Array = nav.find(0, 0, 2, 2);
+        assertNull(path1, "起点不可走应返回null");
+        
+        var path2:Array = nav.find(1, 1, 2, 2);
+        assertNull(path2, "终点不可走应返回null");
+        
+        end();
+    }
+
+    // ========== 权重和可达性测试 ==========
+    private static function test_extreme_weights():Void
+    {
+        var name:String = "极端权重测试";
+        begin(name);
+        
+        var nav:AStarGrid = new AStarGrid(3, 3, false, false);
+        var weight:Array = [[0,1000,0],
+                            [0,1000,0],
+                            [0,0,0]];
+        nav.setWeightMatrix(weight);
+        
+        var path:Array = nav.find(0, 0, 2, 0);
+        assertNotNull(path, "应能绕开极高权重");
+        
+        // 检查路径是否绕开了中间列
+        var avoidsHighWeight:Boolean = true;
+        var i:Number = 0;
+        while (i < path.length) {
+            if (path[i].x == 1) { avoidsHighWeight = false; break; }
+            i++;
+        }
+        assertTrue(avoidsHighWeight, "应绕开高权重区域");
+        
+        end();
+    }
+
+    private static function test_mixed_terrain_weights():Void
+    {
+        var name:String = "混合地形权重测试";
+        begin(name);
+        
+        var nav:AStarGrid = new AStarGrid(4, 4, true, false);
+        var weight:Array = [[0,1,2,3],
+                            [1,2,3,4],
+                            [2,3,4,5],
+                            [3,4,5,6]];
+        nav.setWeightMatrix(weight);
+        
+        var path:Array = nav.find(0, 0, 3, 3);
+        assertNotNull(path, "混合权重应找到路径");
+        
+        // 计算路径总权重，应该选择较优路径
+        var totalWeight:Number = 0;
+        var i:Number = 0;
+        while (i < path.length) {
+            var px:Number = path[i].x;
+            var py:Number = path[i].y;
+            totalWeight += weight[py][px];
+            i++;
+        }
+        assertTrue(totalWeight > 0, "路径权重应为正值");
+        
+        end();
+    }
+
+    private static function test_partial_blocked_grid():Void
+    {
+        var name:String = "部分阻塞网格测试";
+        begin(name);
+        
+        var nav:AStarGrid = new AStarGrid(6, 6, true, false);
+        var walk:Array = [];
+        var y:Number = 0;
+        while (y < 6) {
+            var row:Array = [1,1,1,1,1,1];
+            walk.push(row);
+            y++;
+        }
+        
+        // 创建一个"L"型障碍
+        walk[2][2] = 0; walk[2][3] = 0; walk[2][4] = 0;
+        walk[3][2] = 0; walk[4][2] = 0;
+        nav.setWalkableMatrix(walk);
+        
+        var path:Array = nav.find(1, 1, 5, 5);
+        assertNotNull(path, "应能绕过L型障碍");
+        
+        end();
+    }
+
+    private static function test_spiral_obstacle_pattern():Void
+    {
+        var name:String = "螺旋障碍模式测试";
+        begin(name);
+        
+        var nav:AStarGrid = new AStarGrid(7, 7, false, false);
+        var walk:Array = [[1,1,1,1,1,1,1],
+                          [1,0,0,0,0,0,1],
+                          [1,0,1,1,1,0,1],
+                          [1,0,1,0,1,0,1],
+                          [1,0,1,1,1,0,1],
+                          [1,0,0,0,0,0,1],
+                          [1,1,1,1,1,1,1]];
+        nav.setWalkableMatrix(walk);
+        
+        var path:Array = nav.find(0, 0, 3, 3);
+        assertNotNull(path, "应能通过螺旋障碍");
+        
+        end();
+    }
+
+    // ========== 启发式函数测试 ==========
+    private static function test_different_heuristics():Void
+    {
+        var name:String = "不同启发式函数测试";
+        begin(name);
+        
+        var nav:AStarGrid = new AStarGrid(5, 5, true, false);
+        
+        // 测试Manhattan距离
+        nav.setHeuristic(0);
+        var pathManhattan:Array = nav.find(0, 0, 4, 4);
+        assertNotNull(pathManhattan, "Manhattan启发式应找到路径");
+        
+        // 测试Diagonal距离
+        nav.setHeuristic(1);
+        var pathDiagonal:Array = nav.find(0, 0, 4, 4);
+        assertNotNull(pathDiagonal, "Diagonal启发式应找到路径");
+        
+        // 测试Euclidean距离
+        nav.setHeuristic(2);
+        var pathEuclidean:Array = nav.find(0, 0, 4, 4);
+        assertNotNull(pathEuclidean, "Euclidean启发式应找到路径");
+        
+        end();
+    }
+
+    private static function test_heuristic_consistency():Void
+    {
+        var name:String = "启发式一致性测试";
+        begin(name);
+        
+        var nav:AStarGrid = new AStarGrid(8, 8, true, false);
+        
+        // 为每种启发式测试多次，结果应一致
+        var h:Number = 0;
+        while (h <= 2) {
+            nav.setHeuristic(h);
+            var path1:Array = nav.find(1, 1, 6, 6);
+            var path2:Array = nav.find(1, 1, 6, 6);
+            assertTrue(pathEqual(path1, path2), "启发式" + h + "应保持一致");
+            h++;
+        }
+        
+        end();
+    }
+
+    // ========== 对角线和卡角测试 ==========
+    private static function test_diagonal_vs_straight_cost():Void
+    {
+        var name:String = "对角线vs直线成本测试";
+        begin(name);
+        
+        // 对角线允许但不允许卡角
+        var nav:AStarGrid = new AStarGrid(3, 3, true, false);
+        var path:Array = nav.find(0, 0, 2, 2);
+        assertNotNull(path, "应找到对角线路径");
+        assertEqual(path.length, 3, "对角线路径应为3步");
+        
+        // 对角线不允许
+        nav.setAllowDiagonal(false);
+        path = nav.find(0, 0, 2, 2);
+        assertNotNull(path, "4向应找到路径");
+        assertTrue(path.length > 3, "4向路径应长于对角线");
+        
+        end();
+    }
+
+    private static function test_complex_corner_cutting():Void
+    {
+        var name:String = "复杂卡角测试";
+        begin(name);
+        
+        var nav:AStarGrid = new AStarGrid(4, 4, true, true);
+        var walk:Array = [[1,0,0,1],
+                          [0,1,1,0],
+                          [0,1,1,0],
+                          [1,0,0,1]];
+        nav.setWalkableMatrix(walk);
+        
+        // 允许卡角时应能找到路径
+        var pathWithCut:Array = nav.find(0, 0, 3, 3);
+        assertNotNull(pathWithCut, "允许卡角应找到路径");
+        
+        // 禁止卡角时应无路径
+        nav.setAllowCornerCut(false);
+        var pathNoCut:Array = nav.find(0, 0, 3, 3);
+        assertNull(pathNoCut, "禁止卡角应无路径");
+        
+        end();
+    }
+
+    private static function test_tight_diagonal_passages():Void
+    {
+        var name:String = "紧密对角通道测试";
+        begin(name);
+        
+        var nav:AStarGrid = new AStarGrid(5, 5, true, true);
+        var walk:Array = [[1,0,1,0,1],
+                          [0,1,0,1,0],
+                          [1,0,1,0,1],
+                          [0,1,0,1,0],
+                          [1,0,1,0,1]];
+        nav.setWalkableMatrix(walk);
+        
+        var path:Array = nav.find(0, 0, 4, 4);
+        assertNotNull(path, "紧密对角通道应可通过");
+        
+        end();
+    }
+
+    // ========== 搜索限制测试 ==========
+    private static function test_max_expand_limit():Void
+    {
+        var name:String = "最大扩展限制测试";
+        begin(name);
+        
+        var nav:AStarGrid = new AStarGrid(10, 10, false, false);
+        
+        // 设置一个需要较多搜索的复杂路径
+        var walk:Array = [];
+        var y:Number = 0;
+        while (y < 10) {
+            var row:Array = [];
+            var x:Number = 0;
+            while (x < 10) {
+                // 棋盘模式，留出路径
+                if ((x + y) % 2 == 0 || y == 9) {
+                    row.push(1);
+                } else {
+                    row.push(0);
+                }
+                x++;
+            }
+            walk.push(row);
+            y++;
+        }
+        nav.setWalkableMatrix(walk);
+        
+        // 限制很小的扩展次数
+        var pathLimited:Array = nav.find(0, 0, 9, 9, 5);
+        assertNull(pathLimited, "扩展限制应阻止找到路径");
+        
+        // 不限制扩展次数
+        var pathUnlimited:Array = nav.find(0, 0, 9, 9);
+        assertNotNull(pathUnlimited, "无限制应找到路径");
+        
+        end();
+    }
+
+    private static function test_very_long_paths():Void
+    {
+        var name:String = "超长路径测试";
+        begin(name);
+        
+        var nav:AStarGrid = new AStarGrid(20, 2, false, false);
+        
+        // 创建一个迫使路径很长的场景
+        var walk:Array = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]];
+        nav.setWalkableMatrix(walk);
+        
+        var path:Array = nav.find(0, 0, 19, 1);
+        assertNotNull(path, "应找到超长路径");
+        assertTrue(path.length > 30, "路径应很长");
+        
+        end();
+    }
+
+    // ========== 极端尺寸测试 ==========
+    private static function test_large_grid_pathfinding():Void
+    {
+        var name:String = "大网格寻路测试";
+        begin(name);
+        
+        var nav:AStarGrid = new AStarGrid(50, 50, true, false);
+        
+        // 大部分可走，少量随机障碍
+        var walk:Array = [];
+        var y:Number = 0;
+        while (y < 50) {
+            var row:Array = [];
+            var x:Number = 0;
+            while (x < 50) {
+                // 95%可走
+                row.push(((x * 7 + y * 11) % 100) < 95 ? 1 : 0);
+                x++;
+            }
+            walk.push(row);
+            y++;
+        }
+        // 确保起终点可达
+        walk[0][0] = 1;
+        walk[49][49] = 1;
+        nav.setWalkableMatrix(walk);
+        
+        var path:Array = nav.find(0, 0, 49, 49);
+        assertNotNull(path, "大网格应找到路径");
+        
+        end();
+    }
+
+    private static function test_grid_edge_cases():Void
+    {
+        var name:String = "网格边缘情况测试";
+        begin(name);
+        
+        // 测试resize到更小尺寸
+        var nav:AStarGrid = new AStarGrid(5, 5, false, false);
+        nav.resize(2, 2);
+        var path1:Array = nav.find(0, 0, 1, 1);
+        assertNotNull(path1, "缩小后应能寻路");
+        
+        // 测试resize到更大尺寸
+        nav.resize(10, 10);
+        var path2:Array = nav.find(0, 0, 9, 9);
+        assertNotNull(path2, "扩大后应能寻路");
+        
+        // 测试权重设置边界值
+        nav.setWeight(0, 0, 0.5); // 应被调整为1
+        nav.setWeight(1, 1, -5);  // 应被调整为1
+        var path3:Array = nav.find(0, 0, 1, 1);
+        assertNotNull(path3, "设置无效权重后仍应能寻路");
+        
+        end();
+    }
+
     private static function perf_smoke(seed:Number):Void
     {
         var name:String = "性能烟雾测试（80x80 随机障碍 20%）";
@@ -253,6 +740,186 @@ class org.flashNight.neur.Navigation.AStarGridTest
             log(" [性能] 找到路径，节点数："+path.length+"，耗时："+ms+" ms");
         }
         // 性能用例不判定通过与否
+        end(true);
+    }
+
+    private static function perf_stress_diagonal_heavy(seed:Number):Void
+    {
+        var name:String = "对角线密集性能测试（60x60）";
+        begin(name);
+        
+        var nav:AStarGrid = new AStarGrid(60, 60, true, true);
+        
+        // 创建需要大量对角线移动的复杂地形
+        var rnd:Number = seed + 1000;
+        function rand01():Number {
+            rnd = (rnd * 1103515245 + 12345) & 0x7fffffff;
+            return (rnd % 10000) / 10000;
+        }
+        
+        var walk:Array = [];
+        var y:Number = 0;
+        while (y < 60) {
+            var row:Array = [];
+            var x:Number = 0;
+            while (x < 60) {
+                // 30% 障碍，形成复杂对角线需求
+                row.push(rand01() < 0.70 ? 1 : 0);
+                x++;
+            }
+            walk.push(row);
+            y++;
+        }
+        // 确保起终点和路径连通性
+        walk[0][0] = 1; walk[59][59] = 1;
+        walk[1][1] = 1; walk[58][58] = 1;
+        nav.setWalkableMatrix(walk);
+        
+        var t0:Number = getTimer();
+        var path:Array = nav.find(0, 0, 59, 59, 20000);
+        var t1:Number = getTimer();
+        var ms:Number = t1 - t0;
+        
+        if (path == null) {
+            log(" [对角线性能] 未找到路径，耗时：" + ms + " ms");
+        } else {
+            log(" [对角线性能] 找到路径，节点数：" + path.length + "，耗时：" + ms + " ms");
+        }
+        
+        end(true);
+    }
+
+    private static function perf_worst_case_scenarios(seed:Number):Void
+    {
+        var name:String = "最坏情况性能测试";
+        begin(name);
+        
+        // 测试1: 长距离无解搜索
+        var nav1:AStarGrid = new AStarGrid(40, 40, false, false);
+        var walk1:Array = [];
+        var y:Number = 0;
+        while (y < 40) {
+            var row:Array = [];
+            var x:Number = 0;
+            while (x < 40) {
+                // 创建两个隔离区域
+                if (x < 19) {
+                    row.push(1);
+                } else if (x == 19) {
+                    row.push(0); // 中间墙
+                } else {
+                    row.push(1);
+                }
+                x++;
+            }
+            walk1.push(row);
+            y++;
+        }
+        nav1.setWalkableMatrix(walk1);
+        
+        var t0:Number = getTimer();
+        var path1:Array = nav1.find(0, 0, 39, 39, 5000);
+        var t1:Number = getTimer();
+        log(" [最坏情况1] 隔离搜索耗时：" + (t1 - t0) + " ms，结果：" + (path1 ? "有路" : "无路"));
+        
+        // 测试2: 复杂权重梯度
+        var nav2:AStarGrid = new AStarGrid(30, 30, true, false);
+        var weight:Array = [];
+        y = 0;
+        while (y < 30) {
+            var rowW:Array = [];
+            x = 0;
+            while (x < 30) {
+                // 权重随距离中心递增
+                var dx:Number = x - 15;
+                var dy:Number = y - 15;
+                var dist:Number = Math.sqrt(dx*dx + dy*dy);
+                rowW.push(Math.floor(dist) + 1);
+                x++;
+            }
+            weight.push(rowW);
+            y++;
+        }
+        nav2.setWeightMatrix(weight);
+        
+        t0 = getTimer();
+        var path2:Array = nav2.find(0, 0, 29, 29);
+        t1 = getTimer();
+        log(" [最坏情况2] 权重梯度耗时：" + (t1 - t0) + " ms，路径长度：" + (path2 ? path2.length : "无路"));
+        
+        end(true);
+    }
+
+    private static function perf_memory_intensive(seed:Number):Void
+    {
+        var name:String = "内存密集型测试（100x100）";
+        begin(name);
+        
+        var nav:AStarGrid = new AStarGrid(100, 100, true, false);
+        
+        // 设置复杂地形但保证有解
+        var rnd:Number = seed + 2000;
+        function rand01():Number {
+            rnd = (rnd * 1103515245 + 12345) & 0x7fffffff;
+            return (rnd % 10000) / 10000;
+        }
+        
+        var walk:Array = [];
+        var y:Number = 0;
+        while (y < 100) {
+            var row:Array = [];
+            var x:Number = 0;
+            while (x < 100) {
+                // 15% 障碍，保持大部分可达
+                row.push(rand01() < 0.85 ? 1 : 0);
+                x++;
+            }
+            walk.push(row);
+            y++;
+        }
+        
+        // 确保有明确路径
+        y = 0;
+        while (y < 100) {
+            walk[y][0] = 1; // 左边界路径
+            walk[0][y] = 1; // 上边界路径
+            walk[y][99] = 1; // 右边界路径
+            walk[99][y] = 1; // 下边界路径
+            y++;
+        }
+        nav.setWalkableMatrix(walk);
+        
+        var t0:Number = getTimer();
+        var path:Array = nav.find(0, 0, 99, 99, 30000);
+        var t1:Number = getTimer();
+        var ms:Number = t1 - t0;
+        
+        if (path == null) {
+            log(" [内存密集型] 搜索超时或无解，耗时：" + ms + " ms");
+        } else {
+            log(" [内存密集型] 完成搜索，路径长度：" + path.length + "，耗时：" + ms + " ms");
+        }
+        
+        // 内存压力测试：连续多次搜索
+        var runs:Number = 5;
+        var totalTime:Number = 0;
+        var i:Number = 0;
+        while (i < runs) {
+            var sx:Number = Math.floor(rand01() * 80);
+            var sy:Number = Math.floor(rand01() * 80);
+            var gx:Number = sx + Math.floor(rand01() * 19) + 1;
+            var gy:Number = sy + Math.floor(rand01() * 19) + 1;
+            if (gx >= 100) gx = 99;
+            if (gy >= 100) gy = 99;
+            
+            t0 = getTimer();
+            nav.find(sx, sy, gx, gy, 5000);
+            t1 = getTimer();
+            totalTime += (t1 - t0);
+            i++;
+        }
+        log(" [内存密集型] " + runs + "次连续搜索平均耗时：" + (totalTime/runs) + " ms");
+        
         end(true);
     }
 
