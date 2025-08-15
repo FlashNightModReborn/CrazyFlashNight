@@ -508,17 +508,18 @@ class org.flashNight.arki.spatial.move.Mover {
     }
 
     /**
-     * 八方向可行走检测
+     * 八方向可行走状态检测
      *
-     * 对给定的实体（单位）进行八个方向的移动检测，返回一个包含所有
-     * 无碰撞、可行走方向的字符串数组。
+     * 对给定的实体（单位）进行八个方向的移动检测，返回一个包含所有方向
+     * 及其可行性（true/false）的对象，便于快速查询。
      *
      * @param entity 需要检测的 MovieClip 对象
-     * @return Array 一个包含可行走方向名称（如 "上", "右上" 等）的数组
+     * @return Object 一个以方向字符串为键，布尔值为值的对象。
+     *                例如：{ "上": true, "右上": false, "右": true, ... }
      */
-    public static function getWalkableDirections(entity:MovieClip):Array {
-        // 创建一个空数组，用于存储可以移动的方向
-        var walkableDirections:Array = [];
+    public static function getWalkableDirections(entity:MovieClip):Object {
+        // 创建一个空对象，用于存储所有方向的可行走状态
+        var walkableStatus:Object = {};
         // 预设的检测速度/距离
         var speed:Number = 50;
 
@@ -528,23 +529,74 @@ class org.flashNight.arki.spatial.move.Mover {
             var dir:Vector = Mover.directions8[direction];
             
             // 计算目标点的全局坐标
-            // 注意：我们使用 entity.Z轴坐标 作为其在游戏世界中的Y轴位置
             var targetX:Number = entity._x + dir.x * speed;
             var targetY:Number = entity.Z轴坐标 + dir.y * speed;
 
-            // _root.服务器.发布服务器消息(targetX + "," + targetY)
+            // _root.服务器.发布服务器消息(direction + ": " + targetX + "," + targetY);
             
-            // 使用已有的 isPointValid 方法检测目标点是否会发生碰撞
-            if (Mover.isPointValid(targetX, targetY)) {
-                // 如果目标点合法（无碰撞），则将该方向添加到结果数组中
-                walkableDirections.push(direction);
-            }
+            // 检测目标点是否合法，并将结果 (true/false) 直接存入对象
+            walkableStatus[direction] = Mover.isPointValid(targetX, targetY);
         }
 
-        // _root.服务器.发布服务器消息("getWalkableDirections " + walkableDirections)
+        // _root.服务器.发布服务器消息("getWalkableDirections " + ObjectUtil.toString(walkableStatus));
         
-        // 返回包含所有可行方向的数组
-        return walkableDirections;
+        // 返回包含所有方向可行性状态的对象
+        return walkableStatus;
     }
 
+    /**
+     * 检测两个实体之间是否存在无障碍的直线路径（即可达性）
+     *
+     * 该方法通过在两个实体的坐标之间进行步进式碰撞检测（光线投射），
+     * 来判断它们之间是否存在一条不被 `_root.collisionLayer` 阻挡的直线路径。
+     * 
+     * @param startEntity 起点实体 MovieClip
+     * @param endEntity   终点实体 MovieClip
+     * @param stepSize    检测步长（像素）。步长越小，检测越精确，但性能开销越大。
+     *                    建议值为实体平均宽度的一半左右。
+     * @return Boolean    如果两点之间可直线到达，返回 true；否则返回 false。
+     */
+    public static function isReachable(startEntity:MovieClip, endEntity:MovieClip, stepSize:Number):Boolean {
+        if(stepSize == null) stepSize = 10;
+        // 获取起点和终点的游戏世界坐标
+        var startX:Number = startEntity._x;
+        var startY:Number = startEntity._y; // 使用 y 作为游戏世界的Y轴，避免有的单位没有
+
+        var endX:Number = endEntity._x;
+        var endY:Number = endEntity._y;
+
+        // 计算起点到终点的向量和总距离
+        var dx:Number = endX - startX;
+        var dy:Number = endY - startY;
+        var totalDistance:Number = Math.sqrt(dx * dx + dy * dy);
+
+        // 如果距离非常近，可以认为直接可达
+        if (totalDistance < stepSize) {
+            return true;
+        }
+
+        // 计算需要检测的步数
+        var stepCount:Number = Math.ceil(totalDistance / stepSize);
+
+        // 计算每一步的位移量（单位向量 * 步长）
+        var stepX:Number = (dx / totalDistance) * stepSize;
+        var stepY:Number = (dy / totalDistance) * stepSize;
+        
+        // 从起点开始，步进式检测路径上的每个点
+        // 我们从第1步开始，因为起点（第0步）的位置肯定是合法的
+        for (var i:Number = 1; i <= stepCount; i++) {
+            // 计算当前检测点的坐标
+            var currentX:Number = startX + stepX * i;
+            var currentY:Number = startY + stepY * i;
+
+            // 使用 isPointValid 方法来检测该点是否与障碍物碰撞
+            if (!Mover.isPointValid(currentX, currentY)) {
+                // 只要路径上有一个点被阻挡，就立刻返回 false
+                return false;
+            }
+        }
+        
+        // 如果循环完成，所有点都未发生碰撞，则路径是通畅的
+        return true;
+    }
 }
