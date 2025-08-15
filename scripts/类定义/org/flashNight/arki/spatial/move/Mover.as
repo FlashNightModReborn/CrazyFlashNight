@@ -3,7 +3,7 @@ import org.flashNight.gesh.object.*;
 import org.flashNight.arki.spatial.move.*;
 import org.flashNight.arki.spatial.transform.*;
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
-
+import org.flashNight.arki.component.Effect.*;
 
 /*
  * Mover 类 - 2D 与 2.5D 移动逻辑处理
@@ -545,58 +545,152 @@ class org.flashNight.arki.spatial.move.Mover {
     }
 
     /**
-     * 检测两个实体之间是否存在无障碍的直线路径（即可达性）
-     *
-     * 该方法通过在两个实体的坐标之间进行步进式碰撞检测（光线投射），
-     * 来判断它们之间是否存在一条不被 `_root.collisionLayer` 阻挡的直线路径。
-     * 
-     * @param startEntity 起点实体 MovieClip
-     * @param endEntity   终点实体 MovieClip
-     * @param stepSize    检测步长（像素）。步长越小，检测越精确，但性能开销越大。
-     *                    建议值为实体平均宽度的一半左右。
-     * @return Boolean    如果两点之间可直线到达，返回 true；否则返回 false。
+     * 直线可达性检测 + 四向 L 备选路径（先横后纵，失败再试纵后横）
+     * 调试规则：
+     *  - 直线成功：绿色直线
+     *  - 直线失败：
+     *      · 任一 L 成功：绿色 L（成功的那条）
+     *      · 全部失败：两条 L 都画红（HV 透明度 60，VH 透明度 100），失败点落“调试用失败定位”
      */
     public static function isReachable(startEntity:MovieClip, endEntity:MovieClip, stepSize:Number):Boolean {
-        if(stepSize == null) stepSize = 10;
-        // 获取起点和终点的游戏世界坐标
-        var startX:Number = startEntity._x;
-        var startY:Number = startEntity._y; // 使用 y 作为游戏世界的Y轴，避免有的单位没有
+        if (stepSize == null || stepSize <= 0) stepSize = 10;
 
-        var endX:Number = endEntity._x;
-        var endY:Number = endEntity._y;
+        // === 世界坐标（与特效/调试层一致，假定都在 _root.gameworld）===
+        var sx:Number = startEntity._x;
+        var sy:Number = startEntity._y;
+        var ex:Number = endEntity._x;
+        var ey:Number = endEntity._y;
 
-        // 计算起点到终点的向量和总距离
-        var dx:Number = endX - startX;
-        var dy:Number = endY - startY;
-        var totalDistance:Number = Math.sqrt(dx * dx + dy * dy);
+        // === 调试绘制层 ===
+        var getDebugLayer:Function = function():MovieClip {
+            var world:MovieClip = _root.gameworld ? _root.gameworld : _root;
+            if (!world.ReachabilityDebug) {
+                world.createEmptyMovieClip("ReachabilityDebug", world.getNextHighestDepth());
+            }
+            world.ReachabilityDebug.clear();
+            return world.ReachabilityDebug;
+        };
 
-        // 如果距离非常近，可以认为直接可达
-        if (totalDistance < stepSize) {
+        var drawLine:Function = function(layer:MovieClip, x1:Number, y1:Number, x2:Number, y2:Number, color:Number, thick:Number, alpha:Number):Void {
+            layer.lineStyle(thick, color, alpha);
+            layer.moveTo(x1, y1);
+            layer.lineTo(x2, y2);
+        };
+
+        var drawL:Function = function(layer:MovieClip, ax:Number, ay:Number, mx:Number, my:Number, bx:Number, by:Number, color:Number, thick:Number, alpha:Number):Void {
+            layer.lineStyle(thick, color, alpha);
+            layer.moveTo(ax, ay);
+            layer.lineTo(mx, my);
+            layer.lineTo(bx, by);
+        };
+
+        // 线段采样碰撞检测（失败回调返回第一个失败点）
+        var checkSegment:Function = function(x0:Number, y0:Number, x1:Number, y1:Number, step:Number, onFail:Function):Boolean {
+            var dx:Number = x1 - x0;
+            var dy:Number = y1 - y0;
+            var dist:Number = Math.sqrt(dx*dx + dy*dy);
+            if (dist <= step) {
+                if (!Mover.isPointValid(x1, y1)) { if (onFail) onFail(x1, y1); return false; }
+                return true;
+            }
+            var steps:Number = Math.ceil(dist / step);
+            var stepx:Number = (dx / dist) * step;
+            var stepy:Number = (dy / dist) * step;
+
+            for (var i:Number = 1; i <= steps; i++) {
+                var cx:Number = x0 + stepx * i;
+                var cy:Number = y0 + stepy * i;
+                if (!Mover.isPointValid(cx, cy)) {
+                    if (onFail) onFail(cx, cy);
+                    return false;
+                }
+            }
+            return true;
+        };
+
+        // ===== 1) 直线尝试 =====
+        var dx:Number = ex - sx;
+        var dy:Number = ey - sy;
+        var dist:Number = Math.sqrt(dx*dx + dy*dy);
+
+        if (dist < stepSize) {
+            // 很近视作可达，画直线
+            var dl0:MovieClip = getDebugLayer();
+            drawLine(dl0, sx, sy, ex, ey, 0x00FF00, 1, 100);
             return true;
         }
 
-        // 计算需要检测的步数
-        var stepCount:Number = Math.ceil(totalDistance / stepSize);
+        var straightFailX:Number = NaN, straightFailY:Number = NaN;
+        var straightOK:Boolean = checkSegment(sx, sy, ex, ey, stepSize, function(fx:Number, fy:Number) {
+            straightFailX = fx; straightFailY = fy;
+        });
 
-        // 计算每一步的位移量（单位向量 * 步长）
-        var stepX:Number = (dx / totalDistance) * stepSize;
-        var stepY:Number = (dy / totalDistance) * stepSize;
-        
-        // 从起点开始，步进式检测路径上的每个点
-        // 我们从第1步开始，因为起点（第0步）的位置肯定是合法的
-        for (var i:Number = 1; i <= stepCount; i++) {
-            // 计算当前检测点的坐标
-            var currentX:Number = startX + stepX * i;
-            var currentY:Number = startY + stepY * i;
-
-            // 使用 isPointValid 方法来检测该点是否与障碍物碰撞
-            if (!Mover.isPointValid(currentX, currentY)) {
-                // 只要路径上有一个点被阻挡，就立刻返回 false
-                return false;
-            }
+        if (straightOK) {
+            var dl1:MovieClip = getDebugLayer();
+            drawLine(dl1, sx, sy, ex, ey, 0x00FF00, 1, 100);
+            return true;
         }
-        
-        // 如果循环完成，所有点都未发生碰撞，则路径是通畅的
-        return true;
+
+        // ===== 2) L 方案 A：横->纵 (HV)，中点 (ex, sy) =====
+        var midHX:Number = ex, midHY:Number = sy;
+        var hvFailX:Number = NaN, hvFailY:Number = NaN;
+
+        var hvSeg1:Boolean = checkSegment(sx, sy, midHX, midHY, stepSize, function(fx:Number, fy:Number){ hvFailX = fx; hvFailY = fy; });
+        if (hvSeg1 && !Mover.isPointValid(midHX, midHY)) { hvSeg1 = false; hvFailX = midHX; hvFailY = midHY; }
+
+        var hvSeg2:Boolean = false;
+        if (hvSeg1) {
+            hvSeg2 = checkSegment(midHX, midHY, ex, ey, stepSize, function(fx2:Number, fy2:Number){ hvFailX = fx2; hvFailY = fy2; });
+        }
+        var hvOK:Boolean = hvSeg1 && hvSeg2;
+
+        if (hvOK) {
+            var dl2:MovieClip = getDebugLayer();
+            drawL(dl2, sx, sy, midHX, midHY, ex, ey, 0x00FF00, 1, 100);
+            // 辅助定位点
+            EffectSystem.Effect("调试用定位", sx, sy,  60, true);
+            EffectSystem.Effect("调试用定位", midHX, midHY, 60, true);
+            EffectSystem.Effect("调试用定位", ex, ey,  60, true);
+            return true;
+        }
+
+        // ===== 3) L 方案 B：纵->横 (VH)，中点 (sx, ey) =====
+        var midVX:Number = sx, midVY:Number = ey;
+        var vhFailX:Number = NaN, vhFailY:Number = NaN;
+
+        var vhSeg1:Boolean = checkSegment(sx, sy, midVX, midVY, stepSize, function(fx:Number, fy:Number){ vhFailX = fx; vhFailY = fy; });
+        if (vhSeg1 && !Mover.isPointValid(midVX, midVY)) { vhSeg1 = false; vhFailX = midVX; vhFailY = midVY; }
+
+        var vhSeg2:Boolean = false;
+        if (vhSeg1) {
+            vhSeg2 = checkSegment(midVX, midVY, ex, ey, stepSize, function(fx2:Number, fy2:Number){ vhFailX = fx2; vhFailY = fy2; });
+        }
+        var vhOK:Boolean = vhSeg1 && vhSeg2;
+
+        var dl3:MovieClip = getDebugLayer();
+
+        if (vhOK) {
+            // 成功：画 VH 绿色 L
+            drawL(dl3, sx, sy, midVX, midVY, ex, ey, 0x00FF00, 1, 100);
+            EffectSystem.Effect("调试用定位", sx, sy,  60, true);
+            EffectSystem.Effect("调试用定位", midVX, midVY, 60, true);
+            EffectSystem.Effect("调试用定位", ex, ey,  60, true);
+            return true;
+        }
+
+        // ===== 4) 全部失败：两条 L 都标红，并在失败点落标记 =====
+        // HV 用较低透明度，VH 用不透明，叠加更易看
+        drawL(dl3, sx, sy, midHX, midHY, ex, ey, 0xFF0000, 1, 60);
+        drawL(dl3, sx, sy, midVX, midVY, ex, ey, 0xFF0000, 1, 100);
+
+        if (!isNaN(hvFailX)) EffectSystem.Effect("调试用失败定位", hvFailX, hvFailY, 100, true);
+        if (!isNaN(vhFailX)) EffectSystem.Effect("调试用失败定位", vhFailX, vhFailY, 100, true);
+        if (isNaN(hvFailX) && isNaN(vhFailX) && !isNaN(straightFailX)) {
+            // 兜底：至少标记直线的失败点
+            EffectSystem.Effect("调试用失败定位", straightFailX, straightFailY, 100, true);
+        }
+
+        return false;
     }
+
 }

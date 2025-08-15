@@ -121,6 +121,53 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
         return aabb;
     }
 
+    // ========================= 静态工厂方法区域 ========================= //
+
+    /**
+     * 从现有的 AABB 对象创建一个纯工具用的 AABBCollider 实例。
+     * 该方法创建的碰撞器不与游戏对象绑定，主要用于几何计算、碰撞测试等工具场景。
+     *
+     * @param aabb 源 AABB 对象
+     * @return AABBCollider 实例，边界坐标复制自源 AABB
+     */
+    public static function fromAABB(aabb:AABB):AABBCollider {
+        return new AABBCollider(aabb.left, aabb.right, aabb.top, aabb.bottom);
+    }
+
+    /**
+     * 创建一个临时的工具用 AABBCollider，用于快速几何计算。
+     * 这个方法创建的碰撞器适用于一次性计算，不会缓存任何状态。
+     *
+     * @param left   左边界坐标
+     * @param right  右边界坐标
+     * @param top    上边界坐标
+     * @param bottom 下边界坐标
+     * @return AABBCollider 实例
+     */
+    public static function createTempCollider(left:Number, right:Number, top:Number, bottom:Number):AABBCollider {
+        return new AABBCollider(left, right, top, bottom);
+    }
+
+    /**
+     * 从中心点和尺寸创建一个工具用的 AABBCollider。
+     * 
+     * @param centerX 中心点 X 坐标
+     * @param centerY 中心点 Y 坐标
+     * @param width   宽度
+     * @param height  高度
+     * @return AABBCollider 实例
+     */
+    public static function fromCenter(centerX:Number, centerY:Number, width:Number, height:Number):AABBCollider {
+        var halfWidth:Number = width * 0.5;
+        var halfHeight:Number = height * 0.5;
+        return new AABBCollider(
+            centerX - halfWidth,  // left
+            centerX + halfWidth,  // right
+            centerY - halfHeight, // top
+            centerY + halfHeight  // bottom
+        );
+    }
+
     // ========================= 静态辅助方法区域 ========================= //
 
     /**

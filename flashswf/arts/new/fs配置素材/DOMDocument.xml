@@ -134,7 +134,7 @@
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="ashcore/ashcore.xml" itemID="688340fd-00000819" lastModified="1753436006"/>
           <Include href="ashcore/图标-ashcore.xml" itemID="68835078-00000a95" lastModified="1753436313"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1755233922"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1755268079"/>
           <Include href="q.xml" loadImmediate="false" itemID="6898491a-00000406" lastModified="1754812780"/>
           <Include href="sprite/Symbol 35.xml" itemID="6577b699-00000971" lastModified="1718635260"/>
           <Include href="sprite/Symbol 36.xml" loadImmediate="false" itemID="6577b699-00000972" lastModified="1719476235"/>
@@ -268,7 +268,8 @@
           <Include href="特效素材/打击伤害数字.xml" itemID="656983a5-000002a1" lastModified="1706446521"/>
           <Include href="特效与子弹/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="65e08f36-00001ff1" lastModified="1702237154"/>
           <Include href="特效与子弹/Symbol 13.xml" loadImmediate="false" itemID="65e08f36-00001ff0" lastModified="1702237154"/>
-          <Include href="调试用定位.xml" itemID="689ebe82-0000277a" lastModified="1755233963"/>
+          <Include href="调试用定位.xml" itemID="689f43ef-00002651" lastModified="1755268079"/>
+          <Include href="调试用失败定位.xml" itemID="689f43e7-00002650" lastModified="1755268071"/>
           <Include href="铁枪高级logo图腾.xml" loadImmediate="false" itemID="685e57a7-00000725" lastModified="1751013287"/>
           <Include href="未命名文件夹 1/1/shape 9 (Up Over Down Hit).xml" itemIcon="1" loadImmediate="false" itemID="6551edd1-0000219f" lastModified="1443854724"/>
           <Include href="未命名文件夹 1/1/shape 1194.xml" itemIcon="1" loadImmediate="false" itemID="560f79ad-000004ab" lastModified="1443854765"/>
@@ -1285,7 +1286,7 @@
                     <SolidSwatchItem color="#111415" hue="130" saturation="27" brightness="18"/>
                     <SolidSwatchItem color="#410C13" hue="234" saturation="167" brightness="36"/>
                     <SolidSwatchItem color="#8C151A" hue="239" saturation="177" brightness="76"/>
-                    <SolidSwatchItem color="#FF0000" alpha="0.0941176470588235" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF0000" alpha="0.0901960784313725" saturation="239" brightness="120"/>
                     <SolidSwatchItem color="#FF0000" alpha="0.0470588235294118" saturation="239" brightness="120"/>
                </swatches>
           </swatchList>
@@ -1369,6 +1370,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2263475" publishTime="1755268103"/>
+          <PublishItem publishSize="2263484" publishTime="1755268083"/>
+          <PublishItem publishSize="2263477" publishTime="1755267714"/>
           <PublishItem publishSize="2263219" publishTime="1755233968"/>
           <PublishItem publishSize="2262378" publishTime="1755055514"/>
           <PublishItem publishSize="2262388" publishTime="1755055236"/>
@@ -1386,8 +1390,5 @@
           <PublishItem publishSize="2265779" publishTime="1755052216"/>
           <PublishItem publishSize="2266850" publishTime="1755052170"/>
           <PublishItem publishSize="2266850" publishTime="1755052102"/>
-          <PublishItem publishSize="2267040" publishTime="1755051890"/>
-          <PublishItem publishSize="2267038" publishTime="1755051799"/>
-          <PublishItem publishSize="2264532" publishTime="1755051629"/>
      </publishHistory>
 </DOMDocument>
