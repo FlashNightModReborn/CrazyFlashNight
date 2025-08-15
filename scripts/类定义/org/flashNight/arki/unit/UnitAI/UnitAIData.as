@@ -110,4 +110,128 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
             this.absdiff_z = null;
         }
     }
+
+    // 卡死检测的历史位置缓存
+    private var _lastStuckCheckFrame:Number = -1;
+    private var _lastSelfX:Number;
+    private var _lastSelfY:Number;
+    private var _lastSelfZ:Number;
+    private var _stuckCheckCount:Number = 0;
+
+    /**
+     * 改进版卡死检测 - 基于自身绝对位置变化而非相对距离变化
+     * 
+     * 解决原版本的误报问题：
+     * 1. 检测自身绝对位置变化而非与目标的相对距离
+     * 2. 适配间隔检测（非每帧调用）
+     * 3. 需要连续多次检测到无移动才判定为卡死
+     *
+     * @param isTryingToMove  是否有移动意图
+     * @param eps            位置变化阈值（像素）
+     * @param minStuckCount  连续无移动的最小次数才判定卡死（默认3）
+     * @return Boolean       true=确实卡死；false=正常
+     */
+    public function stuckProbeByDiffChange(isTryingToMove:Boolean, eps:Number, minStuckCount:Number):Boolean {
+        // 参数默认值处理
+        if (isTryingToMove == undefined) {
+            var s:String = this.state;
+            isTryingToMove = (s == "Walk" || s == "Run" || s == "Chase" || s == "移动" || s == "追击" || s == "奔跑");
+        }
+        if (eps == undefined) eps = 8; // 提高阈值，适配四向移动
+        if (minStuckCount == undefined) minStuckCount = 3;
+
+        var currentFrame:Number = _root.帧计时器.当前帧数;
+
+        // 非移动意图 / 待机状态：重置检测计数
+        if (!isTryingToMove || this.standby) {
+            this._stuckCheckCount = 0;
+            this._lastStuckCheckFrame = currentFrame;
+            return false;
+        }
+
+        // 更新自身坐标
+        this.updateSelf();
+
+        // 初次检测：记录位置，不判定卡死
+        if (this._lastStuckCheckFrame < 0 || 
+            this._lastSelfX == undefined || 
+            this._lastSelfY == undefined || 
+            this._lastSelfZ == undefined) {
+            
+            this._lastSelfX = this.x;
+            this._lastSelfY = this.y;
+            this._lastSelfZ = this.z;
+            this._lastStuckCheckFrame = currentFrame;
+            this._stuckCheckCount = 0;
+            return false;
+        }
+
+        // 检测时间间隔过短，跳过本次检测
+        var frameGap:Number = currentFrame - this._lastStuckCheckFrame;
+        if (frameGap < 4) { // 至少4帧间隔再检测
+            return this._stuckCheckCount >= minStuckCount;
+        }
+
+        // 计算位置变化量
+        var deltaX:Number = Math.abs(this.x - this._lastSelfX);
+        var deltaY:Number = Math.abs(this.y - this._lastSelfY);
+        var deltaZ:Number = Math.abs(this.z - this._lastSelfZ);
+        var totalDelta:Number = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+
+        // 判断是否有显著移动
+        var hasMoved:Boolean = totalDelta > eps;
+
+        if (hasMoved) {
+            // 有移动：重置卡死计数
+            this._stuckCheckCount = 0;
+        } else {
+            // 无移动：增加卡死计数
+            this._stuckCheckCount++;
+        }
+
+        // 更新检测记录
+        this._lastSelfX = this.x;
+        this._lastSelfY = this.y;
+        this._lastSelfZ = this.z;
+        this._lastStuckCheckFrame = currentFrame;
+
+        // 调试输出
+        if (_root.调试模式 && this._stuckCheckCount > 0) {
+            _root.发布消息(this.self, "卡死检测: " + this._stuckCheckCount + "/" + minStuckCount + " 移动距离: " + totalDelta);
+        }
+
+        // 只有连续多次无移动才判定为真正卡死
+        return this._stuckCheckCount >= minStuckCount;
+    }
+
+    /**
+     * 兼容旧版本的卡死检测（已废弃，保留向下兼容）
+     * @deprecated 请使用改进版的 stuckProbeByDiffChange
+     */
+    public function stuckProbeByDiffChange_Legacy(isTryingToMove:Boolean, eps:Number):Boolean {
+        if (eps == undefined) eps = 0;
+        if (!isTryingToMove || this.standby || this.target == null) {
+            return false;
+        }
+
+        var old_dx:Number = this.diff_x;
+        var old_dy:Number = this.diff_y;
+        var old_dz:Number = this.diff_z;
+
+        this.updateSelf();
+        this.updateTarget();
+
+        if (old_dx == null || old_dy == null || old_dz == null ||
+            this.diff_x == null || this.diff_y == null || this.diff_z == null) {
+            return false;
+        }
+
+        var changed:Boolean =
+            Math.abs(this.diff_x - old_dx) > eps ||
+            Math.abs(this.diff_y - old_dy) > eps ||
+            Math.abs(this.diff_z - old_dz) > eps;
+
+        return !changed;
+    }
+
 }
