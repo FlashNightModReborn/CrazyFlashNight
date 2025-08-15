@@ -91,6 +91,188 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
         return ((nextFloat() * 3) >> 0) == 0;
     }
 
+    /**
+     * 1/4 概率检查（四分之一）
+     * 等价于 random(4)==0，适用于季度、象限等逻辑
+     */
+    public function randomCheckQuarter():Boolean {
+        return ((nextFloat() * 4) >> 0) == 0;
+    }
+
+    /**
+     * 1/5 概率检查（五分之一）
+     * 等价于 random(5)==0，适用于星级评价等
+     */
+    public function randomCheckFifth():Boolean {
+        return ((nextFloat() * 5) >> 0) == 0;
+    }
+
+    /**
+     * 1/6 概率检查（六分之一）
+     * 等价于 random(6)==0，骰子单面概率
+     */
+    public function randomCheckSixth():Boolean {
+        return ((nextFloat() * 6) >> 0) == 0;
+    }
+
+    /**
+     * 1/8 概率检查（八分之一）
+     * 等价于 random(8)==0，二的三次方，常用于位运算优化场景
+     */
+    public function randomCheckEighth():Boolean {
+        return ((nextFloat() * 8) >> 0) == 0;
+    }
+
+    /**
+     * 1/10 概率检查（十分之一）
+     * 等价于 random(10)==0，适用于十进制概率，如10%概率
+     */
+    public function randomCheckTenth():Boolean {
+        return ((nextFloat() * 10) >> 0) == 0;
+    }
+
+    /**
+     * 1/16 概率检查（十六分之一）
+     * 等价于 random(16)==0，二的四次方，位运算友好
+     */
+    public function randomCheckSixteenth():Boolean {
+        return ((nextFloat() * 16) >> 0) == 0;
+    }
+
+    /**
+     * 1/20 概率检查（二十分之一）
+     * 等价于 random(20)==0，5%概率，RPG常用
+     */
+    public function randomCheckTwentieth():Boolean {
+        return ((nextFloat() * 20) >> 0) == 0;
+    }
+
+    /**
+     * 1/100 概率检查（百分之一）
+     * 等价于 random(100)==0，1%概率，百分比系统
+     */
+    public function randomCheckHundredth():Boolean {
+        return ((nextFloat() * 100) >> 0) == 0;
+    }
+
+    /**
+     * 概率权重检查（多选一）
+     * 基于权重数组进行随机选择，返回选中的索引
+     * @param weights 权重数组，如 [30, 50, 20] 表示 30%、50%、20%的概率
+     * @return Number 返回选中的索引，-1表示无效输入
+     */
+    public function randomWeightedChoice(weights:Array):Number {
+        if (!weights || weights.length == 0) return -1;
+        
+        var total:Number = 0;
+        for (var i:Number = 0; i < weights.length; i++) {
+            total += weights[i];
+        }
+        
+        if (total <= 0) return -1;
+        
+        var roll:Number = nextFloat() * total;
+        var accumulator:Number = 0;
+        
+        for (var j:Number = 0; j < weights.length; j++) {
+            accumulator += weights[j];
+            if (roll < accumulator) {
+                return j;
+            }
+        }
+        
+        return weights.length - 1; // 防止浮点精度问题
+    }
+
+    /**
+     * 渐进概率检查
+     * 随着尝试次数增加，成功概率逐步提高
+     * @param baseChance 基础概率分母（如传入100表示1%基础概率）
+     * @param attemptCount 当前尝试次数
+     * @param scaleFactor 缩放因子，默认为2（每次尝试概率翻倍）
+     * @return Boolean 是否成功
+     */
+    public function randomProgressiveCheck(baseChance:Number, attemptCount:Number, scaleFactor:Number):Boolean {
+        if (scaleFactor == undefined) scaleFactor = 2;
+        if (attemptCount <= 0) attemptCount = 1;
+        
+        var adjustedChance:Number = baseChance / Math.pow(scaleFactor, attemptCount - 1);
+        if (adjustedChance < 1) adjustedChance = 1; // 确保最终必定成功
+        
+        return randomCheck(adjustedChance);
+    }
+
+    /**
+     * 连击概率检查
+     * 用于连续成功的概率计算，每次成功后概率递减
+     * @param baseDenominator 基础概率分母
+     * @param comboCount 当前连击次数
+     * @param decayRate 衰减率，默认为1.5
+     * @return Boolean 是否继续连击
+     */
+    public function randomComboCheck(baseDenominator:Number, comboCount:Number, decayRate:Number):Boolean {
+        if (decayRate == undefined) decayRate = 1.5;
+        if (comboCount <= 0) return randomCheck(baseDenominator);
+        
+        var adjustedDenominator:Number = baseDenominator * Math.pow(decayRate, comboCount);
+        return randomCheck(adjustedDenominator);
+    }
+
+    /**
+     * 冷却时间概率检查
+     * 用于技能冷却或限频场景，在冷却期间返回false
+     * @param denominator 基础概率分母
+     * @param lastTriggerTime 上次触发时间
+     * @param cooldownFrames 冷却帧数
+     * @return Boolean 是否通过检查
+     */
+    public function randomCooldownCheck(denominator:Number, lastTriggerTime:Number, cooldownFrames:Number):Boolean {
+        var currentTime:Number = _root.帧计时器.当前帧数 || getTimer();
+        if (currentTime - lastTriggerTime < cooldownFrames) {
+            return false; // 冷却期内
+        }
+        return randomCheck(denominator);
+    }
+
+    /**
+     * 疲劳系统概率检查
+     * 随着连续使用次数增加，成功概率逐渐降低
+     * @param baseDenominator 基础概率分母
+     * @param fatigueLevel 疲劳等级（0-无疲劳）
+     * @param maxFatigue 最大疲劳值，超过此值概率降为0
+     * @return Boolean 是否成功
+     */
+    public function randomFatigueCheck(baseDenominator:Number, fatigueLevel:Number, maxFatigue:Number):Boolean {
+        if (fatigueLevel >= maxFatigue) return false; // 完全疲劳
+        
+        var fatigueRatio:Number = fatigueLevel / maxFatigue;
+        var adjustedDenominator:Number = baseDenominator * (1 + fatigueRatio * 3); // 疲劳降低概率
+        
+        return randomCheck(adjustedDenominator);
+    }
+
+    /**
+     * 临界概率检查
+     * 在特定条件下（如血量低于阈值）提高概率
+     * @param baseDenominator 基础概率分母
+     * @param currentValue 当前值（如当前血量）
+     * @param threshold 临界阈值
+     * @param maxValue 最大值（如最大血量）
+     * @param boostFactor 提升因子，默认为2
+     * @return Boolean 是否成功
+     */
+    public function randomCriticalCheck(baseDenominator:Number, currentValue:Number, threshold:Number, maxValue:Number, boostFactor:Number):Boolean {
+        if (boostFactor == undefined) boostFactor = 2;
+        
+        if (currentValue <= threshold) {
+            var criticalRatio:Number = 1 - (currentValue / threshold); // 越低越强
+            var adjustedDenominator:Number = baseDenominator / (1 + criticalRatio * (boostFactor - 1));
+            return randomCheck(adjustedDenominator);
+        }
+        
+        return randomCheck(baseDenominator);
+    }
+
 
 
 
