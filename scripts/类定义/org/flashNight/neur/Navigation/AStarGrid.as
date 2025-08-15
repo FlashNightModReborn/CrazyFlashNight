@@ -16,6 +16,7 @@
 //
 //  坐标与单位说明：
 //    - **格坐标 vs 像素坐标**：本类所有 API 使用"格"为单位；若世界坐标是像素，需由调用方完成 px→cell/cell→px 映射。
+//    - **索引计算公式**：内部线性索引 = y * _w + x（行主序存储）。
 //    - **代价单位**：基于 COST_STRAIGHT=10 的整数刻度（相当于把每步×10），权重是加法的"额外成本"。
 //  返回路径：
 //    - 形式为数组 [{x:Number, y:Number}, ...]，**从起点到终点**（已反转），若无路返回 null。
@@ -35,13 +36,12 @@
 //    - 因此 **同输入→同输出**，确保测试可复现。
 //  注意：
 //    - 本类为**纯栅格** A*，未内建导航网格/可视直线(LOS)/漏斗压路径；可在外层做路径后处理。
-//    - "Euclidean" 启发式内部采用整数近似（14*min + 10*(max-min)），与 Octile 的近似一致。
-//    - 若你需真正欧氏距离并仍保持可采纳性，请自行替换/近似实现（需注意整型代价与单调性）。
+//    - 若需真正欧氏距离并仍保持可采纳性，请自行替换启发式实现（需注意整型代价与单调性）。
 //
 //  使用示例：
 //    ```actionscript
-//    // 1. 创建 10x10 网格，允许斜向但禁止卡角
-//    var nav:AStarGrid = new AStarGrid(10, 10, true, false);
+//    // 1. 创建 5x3 网格，允许斜向但禁止卡角
+//    var nav:AStarGrid = new AStarGrid(5, 3, true, false);
 //    
 //    // 2. 设置地图（二维数组，1=可走，0=不可走）
 //    var walkMatrix:Array = [
@@ -179,7 +179,8 @@ class org.flashNight.neur.Navigation.AStarGrid
     /**
      * 搜索轮次标识
      * - 每次 find() 自增一次
-     * - 与 _closedMark 协同用于“逻辑清空”关闭表
+     * - 与 _closedMark 协同用于"逻辑清空"关闭表
+     * - 溢出时回绕到 1，只影响标记不影响正确性
      */
     private var _searchId:Number;
 
@@ -414,7 +415,7 @@ class org.flashNight.neur.Navigation.AStarGrid
      * @param gy 终点 y
      * @param maxExpand 可选：最大展开节点数上限（>0 有效；用于防止极端卡死）
      *   - 达到上限返回 null，但**不代表地图无路**，而是**被限流**
-     *   - 建议值：小地图(<50x50)可不设；大地图建议设为 _size 的 2-5 倍
+     *   - 建议值：小地图(<50x50)可不设；若需限流，可设为 0.25×_size ~ 1.0×_size，或改用**按帧预算**的分步搜索接口在外层限时
      * @return Array<{x:Number,y:Number}>：从起点到终点；若无路或超限返回 null
      *
      * 过程要点：
