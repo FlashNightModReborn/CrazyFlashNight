@@ -15,6 +15,7 @@ import org.flashNight.arki.bullet.Factory.*;
 import org.flashNight.arki.spatial.transform.*;
 import org.flashNight.arki.render.*;
 import org.flashNight.arki.scene.*;
+import org.flashNight.arki.spatial.move.*;
 
 // 初始化全局帧计时器对象
 _root.帧计时器 = {};
@@ -120,6 +121,7 @@ _root.帧计时器.初始化任务栈 = function():Void {
 
         WaveSpawner.instance.tick(); // 暂时把刷怪挂在这边
         // _root.服务器.发布服务器消息(_root.场景进入位置名)
+        // Mover.getWalkableDirections(TargetCacheManager.findHero());
     }, this);
 };
 

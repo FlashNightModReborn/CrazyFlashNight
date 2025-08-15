@@ -50,6 +50,36 @@ class org.flashNight.arki.spatial.move.Mover {
     // 2.5D方向向量（包含水平、垂直及高度变化的 dz 分量）
     private static var directions25D:Object;
 
+    // 8向移动方向向量（用于可行走检测）
+    private static var directions8:Object = initDirections8();
+
+    /**
+     * 初始化8向移动方向向量映射表
+     *
+     * 构造一个 Object 对象，将中文八个方向（"上"、"下"、"左"、"右"、
+     * "左上"、"右上"、"左下"、"右下"）映射到对应的 Vector 实例。
+     *
+     * @return Object 方向字符串到 Vector 实例的映射表
+     */
+    private static function initDirections8():Object {
+        var obj:Object = {};
+        // 基础四方向
+        obj["上"] = new Vector(0, -1);
+        obj["下"] = new Vector(0, 1);
+        obj["左"] = new Vector(-1, 0);
+        obj["右"] = new Vector(1, 0);
+
+        // 斜向四方向（向量需要归一化，以保证斜向移动速度一致）
+        var diagonalFactor:Number = 1 / Math.sqrt(2); // 约等于 0.707
+        obj["左上"] = new Vector(-diagonalFactor, -diagonalFactor);
+        obj["右上"] = new Vector(diagonalFactor, -diagonalFactor);
+        obj["左下"] = new Vector(-diagonalFactor, diagonalFactor);
+        obj["右下"] = new Vector(diagonalFactor, diagonalFactor);
+        
+        return obj;
+    };
+
+
     /**
      * 初始化2.5D方向向量映射表
      *
@@ -475,6 +505,46 @@ class org.flashNight.arki.spatial.move.Mover {
         // 更新碰撞箱并调整显示深度
         entity.aabbCollider.updateFromUnitArea(entity);
         entity.swapDepths(entity._y);
+    }
+
+    /**
+     * 八方向可行走检测
+     *
+     * 对给定的实体（单位）进行八个方向的移动检测，返回一个包含所有
+     * 无碰撞、可行走方向的字符串数组。
+     *
+     * @param entity 需要检测的 MovieClip 对象
+     * @return Array 一个包含可行走方向名称（如 "上", "右上" 等）的数组
+     */
+    public static function getWalkableDirections(entity:MovieClip):Array {
+        // 创建一个空数组，用于存储可以移动的方向
+        var walkableDirections:Array = [];
+        // 预设的检测速度/距离
+        var speed:Number = 50;
+
+        // 遍历所有八个方向
+        for (var direction in Mover.directions8) {
+            // 获取当前方向对应的向量
+            var dir:Vector = Mover.directions8[direction];
+            
+            // 计算目标点的全局坐标
+            // 注意：我们使用 entity.Z轴坐标 作为其在游戏世界中的Y轴位置
+            var targetX:Number = entity._x + dir.x * speed;
+            var targetY:Number = entity.Z轴坐标 + dir.y * speed;
+
+            // _root.服务器.发布服务器消息(targetX + "," + targetY)
+            
+            // 使用已有的 isPointValid 方法检测目标点是否会发生碰撞
+            if (Mover.isPointValid(targetX, targetY)) {
+                // 如果目标点合法（无碰撞），则将该方向添加到结果数组中
+                walkableDirections.push(direction);
+            }
+        }
+
+        // _root.服务器.发布服务器消息("getWalkableDirections " + walkableDirections)
+        
+        // 返回包含所有可行方向的数组
+        return walkableDirections;
     }
 
 }
