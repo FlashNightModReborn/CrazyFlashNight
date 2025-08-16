@@ -546,8 +546,10 @@ class org.flashNight.arki.spatial.move.Mover {
 
     /**
      * 直线可达性检测 + 四向 L 备选路径（先横后纵，失败再试纵后横）
+     * 检测从 startEntity 到指定点坐标是否可达
      * @param startEntity 起点 MovieClip（世界坐标）
-     * @param endEntity   终点 MovieClip（世界坐标）
+     * @param endX        终点X坐标
+     * @param endY        终点Y坐标
      * @param stepSize    采样步长（像素），默认 10
      * @param debugMode   是否绘制调试线与投放调试特效（默认 false）
      *
@@ -555,17 +557,17 @@ class org.flashNight.arki.spatial.move.Mover {
      *  - 直线成功：绿色直线
      *  - 直线失败：
      *      · 任一 L 成功：绿色 L（成功的那条）
-     *      · 全部失败：两条 L 都画红（HV 透明度 60，VH 透明度 100），失败点落“调试用失败定位”
+     *      · 全部失败：两条 L 都画红（HV 透明度 60，VH 透明度 100），失败点落"调试用失败定位"
      */
-    public static function isReachable(startEntity:MovieClip, endEntity:MovieClip, stepSize:Number, debugMode:Boolean):Boolean {
+    public static function isReachableToPoint(startEntity:MovieClip, endX:Number, endY:Number, stepSize:Number, debugMode:Boolean):Boolean {
         if (stepSize == null || stepSize <= 0) stepSize = 10;
         var DEBUG:Boolean = (debugMode == true);
 
         // === 世界坐标（与特效/调试层一致，假定都在 _root.gameworld）===
         var sx:Number = startEntity._x;
         var sy:Number = startEntity._y;
-        var ex:Number = endEntity._x;
-        var ey:Number = endEntity._y;
+        var ex:Number = endX;
+        var ey:Number = endY;
 
         // === 调试绘制层（仅在 DEBUG 时创建/清理）===
         var getDebugLayer:Function = function():MovieClip {
@@ -704,6 +706,23 @@ class org.flashNight.arki.spatial.move.Mover {
         }
 
         return false;
+    }
+
+    /**
+     * 直线可达性检测 + 四向 L 备选路径（先横后纵，失败再试纵后横）
+     * @param startEntity 起点 MovieClip（世界坐标）
+     * @param endEntity   终点 MovieClip（世界坐标）
+     * @param stepSize    采样步长（像素），默认 10
+     * @param debugMode   是否绘制调试线与投放调试特效（默认 false）
+     *
+     * 调试规则（debugMode=true 时生效）：
+     *  - 直线成功：绿色直线
+     *  - 直线失败：
+     *      · 任一 L 成功：绿色 L（成功的那条）
+     *      · 全部失败：两条 L 都画红（HV 透明度 60，VH 透明度 100），失败点落"调试用失败定位"
+     */
+    public static function isReachable(startEntity:MovieClip, endEntity:MovieClip, stepSize:Number, debugMode:Boolean):Boolean {
+        return isReachableToPoint(startEntity, endEntity._x, endEntity._y, stepSize, debugMode);
     }
 
 }

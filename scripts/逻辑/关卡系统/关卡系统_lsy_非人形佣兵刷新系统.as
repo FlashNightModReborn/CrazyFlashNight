@@ -9,6 +9,8 @@ _root.生成游戏世界可雇用敌人 = function(添加佣兵函数, 机率, �
 
 	场上佣兵总人数 = Math.floor(Math.max(场上佣兵总人数 * 面积系数, 1));
 
+	var currentGameWorld:MovieClip = _root.gameworld;
+
 	var 已上场佣兵编号 = [];
 	if(isNaN(_root.gameworld.可雇用敌人在场数量)) _root.gameworld.可雇用敌人在场数量 = 0;
 
@@ -18,21 +20,25 @@ _root.生成游戏世界可雇用敌人 = function(添加佣兵函数, 机率, �
 			break;
 		}
 
-		if (是否门口){
-			var 门名单 = [];
-			for (var 单位 in _root.gameworld){
-				if (_root.gameworld[单位].是否从门加载主角)
-				{
-					门名单.push(_root.gameworld[单位]._name);
+		// 使用帧计时器错峰刷新，避免集中刷佣兵
+		_root.帧计时器.添加单次任务(function(是否门口, 添加佣兵函数) {
+			if(currentGameWorld != _root.gameworld) return;
+			if (是否门口){
+				var 门名单 = [];
+				for (var 单位 in _root.gameworld){
+					if (_root.gameworld[单位].是否从门加载主角)
+					{
+						门名单.push(_root.gameworld[单位]._name);
+					}
 				}
+				var 刷佣兵的门 = _root.随机选择数组元素(门名单);
+				添加佣兵函数(_root.gameworld[刷佣兵的门]._x,_root.gameworld[刷佣兵的门]._y);
 			}
-			var 刷佣兵的门 = _root.随机选择数组元素(门名单);
-			添加佣兵函数(_root.gameworld[刷佣兵的门]._x,_root.gameworld[刷佣兵的门]._y);
-		}
-		else
-		{
-			添加佣兵函数();
-		}
+			else
+			{
+				添加佣兵函数();
+			}
+		}, _root.随机整数(1, 场上佣兵总人数 * 2) * 1000, 是否门口, 添加佣兵函数);
 	}
 };
 

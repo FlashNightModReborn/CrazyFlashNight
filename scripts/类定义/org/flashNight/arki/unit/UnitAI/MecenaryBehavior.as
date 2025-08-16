@@ -88,7 +88,25 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
                 }
                 
                 if(data.absdiff_x < 100 && data.absdiff_z < 50){
-                    newstate = "Idle"; // 若离目标门太近则先进入Idle
+                    // 基于存活时间的体验优化
+                    var aliveTime:Number = _root.帧计时器.当前帧数 - data.createdFrame;
+                    
+                    if(aliveTime <= 100) {
+                        // 存活时间较短，33%几率进入wandering，提升体验
+                        newstate = engine.randomCheckThird() ? "Wandering" : "Idle";
+                    } else if(aliveTime <= 200) {
+                        // 线性过渡：wandering概率从33%减少到0%
+                        var wanderingProbability:Number = 33 * (200 - aliveTime) / 100;
+                        newstate = engine.successRate(wanderingProbability) ? "Wandering" : "Idle";
+                    } else if(aliveTime <= 300) {
+                        // 中等存活时间，必然进入idle
+                        newstate = "Idle";
+                    } else {
+                        // 存活时间过长，直接walk避免过度逗留
+                        newstate = "Walking";
+                    }
+
+                    // _root.发布消息(aliveTime, wanderingProbability, newstate)
                 } else {
                     newstate = engine.randomCheckHalf() ? "Idle" : "Walking"; // 避免佣兵停留时间太短，概率逗留
                 }
@@ -107,49 +125,48 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
     }
 
     // 移动
-    public function walk():Void{
-        // 更新目标出生点坐标,并且检查是否卡死
+    public function walk():Void {
         var sm = this.superMachine;
-        if(sm.actionCount % 4 == 0) {
-            var isStuck:Boolean = data.stuckProbeByDiffChange(true, 8, 3); 
-            
-            // 如果检测到卡死，切换到漫游状态以获得自行解困能力
-            if(isStuck){
+        // 判定帧：每 4 次（若想每 5 次，把下面两处 4 改成 5，并改成 % 5 判定）
+        var onDecisionTick:Boolean = ((sm.actionCount & 3) == 0);
+
+        if (onDecisionTick) {
+            // 1) 判定是否卡死
+            var isStuck:Boolean = data.stuckProbeByDiffChange(true, 8, 3);
+            if (isStuck) {
                 this.superMachine.ChangeState("Wandering");
                 _root.发布消息(data.self, "检测到卡死，切换到漫游模式");
                 return;
             }
+
+            // 2) 同一帧内刷新移动方向（原来第二个 if(%4==0) 的内容）
+            var self = data.self;
+            var X距离:Number = 20;
+            var Y距离:Number = 10;
+
+            self.左行 = false; self.右行 = false;
+            self.上行 = false; self.下行 = false;
+
+            if (data.absdiff_x > X距离) {
+                self.左行 = (data.diff_x < 0);
+                self.右行 = (data.diff_x > 0);
+            }
+            if (data.absdiff_z > Y距离) {
+                self.上行 = (data.diff_z < 0);
+                self.下行 = (data.diff_z > 0);
+            }
         } else {
+            // 非判定帧：只更新目标
             data.updateTarget();
         }
 
-        
-        if(data.absdiff_x < 50 && data.absdiff_z < 25){
+        // 结束条件保持原位
+        if (data.absdiff_x < 50 && data.absdiff_z < 25) {
             data.self.删除可雇用单位();
             return;
         }
-
-
-        if(sm.actionCount % 4 == 0){
-            //每5次action判定移动方向
-            var self = data.self;
-            var X距离 = 20;
-            var Y距离 = 10;
-
-            self.左行 = false;
-            self.右行 = false;
-            self.上行 = false;
-            self.下行 = false;
-            if (data.absdiff_x > X距离){
-                self.左行 = data.diff_x < 0;
-                self.右行 = data.diff_x > 0;
-            }
-            if (data.absdiff_z > Y距离){
-                self.上行 = data.diff_z < 0;
-                self.下行 = data.diff_z > 0;
-            }
-        }
     }
+
 
     // 进入移动状态
     public function walk_enter():Void{
@@ -184,8 +201,27 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
             return; 
         }
 
-        var randy = engine.randomIntegerStrict(_root.Ymin, _root.Ymax);
-        var randx = engine.randomIntegerStrict(_root.Xmin, _root.Xmax);
+        // 尝试找到一个可达的随机目标点
+        var maxAttempts:Number = 10;
+        var foundTarget:Boolean = false;
+        var randx:Number, randy:Number;
+        
+        for(var i:Number = 0; i < maxAttempts; i++) {
+            randx = engine.randomIntegerStrict(_root.Xmin, _root.Xmax);
+            randy = engine.randomIntegerStrict(_root.Ymin, _root.Ymax);
+            
+            // 直接检测点坐标的可达性
+            if(Mover.isReachableToPoint(self, randx, randy, 30, false)) {
+                foundTarget = true;
+                break;
+            }
+        }
+        
+        if(!foundTarget) {
+            // 如果找不到可达点，使用原来的简单逻辑作为备选
+            randx = engine.randomIntegerStrict(_root.Xmin, _root.Xmax);
+            randy = engine.randomIntegerStrict(_root.Ymin, _root.Ymax);
+        }
         
         self.左行 = randx < data.x;
         self.右行 = !self.左行;
