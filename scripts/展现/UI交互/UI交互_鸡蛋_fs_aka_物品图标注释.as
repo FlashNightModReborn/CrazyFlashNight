@@ -1,47 +1,48 @@
 ﻿import org.flashNight.arki.item.*;
 import org.flashNight.gesh.array.*;
+import org.flashNight.gesh.string.*;
 
 // =========================
 // 阶段3：常量与样式模块化
 // =========================
 
 /**
- * @deprecated 请使用 org.flashNight.gesh.string.TooltipConstants
+ * @deprecated 请使用 TooltipConstants
  * 兼容性包装：注释常量
  */
-_root.注释常量 = org.flashNight.gesh.string.TooltipConstants;
+_root.注释常量 = TooltipConstants;
 
 /**
- * @deprecated 请使用 org.flashNight.gesh.string.TooltipFormatter  
+ * @deprecated 请使用 TooltipFormatter  
  * 兼容性包装：注释样式格式化函数
  */
 _root.注释样式 = {
   bold: function(str:String):String {
-    return org.flashNight.gesh.string.TooltipFormatter.bold(str);
+    return TooltipFormatter.bold(str);
   },
   
   color: function(str:String, hex:String):String {
-    return org.flashNight.gesh.string.TooltipFormatter.color(str, hex);
+    return TooltipFormatter.color(str, hex);
   },
   
   br: function():String {
-    return org.flashNight.gesh.string.TooltipFormatter.br();
+    return TooltipFormatter.br();
   },
   
   kv: function(label:String, val, suffix:String):String {
-    return org.flashNight.gesh.string.TooltipFormatter.kv(label, val, suffix);
+    return TooltipFormatter.kv(label, val, suffix);
   },
   
   numLine: function(buf:Array, label:String, val, suffix:String):Void {
-    org.flashNight.gesh.string.TooltipFormatter.numLine(buf, label, val, suffix);
+    TooltipFormatter.numLine(buf, label, val, suffix);
   },
   
   upgradeLine: function(buf:Array, label:String, base:Number, lvl:Number):Void {
-    org.flashNight.gesh.string.TooltipFormatter.upgradeLine(buf, label, base, lvl, _root.注释常量.COL_HL);
+    TooltipFormatter.upgradeLine(buf, label, base, lvl, _root.注释常量.COL_HL);
   },
   
   colorLine: function(buf:Array, color:String, text:String):Void {
-    org.flashNight.gesh.string.TooltipFormatter.colorLine(buf, color, text);
+    TooltipFormatter.colorLine(buf, color, text);
   }
 };
 
@@ -400,7 +401,8 @@ _root.注释文本.生成装备属性块 = function(item:Object, tier:String, �
   _root.注释行.纯数值行(a, "挡拆加成", d.evasion, "%");
   _root.注释行.纯数值行(a, "韧性加成", d.toughness, "%");
   _root.注释行.纯数值行(a, "高危回避", d.lazymiss, "");
-  if (d.poison) _root.注释行.彩色行(a, "#66dd00", "剧毒性：" + d.poison);
+  // 非药剂才在通用区显示"剧毒性"；药剂的剧毒由药剂分支统一输出
+  if (d.poison && item.use != "药剂") _root.注释行.彩色行(a, "#66dd00", "剧毒性：" + d.poison);
   if (d.vampirism) _root.注释行.彩色行(a, "#bb00aa", "吸血：" + d.vampirism + "%");
   if (d.rout) _root.注释行.彩色行(a, "#FF3333", "击溃：" + d.rout + "%");
 
@@ -433,8 +435,12 @@ _root.注释文本.生成装备属性块 = function(item:Object, tier:String, �
     if (!isNaN(d.affecthp) && d.affecthp != 0) a.push("<FONT COLOR='#00FF00'>HP+", d.affecthp, "</FONT><BR>");
     if (!isNaN(d.affectmp) && d.affectmp != 0) a.push("<FONT COLOR='#00FFFF'>MP+", d.affectmp, "</FONT><BR>");
     if (d.friend == 1) a.push("<FONT COLOR='#FFCC00'>全体友方有效</FONT><BR>");
-    else if (d.friend == "淬毒") a.push("<FONT COLOR='#66dd00'>剧毒性: ", (isNaN(d.poison)?0:d.poison), "</FONT><BR>");
-    else if (d.friend == "净化") a.push("净化度: ", (isNaN(d.clean)?0:d.clean), "<BR>");
+    else if (d.friend == "淬毒") {
+      var p:Number = Number(d.poison);
+      if (isNaN(p)) p = 0;
+      a.push("<FONT COLOR='#66dd00'>剧毒性：", p, "</FONT><BR>");
+    }
+    else if (d.friend == "净化") a.push("净化度：", (isNaN(d.clean)?0:d.clean), "<BR>");
   }
   if (item.actiontype !== undefined) a.push("动作：", item.actiontype, "<BR>");
 

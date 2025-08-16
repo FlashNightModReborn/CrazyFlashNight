@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 18" itemID="68a0d0c3-00001dfe" symbolType="graphic" lastModified="1755369667">
+  <timeline>
+    <DOMTimeline name="补间 18">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="线路" selected="true" centerPoint3DX="403.35" centerPoint3DY="193.2">
+                  <matrix>
+                    <Matrix tx="-127.15" ty="-73.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="530.5" y="266.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="握把1" selected="true" centerPoint3DX="95.3" centerPoint3DY="44.05">
+                  <matrix>
+                    <Matrix a="-1" tx="127.2" ty="14.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.85" y="7.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
