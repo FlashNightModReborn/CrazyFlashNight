@@ -12,13 +12,13 @@
           <DOMFolderItem name="键盘镰刀" itemID="655480e9-00005ea5"/>
           <DOMFolderItem name="将军 披风" itemID="667d1ed9-00000ce9"/>
           <DOMFolderItem name="军阀精英敌人" itemID="68843a37-00003366"/>
-          <DOMFolderItem name="军阀精英敌人/重甲" itemID="68843a37-00003367"/>
-          <DOMFolderItem name="军阀精英敌人/重甲/弹药" itemID="68843a37-00003370"/>
-          <DOMFolderItem name="军阀精英敌人/重甲/机枪" itemID="68843a37-00003368"/>
-          <DOMFolderItem name="军阀精英敌人/重甲/机枪/转轮机枪" itemID="68843a37-00003369"/>
-          <DOMFolderItem name="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A" itemID="68843a37-0000336a"/>
+          <DOMFolderItem name="军阀精英敌人/重甲" itemID="68843a37-00003367" isExpanded="true"/>
+          <DOMFolderItem name="军阀精英敌人/重甲/弹药" itemID="68843a37-00003370" isExpanded="true"/>
+          <DOMFolderItem name="军阀精英敌人/重甲/机枪" itemID="68843a37-00003368" isExpanded="true"/>
+          <DOMFolderItem name="军阀精英敌人/重甲/机枪/转轮机枪" itemID="68843a37-00003369" isExpanded="true"/>
+          <DOMFolderItem name="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A" itemID="68843a37-0000336a" isExpanded="true"/>
           <DOMFolderItem name="龙破军霜" itemID="65f704ac-00002258"/>
-          <DOMFolderItem name="生存战素材" itemID="66a8fcff-00001f68" isExpanded="true"/>
+          <DOMFolderItem name="生存战素材" itemID="66a8fcff-00001f68"/>
           <DOMFolderItem name="特效素材" itemID="65698b55-000002b7"/>
           <DOMFolderItem name="特效与子弹" itemID="65e41282-000004b3"/>
           <DOMFolderItem name="未命名文件夹 1" itemID="6551c282-00001fe6"/>
@@ -37,7 +37,7 @@
           <DOMFolderItem name="长枪" itemID="68982df5-00002672" isExpanded="true"/>
           <DOMFolderItem name="长枪/53式步骑枪" itemID="659ea370-00000ca4"/>
           <DOMFolderItem name="长枪/g11" itemID="6878f46b-000007fd"/>
-          <DOMFolderItem name="长枪/GM6_LYNX" itemID="68979216-000016b1" isExpanded="true"/>
+          <DOMFolderItem name="长枪/GM6_LYNX" itemID="68979216-000016b1"/>
           <DOMFolderItem name="长枪/Jackhammer" itemID="6870de51-00000afb"/>
           <DOMFolderItem name="长枪/M1918A2" itemID="6872364e-00003591"/>
           <DOMFolderItem name="长枪/NEGEV" itemID="686a7a3e-0000131c"/>
@@ -50,7 +50,7 @@
           <DOMFolderItem name="长枪/XM214" itemID="689a24d4-000032b3"/>
           <DOMFolderItem name="长枪/XM556" itemID="686bba3f-000040b0"/>
           <DOMFolderItem name="长枪/ZB-26" itemID="68728189-000006c7"/>
-          <DOMFolderItem name="长枪/火药燃气液压打桩机" itemID="655175a5-000006e2"/>
+          <DOMFolderItem name="长枪/火药燃气液压打桩机" itemID="655175a5-000006e2" isExpanded="true"/>
           <DOMFolderItem name="长枪/火药燃气液压打桩机/未命名文件夹 1" itemID="6551ede1-000021a3"/>
           <DOMFolderItem name="长枪/火药燃气液压打桩机/未命名文件夹 1/1" itemID="6551ede1-000021a4" isExpanded="true"/>
           <DOMFolderItem name="长枪/铁枪" itemID="68663e85-0000038c"/>
@@ -134,7 +134,7 @@
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="ashcore/ashcore.xml" itemID="688340fd-00000819" lastModified="1753436006"/>
           <Include href="ashcore/图标-ashcore.xml" itemID="68835078-00000a95" lastModified="1753436313"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1755268079"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1755341796"/>
           <Include href="q.xml" loadImmediate="false" itemID="6898491a-00000406" lastModified="1754812780"/>
           <Include href="sprite/Symbol 35.xml" itemID="6577b699-00000971" lastModified="1718635260"/>
           <Include href="sprite/Symbol 36.xml" loadImmediate="false" itemID="6577b699-00000972" lastModified="1719476235"/>
@@ -142,6 +142,7 @@
           <Include href="补间 12.xml" itemIcon="1" loadImmediate="false" itemID="688b0839-00000756" lastModified="1753942073"/>
           <Include href="补间 13.xml" itemIcon="1" loadImmediate="false" itemID="688b39ff-000007ea" lastModified="1753954815"/>
           <Include href="补间 14.xml" itemIcon="1" loadImmediate="false" itemID="688b39ff-000007ec" lastModified="1753954815"/>
+          <Include href="等离子光片.xml" loadImmediate="false" itemID="6883540e-00000e06" lastModified="1753438466"/>
           <Include href="电感切割刃/刀-电感切割刃.xml" itemID="655c55d9-00000308" lastModified="1721580831"/>
           <Include href="电感切割刃/刀脊.xml" loadImmediate="false" itemID="655c4e2f-0000062f" lastModified="1700551159"/>
           <Include href="电感切割刃/刀脊花纹.xml" loadImmediate="false" itemID="655c4e77-00000633" lastModified="1700548288"/>
@@ -489,6 +490,7 @@
           <Include href="长枪/火药燃气液压打桩机/MACSIII火焰5.xml" itemIcon="1" loadImmediate="false" itemID="68865ce9-00006fc5" lastModified="1753636073"/>
           <Include href="长枪/火药燃气液压打桩机/MACSIII锯片.xml" loadImmediate="false" itemID="6881fc3a-000005a4" lastModified="1753352189"/>
           <Include href="长枪/火药燃气液压打桩机/打桩机子弹.xml" itemID="6551eea5-000021cc" lastModified="1702259181"/>
+          <Include href="长枪/火药燃气液压打桩机/等离子切割机.xml" loadImmediate="false" itemID="68a0606d-00002274" lastModified="1755341298"/>
           <Include href="长枪/火药燃气液压打桩机/改造打草机锯片.xml" loadImmediate="false" itemID="6881a79d-00000539" lastModified="1753330525"/>
           <Include href="长枪/火药燃气液压打桩机/杆体.xml" itemIcon="1" loadImmediate="false" itemID="651ce0aa-00002f3c" lastModified="1696425129"/>
           <Include href="长枪/火药燃气液压打桩机/护盾.xml" itemIcon="1" loadImmediate="false" itemID="651d6417-00002ff9" lastModified="1696424983"/>
@@ -1286,8 +1288,13 @@
                     <SolidSwatchItem color="#111415" hue="130" saturation="27" brightness="18"/>
                     <SolidSwatchItem color="#410C13" hue="234" saturation="167" brightness="36"/>
                     <SolidSwatchItem color="#8C151A" hue="239" saturation="177" brightness="76"/>
-                    <SolidSwatchItem color="#FF0000" alpha="0.0901960784313725" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF0000" alpha="0.0862745098039216" saturation="239" brightness="120"/>
                     <SolidSwatchItem color="#FF0000" alpha="0.0470588235294118" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#29251A" hue="29" saturation="57" brightness="32"/>
+                    <SolidSwatchItem color="#281C0E" hue="21" saturation="118" brightness="26"/>
+                    <SolidSwatchItem color="#E0D1A4" hue="30" saturation="119" brightness="183"/>
+                    <SolidSwatchItem color="#1B1308" hue="24" saturation="124" brightness="17"/>
+                    <SolidSwatchItem color="#16130A" hue="30" saturation="96" brightness="15"/>
                </swatches>
           </swatchList>
      </swatchLists>

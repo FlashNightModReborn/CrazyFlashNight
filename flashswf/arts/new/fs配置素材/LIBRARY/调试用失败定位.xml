@@ -7,11 +7,11 @@
             <DOMFrame index="0" duration="29" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
-                  <MorphSegment startPointA="-1.6875, #0.01" startPointB="-0.2265625, #0.01" strokeIndex1="0" strokeIndex2="1">
+                  <MorphSegment startPointA="-1.6875, #0.01" startPointB="-0.2265625, #0.01" strokeIndex1="0" strokeIndex2="0">
                     <MorphCurves controlPointA="-0.8515625, #0.01" anchorPointA="-0.015625, #0.01" controlPointB="#FFFFFF.E3, #0.01" anchorPointB="0, #0.01" isLine="true"/>
                     <MorphCurves controlPointA="-0.015625, #FFFFFF.2F" anchorPointA="-0.015625, #FFFFFE.5D" controlPointB="0, #FFFFFF.E5" anchorPointB="0, -0.21875" isLine="true"/>
                   </MorphSegment>
-                  <MorphSegment startPointA="-0.0078125, #1.CE" startPointB="0, #0.3F" strokeIndex1="0" strokeIndex2="1">
+                  <MorphSegment startPointA="-0.0078125, #1.CE" startPointB="0, #0.3F" strokeIndex1="0" strokeIndex2="0">
                     <MorphCurves controlPointA="-0.0078125, #0.ED" anchorPointA="-0.0078125, #0.0B" controlPointB="0, #0.21" anchorPointB="0, #0.02" isLine="true"/>
                     <MorphCurves controlPointA="#0.E, #0.0B" anchorPointA="#1.C1, #0.0B" controlPointB="#0.1F, #0.02" anchorPointB="#0.3D, #0.02" isLine="true"/>
                   </MorphSegment>
@@ -30,7 +30,7 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!-2 462|-2 11!-2 11|449 11!-4 -419|-4 1!-4 1|-432 1"/>
+                    <Edge strokeStyle="1" edges="!-4 -419|-4 1!-4 1|-432 1!-2 462|-2 11!-2 11|449 11"/>
                   </edges>
                 </DOMShape>
               </elements>

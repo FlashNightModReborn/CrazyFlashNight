@@ -2,7 +2,101 @@
 import org.flashNight.gesh.array.*;
 
 // =========================
-// 阶段1：文本拼接纯函数化
+// 阶段3：常量与样式模块化
+// =========================
+
+// A. 常量模块：集中管理颜色、单位、布局参数
+_root.注释常量 = {
+  // 颜色常量
+  COL_HL: "#FFCC00",        // 高亮黄色（强化等级、技能加成等）
+  COL_HP: "#00FF00",        // HP绿色
+  COL_MP: "#00FFFF",        // MP青色  
+  COL_CRIT: "#DD4455",      // 暴击红色
+  COL_POISON: "#66dd00",    // 剧毒绿色
+  COL_VAMP: "#bb00aa",      // 吸血紫色
+  COL_ROUT: "#FF3333",      // 击溃红色
+  COL_DMG: "#0099FF",       // 伤害类型蓝色
+  COL_BREAK_LIGHT: "#66bcf5", // 破击附加伤害淡蓝
+  COL_BREAK_MAIN: "#CC6600",  // 破击类型橙色
+  COL_INFO: "#FFCC00",      // 信息提示黄色
+  
+  // 单位/后缀常量
+  SUF_PERCENT: "%",
+  SUF_HP: "HP", 
+  SUF_MP: "MP",
+  SUF_BLOOD: "%血量",
+  SUF_SECOND: "秒",
+  SUF_FIRE_RATE: "发/秒",
+  SUF_KG: "kg",
+  
+  // 布局参数常量
+  BASE_NUM: 200,           // 基础宽度
+  RATE: 0.6,              // 缩放比例（3/5）
+  BASE_SCALE: 486.8,      // 基础缩放
+  BASE_OFFSET: 7.5,       // 基础偏移
+  MIN_W: 150,             // 最小宽度
+  MAX_W: 500,             // 最大宽度
+  TEXT_PAD: 10,           // 文本内边距
+  BG_HEIGHT_OFFSET: 20,   // 背景高度偏移
+  
+  // 字符宽度估算
+  CHAR_AVG_WIDTH: 0.5,    // 每字符平均宽度
+  
+  // 微调偏移（预留）
+  OFFSET_X: 0,
+  OFFSET_Y: 0
+};
+
+// B. 样式模块：文本包装器和格式化函数
+_root.注释样式 = {
+  // 文本包装器
+  bold: function(str:String):String {
+    return "<B>" + str + "</B>";
+  },
+  
+  color: function(str:String, hex:String):String {
+    return "<FONT COLOR='" + hex + "'>" + str + "</FONT>";
+  },
+  
+  br: function():String {
+    return "<BR>";
+  },
+  
+  kv: function(label:String, val, suffix:String):String {
+    if (suffix === undefined) suffix = "";
+    return label + "：" + val + suffix;
+  },
+  
+  // 数值行：统一数值行格式化（复用现有的空值过滤逻辑）
+  numLine: function(buf:Array, label:String, val, suffix:String):Void {
+    if (val === undefined || val === null) return;
+    var n = Number(val);
+    if (!isNaN(n)) {              // 数值（或可转为数值）
+      if (n === 0) return;
+      buf.push(label, "：", n, (suffix ? suffix : ""), "<BR>");
+      return;
+    }
+    // 非数值：过滤空串/"0"/"null" 等情况
+    if (val === "" || val == "0" || val == "null") return;
+    buf.push(label, "：", val, (suffix ? suffix : ""), "<BR>");
+  },
+  
+  // 强化行：基础值+强化加成显示
+  upgradeLine: function(buf:Array, label:String, base:Number, lvl:Number):Void {
+    if (base === undefined || base === 0) return;
+    buf.push(label, "：", base);
+    var enhanced = _root.强化计算(base, lvl);
+    buf.push("<FONT COLOR='" + _root.注释常量.COL_HL + "'>(+", (enhanced - base), ")</FONT><BR>");
+  },
+  
+  // 彩色行：带颜色的文本行
+  colorLine: function(buf:Array, color:String, text:String):Void {
+    buf.push("<FONT COLOR='" + color + "'>", text, "</FONT><BR>");
+  }
+};
+
+// =========================
+// 阶段1：文本拼接纯函数化  
 // =========================
 _root.注释文本 = {
   生成基础描述: function(item:Object):Array {
@@ -101,30 +195,25 @@ _root.注释选择 = {
   }
 };
 
+// 兼容别名：保持向后兼容，内部转调新的样式模块
 _root.注释行 = {
   基础加强化: function(buf:Array, 标题:String, 基础:Number, 等级:Number):Void {
-    if (基础 === undefined || 基础 === 0) return;
-    buf.push(标题, "：", 基础);
-    var 强化后 = _root.强化计算(基础, 等级);
-    buf.push("<FONT COLOR='#FFCC00'>(+", (强化后 - 基础), ")</FONT><BR>");
+    _root.注释样式.upgradeLine(buf, 标题, 基础, 等级);
   },
-  // 统一数值行：自动忽略 null/undefined/0/""，支持可选后缀（如 "%"、"%血量"）
   纯数值行: function(buf:Array, 标题:String, 值, 后缀:String):Void {
-    if (值 === undefined || 值 === null) return;
-    var n = Number(值);
-    if (!isNaN(n)) {              // 数值（或可转为数值）
-      if (n === 0) return;
-      buf.push(标题, "：", n, (后缀 ? 后缀 : ""), "<BR>");
-      return;
-    }
-    // 非数值：过滤空串/"0"/"null" 等情况
-    if (值 === "" || 值 == "0" || 值 == "null") return;
-    buf.push(标题, "：", 值, (后缀 ? 后缀 : ""), "<BR>");
+    _root.注释样式.numLine(buf, 标题, 值, 后缀);
   },
   彩色行: function(buf:Array, 颜色:String, 文本:String):Void {
-    buf.push("<FONT COLOR='" + 颜色 + "'>", 文本, "</FONT><BR>");
+    _root.注释样式.colorLine(buf, 颜色, 文本);
   }
 };
+
+// 验证常量模块正确性（可在测试时启用）
+// _root.testConstants = function() {
+//   trace("COL_HL:", _root.注释常量.COL_HL);
+//   trace("SUF_PERCENT:", _root.注释常量.SUF_PERCENT);
+//   trace("BASE_NUM:", _root.注释常量.BASE_NUM);
+// };
 
 _root.注释文本.生成装备属性块 = function(item:Object, tier:String, 等级:Number):Array {
   if (等级 == undefined || isNaN(等级) || 等级 < 1) 等级 = 1;
