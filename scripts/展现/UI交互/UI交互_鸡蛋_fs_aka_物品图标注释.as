@@ -111,12 +111,18 @@ _root.注释文本 = {
   },
   生成合成材料: function(item:Object):Array {
     var a = [];
-    if (item.synthesis != null) {
+    // 三段防护：对象存在 / materials 存在 / 返回数组存在
+    if (item.synthesis != null && 
+        _root.改装清单对象 && 
+        _root.改装清单对象[item.synthesis] && 
+        _root.改装清单对象[item.synthesis].materials) {
       var 表 = ItemUtil.getRequirementFromTask(_root.改装清单对象[item.synthesis].materials);
-      if (表.length > 0) {
+      if (表 && 表.length > 0) {
         a.push("合成材料：<BR>");
         for (var i=0; i<表.length; i++) {
-          a.push(ItemUtil.getItemData(表[i].name).displayname, "：", 表[i].value, "<BR>");
+          if (表[i] && 表[i].name) {
+            a.push(ItemUtil.getItemData(表[i].name).displayname, "：", 表[i].value, "<BR>");
+          }
         }
       }
     }
@@ -170,10 +176,21 @@ _root.注释文本 = {
     if (强化等级 > 1 && (item.type == "武器" || item.type == "防具")) {
       a.push("<FONT COLOR='#FFCC00'>强化等级：", 强化等级, "</FONT><BR>");
     } else {
-      // 兼容两种形态：value 为数字 或 对象里带 count
-      var 数量:Number = (typeof value == "number")
-                        ? Number(value)
-                        : (value && !isNaN(Number(value.count)) ? Number(value.count) : 0);
+      // 兼容多种形态：value 为数字 或 对象里带各种数量字段
+      var 数量:Number = 0;
+      if (typeof value == "number") {
+        数量 = Number(value);
+      } else if (value) {
+        // 优先级：count > amount > num > stack > quantity
+        var candidates = [value.count, value.amount, value.num, value.stack, value.quantity];
+        for (var i = 0; i < candidates.length; i++) {
+          var candidate = Number(candidates[i]);
+          if (!isNaN(candidate) && candidate > 0) {
+            数量 = candidate;
+            break;
+          }
+        }
+      }
       if (数量 > 1) a.push("数量：", 数量, "<BR>");
     }
     return a;
@@ -208,7 +225,7 @@ _root.注释布局 = {
   },
   
   // 应用简介布局：处理武器/防具 vs 其他物品的布局差异
-  应用简介布局: function(itemType:String, target:MovieClip, background:MovieClip, text:MovieClip):Number {
+  应用简介布局: function(itemType:String, target:MovieClip, background:MovieClip, text:MovieClip):Object {
     var 常量 = _root.注释常量;
     var stringWidth:Number;
     var backgroundHeightOffset:Number;
@@ -221,7 +238,7 @@ _root.注释布局 = {
         background._x = -常量.BASE_NUM;
         target._x = -常量.BASE_NUM + 常量.BASE_OFFSET;
         target._xscale = target._yscale = 常量.BASE_SCALE;
-        text._x = -200;
+        text._x = -常量.BASE_NUM;  // 使用常量替换魔法数
         text._y = 210;
         backgroundHeightOffset = 常量.BASE_NUM + 常量.BG_HEIGHT_OFFSET;
         break;
@@ -238,7 +255,7 @@ _root.注释布局 = {
         break;
     }
     
-    return backgroundHeightOffset;
+    return { width: stringWidth, heightOffset: backgroundHeightOffset };
   },
   
   // 定位注释框：处理边界检测和左右背景对齐
@@ -287,6 +304,62 @@ _root.注释布局 = {
   }
 };
 
+// C. 文本组合模块：统一组合各种文本段落
+_root.注释组合 = {
+  // 基础段：聚合描述/剧情/合成/刀技/战技/生命周期
+  基础段: function(item:Object):Array {
+    var segments = [];
+    segments = segments.concat(
+      _root.注释文本.生成基础描述(item),
+      _root.注释文本.生成剧情碎片提示(item), 
+      _root.注释文本.生成合成材料(item),
+      _root.注释文本.生成刀技乘数(item),
+      _root.注释文本.生成战技信息(item.skill),
+      _root.注释文本.生成生命周期(item.lifecycle)
+    );
+    return segments;
+  },
+  
+  // 装备段：直接调用现有的装备属性块生成
+  装备段: function(item:Object, tier:String, lvl:Number):Array {
+    return _root.注释文本.生成装备属性块(item, tier, lvl);
+  },
+  
+  // 简介头：直接调用现有的简介标题头生成
+  简介头: function(item:Object, value:Object, lvl:Number):Array {
+    return _root.注释文本.生成简介标题头(item, value, lvl);
+  },
+  
+  // 生成物品全文：组合所有段落为完整HTML
+  生成物品全文: function(item:Object, value:Object, lvl:Number):String {
+    var allSegments = [];
+    
+    // 按顺序组合：简介头 + 装备段 + 基础段
+    allSegments = allSegments.concat(
+      this.简介头(item, value, lvl),
+      this.装备段(item, value.tier, lvl),
+      this.基础段(item)
+    );
+    
+    return allSegments.join('');
+  },
+  
+  // 生成物品描述文本：仅描述部分（用于主要注释）
+  生成物品描述文本: function(item:Object):String {
+    return this.基础段(item).join('');
+  },
+  
+  // 生成简介面板内容：只包含简介头+装备段（修复左侧面板语义）
+  生成简介面板内容: function(item:Object, value:Object, lvl:Number):String {
+    var segments = [];
+    segments = segments.concat(
+      this.简介头(item, value, lvl),
+      this.装备段(item, value.tier, lvl)
+    );
+    return segments.join('');
+  }
+};
+
 // 兼容别名：保持向后兼容，内部转调新的样式模块
 _root.注释行 = {
   基础加强化: function(buf:Array, 标题:String, 基础:Number, 等级:Number):Void {
@@ -325,13 +398,29 @@ _root.注释文本.生成装备属性块 = function(item:Object, tier:String, �
       var bulletStr = (d.bulletrename ? d.bulletrename : d.bullet);
       if (bulletStr) a.push("子弹类型：", bulletStr, "<BR>");
       var notMuti = (d.bullet && d.bullet.indexOf("纵向") >= 0);
-      var splitVal:Number = (d.split && d.split > 1) ? d.split : 1;
+      
+      // 数值字段统一防护：使用Number()转换 + isNaN()兜底
+      var splitVal:Number = Number(d.split);
+      if (isNaN(splitVal) || splitVal <= 1) splitVal = 1;
+      
+      var capacity:Number = Number(d.capacity);
+      if (isNaN(capacity)) capacity = 0;
+      
       var magazineCapacity = notMuti ? splitVal : 1;
-      a.push("弹夹容量：", (d.capacity * magazineCapacity), "<BR>");
+      if (capacity > 0) a.push("弹夹容量：", (capacity * magazineCapacity), "<BR>");
       a.push("子弹威力：", d.power, "<FONT COLOR='#FFCC00'>(+", (_root.强化计算(d.power, 等级)-d.power), ")</FONT><BR>");
       if (splitVal > 1) a.push(notMuti ? "点射弹数：" : "弹丸数量：", splitVal, "<BR>");
-      if (d.interval) a.push("射速：", (Math.floor(10000 / d.interval) * 0.1 * magazineCapacity), "发/秒<BR>");
-      if (d.impact)  a.push("冲击力：", Math.floor(500 / d.impact), "<BR>");
+      
+      // interval和impact的防护：确保是有效数值且非零
+      var interval:Number = Number(d.interval);
+      if (!isNaN(interval) && interval > 0) {
+        a.push("射速：", (Math.floor(10000 / interval) * 0.1 * magazineCapacity), "发/秒<BR>");
+      }
+      
+      var impact:Number = Number(d.impact);
+      if (!isNaN(impact) && impact > 0) {
+        a.push("冲击力：", Math.floor(500 / impact), "<BR>");
+      }
       break;
   }
 
@@ -395,86 +484,8 @@ _root.物品图标注释 = function(name, value) {
     var 强化等级 = value.level > 0 ? value.level : 1;
 
     var 物品数据 = ItemUtil.getItemData(name);
-    var 文本数据 = new Array();
-
-    //避免回车换两行
-    文本数据.push(物品数据.description.split("\r\n").join("<BR>"));
-    文本数据.push("<BR>");
-
-    //是否为剧情碎片                                                                                                 
-    if (物品数据.use == "情报") {
-        文本数据.push("<FONT COLOR=\'#FFCC00\'>详细信息可在物品栏的情报界面查阅</FONT><BR>");
-    }
-
-
-    //合成材料
-    if (物品数据.synthesis != null) {
-        var 合成表 = ItemUtil.getRequirementFromTask(_root.改装清单对象[物品数据.synthesis].materials);
-        if (合成表.length > 0) {
-            文本数据.push("合成材料：<BR>");
-            for (var i = 0; i < 合成表.length; i++) {
-                文本数据.push(ItemUtil.getItemData(合成表[i].name).displayname + "：" + 合成表[i].value);
-                文本数据.push("<BR>");
-            }
-        }
-    }
-
-    //刀技乘数
-    if (物品数据.use === "刀") {
-        var templist = [_root.技能函数.凶斩伤害乘数表,
-            _root.技能函数.瞬步斩伤害乘数表,
-            _root.技能函数.龙斩刀伤乘数表,
-            _root.技能函数.拔刀术伤害乘数表];
-        var namelist = ["凶斩", "瞬步斩", "龙斩", "拔刀术"];
-        for (var i = 0; i < templist.length; i++) {
-            var temp = templist[i][物品数据.name];
-            if (temp > 1) {
-                var tempPercent = String((temp - 1) * 100);
-                文本数据.push('<font color="#FFCC00">【技能加成】</font>使用' + namelist[i] + "享受" + tempPercent + "%锋利度增益<BR>");
-            }
-        }
-
-    }
-
-    //战技信息
-    var 战技 = 物品数据.skill;
-    if (战技 != null) {
-        if (战技.description) {
-            文本数据.push('<font color="#FFCC00">【主动战技】</font>');
-            文本数据.push(战技.description);
-            文本数据.push('<BR><font color="#FFCC00">【战技信息】</font>');
-            if (战技.information) {
-                文本数据.push(战技.information);
-            } else {
-                //自动生成战技信息
-                var cd = 战技.cd / 1000;
-                文本数据.push("冷却" + cd + "秒");
-                if (战技.hp && 战技.hp != 0) {
-                    文本数据.push("，消耗" + 战技.hp + "HP");
-                }
-                if (战技.mp && 战技.mp != 0) {
-                    文本数据.push("，消耗" + 战技.mp + "MP");
-                }
-                文本数据.push("。");
-            }
-        } else {
-            文本数据.push(战技);
-        }
-        文本数据.push("<BR>");
-    }
-
-    //生命周期信息
-
-    var 生命周期 = 物品数据.lifecycle;
-    if (生命周期 != null) {
-        if (生命周期.description) {
-            文本数据.push('<font color="#FFCC00">【词条信息】</font>');
-            文本数据.push(生命周期.description);
-            文本数据.push("<BR>");
-        }
-    }
-
-    var 完整文本 = 文本数据.join('');
+    // 阶段3：使用文本组合器统一生成
+    var 完整文本 = _root.注释组合.生成物品描述文本(物品数据);
     var 计算宽度 = _root.注释布局.估算宽度(完整文本);
 
     _root.注释结束(); // 保底清理
@@ -558,20 +569,16 @@ _root.注释物品图标 = function(enable:Boolean, name:String, value:Object, e
 
         var data:Object = ItemUtil.getItemData(name);
         var level:Number = value.level > 0 ? value.level : 1;
-        // 阶段1：简介标题头纯函数
-        var introductionString:Array = _root.注释文本.生成简介标题头(data, value, level);
-
+        
         var tips:MovieClip = _root.注释框;
         
         // 使用新的布局模块处理简介布局
-        var backgroundHeightOffset = _root.注释布局.应用简介布局(data.type, target, background, text);
-        var stringWidth = background._width;  // 获取布局后的实际宽度
+        var layout = _root.注释布局.应用简介布局(data.type, target, background, text);
+        var stringWidth = layout.width;
+        var backgroundHeightOffset = layout.heightOffset;
 
-        // 阶段2：装备属性块（纯函数返回数组）
-        var 装备块:Array = _root.注释文本.生成装备属性块(data, value.tier, level);
-        introductionString = introductionString.concat(装备块);
-
-        var introduction:String = introductionString.join('');
+        // 阶段3：使用文本组合器生成简介面板内容（只包含简介头+装备段）
+        var introduction:String = _root.注释组合.生成简介面板内容(data, value, level);
 
         if(extraString) introduction += "<BR>" + extraString;
 
@@ -585,6 +592,16 @@ _root.注释物品图标 = function(enable:Boolean, name:String, value:Object, e
         var icon:MovieClip = target.attachMovie(iconString, "icon", target.getNextHighestDepth());
         icon._xscale = icon._yscale = 150;
         icon._x = icon._y = 19;
+        
+        // 层级修正：确保图标在简介背景之上，避免被遮挡
+        if (tips.简介背景) {
+          var iconDepth = target.getDepth();
+          var bgDepth = tips.简介背景.getDepth();
+          if (iconDepth <= bgDepth) {
+            // 将图标容器提升到背景之上
+            target.swapDepths(bgDepth + 1);
+          }
+        }
 
         background._height = text._height + backgroundHeightOffset;
     } else {
