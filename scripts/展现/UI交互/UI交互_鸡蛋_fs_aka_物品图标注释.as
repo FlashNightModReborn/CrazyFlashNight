@@ -195,6 +195,98 @@ _root.注释选择 = {
   }
 };
 
+// D. 布局模块：宽度估算、简介布局、注释框定位
+_root.注释布局 = {
+  // 估算文本宽度：基于字符数的粗估算法
+  估算宽度: function(html:String, minW:Number, maxW:Number):Number {
+    if (minW === undefined) minW = _root.注释常量.MIN_W;
+    if (maxW === undefined) maxW = _root.注释常量.MAX_W;
+    
+    var 字数 = html.length;
+    var 估算宽度 = 字数 * _root.注释常量.CHAR_AVG_WIDTH;
+    return Math.max(minW, Math.min(估算宽度, maxW));
+  },
+  
+  // 应用简介布局：处理武器/防具 vs 其他物品的布局差异
+  应用简介布局: function(itemType:String, target:MovieClip, background:MovieClip, text:MovieClip):Number {
+    var 常量 = _root.注释常量;
+    var stringWidth:Number;
+    var backgroundHeightOffset:Number;
+    
+    switch(itemType) {
+      case "武器":
+      case "防具":
+        stringWidth = 常量.BASE_NUM;
+        background._width = 常量.BASE_NUM;
+        background._x = -常量.BASE_NUM;
+        target._x = -常量.BASE_NUM + 常量.BASE_OFFSET;
+        target._xscale = target._yscale = 常量.BASE_SCALE;
+        text._x = -200;
+        text._y = 210;
+        backgroundHeightOffset = 常量.BASE_NUM + 常量.BG_HEIGHT_OFFSET;
+        break;
+      default:
+        var scaledWidth = 常量.BASE_NUM * 常量.RATE;
+        stringWidth = scaledWidth;
+        background._width = scaledWidth;
+        background._x = -scaledWidth;
+        target._x = -scaledWidth + 常量.BASE_OFFSET * 常量.RATE;
+        target._xscale = target._yscale = 常量.BASE_SCALE * 常量.RATE;
+        text._x = -scaledWidth;
+        text._y = 10 - text._x;
+        backgroundHeightOffset = 常量.BG_HEIGHT_OFFSET + 常量.RATE * 常量.BASE_NUM;
+        break;
+    }
+    
+    return backgroundHeightOffset;
+  },
+  
+  // 定位注释框：处理边界检测和左右背景对齐
+  定位注释框: function(tips:MovieClip, background:MovieClip, mouseX:Number, mouseY:Number):Void {
+    var 简介背景:MovieClip = tips.简介背景;
+    var 右背景:MovieClip = tips.背景;
+    
+    var isAbbr:Boolean = !简介背景._visible;
+    
+    if (isAbbr) {
+      // 简介背景隐藏时的定位逻辑
+      tips._x = Math.min(Stage.width - background._width, Math.max(0, mouseX - background._width));
+      tips._y = Math.min(Stage.height - background._height, Math.max(0, mouseY - background._height - 20));
+    } else {
+      if (右背景._visible) {
+        // 计算鼠标的理想定位点（将注释框的右边缘对齐到鼠标指针）
+        var desiredX:Number = mouseX - 右背景._width;
+        
+        // 计算允许的最小X值和最大X值
+        var minX:Number = 简介背景._width;
+        var maxX:Number = Stage.width - 右背景._width;
+        
+        // Y轴定位逻辑
+        tips._y = Math.min(Stage.height - tips._height, Math.max(0, mouseY - tips._height - 20));
+        var rightBottomHeight:Number = tips._y + 右背景._height;
+        
+        var offset:Number = mouseY - rightBottomHeight - 20;
+        if (offset > 0) {
+          tips.文本框._y = offset;
+          tips.背景._y = offset;
+        } else {
+          var icon:MovieClip = tips.物品图标定位;
+          右背景._height = Math.max(tips.文本框.textHeight, icon._height) + 10;
+        }
+        
+        tips._x = Math.max(minX, Math.min(desiredX, maxX));
+      } else {
+        // 只有左背景可见时
+        tips._x = Math.min(Stage.width - 简介背景._width, Math.max(0, mouseX - 简介背景._width)) + 简介背景._width;
+        tips._y = Math.min(Stage.height - 简介背景._height, Math.max(0, mouseY - 简介背景._height - 20));
+        
+        // 调整左背景高度以适配内容
+        简介背景._height = tips.简介文本框.textHeight + 10;
+      }
+    }
+  }
+};
+
 // 兼容别名：保持向后兼容，内部转调新的样式模块
 _root.注释行 = {
   基础加强化: function(buf:Array, 标题:String, 基础:Number, 等级:Number):Void {
@@ -383,10 +475,7 @@ _root.物品图标注释 = function(name, value) {
     }
 
     var 完整文本 = 文本数据.join('');
-    var 字数 = 完整文本.length;
-    var 每字平均宽度 = 0.5; // 根据实际情况调整
-    var 最大宽度 = 500; // 根据实际情况调整
-    var 计算宽度 = Math.max(150, Math.min(字数 * 每字平均宽度, 最大宽度));
+    var 计算宽度 = _root.注释布局.估算宽度(完整文本);
 
     _root.注释结束(); // 保底清理
 
@@ -431,7 +520,7 @@ _root.技能栏技能图标注释 = function(对应数组号) {
     文本数据 += "<BR>技能等级：" + 主角技能信息[1];
     // 文本数据 += "<BR>" + 是否装备或启用;
 
-    var 计算宽度 = 技能信息.Description.length < 20 ? 160 : 200;
+    var 计算宽度 = _root.注释布局.估算宽度(文本数据, 160, 200);
     _root.注释(计算宽度, 文本数据);
 };
 
@@ -449,7 +538,7 @@ _root.学习界面技能图标注释 = function(对应数组号) {
     文本数据 += "<BR>MP消耗：" + 技能信息.MP;
     文本数据 += "<BR>等级限制：" + 技能信息.UnlockLevel;
 
-    var 计算宽度 = 技能信息.Description.length < 20 ? 160 : 200;
+    var 计算宽度 = _root.注释布局.估算宽度(文本数据, 160, 200);
     _root.注释(计算宽度, 文本数据);
 };
 
@@ -474,36 +563,9 @@ _root.注释物品图标 = function(enable:Boolean, name:String, value:Object, e
 
         var tips:MovieClip = _root.注释框;
         
-        var stringWidth:Number;
-        var baseNum:Number = 200;
-        var rate:Number = 3 / 5;
-        var baseScale:Number = 486.8;
-        var baseOffset:Number = 7.5;
-        var backgroundHeightOffset;
-
-        switch(data.type) {
-            case "武器":
-            case "防具":
-                
-                stringWidth = baseNum;
-                background._width = baseNum;
-                background._x = -baseNum;
-                target._x = -baseNum + baseOffset;
-                target._xscale = target._yscale = baseScale;
-                text._x = -200;
-                text._y = 210;
-                backgroundHeightOffset = baseNum + 20;
-                break;
-            default:
-                stringWidth = 200 * rate;
-                background._width = 200 * rate;
-                background._x = -200 * rate;
-                target._x = -200 * rate + baseOffset * rate;
-                target._xscale = target._yscale = (baseScale * rate);
-                text._x = -baseNum * rate;
-                text._y = 10 - text._x;
-                backgroundHeightOffset = 20 + rate * baseNum;
-        }
+        // 使用新的布局模块处理简介布局
+        var backgroundHeightOffset = _root.注释布局.应用简介布局(data.type, target, background, text);
+        var stringWidth = background._width;  // 获取布局后的实际宽度
 
         // 阶段2：装备属性块（纯函数返回数组）
         var 装备块:Array = _root.注释文本.生成装备属性块(data, value.tier, level);
@@ -560,64 +622,8 @@ _root.注释 = function(宽度, 内容, 框体) {
     background._height = target.textHeight + 10;
     target._height = target.textHeight + 10;
 
-    var isAbbr:Boolean = !tips.简介背景._visible;
-
-    if(isAbbr) {
-        // 简介背景隐藏时的定位逻辑
-        tips._x = Math.min(Stage.width - background._width, Math.max(0, _root._xmouse - background._width));
-        tips._y = Math.min(Stage.height - background._height, Math.max(0, _root._ymouse - background._height - 20));
-    } else {
-        // 为了代码清晰，明确获取左右两个背景的引用
-        var rightBackground:MovieClip = tips.背景;
-        var leftBackground:MovieClip = tips.简介背景;
-
-        if(tips.背景._visible) {
-            // 1. 计算鼠标的理想定位点（将注释框的右边缘对齐到鼠标指针）
-            var desiredX:Number = _root._xmouse - rightBackground._width;
-
-            // 2. 计算允许的最小X值
-            //    为了保证左背景不移出屏幕，注册点(tips._x)的最小值必须是左背景的宽度
-            var minX:Number = leftBackground._width;
-
-            // 3. 计算允许的最大X值
-            //    为了保证右背景不移出屏幕，注册点(tips._x)的最大值是舞台宽度减去右背景的宽度
-            var maxX:Number = Stage.width - rightBackground._width;
-
-            // 4. 应用约束：先在最大和最小边界内夹住理想值
-            //    这里的逻辑可以简化为一行，但分解开更易于理解
-
-
-            // Y轴定位逻辑保持不变
-            tips._y = Math.min(Stage.height - tips._height, Math.max(0, _root._ymouse - tips._height - 20));
-            var rightBottomeight:Number = tips._y + rightBackground._height;
-
-            // _root.发布消息(_root._ymouse, rightBottomeight)
-            var offset:Number = _root._ymouse - rightBottomeight - 20;
-
-            if(offset > 0) {
-                if(true) {
-                    
-                    _root.注释框.文本框._y = offset;
-                    _root.注释框.背景._y = offset;
-                } else {
-                    desiredX = _root._xmouse;
-                }
-                
-            } else {
-                var icon:MovieClip = _root.注释框.物品图标定位;
-                rightBackground._height = Math.max(tips.文本框.textHeight, icon._height) + 10;
-            }
-
-            tips._x = Math.max(minX, Math.min(desiredX, maxX));
-        } else {
-            // 4. 应用约束：在边界内夹住理想值
-            tips._x = Math.min(Stage.width - leftBackground._width, Math.max(0, _root._xmouse - leftBackground._width)) + leftBackground._width;
-            tips._y = Math.min(Stage.height - leftBackground._height, Math.max(0, _root._ymouse - leftBackground._height - 20));
-            
-            // 调整左背景高度以适配内容
-            leftBackground._height = tips.简介文本框.textHeight + 10;
-        }
-    }
+    // 使用新的布局模块处理注释框定位
+    _root.注释布局.定位注释框(tips, background, _root._xmouse, _root._ymouse);
 };
 
 _root.注释结束 = function() {
