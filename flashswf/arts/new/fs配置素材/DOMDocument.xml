@@ -271,7 +271,7 @@
           <Include href="特效素材/打击伤害数字.xml" itemID="656983a5-000002a1" lastModified="1706446521"/>
           <Include href="特效与子弹/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="65e08f36-00001ff1" lastModified="1702237154"/>
           <Include href="特效与子弹/Symbol 13.xml" loadImmediate="false" itemID="65e08f36-00001ff0" lastModified="1702237154"/>
-          <Include href="提把.xml" loadImmediate="false" itemID="68a08614-00002d17" lastModified="1755351154"/>
+          <Include href="提把.xml" loadImmediate="false" itemID="68a08614-00002d17" lastModified="1755356624"/>
           <Include href="调试用定位.xml" itemID="689f43ef-00002651" lastModified="1755268079"/>
           <Include href="调试用失败定位.xml" itemID="689f43e7-00002650" lastModified="1755268071"/>
           <Include href="铁枪高级logo图腾.xml" loadImmediate="false" itemID="685e57a7-00000725" lastModified="1751013287"/>
@@ -299,7 +299,7 @@
           <Include href="未命名文件夹 1/重复项目文件夹/shape 4225.xml" itemIcon="1" loadImmediate="false" itemID="6551c27b-00001fe3" lastModified="1443854838"/>
           <Include href="未命名文件夹 1/重复项目文件夹/sprite 10.xml" loadImmediate="false" itemID="6551c27b-00001fe1" lastModified="1443854724"/>
           <Include href="未命名文件夹 1/重复项目文件夹/sprite 4226 (￯﾿ﾪ-￩ﾕ﾿￦ﾞﾪ-AK47).xml" loadImmediate="false" itemID="6551c27b-00001fe0" lastModified="1699858478"/>
-          <Include href="握把.xml" loadImmediate="false" itemID="68a076fc-00002913" lastModified="1755346697"/>
+          <Include href="握把1.xml" loadImmediate="false" itemID="68a09f91-00000574" lastModified="1755357185"/>
           <Include href="无AS链接/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005be" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 13.xml" loadImmediate="false" itemID="668e7c1e-000005bf" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005c2" lastModified="1720533000"/>
@@ -311,6 +311,7 @@
           <Include href="无AS链接/Symbol 4071.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001012" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4270.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001073" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4751.xml" loadImmediate="false" itemID="668e7c1e-0000117a" lastModified="1720533000"/>
+          <Include href="下框架.xml" loadImmediate="false" itemID="68a09f9b-00000578" lastModified="1755357290"/>
           <Include href="箱子素材/Symbol 9.xml" itemIcon="1" loadImmediate="false" itemID="65c8ed3c-00000647" lastModified="1704525302"/>
           <Include href="箱子素材/Symbol 10.xml" loadImmediate="false" itemID="65c8ed3c-00000648" lastModified="1714562335"/>
           <Include href="蓄力雷电.xml" loadImmediate="false" itemID="688adf6f-00000673" lastModified="1753934003"/>
@@ -494,7 +495,7 @@
           <Include href="长枪/火药燃气液压打桩机/MACSIII火焰5.xml" itemIcon="1" loadImmediate="false" itemID="68865ce9-00006fc5" lastModified="1753636073"/>
           <Include href="长枪/火药燃气液压打桩机/MACSIII锯片.xml" loadImmediate="false" itemID="6881fc3a-000005a4" lastModified="1753352189"/>
           <Include href="长枪/火药燃气液压打桩机/打桩机子弹.xml" itemID="6551eea5-000021cc" lastModified="1702259181"/>
-          <Include href="长枪/火药燃气液压打桩机/等离子切割机.xml" loadImmediate="false" itemID="68a0606d-00002274" lastModified="1755350570"/>
+          <Include href="长枪/火药燃气液压打桩机/等离子切割机.xml" loadImmediate="false" itemID="68a0606d-00002274" lastModified="1755357331"/>
           <Include href="长枪/火药燃气液压打桩机/改造打草机锯片.xml" loadImmediate="false" itemID="6881a79d-00000539" lastModified="1753330525"/>
           <Include href="长枪/火药燃气液压打桩机/杆体.xml" itemIcon="1" loadImmediate="false" itemID="651ce0aa-00002f3c" lastModified="1696425129"/>
           <Include href="长枪/火药燃气液压打桩机/护盾.xml" itemIcon="1" loadImmediate="false" itemID="651d6417-00002ff9" lastModified="1696424983"/>
@@ -1303,6 +1304,9 @@
                     <SolidSwatchItem color="#211E14" hue="30" saturation="58" brightness="25"/>
                     <SolidSwatchItem color="#070702" hue="40" saturation="133" brightness="5"/>
                     <SolidSwatchItem color="#1D1205" hue="22" saturation="165" brightness="16"/>
+                    <SolidSwatchItem color="#292717" hue="35" saturation="67" brightness="31"/>
+                    <SolidSwatchItem color="#231B0E" hue="24" saturation="104" brightness="23"/>
+                    <SolidSwatchItem color="#30230E" hue="25" saturation="132" brightness="29"/>
                </swatches>
           </swatchList>
      </swatchLists>
