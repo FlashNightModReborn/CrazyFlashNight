@@ -6,45 +6,6 @@ import org.flashNight.gesh.string.*;
 // 阶段3：常量与样式模块化
 // =========================
 
-/**
- * @deprecated 请使用 TooltipConstants
- * 兼容性包装：注释常量
- */
-_root.注释常量 = TooltipConstants;
-
-/**
- * @deprecated 请使用 TooltipFormatter  
- * 兼容性包装：注释样式格式化函数
- */
-_root.注释样式 = {
-  bold: function(str:String):String {
-    return TooltipFormatter.bold(str);
-  },
-  
-  color: function(str:String, hex:String):String {
-    return TooltipFormatter.color(str, hex);
-  },
-  
-  br: function():String {
-    return TooltipFormatter.br();
-  },
-  
-  kv: function(label:String, val, suffix:String):String {
-    return TooltipFormatter.kv(label, val, suffix);
-  },
-  
-  numLine: function(buf:Array, label:String, val, suffix:String):Void {
-    TooltipFormatter.numLine(buf, label, val, suffix);
-  },
-  
-  upgradeLine: function(buf:Array, label:String, base:Number, lvl:Number):Void {
-    TooltipFormatter.upgradeLine(buf, label, base, lvl, _root.注释常量.COL_HL);
-  },
-  
-  colorLine: function(buf:Array, color:String, text:String):Void {
-    TooltipFormatter.colorLine(buf, color, text);
-  }
-};
 
 // =========================
 // 阶段1：文本拼接纯函数化  
@@ -153,23 +114,6 @@ _root.注释文本 = {
   }
 };
 
-/**
- * 数据选择器模块
- * 用于根据装备阶级选择正确的数据源
- */
-_root.注释选择 = {
-  取装备数据: function(item:Object, tier:String):Object {
-    if (tier == null) return item.data;
-    switch (tier) {
-      case "二阶": return item.data_2;
-      case "三阶": return item.data_3;
-      case "四阶": return item.data_4;
-      case "墨冰": return item.data_ice;
-      case "狱火": return item.data_fire;
-      default: return item.data;
-    }
-  }
-};
 
 /**
  * 布局模块
@@ -178,42 +122,41 @@ _root.注释选择 = {
 _root.注释布局 = {
   // 估算文本宽度：基于字符数的粗估算法
   估算宽度: function(html:String, minW:Number, maxW:Number):Number {
-    if (minW === undefined) minW = _root.注释常量.MIN_W;
-    if (maxW === undefined) maxW = _root.注释常量.MAX_W;
+    if (minW === undefined) minW = TooltipConstants.MIN_W;
+    if (maxW === undefined) maxW = TooltipConstants.MAX_W;
     
     var 字数 = html.length;
-    var 估算宽度 = 字数 * _root.注释常量.CHAR_AVG_WIDTH;
+    var 估算宽度 = 字数 * TooltipConstants.CHAR_AVG_WIDTH;
     return Math.max(minW, Math.min(估算宽度, maxW));
   },
   
   // 应用简介布局：处理武器/防具 vs 其他物品的布局差异
   应用简介布局: function(itemType:String, target:MovieClip, background:MovieClip, text:MovieClip):Object {
-    var 常量 = _root.注释常量;
     var stringWidth:Number;
     var backgroundHeightOffset:Number;
     
     switch(itemType) {
       case "武器":
       case "防具":
-        stringWidth = 常量.BASE_NUM;
-        background._width = 常量.BASE_NUM;
-        background._x = -常量.BASE_NUM;
-        target._x = -常量.BASE_NUM + 常量.BASE_OFFSET;
-        target._xscale = target._yscale = 常量.BASE_SCALE;
-        text._x = -常量.BASE_NUM;  // 使用常量替换魔法数
+        stringWidth = TooltipConstants.BASE_NUM;
+        background._width = TooltipConstants.BASE_NUM;
+        background._x = -TooltipConstants.BASE_NUM;
+        target._x = -TooltipConstants.BASE_NUM + TooltipConstants.BASE_OFFSET;
+        target._xscale = target._yscale = TooltipConstants.BASE_SCALE;
+        text._x = -TooltipConstants.BASE_NUM;  // 使用TooltipConstants替换魔法数
         text._y = 210;
-        backgroundHeightOffset = 常量.BASE_NUM + 常量.BG_HEIGHT_OFFSET;
+        backgroundHeightOffset = TooltipConstants.BASE_NUM + TooltipConstants.BG_HEIGHT_OFFSET;
         break;
       default:
-        var scaledWidth = 常量.BASE_NUM * 常量.RATE;
+        var scaledWidth = TooltipConstants.BASE_NUM * TooltipConstants.RATE;
         stringWidth = scaledWidth;
         background._width = scaledWidth;
         background._x = -scaledWidth;
-        target._x = -scaledWidth + 常量.BASE_OFFSET * 常量.RATE;
-        target._xscale = target._yscale = 常量.BASE_SCALE * 常量.RATE;
+        target._x = -scaledWidth + TooltipConstants.BASE_OFFSET * TooltipConstants.RATE;
+        target._xscale = target._yscale = TooltipConstants.BASE_SCALE * TooltipConstants.RATE;
         text._x = -scaledWidth;
         text._y = 10 - text._x;
-        backgroundHeightOffset = 常量.BG_HEIGHT_OFFSET + 常量.RATE * 常量.BASE_NUM;
+        backgroundHeightOffset = TooltipConstants.BG_HEIGHT_OFFSET + TooltipConstants.RATE * TooltipConstants.BASE_NUM;
         break;
     }
     
@@ -331,13 +274,13 @@ _root.注释组合 = {
  */
 _root.注释行 = {
   基础加强化: function(buf:Array, 标题:String, 基础:Number, 等级:Number):Void {
-    _root.注释样式.upgradeLine(buf, 标题, 基础, 等级);
+    TooltipFormatter.upgradeLine(buf, 标题, 基础, 等级, TooltipConstants.COL_HL);
   },
   纯数值行: function(buf:Array, 标题:String, 值, 后缀:String):Void {
-    _root.注释样式.numLine(buf, 标题, 值, 后缀);
+    TooltipFormatter.numLine(buf, 标题, 值, 后缀);
   },
   彩色行: function(buf:Array, 颜色:String, 文本:String):Void {
-    _root.注释样式.colorLine(buf, 颜色, 文本);
+    TooltipFormatter.colorLine(buf, 颜色, 文本);
   }
 };
 
@@ -345,7 +288,7 @@ _root.注释行 = {
 _root.注释文本.生成装备属性块 = function(item:Object, tier:String, 等级:Number):Array {
   if (等级 == undefined || isNaN(等级) || 等级 < 1) 等级 = 1;
   var a = [];
-  var d = _root.注释选择.取装备数据(item, tier);
+  var d = TooltipDataSelector.getEquipmentData(item, tier);
 
   switch (item.use) {
     case "刀":

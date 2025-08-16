@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/火药燃气液压打桩机/等离子切割机" itemID="68a0606d-00002274" lastModified="1755373452" lastUniqueIdentifier="78">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/火药燃气液压打桩机/等离子切割机" itemID="68a0606d-00002274" lastModified="1755373509" lastUniqueIdentifier="78">
   <timeline>
     <DOMTimeline name="等离子切割机" currentFrame="17">
       <layers>
@@ -906,7 +906,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 8" color="#FF4F4F" current="true" isSelected="true">
+        <DOMLayer name="图层 8" color="#FF4F4F">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
@@ -932,22 +932,6 @@
                   </matrix>
                   <transformationPoint>
                     <Point x="88.8" y="36.65"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 9" color="#4FFF4F">
-          <frames>
-            <DOMFrame index="0" duration="31" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="提把" centerPoint3DX="-3.6" centerPoint3DY="-96.75">
-                  <matrix>
-                    <Matrix tx="-70.6" ty="-119.25"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="67" y="22.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -1430,11 +1414,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A">
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="基底" centerPoint3DX="37.5" centerPoint3DY="-38.6">
+                <DOMSymbolInstance libraryItemName="基底" selected="true" centerPoint3DX="37.5" centerPoint3DY="-38.6">
                   <matrix>
                     <Matrix tx="-62" ty="-88.6"/>
                   </matrix>
@@ -1596,6 +1580,22 @@
                   </matrix>
                   <transformationPoint>
                     <Point x="29.9" y="44.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 9" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="提把" centerPoint3DX="-3.6" centerPoint3DY="-96.75">
+                  <matrix>
+                    <Matrix tx="-70.6" ty="-119.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="67" y="22.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
