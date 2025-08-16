@@ -71,7 +71,7 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
             for (var 单位 in _root.gameworld){
                 var 出生点 = _root.gameworld[单位];
                 if (出生点.是否从门加载主角 && 单位 != "出生地"){
-                    if(Mover.isReachable(self, 出生点, 50, true)) {
+                    if(Mover.isReachable(self, 出生点, 50, _root.调试模式)) {
                         出生点列表.push(出生点);
                     } else {
                         // _root.发布消息(出生点,"unReachable");
@@ -82,7 +82,7 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
             if(出生点列表.length > 0){
                 data.target = engine.getRandomArrayElement(出生点列表);
                 data.updateTarget();
-                if(true) {
+                if(_root.调试模式) {
                     var aabb:AABB = AABB.fromMovieClip(data.target, 0);
                     AABBRenderer.renderAABB(AABBCollider.fromAABB(aabb), 0, "filled");
                 }

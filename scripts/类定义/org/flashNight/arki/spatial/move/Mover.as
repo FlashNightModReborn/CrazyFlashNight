@@ -546,14 +546,20 @@ class org.flashNight.arki.spatial.move.Mover {
 
     /**
      * 直线可达性检测 + 四向 L 备选路径（先横后纵，失败再试纵后横）
-     * 调试规则：
+     * @param startEntity 起点 MovieClip（世界坐标）
+     * @param endEntity   终点 MovieClip（世界坐标）
+     * @param stepSize    采样步长（像素），默认 10
+     * @param debugMode   是否绘制调试线与投放调试特效（默认 false）
+     *
+     * 调试规则（debugMode=true 时生效）：
      *  - 直线成功：绿色直线
      *  - 直线失败：
      *      · 任一 L 成功：绿色 L（成功的那条）
      *      · 全部失败：两条 L 都画红（HV 透明度 60，VH 透明度 100），失败点落“调试用失败定位”
      */
-    public static function isReachable(startEntity:MovieClip, endEntity:MovieClip, stepSize:Number):Boolean {
+    public static function isReachable(startEntity:MovieClip, endEntity:MovieClip, stepSize:Number, debugMode:Boolean):Boolean {
         if (stepSize == null || stepSize <= 0) stepSize = 10;
+        var DEBUG:Boolean = (debugMode == true);
 
         // === 世界坐标（与特效/调试层一致，假定都在 _root.gameworld）===
         var sx:Number = startEntity._x;
@@ -561,7 +567,7 @@ class org.flashNight.arki.spatial.move.Mover {
         var ex:Number = endEntity._x;
         var ey:Number = endEntity._y;
 
-        // === 调试绘制层 ===
+        // === 调试绘制层（仅在 DEBUG 时创建/清理）===
         var getDebugLayer:Function = function():MovieClip {
             var world:MovieClip = _root.gameworld ? _root.gameworld : _root;
             if (!world.ReachabilityDebug) {
@@ -614,9 +620,10 @@ class org.flashNight.arki.spatial.move.Mover {
         var dist:Number = Math.sqrt(dx*dx + dy*dy);
 
         if (dist < stepSize) {
-            // 很近视作可达，画直线
-            var dl0:MovieClip = getDebugLayer();
-            drawLine(dl0, sx, sy, ex, ey, 0x00FF00, 1, 100);
+            if (DEBUG) {
+                var dl0:MovieClip = getDebugLayer();
+                drawLine(dl0, sx, sy, ex, ey, 0x00FF00, 1, 100);
+            }
             return true;
         }
 
@@ -626,8 +633,10 @@ class org.flashNight.arki.spatial.move.Mover {
         });
 
         if (straightOK) {
-            var dl1:MovieClip = getDebugLayer();
-            drawLine(dl1, sx, sy, ex, ey, 0x00FF00, 1, 100);
+            if (DEBUG) {
+                var dl1:MovieClip = getDebugLayer();
+                drawLine(dl1, sx, sy, ex, ey, 0x00FF00, 1, 100);
+            }
             return true;
         }
 
@@ -645,12 +654,13 @@ class org.flashNight.arki.spatial.move.Mover {
         var hvOK:Boolean = hvSeg1 && hvSeg2;
 
         if (hvOK) {
-            var dl2:MovieClip = getDebugLayer();
-            drawL(dl2, sx, sy, midHX, midHY, ex, ey, 0x00FF00, 1, 100);
-            // 辅助定位点
-            EffectSystem.Effect("调试用定位", sx, sy,  60, true);
-            EffectSystem.Effect("调试用定位", midHX, midHY, 60, true);
-            EffectSystem.Effect("调试用定位", ex, ey,  60, true);
+            if (DEBUG) {
+                var dl2:MovieClip = getDebugLayer();
+                drawL(dl2, sx, sy, midHX, midHY, ex, ey, 0x00FF00, 1, 100);
+                EffectSystem.Effect("调试用定位", sx, sy,  60, true);
+                EffectSystem.Effect("调试用定位", midHX, midHY, 60, true);
+                EffectSystem.Effect("调试用定位", ex, ey,  60, true);
+            }
             return true;
         }
 
@@ -667,27 +677,30 @@ class org.flashNight.arki.spatial.move.Mover {
         }
         var vhOK:Boolean = vhSeg1 && vhSeg2;
 
-        var dl3:MovieClip = getDebugLayer();
-
         if (vhOK) {
-            // 成功：画 VH 绿色 L
-            drawL(dl3, sx, sy, midVX, midVY, ex, ey, 0x00FF00, 1, 100);
-            EffectSystem.Effect("调试用定位", sx, sy,  60, true);
-            EffectSystem.Effect("调试用定位", midVX, midVY, 60, true);
-            EffectSystem.Effect("调试用定位", ex, ey,  60, true);
+            if (DEBUG) {
+                var dl3ok:MovieClip = getDebugLayer();
+                drawL(dl3ok, sx, sy, midVX, midVY, ex, ey, 0x00FF00, 1, 100);
+                EffectSystem.Effect("调试用定位", sx, sy,  60, true);
+                EffectSystem.Effect("调试用定位", midVX, midVY, 60, true);
+                EffectSystem.Effect("调试用定位", ex, ey,  60, true);
+            }
             return true;
         }
 
         // ===== 4) 全部失败：两条 L 都标红，并在失败点落标记 =====
-        // HV 用较低透明度，VH 用不透明，叠加更易看
-        drawL(dl3, sx, sy, midHX, midHY, ex, ey, 0xFF0000, 1, 60);
-        drawL(dl3, sx, sy, midVX, midVY, ex, ey, 0xFF0000, 1, 100);
+        if (DEBUG) {
+            var dl3:MovieClip = getDebugLayer();
+            // HV 用较低透明度，VH 用不透明，叠加更易看
+            drawL(dl3, sx, sy, midHX, midHY, ex, ey, 0xFF0000, 1, 60);
+            drawL(dl3, sx, sy, midVX, midVY, ex, ey, 0xFF0000, 1, 100);
 
-        if (!isNaN(hvFailX)) EffectSystem.Effect("调试用失败定位", hvFailX, hvFailY, 100, true);
-        if (!isNaN(vhFailX)) EffectSystem.Effect("调试用失败定位", vhFailX, vhFailY, 100, true);
-        if (isNaN(hvFailX) && isNaN(vhFailX) && !isNaN(straightFailX)) {
-            // 兜底：至少标记直线的失败点
-            EffectSystem.Effect("调试用失败定位", straightFailX, straightFailY, 100, true);
+            if (!isNaN(hvFailX)) EffectSystem.Effect("调试用失败定位", hvFailX, hvFailY, 100, true);
+            if (!isNaN(vhFailX)) EffectSystem.Effect("调试用失败定位", vhFailX, vhFailY, 100, true);
+            if (isNaN(hvFailX) && isNaN(vhFailX) && !isNaN(straightFailX)) {
+                // 兜底：至少标记直线的失败点
+                EffectSystem.Effect("调试用失败定位", straightFailX, straightFailY, 100, true);
+            }
         }
 
         return false;
