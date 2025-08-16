@@ -2841,4 +2841,20 @@
         <MaxIllumination>1</MaxIllumination>
         <MinIllumination>1</MinIllumination>
     </Environment>
+    
+    
+    <Environment>
+        <BackgroundURL>数据之海.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>0</Xmin>
+        <Xmax>3100</Xmax>
+        <Ymin>650</Ymin>
+        <Ymax>1000</Ymax>
+        <Width>3100</Width>
+        <Height>1000</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>7</MinIllumination>
+        <DisableSky>true</DisableSky>
+    </Environment>
 </EnvironmentSettings>

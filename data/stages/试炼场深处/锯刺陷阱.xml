@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GameStage>
+    <Rewards>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/数据之海.swf</Background>
+        </BasicInformation>
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
+                <Name>重置组</Name>
+                <Title/>
+                <Char>无头像</Char>
+                <Text>关卡仍在内部测试中，敬请期待</Text>
+            </Dialogue>
+        </Event>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种379</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
+                        <x>500</x>
+                        <y>800</y>
+                        <Parameters>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种379</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>1000</x>
+                        <y>800</y>
+                        <Parameters>
+                            <movementPatternName>FigureEight</movementPatternName>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种379</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>800</x>
+                        <y>800</y>
+                        <Parameters>
+                            <movementPatternName>SineWaveHorizontal</movementPatternName>
+                            <amplitudeY_param>80</amplitudeY_param>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种379</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>200</x>
+                        <y>800</y>
+                        <Parameters>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>
