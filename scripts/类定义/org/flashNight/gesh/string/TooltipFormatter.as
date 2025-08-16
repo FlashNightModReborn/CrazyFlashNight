@@ -1,10 +1,10 @@
-class org.flashNight.gesh.string.TooltipFormatter {
+﻿class org.flashNight.gesh.string.TooltipFormatter {
   public static function bold(s:String):String {
     return "<B>" + s + "</B>";
   }
   
   public static function color(s:String, hex:String):String {
-    return "<FONT COLOR='" + hex + "'>" + s + "</FONT>";
+    return "<FONT COLOR='" + hex + "'>" + s + "</FONT>"; 
   }
   
   public static function br():String {

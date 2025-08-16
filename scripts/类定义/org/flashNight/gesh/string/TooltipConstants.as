@@ -1,4 +1,4 @@
-class org.flashNight.gesh.string.TooltipConstants {
+﻿class org.flashNight.gesh.string.TooltipConstants {
   public static var COL_HL:String = "#FFCC00";
   public static var COL_HP:String = "#00FF00";
   public static var COL_MP:String = "#00FFFF";
@@ -10,7 +10,7 @@ class org.flashNight.gesh.string.TooltipConstants {
   public static var COL_BREAK_LIGHT:String = "#66bcf5";
   public static var COL_BREAK_MAIN:String = "#CC6600";
   public static var COL_INFO:String = "#FFCC00";
-
+ 
   public static var SUF_PERCENT:String = "%";
   public static var SUF_HP:String = "HP";
   public static var SUF_MP:String = "MP";
