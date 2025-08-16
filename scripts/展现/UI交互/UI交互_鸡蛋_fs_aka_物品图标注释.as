@@ -106,7 +106,8 @@ _root.物品图标注释 = function(name, value) {
 };
 
 
-_root.物品装备信息注释 = function(文本数据:Array, 物品数据:Object, tier:String):Void {
+_root.物品装备信息注释 = function(文本数据:Array, 物品数据:Object, tier:String, 强化等级:Number):Void {
+    if (强化等级 == undefined || isNaN(强化等级) || 强化等级 < 1) 强化等级 = 1;
     var 物品装备数据;
     if (tier != null) {
         switch (tier) {
@@ -424,7 +425,7 @@ _root.注释物品图标 = function(enable:Boolean, name:String, value:Object, e
 
         var level:Number = value.level > 0 ? value.level : 1;
 
-        if (level > 1 && data.type == "武器" || data.type == "防具") {
+        if (level > 1 && (data.type == "武器" || data.type == "防具")) {
             introductionString.push("<FONT COLOR=\'#FFCC00\'>");
             introductionString.push("强化等级：");
             introductionString.push(level);
@@ -470,7 +471,7 @@ _root.注释物品图标 = function(enable:Boolean, name:String, value:Object, e
         }
 
         // 获取装备数据
-        _root.物品装备信息注释(introductionString, data, value.tier);
+        _root.物品装备信息注释(introductionString, data, value.tier, level);
 
         var introduction:String = introductionString.join('');
 
