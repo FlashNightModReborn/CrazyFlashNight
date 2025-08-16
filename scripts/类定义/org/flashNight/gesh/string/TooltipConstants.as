@@ -30,6 +30,7 @@
 
   public static var CHAR_CJK_WIDTH:Number = 8;
   public static var CHAR_LATIN_WIDTH:Number = 5;
+  public static var CHAR_AVG_WIDTH:Number = 0.5;
 
   public static var OFFSET_X:Number = 0;
   public static var OFFSET_Y:Number = 0;
