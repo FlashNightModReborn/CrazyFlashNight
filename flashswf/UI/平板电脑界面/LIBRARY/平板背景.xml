@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="平板背景" itemID="66f84083-0000036b" lastModified="1752385681" lastUniqueIdentifier="279">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="平板背景" itemID="66f84083-0000036b" lastModified="1755332011" lastUniqueIdentifier="279">
   <timeline>
-    <DOMTimeline name="平板背景" currentFrame="24">
+    <DOMTimeline name="平板背景" currentFrame="187">
       <layers>
         <DOMLayer name="标识" color="#808080" autoNamed="false">
           <frames>
@@ -144,17 +144,17 @@ gotoAndStop("初始界面");]]></script>
 this.图鉴悬停说明._visible = 0;
 this.图鉴悬停说明.gotoAndPlay(1);
 this.支线查询按钮._visible = 1;
-this.支线查询按钮.gotoAndPlay(2);
+this.支线查询按钮.gotoAndPlay(1);
 this.材料大全按钮._visible = 1;
-this.材料大全按钮.gotoAndPlay(2);
+this.材料大全按钮.gotoAndPlay(1);
 this.角色信息按钮._visible = 1;
-this.角色信息按钮.gotoAndPlay(2);
+this.角色信息按钮.gotoAndPlay(1);
 this.文本收集按钮._visible = 1;
-this.文本收集按钮.gotoAndPlay(2);
+this.文本收集按钮.gotoAndPlay(1);
 this.单位说明按钮._visible = 1;
-this.单位说明按钮.gotoAndPlay(2);
+this.单位说明按钮.gotoAndPlay(1);
 this.阵营信息按钮._visible = 1;
-this.阵营信息按钮.gotoAndPlay(2);]]></script>
+this.阵营信息按钮.gotoAndPlay(1);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -256,7 +256,7 @@ _parent.关闭界面();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="基建界面内容" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="基建界面内容" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -375,7 +375,7 @@ _parent.关闭界面();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="材料大全界面内容" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="材料大全界面内容" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
@@ -428,7 +428,7 @@ _parent.关闭界面();]]></script>
           </frames>
         </DOMLayer>
         <DOMLayer name="功能按键" color="#4F80FF" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="透明按钮" color="#9933CC" parentLayerIndex="5" autoNamed="false">
+        <DOMLayer name="透明按钮" color="#9933CC" parentLayerIndex="5" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -579,7 +579,7 @@ on (rollOut) {
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="透明按钮" symbolType="button">
+                <DOMSymbolInstance libraryItemName="透明按钮" selected="true" symbolType="button">
                   <matrix>
                     <Matrix a="1.56591796875" tx="22.2" ty="152.25"/>
                   </matrix>
@@ -2596,7 +2596,7 @@ on (rollOut) {
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="图鉴内容/阵营信息/阵营信息按钮" blendMode="add" centerPoint3DX="344.45" centerPoint3DY="238">
+                <DOMSymbolInstance libraryItemName="图鉴内容/阵营信息/阵营信息按钮" selected="true" blendMode="add" centerPoint3DX="344.45" centerPoint3DY="238">
                   <matrix>
                     <Matrix tx="269.1" ty="220.1"/>
                   </matrix>
@@ -4205,7 +4205,7 @@ on (rollOut) {
           </frames>
         </DOMLayer>
         <DOMLayer name="边框与背景" color="#FF4FFF" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="平板整体UI背景" color="#FF4FFF" parentLayerIndex="29" locked="true" autoNamed="false">
+        <DOMLayer name="平板整体UI背景" color="#FF4FFF" parentLayerIndex="29" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="127" keyMode="9728">
               <elements>
@@ -4217,7 +4217,7 @@ on (rollOut) {
                     <Point x="223.75" y="155.1"/>
                   </transformationPoint>
                   <color>
-                    <Color alphaMultiplier="0.69921875"/>
+                    <Color alphaMultiplier="0.8984375"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -4240,7 +4240,7 @@ on (rollOut) {
                     <Point x="223.75" y="155.1"/>
                   </transformationPoint>
                   <color>
-                    <Color alphaMultiplier="0.69921875"/>
+                    <Color alphaMultiplier="0.8984375"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -4278,7 +4278,7 @@ on (rollOut) {
                     <Point x="223.75" y="155.1"/>
                   </transformationPoint>
                   <color>
-                    <Color alphaMultiplier="0.69921875"/>
+                    <Color alphaMultiplier="0.8984375"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -4316,7 +4316,7 @@ on (rollOut) {
                     <Point x="223.75" y="155.1"/>
                   </transformationPoint>
                   <color>
-                    <Color alphaMultiplier="0.69921875"/>
+                    <Color alphaMultiplier="0.8984375"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -4354,7 +4354,7 @@ on (rollOut) {
                     <Point x="223.75" y="155.1"/>
                   </transformationPoint>
                   <color>
-                    <Color alphaMultiplier="0.69921875"/>
+                    <Color alphaMultiplier="0.8984375"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>

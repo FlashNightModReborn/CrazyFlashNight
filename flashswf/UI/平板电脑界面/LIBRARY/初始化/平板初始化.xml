@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="初始化/平板初始化" itemID="66f84139-000003bf" lastModified="1752333717" lastUniqueIdentifier="12">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="初始化/平板初始化" itemID="66f84139-000003bf" lastModified="1755332029" lastUniqueIdentifier="12">
   <timeline>
-    <DOMTimeline name="平板初始化">
+    <DOMTimeline name="平板初始化" currentFrame="89">
       <layers>
         <DOMLayer name="as" color="#9933CC" locked="true" autoNamed="false">
           <frames>
@@ -798,7 +798,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="边框与背景" color="#FF4FFF" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="背景" color="#9933CC" parentLayerIndex="21" locked="true" autoNamed="false">
+        <DOMLayer name="背景" color="#9933CC" parentLayerIndex="21" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -828,14 +828,14 @@
                     <Point x="223.75" y="155.1"/>
                   </transformationPoint>
                   <color>
-                    <Color alphaMultiplier="0.69921875"/>
+                    <Color alphaMultiplier="0.8984375"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="89" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="平板背景空闲" blendMode="hardlight" centerPoint3DX="224.4" centerPoint3DY="149.9">
+                <DOMSymbolInstance libraryItemName="平板背景空闲" selected="true" blendMode="hardlight" centerPoint3DX="224.4" centerPoint3DY="149.9">
                   <matrix>
                     <Matrix tx="0.65" ty="-5.2"/>
                   </matrix>
@@ -843,14 +843,14 @@
                     <Point x="223.75" y="155.1"/>
                   </transformationPoint>
                   <color>
-                    <Color alphaMultiplier="0.69921875"/>
+                    <Color alphaMultiplier="0.8984375"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="soundlayer1" color="#9933CC" parentLayerIndex="21" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="soundlayer1" color="#9933CC" parentLayerIndex="21" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
