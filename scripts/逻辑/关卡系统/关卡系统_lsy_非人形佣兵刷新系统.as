@@ -21,8 +21,12 @@ _root.生成游戏世界可雇用敌人 = function(添加佣兵函数, 机率, �
 		}
 
 		// 使用帧计时器错峰刷新，避免集中刷佣兵
-		_root.帧计时器.添加单次任务(function(是否门口, 添加佣兵函数) {
-			if(currentGameWorld != _root.gameworld) return;
+		_root.帧计时器.添加单次任务(function(是否门口, 添加佣兵函数,frameFlag) {
+			// _root.发布消息(frameFlag, _root.gameworld.frameFlag)
+			if(frameFlag != _root.gameworld.frameFlag) {
+				
+				return;
+			}
 			if (是否门口){
 				var 门名单 = [];
 				for (var 单位 in _root.gameworld){
@@ -38,7 +42,7 @@ _root.生成游戏世界可雇用敌人 = function(添加佣兵函数, 机率, �
 			{
 				添加佣兵函数();
 			}
-		}, _root.随机整数(1, 场上佣兵总人数 * 2) * 1000, 是否门口, 添加佣兵函数);
+		}, _root.随机整数(1, 场上佣兵总人数 * 2) * 1000, 是否门口, 添加佣兵函数, _root.gameworld.frameFlag);
 	}
 };
 
