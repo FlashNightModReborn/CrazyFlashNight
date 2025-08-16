@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/火药燃气液压打桩机/等离子切割机" itemID="68a0606d-00002274" lastModified="1755373509" lastUniqueIdentifier="78">
   <timeline>
-    <DOMTimeline name="等离子切割机" currentFrame="17">
+    <DOMTimeline name="等离子切割机" currentFrame="26">
       <layers>
         <DOMLayer name="图层 5" color="#4FFFFF">
           <frames>
@@ -28,7 +28,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 17" color="#4FFF4F">
+        <DOMLayer name="图层 17" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>
@@ -1414,11 +1414,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="基底" selected="true" centerPoint3DX="37.5" centerPoint3DY="-38.6">
+                <DOMSymbolInstance libraryItemName="基底" centerPoint3DX="37.5" centerPoint3DY="-38.6">
                   <matrix>
                     <Matrix tx="-62" ty="-88.6"/>
                   </matrix>

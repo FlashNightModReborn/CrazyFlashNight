@@ -115,106 +115,6 @@ _root.注释文本 = {
 };
 
 /**
- * 布局模块包装器
- * 支持调试路由：通过USE_NEW_LAYOUT控制使用新旧实现
- */
-_root.注释布局 = {
-  USE_NEW_LAYOUT: false, // 调试开关：true=使用TooltipLayout，false=使用原始实现
-  
-  估算宽度: function(html:String, minW:Number, maxW:Number):Number {
-    if (this.USE_NEW_LAYOUT) {
-      return TooltipLayout.estimateWidth(html, minW, maxW);
-    } else {
-      // 原始实现
-      if (minW === undefined) minW = TooltipConstants.MIN_W;
-      if (maxW === undefined) maxW = TooltipConstants.MAX_W;
-      
-      var 字数 = html.length;
-      var 估算宽度 = 字数 * TooltipConstants.CHAR_AVG_WIDTH;
-      return Math.max(minW, Math.min(估算宽度, maxW));
-    }
-  },
-  
-  应用简介布局: function(itemType:String, target:MovieClip, background:MovieClip, text:MovieClip):Object {
-    if (this.USE_NEW_LAYOUT) {
-      return TooltipLayout.applyIntroLayout(itemType, target, background, text);
-    } else {
-      // 原始实现
-      var stringWidth:Number;
-      var backgroundHeightOffset:Number;
-      
-      switch(itemType) {
-        case "武器":
-        case "防具":
-          stringWidth = TooltipConstants.BASE_NUM;
-          background._width = TooltipConstants.BASE_NUM;
-          background._x = -TooltipConstants.BASE_NUM;
-          target._x = -TooltipConstants.BASE_NUM + TooltipConstants.BASE_OFFSET;
-          target._xscale = target._yscale = TooltipConstants.BASE_SCALE;
-          text._x = -TooltipConstants.BASE_NUM;
-          text._y = 210;
-          backgroundHeightOffset = TooltipConstants.BASE_NUM + TooltipConstants.BG_HEIGHT_OFFSET;
-          break;
-        default:
-          var scaledWidth = TooltipConstants.BASE_NUM * TooltipConstants.RATE;
-          stringWidth = scaledWidth;
-          background._width = scaledWidth;
-          background._x = -scaledWidth;
-          target._x = -scaledWidth + TooltipConstants.BASE_OFFSET * TooltipConstants.RATE;
-          target._xscale = target._yscale = TooltipConstants.BASE_SCALE * TooltipConstants.RATE;
-          text._x = -scaledWidth;
-          text._y = 10 - text._x;
-          backgroundHeightOffset = TooltipConstants.BG_HEIGHT_OFFSET + TooltipConstants.RATE * TooltipConstants.BASE_NUM;
-          break;
-      }
-      
-      return { width: stringWidth, heightOffset: backgroundHeightOffset };
-    }
-  },
-  
-  定位注释框: function(tips:MovieClip, background:MovieClip, mouseX:Number, mouseY:Number):Void {
-    if (this.USE_NEW_LAYOUT) {
-      TooltipLayout.positionTooltip(tips, background, mouseX, mouseY);
-    } else {
-      // 原始实现
-      var 简介背景:MovieClip = tips.简介背景;
-      var 右背景:MovieClip = tips.背景;
-      
-      var isAbbr:Boolean = !简介背景._visible;
-      
-      if (isAbbr) {
-        tips._x = Math.min(Stage.width - background._width, Math.max(0, mouseX - background._width));
-        tips._y = Math.min(Stage.height - background._height, Math.max(0, mouseY - background._height - 20));
-      } else {
-        if (右背景._visible) {
-          var desiredX:Number = mouseX - 右背景._width;
-          var minX:Number = 简介背景._width;
-          var maxX:Number = Stage.width - 右背景._width;
-          
-          tips._y = Math.min(Stage.height - tips._height, Math.max(0, mouseY - tips._height - 20));
-          var rightBottomHeight:Number = tips._y + 右背景._height;
-          
-          var offset:Number = mouseY - rightBottomHeight - 20;
-          if (offset > 0) {
-            tips.文本框._y = offset;
-            tips.背景._y = offset;
-          } else {
-            var icon:MovieClip = tips.物品图标定位;
-            右背景._height = Math.max(tips.文本框.textHeight, icon._height) + 10;
-          }
-          
-          tips._x = Math.max(minX, Math.min(desiredX, maxX));
-        } else {
-          tips._x = Math.min(Stage.width - 简介背景._width, Math.max(0, mouseX - 简介背景._width)) + 简介背景._width;
-          tips._y = Math.min(Stage.height - 简介背景._height, Math.max(0, mouseY - 简介背景._height - 20));
-          简介背景._height = tips.简介文本框.textHeight + 10;
-        }
-      }
-    }
-  }
-};
-
-/**
  * 文本组合模块
  * 统一组合各种文本段落，生成完整的注释内容
  */
@@ -406,7 +306,7 @@ _root.物品图标注释 = function(name, value) {
     var 物品数据 = ItemUtil.getItemData(name);
     // 阶段3：使用文本组合器统一生成
     var 完整文本 = _root.注释组合.生成物品描述文本(物品数据);
-    var 计算宽度 = _root.注释布局.估算宽度(完整文本);
+    var 计算宽度 = TooltipLayout.estimateWidth(完整文本);
 
     _root.注释结束(); // 保底清理
 
@@ -460,7 +360,7 @@ _root.技能栏技能图标注释 = function(对应数组号) {
     文本数据 += "<BR>技能等级：" + 主角技能信息[1];
     // 文本数据 += "<BR>" + 是否装备或启用;
 
-    var 计算宽度 = _root.注释布局.估算宽度(文本数据, 160, 200);
+    var 计算宽度 = TooltipLayout.estimateWidth(文本数据, 160, 200);
     _root.注释(计算宽度, 文本数据);
 };
 
@@ -482,7 +382,7 @@ _root.学习界面技能图标注释 = function(对应数组号) {
     文本数据 += "<BR>MP消耗：" + 技能信息.MP;
     文本数据 += "<BR>等级限制：" + 技能信息.UnlockLevel;
 
-    var 计算宽度 = _root.注释布局.估算宽度(文本数据, 160, 200);
+    var 计算宽度 = TooltipLayout.estimateWidth(文本数据, 160, 200);
     _root.注释(计算宽度, 文本数据);
 };
 
@@ -513,7 +413,7 @@ _root.注释物品图标 = function(enable:Boolean, name:String, value:Object, e
         var tips:MovieClip = _root.注释框;
         
         // 使用新的布局模块处理简介布局
-        var layout = _root.注释布局.应用简介布局(data.type, target, background, text);
+        var layout = TooltipLayout.applyIntroLayout(data.type, target, background, text);
         var stringWidth = layout.width;
         var backgroundHeightOffset = layout.heightOffset;
 
@@ -586,7 +486,7 @@ _root.注释 = function(宽度, 内容, 框体) {
     target._height = target.textHeight + 10;
 
     // 使用新的布局模块处理注释框定位
-    _root.注释布局.定位注释框(tips, background, _root._xmouse, _root._ymouse);
+    TooltipLayout.positionTooltip(tips, background, _root._xmouse, _root._ymouse);
 };
 
 /**
