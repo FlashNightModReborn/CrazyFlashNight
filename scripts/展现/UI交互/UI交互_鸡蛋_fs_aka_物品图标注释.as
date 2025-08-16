@@ -325,19 +325,6 @@ _root.物品图标注释 = function(name, value) {
 
 
 /**
- * 兼容包装：物品装备信息注释（已重构为模块化调用）
- * @param 文本数据:Array 输出文本数组
- * @param 物品数据:Object 物品数据对象
- * @param tier:String 装备阶级
- * @param 强化等级:Number 强化等级
- */
-_root.物品装备信息注释 = function(文本数据:Array, 物品数据:Object, tier:String, 强化等级:Number):Void {
-    var 块 = _root.注释文本.生成装备属性块(物品数据, tier, 强化等级);
-    for (var i=0; i<块.length; i++) 文本数据.push(块[i]);
-}
-
-
-/**
  * 技能栏技能图标注释
  * @param 对应数组号:Number 技能在主角技能表中的数组索引
  */
