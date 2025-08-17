@@ -232,7 +232,8 @@ _root.物品UI函数.刷新商店图标 = function(NPC物品栏){
 	}else{
 		var 图标列表 = _root.购买物品界面.图标列表;
 		for(var i=0; i<图标列表.length; i++){
-			图标列表[i].itemIcon.init(NPC物品栏[i][0], 1);
+			var saleItemName = typeof NPC物品栏[i] == "string" ? NPC物品栏[i] : NPC物品栏[i].name;
+			图标列表[i].itemIcon.init(saleItemName, 1);
 		}
 	}
 	_root.购买物品界面.NPC物品栏 = NPC物品栏;
