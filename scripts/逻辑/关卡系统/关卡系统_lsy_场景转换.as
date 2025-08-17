@@ -418,4 +418,6 @@ _root.清除游戏世界组件 = function(){
 	_root.商城主mc = null;
 	_root.关卡结束界面._visible = false;
 	_root.关卡结束界面.关卡是否结束 = false;
+
+    _root.注释结束();
 }

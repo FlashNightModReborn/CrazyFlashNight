@@ -208,7 +208,4 @@ _root.注释结束 = function() {
     }
 };
 
-_root.帧计时器.eventBus.subscribe("SceneChanged", function() {
-    _root.注释结束();
-}, null); 
 
