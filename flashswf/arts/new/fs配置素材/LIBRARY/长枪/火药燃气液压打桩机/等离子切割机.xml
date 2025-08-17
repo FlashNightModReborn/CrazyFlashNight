@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/火药燃气液压打桩机/等离子切割机" itemID="68a0606d-00002274" lastModified="1755373509" lastUniqueIdentifier="78">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/火药燃气液压打桩机/等离子切割机" itemID="68a0606d-00002274" lastModified="1755388880" lastUniqueIdentifier="82">
   <timeline>
-    <DOMTimeline name="等离子切割机" currentFrame="26">
+    <DOMTimeline name="等离子切割机" currentFrame="7" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;68&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层 5" color="#4FFFFF">
           <frames>
@@ -28,7 +28,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 17" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 17" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>
@@ -854,7 +854,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 10" color="#9933CC">
+        <DOMLayer name="图层 10" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
               <elements>
@@ -900,6 +900,37 @@
                   </matrix>
                   <transformationPoint>
                     <Point x="56.85" y="7.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 20" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="小支架" centerPoint3DX="132.35" centerPoint3DY="40.95">
+                  <matrix>
+                    <Matrix a="0.458343505859375" b="-0.888763427734375" c="0.888763427734375" d="0.458343505859375" tx="102" ty="43.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.2" y="-0.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="小支架" centerPoint3DX="101.05" centerPoint3DY="42.3">
+                  <matrix>
+                    <Matrix tx="84.45" ty="16.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.2" y="-0.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -1079,7 +1110,7 @@
             </DOMFrame>
             <DOMFrame index="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
               <elements>
-                <DOMSymbolInstance libraryItemName="等离子光片" selected="true" blendMode="lighten" centerPoint3DX="257.65" centerPoint3DY="-39.4">
+                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="257.65" centerPoint3DY="-39.4">
                   <matrix>
                     <Matrix a="0.3194580078125" d="1.78109741210938" tx="134.35" ty="-127.75"/>
                   </matrix>
@@ -1432,7 +1463,7 @@
         </DOMLayer>
         <DOMLayer name="图层 16" color="#FF4F4F">
           <frames>
-            <DOMFrame index="0" duration="15" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>
                 <CustomEase target="all">
                   <Point/>
@@ -1442,9 +1473,29 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="100.1" centerPoint3DY="-36.7">
+                <DOMSymbolInstance libraryItemName="枪口" selected="true" centerPoint3DX="100.1" centerPoint3DY="-36.7">
                   <matrix>
                     <Matrix tx="70.2" ty="-80.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.9" y="44.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="8" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.292179094606531" y="0.485105398307329"/>
+                  <Point x="0.58277539463353" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="219.5" centerPoint3DY="-36.7">
+                  <matrix>
+                    <Matrix tx="189.6" ty="-80.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="29.9" y="44.2"/>
