@@ -36,18 +36,34 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
             return;
         }
         // 检查是否为材料或情报，是则点击直接加入对应的收集品栏
-        if(type === "收集品"){
-            if(use === "材料"){
-                _root.收集品栏.材料.add(this.name, this.value);
-                _root.发布消息("获得[材料]" + this.name + "*" + this.value + "。");
-                collection.remove(index);
-            }else if(use === "情报"){
-                _root.收集品栏.情报.add(this.name, this.value);
-                _root.发布消息("获得[情报]" + this.name + "*" + this.value + "。");
-                collection.remove(index);
+        if (type == "收集品") {
+            var 栏:Object = _root.收集品栏; // 缓存，少一次链式查找
+            var 目标栏:Object = null;
+            var 标签:String = "";
+
+            switch (use) {
+                case "材料":
+                    目标栏 = 栏.材料;
+                    标签 = "材料";
+                    break;
+                case "情报":
+                    目标栏 = 栏.情报;
+                    标签 = "情报";
+                    break;
+                default:
+                    // 未知 use，必要时可记录日志
+                    return;
             }
+
+            // 统一落点
+            if(!目标栏.add(this.name, this.value)) {
+                目标栏.addValue(this.name, this.value);
+            };
+            _root.发布消息("获得[" + 标签 + "]" + this.name + "*" + this.value + "。");
+            collection.remove(index);
             return;
         }
+
 
         var dragIcon = _root.鼠标.物品图标容器.attachMovie("图标-" + itemData.icon, "物品图标", 0);
         dragIcon.gotoAndStop(2);
