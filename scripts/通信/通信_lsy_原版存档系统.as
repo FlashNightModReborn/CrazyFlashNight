@@ -322,6 +322,7 @@ _root.读取存盘 = function(){
         return false;
     }
     _root.发布消息("游戏本地读取成功！");
+    _root.读取本地存盘战宠(); // 使用最新的savePath重新读取战宠数据
     载入新佣兵库数据(0,0,0,0,0);
     return true;
 }
