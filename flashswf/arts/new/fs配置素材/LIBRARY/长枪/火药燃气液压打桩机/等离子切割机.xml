@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/火药燃气液压打桩机/等离子切割机" itemID="68a0606d-00002274" lastModified="1755443122" lastUniqueIdentifier="99">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/火药燃气液压打桩机/等离子切割机" itemID="68a0606d-00002274" linkageExportForAS="true" linkageIdentifier="枪-长枪-等离子切割机" lastModified="1755447350" lastUniqueIdentifier="108">
   <timeline>
-    <DOMTimeline name="等离子切割机" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;68&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="等离子切割机" currentFrame="22" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;68&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层 5" color="#4FFFFF">
           <frames>
@@ -12,13 +12,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 15" color="#4F80FF" current="true" isSelected="true">
+        <DOMLayer name="图层 15" color="#4F80FF">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="能量舱" centerPoint3DX="67.55" centerPoint3DY="-36.45">
+                <DOMSymbolInstance libraryItemName="能量舱" centerPoint3DX="67.55" centerPoint3DY="-57.7">
                   <matrix>
-                    <Matrix tx="49.95" ty="-63"/>
+                    <Matrix tx="49.95" ty="-84.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="17.6" y="26.55"/>
@@ -32,9 +32,9 @@
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="电容器舱" centerPoint3DX="-86.3" centerPoint3DY="34.35">
+                <DOMSymbolInstance libraryItemName="电容器舱" centerPoint3DX="-86.3" centerPoint3DY="13.1">
                   <matrix>
-                    <Matrix tx="-123.6" ty="6.75"/>
+                    <Matrix tx="-123.6" ty="-14.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="37.3" y="27.6"/>
@@ -48,9 +48,9 @@
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹舱" centerPoint3DX="-89.6" centerPoint3DY="-17">
+                <DOMSymbolInstance libraryItemName="弹舱" centerPoint3DX="-89.6" centerPoint3DY="-38.25">
                   <matrix>
-                    <Matrix tx="-143.05" ty="-95.7"/>
+                    <Matrix tx="-143.05" ty="-116.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="53.45" y="78.7"/>
@@ -60,7 +60,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 13" color="#4FFFFF">
+        <DOMLayer name="图层 13" color="#4FFFFF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>
@@ -72,9 +72,9 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="93.45" centerPoint3DY="-38">
+                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="93.45" centerPoint3DY="-59.25">
                   <matrix>
-                    <Matrix tx="71.4" ty="-60.8"/>
+                    <Matrix tx="71.4" ty="-82.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="22.05" y="22.8"/>
@@ -92,9 +92,9 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="84.35" centerPoint3DY="-38.05">
+                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="84.35" centerPoint3DY="-59.3">
                   <matrix>
-                    <Matrix tx="62.3" ty="-60.85"/>
+                    <Matrix tx="62.3" ty="-82.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="22.05" y="22.8"/>
@@ -104,9 +104,9 @@
             </DOMFrame>
             <DOMFrame index="2" duration="6" keyMode="15872">
               <elements>
-                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="93.3" centerPoint3DY="-38.05">
+                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="93.3" centerPoint3DY="-59.3">
                   <matrix>
-                    <Matrix tx="71.25" ty="-60.85"/>
+                    <Matrix tx="71.25" ty="-82.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="22.05" y="22.8"/>
@@ -124,9 +124,9 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="93.3" centerPoint3DY="-38.05">
+                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="93.3" centerPoint3DY="-59.3">
                   <matrix>
-                    <Matrix tx="71.25" ty="-60.85"/>
+                    <Matrix tx="71.25" ty="-82.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="22.05" y="22.8"/>
@@ -136,9 +136,9 @@
             </DOMFrame>
             <DOMFrame index="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="94.6" centerPoint3DY="-38.05">
+                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="94.6" centerPoint3DY="-59.3">
                   <matrix>
-                    <Matrix tx="72.55" ty="-60.85"/>
+                    <Matrix tx="72.55" ty="-82.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="22.05" y="22.8"/>
@@ -148,9 +148,9 @@
             </DOMFrame>
             <DOMFrame index="16" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
               <elements>
-                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="87.7" centerPoint3DY="-38">
+                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="87.7" centerPoint3DY="-59.25">
                   <matrix>
-                    <Matrix tx="65.65" ty="-60.8"/>
+                    <Matrix tx="65.65" ty="-82.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="22.05" y="22.8"/>
@@ -160,9 +160,9 @@
             </DOMFrame>
             <DOMFrame index="18" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-90">
               <elements>
-                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="82.75" centerPoint3DY="-38">
+                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="82.75" centerPoint3DY="-59.25">
                   <matrix>
-                    <Matrix tx="60.7" ty="-60.8"/>
+                    <Matrix tx="60.7" ty="-82.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="22.05" y="22.8"/>
@@ -172,9 +172,9 @@
             </DOMFrame>
             <DOMFrame index="20" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
               <elements>
-                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="100.2" centerPoint3DY="-38">
+                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="100.2" centerPoint3DY="-59.25">
                   <matrix>
-                    <Matrix tx="78.15" ty="-60.8"/>
+                    <Matrix tx="78.15" ty="-82.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="22.05" y="22.8"/>
@@ -184,9 +184,9 @@
             </DOMFrame>
             <DOMFrame index="22" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="94.6" centerPoint3DY="-38.05">
+                <DOMSymbolInstance libraryItemName="转轴" selected="true" centerPoint3DX="94.6" centerPoint3DY="-59.3">
                   <matrix>
-                    <Matrix tx="72.55" ty="-60.85"/>
+                    <Matrix tx="72.55" ty="-82.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="22.05" y="22.8"/>
@@ -196,9 +196,9 @@
             </DOMFrame>
             <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="94.6" centerPoint3DY="-38.05">
+                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="94.6" centerPoint3DY="-59.3">
                   <matrix>
-                    <Matrix tx="72.55" ty="-60.85"/>
+                    <Matrix tx="72.55" ty="-82.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="22.05" y="22.8"/>
@@ -208,9 +208,9 @@
             </DOMFrame>
             <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="73.45" centerPoint3DY="-38">
+                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="73.45" centerPoint3DY="-59.25">
                   <matrix>
-                    <Matrix tx="51.4" ty="-60.8"/>
+                    <Matrix tx="51.4" ty="-82.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="22.05" y="22.8"/>
@@ -220,9 +220,9 @@
             </DOMFrame>
             <DOMFrame index="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="转轴" selected="true" centerPoint3DX="94.6" centerPoint3DY="-38.05">
+                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="94.6" centerPoint3DY="-59.3">
                   <matrix>
-                    <Matrix tx="72.55" ty="-60.85"/>
+                    <Matrix tx="72.55" ty="-82.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="22.05" y="22.8"/>
@@ -232,9 +232,9 @@
             </DOMFrame>
             <DOMFrame index="30" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="106.05" centerPoint3DY="-38">
+                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="106.05" centerPoint3DY="-59.25">
                   <matrix>
-                    <Matrix tx="84" ty="-60.8"/>
+                    <Matrix tx="84" ty="-82.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="22.05" y="22.8"/>
@@ -244,9 +244,9 @@
             </DOMFrame>
             <DOMFrame index="31" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="101.75" centerPoint3DY="-38">
+                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="101.75" centerPoint3DY="-59.25">
                   <matrix>
-                    <Matrix tx="79.7" ty="-60.8"/>
+                    <Matrix tx="79.7" ty="-82.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="22.05" y="22.8"/>
@@ -256,9 +256,9 @@
             </DOMFrame>
             <DOMFrame index="33" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="94.6" centerPoint3DY="-38.05">
+                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="94.6" centerPoint3DY="-59.3">
                   <matrix>
-                    <Matrix tx="72.55" ty="-60.85"/>
+                    <Matrix tx="72.55" ty="-82.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="22.05" y="22.8"/>
@@ -390,507 +390,503 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="!-1610 -632[-1608 -642 -1608 -673!-1608 -673[-1608 -699 -1603 -713!-1603 -713[-1600 -726 -1600 -744!-1600 -744[-1600 -765 -1600 -775!-1600 -775[-1598 -856 -1598 -896!-1598 -896[-1597 -967 -1605 -1016!-1605 -1016[-1612 -1044 -1613 -1047
-!-1613 -1047[-1619 -1065 -1628 -1075!-1628 -1075[-1637 -1080 -1654 -1079!-1654 -1079[-1675 -1078 -1681 -1079!-1681 -1079[-1662 -1082 -1647 -1085!-1647 -1085[#FFF97D.5F #FFFBC0.0E -1693 -1088"/>
-                    <Edge fillStyle0="1" edges="
-!-1693 -1088|-1693 -1069"/>
-                    <Edge fillStyle0="1" fillStyle1="4" edges="
-!-1693 -1069[#FFF974.98 -1070 -1670 -1070!-1670 -1070|-1693 -1065.5"/>
-                    <Edge fillStyle0="1" edges="
-!-1693 -1065.5|-1693 -1057"/>
-                    <Edge fillStyle0="1" fillStyle1="3" edges="
-!-1693 -1057[#FFF987.57 #FFFBDD.15 -1632 -1053"/>
-                    <Edge fillStyle0="1" fillStyle1="5" edges="
-!-1632 -1053|-1629 -1066!-1629 -1066[-1618 -1053 -1620 -1035"/>
-                    <Edge fillStyle0="1" fillStyle1="11" edges="
-!-1620 -1035[-1621 -1026 -1621 -981"/>
-                    <Edge fillStyle0="1" fillStyle1="6" edges="
-!-1621 -981|-1621 -978"/>
-                    <Edge fillStyle0="1" fillStyle1="16" edges="
-!-1621 -978|-1613 -977!-1613 -977[-1607 -928 -1611 -849!-1611 -849[-1616 -751 -1615 -720!-1615 -720[-1615 -714 -1618 -706!-1618 -706[-1619 -702 -1623 -693!-1623 -693|-1614 -650!-1614 -650|-1626 -635!-1626 -635|-1610 -632"/>
-                    <Edge fillStyle1="2" edges="
-!-1693 -1088|-1693 -1102!-1693 -1102[#FFF97F.6F #FFFBB3.15 -1647 -1096!-1647 -1096[-1632 -1092 -1623 -1088!-1623 -1088[-1611 -1075 -1600 -1049!-1600 -1049[-1591 -1026 -1586 -1014!-1586 -1014|-1586 -915"/>
-                    <Edge fillStyle1="37" edges="
-!-1586 -915|-1586 -913"/>
-                    <Edge fillStyle1="2" edges="
-!-1586 -913|-1586 -560"/>
-                    <Edge fillStyle1="38" edges="
-!-1586 -560|-1586 -517"/>
-                    <Edge fillStyle1="36" edges="
-!-1586 -517|-1586 -355!-1586 -355[-1610 -317 -1611 -315"/>
-                    <Edge fillStyle1="2" edges="
-!-1611 -315[-1628 -297 -1639 -289!-1639 -289[-1657 -277 -1675 -278!-1675 -278|-1693 -278!-1693 -278|-1693 -297"/>
-                    <Edge fillStyle1="33" edges="
-!-1693 -297|-1693 -337.5"/>
-                    <Edge fillStyle1="34" edges="
-!-1693 -337.5|-1693 -348"/>
-                    <Edge fillStyle1="28" edges="
-!-1693 -348|-1693 -386.5"/>
-                    <Edge fillStyle1="35" edges="
-!-1693 -386.5|-1693 -398.5"/>
-                    <Edge fillStyle1="28" edges="
-!-1693 -398.5|-1693 -482"/>
-                    <Edge fillStyle1="30" edges="
-!-1693 -482|-1693 -599"/>
-                    <Edge fillStyle1="32" edges="
-!-1693 -599|-1693 -610.5"/>
-                    <Edge fillStyle1="30" edges="
-!-1693 -610.5|-1693 -630.5"/>
-                    <Edge fillStyle1="32" edges="
-!-1693 -630.5|-1693 -693"/>
-                    <Edge fillStyle1="25" edges="
-!-1693 -693|-1693 -714"/>
-                    <Edge fillStyle1="31" edges="
-!-1693 -714|-1693 -718.5"/>
-                    <Edge fillStyle1="27" edges="
-!-1693 -718.5|-1693 -789.5"/>
-                    <Edge fillStyle1="26" edges="
-!-1693 -789.5|-1693 -823.5"/>
-                    <Edge fillStyle1="3" edges="
-!-1693 -823.5|-1693 -827.5"/>
-                    <Edge fillStyle1="20" edges="
-!-1693 -827.5|-1693 -897.5"/>
-                    <Edge fillStyle1="18" edges="
-!-1693 -897.5|-1693 -908.5"/>
-                    <Edge fillStyle1="17" edges="
-!-1693 -908.5|-1693 -912.5"/>
-                    <Edge fillStyle1="18" edges="
-!-1693 -912.5|-1693 -928"/>
-                    <Edge fillStyle1="17" edges="
-!-1693 -928|-1693 -940"/>
-                    <Edge fillStyle1="18" edges="
-!-1693 -940|-1693 -945.5"/>
-                    <Edge fillStyle1="17" edges="
-!-1693 -945.5|-1693 -954"/>
-                    <Edge fillStyle1="13" edges="
-!-1693 -954|-1693 -959.5"/>
-                    <Edge fillStyle1="6" edges="
-!-1693 -959.5|-1693 -980"/>
-                    <Edge fillStyle1="10" edges="
-!-1693 -980|-1693 -994"/>
-                    <Edge fillStyle1="6" edges="
-!-1693 -994|-1693 -1005"/>
-                    <Edge fillStyle1="9" edges="
-!-1693 -1005|-1693 -1016"/>
-                    <Edge fillStyle1="6" edges="
-!-1693 -1016|-1693 -1023"/>
-                    <Edge fillStyle1="8" edges="
-!-1693 -1023|-1693 -1031.5"/>
-                    <Edge fillStyle1="5" edges="
-!-1693 -1031.5|-1693 -1048.5"/>
-                    <Edge fillStyle1="7" edges="
-!-1693 -1048.5|-1693 -1052"/>
-                    <Edge fillStyle1="3" edges="
-!-1693 -1052|-1693 -1057"/>
-                    <Edge fillStyle0="7" fillStyle1="3" edges="
-!-1645 -1048[-1656 -1051 -1672 -1052!-1672 -1052[#FFF96B.3F -1052 -1693 -1052"/>
+                    <Edge fillStyle0="1" edges="!-1693 -1513S1|-1693 -1494"/>
+                    <Edge fillStyle0="1" fillStyle1="4" edges="!-1693 -1494S3[-1675 -1495 -1670 -1495!-1670 -1495|-1693 -1490"/>
+                    <Edge fillStyle0="1" edges="!-1693 -1490S1|-1693 -1482"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!-1693 -1482S3[-1657 -1484 -1632 -1478"/>
+                    <Edge fillStyle0="1" fillStyle1="5" edges="!-1632 -1478S3|-1629 -1491!-1629 -1491[-1618 -1478 -1620 -1460"/>
+                    <Edge fillStyle0="1" fillStyle1="11" edges="!-1620 -1460S3[-1621 -1451 -1621 -1406"/>
+                    <Edge fillStyle0="1" fillStyle1="6" edges="!-1621 -1406S3|-1621 -1403"/>
+                    <Edge fillStyle0="1" fillStyle1="16" edges="!-1621 -1403S3|-1613 -1402!-1613 -1402[-1607 -1353 -1611 -1274!-1611 -1274[-1616 -1176 -1615 -1145!-1615 -1145[-1615 -1139 -1618 -1131!-1618 -1131[-1619 -1127 -1623 -1118!-1623 -1118|-1614 -1075!-1614 -1075|-1626 -1060!-1626 -1060|-1610
+ -1057"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-1610 -1057S3[-1608 -1067 -1608 -1098!-1608 -1098[-1608 -1124 -1603 -1138!-1603 -1138[-1600 -1151 -1600 -1169!-1600 -1169[-1600 -1190 -1600 -1200!-1600 -1200[-1598 -1281 -1598 -1321!-1598 -1321[-1597 -1392 -1605 -1441!-1605 -1441[-1612
+ -1469 -1613 -1472!-1613 -1472[-1619 -1490 -1628 -1500!-1628 -1500[-1637 -1505 -1654 -1504!-1654 -1504[-1675 -1503 -1681 -1504!-1681 -1504[-1662 -1507 -1647 -1510!-1647 -1510[-1667 -1513 -1693 -1513"/>
                     <Edge fillStyle0="4" edges="
-!-1693 -1069|-1693 -1065.5"/>
-                    <Edge fillStyle0="8" fillStyle1="5" edges="
-!-1663 -1011[-1674 -1022 -1680 -1026!-1680 -1026[#FFF969.59 #FFFBF9.9 -1693 -1031.5"/>
-                    <Edge fillStyle0="9" fillStyle1="6" edges="
-!-1689 -1019[#FFF964.6F #FFFC06.49 -1693 -1016"/>
-                    <Edge fillStyle0="10" fillStyle1="6" edges="
-!-1686 -994|-1693 -994"/>
-                    <Edge fillStyle0="9" fillStyle1="6" edges="
-!-1693 -1005[#FFF965.3D #FFFC16.DC -1686 -994"/>
-                    <Edge fillStyle0="9" fillStyle1="10" edges="
-!-1686 -994[-1662 -989 -1638 -989"/>
-                    <Edge fillStyle0="9" fillStyle1="6" edges="
-!-1638 -989|-1633 -989"/>
+!-1693 -1494S1|-1693 -1490"/>
+                    <Edge fillStyle0="2" edges="
+!-1586 -1340S1|-1586 -1439!-1586 -1439[-1591 -1451 -1600 -1474!-1600 -1474[-1611 -1500 -1623 -1513!-1623 -1513[-1632 -1517 -1647 -1521!-1647 -1521[-1665 -1526 -1693 -1527!-1693 -1527|-1693 -1513"/>
                     <Edge fillStyle0="9" fillStyle1="11" edges="
-!-1633 -989[-1632 -1006 -1631 -1013!-1631 -1013[-1631 -1026 -1633 -1036"/>
+!-1633 -1414S3[-1632 -1431 -1631 -1438!-1631 -1438[-1631 -1451 -1633 -1461"/>
                     <Edge fillStyle0="9" fillStyle1="5" edges="
-!-1633 -1036[-1639 -1031 -1639 -1022!-1639 -1022[-1639 -1021 -1637 -1005!-1637 -1005|-1663 -1011"/>
+!-1633 -1461S3[-1639 -1456 -1639 -1447!-1639 -1447[-1639 -1446 -1637 -1430!-1637 -1430|-1663 -1436"/>
                     <Edge fillStyle0="9" fillStyle1="8" edges="
-!-1663 -1011|-1677 -1011!-1677 -1011[-1685 -1012 -1689 -1019"/>
-                    <Edge fillStyle0="8" fillStyle1="6" edges="
-!-1693 -1023[#FFF965.1B #FFFC03.1B -1689 -1019"/>
-                    <Edge fillStyle0="11" fillStyle1="5" edges="
-!-1620 -1035|-1631 -1039!-1631 -1039|-1633 -1036"/>
+!-1663 -1436S3|-1677 -1436!-1677 -1436[-1685 -1437 -1689 -1444"/>
+                    <Edge fillStyle0="9" fillStyle1="6" edges="
+!-1689 -1444S3[-1692 -1443 -1693 -1441"/>
+                    <Edge fillStyle0="9" edges="
+!-1693 -1441S1|-1693 -1430"/>
+                    <Edge fillStyle0="9" fillStyle1="6" edges="
+!-1693 -1430S3[-1691 -1426 -1686 -1419"/>
+                    <Edge fillStyle0="9" fillStyle1="10" edges="
+!-1686 -1419S3[-1662 -1414 -1638 -1414"/>
+                    <Edge fillStyle0="9" fillStyle1="6" edges="
+!-1638 -1414S3|-1633 -1414"/>
                     <Edge fillStyle0="3" fillStyle1="5" edges="
-!-1645 -1048|-1634 -1045!-1634 -1045|-1632 -1053"/>
-                    <Edge fillStyle0="5" fillStyle1="7" edges="
-!-1645 -1048[#FFF977.BB #FFFBF0.85 -1693 -1048.5"/>
-                    <Edge fillStyle0="6" fillStyle1="11" edges="
-!-1621 -981|-1633 -989"/>
+!-1645 -1473S3|-1634 -1470!-1634 -1470|-1632 -1478"/>
+                    <Edge fillStyle0="11" fillStyle1="5" edges="
+!-1620 -1460S3|-1631 -1464!-1631 -1464|-1633 -1461"/>
+                    <Edge fillStyle0="7" fillStyle1="3" edges="
+!-1645 -1473S3[-1656 -1476 -1672 -1477!-1672 -1477[-1685 -1477 -1693 -1477"/>
+                    <Edge fillStyle0="7" edges="
+!-1693 -1477S1|-1693 -1473"/>
+                    <Edge fillStyle0="7" fillStyle1="5" edges="
+!-1693 -1473S3[-1672 -1464 -1645 -1473"/>
+                    <Edge fillStyle0="3" edges="
+!-1693 -1482S1|-1693 -1477"/>
+                    <Edge fillStyle0="5" edges="
+!-1693 -1473S1|-1693 -1456"/>
+                    <Edge fillStyle0="5" fillStyle1="8" edges="
+!-1693 -1456S3[-1687 -1455 -1680 -1451!-1680 -1451[-1674 -1447 -1663 -1436"/>
+                    <Edge fillStyle0="6" edges="
+!-1693 -1448S1|-1693 -1441"/>
+                    <Edge fillStyle0="8" fillStyle1="6" edges="
+!-1693 -1448S3[-1691 -1446 -1689 -1444"/>
+                    <Edge fillStyle0="8" edges="
+!-1693 -1456S1|-1693 -1448"/>
                     <Edge fillStyle0="10" fillStyle1="6" edges="
-!-1693 -980[-1691 -972 -1685 -969!-1685 -969|-1677 -983!-1677 -983|-1662 -969!-1662 -969[-1652 -974 -1649 -977!-1649 -977[-1642 -982 -1638 -989"/>
-                    <Edge fillStyle0="6" fillStyle1="13" edges="
-!-1693 -959.5[#FFF978.63 -960 -1635 -960!-1635 -960|-1651 -954!-1651 -954|-1648 -949"/>
-                    <Edge fillStyle0="6" fillStyle1="15" edges="
-!-1648 -949|-1641 -949!-1641 -949|-1640 -940"/>
-                    <Edge fillStyle0="6" fillStyle1="21" edges="
-!-1640 -940[-1635 -932 -1635 -924"/>
-                    <Edge fillStyle0="6" fillStyle1="16" edges="
-!-1635 -924|-1628 -931!-1628 -931[-1625 -958 -1621 -978"/>
-                    <Edge fillStyle0="14" fillStyle1="12" edges="
-!-1661 -938|-1669 -936!-1669 -936[-1672 -929 -1675 -922"/>
-                    <Edge fillStyle0="14" fillStyle1="18" edges="
-!-1675 -922|-1677 -898"/>
-                    <Edge fillStyle0="14" fillStyle1="19" edges="
-!-1677 -898[-1660 -894 -1638 -895"/>
-                    <Edge fillStyle0="14" fillStyle1="24" edges="
-!-1638 -895|-1636 -916"/>
-                    <Edge fillStyle0="14" fillStyle1="21" edges="
-!-1636 -916|-1638 -915"/>
-                    <Edge fillStyle0="14" fillStyle1="22" edges="
-!-1638 -915|-1650 -900!-1650 -900|-1670 -916!-1670 -916[-1652 -920 -1642 -919"/>
-                    <Edge fillStyle0="14" fillStyle1="21" edges="
-!-1642 -919|-1644 -925"/>
-                    <Edge fillStyle0="14" fillStyle1="15" edges="
-!-1644 -925|-1655 -936"/>
-                    <Edge fillStyle0="14" fillStyle1="13" edges="
-!-1655 -936|-1660 -924!-1660 -924|-1661 -938"/>
-                    <Edge fillStyle0="15" fillStyle1="13" edges="
-!-1648 -949[-1653 -941 -1655 -936"/>
-                    <Edge fillStyle0="12" fillStyle1="13" edges="
-!-1661 -938[-1653 -943 -1654 -951!-1654 -951[-1659 -953 -1666 -954!-1666 -954[-1674 -954 -1678 -954"/>
-                    <Edge fillStyle0="12" fillStyle1="18" edges="
-!-1678 -954[-1679 -941 -1675 -922"/>
-                    <Edge fillStyle0="13" fillStyle1="18" edges="
-!-1683 -954|-1678 -954"/>
+!-1686 -1419S3|-1693 -1419"/>
+                    <Edge fillStyle0="10" edges="
+!-1693 -1419S1|-1693 -1405"/>
+                    <Edge fillStyle0="10" fillStyle1="6" edges="
+!-1693 -1405S3[-1691 -1397 -1685 -1394!-1685 -1394|-1677 -1408!-1677 -1408|-1662 -1394!-1662 -1394[-1652 -1399 -1649 -1402!-1649 -1402[-1642 -1407 -1638 -1414"/>
+                    <Edge fillStyle0="18" edges="
+!-1693 -1370S1|-1693 -1365"/>
                     <Edge fillStyle0="18" fillStyle1="17" edges="
-!-1693 -940|-1684 -943!-1684 -943[-1683 -933 -1689 -930!-1689 -930[#FFF965.B9 #FFFC5F.47 -1693 -928!-1683 -954[#FFF96A.1A #FFFC4A.59 -1693 -945.5"/>
+!-1693 -1365S3|-1684 -1368!-1684 -1368[-1683 -1358 -1689 -1355!-1689 -1355[-1690 -1354 -1693 -1353"/>
+                    <Edge fillStyle0="18" edges="
+!-1693 -1353S1|-1693 -1337"/>
+                    <Edge fillStyle0="18" fillStyle1="17" edges="
+!-1693 -1337S3[-1689 -1336 -1681 -1334!-1681 -1334|-1693 -1333"/>
+                    <Edge fillStyle0="18" edges="
+!-1693 -1333S1|-1693 -1322"/>
+                    <Edge fillStyle0="18" fillStyle1="20" edges="
+!-1693 -1322S3|-1681 -1324"/>
+                    <Edge fillStyle0="18" fillStyle1="19" edges="
+!-1681 -1324S3|-1677 -1323"/>
+                    <Edge fillStyle0="18" fillStyle1="14" edges="
+!-1677 -1323S3|-1675 -1347"/>
+                    <Edge fillStyle0="18" fillStyle1="12" edges="
+!-1675 -1347S3[-1679 -1366 -1678 -1379"/>
+                    <Edge fillStyle0="18" fillStyle1="13" edges="
+!-1678 -1379S3|-1683 -1379"/>
+                    <Edge fillStyle0="18" fillStyle1="17" edges="
+!-1683 -1379S3[-1686 -1375 -1693 -1370"/>
                     <Edge fillStyle0="13" fillStyle1="17" edges="
-!-1693 -954[-1688 -954 -1683 -954"/>
-                    <Edge fillStyle0="19" fillStyle1="18" edges="
-!-1677 -898|-1681 -899"/>
-                    <Edge fillStyle0="19" fillStyle1="20" edges="
-!-1681 -899[-1680 -894 -1676 -885!-1676 -885[-1674 -876 -1674 -869"/>
-                    <Edge fillStyle0="19" fillStyle1="25" edges="
-!-1674 -869[-1674 -856 -1672 -821!-1672 -821[-1671 -790 -1672 -772"/>
-                    <Edge fillStyle0="19" fillStyle1="28" edges="
-!-1672 -772|-1653 -768!-1653 -768[-1660 -759 -1662 -755!-1662 -755|-1652 -745"/>
-                    <Edge fillStyle0="19" fillStyle1="29" edges="
-!-1652 -745[-1647 -765 -1645 -774!-1645 -774[-1643 -762 -1639 -736"/>
-                    <Edge fillStyle0="19" fillStyle1="24" edges="
-!-1639 -736[-1639 -761 -1639 -815!-1639 -815[-1639 -867 -1638 -895"/>
-                    <Edge fillStyle0="20" fillStyle1="18" edges="
-!-1681 -899|-1693 -897.5"/>
-                    <Edge fillStyle0="18" fillStyle1="17" edges="
-!-1693 -912.5[#FFF966.BC #FFFC70.A3 -1681 -909!-1681 -909|-1693 -908.5"/>
-                    <Edge fillStyle0="21" fillStyle1="16" edges="
-!-1636 -916|-1635 -924"/>
+!-1693 -1379S3[-1688 -1379 -1683 -1379"/>
+                    <Edge fillStyle0="13" edges="
+!-1693 -1384S1|-1693 -1379"/>
+                    <Edge fillStyle0="17" edges="
+!-1693 -1379S1|-1693 -1370"/>
+                    <Edge fillStyle0="6" edges="
+!-1693 -1405S1|-1693 -1384"/>
+                    <Edge fillStyle0="6" fillStyle1="13" edges="
+!-1693 -1384S3[-1672 -1385 -1635 -1385!-1635 -1385|-1651 -1379!-1651 -1379|-1648 -1374"/>
+                    <Edge fillStyle0="6" fillStyle1="15" edges="
+!-1648 -1374S3|-1641 -1374!-1641 -1374|-1640 -1365"/>
+                    <Edge fillStyle0="6" fillStyle1="21" edges="
+!-1640 -1365S3[-1635 -1357 -1635 -1349"/>
+                    <Edge fillStyle0="6" fillStyle1="16" edges="
+!-1635 -1349S3|-1628 -1356!-1628 -1356[-1625 -1383 -1621 -1403"/>
+                    <Edge fillStyle0="6" fillStyle1="11" edges="
+!-1621 -1406S3|-1633 -1414"/>
+                    <Edge fillStyle0="12" fillStyle1="13" edges="
+!-1661 -1363S3[-1653 -1368 -1654 -1376!-1654 -1376[-1659 -1378 -1666 -1379!-1666 -1379[-1674 -1379 -1678 -1379"/>
+                    <Edge fillStyle0="6" edges="
+!-1693 -1430S1|-1693 -1419"/>
                     <Edge fillStyle0="22" fillStyle1="21" edges="
-!-1638 -915|-1642 -919"/>
+!-1638 -1340S3|-1642 -1344"/>
+                    <Edge fillStyle0="22" fillStyle1="14" edges="
+!-1642 -1344S3[-1652 -1345 -1670 -1341!-1670 -1341|-1650 -1325!-1650 -1325|-1638 -1340"/>
+                    <Edge fillStyle0="21" fillStyle1="14" edges="
+!-1638 -1340S3|-1636 -1341"/>
+                    <Edge fillStyle0="21" fillStyle1="16" edges="
+!-1636 -1341S3|-1635 -1349"/>
+                    <Edge fillStyle0="21" fillStyle1="14" edges="
+!-1644 -1350S3|-1642 -1344"/>
+                    <Edge fillStyle0="14" fillStyle1="13" edges="
+!-1655 -1361S3|-1660 -1349!-1660 -1349|-1661 -1363"/>
+                    <Edge fillStyle0="14" fillStyle1="12" edges="
+!-1661 -1363S3|-1669 -1361!-1669 -1361[-1672 -1354 -1675 -1347"/>
                     <Edge fillStyle0="23" fillStyle1="19" edges="
-!-1653 -874[-1647 -871 -1642 -875!-1642 -875[-1638 -881 -1645 -885!-1645 -885[-1653 -888 -1656 -883!-1656 -883[-1660 -878 -1653 -874"/>
-                    <Edge fillStyle0="21" fillStyle1="15" edges="
-!-1640 -940|-1644 -925"/>
-                    <Edge fillStyle0="24" fillStyle1="16" edges="
-!-1631 -586[-1632 -632 -1632 -697!-1632 -697[-1631 -771 -1631 -808!-1631 -808[-1630 -844 -1630 -863!-1630 -863[-1629 -895 -1636 -916"/>
-                    <Edge fillStyle0="20" fillStyle1="25" edges="
-!-1689 -826[-1683 -832 -1680 -847!-1680 -847[-1677 -864 -1674 -869"/>
-                    <Edge fillStyle0="20" fillStyle1="3" edges="
-!-1693 -827.5[#FFF964.FA #FFFCC5.35 -1689 -826"/>
-                    <Edge fillStyle0="26" fillStyle1="3" edges="
-!-1688 -802|-1691 -823!-1691 -823[#FFF964.06 #FFFCC8.A5 -1693 -823.5"/>
-                    <Edge fillStyle0="25" fillStyle1="27" edges="
-!-1688 -773[-1688 -764 -1684 -744!-1684 -744[-1681 -727 -1690 -718"/>
-                    <Edge fillStyle0="25" fillStyle1="31" edges="
-!-1690 -718[#FFF964.A5 -715.90625 -1693 -714"/>
-                    <Edge fillStyle0="26" fillStyle1="27" edges="
-!-1693 -789.5|-1688 -773"/>
-                    <Edge fillStyle0="26" fillStyle1="25" edges="
-!-1688 -773[-1688 -797 -1688 -802"/>
-                    <Edge fillStyle0="25" fillStyle1="3" edges="
-!-1689 -826[-1689 -815 -1688 -802"/>
-                    <Edge fillStyle0="29" fillStyle1="24" edges="
-!-1640 -471[-1643 -509 -1641 -584!-1641 -584[-1640 -659 -1643 -696!-1643 -696[-1639 -723 -1639 -736"/>
-                    <Edge fillStyle0="31" fillStyle1="27" edges="
-!-1690 -718[#FFF964.89 #FFFD31.CD -1693 -718.5"/>
-                    <Edge fillStyle0="32" fillStyle1="25" edges="
-!-1681 -620[-1677 -663 -1683 -697!-1683 -697[#FFF967.89 -694.75 -1693 -693"/>
-                    <Edge fillStyle0="32" fillStyle1="30" edges="
-!-1693 -630.5|-1689 -636!-1689 -636|-1681 -620"/>
-                    <Edge fillStyle0="28" fillStyle1="25" edges="
-!-1672 -772[-1674 -754 -1672 -724!-1672 -724[-1671 -690 -1671 -676!-1671 -676[-1670 -500 -1670 -479!-1670 -479[-1670 -469 -1670 -450!-1670 -450[-1670 -432 -1672 -421!-1672 -421|-1680 -417!-1680 -417[-1680 -471 -1681 -478"/>
-                    <Edge fillStyle0="28" fillStyle1="30" edges="
-!-1681 -478|-1688 -487!-1688 -487|-1693 -482"/>
-                    <Edge fillStyle0="29" fillStyle1="28" edges="
-!-1652 -745[-1652 -731 -1652 -693!-1652 -693[-1651 -660 -1651 -641!-1651 -641[-1655 -624 -1653 -596!-1653 -596[-1651 -562 -1652 -550!-1652 -550|-1655 -517!-1655 -517[-1657 -496 -1655 -483!-1655 -483[-1652 -475 -1650 -472!-1650 -472[-1646
- -467 -1640 -471"/>
-                    <Edge fillStyle0="16" fillStyle1="28" edges="
-!-1631 -586|-1622 -609!-1622 -609|-1617 -594!-1617 -594|-1611 -623"/>
-                    <Edge fillStyle0="16" fillStyle1="2" edges="
-!-1611 -623|-1610 -632"/>
-                    <Edge fillStyle0="32" fillStyle1="30" edges="
-!-1693 -599[#FFF966.36 #FFFDA4.62 -1688 -606!-1688 -606|-1693 -610.5"/>
+!-1645 -1310S3[-1653 -1313 -1656 -1308!-1656 -1308[-1660 -1303 -1653 -1299!-1653 -1299[-1647 -1296 -1642 -1300!-1642 -1300[-1638 -1306 -1645 -1310"/>
+                    <Edge fillStyle0="24" fillStyle1="14" edges="
+!-1636 -1341S3|-1638 -1320"/>
+                    <Edge fillStyle0="24" fillStyle1="19" edges="
+!-1638 -1320S3[-1639 -1292 -1639 -1240!-1639 -1240[-1639 -1186 -1639 -1161"/>
+                    <Edge fillStyle0="24" fillStyle1="29" edges="
+!-1639 -1161S3[-1639 -1148 -1643 -1121!-1643 -1121[-1640 -1084 -1641 -1009!-1641 -1009[-1643 -934 -1640 -896"/>
                     <Edge fillStyle0="24" fillStyle1="28" edges="
-!-1640 -471|-1635 -434!-1635 -434|-1624 -442!-1624 -442[-1629 -456 -1630 -462!-1630 -462[-1633 -474 -1632 -484!-1632 -484[-1632 -498 -1632 -535!-1632 -535[-1632 -567 -1631 -586"/>
-                    <Edge fillStyle0="30" fillStyle1="25" edges="
-!-1681 -478[-1682 -504 -1681 -549!-1681 -549[-1680 -599 -1681 -620"/>
-                    <Edge fillStyle0="35" fillStyle1="28" edges="
-!-1693 -386.5[#FFF965.0E #FFFE7C.9F -1689 -389!-1689 -389[-1683 -394 -1682 -402!-1682 -402[#FFF968.A5 #FFFE6E.89 -1693 -398.5"/>
-                    <Edge fillStyle0="34" fillStyle1="2" edges="
-!-1642 -378|-1646 -387"/>
-                    <Edge fillStyle0="34" fillStyle1="28" edges="
-!-1646 -387[-1661 -368 -1671 -361!-1671 -361[#FFF96E.42 #FFFEA1.07 -1693 -348"/>
+!-1640 -896S3|-1635 -859!-1635 -859|-1624 -867!-1624 -867[-1629 -881 -1630 -887!-1630 -887[-1633 -899 -1632 -909!-1632 -909[-1632 -923 -1632 -960!-1632 -960[-1632 -992 -1631 -1011"/>
+                    <Edge fillStyle0="24" fillStyle1="16" edges="
+!-1631 -1011S3[-1632 -1057 -1632 -1122!-1632 -1122[-1631 -1196 -1631 -1233!-1631 -1233[-1630 -1269 -1630 -1288!-1630 -1288[-1629 -1320 -1636 -1341"/>
+                    <Edge fillStyle0="14" fillStyle1="15" edges="
+!-1644 -1350S3|-1655 -1361"/>
+                    <Edge fillStyle0="17" edges="
+!-1693 -1337S1|-1693 -1333"/>
+                    <Edge fillStyle0="20" fillStyle1="19" edges="
+!-1674 -1294S3[-1674 -1301 -1676 -1310!-1676 -1310[-1680 -1319 -1681 -1324"/>
+                    <Edge fillStyle0="20" fillStyle1="25" edges="
+!-1689 -1251S3[-1683 -1257 -1680 -1272!-1680 -1272[-1677 -1289 -1674 -1294"/>
+                    <Edge fillStyle0="20" fillStyle1="3" edges="
+!-1693 -1252S3[-1691 -1252 -1689 -1251"/>
+                    <Edge fillStyle0="26" fillStyle1="3" edges="
+!-1688 -1227S3|-1691 -1248!-1691 -1248[-1692 -1248 -1693 -1248"/>
+                    <Edge fillStyle0="26" edges="
+!-1693 -1248S1|-1693 -1214"/>
+                    <Edge fillStyle0="26" fillStyle1="27" edges="
+!-1693 -1214S3|-1688 -1198"/>
+                    <Edge fillStyle0="26" fillStyle1="25" edges="
+!-1688 -1198S3[-1688 -1222 -1688 -1227"/>
+                    <Edge fillStyle0="19" fillStyle1="25" edges="
+!-1674 -1294S3[-1674 -1281 -1672 -1246!-1672 -1246[-1671 -1215 -1672 -1197"/>
+                    <Edge fillStyle0="19" fillStyle1="28" edges="
+!-1672 -1197S3|-1653 -1193!-1653 -1193[-1660 -1184 -1662 -1180!-1662 -1180|-1652 -1170"/>
+                    <Edge fillStyle0="19" fillStyle1="29" edges="
+!-1652 -1170S3[-1647 -1190 -1645 -1199!-1645 -1199[-1643 -1187 -1639 -1161"/>
+                    <Edge fillStyle0="3" edges="
+!-1693 -1252S1|-1693 -1248"/>
+                    <Edge fillStyle0="20" edges="
+!-1693 -1322S1|-1693 -1252"/>
+                    <Edge fillStyle0="19" fillStyle1="14" edges="
+!-1638 -1320S3[-1660 -1319 -1677 -1323"/>
+                    <Edge fillStyle0="21" fillStyle1="15" edges="
+!-1640 -1365S3|-1644 -1350"/>
+                    <Edge fillStyle0="17" edges="
+!-1693 -1365S1|-1693 -1353"/>
+                    <Edge fillStyle0="15" fillStyle1="13" edges="
+!-1648 -1374S3[-1653 -1366 -1655 -1361"/>
+                    <Edge fillStyle0="31" fillStyle1="27" edges="
+!-1690 -1143S3[-1691 -1143 -1693 -1143"/>
+                    <Edge fillStyle0="31" edges="
+!-1693 -1143S1|-1693 -1139"/>
+                    <Edge fillStyle0="31" fillStyle1="25" edges="
+!-1693 -1139S3[-1691 -1141 -1690 -1143"/>
+                    <Edge fillStyle0="25" fillStyle1="27" edges="
+!-1688 -1198S3[-1688 -1189 -1684 -1169!-1684 -1169[-1681 -1152 -1690 -1143"/>
+                    <Edge fillStyle0="32" fillStyle1="25" edges="
+!-1681 -1045S3[-1677 -1088 -1683 -1122!-1683 -1122[-1688 -1120 -1693 -1118"/>
+                    <Edge fillStyle0="32" edges="
+!-1693 -1118S1|-1693 -1055"/>
+                    <Edge fillStyle0="32" fillStyle1="30" edges="
+!-1693 -1055S3|-1689 -1061!-1689 -1061|-1681 -1045"/>
+                    <Edge fillStyle0="25" edges="
+!-1693 -1139S1|-1693 -1118"/>
+                    <Edge fillStyle0="29" fillStyle1="28" edges="
+!-1652 -1170S3[-1652 -1156 -1652 -1118!-1652 -1118[-1651 -1085 -1651 -1066!-1651 -1066[-1655 -1049 -1653 -1021!-1653 -1021[-1651 -987 -1652 -975!-1652 -975|-1655 -942!-1655 -942[-1657 -921 -1655 -908!-1655 -908[-1652 -900 -1650 -897!-1650
+ -897[-1646 -892 -1640 -896"/>
+                    <Edge fillStyle0="27" edges="
+!-1693 -1214S1|-1693 -1143"/>
+                    <Edge fillStyle0="28" fillStyle1="25" edges="
+!-1672 -1197S3[-1674 -1179 -1672 -1149!-1672 -1149[-1671 -1115 -1671 -1101!-1671 -1101[-1670 -925 -1670 -904!-1670 -904[-1670 -894 -1670 -875!-1670 -875[-1670 -857 -1672 -846!-1672 -846|-1680 -842!-1680 -842[-1680 -896 -1681 -903"/>
+                    <Edge fillStyle0="28" fillStyle1="30" edges="
+!-1681 -903S3|-1688 -912!-1688 -912|-1693 -907"/>
+                    <Edge fillStyle0="28" edges="
+!-1693 -907S1|-1693 -823"/>
+                    <Edge fillStyle0="28" fillStyle1="35" edges="
+!-1693 -823S3[-1687 -826 -1682 -827!-1682 -827[-1683 -819 -1689 -814!-1689 -814[-1691 -812 -1693 -811"/>
+                    <Edge fillStyle0="28" edges="
+!-1693 -811S1|-1693 -773"/>
+                    <Edge fillStyle0="28" fillStyle1="34" edges="
+!-1693 -773S3[-1682 -776 -1671 -786!-1671 -786[-1661 -793 -1646 -812"/>
                     <Edge fillStyle0="28" fillStyle1="2" edges="
-!-1646 -387[-1640 -395 -1628 -412!-1628 -412[-1618 -428 -1615 -440!-1615 -440[-1607 -484 -1609 -522!-1609 -522[-1610 -537 -1610 -573!-1610 -573[-1609 -605 -1611 -623"/>
+!-1646 -812S3[-1640 -820 -1628 -837!-1628 -837[-1618 -853 -1615 -865!-1615 -865[-1607 -909 -1609 -947!-1609 -947[-1610 -962 -1610 -998!-1610 -998[-1609 -1030 -1611 -1048"/>
+                    <Edge fillStyle0="28" fillStyle1="16" edges="
+!-1611 -1048S3|-1617 -1019!-1617 -1019|-1622 -1034!-1622 -1034|-1631 -1011"/>
+                    <Edge fillStyle0="30" edges="
+!-1693 -1055S1|-1693 -1035"/>
+                    <Edge fillStyle0="30" fillStyle1="32" edges="
+!-1693 -1035S3|-1688 -1031!-1688 -1031[-1690 -1029 -1693 -1024"/>
+                    <Edge fillStyle0="30" edges="
+!-1693 -1024S1|-1693 -907"/>
+                    <Edge fillStyle0="32" edges="
+!-1693 -1035S1|-1693 -1024"/>
+                    <Edge fillStyle0="25" fillStyle1="3" edges="
+!-1689 -1251S3[-1689 -1240 -1688 -1227"/>
+                    <Edge fillStyle0="30" fillStyle1="25" edges="
+!-1681 -903S3[-1682 -929 -1681 -974!-1681 -974[-1680 -1024 -1681 -1045"/>
+                    <Edge fillStyle0="35" edges="
+!-1693 -823S1|-1693 -811"/>
+                    <Edge fillStyle0="34" fillStyle1="33" edges="
+!-1693 -762S3[-1686 -764 -1680 -766!-1680 -766[-1667 -768 -1657 -780!-1657 -780[-1651 -787 -1642 -803"/>
+                    <Edge fillStyle0="34" fillStyle1="2" edges="
+!-1642 -803S3|-1646 -812"/>
+                    <Edge fillStyle0="34" edges="
+!-1693 -773S1|-1693 -762"/>
                     <Edge fillStyle0="33" fillStyle1="36" edges="
-!-1654 -321[-1649 -337 -1646 -343!-1646 -343[-1639 -355 -1628 -358"/>
+!-1654 -746S3[-1649 -762 -1646 -768!-1646 -768[-1639 -780 -1628 -783"/>
                     <Edge fillStyle0="33" fillStyle1="2" edges="
-!-1628 -358[-1616 -370 -1611 -389!-1611 -389[-1607 -405 -1610 -424!-1610 -424[-1628 -402 -1642 -378"/>
-                    <Edge fillStyle0="33" fillStyle1="34" edges="
-!-1642 -378[-1651 -362 -1657 -355!-1657 -355[-1667 -343 -1680 -341!-1680 -341[#FFF969.CD #FFFEAC.CD -1693 -337.5"/>
+!-1628 -783S3[-1616 -795 -1611 -814!-1611 -814[-1607 -830 -1610 -849!-1610 -849[-1628 -827 -1642 -803"/>
+                    <Edge fillStyle1="2" edges="
+!-1611 -740S2[-1628 -722 -1639 -714!-1639 -714[-1657 -702 -1675 -703!-1675 -703|-1693 -703!-1693 -703|-1693 -722"/>
+                    <Edge fillStyle1="33" edges="
+!-1693 -722S2|-1693 -762"/>
                     <Edge fillStyle0="33" fillStyle1="2" edges="
-!-1693 -297[#FFF96E.21 -300 -1679 -300!-1679 -300[-1668 -299 -1647 -293!-1647 -293[-1656 -299 -1669 -306!-1669 -306|-1654 -321"/>
+!-1693 -722S3[-1682 -725 -1679 -725!-1679 -725[-1668 -724 -1647 -718!-1647 -718[-1656 -724 -1669 -731!-1669 -731|-1654 -746"/>
                     <Edge fillStyle0="36" fillStyle1="2" edges="
-!-1654 -321|-1635 -304!-1635 -304[-1632 -307 -1624 -313!-1624 -313[-1617 -317 -1611 -315"/>
-                    <Edge fillStyle0="2" fillStyle1="37" edges="
-!-1586 -913[-1587 -913 -1588 -914!-1588 -914[#FFF9CD.F8 -914 -1586 -915"/>
-                    <Edge fillStyle0="2" fillStyle1="38" edges="
-!-1591 -518|-1586 -560"/>
+!-1654 -746S3|-1635 -729!-1635 -729[-1632 -732 -1624 -738!-1624 -738[-1617 -742 -1611 -740"/>
+                    <Edge fillStyle0="36" edges="
+!-1611 -740S1[-1610 -742 -1586 -780!-1586 -780|-1586 -942"/>
                     <Edge fillStyle0="36" fillStyle1="38" edges="
-!-1586 -517|-1591 -518"/>
+!-1586 -942S3|-1591 -943"/>
                     <Edge fillStyle0="36" fillStyle1="2" edges="
-!-1591 -518[-1596 -443 -1588 -385!-1588 -385[-1605 -354 -1628 -358"/>
-                    <Edge cubics="!-1647 -1096(;-1637,-1093 -1629,-1091 -1623,-1088q-1647 -1096Q-1632 -1092q-1623 -1088);"/>
-                    <Edge cubics="!-1645 -1048(;-1645,-1048 -1634,-1045 -1634,-1045q-1645 -1048 -1634 -1045);"/>
-                    <Edge cubics="!-1620 -1035(;-1620,-1035 -1631,-1039 -1631,-1039q-1620 -1035 -1631 -1039);"/>
-                    <Edge cubics="!-1631 -1039(;-1631,-1039 -1633,-1036 -1633,-1036q-1631 -1039 -1633 -1036);"/>
-                    <Edge cubics="!-1633 -1036(;-1637,-1033 -1639,-1028 -1639,-1022q-1633 -1036Q-1639 -1031q-1639 -1022);"/>
-                    <Edge cubics="!-1634 -1045(;-1634,-1045 -1632,-1053 -1632,-1053q-1634 -1045 -1632 -1053);"/>
-                    <Edge cubics="!-1633 -989(;-1632,-1000 -1632,-1008 -1631,-1013q-1633 -989Q-1632 -1006q-1631 -1013);"/>
-                    <Edge cubics="!-1638 -989(;-1638,-989 -1633,-989 -1633,-989q-1638 -989 -1633 -989);"/>
-                    <Edge cubics="!-1631 -1013(;-1631,-1022 -1632,-1030 -1633,-1036q-1631 -1013Q-1631 -1026q-1633 -1036);"/>
-                    <Edge cubics="!-1605 -1016(;-1610,-1035 -1613,-1045 -1613,-1047q-1605 -1016Q-1612 -1044q-1613 -1047);"/>
-                    <Edge cubics="!-1639 -1022(;-1639,-1021 -1638,-1016 -1637,-1005q-1639 -1022Q-1639 -1021q-1637 -1005);"/>
-                    <Edge cubics="!-1629 -1066(;-1629,-1066 -1632,-1053 -1632,-1053q-1629 -1066 -1632 -1053);"/>
-                    <Edge cubics="!-1623 -1088(;-1615,-1079 -1608,-1066 -1600,-1049q-1623 -1088Q-1611 -1075q-1600 -1049);"/>
-                    <Edge cubics="!-1613 -1047(;-1617,-1059 -1622,-1069 -1628,-1075q-1613 -1047Q-1619 -1065q-1628 -1075);"/>
-                    <Edge cubics="!-1620 -1035(;-1619,-1047 -1622,-1057 -1629,-1066q-1620 -1035Q-1618 -1053q-1629 -1066);"/>
-                    <Edge cubics="!-1600 -1049(;-1594,-1033 -1589,-1022 -1586,-1014q-1600 -1049Q-1591 -1026q-1586 -1014);"/>
-                    <Edge cubics="!-1654 -1079(;-1668,-1078 -1677,-1078 -1681,-1079q-1654 -1079Q-1675 -1078q-1681 -1079);"/>
-                    <Edge cubics="!-1677 -1011(;-1683,-1011 -1686,-1014 -1689,-1019q-1677 -1011Q-1685 -1012q-1689 -1019);"/>
-                    <Edge cubics="!-1663 -1011(;-1671,-1019 -1676,-1024 -1680,-1026q-1663 -1011Q-1674 -1022q-1680 -1026);"/>
-                    <Edge cubics="!-1663 -1011(;-1663,-1011 -1677,-1011 -1677,-1011q-1663 -1011 -1677 -1011);"/>
-                    <Edge cubics="!-1662 -969(;-1655,-973 -1651,-975 -1649,-977q-1662 -969Q-1652 -974q-1649 -977);"/>
-                    <Edge cubics="!-1683 -954(;-1683,-954 -1678,-954 -1678,-954q-1683 -954 -1678 -954);"/>
-                    <Edge cubics="!-1685 -969(;-1685,-969 -1677,-983 -1677,-983q-1685 -969 -1677 -983);"/>
-                    <Edge cubics="!-1693 -980(;-1691,-975 -1689,-971 -1685,-969q-1693 -980Q-1691 -972q-1685 -969);"/>
-                    <Edge cubics="!-1684 -943(;-1683,-936 -1685,-932 -1689,-930q-1684 -943Q-1683 -933q-1689 -930);"/>
-                    <Edge cubics="!-1648 -949(;-1651,-944 -1653,-939 -1655,-936q-1648 -949Q-1653 -941q-1655 -936);"/>
-                    <Edge cubics="!-1661 -938(;-1661,-938 -1669,-936 -1669,-936q-1661 -938 -1669 -936);"/>
-                    <Edge cubics="!-1661 -938(;-1655,-941 -1653,-945 -1654,-951q-1661 -938Q-1653 -943q-1654 -951);"/>
-                    <Edge cubics="!-1669 -936(;-1671,-931 -1673,-927 -1675,-922q-1669 -936Q-1672 -929q-1675 -922);"/>
-                    <Edge cubics="!-1660 -924(;-1660,-924 -1661,-938 -1661,-938q-1660 -924 -1661 -938);"/>
-                    <Edge cubics="!-1655 -936(;-1655,-936 -1660,-924 -1660,-924q-1655 -936 -1660 -924);"/>
-                    <Edge cubics="!-1654 -951(;-1657,-953 -1661,-954 -1666,-954q-1654 -951Q-1659 -953q-1666 -954);"/>
-                    <Edge cubics="!-1651 -954(;-1651,-954 -1648,-949 -1648,-949q-1651 -954 -1648 -949);"/>
-                    <Edge cubics="!-1677 -983(;-1677,-983 -1662,-969 -1662,-969q-1677 -983 -1662 -969);"/>
-                    <Edge cubics="!-1666 -954(;-1671,-954 -1675,-954 -1678,-954q-1666 -954Q-1674 -954q-1678 -954);"/>
-                    <Edge cubics="!-1675 -922(;-1677,-935 -1678,-946 -1678,-954q-1675 -922Q-1679 -941q-1678 -954);"/>
-                    <Edge cubics="!-1670 -916(;-1670,-916 -1650,-900 -1650,-900q-1670 -916 -1650 -900);"/>
-                    <Edge cubics="!-1677 -898(;-1677,-898 -1681,-899 -1681,-899q-1677 -898 -1681 -899);"/>
-                    <Edge cubics="!-1676 -885(;-1679,-891 -1680,-896 -1681,-899q-1676 -885Q-1680 -894q-1681 -899);"/>
-                    <Edge cubics="!-1656 -883(;-1659,-880 -1658,-877 -1653,-874q-1656 -883Q-1660 -878q-1653 -874);"/>
-                    <Edge cubics="!-1674 -869(;-1674,-874 -1674,-879 -1676,-885q-1674 -869Q-1674 -876q-1676 -885);"/>
-                    <Edge cubics="!-1675 -922(;-1675,-922 -1677,-898 -1677,-898q-1675 -922 -1677 -898);"/>
-                    <Edge cubics="!-1688 -802(;-1688,-802 -1691,-823 -1691,-823q-1688 -802 -1691 -823);"/>
-                    <Edge cubics="!-1689 -826(;-1689,-819 -1689,-811 -1688,-802q-1689 -826Q-1689 -815q-1688 -802);"/>
-                    <Edge cubics="!-1689 -826(;-1685,-830 -1682,-837 -1680,-847q-1689 -826Q-1683 -832q-1680 -847);"/>
-                    <Edge cubics="!-1688 -773(;-1688,-767 -1687,-757 -1684,-744q-1688 -773Q-1688 -764q-1684 -744);"/>
-                    <Edge cubics="!-1662 -755(;-1662,-755 -1652,-745 -1652,-745q-1662 -755 -1652 -745);"/>
-                    <Edge cubics="!-1672 -772(;-1672,-772 -1653,-768 -1653,-768q-1672 -772 -1653 -768);"/>
-                    <Edge cubics="!-1653 -768(;-1658,-762 -1661,-758 -1662,-755q-1653 -768Q-1660 -759q-1662 -755);"/>
-                    <Edge cubics="!-1672 -772(;-1673,-760 -1673,-744 -1672,-724q-1672 -772Q-1674 -754q-1672 -724);"/>
-                    <Edge cubics="!-1684 -744(;-1682,-733 -1685,-724 -1690,-718q-1684 -744Q-1681 -727q-1690 -718);"/>
-                    <Edge cubics="!-1688 -773(;-1688,-789 -1688,-799 -1688,-802q-1688 -773Q-1688 -797q-1688 -802);"/>
-                    <Edge cubics="!-1672 -821(;-1672,-800 -1671,-784 -1672,-772q-1672 -821Q-1671 -790q-1672 -772);"/>
-                    <Edge cubics="!-1680 -847(;-1678,-858 -1676,-866 -1674,-869q-1680 -847Q-1677 -864q-1674 -869);"/>
-                    <Edge cubics="!-1674 -869(;-1674,-861 -1674,-844 -1672,-821q-1674 -869Q-1674 -856q-1672 -821);"/>
-                    <Edge cubics="!-1651 -641(;-1654,-630 -1654,-615 -1653,-596q-1651 -641Q-1655 -624q-1653 -596);"/>
-                    <Edge cubics="!-1689 -636(;-1689,-636 -1681,-620 -1681,-620q-1689 -636 -1681 -620);"/>
-                    <Edge cubics="!-1652 -693(;-1651,-671 -1651,-654 -1651,-641q-1652 -693Q-1651 -660q-1651 -641);"/>
-                    <Edge cubics="!-1681 -620(;-1678,-649 -1679,-674 -1683,-697q-1681 -620Q-1677 -663q-1683 -697);"/>
-                    <Edge cubics="!-1652 -550(;-1652,-550 -1655,-517 -1655,-517q-1652 -550 -1655 -517);"/>
-                    <Edge cubics="!-1688 -487(;-1688,-487 -1681,-478 -1681,-478q-1688 -487 -1681 -478);"/>
-                    <Edge cubics="!-1655 -483(;-1653,-478 -1651,-474 -1650,-472q-1655 -483Q-1652 -475q-1650 -472);"/>
-                    <Edge cubics="!-1670 -479(;-1670,-472 -1670,-462 -1670,-450q-1670 -479Q-1670 -469q-1670 -450);"/>
-                    <Edge cubics="!-1655 -517(;-1656,-503 -1656,-492 -1655,-483q-1655 -517Q-1657 -496q-1655 -483);"/>
-                    <Edge cubics="!-1681 -478(;-1682,-495 -1682,-519 -1681,-549q-1681 -478Q-1682 -504q-1681 -549);"/>
-                    <Edge cubics="!-1681 -549(;-1680,-583 -1680,-606 -1681,-620q-1681 -549Q-1680 -599q-1681 -620);"/>
-                    <Edge cubics="!-1653 -596(;-1652,-573 -1652,-558 -1652,-550q-1653 -596Q-1651 -562q-1652 -550);"/>
-                    <Edge cubics="!-1671 -676(;-1671,-559 -1670,-493 -1670,-479q-1671 -676Q-1670 -500q-1670 -479);"/>
-                    <Edge cubics="!-1672 -724(;-1671,-701 -1671,-685 -1671,-676q-1672 -724Q-1671 -690q-1671 -676);"/>
-                    <Edge cubics="!-1652 -745(;-1652,-735 -1652,-718 -1652,-693q-1652 -745Q-1652 -731q-1652 -693);"/>
-                    <Edge cubics="!-1635 -924(;-1635,-930 -1637,-935 -1640,-940q-1635 -924Q-1635 -932q-1640 -940);"/>
-                    <Edge cubics="!-1640 -940(;-1640,-940 -1644,-925 -1644,-925q-1640 -940 -1644 -925);"/>
-                    <Edge cubics="!-1628 -931(;-1628,-931 -1635,-924 -1635,-924q-1628 -931 -1635 -924);"/>
-                    <Edge cubics="!-1644 -925(;-1644,-925 -1642,-919 -1642,-919q-1644 -925 -1642 -919);"/>
-                    <Edge cubics="!-1613 -977(;-1613,-977 -1621,-978 -1621,-978q-1613 -977 -1621 -978);"/>
-                    <Edge cubics="!-1621 -978(;-1624,-964 -1626,-949 -1628,-931q-1621 -978Q-1625 -958q-1628 -931);"/>
-                    <Edge cubics="!-1640 -940(;-1640,-940 -1641,-949 -1641,-949q-1640 -940 -1641 -949);"/>
-                    <Edge cubics="!-1621 -978(;-1621,-978 -1621,-981 -1621,-981q-1621 -978 -1621 -981);"/>
-                    <Edge cubics="!-1638 -915(;-1638,-915 -1636,-916 -1636,-916q-1638 -915 -1636 -916);"/>
-                    <Edge cubics="!-1630 -863(;-1629,-884 -1632,-902 -1636,-916q-1630 -863Q-1629 -895q-1636 -916);"/>
-                    <Edge cubics="!-1636 -916(;-1636,-916 -1638,-895 -1638,-895q-1636 -916 -1638 -895);"/>
-                    <Edge cubics="!-1642 -875(;-1639,-879 -1641,-882 -1645,-885q-1642 -875Q-1638 -881q-1645 -885);"/>
-                    <Edge cubics="!-1588 -914(;-1587,-914 -1586,-915 -1586,-915q-1588 -914Q-1586 -914q-1586 -915);"/>
-                    <Edge cubics="!-1586 -913(;-1586,-913 -1587,-913 -1588,-914q-1586 -913Q-1587 -913q-1588 -914);"/>
-                    <Edge cubics="!-1586 -913(;-1586,-913 -1586,-915 -1586,-915q-1586 -913 -1586 -915);"/>
-                    <Edge cubics="!-1636 -916(;-1636,-916 -1635,-924 -1635,-924q-1636 -916 -1635 -924);"/>
-                    <Edge cubics="!-1638 -915(;-1638,-915 -1642,-919 -1642,-919q-1638 -915 -1642 -919);"/>
-                    <Edge cubics="!-1639 -736(;-1639,-752 -1639,-779 -1639,-815q-1639 -736Q-1639 -761q-1639 -815);"/>
-                    <Edge cubics="!-1600 -744(;-1600,-758 -1600,-768 -1600,-775q-1600 -744Q-1600 -765q-1600 -775);"/>
-                    <Edge cubics="!-1639 -736(;-1642,-753 -1644,-766 -1645,-774q-1639 -736Q-1643 -762q-1645 -774);"/>
-                    <Edge cubics="!-1615 -720(;-1616,-741 -1614,-783 -1611,-849q-1615 -720Q-1616 -751q-1611 -849);"/>
-                    <Edge cubics="!-1611 -849(;-1608,-902 -1609,-945 -1613,-977q-1611 -849Q-1607 -928q-1613 -977);"/>
-                    <Edge cubics="!-1639 -815(;-1639,-850 -1638,-876 -1638,-895q-1639 -815Q-1639 -867q-1638 -895);"/>
-                    <Edge cubics="!-1631 -808(;-1630,-832 -1630,-850 -1630,-863q-1631 -808Q-1630 -844q-1630 -863);"/>
-                    <Edge cubics="!-1600 -775(;-1599,-829 -1598,-869 -1598,-896q-1600 -775Q-1598 -856q-1598 -896);"/>
-                    <Edge cubics="!-1614 -650(;-1614,-650 -1623,-693 -1623,-693q-1614 -650 -1623 -693);"/>
-                    <Edge cubics="!-1623 -693(;-1621,-699 -1619,-703 -1618,-706q-1623 -693Q-1619 -702q-1618 -706);"/>
-                    <Edge cubics="!-1608 -673(;-1608,-690 -1607,-704 -1603,-713q-1608 -673Q-1608 -699q-1603 -713);"/>
-                    <Edge cubics="!-1631 -586(;-1631,-586 -1622,-609 -1622,-609q-1631 -586 -1622 -609);"/>
-                    <Edge cubics="!-1610 -632(;-1610,-632 -1626,-635 -1626,-635q-1610 -632 -1626 -635);"/>
-                    <Edge cubics="!-1622 -609(;-1622,-609 -1617,-594 -1617,-594q-1622 -609 -1617 -594);"/>
-                    <Edge cubics="!-1617 -594(;-1617,-594 -1611,-623 -1611,-623q-1617 -594 -1611 -623);"/>
-                    <Edge cubics="!-1611 -623(;-1611,-623 -1610,-632 -1610,-632q-1611 -623 -1610 -632);"/>
-                    <Edge cubics="!-1626 -635(;-1626,-635 -1614,-650 -1614,-650q-1626 -635 -1614 -650);"/>
-                    <Edge cubics="!-1610 -632(;-1609,-638 -1608,-652 -1608,-673q-1610 -632Q-1608 -642q-1608 -673);"/>
-                    <Edge cubics="!-1641 -584(;-1640,-634 -1641,-671 -1643,-696q-1641 -584Q-1640 -659q-1643 -696);"/>
-                    <Edge cubics="!-1631 -586(;-1632,-616 -1632,-653 -1632,-697q-1631 -586Q-1632 -632q-1632 -697);"/>
-                    <Edge cubics="!-1591 -518(;-1591,-518 -1586,-560 -1586,-560q-1591 -518 -1586 -560);"/>
-                    <Edge cubics="!-1586 -517(;-1586,-517 -1586,-560 -1586,-560q-1586 -517 -1586 -560);"/>
-                    <Edge cubics="!-1586 -517(;-1586,-517 -1591,-518 -1591,-518q-1586 -517 -1591 -518);"/>
-                    <Edge cubics="!-1609 -522(;-1610,-532 -1610,-549 -1610,-573q-1609 -522Q-1610 -537q-1610 -573);"/>
-                    <Edge cubics="!-1630 -462(;-1632,-470 -1633,-478 -1632,-484q-1630 -462Q-1633 -474q-1632 -484);"/>
-                    <Edge cubics="!-1632 -484(;-1632,-493 -1632,-510 -1632,-535q-1632 -484Q-1632 -498q-1632 -535);"/>
-                    <Edge cubics="!-1640 -471(;-1642,-496 -1642,-534 -1641,-584q-1640 -471Q-1643 -509q-1641 -584);"/>
-                    <Edge cubics="!-1632 -535(;-1632,-556 -1632,-573 -1631,-586q-1632 -535Q-1632 -567q-1631 -586);"/>
-                    <Edge cubics="!-1610 -573(;-1609,-594 -1610,-611 -1611,-623q-1610 -573Q-1609 -605q-1611 -623);"/>
-                    <Edge cubics="!-1618 -706(;-1616,-712 -1615,-716 -1615,-720q-1618 -706Q-1615 -714q-1615 -720);"/>
-                    <Edge cubics="!-1603 -713(;-1601,-721 -1600,-732 -1600,-744q-1603 -713Q-1600 -726q-1600 -744);"/>
-                    <Edge cubics="!-1643 -696(;-1640,-713 -1639,-727 -1639,-736q-1643 -696Q-1639 -723q-1639 -736);"/>
-                    <Edge cubics="!-1632 -697(;-1631,-746 -1631,-783 -1631,-808q-1632 -697Q-1631 -771q-1631 -808);"/>
-                    <Edge cubics="!-1586 -560(;-1586,-560 -1586,-913 -1586,-913q-1586 -560 -1586 -913);"/>
-                    <Edge cubics="!-1621 -981(;-1621,-981 -1633,-989 -1633,-989q-1621 -981 -1633 -989);"/>
-                    <Edge cubics="!-1645 -1048(;-1652,-1050 -1661,-1051 -1672,-1052q-1645 -1048Q-1656 -1051q-1672 -1052);"/>
-                    <Edge cubics="!-1681 -1079(;-1669,-1081 -1657,-1083 -1647,-1085q-1681 -1079Q-1662 -1082q-1647 -1085);"/>
-                    <Edge cubics="!-1621 -981(;-1621,-1011 -1620,-1029 -1620,-1035q-1621 -981Q-1621 -1026q-1620 -1035);"/>
-                    <Edge cubics="!-1638 -989(;-1654,-989 -1670,-991 -1686,-994q-1638 -989Q-1662 -989q-1686 -994);"/>
-                    <Edge cubics="!-1637 -1005(;-1637,-1005 -1663,-1011 -1663,-1011q-1637 -1005 -1663 -1011);"/>
-                    <Edge cubics="!-1628 -1075(;-1634,-1079 -1643,-1080 -1654,-1079q-1628 -1075Q-1637 -1080q-1654 -1079);"/>
-                    <Edge cubics="!-1641 -949(;-1641,-949 -1648,-949 -1648,-949q-1641 -949 -1648 -949);"/>
-                    <Edge cubics="!-1644 -925(;-1644,-925 -1655,-936 -1655,-936q-1644 -925 -1655 -936);"/>
-                    <Edge cubics="!-1642 -919(;-1649,-919 -1658,-918 -1670,-916q-1642 -919Q-1652 -920q-1670 -916);"/>
-                    <Edge cubics="!-1645 -885(;-1650,-887 -1654,-886 -1656,-883q-1645 -885Q-1653 -888q-1656 -883);"/>
-                    <Edge cubics="!-1653 -874(;-1649,-872 -1645,-872 -1642,-875q-1653 -874Q-1647 -871q-1642 -875);"/>
-                    <Edge cubics="!-1638 -895(;-1653,-894 -1666,-896 -1677,-898q-1638 -895Q-1660 -894q-1677 -898);"/>
-                    <Edge cubics="!-1650 -900(;-1650,-900 -1638,-915 -1638,-915q-1650 -900 -1638 -915);"/>
-                    <Edge cubics="!-1635 -960(;-1635,-960 -1651,-954 -1651,-954q-1635 -960 -1651 -954);"/>
-                    <Edge cubics="!-1645 -774(;-1647,-768 -1649,-758 -1652,-745q-1645 -774Q-1647 -765q-1652 -745);"/>
-                    <Edge cubics="!-1650 -472(;-1647,-469 -1644,-468 -1640,-471q-1650 -472Q-1646 -467q-1640 -471);"/>
-                    <Edge cubics="!-1649 -977(;-1644,-981 -1641,-985 -1638,-989q-1649 -977Q-1642 -982q-1638 -989);"/>
-                    <Edge cubics="!-1598 -896(;-1598,-943 -1600,-983 -1605,-1016q-1598 -896Q-1597 -967q-1605 -1016);"/>
-                    <Edge cubics="!-1586 -915(;-1586,-915 -1586,-1014 -1586,-1014q-1586 -915 -1586 -1014);"/>
-                    <Edge cubics="!-1642 -378(;-1642,-378 -1646,-387 -1646,-387q-1642 -378 -1646 -387);"/>
-                    <Edge cubics="!-1610 -424(;-1622,-409 -1632,-394 -1642,-378q-1610 -424Q-1628 -402q-1642 -378);"/>
-                    <Edge cubics="!-1611 -389(;-1608,-400 -1608,-411 -1610,-424q-1611 -389Q-1607 -405q-1610 -424);"/>
-                    <Edge cubics="!-1628 -412(;-1622,-423 -1617,-432 -1615,-440q-1628 -412Q-1618 -428q-1615 -440);"/>
-                    <Edge cubics="!-1635 -434(;-1635,-434 -1624,-442 -1624,-442q-1635 -434 -1624 -442);"/>
-                    <Edge cubics="!-1646 -387(;-1642,-392 -1636,-401 -1628,-412q-1646 -387Q-1640 -395q-1628 -412);"/>
-                    <Edge cubics="!-1624 -313(;-1620,-316 -1615,-317 -1611,-315q-1624 -313Q-1617 -317q-1611 -315);"/>
-                    <Edge cubics="!-1646 -343(;-1641,-351 -1635,-356 -1628,-358q-1646 -343Q-1639 -355q-1628 -358);"/>
-                    <Edge cubics="!-1628 -358(;-1620,-366 -1614,-376 -1611,-389q-1628 -358Q-1616 -370q-1611 -389);"/>
-                    <Edge cubics="!-1588 -385(;-1599,-364 -1613,-355 -1628,-358q-1588 -385Q-1605 -354q-1628 -358);"/>
-                    <Edge cubics="!-1611 -315(;-1610,-317 -1602,-330 -1586,-355q-1611 -315Q-1610 -317q-1586 -355);"/>
-                    <Edge cubics="!-1635 -304(;-1633,-306 -1629,-309 -1624,-313q-1635 -304Q-1632 -307q-1624 -313);"/>
-                    <Edge cubics="!-1611 -315(;-1622,-303 -1632,-294 -1639,-289q-1611 -315Q-1628 -297q-1639 -289);"/>
-                    <Edge cubics="!-1672 -421(;-1672,-421 -1680,-417 -1680,-417q-1672 -421 -1680 -417);"/>
-                    <Edge cubics="!-1689 -389(;-1685,-392 -1682,-397 -1682,-402q-1689 -389Q-1683 -394q-1682 -402);"/>
-                    <Edge cubics="!-1680 -341(;-1671,-342 -1664,-347 -1657,-355q-1680 -341Q-1667 -343q-1657 -355);"/>
-                    <Edge cubics="!-1669 -306(;-1669,-306 -1654,-321 -1654,-321q-1669 -306 -1654 -321);"/>
-                    <Edge cubics="!-1654 -321(;-1651,-332 -1648,-339 -1646,-343q-1654 -321Q-1649 -337q-1646 -343);"/>
-                    <Edge cubics="!-1646 -387(;-1656,-375 -1664,-366 -1671,-361q-1646 -387Q-1661 -368q-1671 -361);"/>
-                    <Edge cubics="!-1654 -321(;-1654,-321 -1635,-304 -1635,-304q-1654 -321 -1635 -304);"/>
-                    <Edge cubics="!-1657 -355(;-1653,-359 -1648,-367 -1642,-378q-1657 -355Q-1651 -362q-1642 -378);"/>
-                    <Edge cubics="!-1639 -289(;-1651,-281 -1663,-278 -1675,-278q-1639 -289Q-1657 -277q-1675 -278);"/>
-                    <Edge cubics="!-1647 -293(;-1653,-297 -1660,-301 -1669,-306q-1647 -293Q-1656 -299q-1669 -306);"/>
-                    <Edge cubics="!-1679 -300(;-1672,-299 -1661,-297 -1647,-293q-1679 -300Q-1668 -299q-1647 -293);"/>
-                    <Edge cubics="!-1670 -450(;-1670,-438 -1671,-429 -1672,-421q-1670 -450Q-1670 -432q-1672 -421);"/>
-                    <Edge cubics="!-1624 -442(;-1627,-451 -1629,-458 -1630,-462q-1624 -442Q-1629 -456q-1630 -462);"/>
-                    <Edge cubics="!-1615 -440(;-1610,-470 -1608,-497 -1609,-522q-1615 -440Q-1607 -484q-1609 -522);"/>
-                    <Edge cubics="!-1591 -518(;-1594,-468 -1593,-424 -1588,-385q-1591 -518Q-1596 -443q-1588 -385);"/>
-                    <Edge cubics="!-1640 -471(;-1640,-471 -1635,-434 -1635,-434q-1640 -471 -1635 -434);"/>
-                    <Edge cubics="!-1680 -417(;-1680,-453 -1680,-473 -1681,-478q-1680 -417Q-1680 -471q-1681 -478);"/>
-                    <Edge cubics="!-1586 -355(;-1586,-355 -1586,-517 -1586,-517q-1586 -355 -1586 -517);"/>
-                    <Edge cubics="!-1693 -1102(;-1693,-1102 -1693,-1088 -1693,-1088q-1693 -1102 -1693 -1088);"/>
-                    <Edge cubics="!-1693 -1057(;-1693,-1057 -1693,-1052 -1693,-1052q-1693 -1057 -1693 -1052);"/>
-                    <Edge cubics="!-1693 -1065(;-1693,-1065 -1693,-1057 -1693,-1057q-1693 -1065 -1693 -1057);"/>
-                    <Edge cubics="!-1693 -1069(;-1693,-1069 -1693,-1065 -1693,-1065q-1693 -1069 -1693 -1065);"/>
-                    <Edge cubics="!-1672 -1052(;-1681,-1052 -1688,-1052 -1693,-1052q-1672 -1052Q-1685 -1052q-1693 -1052);"/>
-                    <Edge cubics="!-1693 -1088(;-1693,-1088 -1693,-1069 -1693,-1069q-1693 -1088 -1693 -1069);"/>
-                    <Edge cubics="!-1693 -1031(;-1693,-1031 -1693,-1023 -1693,-1023q-1693 -1031 -1693 -1023);"/>
-                    <Edge cubics="!-1693 -1048(;-1693,-1048 -1693,-1031 -1693,-1031q-1693 -1048 -1693 -1031);"/>
-                    <Edge cubics="!-1680 -1026(;-1685,-1029 -1689,-1030 -1693,-1031q-1680 -1026Q-1687 -1030q-1693 -1031);"/>
-                    <Edge cubics="!-1693 -1005(;-1693,-1005 -1693,-994 -1693,-994q-1693 -1005 -1693 -994);"/>
-                    <Edge cubics="!-1686 -994(;-1686,-994 -1693,-994 -1693,-994q-1686 -994 -1693 -994);"/>
-                    <Edge cubics="!-1693 -1016(;-1693,-1016 -1693,-1005 -1693,-1005q-1693 -1016 -1693 -1005);"/>
-                    <Edge cubics="!-1689 -1019(;-1691,-1018 -1692,-1017 -1693,-1016q-1689 -1019Q-1692 -1018q-1693 -1016);"/>
-                    <Edge cubics="!-1693 -1005(;-1692,-1002 -1689,-999 -1686,-994q-1693 -1005Q-1691 -1001q-1686 -994);"/>
-                    <Edge cubics="!-1693 -1023(;-1693,-1023 -1693,-1016 -1693,-1016q-1693 -1023 -1693 -1016);"/>
-                    <Edge cubics="!-1693 -1023(;-1692,-1022 -1690,-1020 -1689,-1019q-1693 -1023Q-1691 -1021q-1689 -1019);"/>
-                    <Edge cubics="!-1693 -1052(;-1693,-1052 -1693,-1048 -1693,-1048q-1693 -1052 -1693 -1048);"/>
-                    <Edge cubics="!-1645 -1048(;-1663,-1042 -1679,-1042 -1693,-1048q-1645 -1048Q-1672 -1039q-1693 -1048);"/>
-                    <Edge cubics="!-1693 -1065(;-1693,-1065 -1670,-1070 -1670,-1070q-1693 -1065 -1670 -1070);"/>
-                    <Edge cubics="!-1670 -1070(;-1673,-1070 -1681,-1070 -1693,-1069q-1670 -1070Q-1675 -1070q-1693 -1069);"/>
-                    <Edge cubics="!-1693 -1102(;-1674,-1101 -1659,-1099 -1647,-1096q-1693 -1102Q-1665 -1101q-1647 -1096);"/>
-                    <Edge cubics="!-1647 -1085(;-1660,-1087 -1676,-1088 -1693,-1088q-1647 -1085Q-1667 -1088q-1693 -1088);"/>
-                    <Edge cubics="!-1693 -1057(;-1669,-1058 -1649,-1057 -1632,-1053q-1693 -1057Q-1657 -1059q-1632 -1053);"/>
-                    <Edge cubics="!-1693 -980(;-1693,-980 -1693,-959 -1693,-959q-1693 -980 -1693 -959);"/>
-                    <Edge cubics="!-1693 -945(;-1693,-945 -1693,-940 -1693,-940q-1693 -945 -1693 -940);"/>
-                    <Edge cubics="!-1693 -954(;-1693,-954 -1693,-945 -1693,-945q-1693 -954 -1693 -945);"/>
-                    <Edge cubics="!-1683 -954(;-1685,-951 -1688,-948 -1693,-945q-1683 -954Q-1686 -950q-1693 -945);"/>
-                    <Edge cubics="!-1693 -940(;-1693,-940 -1684,-943 -1684,-943q-1693 -940 -1684 -943);"/>
-                    <Edge cubics="!-1693 -954(;-1690,-954 -1686,-954 -1683,-954q-1693 -954Q-1688 -954q-1683 -954);"/>
-                    <Edge cubics="!-1693 -959(;-1693,-959 -1693,-954 -1693,-954q-1693 -959 -1693 -954);"/>
-                    <Edge cubics="!-1693 -908(;-1693,-908 -1693,-897 -1693,-897q-1693 -908 -1693 -897);"/>
-                    <Edge cubics="!-1681 -899(;-1681,-899 -1693,-897 -1693,-897q-1681 -899 -1693 -897);"/>
-                    <Edge cubics="!-1693 -912(;-1693,-912 -1693,-908 -1693,-908q-1693 -912 -1693 -908);"/>
-                    <Edge cubics="!-1693 -928(;-1693,-928 -1693,-912 -1693,-912q-1693 -928 -1693 -912);"/>
-                    <Edge cubics="!-1693 -912(;-1690,-911 -1686,-910 -1681,-909q-1693 -912Q-1689 -911q-1681 -909);"/>
-                    <Edge cubics="!-1681 -909(;-1681,-909 -1693,-908 -1693,-908q-1681 -909 -1693 -908);"/>
-                    <Edge cubics="!-1693 -940(;-1693,-940 -1693,-928 -1693,-928q-1693 -940 -1693 -928);"/>
-                    <Edge cubics="!-1689 -930(;-1690,-929 -1691,-929 -1693,-928q-1689 -930Q-1690 -929q-1693 -928);"/>
-                    <Edge cubics="!-1693 -959(;-1679,-960 -1660,-960 -1635,-960q-1693 -959Q-1672 -960q-1635 -960);"/>
-                    <Edge cubics="!-1693 -827(;-1693,-827 -1693,-823 -1693,-823q-1693 -827 -1693 -823);"/>
-                    <Edge cubics="!-1693 -827(;-1692,-827 -1690,-827 -1689,-826q-1693 -827Q-1691 -827q-1689 -826);"/>
-                    <Edge cubics="!-1691 -823(;-1692,-823 -1692,-823 -1693,-823q-1691 -823Q-1692 -823q-1693 -823);"/>
-                    <Edge cubics="!-1693 -789(;-1693,-789 -1688,-773 -1688,-773q-1693 -789 -1688 -773);"/>
-                    <Edge cubics="!-1693 -823(;-1693,-823 -1693,-789 -1693,-789q-1693 -823 -1693 -789);"/>
-                    <Edge cubics="!-1693 -897(;-1693,-897 -1693,-827 -1693,-827q-1693 -897 -1693 -827);"/>
-                    <Edge cubics="!-1693 -714(;-1693,-714 -1693,-693 -1693,-693q-1693 -714 -1693 -693);"/>
-                    <Edge cubics="!-1693 -718(;-1693,-718 -1693,-714 -1693,-714q-1693 -718 -1693 -714);"/>
-                    <Edge cubics="!-1683 -697(;-1686,-696 -1690,-694 -1693,-693q-1683 -697Q-1688 -695q-1693 -693);"/>
-                    <Edge cubics="!-1693 -714(;-1692,-715 -1691,-717 -1690,-718q-1693 -714Q-1691 -716q-1690 -718);"/>
-                    <Edge cubics="!-1690 -718(;-1691,-718 -1692,-718 -1693,-718q-1690 -718Q-1691 -718q-1693 -718);"/>
-                    <Edge cubics="!-1693 -630(;-1693,-630 -1689,-636 -1689,-636q-1693 -630 -1689 -636);"/>
-                    <Edge cubics="!-1693 -693(;-1693,-693 -1693,-630 -1693,-630q-1693 -693 -1693 -630);"/>
-                    <Edge cubics="!-1693 -610(;-1693,-610 -1693,-599 -1693,-599q-1693 -610 -1693 -599);"/>
-                    <Edge cubics="!-1693 -599(;-1691,-602 -1689,-605 -1688,-606q-1693 -599Q-1690 -604q-1688 -606);"/>
-                    <Edge cubics="!-1688 -606(;-1688,-606 -1693,-610 -1693,-610q-1688 -606 -1693 -610);"/>
-                    <Edge cubics="!-1693 -630(;-1693,-630 -1693,-610 -1693,-610q-1693 -630 -1693 -610);"/>
-                    <Edge cubics="!-1693 -789(;-1693,-789 -1693,-718 -1693,-718q-1693 -789 -1693 -718);"/>
-                    <Edge cubics="!-1693 -482(;-1693,-482 -1688,-487 -1688,-487q-1693 -482 -1688 -487);"/>
-                    <Edge cubics="!-1693 -398(;-1693,-398 -1693,-386 -1693,-386q-1693 -398 -1693 -386);"/>
-                    <Edge cubics="!-1682 -402(;-1685,-401 -1689,-400 -1693,-398q-1682 -402Q-1687 -401q-1693 -398);"/>
-                    <Edge cubics="!-1693 -386(;-1692,-387 -1690,-388 -1689,-389q-1693 -386Q-1691 -387q-1689 -389);"/>
-                    <Edge cubics="!-1693 -482(;-1693,-482 -1693,-398 -1693,-398q-1693 -482 -1693 -398);"/>
-                    <Edge cubics="!-1693 -348(;-1693,-348 -1693,-337 -1693,-337q-1693 -348 -1693 -337);"/>
-                    <Edge cubics="!-1693 -337(;-1688,-338 -1684,-340 -1680,-341q-1693 -337Q-1686 -339q-1680 -341);"/>
-                    <Edge cubics="!-1671 -361(;-1678,-354 -1686,-350 -1693,-348q-1671 -361Q-1682 -351q-1693 -348);"/>
-                    <Edge cubics="!-1693 -297(;-1693,-297 -1693,-278 -1693,-278q-1693 -297 -1693 -278);"/>
-                    <Edge cubics="!-1675 -278(;-1675,-278 -1693,-278 -1693,-278q-1675 -278 -1693 -278);"/>
-                    <Edge cubics="!-1693 -297(;-1686,-299 -1681,-300 -1679,-300q-1693 -297Q-1682 -300q-1679 -300);"/>
-                    <Edge cubics="!-1693 -337(;-1693,-337 -1693,-297 -1693,-297q-1693 -337 -1693 -297);"/>
-                    <Edge cubics="!-1693 -386(;-1693,-386 -1693,-348 -1693,-348q-1693 -386 -1693 -348);"/>
-                    <Edge cubics="!-1693 -599(;-1693,-599 -1693,-482 -1693,-482q-1693 -599 -1693 -482);"/>
-                    <Edge cubics="!-1693 -994(;-1693,-994 -1693,-980 -1693,-980q-1693 -994 -1693 -980);"/>
+!-1591 -943S3[-1596 -868 -1588 -810!-1588 -810[-1605 -779 -1628 -783"/>
+                    <Edge fillStyle0="2" fillStyle1="37" edges="
+!-1586 -1338S3[-1587 -1338 -1588 -1339!-1588 -1339[#FFF9CD.F8 -1339 -1586 -1340"/>
+                    <Edge fillStyle0="37" edges="
+!-1586 -1338S1|-1586 -1340"/>
+                    <Edge fillStyle0="16" fillStyle1="2" edges="
+!-1611 -1048S3|-1610 -1057"/>
+                    <Edge fillStyle0="38" edges="
+!-1586 -942S1|-1586 -985"/>
+                    <Edge fillStyle0="38" fillStyle1="2" edges="
+!-1586 -985S3|-1591 -943"/>
+                    <Edge fillStyle0="2" edges="
+!-1586 -985S1|-1586 -1338"/>
+                    <Edge cubics="!-1647 -1521(;-1637,-1518 -1629,-1516 -1623,-1513q-1647 -1521Q-1632 -1517q-1623 -1513);"/>
+                    <Edge cubics="!-1645 -1473(;-1645,-1473 -1634,-1470 -1634,-1470q-1645 -1473 -1634 -1470);"/>
+                    <Edge cubics="!-1620 -1460(;-1620,-1460 -1631,-1464 -1631,-1464q-1620 -1460 -1631 -1464);"/>
+                    <Edge cubics="!-1631 -1464(;-1631,-1464 -1633,-1461 -1633,-1461q-1631 -1464 -1633 -1461);"/>
+                    <Edge cubics="!-1633 -1461(;-1637,-1458 -1639,-1453 -1639,-1447q-1633 -1461Q-1639 -1456q-1639 -1447);"/>
+                    <Edge cubics="!-1634 -1470(;-1634,-1470 -1632,-1478 -1632,-1478q-1634 -1470 -1632 -1478);"/>
+                    <Edge cubics="!-1633 -1414(;-1632,-1425 -1632,-1433 -1631,-1438q-1633 -1414Q-1632 -1431q-1631 -1438);"/>
+                    <Edge cubics="!-1638 -1414(;-1638,-1414 -1633,-1414 -1633,-1414q-1638 -1414 -1633 -1414);"/>
+                    <Edge cubics="!-1631 -1438(;-1631,-1447 -1632,-1455 -1633,-1461q-1631 -1438Q-1631 -1451q-1633 -1461);"/>
+                    <Edge cubics="!-1605 -1441(;-1610,-1460 -1613,-1470 -1613,-1472q-1605 -1441Q-1612 -1469q-1613 -1472);"/>
+                    <Edge cubics="!-1639 -1447(;-1639,-1446 -1638,-1441 -1637,-1430q-1639 -1447Q-1639 -1446q-1637 -1430);"/>
+                    <Edge cubics="!-1629 -1491(;-1629,-1491 -1632,-1478 -1632,-1478q-1629 -1491 -1632 -1478);"/>
+                    <Edge cubics="!-1623 -1513(;-1615,-1504 -1608,-1491 -1600,-1474q-1623 -1513Q-1611 -1500q-1600 -1474);"/>
+                    <Edge cubics="!-1613 -1472(;-1617,-1484 -1622,-1494 -1628,-1500q-1613 -1472Q-1619 -1490q-1628 -1500);"/>
+                    <Edge cubics="!-1620 -1460(;-1619,-1472 -1622,-1482 -1629,-1491q-1620 -1460Q-1618 -1478q-1629 -1491);"/>
+                    <Edge cubics="!-1600 -1474(;-1594,-1458 -1589,-1447 -1586,-1439q-1600 -1474Q-1591 -1451q-1586 -1439);"/>
+                    <Edge cubics="!-1654 -1504(;-1668,-1503 -1677,-1503 -1681,-1504q-1654 -1504Q-1675 -1503q-1681 -1504);"/>
+                    <Edge cubics="!-1677 -1436(;-1683,-1436 -1686,-1439 -1689,-1444q-1677 -1436Q-1685 -1437q-1689 -1444);"/>
+                    <Edge cubics="!-1663 -1436(;-1671,-1444 -1676,-1449 -1680,-1451q-1663 -1436Q-1674 -1447q-1680 -1451);"/>
+                    <Edge cubics="!-1663 -1436(;-1663,-1436 -1677,-1436 -1677,-1436q-1663 -1436 -1677 -1436);"/>
+                    <Edge cubics="!-1662 -1394(;-1655,-1398 -1651,-1400 -1649,-1402q-1662 -1394Q-1652 -1399q-1649 -1402);"/>
+                    <Edge cubics="!-1683 -1379(;-1683,-1379 -1678,-1379 -1678,-1379q-1683 -1379 -1678 -1379);"/>
+                    <Edge cubics="!-1685 -1394(;-1685,-1394 -1677,-1408 -1677,-1408q-1685 -1394 -1677 -1408);"/>
+                    <Edge cubics="!-1693 -1405(;-1691,-1400 -1689,-1396 -1685,-1394q-1693 -1405Q-1691 -1397q-1685 -1394);"/>
+                    <Edge cubics="!-1684 -1368(;-1683,-1361 -1685,-1357 -1689,-1355q-1684 -1368Q-1683 -1358q-1689 -1355);"/>
+                    <Edge cubics="!-1648 -1374(;-1651,-1369 -1653,-1364 -1655,-1361q-1648 -1374Q-1653 -1366q-1655 -1361);"/>
+                    <Edge cubics="!-1661 -1363(;-1661,-1363 -1669,-1361 -1669,-1361q-1661 -1363 -1669 -1361);"/>
+                    <Edge cubics="!-1661 -1363(;-1655,-1366 -1653,-1370 -1654,-1376q-1661 -1363Q-1653 -1368q-1654 -1376);"/>
+                    <Edge cubics="!-1669 -1361(;-1671,-1356 -1673,-1352 -1675,-1347q-1669 -1361Q-1672 -1354q-1675 -1347);"/>
+                    <Edge cubics="!-1660 -1349(;-1660,-1349 -1661,-1363 -1661,-1363q-1660 -1349 -1661 -1363);"/>
+                    <Edge cubics="!-1655 -1361(;-1655,-1361 -1660,-1349 -1660,-1349q-1655 -1361 -1660 -1349);"/>
+                    <Edge cubics="!-1654 -1376(;-1657,-1378 -1661,-1379 -1666,-1379q-1654 -1376Q-1659 -1378q-1666 -1379);"/>
+                    <Edge cubics="!-1651 -1379(;-1651,-1379 -1648,-1374 -1648,-1374q-1651 -1379 -1648 -1374);"/>
+                    <Edge cubics="!-1677 -1408(;-1677,-1408 -1662,-1394 -1662,-1394q-1677 -1408 -1662 -1394);"/>
+                    <Edge cubics="!-1666 -1379(;-1671,-1379 -1675,-1379 -1678,-1379q-1666 -1379Q-1674 -1379q-1678 -1379);"/>
+                    <Edge cubics="!-1675 -1347(;-1677,-1360 -1678,-1371 -1678,-1379q-1675 -1347Q-1679 -1366q-1678 -1379);"/>
+                    <Edge cubics="!-1670 -1341(;-1670,-1341 -1650,-1325 -1650,-1325q-1670 -1341 -1650 -1325);"/>
+                    <Edge cubics="!-1677 -1323(;-1677,-1323 -1681,-1324 -1681,-1324q-1677 -1323 -1681 -1324);"/>
+                    <Edge cubics="!-1676 -1310(;-1679,-1316 -1680,-1321 -1681,-1324q-1676 -1310Q-1680 -1319q-1681 -1324);"/>
+                    <Edge cubics="!-1656 -1308(;-1659,-1305 -1658,-1302 -1653,-1299q-1656 -1308Q-1660 -1303q-1653 -1299);"/>
+                    <Edge cubics="!-1674 -1294(;-1674,-1299 -1674,-1304 -1676,-1310q-1674 -1294Q-1674 -1301q-1676 -1310);"/>
+                    <Edge cubics="!-1675 -1347(;-1675,-1347 -1677,-1323 -1677,-1323q-1675 -1347 -1677 -1323);"/>
+                    <Edge cubics="!-1688 -1227(;-1688,-1227 -1691,-1248 -1691,-1248q-1688 -1227 -1691 -1248);"/>
+                    <Edge cubics="!-1689 -1251(;-1689,-1244 -1689,-1236 -1688,-1227q-1689 -1251Q-1689 -1240q-1688 -1227);"/>
+                    <Edge cubics="!-1689 -1251(;-1685,-1255 -1682,-1262 -1680,-1272q-1689 -1251Q-1683 -1257q-1680 -1272);"/>
+                    <Edge cubics="!-1688 -1198(;-1688,-1192 -1687,-1182 -1684,-1169q-1688 -1198Q-1688 -1189q-1684 -1169);"/>
+                    <Edge cubics="!-1662 -1180(;-1662,-1180 -1652,-1170 -1652,-1170q-1662 -1180 -1652 -1170);"/>
+                    <Edge cubics="!-1672 -1197(;-1672,-1197 -1653,-1193 -1653,-1193q-1672 -1197 -1653 -1193);"/>
+                    <Edge cubics="!-1653 -1193(;-1658,-1187 -1661,-1183 -1662,-1180q-1653 -1193Q-1660 -1184q-1662 -1180);"/>
+                    <Edge cubics="!-1672 -1197(;-1673,-1185 -1673,-1169 -1672,-1149q-1672 -1197Q-1674 -1179q-1672 -1149);"/>
+                    <Edge cubics="!-1684 -1169(;-1682,-1158 -1685,-1149 -1690,-1143q-1684 -1169Q-1681 -1152q-1690 -1143);"/>
+                    <Edge cubics="!-1688 -1198(;-1688,-1214 -1688,-1224 -1688,-1227q-1688 -1198Q-1688 -1222q-1688 -1227);"/>
+                    <Edge cubics="!-1672 -1246(;-1672,-1225 -1671,-1209 -1672,-1197q-1672 -1246Q-1671 -1215q-1672 -1197);"/>
+                    <Edge cubics="!-1680 -1272(;-1678,-1283 -1676,-1291 -1674,-1294q-1680 -1272Q-1677 -1289q-1674 -1294);"/>
+                    <Edge cubics="!-1674 -1294(;-1674,-1286 -1674,-1269 -1672,-1246q-1674 -1294Q-1674 -1281q-1672 -1246);"/>
+                    <Edge cubics="!-1651 -1066(;-1654,-1055 -1654,-1040 -1653,-1021q-1651 -1066Q-1655 -1049q-1653 -1021);"/>
+                    <Edge cubics="!-1689 -1061(;-1689,-1061 -1681,-1045 -1681,-1045q-1689 -1061 -1681 -1045);"/>
+                    <Edge cubics="!-1652 -1118(;-1651,-1096 -1651,-1079 -1651,-1066q-1652 -1118Q-1651 -1085q-1651 -1066);"/>
+                    <Edge cubics="!-1681 -1045(;-1678,-1074 -1679,-1099 -1683,-1122q-1681 -1045Q-1677 -1088q-1683 -1122);"/>
+                    <Edge cubics="!-1652 -975(;-1652,-975 -1655,-942 -1655,-942q-1652 -975 -1655 -942);"/>
+                    <Edge cubics="!-1688 -912(;-1688,-912 -1681,-903 -1681,-903q-1688 -912 -1681 -903);"/>
+                    <Edge cubics="!-1655 -908(;-1653,-903 -1651,-899 -1650,-897q-1655 -908Q-1652 -900q-1650 -897);"/>
+                    <Edge cubics="!-1670 -904(;-1670,-897 -1670,-887 -1670,-875q-1670 -904Q-1670 -894q-1670 -875);"/>
+                    <Edge cubics="!-1655 -942(;-1656,-928 -1656,-917 -1655,-908q-1655 -942Q-1657 -921q-1655 -908);"/>
+                    <Edge cubics="!-1681 -903(;-1682,-920 -1682,-944 -1681,-974q-1681 -903Q-1682 -929q-1681 -974);"/>
+                    <Edge cubics="!-1681 -974(;-1680,-1008 -1680,-1031 -1681,-1045q-1681 -974Q-1680 -1024q-1681 -1045);"/>
+                    <Edge cubics="!-1653 -1021(;-1652,-998 -1652,-983 -1652,-975q-1653 -1021Q-1651 -987q-1652 -975);"/>
+                    <Edge cubics="!-1671 -1101(;-1671,-984 -1670,-918 -1670,-904q-1671 -1101Q-1670 -925q-1670 -904);"/>
+                    <Edge cubics="!-1672 -1149(;-1671,-1126 -1671,-1110 -1671,-1101q-1672 -1149Q-1671 -1115q-1671 -1101);"/>
+                    <Edge cubics="!-1652 -1170(;-1652,-1160 -1652,-1143 -1652,-1118q-1652 -1170Q-1652 -1156q-1652 -1118);"/>
+                    <Edge cubics="!-1635 -1349(;-1635,-1355 -1637,-1360 -1640,-1365q-1635 -1349Q-1635 -1357q-1640 -1365);"/>
+                    <Edge cubics="!-1640 -1365(;-1640,-1365 -1644,-1350 -1644,-1350q-1640 -1365 -1644 -1350);"/>
+                    <Edge cubics="!-1628 -1356(;-1628,-1356 -1635,-1349 -1635,-1349q-1628 -1356 -1635 -1349);"/>
+                    <Edge cubics="!-1644 -1350(;-1644,-1350 -1642,-1344 -1642,-1344q-1644 -1350 -1642 -1344);"/>
+                    <Edge cubics="!-1613 -1402(;-1613,-1402 -1621,-1403 -1621,-1403q-1613 -1402 -1621 -1403);"/>
+                    <Edge cubics="!-1621 -1403(;-1624,-1389 -1626,-1374 -1628,-1356q-1621 -1403Q-1625 -1383q-1628 -1356);"/>
+                    <Edge cubics="!-1640 -1365(;-1640,-1365 -1641,-1374 -1641,-1374q-1640 -1365 -1641 -1374);"/>
+                    <Edge cubics="!-1621 -1403(;-1621,-1403 -1621,-1406 -1621,-1406q-1621 -1403 -1621 -1406);"/>
+                    <Edge cubics="!-1638 -1340(;-1638,-1340 -1636,-1341 -1636,-1341q-1638 -1340 -1636 -1341);"/>
+                    <Edge cubics="!-1630 -1288(;-1629,-1309 -1632,-1327 -1636,-1341q-1630 -1288Q-1629 -1320q-1636 -1341);"/>
+                    <Edge cubics="!-1636 -1341(;-1636,-1341 -1638,-1320 -1638,-1320q-1636 -1341 -1638 -1320);"/>
+                    <Edge cubics="!-1642 -1300(;-1639,-1304 -1641,-1307 -1645,-1310q-1642 -1300Q-1638 -1306q-1645 -1310);"/>
+                    <Edge cubics="!-1588 -1339(;-1587,-1339 -1586,-1340 -1586,-1340q-1588 -1339Q-1586 -1339q-1586 -1340);"/>
+                    <Edge cubics="!-1586 -1338(;-1586,-1338 -1587,-1338 -1588,-1339q-1586 -1338Q-1587 -1338q-1588 -1339);"/>
+                    <Edge cubics="!-1586 -1338(;-1586,-1338 -1586,-1340 -1586,-1340q-1586 -1338 -1586 -1340);"/>
+                    <Edge cubics="!-1636 -1341(;-1636,-1341 -1635,-1349 -1635,-1349q-1636 -1341 -1635 -1349);"/>
+                    <Edge cubics="!-1638 -1340(;-1638,-1340 -1642,-1344 -1642,-1344q-1638 -1340 -1642 -1344);"/>
+                    <Edge cubics="!-1639 -1161(;-1639,-1177 -1639,-1204 -1639,-1240q-1639 -1161Q-1639 -1186q-1639 -1240);"/>
+                    <Edge cubics="!-1600 -1169(;-1600,-1183 -1600,-1193 -1600,-1200q-1600 -1169Q-1600 -1190q-1600 -1200);"/>
+                    <Edge cubics="!-1639 -1161(;-1642,-1178 -1644,-1191 -1645,-1199q-1639 -1161Q-1643 -1187q-1645 -1199);"/>
+                    <Edge cubics="!-1615 -1145(;-1616,-1166 -1614,-1208 -1611,-1274q-1615 -1145Q-1616 -1176q-1611 -1274);"/>
+                    <Edge cubics="!-1611 -1274(;-1608,-1327 -1609,-1370 -1613,-1402q-1611 -1274Q-1607 -1353q-1613 -1402);"/>
+                    <Edge cubics="!-1639 -1240(;-1639,-1275 -1638,-1301 -1638,-1320q-1639 -1240Q-1639 -1292q-1638 -1320);"/>
+                    <Edge cubics="!-1631 -1233(;-1630,-1257 -1630,-1275 -1630,-1288q-1631 -1233Q-1630 -1269q-1630 -1288);"/>
+                    <Edge cubics="!-1600 -1200(;-1599,-1254 -1598,-1294 -1598,-1321q-1600 -1200Q-1598 -1281q-1598 -1321);"/>
+                    <Edge cubics="!-1614 -1075(;-1614,-1075 -1623,-1118 -1623,-1118q-1614 -1075 -1623 -1118);"/>
+                    <Edge cubics="!-1623 -1118(;-1621,-1124 -1619,-1128 -1618,-1131q-1623 -1118Q-1619 -1127q-1618 -1131);"/>
+                    <Edge cubics="!-1608 -1098(;-1608,-1115 -1607,-1129 -1603,-1138q-1608 -1098Q-1608 -1124q-1603 -1138);"/>
+                    <Edge cubics="!-1631 -1011(;-1631,-1011 -1622,-1034 -1622,-1034q-1631 -1011 -1622 -1034);"/>
+                    <Edge cubics="!-1610 -1057(;-1610,-1057 -1626,-1060 -1626,-1060q-1610 -1057 -1626 -1060);"/>
+                    <Edge cubics="!-1622 -1034(;-1622,-1034 -1617,-1019 -1617,-1019q-1622 -1034 -1617 -1019);"/>
+                    <Edge cubics="!-1617 -1019(;-1617,-1019 -1611,-1048 -1611,-1048q-1617 -1019 -1611 -1048);"/>
+                    <Edge cubics="!-1611 -1048(;-1611,-1048 -1610,-1057 -1610,-1057q-1611 -1048 -1610 -1057);"/>
+                    <Edge cubics="!-1626 -1060(;-1626,-1060 -1614,-1075 -1614,-1075q-1626 -1060 -1614 -1075);"/>
+                    <Edge cubics="!-1610 -1057(;-1609,-1063 -1608,-1077 -1608,-1098q-1610 -1057Q-1608 -1067q-1608 -1098);"/>
+                    <Edge cubics="!-1641 -1009(;-1640,-1059 -1641,-1096 -1643,-1121q-1641 -1009Q-1640 -1084q-1643 -1121);"/>
+                    <Edge cubics="!-1631 -1011(;-1632,-1041 -1632,-1078 -1632,-1122q-1631 -1011Q-1632 -1057q-1632 -1122);"/>
+                    <Edge cubics="!-1591 -943(;-1591,-943 -1586,-985 -1586,-985q-1591 -943 -1586 -985);"/>
+                    <Edge cubics="!-1586 -942(;-1586,-942 -1586,-985 -1586,-985q-1586 -942 -1586 -985);"/>
+                    <Edge cubics="!-1586 -942(;-1586,-942 -1591,-943 -1591,-943q-1586 -942 -1591 -943);"/>
+                    <Edge cubics="!-1609 -947(;-1610,-957 -1610,-974 -1610,-998q-1609 -947Q-1610 -962q-1610 -998);"/>
+                    <Edge cubics="!-1630 -887(;-1632,-895 -1633,-903 -1632,-909q-1630 -887Q-1633 -899q-1632 -909);"/>
+                    <Edge cubics="!-1632 -909(;-1632,-918 -1632,-935 -1632,-960q-1632 -909Q-1632 -923q-1632 -960);"/>
+                    <Edge cubics="!-1640 -896(;-1642,-921 -1642,-959 -1641,-1009q-1640 -896Q-1643 -934q-1641 -1009);"/>
+                    <Edge cubics="!-1632 -960(;-1632,-981 -1632,-998 -1631,-1011q-1632 -960Q-1632 -992q-1631 -1011);"/>
+                    <Edge cubics="!-1610 -998(;-1609,-1019 -1610,-1036 -1611,-1048q-1610 -998Q-1609 -1030q-1611 -1048);"/>
+                    <Edge cubics="!-1618 -1131(;-1616,-1137 -1615,-1141 -1615,-1145q-1618 -1131Q-1615 -1139q-1615 -1145);"/>
+                    <Edge cubics="!-1603 -1138(;-1601,-1146 -1600,-1157 -1600,-1169q-1603 -1138Q-1600 -1151q-1600 -1169);"/>
+                    <Edge cubics="!-1643 -1121(;-1640,-1138 -1639,-1152 -1639,-1161q-1643 -1121Q-1639 -1148q-1639 -1161);"/>
+                    <Edge cubics="!-1632 -1122(;-1631,-1171 -1631,-1208 -1631,-1233q-1632 -1122Q-1631 -1196q-1631 -1233);"/>
+                    <Edge cubics="!-1586 -985(;-1586,-985 -1586,-1338 -1586,-1338q-1586 -985 -1586 -1338);"/>
+                    <Edge cubics="!-1621 -1406(;-1621,-1406 -1633,-1414 -1633,-1414q-1621 -1406 -1633 -1414);"/>
+                    <Edge cubics="!-1645 -1473(;-1652,-1475 -1661,-1476 -1672,-1477q-1645 -1473Q-1656 -1476q-1672 -1477);"/>
+                    <Edge cubics="!-1681 -1504(;-1669,-1506 -1657,-1508 -1647,-1510q-1681 -1504Q-1662 -1507q-1647 -1510);"/>
+                    <Edge cubics="!-1621 -1406(;-1621,-1436 -1620,-1454 -1620,-1460q-1621 -1406Q-1621 -1451q-1620 -1460);"/>
+                    <Edge cubics="!-1638 -1414(;-1654,-1414 -1670,-1416 -1686,-1419q-1638 -1414Q-1662 -1414q-1686 -1419);"/>
+                    <Edge cubics="!-1637 -1430(;-1637,-1430 -1663,-1436 -1663,-1436q-1637 -1430 -1663 -1436);"/>
+                    <Edge cubics="!-1628 -1500(;-1634,-1504 -1643,-1505 -1654,-1504q-1628 -1500Q-1637 -1505q-1654 -1504);"/>
+                    <Edge cubics="!-1641 -1374(;-1641,-1374 -1648,-1374 -1648,-1374q-1641 -1374 -1648 -1374);"/>
+                    <Edge cubics="!-1644 -1350(;-1644,-1350 -1655,-1361 -1655,-1361q-1644 -1350 -1655 -1361);"/>
+                    <Edge cubics="!-1642 -1344(;-1649,-1344 -1658,-1343 -1670,-1341q-1642 -1344Q-1652 -1345q-1670 -1341);"/>
+                    <Edge cubics="!-1645 -1310(;-1650,-1312 -1654,-1311 -1656,-1308q-1645 -1310Q-1653 -1313q-1656 -1308);"/>
+                    <Edge cubics="!-1653 -1299(;-1649,-1297 -1645,-1297 -1642,-1300q-1653 -1299Q-1647 -1296q-1642 -1300);"/>
+                    <Edge cubics="!-1638 -1320(;-1653,-1319 -1666,-1321 -1677,-1323q-1638 -1320Q-1660 -1319q-1677 -1323);"/>
+                    <Edge cubics="!-1650 -1325(;-1650,-1325 -1638,-1340 -1638,-1340q-1650 -1325 -1638 -1340);"/>
+                    <Edge cubics="!-1635 -1385(;-1635,-1385 -1651,-1379 -1651,-1379q-1635 -1385 -1651 -1379);"/>
+                    <Edge cubics="!-1645 -1199(;-1647,-1193 -1649,-1183 -1652,-1170q-1645 -1199Q-1647 -1190q-1652 -1170);"/>
+                    <Edge cubics="!-1650 -897(;-1647,-894 -1644,-893 -1640,-896q-1650 -897Q-1646 -892q-1640 -896);"/>
+                    <Edge cubics="!-1649 -1402(;-1644,-1406 -1641,-1410 -1638,-1414q-1649 -1402Q-1642 -1407q-1638 -1414);"/>
+                    <Edge cubics="!-1598 -1321(;-1598,-1368 -1600,-1408 -1605,-1441q-1598 -1321Q-1597 -1392q-1605 -1441);"/>
+                    <Edge cubics="!-1586 -1340(;-1586,-1340 -1586,-1439 -1586,-1439q-1586 -1340 -1586 -1439);"/>
+                    <Edge cubics="!-1642 -803(;-1642,-803 -1646,-812 -1646,-812q-1642 -803 -1646 -812);"/>
+                    <Edge cubics="!-1610 -849(;-1622,-834 -1632,-819 -1642,-803q-1610 -849Q-1628 -827q-1642 -803);"/>
+                    <Edge cubics="!-1611 -814(;-1608,-825 -1608,-836 -1610,-849q-1611 -814Q-1607 -830q-1610 -849);"/>
+                    <Edge cubics="!-1628 -837(;-1622,-848 -1617,-857 -1615,-865q-1628 -837Q-1618 -853q-1615 -865);"/>
+                    <Edge cubics="!-1635 -859(;-1635,-859 -1624,-867 -1624,-867q-1635 -859 -1624 -867);"/>
+                    <Edge cubics="!-1646 -812(;-1642,-817 -1636,-826 -1628,-837q-1646 -812Q-1640 -820q-1628 -837);"/>
+                    <Edge cubics="!-1624 -738(;-1620,-741 -1615,-742 -1611,-740q-1624 -738Q-1617 -742q-1611 -740);"/>
+                    <Edge cubics="!-1646 -768(;-1641,-776 -1635,-781 -1628,-783q-1646 -768Q-1639 -780q-1628 -783);"/>
+                    <Edge cubics="!-1628 -783(;-1620,-791 -1614,-801 -1611,-814q-1628 -783Q-1616 -795q-1611 -814);"/>
+                    <Edge cubics="!-1588 -810(;-1599,-789 -1613,-780 -1628,-783q-1588 -810Q-1605 -779q-1628 -783);"/>
+                    <Edge cubics="!-1611 -740(;-1610,-742 -1602,-755 -1586,-780q-1611 -740Q-1610 -742q-1586 -780);"/>
+                    <Edge cubics="!-1635 -729(;-1633,-731 -1629,-734 -1624,-738q-1635 -729Q-1632 -732q-1624 -738);"/>
+                    <Edge cubics="!-1611 -740(;-1622,-728 -1632,-719 -1639,-714q-1611 -740Q-1628 -722q-1639 -714);"/>
+                    <Edge cubics="!-1672 -846(;-1672,-846 -1680,-842 -1680,-842q-1672 -846 -1680 -842);"/>
+                    <Edge cubics="!-1689 -814(;-1685,-817 -1682,-822 -1682,-827q-1689 -814Q-1683 -819q-1682 -827);"/>
+                    <Edge cubics="!-1680 -766(;-1671,-767 -1664,-772 -1657,-780q-1680 -766Q-1667 -768q-1657 -780);"/>
+                    <Edge cubics="!-1669 -731(;-1669,-731 -1654,-746 -1654,-746q-1669 -731 -1654 -746);"/>
+                    <Edge cubics="!-1654 -746(;-1651,-757 -1648,-764 -1646,-768q-1654 -746Q-1649 -762q-1646 -768);"/>
+                    <Edge cubics="!-1646 -812(;-1656,-800 -1664,-791 -1671,-786q-1646 -812Q-1661 -793q-1671 -786);"/>
+                    <Edge cubics="!-1654 -746(;-1654,-746 -1635,-729 -1635,-729q-1654 -746 -1635 -729);"/>
+                    <Edge cubics="!-1657 -780(;-1653,-784 -1648,-792 -1642,-803q-1657 -780Q-1651 -787q-1642 -803);"/>
+                    <Edge cubics="!-1639 -714(;-1651,-706 -1663,-703 -1675,-703q-1639 -714Q-1657 -702q-1675 -703);"/>
+                    <Edge cubics="!-1647 -718(;-1653,-722 -1660,-726 -1669,-731q-1647 -718Q-1656 -724q-1669 -731);"/>
+                    <Edge cubics="!-1679 -725(;-1672,-724 -1661,-722 -1647,-718q-1679 -725Q-1668 -724q-1647 -718);"/>
+                    <Edge cubics="!-1670 -875(;-1670,-863 -1671,-854 -1672,-846q-1670 -875Q-1670 -857q-1672 -846);"/>
+                    <Edge cubics="!-1624 -867(;-1627,-876 -1629,-883 -1630,-887q-1624 -867Q-1629 -881q-1630 -887);"/>
+                    <Edge cubics="!-1615 -865(;-1610,-895 -1608,-922 -1609,-947q-1615 -865Q-1607 -909q-1609 -947);"/>
+                    <Edge cubics="!-1591 -943(;-1594,-893 -1593,-849 -1588,-810q-1591 -943Q-1596 -868q-1588 -810);"/>
+                    <Edge cubics="!-1640 -896(;-1640,-896 -1635,-859 -1635,-859q-1640 -896 -1635 -859);"/>
+                    <Edge cubics="!-1680 -842(;-1680,-878 -1680,-898 -1681,-903q-1680 -842Q-1680 -896q-1681 -903);"/>
+                    <Edge cubics="!-1586 -780(;-1586,-780 -1586,-942 -1586,-942q-1586 -780 -1586 -942);"/>
+                    <Edge cubics="!-1693 -1527(;-1693,-1527 -1693,-1513 -1693,-1513q-1693 -1527 -1693 -1513);"/>
+                    <Edge cubics="!-1693 -1482(;-1693,-1482 -1693,-1477 -1693,-1477q-1693 -1482 -1693 -1477);"/>
+                    <Edge cubics="!-1693 -1490(;-1693,-1490 -1693,-1482 -1693,-1482q-1693 -1490 -1693 -1482);"/>
+                    <Edge cubics="!-1693 -1494(;-1693,-1494 -1693,-1490 -1693,-1490q-1693 -1494 -1693 -1490);"/>
+                    <Edge cubics="!-1672 -1477(;-1681,-1477 -1688,-1477 -1693,-1477q-1672 -1477Q-1685 -1477q-1693 -1477);"/>
+                    <Edge cubics="!-1693 -1513(;-1693,-1513 -1693,-1494 -1693,-1494q-1693 -1513 -1693 -1494);"/>
+                    <Edge cubics="!-1693 -1456(;-1693,-1456 -1693,-1448 -1693,-1448q-1693 -1456 -1693 -1448);"/>
+                    <Edge cubics="!-1693 -1473(;-1693,-1473 -1693,-1456 -1693,-1456q-1693 -1473 -1693 -1456);"/>
+                    <Edge cubics="!-1680 -1451(;-1685,-1454 -1689,-1455 -1693,-1456q-1680 -1451Q-1687 -1455q-1693 -1456);"/>
+                    <Edge cubics="!-1693 -1430(;-1693,-1430 -1693,-1419 -1693,-1419q-1693 -1430 -1693 -1419);"/>
+                    <Edge cubics="!-1686 -1419(;-1686,-1419 -1693,-1419 -1693,-1419q-1686 -1419 -1693 -1419);"/>
+                    <Edge cubics="!-1693 -1441(;-1693,-1441 -1693,-1430 -1693,-1430q-1693 -1441 -1693 -1430);"/>
+                    <Edge cubics="!-1689 -1444(;-1691,-1443 -1692,-1442 -1693,-1441q-1689 -1444Q-1692 -1443q-1693 -1441);"/>
+                    <Edge cubics="!-1693 -1430(;-1692,-1427 -1689,-1424 -1686,-1419q-1693 -1430Q-1691 -1426q-1686 -1419);"/>
+                    <Edge cubics="!-1693 -1448(;-1693,-1448 -1693,-1441 -1693,-1441q-1693 -1448 -1693 -1441);"/>
+                    <Edge cubics="!-1693 -1448(;-1692,-1447 -1690,-1445 -1689,-1444q-1693 -1448Q-1691 -1446q-1689 -1444);"/>
+                    <Edge cubics="!-1693 -1477(;-1693,-1477 -1693,-1473 -1693,-1473q-1693 -1477 -1693 -1473);"/>
+                    <Edge cubics="!-1645 -1473(;-1663,-1467 -1679,-1467 -1693,-1473q-1645 -1473Q-1672 -1464q-1693 -1473);"/>
+                    <Edge cubics="!-1693 -1490(;-1693,-1490 -1670,-1495 -1670,-1495q-1693 -1490 -1670 -1495);"/>
+                    <Edge cubics="!-1670 -1495(;-1673,-1495 -1681,-1495 -1693,-1494q-1670 -1495Q-1675 -1495q-1693 -1494);"/>
+                    <Edge cubics="!-1693 -1527(;-1674,-1526 -1659,-1524 -1647,-1521q-1693 -1527Q-1665 -1526q-1647 -1521);"/>
+                    <Edge cubics="!-1647 -1510(;-1660,-1512 -1676,-1513 -1693,-1513q-1647 -1510Q-1667 -1513q-1693 -1513);"/>
+                    <Edge cubics="!-1693 -1482(;-1669,-1483 -1649,-1482 -1632,-1478q-1693 -1482Q-1657 -1484q-1632 -1478);"/>
+                    <Edge cubics="!-1693 -1405(;-1693,-1405 -1693,-1384 -1693,-1384q-1693 -1405 -1693 -1384);"/>
+                    <Edge cubics="!-1693 -1370(;-1693,-1370 -1693,-1365 -1693,-1365q-1693 -1370 -1693 -1365);"/>
+                    <Edge cubics="!-1693 -1379(;-1693,-1379 -1693,-1370 -1693,-1370q-1693 -1379 -1693 -1370);"/>
+                    <Edge cubics="!-1683 -1379(;-1685,-1376 -1688,-1373 -1693,-1370q-1683 -1379Q-1686 -1375q-1693 -1370);"/>
+                    <Edge cubics="!-1693 -1365(;-1693,-1365 -1684,-1368 -1684,-1368q-1693 -1365 -1684 -1368);"/>
+                    <Edge cubics="!-1693 -1379(;-1690,-1379 -1686,-1379 -1683,-1379q-1693 -1379Q-1688 -1379q-1683 -1379);"/>
+                    <Edge cubics="!-1693 -1384(;-1693,-1384 -1693,-1379 -1693,-1379q-1693 -1384 -1693 -1379);"/>
+                    <Edge cubics="!-1693 -1333(;-1693,-1333 -1693,-1322 -1693,-1322q-1693 -1333 -1693 -1322);"/>
+                    <Edge cubics="!-1681 -1324(;-1681,-1324 -1693,-1322 -1693,-1322q-1681 -1324 -1693 -1322);"/>
+                    <Edge cubics="!-1693 -1337(;-1693,-1337 -1693,-1333 -1693,-1333q-1693 -1337 -1693 -1333);"/>
+                    <Edge cubics="!-1693 -1353(;-1693,-1353 -1693,-1337 -1693,-1337q-1693 -1353 -1693 -1337);"/>
+                    <Edge cubics="!-1693 -1337(;-1690,-1336 -1686,-1335 -1681,-1334q-1693 -1337Q-1689 -1336q-1681 -1334);"/>
+                    <Edge cubics="!-1681 -1334(;-1681,-1334 -1693,-1333 -1693,-1333q-1681 -1334 -1693 -1333);"/>
+                    <Edge cubics="!-1693 -1365(;-1693,-1365 -1693,-1353 -1693,-1353q-1693 -1365 -1693 -1353);"/>
+                    <Edge cubics="!-1689 -1355(;-1690,-1354 -1691,-1354 -1693,-1353q-1689 -1355Q-1690 -1354q-1693 -1353);"/>
+                    <Edge cubics="!-1693 -1384(;-1679,-1385 -1660,-1385 -1635,-1385q-1693 -1384Q-1672 -1385q-1635 -1385);"/>
+                    <Edge cubics="!-1693 -1252(;-1693,-1252 -1693,-1248 -1693,-1248q-1693 -1252 -1693 -1248);"/>
+                    <Edge cubics="!-1693 -1252(;-1692,-1252 -1690,-1252 -1689,-1251q-1693 -1252Q-1691 -1252q-1689 -1251);"/>
+                    <Edge cubics="!-1691 -1248(;-1692,-1248 -1692,-1248 -1693,-1248q-1691 -1248Q-1692 -1248q-1693 -1248);"/>
+                    <Edge cubics="!-1693 -1214(;-1693,-1214 -1688,-1198 -1688,-1198q-1693 -1214 -1688 -1198);"/>
+                    <Edge cubics="!-1693 -1248(;-1693,-1248 -1693,-1214 -1693,-1214q-1693 -1248 -1693 -1214);"/>
+                    <Edge cubics="!-1693 -1322(;-1693,-1322 -1693,-1252 -1693,-1252q-1693 -1322 -1693 -1252);"/>
+                    <Edge cubics="!-1693 -1139(;-1693,-1139 -1693,-1118 -1693,-1118q-1693 -1139 -1693 -1118);"/>
+                    <Edge cubics="!-1693 -1143(;-1693,-1143 -1693,-1139 -1693,-1139q-1693 -1143 -1693 -1139);"/>
+                    <Edge cubics="!-1683 -1122(;-1686,-1121 -1690,-1119 -1693,-1118q-1683 -1122Q-1688 -1120q-1693 -1118);"/>
+                    <Edge cubics="!-1693 -1139(;-1692,-1140 -1691,-1142 -1690,-1143q-1693 -1139Q-1691 -1141q-1690 -1143);"/>
+                    <Edge cubics="!-1690 -1143(;-1691,-1143 -1692,-1143 -1693,-1143q-1690 -1143Q-1691 -1143q-1693 -1143);"/>
+                    <Edge cubics="!-1693 -1055(;-1693,-1055 -1689,-1061 -1689,-1061q-1693 -1055 -1689 -1061);"/>
+                    <Edge cubics="!-1693 -1118(;-1693,-1118 -1693,-1055 -1693,-1055q-1693 -1118 -1693 -1055);"/>
+                    <Edge cubics="!-1693 -1035(;-1693,-1035 -1693,-1024 -1693,-1024q-1693 -1035 -1693 -1024);"/>
+                    <Edge cubics="!-1693 -1024(;-1691,-1027 -1689,-1030 -1688,-1031q-1693 -1024Q-1690 -1029q-1688 -1031);"/>
+                    <Edge cubics="!-1688 -1031(;-1688,-1031 -1693,-1035 -1693,-1035q-1688 -1031 -1693 -1035);"/>
+                    <Edge cubics="!-1693 -1055(;-1693,-1055 -1693,-1035 -1693,-1035q-1693 -1055 -1693 -1035);"/>
+                    <Edge cubics="!-1693 -1214(;-1693,-1214 -1693,-1143 -1693,-1143q-1693 -1214 -1693 -1143);"/>
+                    <Edge cubics="!-1693 -907(;-1693,-907 -1688,-912 -1688,-912q-1693 -907 -1688 -912);"/>
+                    <Edge cubics="!-1693 -823(;-1693,-823 -1693,-811 -1693,-811q-1693 -823 -1693 -811);"/>
+                    <Edge cubics="!-1682 -827(;-1685,-826 -1689,-825 -1693,-823q-1682 -827Q-1687 -826q-1693 -823);"/>
+                    <Edge cubics="!-1693 -811(;-1692,-812 -1690,-813 -1689,-814q-1693 -811Q-1691 -812q-1689 -814);"/>
+                    <Edge cubics="!-1693 -907(;-1693,-907 -1693,-823 -1693,-823q-1693 -907 -1693 -823);"/>
+                    <Edge cubics="!-1693 -773(;-1693,-773 -1693,-762 -1693,-762q-1693 -773 -1693 -762);"/>
+                    <Edge cubics="!-1693 -762(;-1688,-763 -1684,-765 -1680,-766q-1693 -762Q-1686 -764q-1680 -766);"/>
+                    <Edge cubics="!-1671 -786(;-1678,-779 -1686,-775 -1693,-773q-1671 -786Q-1682 -776q-1693 -773);"/>
+                    <Edge cubics="!-1693 -722(;-1693,-722 -1693,-703 -1693,-703q-1693 -722 -1693 -703);"/>
+                    <Edge cubics="!-1675 -703(;-1675,-703 -1693,-703 -1693,-703q-1675 -703 -1693 -703);"/>
+                    <Edge cubics="!-1693 -722(;-1686,-724 -1681,-725 -1679,-725q-1693 -722Q-1682 -725q-1679 -725);"/>
+                    <Edge cubics="!-1693 -762(;-1693,-762 -1693,-722 -1693,-722q-1693 -762 -1693 -722);"/>
+                    <Edge cubics="!-1693 -811(;-1693,-811 -1693,-773 -1693,-773q-1693 -811 -1693 -773);"/>
+                    <Edge cubics="!-1693 -1024(;-1693,-1024 -1693,-907 -1693,-907q-1693 -1024 -1693 -907);"/>
+                    <Edge cubics="!-1693 -1419(;-1693,-1419 -1693,-1405 -1693,-1405q-1693 -1419 -1693 -1405);"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -901,9 +897,9 @@
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="线路" centerPoint3DX="448.2" centerPoint3DY="187.3">
+                <DOMSymbolInstance libraryItemName="线路" centerPoint3DX="448.2" centerPoint3DY="166.05">
                   <matrix>
-                    <Matrix tx="-82.3" ty="-79.35"/>
+                    <Matrix tx="-82.3" ty="-100.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="530.5" y="266.65"/>
@@ -917,9 +913,9 @@
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
               <elements>
-                <DOMSymbolInstance libraryItemName="握把1" centerPoint3DX="81.4" centerPoint3DY="19.25">
+                <DOMSymbolInstance libraryItemName="握把1" centerPoint3DX="81.4" centerPoint3DY="-2">
                   <matrix>
-                    <Matrix a="0.526565551757813" b="-0.850128173828125" c="-0.850128173828125" d="-0.526565551757813" tx="89.25" ty="62.4"/>
+                    <Matrix a="0.526565551757813" b="-0.850128173828125" c="-0.850128173828125" d="-0.526565551757813" tx="89.25" ty="41.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="56.8" y="7.15"/>
@@ -929,9 +925,9 @@
             </DOMFrame>
             <DOMFrame index="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="握把1" centerPoint3DX="138.05" centerPoint3DY="32.75">
+                <DOMSymbolInstance libraryItemName="握把1" centerPoint3DX="138.05" centerPoint3DY="11.5">
                   <matrix>
-                    <Matrix a="-1" tx="169.95" ty="3.2"/>
+                    <Matrix a="-1" tx="169.95" ty="-18.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="56.85" y="7.15"/>
@@ -941,9 +937,9 @@
             </DOMFrame>
             <DOMFrame index="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="握把1" centerPoint3DX="142.55" centerPoint3DY="27.1">
+                <DOMSymbolInstance libraryItemName="握把1" centerPoint3DX="142.55" centerPoint3DY="5.85">
                   <matrix>
-                    <Matrix a="-0.980117797851563" b="0.198410034179688" c="0.198410034179688" d="0.980117797851563" tx="167.45" ty="-7.95"/>
+                    <Matrix a="-0.980117797851563" b="0.198410034179688" c="0.198410034179688" d="0.980117797851563" tx="167.45" ty="-29.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="56.9" y="7.15"/>
@@ -953,9 +949,9 @@
             </DOMFrame>
             <DOMFrame index="6" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="握把1" centerPoint3DX="138.05" centerPoint3DY="32.75">
+                <DOMSymbolInstance libraryItemName="握把1" centerPoint3DX="138.05" centerPoint3DY="11.5">
                   <matrix>
-                    <Matrix a="-1" tx="169.95" ty="3.2"/>
+                    <Matrix a="-1" tx="169.95" ty="-18.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="56.85" y="7.15"/>
@@ -972,9 +968,9 @@
             </DOMFrame>
             <DOMFrame index="5" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="小支架" centerPoint3DX="130.25" centerPoint3DY="35.55">
+                <DOMSymbolInstance libraryItemName="小支架" centerPoint3DX="130.25" centerPoint3DY="14.3">
                   <matrix>
-                    <Matrix a="0.458343505859375" b="-0.888763427734375" c="0.888763427734375" d="0.458343505859375" tx="99.9" ty="38.25"/>
+                    <Matrix a="0.458343505859375" b="-0.888763427734375" c="0.888763427734375" d="0.458343505859375" tx="99.9" ty="17"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="31.2" y="-0.7"/>
@@ -984,9 +980,9 @@
             </DOMFrame>
             <DOMFrame index="9" duration="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="小支架" centerPoint3DX="98.95" centerPoint3DY="36.9">
+                <DOMSymbolInstance libraryItemName="小支架" centerPoint3DX="98.95" centerPoint3DY="15.65">
                   <matrix>
-                    <Matrix tx="82.35" ty="10.9"/>
+                    <Matrix tx="82.35" ty="-10.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="31.2" y="-0.7"/>
@@ -1000,9 +996,9 @@
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="滚珠" centerPoint3DX="22.65" centerPoint3DY="-69.9">
+                <DOMSymbolInstance libraryItemName="滚珠" centerPoint3DX="22.65" centerPoint3DY="-91.15">
                   <matrix>
-                    <Matrix tx="7.4" ty="-74.65"/>
+                    <Matrix tx="7.4" ty="-95.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="15.25" y="4.75"/>
@@ -1016,9 +1012,9 @@
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="下框架" centerPoint3DX="46.55" centerPoint3DY="21.9">
+                <DOMSymbolInstance libraryItemName="下框架" centerPoint3DX="46.55" centerPoint3DY="0.65">
                   <matrix>
-                    <Matrix tx="-42.25" ty="-14.75"/>
+                    <Matrix tx="-42.25" ty="-36"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="88.8" y="36.65"/>
@@ -1037,110 +1033,14 @@
         </DOMLayer>
         <DOMLayer name="图层 2" color="#9933CC" visible="false">
           <frames>
-            <DOMFrame index="0" duration="15" keyMode="9728">
+            <DOMFrame index="0" duration="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="153.45" centerPoint3DY="-64.35">
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" selected="true" centerPoint3DX="150.55" centerPoint3DY="46.8">
                   <matrix>
-                    <Matrix a="8.52407836914063" d="3.0269775390625" tx="140.9" ty="-76.75"/>
+                    <Matrix a="16.6185455322266" d="15.2631683349609" tx="136.3" ty="-116.95"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="15" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="153.45" centerPoint3DY="-64.35">
-                  <matrix>
-                    <Matrix a="2.13102722167969" d="3.0269775390625" tx="140.9" ty="-76.75"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="16" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="148.85" centerPoint3DY="-111.75">
-                  <matrix>
-                    <Matrix a="1.70925903320313" d="6.4088134765625" tx="136.3" ty="-124.15"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="17" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="154.85" centerPoint3DY="-109.55">
-                  <matrix>
-                    <Matrix a="1.70925903320313" d="6.4088134765625" tx="142.3" ty="-121.95"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="18" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="179.85" centerPoint3DY="-73.55">
-                  <matrix>
-                    <Matrix a="1.75028991699219" d="3.92500305175781" tx="167.3" ty="-85.95"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="19" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="145.85" centerPoint3DY="-73.55">
-                  <matrix>
-                    <Matrix a="9.43756103515625" d="3.92500305175781" tx="133.3" ty="-85.95"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="20" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="146.4" centerPoint3DY="-73.15">
-                  <matrix>
-                    <Matrix a="11.8479614257813" d="3.92500305175781" tx="133.85" ty="-85.55"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="21" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="153.45" centerPoint3DY="-64.35">
-                  <matrix>
-                    <Matrix a="8.52407836914063" d="3.0269775390625" tx="140.9" ty="-76.75"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="22" duration="13" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" selected="true" centerPoint3DX="153.45" centerPoint3DY="-100.35">
-                  <matrix>
-                    <Matrix a="0.698974609375" d="5.87234497070313" tx="140.9" ty="-112.75"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
+                    <Point x="0.2" y="12.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -1154,9 +1054,9 @@
             </DOMFrame>
             <DOMFrame index="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="270.7" centerPoint3DY="-38.95">
+                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="270.7" centerPoint3DY="-60.2">
                   <matrix>
-                    <Matrix a="0.486846923828125" d="0.947174072265625" tx="145.75" ty="-85.1"/>
+                    <Matrix a="0.486846923828125" d="0.947174072265625" tx="145.75" ty="-106.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="9.75" y="50.6"/>
@@ -1169,9 +1069,9 @@
             </DOMFrame>
             <DOMFrame index="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
               <elements>
-                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="257.65" centerPoint3DY="-39.4">
+                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="257.65" centerPoint3DY="-60.65">
                   <matrix>
-                    <Matrix a="0.3194580078125" d="1.78109741210938" tx="134.35" ty="-127.75"/>
+                    <Matrix a="0.3194580078125" d="1.78109741210938" tx="134.35" ty="-149"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="9.7" y="50.55"/>
@@ -1181,9 +1081,9 @@
             </DOMFrame>
             <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="281.4" centerPoint3DY="-39.2">
+                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="281.4" centerPoint3DY="-60.45">
                   <matrix>
-                    <Matrix a="0.361312866210938" d="1.57258605957031" tx="141.95" ty="-117.2"/>
+                    <Matrix a="0.361312866210938" d="1.57258605957031" tx="141.95" ty="-138.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="9.7" y="50.55"/>
@@ -1193,9 +1093,9 @@
             </DOMFrame>
             <DOMFrame index="18" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-81">
               <elements>
-                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="289.65" centerPoint3DY="-39.4">
+                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="289.65" centerPoint3DY="-60.65">
                   <matrix>
-                    <Matrix a="0.486846923828125" d="0.947174072265625" tx="164.7" ty="-85.55"/>
+                    <Matrix a="0.486846923828125" d="0.947174072265625" tx="164.7" ty="-106.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="9.75" y="50.6"/>
@@ -1205,9 +1105,9 @@
             </DOMFrame>
             <DOMFrame index="20" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
               <elements>
-                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="272.15" centerPoint3DY="-41.5">
+                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="272.15" centerPoint3DY="-62.75">
                   <matrix>
-                    <Matrix a="3.17796325683594" d="0.947174072265625" tx="120.9" ty="-87.65"/>
+                    <Matrix a="3.17796325683594" d="0.947174072265625" tx="120.9" ty="-108.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="9.75" y="50.6"/>
@@ -1217,9 +1117,9 @@
             </DOMFrame>
             <DOMFrame index="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="269.25" centerPoint3DY="-39.4">
+                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="269.25" centerPoint3DY="-60.65">
                   <matrix>
-                    <Matrix a="0.0557708740234375" d="1.62760925292969" tx="148.5" ty="-120"/>
+                    <Matrix a="0.0557708740234375" d="1.62760925292969" tx="148.5" ty="-141.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="9.85" y="50.6"/>
@@ -1232,9 +1132,9 @@
             </DOMFrame>
             <DOMFrame index="25" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="270.7" centerPoint3DY="-38.95">
+                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="270.7" centerPoint3DY="-60.2">
                   <matrix>
-                    <Matrix a="0.486846923828125" d="0.947174072265625" tx="145.75" ty="-85.1"/>
+                    <Matrix a="0.486846923828125" d="0.947174072265625" tx="145.75" ty="-106.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="9.75" y="50.6"/>
@@ -1247,9 +1147,9 @@
             </DOMFrame>
             <DOMFrame index="26" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
               <elements>
-                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="271.9" centerPoint3DY="-38.7">
+                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="271.9" centerPoint3DY="-59.95">
                   <matrix>
-                    <Matrix a="0.3194580078125" d="1.78109741210938" tx="148.6" ty="-127.05"/>
+                    <Matrix a="0.3194580078125" d="1.78109741210938" tx="148.6" ty="-148.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="9.7" y="50.55"/>
@@ -1259,9 +1159,9 @@
             </DOMFrame>
             <DOMFrame index="27" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="287.2" centerPoint3DY="-39.2">
+                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="287.2" centerPoint3DY="-60.45">
                   <matrix>
-                    <Matrix a="0.361312866210938" d="3.156005859375" tx="147.75" ty="-197.3"/>
+                    <Matrix a="0.361312866210938" d="3.156005859375" tx="147.75" ty="-218.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="9.7" y="50.6"/>
@@ -1271,9 +1171,9 @@
             </DOMFrame>
             <DOMFrame index="28" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-81">
               <elements>
-                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="311.8" centerPoint3DY="-39.2">
+                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="311.8" centerPoint3DY="-60.45">
                   <matrix>
-                    <Matrix a="1.58926391601563" d="3.156005859375" tx="160.5" ty="-197.3"/>
+                    <Matrix a="1.58926391601563" d="3.156005859375" tx="160.5" ty="-218.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="9.65" y="50.6"/>
@@ -1283,9 +1183,9 @@
             </DOMFrame>
             <DOMFrame index="30" keyMode="15872">
               <elements>
-                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="356.2" centerPoint3DY="-39.2">
+                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="356.2" centerPoint3DY="-60.45">
                   <matrix>
-                    <Matrix a="4.49624633789063" d="3.156005859375" tx="176.65" ty="-197.3"/>
+                    <Matrix a="4.49624633789063" d="3.156005859375" tx="176.65" ty="-218.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="9.7" y="50.6"/>
@@ -1302,9 +1202,9 @@
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="107.65" centerPoint3DY="-38.15">
+                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="107.65" centerPoint3DY="-59.4">
                   <matrix>
-                    <Matrix tx="91.95" ty="-53.8"/>
+                    <Matrix tx="91.95" ty="-75.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="15.7" y="15.65"/>
@@ -1314,9 +1214,9 @@
             </DOMFrame>
             <DOMFrame index="3" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="89.65" centerPoint3DY="-38.15">
+                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="89.65" centerPoint3DY="-59.4">
                   <matrix>
-                    <Matrix tx="73.95" ty="-53.8"/>
+                    <Matrix tx="73.95" ty="-75.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="15.7" y="15.65"/>
@@ -1326,9 +1226,9 @@
             </DOMFrame>
             <DOMFrame index="7" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="107.85" centerPoint3DY="-38.15">
+                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="107.85" centerPoint3DY="-59.4">
                   <matrix>
-                    <Matrix tx="92.15" ty="-53.8"/>
+                    <Matrix tx="92.15" ty="-75.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="15.7" y="15.65"/>
@@ -1338,9 +1238,9 @@
             </DOMFrame>
             <DOMFrame index="11" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="135" centerPoint3DY="-38.15">
+                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="135" centerPoint3DY="-59.4">
                   <matrix>
-                    <Matrix tx="119.3" ty="-53.8"/>
+                    <Matrix tx="119.3" ty="-75.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="15.7" y="15.65"/>
@@ -1350,9 +1250,9 @@
             </DOMFrame>
             <DOMFrame index="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="135" centerPoint3DY="-38.15">
+                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="135" centerPoint3DY="-59.4">
                   <matrix>
-                    <Matrix tx="119.3" ty="-53.8"/>
+                    <Matrix tx="119.3" ty="-75.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="15.7" y="15.65"/>
@@ -1362,9 +1262,9 @@
             </DOMFrame>
             <DOMFrame index="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="118.2" centerPoint3DY="-38.15">
+                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="118.2" centerPoint3DY="-59.4">
                   <matrix>
-                    <Matrix tx="102.5" ty="-53.8"/>
+                    <Matrix tx="102.5" ty="-75.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="15.7" y="15.65"/>
@@ -1374,9 +1274,9 @@
             </DOMFrame>
             <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="155.55" centerPoint3DY="-38.15">
+                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="155.55" centerPoint3DY="-59.4">
                   <matrix>
-                    <Matrix tx="139.85" ty="-53.8"/>
+                    <Matrix tx="139.85" ty="-75.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="15.7" y="15.65"/>
@@ -1386,9 +1286,9 @@
             </DOMFrame>
             <DOMFrame index="18" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="120.5" centerPoint3DY="-38.15">
+                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="120.5" centerPoint3DY="-59.4">
                   <matrix>
-                    <Matrix tx="104.8" ty="-53.8"/>
+                    <Matrix tx="104.8" ty="-75.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="15.7" y="15.65"/>
@@ -1398,9 +1298,9 @@
             </DOMFrame>
             <DOMFrame index="22" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="135" centerPoint3DY="-38.15">
+                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="135" centerPoint3DY="-59.4">
                   <matrix>
-                    <Matrix tx="119.3" ty="-53.8"/>
+                    <Matrix tx="119.3" ty="-75.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="15.7" y="15.65"/>
@@ -1410,9 +1310,9 @@
             </DOMFrame>
             <DOMFrame index="25" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="135" centerPoint3DY="-38.15">
+                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="135" centerPoint3DY="-59.4">
                   <matrix>
-                    <Matrix tx="119.3" ty="-53.8"/>
+                    <Matrix tx="119.3" ty="-75.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="15.7" y="15.65"/>
@@ -1422,9 +1322,9 @@
             </DOMFrame>
             <DOMFrame index="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="162.5" centerPoint3DY="-38.15">
+                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="162.5" centerPoint3DY="-59.4">
                   <matrix>
-                    <Matrix tx="146.8" ty="-53.8"/>
+                    <Matrix tx="146.8" ty="-75.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="15.7" y="15.65"/>
@@ -1434,9 +1334,9 @@
             </DOMFrame>
             <DOMFrame index="27" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="175" centerPoint3DY="-38.15">
+                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="175" centerPoint3DY="-59.4">
                   <matrix>
-                    <Matrix tx="159.3" ty="-53.8"/>
+                    <Matrix tx="159.3" ty="-75.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="15.7" y="15.65"/>
@@ -1446,9 +1346,9 @@
             </DOMFrame>
             <DOMFrame index="28" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="192.5" centerPoint3DY="-38.15">
+                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="192.5" centerPoint3DY="-59.4">
                   <matrix>
-                    <Matrix tx="176.8" ty="-53.8"/>
+                    <Matrix tx="176.8" ty="-75.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="15.7" y="15.65"/>
@@ -1458,9 +1358,9 @@
             </DOMFrame>
             <DOMFrame index="30" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-97">
               <elements>
-                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="253.15" centerPoint3DY="-38.15">
+                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="253.15" centerPoint3DY="-59.4">
                   <matrix>
-                    <Matrix tx="237.45" ty="-53.8"/>
+                    <Matrix tx="237.45" ty="-75.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="15.7" y="15.65"/>
@@ -1470,9 +1370,9 @@
             </DOMFrame>
             <DOMFrame index="33" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="141.8" centerPoint3DY="-38.15">
+                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="141.8" centerPoint3DY="-59.4">
                   <matrix>
-                    <Matrix tx="126.1" ty="-53.8"/>
+                    <Matrix tx="126.1" ty="-75.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="15.7" y="15.65"/>
@@ -1482,9 +1382,9 @@
             </DOMFrame>
             <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="135" centerPoint3DY="-38.15">
+                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="135" centerPoint3DY="-59.4">
                   <matrix>
-                    <Matrix tx="119.3" ty="-53.8"/>
+                    <Matrix tx="119.3" ty="-75.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="15.7" y="15.65"/>
@@ -1498,9 +1398,9 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="5.35" centerPoint3DY="-48.05">
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="5.35" centerPoint3DY="-69.3">
                   <matrix>
-                    <Matrix tx="-112.9" ty="-91.05"/>
+                    <Matrix tx="-112.9" ty="-112.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="118.25" y="43"/>
@@ -1510,9 +1410,9 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="13.35" centerPoint3DY="-48.05">
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="13.35" centerPoint3DY="-69.3">
                   <matrix>
-                    <Matrix tx="-104.9" ty="-91.05"/>
+                    <Matrix tx="-104.9" ty="-112.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="118.25" y="43"/>
@@ -1522,9 +1422,9 @@
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="5.35" centerPoint3DY="-48.05">
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="5.35" centerPoint3DY="-69.3">
                   <matrix>
-                    <Matrix tx="-112.9" ty="-91.05"/>
+                    <Matrix tx="-112.9" ty="-112.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="118.25" y="43"/>
@@ -1534,9 +1434,9 @@
             </DOMFrame>
             <DOMFrame index="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-6.65" centerPoint3DY="-48.05">
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-6.65" centerPoint3DY="-69.3">
                   <matrix>
-                    <Matrix tx="-124.9" ty="-91.05"/>
+                    <Matrix tx="-124.9" ty="-112.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="118.25" y="43"/>
@@ -1546,9 +1446,9 @@
             </DOMFrame>
             <DOMFrame index="4" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="7.05" centerPoint3DY="-48.05">
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="7.05" centerPoint3DY="-69.3">
                   <matrix>
-                    <Matrix tx="-111.2" ty="-91.05"/>
+                    <Matrix tx="-111.2" ty="-112.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="118.25" y="43"/>
@@ -1558,9 +1458,9 @@
             </DOMFrame>
             <DOMFrame index="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="12.95" centerPoint3DY="-48.05">
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="12.95" centerPoint3DY="-69.3">
                   <matrix>
-                    <Matrix tx="-105.3" ty="-91.05"/>
+                    <Matrix tx="-105.3" ty="-112.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="118.25" y="43"/>
@@ -1570,9 +1470,9 @@
             </DOMFrame>
             <DOMFrame index="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="17.9" centerPoint3DY="-48.05">
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="17.9" centerPoint3DY="-69.3">
                   <matrix>
-                    <Matrix tx="-100.35" ty="-91.05"/>
+                    <Matrix tx="-100.35" ty="-112.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="118.25" y="43"/>
@@ -1582,9 +1482,9 @@
             </DOMFrame>
             <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-40.15" centerPoint3DY="-48.05">
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-40.15" centerPoint3DY="-69.3">
                   <matrix>
-                    <Matrix a="1.54122924804688" tx="-222.4" ty="-91.05"/>
+                    <Matrix a="1.54122924804688" tx="-222.4" ty="-112.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="118.25" y="43"/>
@@ -1594,9 +1494,9 @@
             </DOMFrame>
             <DOMFrame index="18" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-10.2" centerPoint3DY="-48.05">
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-10.2" centerPoint3DY="-69.3">
                   <matrix>
-                    <Matrix a="1.50105285644531" tx="-187.7" ty="-91.05"/>
+                    <Matrix a="1.50105285644531" tx="-187.7" ty="-112.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="118.25" y="43"/>
@@ -1606,9 +1506,9 @@
             </DOMFrame>
             <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="39.85" centerPoint3DY="-48.05">
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="39.85" centerPoint3DY="-69.3">
                   <matrix>
-                    <Matrix tx="-78.4" ty="-91.05"/>
+                    <Matrix tx="-78.4" ty="-112.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="118.25" y="43"/>
@@ -1618,9 +1518,9 @@
             </DOMFrame>
             <DOMFrame index="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-2.1" centerPoint3DY="-48.05">
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-2.1" centerPoint3DY="-69.3">
                   <matrix>
-                    <Matrix tx="-120.35" ty="-91.05"/>
+                    <Matrix tx="-120.35" ty="-112.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="118.25" y="43"/>
@@ -1630,9 +1530,9 @@
             </DOMFrame>
             <DOMFrame index="21" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-2.75" centerPoint3DY="-48.05">
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-2.75" centerPoint3DY="-69.3">
                   <matrix>
-                    <Matrix tx="-121" ty="-91.05"/>
+                    <Matrix tx="-121" ty="-112.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="118.25" y="43"/>
@@ -1642,9 +1542,9 @@
             </DOMFrame>
             <DOMFrame index="22" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="7.05" centerPoint3DY="-48.05">
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="7.05" centerPoint3DY="-69.3">
                   <matrix>
-                    <Matrix tx="-111.2" ty="-91.05"/>
+                    <Matrix tx="-111.2" ty="-112.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="118.25" y="43"/>
@@ -1652,11 +1552,23 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="26" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="26" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-7.45" centerPoint3DY="-48.05">
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-7.45" centerPoint3DY="-69.3">
                   <matrix>
-                    <Matrix tx="-125.7" ty="-91.05"/>
+                    <Matrix tx="-125.7" ty="-112.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="118.25" y="43"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-17.85" centerPoint3DY="-69.3">
+                  <matrix>
+                    <Matrix tx="-136.1" ty="-112.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="118.25" y="43"/>
@@ -1666,9 +1578,9 @@
             </DOMFrame>
             <DOMFrame index="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-1.25" centerPoint3DY="-48.05">
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-1.25" centerPoint3DY="-69.3">
                   <matrix>
-                    <Matrix tx="-119.5" ty="-91.05"/>
+                    <Matrix tx="-119.5" ty="-112.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="118.25" y="43"/>
@@ -1678,9 +1590,9 @@
             </DOMFrame>
             <DOMFrame index="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-0.4" centerPoint3DY="-48.05">
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-0.4" centerPoint3DY="-69.3">
                   <matrix>
-                    <Matrix tx="-118.65" ty="-91.05"/>
+                    <Matrix tx="-118.65" ty="-112.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="118.25" y="43"/>
@@ -1690,9 +1602,9 @@
             </DOMFrame>
             <DOMFrame index="30" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-2.1" centerPoint3DY="-48.05">
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-2.1" centerPoint3DY="-69.3">
                   <matrix>
-                    <Matrix tx="-120.35" ty="-91.05"/>
+                    <Matrix tx="-120.35" ty="-112.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="118.25" y="43"/>
@@ -1702,9 +1614,9 @@
             </DOMFrame>
             <DOMFrame index="31" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-0.7" centerPoint3DY="-48.05">
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-2.7" centerPoint3DY="-69.3">
                   <matrix>
-                    <Matrix tx="-118.95" ty="-91.05"/>
+                    <Matrix tx="-120.95" ty="-112.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="118.25" y="43"/>
@@ -1714,9 +1626,9 @@
             </DOMFrame>
             <DOMFrame index="33" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="19.05" centerPoint3DY="-48.05">
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="19.05" centerPoint3DY="-69.3">
                   <matrix>
-                    <Matrix tx="-99.2" ty="-91.05"/>
+                    <Matrix tx="-99.2" ty="-112.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="118.25" y="43"/>
@@ -1726,9 +1638,9 @@
             </DOMFrame>
             <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="7.05" centerPoint3DY="-48.05">
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="7.05" centerPoint3DY="-69.3">
                   <matrix>
-                    <Matrix tx="-111.2" ty="-91.05"/>
+                    <Matrix tx="-111.2" ty="-112.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="118.25" y="43"/>
@@ -1742,9 +1654,9 @@
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="基底" centerPoint3DX="37.5" centerPoint3DY="-38.6">
+                <DOMSymbolInstance libraryItemName="基底" centerPoint3DX="37.5" centerPoint3DY="-59.85">
                   <matrix>
-                    <Matrix tx="-62" ty="-88.6"/>
+                    <Matrix tx="-62" ty="-109.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="99.5" y="50"/>
@@ -1766,9 +1678,9 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="100.1" centerPoint3DY="-36.7">
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="100.1" centerPoint3DY="-57.95">
                   <matrix>
-                    <Matrix tx="70.2" ty="-80.9"/>
+                    <Matrix tx="70.2" ty="-102.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="29.9" y="44.2"/>
@@ -1776,7 +1688,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="7" duration="8" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+            <DOMFrame index="7" duration="7" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>
                 <CustomEase target="all">
                   <Point/>
@@ -1786,9 +1698,9 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="219.5" centerPoint3DY="-36.7">
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="219.5" centerPoint3DY="-57.95">
                   <matrix>
-                    <Matrix tx="189.6" ty="-80.9"/>
+                    <Matrix tx="189.6" ty="-102.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="29.9" y="44.2"/>
@@ -1796,7 +1708,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="15" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+            <DOMFrame index="14" duration="2" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
               <tweens>
                 <CustomEase target="all">
                   <Point/>
@@ -1806,9 +1718,9 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="159" centerPoint3DY="-36.7">
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="159" centerPoint3DY="-57.95">
                   <matrix>
-                    <Matrix tx="129.1" ty="-80.9"/>
+                    <Matrix tx="129.1" ty="-102.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="29.9" y="44.2"/>
@@ -1826,9 +1738,9 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="144.35" centerPoint3DY="-36.7">
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="144.35" centerPoint3DY="-57.95">
                   <matrix>
-                    <Matrix tx="114.45" ty="-80.9"/>
+                    <Matrix tx="114.45" ty="-102.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="29.9" y="44.2"/>
@@ -1846,9 +1758,9 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="140.6" centerPoint3DY="-36.7">
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="140.6" centerPoint3DY="-57.95">
                   <matrix>
-                    <Matrix tx="110.7" ty="-80.9"/>
+                    <Matrix tx="110.7" ty="-102.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="29.9" y="44.2"/>
@@ -1866,9 +1778,9 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="142.55" centerPoint3DY="-36.7">
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="142.55" centerPoint3DY="-57.95">
                   <matrix>
-                    <Matrix tx="112.65" ty="-80.9"/>
+                    <Matrix tx="112.65" ty="-102.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="29.9" y="44.2"/>
@@ -1886,9 +1798,9 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="129.8" centerPoint3DY="-36.7">
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="129.8" centerPoint3DY="-57.95">
                   <matrix>
-                    <Matrix tx="99.9" ty="-80.9"/>
+                    <Matrix tx="99.9" ty="-102.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="29.9" y="44.2"/>
@@ -1906,9 +1818,9 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="127.5" centerPoint3DY="-36.7">
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="127.5" centerPoint3DY="-57.95">
                   <matrix>
-                    <Matrix tx="97.6" ty="-80.9"/>
+                    <Matrix tx="97.6" ty="-102.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="29.9" y="44.2"/>
@@ -1918,9 +1830,9 @@
             </DOMFrame>
             <DOMFrame index="22" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="159" centerPoint3DY="-36.7">
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="159" centerPoint3DY="-57.95">
                   <matrix>
-                    <Matrix tx="129.1" ty="-80.9"/>
+                    <Matrix tx="129.1" ty="-102.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="29.9" y="44.2"/>
@@ -1930,9 +1842,9 @@
             </DOMFrame>
             <DOMFrame index="25" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="159" centerPoint3DY="-36.7">
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="159" centerPoint3DY="-57.95">
                   <matrix>
-                    <Matrix tx="129.1" ty="-80.9"/>
+                    <Matrix tx="129.1" ty="-102.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="29.9" y="44.2"/>
@@ -1942,9 +1854,9 @@
             </DOMFrame>
             <DOMFrame index="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="169.5" centerPoint3DY="-36.7">
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="169.5" centerPoint3DY="-57.95">
                   <matrix>
-                    <Matrix tx="139.6" ty="-80.9"/>
+                    <Matrix tx="139.6" ty="-102.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="29.9" y="44.2"/>
@@ -1954,9 +1866,9 @@
             </DOMFrame>
             <DOMFrame index="27" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="181.5" centerPoint3DY="-36.7">
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="181.5" centerPoint3DY="-57.95">
                   <matrix>
-                    <Matrix tx="151.6" ty="-80.9"/>
+                    <Matrix tx="151.6" ty="-102.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="29.9" y="44.2"/>
@@ -1964,11 +1876,11 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="28" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="28" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="197.5" centerPoint3DY="-36.7">
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="197.5" centerPoint3DY="-57.95">
                   <matrix>
-                    <Matrix tx="167.6" ty="-80.9"/>
+                    <Matrix tx="167.6" ty="-102.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="29.9" y="44.2"/>
@@ -1976,11 +1888,11 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="30" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="30" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="245.5" centerPoint3DY="-36.7">
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="245.5" centerPoint3DY="-57.95">
                   <matrix>
-                    <Matrix tx="215.6" ty="-80.9"/>
+                    <Matrix tx="215.6" ty="-102.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="29.9" y="44.2"/>
@@ -1990,9 +1902,9 @@
             </DOMFrame>
             <DOMFrame index="33" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="142.55" centerPoint3DY="-36.8">
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="142.55" centerPoint3DY="-58.05">
                   <matrix>
-                    <Matrix tx="112.65" ty="-81"/>
+                    <Matrix tx="112.65" ty="-102.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="29.9" y="44.2"/>
@@ -2002,9 +1914,9 @@
             </DOMFrame>
             <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="159" centerPoint3DY="-36.7">
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="159" centerPoint3DY="-57.95">
                   <matrix>
-                    <Matrix tx="129.1" ty="-80.9"/>
+                    <Matrix tx="129.1" ty="-102.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="29.9" y="44.2"/>
@@ -2018,9 +1930,9 @@
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="提把" centerPoint3DX="-3.6" centerPoint3DY="-96.75">
+                <DOMSymbolInstance libraryItemName="提把" centerPoint3DX="-3.6" centerPoint3DY="-118">
                   <matrix>
-                    <Matrix tx="-70.6" ty="-119.25"/>
+                    <Matrix tx="-70.6" ty="-140.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="67" y="22.5"/>

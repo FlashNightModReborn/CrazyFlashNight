@@ -5927,4 +5927,48 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       </attr_0>
     </lifecycle>
   </item>
+  <item>
+    <id>17705</id>
+    <name>等离子切割机</name>
+    <displayname>等离子切割机</displayname>
+    <icon>等离子切割机</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>30</weight>
+    <price>209664</price>
+    <description>占位待平衡</description>
+    <level>50</level>
+    <data>
+      <dressup>枪-长枪-等离子切割机</dressup>
+      <capacity>150</capacity>
+      <split>1</split>
+      <diffusion>5</diffusion>
+      <interval>60</interval>
+      <velocity>0</velocity>
+      <bullet>近战子弹</bullet>
+      <sound>混凝土切割机音效.waz</sound>
+      <muzzle>null</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>能量电池</clipname>
+      <bulletsize>40</bulletsize>
+      <power>300</power>
+      <impact>10</impact>
+      <hp>400</hp>
+      <defence>400</defence>
+      <damagetype>真伤</damagetype>
+    </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>等离子切割机初始化</initRoutines>
+          <initParam>
+            <temp>1</temp>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>等离子切割机周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
+  </item>
 </root>
