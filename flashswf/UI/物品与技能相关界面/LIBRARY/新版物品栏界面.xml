@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1754890039" lastUniqueIdentifier="42">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1755353954" lastUniqueIdentifier="56">
   <timeline>
-    <DOMTimeline name="新版物品栏界面" currentFrame="5">
+    <DOMTimeline name="新版物品栏界面" currentFrame="9">
       <layers>
         <DOMLayer name="Labels Layer" color="#23D4A1">
           <frames>
@@ -323,38 +323,13 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="已装备" color="#7CE74D" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="装备图标" color="#7CE74D" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="5" duration="7" keyMode="9728">
               <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <LinearGradient>
-                        <matrix>
-                          <Matrix a="0" b="0.169677734375" c="-0.14404296875" d="0" tx="165.1" ty="164.35"/>
-                        </matrix>
-                        <GradientEntry color="#31322C" ratio="0"/>
-                        <GradientEntry color="#111111" ratio="1"/>
-                      </LinearGradient>
-                    </FillStyle>
-                  </fills>
-                  <strokes>
-                    <StrokeStyle index="1">
-                      <SolidStroke scaleMode="normal">
-                        <fill>
-                          <SolidColor/>
-                        </fill>
-                      </SolidStroke>
-                    </StrokeStyle>
-                  </strokes>
-                  <edges>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!-1000 1000|-1000 5600!-1000 5600|-1500 6100!-1500 6100|-7500 6100!-7500 6100|-8000 5600!-8000 5600|-8000 1000!-8000 1000|-7500 500!-7500 500|-1500 500!-1500 500|-1000 1000"/>
-                  </edges>
-                </DOMShape>
                 <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="长枪" centerPoint3DX="118" centerPoint3DY="64.7">
                   <matrix>
                     <Matrix tx="104.7" ty="50.55"/>
@@ -450,7 +425,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="未装备" color="#C3D7F3" autoNamed="false">
+        <DOMLayer name="物品图标" color="#C3D7F3" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -499,6 +474,28 @@ onClipEvent (unload) {
               </elements>
             </DOMFrame>
             <DOMFrame index="38" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="新版装备强化界面" name="装备强化界面" selected="true" centerPoint3DX="-92" centerPoint3DY="160">
+                  <matrix>
+                    <Matrix tx="-220"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="128" y="160"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="40" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1586,7 +1583,7 @@ on(rollOut){
                   </transformationPoint>
                   <filters>
                     <DropShadowFilter angle="44.9992520943067" distance="3" strength="0.5"/>
-                    <BevelFilter blurX="1" blurY="1" angle="43.9999681257848" distance="1" strength="0.3"/>
+                    <BevelFilter blurX="0" blurY="1" angle="43.9999681257848" distance="1" strength="0.3"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>

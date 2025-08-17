@@ -160,26 +160,35 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
         }
 
         // 强化界面
-        if((itemData.type == "武器" || itemData.type == "防具") && _root.装备强化界面._visible && _root.装备强化界面.窗体area.hitTest(xmouse, ymouse)){
-            if(_root.装备强化界面.强化图标.area.hitTest(xmouse, ymouse)) {
-                _root.装备强化界面.强化图标.itemIcon.init(name,item);
-                _root.装备强化界面.目标icon = this;
-                _root.装备强化界面.是否可强化检测();
+        // if((itemData.type == "武器" || itemData.type == "防具") && _root.装备强化界面._visible && _root.装备强化界面.窗体area.hitTest(xmouse, ymouse)){
+        //     if(_root.装备强化界面.强化图标.area.hitTest(xmouse, ymouse)) {
+        //         _root.装备强化界面.强化图标.itemIcon.init(name,item);
+        //         _root.装备强化界面.目标icon = this;
+        //         _root.装备强化界面.是否可强化检测();
+        //         return;
+        //     }
+        //     if(_root.装备强化界面.强化图标左.area.hitTest(xmouse, ymouse)) {
+        //         _root.装备强化界面.强化图标左.itemIcon.init(name,item);
+        //         _root.装备强化界面.目标icon1 = this;
+        //         _root.装备强化界面.是否可强化度转换检测();
+        //         return;
+        //     }
+        //     if(_root.装备强化界面.强化图标右.area.hitTest(xmouse, ymouse)) {
+        //         _root.装备强化界面.强化图标右.itemIcon.init(name,item);
+        //         _root.装备强化界面.目标icon2 = this;
+        //         _root.装备强化界面.是否可强化度转换检测();
+        //         return;
+        //     }
+        //     return;
+        // }
+        if(itemData.type == "武器" || itemData.type == "防具"){
+            var 装备强化界面 = _root.物品栏界面.装备强化界面;
+            if(装备强化界面._visible && 装备强化界面.物品图标容器.hitTest(xmouse, ymouse)){
+                if(装备强化界面.当前物品 == null){
+                    装备强化界面.刷新强化物品(this.item);
+                }
                 return;
             }
-            if(_root.装备强化界面.强化图标左.area.hitTest(xmouse, ymouse)) {
-                _root.装备强化界面.强化图标左.itemIcon.init(name,item);
-                _root.装备强化界面.目标icon1 = this;
-                _root.装备强化界面.是否可强化度转换检测();
-                return;
-            }
-            if(_root.装备强化界面.强化图标右.area.hitTest(xmouse, ymouse)) {
-                _root.装备强化界面.强化图标右.itemIcon.init(name,item);
-                _root.装备强化界面.目标icon2 = this;
-                _root.装备强化界面.是否可强化度转换检测();
-                return;
-            }
-            return;
         }
     }
 }

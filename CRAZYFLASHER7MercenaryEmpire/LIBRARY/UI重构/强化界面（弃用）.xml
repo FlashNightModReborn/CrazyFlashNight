@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1934" itemID="6597607e-00000a56" lastModified="1745730365">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/强化界面（弃用）" itemID="68a03a10-000009c4" lastModified="1755331225">
   <timeline>
-    <DOMTimeline name="Symbol 1934">
+    <DOMTimeline name="强化界面（弃用）">
       <layers>
         <DOMLayer name="Labels Layer" color="#A6E482">
           <frames>
@@ -5245,21 +5245,7 @@ onClipEvent(load){
               <elements/>
             </DOMFrame>
             <DOMFrame index="55" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="import/UI组件/物品图标" name="强化图标右" centerPoint3DX="264.3" centerPoint3DY="146.15">
-                  <matrix>
-                    <Matrix a="1.46588134765625" d="1.46588134765625" tx="251" ty="132"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	this.itemIcon = _root.createItemIcon(this, null, null);
-}]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="56" duration="10" keyMode="9728">
               <elements/>
@@ -5728,21 +5714,7 @@ onClipEvent(load){
         <DOMLayer name="Layer 68" color="#41F3C2">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="import/UI组件/物品图标" name="强化图标" centerPoint3DX="313.3" centerPoint3DY="81.15">
-                  <matrix>
-                    <Matrix a="1.46588134765625" d="1.46588134765625" tx="300" ty="67"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	this.itemIcon = _root.createItemIcon(this, null, null);
-}]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="41" keyMode="9728">
               <elements>
@@ -5806,21 +5778,7 @@ onClipEvent(load){
               <elements/>
             </DOMFrame>
             <DOMFrame index="55" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="import/UI组件/物品图标" name="强化图标左" centerPoint3DX="117.3" centerPoint3DY="146.15">
-                  <matrix>
-                    <Matrix a="1.46588134765625" d="1.46588134765625" tx="104" ty="132"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	this.itemIcon = _root.createItemIcon(this, null, null);
-}]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="56" duration="10" keyMode="9728">
               <elements/>
@@ -5932,7 +5890,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="114" duration="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/通用按钮" selected="true" centerPoint3DX="230.05" centerPoint3DY="246.4">
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="230.05" centerPoint3DY="246.4">
                   <matrix>
                     <Matrix tx="184.25" ty="235.2"/>
                   </matrix>

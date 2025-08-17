@@ -1,0 +1,137 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版装备强化界面" itemID="68a01bda-000002a7" lastModified="1755446289" lastUniqueIdentifier="12">
+  <timeline>
+    <DOMTimeline name="新版装备强化界面">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.物品UI函数.初始化强化界面(this);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="配件文本" fontRenderingMode="device" width="132.5" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="17" ty="112"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText name="名字文本" fontRenderingMode="device" width="168.5" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="17" ty="12"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText name="外观改造文本" fontRenderingMode="device" width="123.95" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="56.5" ty="182"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="强化物品图标" centerPoint3DX="59.95" centerPoint3DY="86.2">
+                  <matrix>
+                    <Matrix a="1.5" d="1.49819946289063" tx="40" ty="65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="强化按钮" symbolType="button">
+                  <matrix>
+                    <Matrix tx="80" ty="40"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35" y="9.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="强化度转换按钮" symbolType="button">
+                  <matrix>
+                    <Matrix tx="80" ty="70"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35" y="9.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="涂装图标" centerPoint3DX="43.3" centerPoint3DY="204.15">
+                  <matrix>
+                    <Matrix tx="30" ty="190"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="新强化界面/物品图标容器" name="物品图标容器" centerPoint3DX="40" centerPoint3DY="65">
+                  <matrix>
+                    <Matrix tx="40" ty="65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16" y="16"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新强化界面/强化界面物品选择框" name="物品选择框" centerPoint3DX="80" centerPoint3DY="277">
+                  <matrix>
+                    <Matrix ty="225"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="80" y="52"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="新强化界面/强化界面背景" centerPoint3DX="80" centerPoint3DY="80">
+                  <transformationPoint>
+                    <Point x="128" y="160"/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="1" distance="2" strength="0.3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

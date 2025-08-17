@@ -1,7 +1,7 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
-          <DOMFolderItem name="image" itemID="6769984d-00000862" isExpanded="true"/>
+          <DOMFolderItem name="image" itemID="6769984d-00000862"/>
           <DOMFolderItem name="import" itemID="6769984d-000008af"/>
           <DOMFolderItem name="import/UI组件" itemID="6769984d-000008b0" isExpanded="true"/>
           <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
@@ -10,8 +10,9 @@
           <DOMFolderItem name="sprite/悬浮UI" itemID="659bbbc2-000014cc"/>
           <DOMFolderItem name="个人信息界面素材" itemID="6772301e-00000396"/>
           <DOMFolderItem name="购买执行界面素材" itemID="677cd948-0000091f" isExpanded="true"/>
-          <DOMFolderItem name="互动提示" itemID="676c09f4-00000f72" isExpanded="true"/>
+          <DOMFolderItem name="互动提示" itemID="676c09f4-00000f72"/>
           <DOMFolderItem name="物品栏" itemID="659d3927-00003122" isExpanded="true"/>
+          <DOMFolderItem name="新强化界面" itemID="68a01abf-000002a3" isExpanded="true"/>
      </folders>
      <media>
           <DOMBitmapItem name="image/bitmap1950.png" itemID="6597607b-00000410" sourceExternalFilepath="../物品与技能相关界面/LIBRARY/image/bitmap1950.png" sourceLastImported="1704419451" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap1950.png" bitmapDataHRef="M 4 1734973517.dat" frameRight="140" frameBottom="220"/>
@@ -121,6 +122,8 @@
           <Include href="互动提示/互动提示-锁定.xml" itemIcon="1" loadImmediate="false" itemID="687918b2-000004fe" lastModified="1752768396"/>
           <Include href="互动提示/互动提示-卸下.xml" itemIcon="1" loadImmediate="false" itemID="676c0ac3-00000f86" lastModified="1739846941"/>
           <Include href="排序图标.xml" loadImmediate="false" itemID="67b3f97f-0000074c" lastModified="1739869240"/>
+          <Include href="强化按钮.xml" itemIcon="0" loadImmediate="false" itemID="68a04233-00000b28" lastModified="1755357559"/>
+          <Include href="强化度转换按钮.xml" itemIcon="0" loadImmediate="false" itemID="68a09107-00000b36" lastModified="1755357550"/>
           <Include href="情报信息界面.xml" loadImmediate="false" itemID="677e2699-00000a04" lastModified="1752512113"/>
           <Include href="锁定.xml" itemIcon="1" loadImmediate="false" itemID="68791a37-0000050c" lastModified="1752768565"/>
           <Include href="物品栏/滚动槽.xml" loadImmediate="false" itemID="677cd93a-0000091a" lastModified="1736246336"/>
@@ -128,11 +131,15 @@
           <Include href="物品栏/排序图标.xml" itemIcon="1" loadImmediate="false" itemID="67b3f748-00000709" lastModified="1739869844"/>
           <Include href="物品栏/物品满级框.xml" loadImmediate="false" itemID="659d3902-0000310e" lastModified="1704802562"/>
           <Include href="物品栏/物品已装备图标.xml" loadImmediate="false" itemID="659d38ed-0000310d" lastModified="1704802541"/>
-          <Include href="物品栏/新版物品图标.xml" itemID="676a60d0-00000262" lastModified="1752769234"/>
+          <Include href="物品栏/新版物品图标.xml" itemID="676a60d0-00000262" lastModified="1755320517"/>
           <Include href="新版仓库界面.xml" itemID="676f9b88-0000028e" lastModified="1752747706"/>
           <Include href="新版商店界面.xml" itemID="676cf8b9-00000359" lastModified="1752753966"/>
           <Include href="新版通用勾选框.xml" loadImmediate="false" itemID="677d58e7-00000cb8" lastModified="1736268332"/>
-          <Include href="新版物品栏界面.xml" itemID="67699dcd-00000abf" lastModified="1754890039"/>
+          <Include href="新版物品栏界面.xml" itemID="67699dcd-00000abf" lastModified="1755353954"/>
+          <Include href="新版装备强化界面.xml" loadImmediate="false" itemID="68a01bda-000002a7" lastModified="1755446289"/>
+          <Include href="新强化界面/强化界面背景.xml" loadImmediate="false" itemID="68a00e73-0000026d" lastModified="1755353987"/>
+          <Include href="新强化界面/强化界面物品选择框.xml" loadImmediate="false" itemID="68a02043-00000405" lastModified="1755360835"/>
+          <Include href="新强化界面/物品图标容器.xml" loadImmediate="false" itemID="68a01aa8-0000029e" lastModified="1755323063"/>
           <Include href="资源箱界面.xml" itemID="684482b6-000002a2" lastModified="1749387337"/>
           <Include href="资源箱界面网格.xml" loadImmediate="false" itemID="6844832f-000002a5" lastModified="1749359714"/>
      </symbols>
@@ -550,10 +557,12 @@
                     <SolidSwatchItem color="#FFCCFF" hue="200" saturation="239" brightness="216"/>
                     <SolidSwatchItem color="#FFFFFF" brightness="240"/>
                     <SolidSwatchItem color="#FF0000" alpha="0.498039215686275" saturation="239" brightness="120"/>
-                    <SolidSwatchItem alpha="0.745098039215686"/>
+                    <SolidSwatchItem alpha="0.737254901960784"/>
                     <SolidSwatchItem alpha="0.498039215686275"/>
                     <SolidSwatchItem alpha="0.694117647058824"/>
                     <SolidSwatchItem color="#242421" hue="40" saturation="11" brightness="33"/>
+                    <SolidSwatchItem color="#111111" brightness="16"/>
+                    <SolidSwatchItem color="#D6D6D6" brightness="201"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -601,6 +610,10 @@
                          <GradientEntry color="#31322C" ratio="0"/>
                          <GradientEntry color="#111111" ratio="1"/>
                     </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#31322C" ratio="0"/>
+                         <GradientEntry color="#111111" ratio="1"/>
+                    </LinearGradientSwatchItem>
                </swatches>
           </swatchList>
      </extendedSwatchLists>
@@ -609,6 +622,19 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="54269" publishTime="1755354480"/>
+          <PublishItem publishSize="54168" publishTime="1755353489"/>
+          <PublishItem publishSize="53373" publishTime="1755332846"/>
+          <PublishItem publishSize="53452" publishTime="1755326459"/>
+          <PublishItem publishSize="53246" publishTime="1755325974"/>
+          <PublishItem publishSize="53217" publishTime="1755325709"/>
+          <PublishItem publishSize="53211" publishTime="1755325469"/>
+          <PublishItem publishSize="53184" publishTime="1755324502"/>
+          <PublishItem publishSize="53002" publishTime="1755323974"/>
+          <PublishItem publishSize="52987" publishTime="1755323679"/>
+          <PublishItem publishSize="52963" publishTime="1755323541"/>
+          <PublishItem publishSize="52956" publishTime="1755320573"/>
+          <PublishItem publishSize="52953" publishTime="1755320332"/>
           <PublishItem publishSize="52832" publishTime="1752769153"/>
           <PublishItem publishSize="52814" publishTime="1752768593"/>
           <PublishItem publishSize="52730" publishTime="1752767723"/>
@@ -616,18 +642,5 @@
           <PublishItem publishSize="52544" publishTime="1752754223"/>
           <PublishItem publishSize="52386" publishTime="1752512630"/>
           <PublishItem publishSize="52862" publishTime="1749387354"/>
-          <PublishItem publishSize="52865" publishTime="1749360529"/>
-          <PublishItem publishSize="52565" publishTime="1749286311"/>
-          <PublishItem publishSize="52550" publishTime="1740304803"/>
-          <PublishItem publishSize="52543" publishTime="1740304704"/>
-          <PublishItem publishSize="52541" publishTime="1740304505"/>
-          <PublishItem publishSize="52535" publishTime="1740304098"/>
-          <PublishItem publishSize="52535" publishTime="1740303813"/>
-          <PublishItem publishSize="52128" publishTime="1740247561"/>
-          <PublishItem publishSize="52072" publishTime="1740105869"/>
-          <PublishItem publishSize="52057" publishTime="1739870197"/>
-          <PublishItem publishSize="52061" publishTime="1739870072"/>
-          <PublishItem publishSize="52064" publishTime="1739868748"/>
-          <PublishItem publishSize="52047" publishTime="1739868666"/>
      </publishHistory>
 </DOMDocument>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="物品栏/新版物品图标" itemID="676a60d0-00000262" linkageExportForAS="true" linkageIdentifier="物品图标" lastModified="1752769234" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="物品栏/新版物品图标" itemID="676a60d0-00000262" linkageExportForAS="true" linkageIdentifier="物品图标" lastModified="1755320517" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="新版物品图标" currentFrame="6">
+    <DOMTimeline name="新版物品图标">
       <layers>
         <DOMLayer name="Labels Layer" color="#4DC4D9">
           <frames>
@@ -82,9 +82,9 @@ if(this.图标壳.图标)this.图标壳.基本款._visible = false;]]></script>
           <frames>
             <DOMFrame index="0" duration="21" keyMode="9728">
               <elements>
-                <DOMDynamicText name="leveltext" fontRenderingMode="device" width="22" height="23.65" isSelectable="false">
+                <DOMDynamicText name="leveltext" fontRenderingMode="device" width="21" height="14.25" isSelectable="false">
                   <matrix>
-                    <Matrix d="1.0035400390625" tx="-11" ty="-13"/>
+                    <Matrix d="1.0035400390625" tx="-10.5" ty="-13"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -102,13 +102,13 @@ if(this.图标壳.图标)this.图标壳.基本款._visible = false;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="数量" color="#F2A592" locked="true" autoNamed="false">
+        <DOMLayer name="数量" color="#F2A592" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="21" keyMode="9728">
               <elements>
-                <DOMDynamicText name="valuetext" fontRenderingMode="device" width="22.15" height="15.9" isSelectable="false">
+                <DOMDynamicText name="valuetext" fontRenderingMode="device" width="21.6" height="15.9" isSelectable="false">
                   <matrix>
-                    <Matrix tx="-11" ty="-13"/>
+                    <Matrix tx="-10.8" ty="-13"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -145,7 +145,7 @@ if(this.图标壳.图标)this.图标壳.基本款._visible = false;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="按钮" color="#C4EA94" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="按钮" color="#C4EA94" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>

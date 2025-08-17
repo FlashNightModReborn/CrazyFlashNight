@@ -198,16 +198,14 @@ _root.物品UI函数.创建商店图标 = function(NPC物品栏){
 		iconMC.saleData = NPC物品栏[i];
 		var saleItemName = typeof iconMC.saleData == "string" ? iconMC.saleData : iconMC.saleData.name;
 		var itemIcon = new ItemIcon(iconMC, saleItemName, 1);
-		if(typeof iconMC.saleData == "object"){
-			// 检查需求情报
-			if(iconMC.saleData.requiredInfo != null){
-				itemIcon.RollOver = onIconRollOver;
-				if(_root.收集品栏.情报.getValue(iconMC.saleData.requiredInfo) <= 0){
-					itemIcon.lock();
-				}
+		itemIcon.RollOver = onIconRollOver;
+		itemIcon.Press = onIconPress;
+		// 检查需求情报
+		if(iconMC.saleData.requiredInfo != null){
+			if(_root.收集品栏.情报.getValue(iconMC.saleData.requiredInfo) <= 0){
+				itemIcon.lock();
 			}
 		}
-		itemIcon.Press = onIconPress;
 		return itemIcon;
 	}
 
@@ -232,8 +230,16 @@ _root.物品UI函数.刷新商店图标 = function(NPC物品栏){
 	}else{
 		var 图标列表 = _root.购买物品界面.图标列表;
 		for(var i=0; i<图标列表.length; i++){
-			var saleItemName = typeof NPC物品栏[i] == "string" ? NPC物品栏[i] : NPC物品栏[i].name;
-			图标列表[i].itemIcon.init(saleItemName, 1);
+			var iconMC = 图标列表[i];
+			iconMC.saleData = NPC物品栏[i];
+			var saleItemName = typeof NPC物品栏[i] == "string" ? iconMC.saleData : iconMC.saleData.name;
+			iconMC.itemIcon.init(saleItemName, 1);
+			// 检查需求情报
+			if(iconMC.saleData.requiredInfo != null && _root.收集品栏.情报.getValue(iconMC.saleData.requiredInfo) <= 0){
+				iconMC.itemIcon.lock();
+			}else{
+				iconMC.itemIcon.unlock();
+			}
 		}
 	}
 	_root.购买物品界面.NPC物品栏 = NPC物品栏;
@@ -573,4 +579,37 @@ _root.物品UI函数.刷新情报信息 = function(){
 	}
 	txt = _root.处理html剧情文本(txt);
 	this.infotext.htmlText = txt;
+}
+
+
+
+// 新版强化界面
+
+_root.物品UI函数.初始化强化界面 = function(UI:MovieClip){
+	UI.当前物品 = null;
+	UI.强化物品图标.itemIcon = new ItemIcon(UI.强化物品图标, null, null);
+	UI.强化物品图标.itemIcon.RollOver = function(){
+		_root.注释(150, "点击卸下装备");
+	};
+	UI.涂装图标.itemIcon = new ItemIcon(UI.涂装图标, null, null);
+	UI.物品选择框._visible = false;
+	UI.刷新强化物品 = this.刷新强化物品;
+	UI.清空强化物品 = this.清空强化物品;
+}
+
+_root.物品UI函数.刷新强化物品 = function(item){
+	if(this.当前物品 != null) return;
+	this.当前物品 = item;
+	this.强化物品图标.itemIcon.init(item.name, item);
+	this.名字文本.text = this.强化物品图标.itemIcon.itemData.displayname;
+	this.外观改造文本.text = "";
+	this.配件文本.text = "配件系统（开发中）";
+}
+
+_root.物品UI函数.清空强化物品 = function(){
+	this.强化物品图标.itemIcon.init(null,null);
+	this.当前物品 = null;
+	this.名字文本.text = "";
+	this.外观改造文本.text = "";
+	this.配件文本.text = "";
 }
