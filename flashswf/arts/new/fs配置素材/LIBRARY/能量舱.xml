@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="能量舱" itemID="68a0c541-0000144b" lastModified="1755366721">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="能量舱" itemID="68a0c541-0000144b" lastModified="1755397777">
   <timeline>
     <DOMTimeline name="能量舱">
       <layers>
@@ -255,18 +255,12 @@
                       <SolidColor color="#333025"/>
                     </FillStyle>
                     <FillStyle index="83">
-                      <SolidColor color="#FEF6E5"/>
-                    </FillStyle>
-                    <FillStyle index="84">
-                      <SolidColor color="#FBF6E3"/>
-                    </FillStyle>
-                    <FillStyle index="85">
                       <SolidColor color="#16130A"/>
                     </FillStyle>
-                    <FillStyle index="86">
+                    <FillStyle index="84">
                       <SolidColor color="#5F5846"/>
                     </FillStyle>
-                    <FillStyle index="87">
+                    <FillStyle index="85">
                       <SolidColor color="#4D493F"/>
                     </FillStyle>
                   </fills>
@@ -522,25 +516,25 @@
 !703 1055|703 1062!703 1062|601 1062"/>
                     <Edge fillStyle1="73" edges="
 !601 1062|594 1062"/>
-                    <Edge fillStyle1="83" edges="
+                    <Edge fillStyle1="75" edges="
 !594 1062|556 1062"/>
                     <Edge fillStyle1="73" edges="
 !556 1062|488 1062"/>
-                    <Edge fillStyle1="84" edges="
+                    <Edge fillStyle1="75" edges="
 !488 1062|252.5 1062"/>
-                    <Edge fillStyle1="85" edges="
+                    <Edge fillStyle1="83" edges="
 !252.5 1062|223 1062"/>
-                    <Edge fillStyle1="84" edges="
+                    <Edge fillStyle1="75" edges="
 !223 1062|218 1062!218 1062[199 1063 176 1062"/>
                     <Edge fillStyle1="73" edges="
 !176 1062|121 1062"/>
-                    <Edge fillStyle1="86" edges="
+                    <Edge fillStyle1="84" edges="
 !121 1062|102 1062"/>
                     <Edge fillStyle1="73" edges="
 !102 1062|52 1062"/>
-                    <Edge fillStyle1="87" edges="
-!52 1062|21 1062"/>
                     <Edge fillStyle1="85" edges="
+!52 1062|21 1062"/>
+                    <Edge fillStyle1="83" edges="
 !21 1062|0 1062!0 1062|0 1053"/>
                     <Edge fillStyle1="73" edges="
 !0 1053|0 980"/>
@@ -763,25 +757,23 @@
 [421 995 464 1006!464 1006[477 1009 493 1004!493 1004[501 1000 518 990!518 990[528 984 544 984!544 984[561 985 570 985!570 985[577 985 602 979"/>
                     <Edge fillStyle0="82" fillStyle1="73" edges="
 !703 1055[702 1055 700 1055!700 1055[629 1054 598 1055!598 1055|601 1062"/>
-                    <Edge fillStyle0="83" fillStyle1="73" edges="
-!594 1062[578 1053 556 1062"/>
-                    <Edge fillStyle0="84" fillStyle1="73" edges="
-!488 1062|489 1060!489 1060[449 1057 383 1058!383 1058[300 1058 277 1058!277 1058[261 1057 240 1061"/>
-                    <Edge fillStyle0="84" fillStyle1="85" edges="
+                    <Edge fillStyle0="75" fillStyle1="73" edges="
+!594 1062[578 1053 556 1062!488 1062|489 1060!489 1060[449 1057 383 1058!383 1058[300 1058 277 1058!277 1058[261 1057 240 1061"/>
+                    <Edge fillStyle0="75" fillStyle1="83" edges="
 !240 1061[#F5.B #425.D 252.5 1062"/>
-                    <Edge fillStyle0="85" fillStyle1="84" edges="
+                    <Edge fillStyle0="83" fillStyle1="75" edges="
 !237 1061[#E6.4 #425.C 223 1062"/>
-                    <Edge fillStyle0="85" fillStyle1="73" edges="
+                    <Edge fillStyle0="83" fillStyle1="73" edges="
 !240 1061|237 1061"/>
-                    <Edge fillStyle0="73" fillStyle1="86" edges="
+                    <Edge fillStyle0="73" fillStyle1="84" edges="
 !102 1062[114 1052 136 1056!136 1056[128 1059 121 1062"/>
-                    <Edge fillStyle0="84" fillStyle1="73" edges="
+                    <Edge fillStyle0="75" fillStyle1="73" edges="
 !237 1061[218 1058 190 1058!190 1058[174 1058 143 1058!143 1058|176 1062"/>
-                    <Edge fillStyle0="73" fillStyle1="87" edges="
+                    <Edge fillStyle0="73" fillStyle1="85" edges="
 !12 1054[22 1055 47 1056!47 1056[69 1057 82 1058!82 1058[69 1061 52 1062"/>
-                    <Edge fillStyle0="85" fillStyle1="87" edges="
+                    <Edge fillStyle0="83" fillStyle1="85" edges="
 !21 1062|12 1054"/>
-                    <Edge fillStyle0="85" fillStyle1="73" edges="
+                    <Edge fillStyle0="83" fillStyle1="73" edges="
 !12 1054[6 1052 0 1053"/>
                     <Edge fillStyle0="45" fillStyle1="73" edges="
 !11 985[13 991 17 998"/>
@@ -1722,6 +1714,17 @@
                     <Edge cubics="!237 1061(;232,1062 228,1062 223,1062q237 1061Q230 1062q223 1062);"/>
                     <Edge cubics="!240 1061(;244,1062 248,1062 253,1062q240 1061Q246 1062q253 1062);"/>
                     <Edge cubics="!488 1062(;488,1062 253,1062 253,1062q488 1062 253 1062);"/>
+                    <Edge cubics="!-385 138(;-385,138 -385,999 -385,999q-385 138 -385 999);"/>
+                    <Edge cubics="!-970 999(;-970,999 -970,138 -970,138q-970 999 -970 138);"/>
+                    <Edge cubics="!-739 138(;-739,138 -385,138 -385,138q-739 138 -385 138);"/>
+                    <Edge cubics="!-800 999(;-755,1142 -682,1283 -579,1421q-800 999Q-733 1214q-579 1421);"/>
+                    <Edge cubics="!-385 999(;-385,999 -800,999 -800,999q-385 999 -800 999);"/>
+                    <Edge cubics="!-739 138(;-867,435 -887,722 -800,999q-739 138Q-931 583q-800 999);"/>
+                    <Edge cubics="!-800 999(;-800,999 -970,999 -970,999q-800 999 -970 999);"/>
+                    <Edge cubics="!-970 138(;-970,138 -739,138 -739,138q-970 138 -739 138);"/>
+                    <Edge cubics="!-579 -158(;-644,-58 -698,41 -739,138q-579 -158Q-677 -8q-739 138);"/>
+                    <Edge cubics="!-591 1436(;-591,1436 -776,1393 -776,1393q-591 1436 -776 1393);"/>
+                    <Edge cubics="!-579 1421(;-579,1421 -577,1257 -577,1257q-579 1421 -577 1257);"/>
                   </edges>
                 </DOMShape>
               </elements>
