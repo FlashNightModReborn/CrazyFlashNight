@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/火药燃气液压打桩机/等离子切割机" itemID="68a0606d-00002274" lastModified="1755410391" lastUniqueIdentifier="95">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/火药燃气液压打桩机/等离子切割机" itemID="68a0606d-00002274" lastModified="1755443122" lastUniqueIdentifier="99">
   <timeline>
-    <DOMTimeline name="等离子切割机" currentFrame="25" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;68&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="等离子切割机" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;68&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层 5" color="#4FFFFF">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 15" color="#4F80FF">
+        <DOMLayer name="图层 15" color="#4F80FF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements>
@@ -184,7 +184,7 @@
             </DOMFrame>
             <DOMFrame index="22" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="转轴" selected="true" centerPoint3DX="94.6" centerPoint3DY="-38.05">
+                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="94.6" centerPoint3DY="-38.05">
                   <matrix>
                     <Matrix tx="72.55" ty="-60.85"/>
                   </matrix>
@@ -218,7 +218,43 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="6" keyMode="9728">
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="转轴" selected="true" centerPoint3DX="94.6" centerPoint3DY="-38.05">
+                  <matrix>
+                    <Matrix tx="72.55" ty="-60.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.05" y="22.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="106.05" centerPoint3DY="-38">
+                  <matrix>
+                    <Matrix tx="84" ty="-60.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.05" y="22.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="101.75" centerPoint3DY="-38">
+                  <matrix>
+                    <Matrix tx="79.7" ty="-60.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.05" y="22.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="转轴" centerPoint3DX="94.6" centerPoint3DY="-38.05">
                   <matrix>
@@ -354,13 +390,6 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="5" fillStyle1="1" edges="!-1620 -1035[-1618 -1053 -1629 -1066!-1629 -1066|-1632 -1053"/>
-                    <Edge fillStyle0="5" fillStyle1="3" edges="!-1632 -1053|-1634 -1045!-1634 -1045|-1645 -1048"/>
-                    <Edge fillStyle0="5" fillStyle1="7" edges="!-1645 -1048[#FFF977.BB #FFFBF0.85 -1693 -1048.5"/>
-                    <Edge fillStyle0="5" edges="!-1693 -1048.5|-1693 -1031.5"/>
-                    <Edge fillStyle0="5" fillStyle1="8" edges="!-1693 -1031.5[#FFF969.59 #FFFBF9.9 -1680 -1026!-1680 -1026[-1674 -1022 -1663 -1011"/>
-                    <Edge fillStyle0="5" fillStyle1="9" edges="!-1663 -1011|-1637 -1005!-1637 -1005[-1639 -1021 -1639 -1022!-1639 -1022[-1639 -1031 -1633 -1036"/>
-                    <Edge fillStyle0="5" fillStyle1="11" edges="!-1633 -1036|-1631 -1039!-1631 -1039|-1620 -1035"/>
                     <Edge fillStyle0="1" fillStyle1="2" edges="!-1610 -632[-1608 -642 -1608 -673!-1608 -673[-1608 -699 -1603 -713!-1603 -713[-1600 -726 -1600 -744!-1600 -744[-1600 -765 -1600 -775!-1600 -775[-1598 -856 -1598 -896!-1598 -896[-1597 -967 -1605 -1016!-1605 -1016[-1612 -1044 -1613 -1047
 !-1613 -1047[-1619 -1065 -1628 -1075!-1628 -1075[-1637 -1080 -1654 -1079!-1654 -1079[-1675 -1078 -1681 -1079!-1681 -1079[-1662 -1082 -1647 -1085!-1647 -1085[#FFF97D.5F #FFFBC0.0E -1693 -1088"/>
                     <Edge fillStyle0="1" edges="
@@ -371,6 +400,14 @@
 !-1693 -1065.5|-1693 -1057"/>
                     <Edge fillStyle0="1" fillStyle1="3" edges="
 !-1693 -1057[#FFF987.57 #FFFBDD.15 -1632 -1053"/>
+                    <Edge fillStyle0="1" fillStyle1="5" edges="
+!-1632 -1053|-1629 -1066!-1629 -1066[-1618 -1053 -1620 -1035"/>
+                    <Edge fillStyle0="1" fillStyle1="11" edges="
+!-1620 -1035[-1621 -1026 -1621 -981"/>
+                    <Edge fillStyle0="1" fillStyle1="6" edges="
+!-1621 -981|-1621 -978"/>
+                    <Edge fillStyle0="1" fillStyle1="16" edges="
+!-1621 -978|-1613 -977!-1613 -977[-1607 -928 -1611 -849!-1611 -849[-1616 -751 -1615 -720!-1615 -720[-1615 -714 -1618 -706!-1618 -706[-1619 -702 -1623 -693!-1623 -693|-1614 -650!-1614 -650|-1626 -635!-1626 -635|-1610 -632"/>
                     <Edge fillStyle1="2" edges="
 !-1693 -1088|-1693 -1102!-1693 -1102[#FFF97F.6F #FFFBB3.15 -1647 -1096!-1647 -1096[-1632 -1092 -1623 -1088!-1623 -1088[-1611 -1075 -1600 -1049!-1600 -1049[-1591 -1026 -1586 -1014!-1586 -1014|-1586 -915"/>
                     <Edge fillStyle1="37" edges="
@@ -439,14 +476,18 @@
 !-1693 -1016|-1693 -1023"/>
                     <Edge fillStyle1="8" edges="
 !-1693 -1023|-1693 -1031.5"/>
+                    <Edge fillStyle1="5" edges="
+!-1693 -1031.5|-1693 -1048.5"/>
+                    <Edge fillStyle1="7" edges="
+!-1693 -1048.5|-1693 -1052"/>
+                    <Edge fillStyle1="3" edges="
+!-1693 -1052|-1693 -1057"/>
                     <Edge fillStyle0="7" fillStyle1="3" edges="
 !-1645 -1048[-1656 -1051 -1672 -1052!-1672 -1052[#FFF96B.3F -1052 -1693 -1052"/>
-                    <Edge fillStyle0="7" edges="
-!-1693 -1052|-1693 -1048.5"/>
                     <Edge fillStyle0="4" edges="
 !-1693 -1069|-1693 -1065.5"/>
-                    <Edge fillStyle0="3" edges="
-!-1693 -1057|-1693 -1052"/>
+                    <Edge fillStyle0="8" fillStyle1="5" edges="
+!-1663 -1011[-1674 -1022 -1680 -1026!-1680 -1026[#FFF969.59 #FFFBF9.9 -1693 -1031.5"/>
                     <Edge fillStyle0="9" fillStyle1="6" edges="
 !-1689 -1019[#FFF964.6F #FFFC06.49 -1693 -1016"/>
                     <Edge fillStyle0="10" fillStyle1="6" edges="
@@ -459,12 +500,18 @@
 !-1638 -989|-1633 -989"/>
                     <Edge fillStyle0="9" fillStyle1="11" edges="
 !-1633 -989[-1632 -1006 -1631 -1013!-1631 -1013[-1631 -1026 -1633 -1036"/>
+                    <Edge fillStyle0="9" fillStyle1="5" edges="
+!-1633 -1036[-1639 -1031 -1639 -1022!-1639 -1022[-1639 -1021 -1637 -1005!-1637 -1005|-1663 -1011"/>
                     <Edge fillStyle0="9" fillStyle1="8" edges="
 !-1663 -1011|-1677 -1011!-1677 -1011[-1685 -1012 -1689 -1019"/>
                     <Edge fillStyle0="8" fillStyle1="6" edges="
 !-1693 -1023[#FFF965.1B #FFFC03.1B -1689 -1019"/>
-                    <Edge fillStyle0="6" fillStyle1="1" edges="
-!-1621 -978|-1621 -981"/>
+                    <Edge fillStyle0="11" fillStyle1="5" edges="
+!-1620 -1035|-1631 -1039!-1631 -1039|-1633 -1036"/>
+                    <Edge fillStyle0="3" fillStyle1="5" edges="
+!-1645 -1048|-1634 -1045!-1634 -1045|-1632 -1053"/>
+                    <Edge fillStyle0="5" fillStyle1="7" edges="
+!-1645 -1048[#FFF977.BB #FFFBF0.85 -1693 -1048.5"/>
                     <Edge fillStyle0="6" fillStyle1="11" edges="
 !-1621 -981|-1633 -989"/>
                     <Edge fillStyle0="10" fillStyle1="6" edges="
@@ -568,8 +615,6 @@
 !-1631 -586|-1622 -609!-1622 -609|-1617 -594!-1617 -594|-1611 -623"/>
                     <Edge fillStyle0="16" fillStyle1="2" edges="
 !-1611 -623|-1610 -632"/>
-                    <Edge fillStyle0="16" fillStyle1="1" edges="
-!-1610 -632|-1626 -635!-1626 -635|-1614 -650!-1614 -650|-1623 -693!-1623 -693[-1619 -702 -1618 -706!-1618 -706[-1615 -714 -1615 -720!-1615 -720[-1616 -751 -1611 -849!-1611 -849[-1607 -928 -1613 -977!-1613 -977|-1621 -978"/>
                     <Edge fillStyle0="32" fillStyle1="30" edges="
 !-1693 -599[#FFF966.36 #FFFDA4.62 -1688 -606!-1688 -606|-1693 -610.5"/>
                     <Edge fillStyle0="24" fillStyle1="28" edges="
@@ -602,8 +647,6 @@
 !-1586 -517|-1591 -518"/>
                     <Edge fillStyle0="36" fillStyle1="2" edges="
 !-1591 -518[-1596 -443 -1588 -385!-1588 -385[-1605 -354 -1628 -358"/>
-                    <Edge fillStyle0="11" fillStyle1="1" edges="
-!-1621 -981[-1621 -1026 -1620 -1035"/>
                     <Edge cubics="!-1647 -1096(;-1637,-1093 -1629,-1091 -1623,-1088q-1647 -1096Q-1632 -1092q-1623 -1088);"/>
                     <Edge cubics="!-1645 -1048(;-1645,-1048 -1634,-1045 -1634,-1045q-1645 -1048 -1634 -1045);"/>
                     <Edge cubics="!-1620 -1035(;-1620,-1035 -1631,-1039 -1631,-1039q-1620 -1035 -1631 -1039);"/>
@@ -1413,11 +1456,11 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="30" duration="3" keyMode="9728">
+            <DOMFrame index="30" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-97">
               <elements>
-                <DOMSymbolInstance libraryItemName="喷口" selected="true" centerPoint3DX="255" centerPoint3DY="-38.15">
+                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="253.15" centerPoint3DY="-38.15">
                   <matrix>
-                    <Matrix tx="239.3" ty="-53.8"/>
+                    <Matrix tx="237.45" ty="-53.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="15.7" y="15.65"/>
@@ -1427,7 +1470,7 @@
             </DOMFrame>
             <DOMFrame index="33" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="喷口" selected="true" centerPoint3DX="141.8" centerPoint3DY="-38.15">
+                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="141.8" centerPoint3DY="-38.15">
                   <matrix>
                     <Matrix tx="126.1" ty="-53.8"/>
                   </matrix>
@@ -1451,7 +1494,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -1597,9 +1640,93 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="22" duration="13" keyMode="9728">
+            <DOMFrame index="22" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪口基座" selected="true" centerPoint3DX="7.05" centerPoint3DY="-48.05">
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="7.05" centerPoint3DY="-48.05">
+                  <matrix>
+                    <Matrix tx="-111.2" ty="-91.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="118.25" y="43"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-7.45" centerPoint3DY="-48.05">
+                  <matrix>
+                    <Matrix tx="-125.7" ty="-91.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="118.25" y="43"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-1.25" centerPoint3DY="-48.05">
+                  <matrix>
+                    <Matrix tx="-119.5" ty="-91.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="118.25" y="43"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-0.4" centerPoint3DY="-48.05">
+                  <matrix>
+                    <Matrix tx="-118.65" ty="-91.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="118.25" y="43"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-2.1" centerPoint3DY="-48.05">
+                  <matrix>
+                    <Matrix tx="-120.35" ty="-91.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="118.25" y="43"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="-0.7" centerPoint3DY="-48.05">
+                  <matrix>
+                    <Matrix tx="-118.95" ty="-91.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="118.25" y="43"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="19.05" centerPoint3DY="-48.05">
+                  <matrix>
+                    <Matrix tx="-99.2" ty="-91.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="118.25" y="43"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="枪口基座" centerPoint3DX="7.05" centerPoint3DY="-48.05">
                   <matrix>
                     <Matrix tx="-111.2" ty="-91.05"/>
                   </matrix>
