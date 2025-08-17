@@ -2,27 +2,6 @@
 import org.flashNight.gesh.array.*;
 import org.flashNight.gesh.string.*;
 
-// 兼容包装
-_root.注释组合 = {
-  基础段: function(item:Object):Array {
-    return TooltipComposer.基础段(item);
-  },
-  装备段: function(item:Object, tier:String, lvl:Number):Array {
-    return TooltipComposer.装备段(item, tier, lvl);
-  },
-  简介头: function(item:Object, value:Object, lvl:Number):Array {
-    return TooltipComposer.简介头(item, value, lvl);
-  },
-  生成物品全文: function(item:Object, value:Object, lvl:Number):String {
-    return TooltipComposer.生成物品全文(item, value, lvl);
-  },
-  生成物品描述文本: function(item:Object):String {
-    return TooltipComposer.生成物品描述文本(item);
-  },
-  生成简介面板内容: function(item:Object, value:Object, lvl:Number):String {
-    return TooltipComposer.生成简介面板内容(item, value, lvl);
-  }
-};
 
 
 /**
@@ -34,8 +13,8 @@ _root.物品图标注释 = function(name, value) {
     var 强化等级 = value.level > 0 ? value.level : 1;
 
     var 物品数据 = ItemUtil.getItemData(name);
-    // 阶段3：使用文本组合器统一生成
-    var 完整文本 = _root.注释组合.生成物品描述文本(物品数据);
+    // Phase 3: Use text composer for unified generation
+    var 完整文本 = TooltipComposer.generateItemDescriptionText(物品数据);
     var 计算宽度 = TooltipLayout.estimateWidth(完整文本);
 
     _root.注释结束(); // 保底清理
@@ -65,9 +44,9 @@ _root.技能栏技能图标注释 = function(对应数组号) {
 
     var 是否装备或启用:String;
     if (技能信息.Equippable)
-        是否装备或启用 = 主角技能信息[2] == true ? "<FONT COLOR='#66FF00'>已装备</FONT>" : "<FONT COLOR='#FFDDDD'>未装备</FONT>";
+        是否装备或启用 = 主角技能信息[2] == true ? "<FONT COLOR='" + TooltipConstants.COL_HP + "'>已装备</FONT>" : "<FONT COLOR='#FFDDDD'>未装备</FONT>";
     else
-        是否装备或启用 = 主角技能信息[4] == true ? "<FONT COLOR='#66FF00'>已启用</FONT>" : "<FONT COLOR='#FFDDDD'>未启用</FONT>";
+        是否装备或启用 = 主角技能信息[4] == true ? "<FONT COLOR='" + TooltipConstants.COL_HP + "'>已启用</FONT>" : "<FONT COLOR='#FFDDDD'>未启用</FONT>";
 
     var 文本数据 = "<B>" + 技能信息.Name + "</B>";
     文本数据 += "<BR>" + 技能信息.Type + "   " + 是否装备或启用;
@@ -77,7 +56,7 @@ _root.技能栏技能图标注释 = function(对应数组号) {
     文本数据 += "<BR>技能等级：" + 主角技能信息[1];
     // 文本数据 += "<BR>" + 是否装备或启用;
 
-    var 计算宽度 = TooltipLayout.estimateWidth(文本数据, 160, 200);
+    var 计算宽度 = TooltipLayout.estimateWidth(文本数据, TooltipConstants.MIN_W, TooltipConstants.MAX_W);
     _root.注释(计算宽度, 文本数据);
 };
 
@@ -99,7 +78,7 @@ _root.学习界面技能图标注释 = function(对应数组号) {
     文本数据 += "<BR>MP消耗：" + 技能信息.MP;
     文本数据 += "<BR>等级限制：" + 技能信息.UnlockLevel;
 
-    var 计算宽度 = TooltipLayout.estimateWidth(文本数据, 160, 200);
+    var 计算宽度 = TooltipLayout.estimateWidth(文本数据, TooltipConstants.MIN_W, TooltipConstants.MAX_W);
     _root.注释(计算宽度, 文本数据);
 };
 
@@ -134,8 +113,8 @@ _root.注释物品图标 = function(enable:Boolean, name:String, value:Object, e
         var stringWidth = layout.width;
         var backgroundHeightOffset = layout.heightOffset;
 
-        // 阶段3：使用文本组合器生成简介面板内容（只包含简介头+装备段）
-        var introduction:String = _root.注释组合.生成简介面板内容(data, value, level);
+        // Phase 3: Use text composer to generate intro panel content (only includes intro header + equipment section)
+        var introduction:String = TooltipComposer.generateIntroPanelContent(data, value, level);
 
         if(extraString) introduction += "<BR>" + extraString;
 
@@ -147,8 +126,8 @@ _root.注释物品图标 = function(enable:Boolean, name:String, value:Object, e
 
         // 从库中将图标附加到 target MovieClip 上
         var icon:MovieClip = target.attachMovie(iconString, "icon", target.getNextHighestDepth());
-        icon._xscale = icon._yscale = 150;
-        icon._x = icon._y = 19;
+        icon._xscale = icon._yscale = 150; // TODO: Move to TooltipConstants.ICON_SCALE
+        icon._x = icon._y = 19; // TODO: Move to TooltipConstants.ICON_OFFSET
         
         // 层级修正：确保图标在简介背景之上，避免被遮挡
         if (tips.简介背景) {
@@ -199,8 +178,8 @@ _root.注释 = function(宽度, 内容, 框体) {
     target._width = 宽度;
 
     background._width = target._width;
-    background._height = target.textHeight + 10;
-    target._height = target.textHeight + 10;
+    background._height = target.textHeight + TooltipConstants.TEXT_PAD;
+    target._height = target.textHeight + TooltipConstants.TEXT_PAD;
 
     // 使用新的布局模块处理注释框定位
     TooltipLayout.positionTooltip(tips, background, _root._xmouse, _root._ymouse);
