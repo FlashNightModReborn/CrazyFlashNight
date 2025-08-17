@@ -599,6 +599,7 @@ _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
     _root.帧计时器.PID.reset();
     _root.帧计时器.执行性能调整(0);
     System.IME.setEnabled(false);
+    _root.关卡结束界面._visible = false;
 }, null); 
 
 
