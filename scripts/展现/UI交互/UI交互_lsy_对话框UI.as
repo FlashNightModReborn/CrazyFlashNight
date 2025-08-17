@@ -107,10 +107,19 @@ _root.对话框UI.刷新外部导入立绘 = function(){
         portraitInfo.instance = this.外部立绘层.createEmptyMovieClip(this.头像图标帧名, portraitInfo.depth);
         _root.对话框UI.loadPortraitList.push(this.头像图标帧名);
         portraitInfo.instance.loadMovie("flashswf/portraits/" + this.头像图标帧名 + ".swf");
+        portraitInfo.instance.onLoad = function(){
+            this.gotoAndStop(_root.对话框UI.人物表情 || "普通");
+        };
     }
     if(this.当前立绘 !== portraitInfo.instance) this.当前立绘._visible = false;
     portraitInfo.instance._visible = true;
-    portraitInfo.instance.gotoAndStop(人物表情);
+    if(portraitInfo.instance._totalframes > 0){
+        var 跳转前帧数 = portraitInfo.instance._currentframe;
+        portraitInfo.instance.gotoAndStop(人物表情);
+        if(portraitInfo.instance._currentframe == 跳转前帧数 && 人物表情 != "普通"){
+            portraitInfo.instance.gotoAndStop("普通");
+        }
+    }
     this.当前立绘 = portraitInfo.instance;
 }
 
