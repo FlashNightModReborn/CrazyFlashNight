@@ -60,15 +60,15 @@ _root.存档系统.mydata数据组包 = function(){
     var 主角技能表储存数据 = _root.主角技能表;
     // var 物品储存数据 = _root.物品栏;
     var 物品储存数据 = {
-        背包:  _root.物品栏.背包.getItems(),
-        装备栏:_root.物品栏.装备栏.getItems(),
-        药剂栏:_root.物品栏.药剂栏.getItems(),
-        仓库:  _root.物品栏.仓库.getItems(),
-        战备箱:_root.物品栏.战备箱.getItems()
+        背包:  ObjectUtil.clone(_root.物品栏.背包.getItems()),
+        装备栏:ObjectUtil.clone(_root.物品栏.装备栏.getItems()),
+        药剂栏:ObjectUtil.clone(_root.物品栏.药剂栏.getItems()),
+        仓库:  ObjectUtil.clone(_root.物品栏.仓库.getItems()),
+        战备箱:ObjectUtil.clone(_root.物品栏.战备箱.getItems())
     }
     var 收集品储存数据 = {
-        材料:_root.收集品栏.材料.getItems(),
-        情报:_root.收集品栏.情报.getItems()
+        材料:ObjectUtil.clone(_root.收集品栏.材料.getItems()),
+        情报:ObjectUtil.clone(_root.收集品栏.情报.getItems())
     }
     var 同伴储存数据 = [_root.同伴数据,_root.同伴数];
     var 任务储存数据 = _root.主线任务进度;

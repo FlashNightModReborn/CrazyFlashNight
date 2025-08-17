@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/火药燃气液压打桩机/等离子切割机" itemID="68a0606d-00002274" lastModified="1755397951" lastUniqueIdentifier="84">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/火药燃气液压打桩机/等离子切割机" itemID="68a0606d-00002274" lastModified="1755410355" lastUniqueIdentifier="92">
   <timeline>
-    <DOMTimeline name="等离子切割机" currentFrame="30" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;68&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="等离子切割机" currentFrame="34" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;68&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层 5" color="#4FFFFF">
           <frames>
@@ -1068,7 +1068,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="操纵杆" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="操纵杆" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
@@ -1168,9 +1168,9 @@
             </DOMFrame>
             <DOMFrame index="26" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
               <elements>
-                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="257.65" centerPoint3DY="-39.4">
+                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="271.9" centerPoint3DY="-38.7">
                   <matrix>
-                    <Matrix a="0.3194580078125" d="1.78109741210938" tx="134.35" ty="-127.75"/>
+                    <Matrix a="0.3194580078125" d="1.78109741210938" tx="148.6" ty="-127.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="9.7" y="50.55"/>
@@ -1180,9 +1180,9 @@
             </DOMFrame>
             <DOMFrame index="27" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="281.4" centerPoint3DY="-39.2">
+                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="287.2" centerPoint3DY="-39.2">
                   <matrix>
-                    <Matrix a="0.361312866210938" d="3.156005859375" tx="141.95" ty="-197.3"/>
+                    <Matrix a="0.361312866210938" d="3.156005859375" tx="147.75" ty="-197.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="9.7" y="50.6"/>
@@ -1192,9 +1192,9 @@
             </DOMFrame>
             <DOMFrame index="28" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-81">
               <elements>
-                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="291.9" centerPoint3DY="-39.2">
+                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="311.8" centerPoint3DY="-39.2">
                   <matrix>
-                    <Matrix a="1.58926391601563" d="3.156005859375" tx="140.6" ty="-197.3"/>
+                    <Matrix a="1.58926391601563" d="3.156005859375" tx="160.5" ty="-197.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="9.65" y="50.6"/>
@@ -1204,9 +1204,9 @@
             </DOMFrame>
             <DOMFrame index="30" keyMode="15872">
               <elements>
-                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="293.85" centerPoint3DY="-39.2">
+                <DOMSymbolInstance libraryItemName="等离子光片" blendMode="lighten" centerPoint3DX="356.2" centerPoint3DY="-39.2">
                   <matrix>
-                    <Matrix a="4.49624633789063" d="3.156005859375" tx="114.3" ty="-197.3"/>
+                    <Matrix a="4.49624633789063" d="3.156005859375" tx="176.65" ty="-197.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="9.7" y="50.6"/>
@@ -1219,7 +1219,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 6" color="#FF0000" autoNamed="false">
+        <DOMLayer name="图层 6" color="#FF0000" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -1317,7 +1317,91 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="22" duration="13" keyMode="9728">
+            <DOMFrame index="22" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="135" centerPoint3DY="-38.15">
+                  <matrix>
+                    <Matrix tx="119.3" ty="-53.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.7" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="喷口" selected="true" centerPoint3DX="135" centerPoint3DY="-38.15">
+                  <matrix>
+                    <Matrix tx="119.3" ty="-53.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.7" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="喷口" selected="true" centerPoint3DX="162.5" centerPoint3DY="-38.15">
+                  <matrix>
+                    <Matrix tx="146.8" ty="-53.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.7" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="喷口" selected="true" centerPoint3DX="175" centerPoint3DY="-38.15">
+                  <matrix>
+                    <Matrix tx="159.3" ty="-53.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.7" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="喷口" selected="true" centerPoint3DX="192.5" centerPoint3DY="-38.15">
+                  <matrix>
+                    <Matrix tx="176.8" ty="-53.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.7" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="喷口" selected="true" centerPoint3DX="255" centerPoint3DY="-38.15">
+                  <matrix>
+                    <Matrix tx="239.3" ty="-53.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.7" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="喷口" selected="true" centerPoint3DX="141.8" centerPoint3DY="-38.15">
+                  <matrix>
+                    <Matrix tx="126.1" ty="-53.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.7" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="喷口" centerPoint3DX="135" centerPoint3DY="-38.15">
                   <matrix>
@@ -1669,7 +1753,91 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="22" duration="13" keyMode="9728">
+            <DOMFrame index="22" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="159" centerPoint3DY="-36.7">
+                  <matrix>
+                    <Matrix tx="129.1" ty="-80.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.9" y="44.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="159" centerPoint3DY="-36.7">
+                  <matrix>
+                    <Matrix tx="129.1" ty="-80.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.9" y="44.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="169.5" centerPoint3DY="-36.7">
+                  <matrix>
+                    <Matrix tx="139.6" ty="-80.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.9" y="44.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="181.5" centerPoint3DY="-36.7">
+                  <matrix>
+                    <Matrix tx="151.6" ty="-80.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.9" y="44.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="197.5" centerPoint3DY="-36.7">
+                  <matrix>
+                    <Matrix tx="167.6" ty="-80.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.9" y="44.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="245.5" centerPoint3DY="-36.7">
+                  <matrix>
+                    <Matrix tx="215.6" ty="-80.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.9" y="44.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="142.55" centerPoint3DY="-36.8">
+                  <matrix>
+                    <Matrix tx="112.65" ty="-81"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.9" y="44.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="枪口" centerPoint3DX="159" centerPoint3DY="-36.7">
                   <matrix>
