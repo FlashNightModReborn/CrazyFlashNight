@@ -10,27 +10,36 @@ import org.flashNight.gesh.string.*;
  * @param value:Object 物品数值对象，包含level、tier等属性
  */
 _root.物品图标注释 = function(name, value) {
-    var 强化等级 = value.level > 0 ? value.level : 1;
+    var 强化等级:Number = (value.level > 0) ? value.level : 1;
+    var 物品数据:Object = ItemUtil.getItemData(name);
 
-    var 物品数据 = ItemUtil.getItemData(name);
-    // Phase 3: Use text composer for unified generation
-    var 完整文本 = TooltipComposer.generateItemDescriptionText(物品数据);
-    var 计算宽度 = TooltipLayout.estimateWidth(完整文本);
+    // 1) 基础段描述（不含简介头与装备属性）
+    var 描述文本:String = TooltipComposer.generateItemDescriptionText(物品数据);
+
+    // 2) 简介面板文本（简介头 + 装备段）
+    var 简介文本:String = TooltipComposer.generateIntroPanelContent(物品数据, value, 强化等级);
+
+    // 3) 以“信息 + 简介”的总长度作为分支依据
+    var 阈值:Number = TooltipConstants.SPLIT_THRESHOLD;
+    var 总长度:Number = 描述文本.length + 简介文本.length;
 
     _root.注释结束(); // 保底清理
 
-    // 调用注释函数，传递计算出的宽度和文本内容
-    if(完整文本.length > 64) {
-        _root.注释(计算宽度, 完整文本);
-        _root.注释物品图标(true, name, value);
+    if (总长度 > 阈值) {
+        // 长内容：主框体展示“描述”，简介面板单独展示
+        var 计算宽度:Number = TooltipLayout.estimateWidth(描述文本);
+        _root.注释(计算宽度, 描述文本);
+        _root.注释物品图标(true, name, value, 简介文本, null);
     } else {
-        _root.注释物品图标(true, name, value, 完整文本);
+        // 短内容：把“描述”并入简介面板，主框体隐藏
+        _root.注释物品图标(true, name, value, 简介文本, 描述文本);
         _root.注释框.文本框.htmlText = "";
         _root.注释框.文本框._visible = false;
         _root.注释框.背景._visible = false;
     }
-
 };
+
+
 
 
 /**
@@ -88,69 +97,59 @@ _root.学习界面技能图标注释 = function(对应数组号) {
  * @param enable:Boolean 是否启用显示
  * @param name:String 物品名称
  * @param value:Object 物品数值对象
- * @param extraString:String 额外显示的文本（可选）
+ * @param introString:String 预先拼好的简介面板文本（简介头 + 装备段）
+ * @param extraString:String 额外显示的文本（可选；用于把短描述并入简介面板）
  */
-_root.注释物品图标 = function(enable:Boolean, name:String, value:Object, extraString:String) {
-    // 'target' MovieClip 作为在舞台上放置的占位符
-    // 它在 Flash IDE 中的位置和大小，应决定图标最终的显示效果
+_root.注释物品图标 = function(enable:Boolean, name:String, value:Object, introString:String, extraString:String) {
     var target:MovieClip = _root.注释框.物品图标定位;
     var background:MovieClip = _root.注释框.简介背景;
     var text:MovieClip = _root.注释框.简介文本框;
 
     if (enable) {
-
         target._visible = true;
         text._visible = true;
         background._visible = true;
 
         var data:Object = ItemUtil.getItemData(name);
-        var level:Number = value.level > 0 ? value.level : 1;
-        
         var tips:MovieClip = _root.注释框;
-        
-        // 使用新的布局模块处理简介布局
-        var layout = TooltipLayout.applyIntroLayout(data.type, target, background, text);
-        var stringWidth = layout.width;
-        var backgroundHeightOffset = layout.heightOffset;
 
-        // Phase 3: Use text composer to generate intro panel content (only includes intro header + equipment section)
-        var introduction:String = TooltipComposer.generateIntroPanelContent(data, value, level);
+        // 交给布局模块决定尺寸与偏移
+        var layout:Object = TooltipLayout.applyIntroLayout(data.type, target, background, text);
+        var stringWidth:Number = layout.width;
+        var backgroundHeightOffset:Number = layout.heightOffset;
 
-        if(extraString) introduction += "<BR>" + extraString;
+        // 使用传入的简介文本；如有 extraString（短描述），并入简介面板
+        var introduction:String = introString ? introString : "";
+        if (extraString) {
+            introduction += "<BR>" + extraString;
+        }
+        _root.注释(stringWidth, introduction, "简介");
 
-        _root.注释(stringWidth, introduction, "简介")
-
+        // 图标挂载
+        if (target.icon) target.icon.removeMovieClip();
         var iconString:String = "图标-" + data.icon;
-
-        if(target.icon) target.icon.removeMovieClip();
-
-        // 从库中将图标附加到 target MovieClip 上
         var icon:MovieClip = target.attachMovie(iconString, "icon", target.getNextHighestDepth());
-        icon._xscale = icon._yscale = 150; // TODO: Move to TooltipConstants.ICON_SCALE
-        icon._x = icon._y = 19; // TODO: Move to TooltipConstants.ICON_OFFSET
-        
-        // 层级修正：确保图标在简介背景之上，避免被遮挡
+        icon._xscale = icon._yscale = 150; // TODO: TooltipConstants.ICON_SCALE
+        icon._x = icon._y = 19;            // TODO: TooltipConstants.ICON_OFFSET
+
+        // 确保图标层级在简介背景之上
         if (tips.简介背景) {
-          var iconDepth = target.getDepth();
-          var bgDepth = tips.简介背景.getDepth();
-          if (iconDepth <= bgDepth) {
-            // 将图标容器提升到背景之上
-            target.swapDepths(bgDepth + 1);
-          }
+            var iconDepth:Number = target.getDepth();
+            var bgDepth:Number = tips.简介背景.getDepth();
+            if (iconDepth <= bgDepth) {
+                target.swapDepths(bgDepth + 1);
+            }
         }
 
         background._height = text._height + backgroundHeightOffset;
     } else {
-        // 清理动态附加的图标
-        if (target.icon) {
-            target.icon.removeMovieClip();
-        }
-
+        if (target.icon) target.icon.removeMovieClip();
         target._visible = false;
         text._visible = false;
         background._visible = false;
     }
-}
+};
+
 
 
 /**

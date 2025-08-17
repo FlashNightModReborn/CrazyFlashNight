@@ -27,6 +27,7 @@
   public static var MAX_W:Number = 500;
   public static var TEXT_PAD:Number = 10;
   public static var BG_HEIGHT_OFFSET:Number = 20;
+  public static var SPLIT_THRESHOLD:Number = 96;
 
   public static var CHAR_CJK_WIDTH:Number = 8;
   public static var CHAR_LATIN_WIDTH:Number = 5;
