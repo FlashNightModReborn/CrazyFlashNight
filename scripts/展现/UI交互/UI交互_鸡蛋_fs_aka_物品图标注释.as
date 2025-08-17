@@ -2,72 +2,25 @@
 import org.flashNight.gesh.array.*;
 import org.flashNight.gesh.string.*;
 
-// =========================
-// 阶段3：常量与样式模块化
-// =========================
-
-
-// =========================
-// 阶段1：文本拼接纯函数化  
-// =========================
-
-
-/**
- * 文本组合模块
- * 统一组合各种文本段落，生成完整的注释内容
- */
+// 兼容包装
 _root.注释组合 = {
-  // 基础段：聚合描述/剧情/合成/刀技/战技/生命周期
   基础段: function(item:Object):Array {
-    var segments = [];
-    segments = segments.concat(
-      TooltipTextBuilder.buildBasicDescription(item),
-      TooltipTextBuilder.buildStoryTip(item), 
-      TooltipTextBuilder.buildSynthesisMaterials(item),
-      TooltipTextBuilder.buildBladeSkillMultipliers(item),
-      TooltipTextBuilder.buildSkillInfo(item.skill),
-      TooltipTextBuilder.buildLifecycleInfo(item.lifecycle)
-    );
-    return segments;
+    return TooltipComposer.基础段(item);
   },
-  
-  // 装备段：直接调用现有的装备属性块生成
   装备段: function(item:Object, tier:String, lvl:Number):Array {
-    return TooltipTextBuilder.buildEquipmentStats(item, tier, lvl);
+    return TooltipComposer.装备段(item, tier, lvl);
   },
-  
-  // 简介头：直接调用现有的简介标题头生成
   简介头: function(item:Object, value:Object, lvl:Number):Array {
-    return TooltipTextBuilder.buildIntroHeader(item, value, lvl);
+    return TooltipComposer.简介头(item, value, lvl);
   },
-  
-  // 生成物品全文：组合所有段落为完整HTML
   生成物品全文: function(item:Object, value:Object, lvl:Number):String {
-    var allSegments = [];
-    
-    // 按顺序组合：简介头 + 装备段 + 基础段
-    allSegments = allSegments.concat(
-      this.简介头(item, value, lvl),
-      this.装备段(item, value.tier, lvl),
-      this.基础段(item)
-    );
-    
-    return allSegments.join('');
+    return TooltipComposer.生成物品全文(item, value, lvl);
   },
-  
-  // 生成物品描述文本：仅描述部分（用于主要注释）
   生成物品描述文本: function(item:Object):String {
-    return this.基础段(item).join('');
+    return TooltipComposer.生成物品描述文本(item);
   },
-  
-  // 生成简介面板内容：只包含简介头+装备段（修复左侧面板语义）
   生成简介面板内容: function(item:Object, value:Object, lvl:Number):String {
-    var segments = [];
-    segments = segments.concat(
-      this.简介头(item, value, lvl),
-      this.装备段(item, value.tier, lvl)
-    );
-    return segments.join('');
+    return TooltipComposer.生成简介面板内容(item, value, lvl);
   }
 };
 
