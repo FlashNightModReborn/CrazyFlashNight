@@ -1125,7 +1125,7 @@ a.runTests();
 [PASS] After invalidate, subsequent accesses use new cache
 
 --- Test: Precompiled Setter Optimization ---
-Setter Performance (ms): Plain=39, Callback=69, Validation=66, Both=93
+Setter Performance (ms): Plain=35, Callback=56, Validation=61, Both=81
 [PASS] Precompiled setter performance measured
 
 --- Test: Memory Leak Prevention ---
@@ -1142,43 +1142,41 @@ Setter Performance (ms): Plain=39, Callback=69, Validation=66, Both=93
 [PASS] Object 1 updated correctly
 [PASS] Object 2 updated correctly
 [PASS] Objects remain isolated
-[FAIL] [detach] simple property solidify current value -> c1=true, c2=true, c3=false, c4=true
-[FAIL] [detach] computed property solidify cached value -> c1=true, c2=true, c3=true, c4=false
+[PASS] [detach] simple property solidify current value
+[PASS] [detach] computed property solidify cached value
 [PASS] [detach] keep current instead of original by default
 [PASS] [detach] idempotent
 
 --- Test: Basic Performance ---
-Basic Performance: Write=519ms, Read=514ms for 100000 iterations
+Basic Performance: Write=493ms, Read=367ms for 100000 iterations
 [PASS] Write performance acceptable (< 5s for 100k ops)
 [PASS] Read performance acceptable (< 1s for 100k ops)
 
 --- Test: Computed Property Performance ---
-Computed Property Performance: 74ms for 10000 cached reads
+Computed Property Performance: 65ms for 10000 cached reads
 [PASS] Computed only once despite multiple reads
 [PASS] Cached read performance acceptable
 
 --- Test: Optimization Performance Gain ---
-Performance Gain: Optimized=74ms, Unoptimized=2822ms, Speedup=38.1351351351351x
+Performance Gain: Optimized=59ms, Unoptimized=2419ms, Speedup=41x
 [PASS] Optimized: computed once
 [PASS] Unoptimized: computed every time
 [PASS] Significant performance improvement achieved (>5x speedup)
 
 --- Test: Scalability Test ---
-Scalability: 1000 properties created in 92ms, accessed in 45ms
+Scalability: 1000 properties created in 83ms, accessed in 44ms
 [PASS] Scalable creation time
 [PASS] Scalable access time
 
 === FINAL TEST REPORT ===
-Tests Passed: 75
-Tests Failed: 2
-Success Rate: 97%
-⚠️  Some tests failed. Please review the implementation.
+Tests Passed: 77
+Tests Failed: 0
+Success Rate: 100%
+🎉 ALL TESTS PASSED! PropertyAccessor implementation is robust and performant.
 === OPTIMIZATION VERIFICATION ===
 ✓ Memory leak prevention verified
 ✓ Self-optimization mechanisms tested
 ✓ Performance benchmarks completed
 ✓ Error handling robustness confirmed
 ========================
-
-
 ```

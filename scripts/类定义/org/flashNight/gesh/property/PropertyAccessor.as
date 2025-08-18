@@ -187,20 +187,31 @@ class org.flashNight.gesh.property.PropertyAccessor implements IProperty {
         return this._propName;
     }
 
-    /**
-     * 分离访问器：仅销毁访问器自身，保留目标对象上的属性。
-     * 这在访问器作为临时装饰器时非常有用。
-     */
-    public function detach():Void {
-        if (this._obj != null) {
-            // 清理实例引用，解除对目标对象的控制
-            this._obj = null;
-            this._propName = null;
-            this.get = null;
-            this.set = null;
-            this.invalidate = null;
-        }
+public function detach():Void {
+    // 幂等：已经分离则直接返回
+    if (this._obj == null || this._propName == null) {
+        return;
     }
+
+    // 先抓引用，避免中途清空后丢失
+    var objRef:Object = this._obj;
+    var name:String = this._propName;
+
+    // 读取“当前可见值”（计算属性会在此触发惰性求值并缓存）
+    var currentValue = objRef[name];
+
+    // 先移除 accessor 化的属性，避免下面的赋值再次触发旧 setter
+    delete objRef[name];
+
+    // 把当前可见值固化为普通数据属性
+    objRef[name] = currentValue;
+
+    // 与目标对象解耦，但保留 accessor 自身的方法与内部缓存
+    this._obj = null;
+    this._propName = null;
+    // 注意：不要清空 this.get / this.set / this.invalidate
+}
+
 
     /**
      * 销毁方法：清理内存，解除引用
