@@ -79,6 +79,15 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
         testCalculationPerformance();
         testMemoryAndCalculationConsistency();
         
+        trace("\n--- Phase: Sticky Container & Lifecycle Contracts ---");
+        testStickyContainer_NoUndefined();
+        testUnmanagePropertyFinalizeAndRebind();
+        testDestroyDefaultFinalizeAll();
+        testBaseZeroVsUndefined();
+        testOrderIndependenceAgainstAddSequence();
+        testClearAllBuffsKeepsProperties();
+        testMetaBuffJitterStability();
+        
         // 输出测试结果
         printTestResults();
         printPerformanceReport();
@@ -1303,16 +1312,31 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
         };
     }
     
-    /**
-     * 获取计算后的属性值
-     * 注意：这是模拟的实现，实际应该通过PropertyAccessor
-     */
-    private static function getCalculatedValue(target:Object, property:String):Number {
-        // 在实际实现中，这应该通过PropertyAccessor获取
-        // 这里我们假设PropertyContainer已经正确更新了target的值
-        return target[property] || 0;
+// ======== 替换：更严格的属性读取（区分 undefined / NaN / 0） ========
+private static function getCalculatedValue(target:Object, property:String):Number {
+    if (typeof target[property] == "undefined") {
+        throw new Error("Property '"+property+"' is undefined on target");
     }
+    var v:Number = Number(target[property]);
+    if (isNaN(v)) {
+        throw new Error("Property '"+property+"' is NaN");
+    }
+    return v;
+}
     
+// ======== 新增：工具断言 ========
+private static function assertPropertyExists(target:Object, property:String, ctx:String):Void {
+    if (typeof target[property] == "undefined") {
+        throw new Error("Property '"+property+"' is undefined " + (ctx ? ("("+ctx+")") : ""));
+    }
+}
+
+private static function assertDefinedNumber(target:Object, property:String, expected:Number, msg:String):Void {
+    assertPropertyExists(target, property, msg);
+    var actual:Number = getCalculatedValue(target, property);
+    assertCalculation(actual, expected, msg);
+}
+
     /**
      * 断言计算结果
      */
@@ -1395,4 +1419,237 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
         }
         trace("==============================================");
     }
+    
+// ===============================================
+// Sticky 容器 & 生命周期 行为契约（新增）
+// ===============================================
+
+/**
+ * 1) Sticky：Meta 高频注入/弹出期间，属性始终存在（不变 undefined），最终值回到 base
+ */
+private static function testStickyContainer_NoUndefined():Void {
+    startTest("Sticky container: meta jitter won't delete property");
+    try {
+        var mockTarget:Object = createMockTarget();
+        mockTarget.hp = 100;
+
+        var manager:BuffManager = new BuffManager(mockTarget, null);
+
+        for (var i:Number = 0; i < 50; i++) {
+            var meta:MetaBuff = new MetaBuff(
+                [ new PodBuff("hp", BuffCalculationType.ADD, 50) ],
+                [],
+                0
+            );
+            manager.addBuff(meta, null);
+            manager.update(0);
+
+            // 注入后：存在且为 150
+            assertPropertyExists(mockTarget, "hp", "after meta add");
+            assertDefinedNumber(mockTarget, "hp", 150, "hp = 100 + 50");
+
+            // 立刻移除
+            manager.removeBuff(meta.getId());
+            manager.update(0);
+
+            // 弹出后：存在且回到 100
+            assertPropertyExists(mockTarget, "hp", "after meta remove");
+            assertDefinedNumber(mockTarget, "hp", 100, "hp back to base");
+        }
+
+        manager.destroy();
+        passTest();
+    } catch (e) {
+        failTest("Sticky jitter failed: " + e.message);
+    }
+}
+
+/**
+ * 2) unmanageProperty(finalize)：固化为普通属性后可直接写；再次管理时以当前普通值作为 base
+ */
+private static function testUnmanagePropertyFinalizeAndRebind():Void {
+    startTest("unmanageProperty(finalize) then rebind uses plain value as base");
+    try {
+        var mockTarget:Object = createMockTarget();
+        mockTarget.atk = 100;
+
+        var manager:BuffManager = new BuffManager(mockTarget, null);
+        manager.addBuff(new PodBuff("atk", BuffCalculationType.ADD, 50), null);
+        manager.update(0);
+
+        assertDefinedNumber(mockTarget, "atk", 150, "before finalize");
+
+        // finalize 成普通属性
+        manager.unmanageProperty("atk", true);
+        assertPropertyExists(mockTarget, "atk", "after finalize");
+        assertDefinedNumber(mockTarget, "atk", 150, "finalized keeps visible value");
+
+        // 作为普通属性可直接写
+        mockTarget.atk = 123;
+        assertDefinedNumber(mockTarget, "atk", 123, "plain write must work");
+
+        // 再次添加 buff ⇒ 重新管理，base 应取当前普通值 123
+        manager.addBuff(new PodBuff("atk", BuffCalculationType.ADD, 1000), null);
+        manager.update(0);
+
+        assertDefinedNumber(mockTarget, "atk", 1123, "rebind base=123 then +1000");
+
+        manager.destroy();
+        passTest();
+    } catch (e) {
+        failTest("Unmanage+Rebind failed: " + e.message);
+    }
+}
+
+/**
+ * 3) destroy() 默认 finalize 全部托管属性（保留可见值，不删属性）
+ */
+private static function testDestroyDefaultFinalizeAll():Void {
+    startTest("destroy() finalizes all managed properties");
+    try {
+        var mockTarget:Object = createMockTarget();
+        mockTarget.def = 20;
+
+        var manager:BuffManager = new BuffManager(mockTarget, null);
+        manager.addBuff(new PodBuff("def", BuffCalculationType.MULTIPLY, 2), null);
+        manager.update(0);
+
+        assertDefinedNumber(mockTarget, "def", 40, "before destroy");
+
+        manager.destroy();
+
+        // 销毁后：属性仍在，值保留
+        assertPropertyExists(mockTarget, "def", "after destroy");
+        var v:Number = getCalculatedValue(mockTarget, "def");
+        assertCalculation(v, 40, "finalized value is kept");
+
+        passTest();
+    } catch (e) {
+        failTest("Destroy finalize-all failed: " + e.message);
+    }
+}
+
+/**
+ * 4) 0 与 undefined 的基值语义：未定义 => base=0；明确 0 => 与百分比相乘仍为 0
+ */
+private static function testBaseZeroVsUndefined():Void {
+    startTest("Base value: zero vs undefined");
+    try {
+        var t:Object = {};
+        var manager:BuffManager = new BuffManager(t, null);
+
+        // 未定义：先 ensure 后变为已定义；+10 = 10
+        manager.addBuff(new PodBuff("x", BuffCalculationType.ADD, 10), null);
+        manager.update(0);
+        assertPropertyExists(t, "x", "undefined -> defined");
+        assertDefinedNumber(t, "x", 10, "undefined base treated as 0 then +10");
+
+        // 明确 0：乘以 1.5 仍为 0
+        t["y"] = 0;
+        manager.addBuff(new PodBuff("y", BuffCalculationType.PERCENT, 0.5), null);
+        manager.update(0);
+        assertPropertyExists(t, "y", "zero stays defined");
+        assertDefinedNumber(t, "y", 0, "0 * 1.5 = 0");
+
+        manager.destroy();
+        passTest();
+    } catch (e) {
+        failTest("Zero vs undefined failed: " + e.message);
+    }
+}
+
+/**
+ * 5) 添加顺序不应影响执行顺序（固定：ADD → MULTIPLY → PERCENT → MAX → MIN → OVERRIDE）
+ */
+private static function testOrderIndependenceAgainstAddSequence():Void {
+    startTest("Calculation order independent of add sequence");
+    try {
+        var t1:Object = { dmg: 100 };
+        var t2:Object = { dmg: 100 };
+        var m1:BuffManager = new BuffManager(t1, null);
+        var m2:BuffManager = new BuffManager(t2, null);
+
+        var A:PodBuff = new PodBuff("dmg", BuffCalculationType.ADD, 20);
+        var M:PodBuff = new PodBuff("dmg", BuffCalculationType.MULTIPLY, 1.5);
+        var P:PodBuff = new PodBuff("dmg", BuffCalculationType.PERCENT, 0.1);
+        var X:PodBuff = new PodBuff("dmg", BuffCalculationType.MAX, 120); // 至少 120
+        var N:PodBuff = new PodBuff("dmg", BuffCalculationType.MIN, 999); // 至多 999（此例不起作用）
+        
+        // 顺序1
+        m1.addBuff(A, null); m1.addBuff(M, null); m1.addBuff(P, null); m1.addBuff(X, null); m1.addBuff(N, null);
+        m1.update(0);
+        var v1:Number = getCalculatedValue(t1, "dmg");
+
+        // 顺序2（打乱顺序）
+        m2.addBuff(N, null); m2.addBuff(P, null); m2.addBuff(A, null); m2.addBuff(X, null); m2.addBuff(M, null);
+        m2.update(0);
+        var v2:Number = getCalculatedValue(t2, "dmg");
+
+        assertCalculation(v1, v2, "add sequence must not change result");
+
+        m1.destroy(); m2.destroy();
+        passTest();
+    } catch (e) {
+        failTest("Order independence failed: " + e.message);
+    }
+}
+
+/**
+ * 6) clearAllBuffs：不销毁容器，属性存在，值回 base
+ */
+private static function testClearAllBuffsKeepsProperties():Void {
+    startTest("clearAllBuffs keeps properties and resets to base");
+    try {
+        var t:Object = { spd: 10 };
+        var m:BuffManager = new BuffManager(t, null);
+
+        m.addBuff(new PodBuff("spd", BuffCalculationType.MULTIPLY, 2), null);
+        m.update(0);
+        assertDefinedNumber(t, "spd", 20, "before clear");
+
+        m.clearAllBuffs();
+        m.update(0);
+
+        assertPropertyExists(t, "spd", "after clearAllBuffs");
+        assertDefinedNumber(t, "spd", 10, "back to base");
+
+        m.destroy();
+        passTest();
+    } catch (e) {
+        failTest("clearAllBuffs contract failed: " + e.message);
+    }
+}
+
+/**
+ * 7) Meta 高频抖动稳定性（额外加压版）
+ */
+private static function testMetaBuffJitterStability():Void {
+    startTest("MetaBuff jitter stability (no undefined during flips)");
+    try {
+        var t:Object = { energy: 100 };
+        var m:BuffManager = new BuffManager(t, null);
+
+        for (var i:Number = 0; i < 100; i++) {
+            var meta:MetaBuff = new MetaBuff(
+                [ new PodBuff("energy", BuffCalculationType.ADD, 1) ],
+                [],
+                0
+            );
+            m.addBuff(meta, null);
+            m.update(0);
+            assertPropertyExists(t, "energy", "after add meta (iter "+i+")");
+
+            m.removeBuff(meta.getId());
+            m.update(0);
+            assertPropertyExists(t, "energy", "after remove meta (iter "+i+")");
+        }
+
+        // 结束后应回到 100
+        assertDefinedNumber(t, "energy", 100, "final back to base");
+        m.destroy();
+        passTest();
+    } catch (e) {
+        failTest("Meta jitter stability failed: " + e.message);
+    }
+}
 }

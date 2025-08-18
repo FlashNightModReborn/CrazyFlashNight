@@ -122,7 +122,7 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
   ✅ PASSED
 
 🧪 Test 27: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 139ms
+  ✓ Performance: 100 buffs, 100 updates in 102ms
   ✅ PASSED
 
 🧪 Test 28: Memory and Calculation Consistency
@@ -130,18 +130,41 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
   ✅ PASSED
 
 
+--- Phase: Sticky Container & Lifecycle Contracts ---
+🧪 Test 29: Sticky container: meta jitter won't delete property
+  ✅ PASSED
+
+🧪 Test 30: unmanageProperty(finalize) then rebind uses plain value as base
+  ❌ FAILED: Unmanage+Rebind failed: Calculation mismatch for rebind base=123 then +1000: expected 1123, got 1173
+
+🧪 Test 31: destroy() finalizes all managed properties
+  ❌ FAILED: Destroy finalize-all failed: Calculation mismatch for finalized value is kept: expected 40, got 20
+
+🧪 Test 32: Base value: zero vs undefined
+  ✅ PASSED
+
+🧪 Test 33: Calculation order independent of add sequence
+  ✅ PASSED
+
+🧪 Test 34: clearAllBuffs keeps properties and resets to base
+  ✅ PASSED
+
+🧪 Test 35: MetaBuff jitter stability (no undefined during flips)
+  ✅ PASSED
+
+
 === Calculation Accuracy Test Results ===
-📊 Total tests: 28
-✅ Passed: 26
-❌ Failed: 2
-📈 Success rate: 93%
-⚠️  2 test(s) failed. Please review calculation issues above.
+📊 Total tests: 35
+✅ Passed: 31
+❌ Failed: 4
+📈 Success rate: 89%
+⚠️  4 test(s) failed. Please review calculation issues above.
 ==============================================
 
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 20ms
+   calculationTime: 12ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -150,7 +173,7 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 139ms
-   avgUpdateTime: 1.39ms per update
+   totalTime: 102ms
+   avgUpdateTime: 1.02ms per update
 
 =======================================
