@@ -1015,6 +1015,15 @@ trace(obj.myProperty); // Hello PropertyAccessor v2.0!
 ---
 
 
+```actionscript
+
+import org.flashNight.gesh.property.*;
+
+var a = new PropertyAccessorTest();
+a.runTests();
+
+---
+
 ```log
 === Enhanced PropertyAccessor Test Initialized ===
 === Running Enhanced PropertyAccessor Tests ===
@@ -1116,7 +1125,7 @@ trace(obj.myProperty); // Hello PropertyAccessor v2.0!
 [PASS] After invalidate, subsequent accesses use new cache
 
 --- Test: Precompiled Setter Optimization ---
-Setter Performance (ms): Plain=24, Callback=36, Validation=38, Both=47
+Setter Performance (ms): Plain=39, Callback=69, Validation=66, Both=93
 [PASS] Precompiled setter performance measured
 
 --- Test: Memory Leak Prevention ---
@@ -1133,38 +1142,43 @@ Setter Performance (ms): Plain=24, Callback=36, Validation=38, Both=47
 [PASS] Object 1 updated correctly
 [PASS] Object 2 updated correctly
 [PASS] Objects remain isolated
+[FAIL] [detach] simple property solidify current value -> c1=true, c2=true, c3=false, c4=true
+[FAIL] [detach] computed property solidify cached value -> c1=true, c2=true, c3=true, c4=false
+[PASS] [detach] keep current instead of original by default
+[PASS] [detach] idempotent
 
 --- Test: Basic Performance ---
-Basic Performance: Write=245ms, Read=192ms for 100000 iterations
+Basic Performance: Write=519ms, Read=514ms for 100000 iterations
 [PASS] Write performance acceptable (< 5s for 100k ops)
 [PASS] Read performance acceptable (< 1s for 100k ops)
 
 --- Test: Computed Property Performance ---
-Computed Property Performance: 32ms for 10000 cached reads
+Computed Property Performance: 74ms for 10000 cached reads
 [PASS] Computed only once despite multiple reads
 [PASS] Cached read performance acceptable
 
 --- Test: Optimization Performance Gain ---
-Performance Gain: Optimized=33ms, Unoptimized=1336ms, Speedup=40.4848484848485x
+Performance Gain: Optimized=74ms, Unoptimized=2822ms, Speedup=38.1351351351351x
 [PASS] Optimized: computed once
 [PASS] Unoptimized: computed every time
 [PASS] Significant performance improvement achieved (>5x speedup)
 
 --- Test: Scalability Test ---
-Scalability: 1000 properties created in 41ms, accessed in 14ms
+Scalability: 1000 properties created in 92ms, accessed in 45ms
 [PASS] Scalable creation time
 [PASS] Scalable access time
 
 === FINAL TEST REPORT ===
-Tests Passed: 73
-Tests Failed: 0
-Success Rate: 100%
-🎉 ALL TESTS PASSED! PropertyAccessor implementation is robust and performant.
+Tests Passed: 75
+Tests Failed: 2
+Success Rate: 97%
+⚠️  Some tests failed. Please review the implementation.
 === OPTIMIZATION VERIFICATION ===
 ✓ Memory leak prevention verified
 ✓ Self-optimization mechanisms tested
 ✓ Performance benchmarks completed
 ✓ Error handling robustness confirmed
 ========================
+
 
 ```

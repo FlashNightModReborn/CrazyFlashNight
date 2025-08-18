@@ -58,6 +58,12 @@ class org.flashNight.gesh.property.PropertyAccessorTest {
         this.testMemoryLeakPrevention();
         this.testDestroyMethod();
         this.testMultipleObjectsMemoryIsolation();
+
+        // 分离测试
+        this.test_detach_simpleProperty();
+        this.test_detach_computedProperty();
+        this.test_detach_preserveCurrent_notOriginal();
+        this.test_detach_idempotent();
         
         // 性能测试
         this.testBasicPerformance();
@@ -671,6 +677,157 @@ class org.flashNight.gesh.property.PropertyAccessorTest {
         this.assert(computeCount2 == iterations, "Unoptimized: computed every time");
         this.assert(speedup > 5, "Significant performance improvement achieved (>5x speedup)");
     }
+
+        /**
+     * [detach] 简单属性：卸载后固化当前值为普通数据属性；不再触发回调
+     */
+    public function test_detach_simpleProperty():Void {
+        var caseName:String = "[detach] simple property solidify current value";
+        var self = this;
+
+        var setCalled:Number = 0;
+        var obj:Object = {};
+        var accessor:PropertyAccessor = new PropertyAccessor(
+            obj, "foo", 1,
+            null,
+            function():Void { setCalled++; },  // onSetCallback
+            function(v):Boolean { return (typeof v == "number"); } // validation
+        );
+
+        // 设置为 2（此时仍是 accessor，回调应被触发）
+        accessor.set(2);
+        var cond1:Boolean = (obj.foo === 2) && (setCalled == 1);
+
+        // 执行 detach：期望删除 getter/setter，并把“当前可见值(2)”写回为普通属性
+        // 且不再触发回调
+        var prevSetCalled:Number = setCalled;
+        accessor.detach();
+
+        var cond2:Boolean = (obj.foo === 2) && (setCalled == prevSetCalled);
+
+        // 之后对 obj.foo 的赋值不应再触发回调
+        obj.foo = 99;
+        var cond3:Boolean = (obj.foo === 99) && (setCalled == prevSetCalled);
+
+        // accessor 自身的 set 不应再影响 obj（两者解耦）
+        accessor.set(777);
+        var cond4:Boolean = (obj.foo === 99); // 仍为 99
+
+        if (cond1 && cond2 && cond3 && cond4) {
+            this._testPassed++;
+            trace("[PASS] " + caseName);
+        } else {
+            this._testFailed++;
+            trace("[FAIL] " + caseName + " -> "
+                + "c1=" + cond1 + ", c2=" + cond2 + ", c3=" + cond3 + ", c4=" + cond4);
+        }
+    }
+
+    /**
+     * [detach] 计算属性：惰性缓存被固化为普通数据属性；后续基础值变化不再影响 obj
+     */
+    public function test_detach_computedProperty():Void {
+        var caseName:String = "[detach] computed property solidify cached value";
+        var base:Object = { a: 1, b: 2 };
+        var obj:Object = {};
+
+        var accessor:PropertyAccessor = new PropertyAccessor(
+            obj, "sum", null,
+            function():Number { return base.a + base.b; }, // computeFunc
+            null, null
+        );
+
+        // 首次访问：计算并缓存 1+2=3
+        var first:Number = obj.sum; // 触发惰性计算
+        var cond1:Boolean = (first === 3);
+
+        // 改变基础值，但未失效缓存前，getter 仍返回 3
+        base.a = 5; base.b = 6; // 期望仍缓存 3
+        var cached:Number = obj.sum;
+        var cond2:Boolean = (cached === 3);
+
+        // detach：固化当前可见值(3)为普通属性
+        accessor.detach();
+
+        // 再次改变基础值，不应影响 obj.sum
+        base.a = 100; base.b = 200;
+        var afterDetachVal:Number = obj.sum;
+        var cond3:Boolean = (afterDetachVal === 3);
+
+        // 对 obj.sum 直接赋值不影响 accessor 内部（两者解耦）
+        obj.sum = 999;
+        var cond4:Boolean = (obj.sum === 999) && (accessor.get() === 3);
+
+        if (cond1 && cond2 && cond3 && cond4) {
+            this._testPassed++;
+            trace("[PASS] " + caseName);
+        } else {
+            this._testFailed++;
+            trace("[FAIL] " + caseName + " -> "
+                + "c1=" + cond1 + ", c2=" + cond2 + ", c3=" + cond3 + ", c4=" + cond4);
+        }
+    }
+
+    /**
+     * [detach] 原始属性存在：默认行为应“固化当前值”，而不是恢复原始值
+     *   先将原始值设为 42，再装饰，并改写为 7，detach 后应保留 7（非 42）
+     */
+    public function test_detach_preserveCurrent_notOriginal():Void {
+        var caseName:String = "[detach] keep current instead of original by default";
+
+        var obj:Object = { foo: 42 }; // 原始存在
+        var accessor:PropertyAccessor = new PropertyAccessor(
+            obj, "foo", null,
+            null, null, null
+        );
+
+        accessor.set(7); // 修改为 7（当前值）
+        var cond1:Boolean = (obj.foo === 7);
+
+        accessor.detach();
+        var cond2:Boolean = (obj.foo === 7); // 期望默认固化当前值
+
+        if (cond1 && cond2) {
+            this._testPassed++;
+            trace("[PASS] " + caseName);
+        } else {
+            this._testFailed++;
+            trace("[FAIL] " + caseName + " -> c1=" + cond1 + ", c2=" + cond2);
+        }
+    }
+
+    /**
+     * [detach] 幂等性：重复调用不会抛错，且维持为普通数据属性
+     */
+    public function test_detach_idempotent():Void {
+        var caseName:String = "[detach] idempotent";
+
+        var obj:Object = {};
+        var accessor:PropertyAccessor = new PropertyAccessor(
+            obj, "bar", 10, null, null, null
+        );
+
+        accessor.detach(); // 第一次
+        var v1:Number = obj.bar;
+        var cond1:Boolean = (v1 === 10);
+
+        // 再改写成普通赋值
+        obj.bar = 123;
+
+        // 第二次 detach（不应该抛错或改变 bar 类型）
+        accessor.detach();
+        var v2:Number = obj.bar;
+        var cond2:Boolean = (v2 === 123);
+
+        if (cond1 && cond2) {
+            this._testPassed++;
+            trace("[PASS] " + caseName);
+        } else {
+            this._testFailed++;
+            trace("[FAIL] " + caseName + " -> c1=" + cond1 + ", c2=" + cond2);
+        }
+    }
+
 
     private function testScalabilityTest():Void {
         trace("\n--- Test: Scalability Test ---");
