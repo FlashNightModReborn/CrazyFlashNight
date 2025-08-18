@@ -24,9 +24,10 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="2" edges="!-5 -140|-26 -368!-94 3|-361 30!-11 116|-88 481!9 3|16 3!16 3|140 297"/>
-                    <Edge strokeStyle="1" edges="!9 3|9 2!9 2|167 -232!7 6|9 3"/>
-                    <Edge strokeStyle="2" edges="!301 15|16 3!7 6|-204 104!9 2|-156 -128!9 3|-2 3"/>
+                    <Edge strokeStyle="2" edges="!-5 -140|-26 -368!-11 116|-88 481!-94 3|-361 30!301 15|16 3!16 3|140 297"/>
+                    <Edge strokeStyle="1" edges="!7 6|9 3!9 3|9 2"/>
+                    <Edge strokeStyle="2" edges="!9 2|-156 -128!9 3|16 3!9 3|-2 3!7 6|-204 104"/>
+                    <Edge strokeStyle="1" edges="!9 2|167 -232"/>
                   </edges>
                 </DOMShape>
               </elements>
