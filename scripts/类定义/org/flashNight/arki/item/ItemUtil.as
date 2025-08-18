@@ -298,17 +298,17 @@ class org.flashNight.arki.item.ItemUtil{
             // 如果是新建 mergeable 物品，则 key 可设为 "-mergeable-" 开头
             if(key.indexOf("-mergeable-") == 0) {
                 // 尝试查找是否已有同名物品
-                var indexFound:Number = 背包.findByName(req.name);
-                if(indexFound != -1) {
-                    背包.addValue(String(indexFound), req.value);
+                var indexFoundStr:String = 背包.searchFirstKey(req.name);
+                if(indexFoundStr != undefined) {
+                    // 找到同名物品，合并到该位置
+                    var indexFound:Number = Number(indexFoundStr);
                     背包.addValue(indexFound, req.value);
                     var existingItem = 背包.getItem(indexFound);
                     existingItem.lastUpdate = acquireLastUpdate; // 更新时间戳
                 } else {
-                    // 没有则添加新项，用 -1 表示新建堆
-                    背包.addValue(indexFound, req.value);
-                    var existingItem = 背包.getItem(indexFound);
-                    existingItem.lastUpdate = acquireLastUpdate; // 更新时间戳
+                    // 没有同名物品，创建新物品并添加到空格子
+                    var newItem = createItem(req.name, req.value, acquireLastUpdate);
+                    背包.add(-1, newItem);
                 }
             } else {
                 // 对于已有项，直接增加数量
