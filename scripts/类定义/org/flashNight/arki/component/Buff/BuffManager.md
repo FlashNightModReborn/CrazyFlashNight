@@ -36,8 +36,7 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
   ✅ PASSED
 
 🧪 Test 8: MetaBuff State Transitions & Calculations
-  ✓ State transitions: 75 → 75 → 75 → 20 (expired)
-  ✅ PASSED
+  ❌ FAILED: MetaBuff state transitions failed: Calculation mismatch for Frame 3 calculation (same-tick eject): expected 20, got 30
 
 🧪 Test 9: MetaBuff Dynamic Injection
   ✓ Dynamic injection: 120 → 198
@@ -124,7 +123,7 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
   ✅ PASSED
 
 🧪 Test 27: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 196ms
+  ✓ Performance: 100 buffs, 100 updates in 108ms
   ✅ PASSED
 
 🧪 Test 28: Memory and Calculation Consistency
@@ -159,10 +158,10 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
   ✅ PASSED
 
 🧪 Test 37: Injected Pods fire onBuffAdded for each injected pod
-  ❌ FAILED: Injected Pods add-event failed: Expected at least 3 onBuffAdded events, got 1
+  ✅ PASSED
 
 🧪 Test 38: Remove injected pod shrinks injected map by 1
-  ❌ FAILED: Remove injected pod failed: Expected injected map to shrink by 1; before=0, after=0
+  ✅ PASSED
 
 🧪 Test 39: clearAllBuffs emits onBuffRemoved for independent pods
   ✅ PASSED
@@ -173,16 +172,16 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
 
 === Calculation Accuracy Test Results ===
 📊 Total tests: 40
-✅ Passed: 38
-❌ Failed: 2
-📈 Success rate: 95%
-⚠️  2 test(s) failed. Please review calculation issues above.
+✅ Passed: 39
+❌ Failed: 1
+📈 Success rate: 98%
+⚠️  1 test(s) failed. Please review calculation issues above.
 ==============================================
 
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 19ms
+   calculationTime: 15ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -191,7 +190,7 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 196ms
-   avgUpdateTime: 1.96ms per update
+   totalTime: 108ms
+   avgUpdateTime: 1.08ms per update
 
 =======================================

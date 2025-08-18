@@ -71,9 +71,10 @@ class org.flashNight.arki.component.Buff.BuffManager {
             ensurePropertyContainerExists(prop);
             _markPropDirty(prop);
         } else {
-            // 如果是 MetaBuff，立即处理初始注入（注入内会确保容器）
-            var metaBuff:MetaBuff = MetaBuff(buff);
-            this._injectMetaBuffPods(metaBuff);
+            // 如果是 MetaBuff，立即处理初始注入（使用鸭子类型检测）
+            if (typeof buff.createPodBuffsForInjection == "function") {
+                this._injectMetaBuffPods(buff);
+            }
         }
         
         this._markDirty();
@@ -93,7 +94,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
         if (old.isPod()) {
             this._removePodBuff(buffId);
         } else {
-            this._removeMetaBuff(MetaBuff(old));
+            this._removeMetaBuff(old);
         }
     }
     
@@ -121,7 +122,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
         for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
             var buff:IBuff = this._buffs[i];
             if (buff && !buff.isPod()) {
-                this._removeMetaBuff(MetaBuff(buff));
+                this._removeMetaBuff(buff);
             }
         }
         
@@ -310,7 +311,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
                     }
                     this._removePodBuff(buffId);
                 } else {
-                    this._removeMetaBuff(MetaBuff(buff));
+                    this._removeMetaBuff(buff);
                 }
             }
         }
@@ -324,30 +325,36 @@ class org.flashNight.arki.component.Buff.BuffManager {
         for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
             var buff:IBuff = this._buffs[i];
             if (buff && !buff.isPod()) {
-                var metaBuff:MetaBuff = MetaBuff(buff);
-                var stateInfo:Object = metaBuff.update(deltaFrames);
-                
-                // 处理状态变化
-                if (stateInfo.stateChanged) {
-                    if (stateInfo.needsInject) {
-                        this._injectMetaBuffPods(metaBuff);
-                    } else if (stateInfo.needsEject) {
-                        this._ejectMetaBuffPods(metaBuff);
+                // 鸭子类型检测：必须有update方法
+                if (typeof buff.update == "function") {
+                    var stateInfo:Object = buff.update(deltaFrames);
+                    
+                    // 处理状态变化
+                    if (stateInfo && stateInfo.stateChanged) {
+                        if (stateInfo.needsInject) {
+                            this._injectMetaBuffPods(buff);
+                        } else if (stateInfo.needsEject) {
+                            this._ejectMetaBuffPods(buff);
+                        }
                     }
-                }
-                
-                // 如果 MetaBuff 死亡，移除它
-                if (!metaBuff.isActive()) {
-                    this._removeMetaBuff(metaBuff);
+                    
+                    // 如果 MetaBuff 死亡，移除它
+                    if (typeof buff.isActive == "function" && !buff.isActive()) {
+                        this._removeMetaBuff(buff);
+                    }
                 }
             }
         }
     }
 
     /**
-     * 注入 MetaBuff 生成的 PodBuff
+     * 注入 MetaBuff 生成的 PodBuff（支持鸭子类型）
      */
-    private function _injectMetaBuffPods(metaBuff:MetaBuff):Void {
+    private function _injectMetaBuffPods(metaBuff:Object):Void {
+        if (!metaBuff || typeof metaBuff.getId != "function" || typeof metaBuff.createPodBuffsForInjection != "function") {
+            return;
+        }
+        
         var metaId:String = metaBuff.getId();
         
         // 创建并注入 PodBuff
@@ -387,9 +394,11 @@ class org.flashNight.arki.component.Buff.BuffManager {
     }
 
     /**
-     * 弹出（移除）某个 MetaBuff 注入的所有 PodBuff
+     * 弹出（移除）某个 MetaBuff 注入的所有 PodBuff（支持鸭子类型）
      */
-    private function _ejectMetaBuffPods(metaBuff:MetaBuff):Void {
+    private function _ejectMetaBuffPods(metaBuff:Object):Void {
+        if (!metaBuff || typeof metaBuff.getId != "function") return;
+        
         var metaId:String = metaBuff.getId();
         var injectedIds:Array = this._metaBuffInjections[metaId];
         
@@ -402,7 +411,9 @@ class org.flashNight.arki.component.Buff.BuffManager {
             
             // 清理注入记录
             delete this._metaBuffInjections[metaId];
-            metaBuff.clearInjectedBuffIds();
+            if (typeof metaBuff.clearInjectedBuffIds == "function") {
+                metaBuff.clearInjectedBuffIds();
+            }
         }
         
         this._markDirty();
@@ -428,15 +439,32 @@ class org.flashNight.arki.component.Buff.BuffManager {
         if (parentMetaId) {
             var metaRef:IBuff = this._idMap[parentMetaId];
             if (metaRef && !metaRef.isPod()) {
-                var metaObj:MetaBuff = MetaBuff(metaRef);
-                if (typeof metaObj["removeInjectedBuffId"] == "function") {
-                    metaObj["removeInjectedBuffId"](podId);
+                if (typeof metaRef["removeInjectedBuffId"] == "function") {
+                    metaRef["removeInjectedBuffId"](podId);
                 }
             }
         }
         
         // 清理映射
         delete this._idMap[podId];
+        
+        // 如果是注入的Pod，还需从父MetaBuff的注入列表中移除
+        if (parentMetaId) {
+            var injectedIds:Array = this._metaBuffInjections[parentMetaId];
+            if (injectedIds) {
+                for (var k:Number = 0; k < injectedIds.length; k++) {
+                    if (injectedIds[k] == podId) {
+                        injectedIds.splice(k, 1);
+                        break;
+                    }
+                }
+                // 如果注入列表空了，清理整个记录
+                if (injectedIds.length == 0) {
+                    delete this._metaBuffInjections[parentMetaId];
+                }
+            }
+        }
+        
         delete this._injectedPodBuffs[podId];
         
         // 销毁
@@ -449,9 +477,11 @@ class org.flashNight.arki.component.Buff.BuffManager {
     }
 
     /**
-     * 移除 MetaBuff（会顺带弹出其注入的 PodBuff）
+     * 移除 MetaBuff（会顺带弹出其注入的 PodBuff）（支持鸭子类型）
      */
-    private function _removeMetaBuff(metaBuff:MetaBuff):Void {
+    private function _removeMetaBuff(metaBuff:Object):Void {
+        if (!metaBuff || typeof metaBuff.getId != "function") return;
+        
         var metaId:String = metaBuff.getId();
         
         // 先弹出它注入的所有Pod
@@ -469,7 +499,9 @@ class org.flashNight.arki.component.Buff.BuffManager {
         delete this._idMap[metaId];
         
         // 销毁
-        metaBuff.destroy();
+        if (typeof metaBuff.destroy == "function") {
+            metaBuff.destroy();
+        }
         
         // 触发回调
         if (this._onBuffRemoved) {
