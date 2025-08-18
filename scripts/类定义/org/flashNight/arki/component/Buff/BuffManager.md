@@ -124,7 +124,7 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
   ✅ PASSED
 
 🧪 Test 27: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 97ms
+  ✓ Performance: 100 buffs, 100 updates in 196ms
   ✅ PASSED
 
 🧪 Test 28: Memory and Calculation Consistency
@@ -136,8 +136,8 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
 🧪 Test 29: Sticky container: meta jitter won't delete property
   ✅ PASSED
 
-🧪 Test 30: unmanageProperty(finalize) then rebind uses plain value as base
-  ❌ FAILED: Unmanage+Rebind failed: Calculation mismatch for rebind uses plain base(123) + existing Pod(+50) + new Pod(+1000): expected 1173, got 1123
+🧪 Test 30: unmanageProperty(finalize) then rebind uses plain value as base (independent Pods are cleaned)
+  ✅ PASSED
 
 🧪 Test 31: destroy() finalizes all managed properties
   ✅ PASSED
@@ -154,19 +154,35 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
 🧪 Test 35: MetaBuff jitter stability (no undefined during flips)
   ✅ PASSED
 
+--- Phase 8: Regression & Lifecycle Contracts ---
+🧪 Test 36: Same-ID replacement keeps only the new instance
+  ✅ PASSED
+
+🧪 Test 37: Injected Pods fire onBuffAdded for each injected pod
+  ❌ FAILED: Injected Pods add-event failed: Expected at least 3 onBuffAdded events, got 1
+
+🧪 Test 38: Remove injected pod shrinks injected map by 1
+  ❌ FAILED: Remove injected pod failed: Expected injected map to shrink by 1; before=0, after=0
+
+🧪 Test 39: clearAllBuffs emits onBuffRemoved for independent pods
+  ✅ PASSED
+
+🧪 Test 40: removeBuff de-dup removes only once
+  ✅ PASSED
+
 
 === Calculation Accuracy Test Results ===
-📊 Total tests: 35
-✅ Passed: 34
-❌ Failed: 1
-📈 Success rate: 97%
-⚠️  1 test(s) failed. Please review calculation issues above.
+📊 Total tests: 40
+✅ Passed: 38
+❌ Failed: 2
+📈 Success rate: 95%
+⚠️  2 test(s) failed. Please review calculation issues above.
 ==============================================
 
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 11ms
+   calculationTime: 19ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -175,7 +191,7 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 97ms
-   avgUpdateTime: 0.97ms per update
+   totalTime: 196ms
+   avgUpdateTime: 1.96ms per update
 
 =======================================

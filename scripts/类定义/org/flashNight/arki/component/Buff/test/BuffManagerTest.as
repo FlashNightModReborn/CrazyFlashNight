@@ -89,6 +89,8 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
         testMetaBuffJitterStability();
         
         // 输出测试结果
+        trace("--- Phase 8: Regression & Lifecycle Contracts ---");
+        runPhase8_RegressionAndContracts();
         printTestResults();
         printPerformanceReport();
     }
@@ -1468,7 +1470,7 @@ private static function testStickyContainer_NoUndefined():Void {
  * 2) unmanageProperty(finalize)：固化为普通属性后可直接写；再次管理时以当前普通值作为 base
  */
 private static function testUnmanagePropertyFinalizeAndRebind():Void {
-    startTest("unmanageProperty(finalize) then rebind uses plain value as base");
+    startTest("unmanageProperty(finalize) then rebind uses plain value as base (independent Pods are cleaned)");
     try {
         var mockTarget:Object = createMockTarget();
         mockTarget.atk = 100;
@@ -1492,8 +1494,8 @@ private static function testUnmanagePropertyFinalizeAndRebind():Void {
         manager.addBuff(new PodBuff("atk", BuffCalculationType.ADD, 1000), null);
         manager.update(0);
 
-        assertDefinedNumber(mockTarget, "atk", 1173,
-          "rebind uses plain base(123) + existing Pod(+50) + new Pod(+1000)");
+        assertDefinedNumber(mockTarget, "atk", 1123,
+          "rebind uses plain base(123) + new Pod(+1000) (independent Pod cleaned on finalize)");
 
         manager.destroy();
         passTest();
@@ -1653,4 +1655,202 @@ private static function testMetaBuffJitterStability():Void {
         failTest("Meta jitter stability failed: " + e.message);
     }
 }
+
+// =======================================================
+// Phase 8: Regression & Lifecycle Contracts (Sticky Upgrade)
+// =======================================================
+private static function runPhase8_RegressionAndContracts():Void {
+    // 🧪 Test 36
+    testSameIdReplacement_NoGhost();
+    // 🧪 Test 37
+    testInjectedPods_EmitOnAdded();
+    // 🧪 Test 38
+    testRemoveInjectedPod_SyncWithMeta();
+    // 🧪 Test 39
+    testClearAllBuffs_RemovesIndependentPodsWithCallback();
+    // 🧪 Test 40
+    testRemoveBuff_DedupOnce();
+}
+
+// ---- helpers for Phase 8 ----
+private static function _countKeys(o:Object):Number {
+    var n:Number = 0;
+    for (var k in o) n++;
+    return n;
+}
+private static function _countLivePods(mgr:BuffManager):Number {
+    var n:Number = 0;
+    var list:Array = mgr["_buffs"];
+    if (!list) return 0;
+    for (var i:Number = 0; i < list.length; i++) {
+        var b:Object = list[i];
+        if (b && typeof b.isPod == "function" && b.isPod() && typeof b.isActive == "function" && b.isActive()) n++;
+    }
+    return n;
+}
+private static function _mkDuckPod(id:String, prop:String):Object {
+    var o:Object = {};
+    o._id = id;
+    o._prop = prop;
+    o._active = true;
+    o.isPod = function():Boolean { return true; };
+    o.getId = function():String { return this._id; };
+    o.getTargetProperty = function():String { return this._prop; };
+    o.isActive = function():Boolean { return this._active; };
+    o.destroy = function():Void { this._active = false; };
+    return o;
+}
+private static function _mkDuckMetaInjectOnce(id:String, pods:Array):Object {
+    var o:Object = {};
+    o._id = id;
+    o._fired = false;
+    o.isPod = function():Boolean { return false; };
+    o.getId = function():String { return this._id; };
+    o.isActive = function():Boolean { return true; };
+    o.update = function(df:Number):Object {
+        if (!this._fired) { this._fired = true; return {stateChanged:true, needsInject:true}; }
+        return {stateChanged:false};
+    };
+    o.createPodBuffsForInjection = function():Array { return pods; };
+    o.clearInjectedBuffIds = function():Void {};
+    o.recordInjectedBuffId = function(pid:String):Void {};
+    o.removeInjectedBuffId = function(pid:String):Void {};
+    return o;
+}
+
+// 🧪 Test 36: Same-ID replacement must not create "ghost" or nuke the new one
+private static function testSameIdReplacement_NoGhost():Void {
+    startTest("Same-ID replacement keeps only the new instance");
+    try {
+        var added:Array = [];
+        var removed:Array = [];
+        var mgr:BuffManager = new BuffManager({}, {
+            onBuffAdded: function(id:String, b:Object):Void { added.push(id); },
+            onBuffRemoved: function(id:String, b:Object):Void { removed.push(id); },
+            onPropertyChanged: function(prop:String, v:Number):Void {}
+        });
+        var A1:Object = _mkDuckPod("A", "atk");
+        var A2:Object = _mkDuckPod("A", "atk");
+        mgr.addBuff(A1, "A");
+        mgr.addBuff(A2, "A"); // 替换
+        mgr.update(1);
+        var livePods:Number = _countLivePods(mgr);
+        if (!(removed.length == 1 && livePods == 1)) {
+            throw new Error("Expected 1 removal and 1 live pod; got removed="+removed.length+", livePods="+livePods);
+        }
+        passTest();
+    } catch (e) {
+        failTest("Same-ID replacement failed: " + e.message);
+    }
+}
+
+// 🧪 Test 37: Injected Pods must emit onBuffAdded
+private static function testInjectedPods_EmitOnAdded():Void {
+    startTest("Injected Pods fire onBuffAdded for each injected pod");
+    try {
+        var added:Array = [];
+        var removed:Array = [];
+        var mgr:BuffManager = new BuffManager({}, {
+            onBuffAdded: function(id:String, b:Object):Void { added.push(id); },
+            onBuffRemoved: function(id:String, b:Object):Void { removed.push(id); },
+            onPropertyChanged: function(prop:String, v:Number):Void {}
+        });
+        var P1:Object = _mkDuckPod("P1", "atk");
+        var P2:Object = _mkDuckPod("P2", "atk");
+        var M:Object  = _mkDuckMetaInjectOnce("M", [P1, P2]);
+        mgr.addBuff(M, "M");
+        mgr.update(1); // 触发注入
+        if (added.length < 3) { // M + P1 + P2
+            throw new Error("Expected at least 3 onBuffAdded events, got " + added.length);
+        }
+        passTest();
+    } catch (e) {
+        failTest("Injected Pods add-event failed: " + e.message);
+    }
+}
+
+// 🧪 Test 38: Removing a single injected Pod updates manager/meta state coherently
+private static function testRemoveInjectedPod_SyncWithMeta():Void {
+    startTest("Remove injected pod shrinks injected map by 1");
+    try {
+        var added:Array = [];
+        var removed:Array = [];
+        var mgr:BuffManager = new BuffManager({}, {
+            onBuffAdded: function(id:String, b:Object):Void { added.push(id); },
+            onBuffRemoved: function(id:String, b:Object):Void { removed.push(id); },
+            onPropertyChanged: function(prop:String, v:Number):Void {}
+        });
+        var P1:Object = _mkDuckPod("P1", "atk");
+        var P2:Object = _mkDuckPod("P2", "atk");
+        var M:Object  = _mkDuckMetaInjectOnce("M", [P1, P2]);
+        mgr.addBuff(M, "M");
+        mgr.update(1); // 注入
+        var injMap:Object = mgr["_injectedPodBuffs"];
+        var before:Number = _countKeys(injMap);
+        mgr.removeBuff("P1");
+        mgr.update(1);
+        var after:Number = _countKeys(mgr["_injectedPodBuffs"]);
+        if (!((before - after) == 1)) {
+            throw new Error("Expected injected map to shrink by 1; before="+before+", after="+after);
+        }
+        var okRemoved:Boolean = false;
+        for (var i:Number=0;i<removed.length;i++) if (removed[i]=="P1") okRemoved = true;
+        if (!okRemoved) throw new Error("Expected onBuffRemoved for P1");
+        passTest();
+    } catch (e) {
+        failTest("Remove injected pod failed: " + e.message);
+    }
+}
+
+// 🧪 Test 39: clearAllBuffs triggers onBuffRemoved for independent Pods
+private static function testClearAllBuffs_RemovesIndependentPodsWithCallback():Void {
+    startTest("clearAllBuffs emits onBuffRemoved for independent pods");
+    try {
+        var added:Array = [];
+        var removed:Array = [];
+        var mgr:BuffManager = new BuffManager({}, {
+            onBuffAdded: function(id:String, b:Object):Void { added.push(id); },
+            onBuffRemoved: function(id:String, b:Object):Void { removed.push(id); },
+            onPropertyChanged: function(prop:String, v:Number):Void {}
+        });
+        mgr.addBuff(_mkDuckPod("X1", "hp"), "X1");
+        mgr.addBuff(_mkDuckPod("X2", "mp"), "X2");
+        mgr.update(1);
+        mgr.clearAllBuffs();
+        var livePods:Number = _countLivePods(mgr);
+        if (!(removed.length >= 2 && livePods == 0)) {
+            throw new Error("Expected >=2 removals and 0 live pods; got removed="+removed.length+", livePods="+livePods);
+        }
+        passTest();
+    } catch (e) {
+        failTest("clearAllBuffs removal-callback failed: " + e.message);
+    }
+}
+
+// 🧪 Test 40: removeBuff de-dup (same ID twice -> 1 removal)
+private static function testRemoveBuff_DedupOnce():Void {
+    startTest("removeBuff de-dup removes only once");
+    try {
+        var added:Array = [];
+        var removed:Array = [];
+        var mgr:BuffManager = new BuffManager({}, {
+            onBuffAdded: function(id:String, b:Object):Void { added.push(id); },
+            onBuffRemoved: function(id:String, b:Object):Void { removed.push(id); },
+            onPropertyChanged: function(prop:String, v:Number):Void {}
+        });
+        mgr.addBuff(_mkDuckPod("DUP", "atk"), "DUP");
+        mgr.update(1);
+        mgr.removeBuff("DUP");
+        mgr.removeBuff("DUP"); // 重复
+        mgr.update(1);
+        var livePods:Number = _countLivePods(mgr);
+        if (!(removed.length == 1 && livePods == 0)) {
+            throw new Error("Expected 1 removal and 0 live pods; got removed="+removed.length+", livePods="+livePods);
+        }
+        passTest();
+    } catch (e) {
+        failTest("removeBuff de-dup failed: " + e.message);
+    }
+}
+
 }
