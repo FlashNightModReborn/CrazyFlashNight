@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/宠物信息显示框" itemID="6652eecd-00002a70" linkageExportForAS="true" linkageIdentifier="宠物信息显示框" lastModified="1747826311" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/宠物信息显示框" itemID="6652eecd-00002a70" linkageExportForAS="true" linkageIdentifier="宠物信息显示框" lastModified="1755534658" lastUniqueIdentifier="6">
   <timeline>
     <DOMTimeline name="宠物信息显示框" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;358&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -108,7 +108,7 @@ function 删除宠物(该宠物信息, 格子位置号)
 	}
 	if (计算返还战宠灵石)
 	{
-		if (_root.singleAquire("战宠灵石",计算返还战宠灵石))
+		if (_root.singleAcquire("战宠灵石",计算返还战宠灵石))
 		{
 			_root.发布消息("战宠已解散，返还战宠灵石" + 计算返还战宠灵石 + "个");
 		}
