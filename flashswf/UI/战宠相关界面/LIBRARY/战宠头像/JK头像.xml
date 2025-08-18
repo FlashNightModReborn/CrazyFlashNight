@@ -1,0 +1,138 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="战宠头像/JK头像" itemID="65a171fc-00002b4f" lastModified="1705080902">
+  <timeline>
+    <DOMTimeline name="JK头像" currentFrame="8">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="8" name="白" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="9" name="橙" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="14" name="ump45" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" duration="8" name="m134" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="7" name="m61" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+/*
+if(_parent._parent._parent.等级){
+	当前等级 = _parent._parent._parent.等级;
+}else if(_parent._parent.等级){
+	当前等级 = _parent._parent.等级;
+}else if(_parent.等级){
+	当前等级 = _parent.等级;
+}
+*/
+//_root.发布调试消息("长枪:"+当前等级+"/"+ _parent+"/"+_parent._parent._parent);
+/*
+发色 = _root.宠物信息[_parent._parent.宠物信息数组号][5].发色;
+
+if(发色){
+	gotoAndStop(发色);
+}else{
+	gotoAndStop("橙");
+}
+*/]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//gotoAndStop("白");
+/*
+发色 = _root.宠物信息[_parent._parent.宠物信息数组号][5].发色;
+
+if(发色){
+	gotoAndStop(发色);
+}else{
+	gotoAndStop("橙");
+}
+*/]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[/*
+发色 = _root.宠物信息[_parent._parent.宠物信息数组号][5].发色;
+
+if(发色){
+	gotoAndStop(发色);
+}else{
+	gotoAndStop("橙");
+}
+*/]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="38" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="战宠头像/位图 341">
+                  <matrix>
+                    <Matrix a="0.156448364257813" d="0.156448364257813"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="战宠头像/位图 342">
+                  <matrix>
+                    <Matrix a="0.156463623046875" d="0.156463623046875" ty="0.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="38" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

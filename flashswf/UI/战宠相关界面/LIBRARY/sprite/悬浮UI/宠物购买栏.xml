@@ -1,0 +1,205 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/宠物购买栏" itemID="66d84ebf-00000a68" lastModified="1747803150" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="宠物购买栏">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#8B58C2">
+          <frames>
+            <DOMFrame index="0" duration="5" name="默认" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" name="锁定" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="6" name="未解锁" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#DC7465">
+          <frames>
+            <DOMFrame index="0" duration="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="透明按钮" symbolType="button">
+                  <matrix>
+                    <Matrix tx="5" ty="30"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+	_parent.点击购买战宠(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor alpha="0.4"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!100 625|1700 625!1700 625|1700 2225!1700 2225|100 2225!100 2225|100 625"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 60" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.06486511230469" d="1.06486511230469" tx="69.75" ty="39.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#9488A1">
+          <frames>
+            <DOMFrame index="0" duration="16" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="83.25" height="15.55" isSelectable="false" variableName="名字">
+                  <matrix>
+                    <Matrix tx="3.25" ty="7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>狗勾</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#F7FDA9">
+          <frames>
+            <DOMFrame index="0" duration="16" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="84.25" height="15.55" isSelectable="false" variableName="显示文字" renderAsHTML="true">
+                  <matrix>
+                    <Matrix tx="2.75" ty="112.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>2000</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#C664CE">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 843" name="图标" centerPoint3DX="46.35" centerPoint3DY="71.15">
+                  <matrix>
+                    <Matrix tx="5" ty="30"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="6" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.048828125" c="-0.048828125" d="0" tx="45" ty="69.95"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#333333" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1700 2199|100 2199!100 2199|100 599!100 599|1700 599!1700 599|1700 2199"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix tx="29.7" ty="42.35"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!617 221[616 116 538 53!538 53[459 -9 308 -11!308 -11[162 -10 81 59!81 59[1 130 -5 263!-5 263[10 286 34 296!34 296[58 308 86 308!86 308[133 308 158 282!158 282[183 256 194 199!194 199|226 43!226 43[306 45 355 90!355 90[403 135 404 209
+!404 209[403 268 376 315!376 315[348 362 299 408!299 408[246 461 220 502!220 502[194 542 194 591!194 591[194 625 200 656!200 656[207 687 224 728!224 728|285 728!285 728|285 676!285 676[285 635 304 606!304 606[322 576 354 552!354 552[385
+ 526 426 499!426 499[499 449 541 408!541 408[583 367 600 323!600 323[618 280 617 221!126 982[128 1039 166 1078!166 1078[205 1116 266 1117!266 1117[325 1116 364 1078!364 1078[403 1039 404 982!404 982[403 923 364 884!364 884[325 843 266
+ 842!266 842[205 843 166 884!166 884[128 923 126 982"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="16" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1800 0|1800 2700!1800 2700|0 2700!0 2700|0 0!0 0|1800 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,116 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="折线图" itemID="67286fae-00000261" symbolType="graphic" lastModified="1730826103">
+  <timeline>
+    <DOMTimeline name="折线图" currentFrame="158">
+      <layers>
+        <DOMLayer name="折线遮罩" color="#4FFF4F" locked="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="158" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix tx="3.9"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!7684 2287S2|0 2287!0 2287|0 0!0 0|7684 0!7684 0|7684 2287"/>
+                    <Edge cubics="!7684 2287(;7684,2287 0,2287 0,2287q7684 2287 0 2287);"/>
+                    <Edge cubics="!0 2287(;0,2287 0,0 0,0q0 2287 0 0);"/>
+                    <Edge cubics="!0 0(;0,0 7684,0 7684,0q0 0 7684 0);"/>
+                    <Edge cubics="!7684 0(;7684,0 7684,2287 7684,2287q7684 0 7684 2287);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="158" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix tx="3.9"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!7684 2287S2|0 2287!0 2287|0 0!0 0|7684 0!7684 0|7684 2287"/>
+                    <Edge cubics="!7684 2287(;7684,2287 0,2287 0,2287q7684 2287 0 2287);"/>
+                    <Edge cubics="!0 2287(;0,2287 0,0 0,0q0 2287 0 0);"/>
+                    <Edge cubics="!0 0(;0,0 7684,0 7684,0q0 0 7684 0);"/>
+                    <Edge cubics="!7684 0(;7684,0 7684,2287 7684,2287q7684 0 7684 2287);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="折线" color="#9933CC" parentLayerIndex="0" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="158" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="折线" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-399.35" ty="29.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="193.4" y="27.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="158" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="折线" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-1.05" ty="29.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="193.4" y="27.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="折线图背景" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="158" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="折线图背景" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="3.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="192.1" y="57.15"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="158" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="折线图背景" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="3.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="192.1" y="57.15"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

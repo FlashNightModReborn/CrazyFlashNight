@@ -1,0 +1,292 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="宠物信息界面" itemID="6652ee55-000029ee" linkageExportForAS="true" linkageIdentifier="宠物信息界面" lastModified="1747766096" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="宠物信息界面">
+      <layers>
+        <DOMLayer name="Script Layer" color="#AB6D68">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 排列宠物图标()
+{
+	删除宠物图标();
+	temp_xmove = 15;
+	temp_ymove = 30;
+	temp_height = 63;
+	temp_width = 355;
+	temp_l = 0;
+	temp_j = 1;
+	temp_xlimit = 2;
+	temp_ylimit = 5;
+	temp_a = [];
+	var _loc3_ = (页数 - 1) * temp_ylimit * temp_xlimit;
+	while (_loc3_ < 页数 * temp_j * temp_ylimit * temp_xlimit)
+	{
+		if (_loc3_ < _root.最大宠物格子数 and _loc3_ % 2 == 0)
+		{
+			this.attachMovie("宠物信息显示框","宠物信息显示框" + _loc3_,this.getNextHighestDepth(),{宠物信息数组号:_loc3_, 宠物库数组号:_root.宠物信息[_loc3_][0], 宠物名:_root.宠物库[_root.宠物信息[_loc3_][0]].Name, 宠物等级:_root.宠物信息[_loc3_][1], 宠物体力:_root.宠物信息[_loc3_][2], 是否出战:_root.宠物信息[_loc3_][4]});
+			temp_a[_loc3_] = this["宠物信息显示框" + _loc3_];
+			temp_a[_loc3_]._x = temp_xmove;
+			temp_a[_loc3_]._y = temp_ymove;
+			temp_xmove += temp_l;
+			if (_root.宠物信息[_loc3_][5].基础训练 && _root.宠物信息[_loc3_][5].基础训练.次数)
+			{
+				var 后缀 =  _root.战宠进阶函数.基础训练.罗马数字[_root.宠物信息[_loc3_][5].基础训练.次数-1];
+				后缀 = 后缀 ? 后缀 : "";
+				temp_a[_loc3_].宠物名 = _root.宠物库[_root.宠物信息[_loc3_][0]].Name + 后缀;
+			}
+			if (_loc3_ % temp_j == 0)
+			{
+				temp_xmove += temp_width;
+			}
+			if (_loc3_ < _root.宠物领养限制 and this["宠物信息显示框" + _loc3_].宠物名 == undefined)
+			{
+				this["宠物信息显示框" + _loc3_].gotoAndStop(2);
+			}
+			else if (_loc3_ >= _root.宠物领养限制)
+			{
+				this["宠物信息显示框" + _loc3_].gotoAndStop(3);
+			}
+		}
+		else
+		{
+			this.attachMovie("宠物信息显示框","宠物信息显示框" + _loc3_,this.getNextHighestDepth(),{宠物信息数组号:_loc3_, 宠物库数组号:_root.宠物信息[_loc3_][0], 宠物名:_root.宠物库[_root.宠物信息[_loc3_][0]].Name, 宠物等级:_root.宠物信息[_loc3_][1], 宠物体力:_root.宠物信息[_loc3_][2], 是否出战:_root.宠物信息[_loc3_][4]});
+			temp_a[_loc3_] = this["宠物信息显示框" + _loc3_];
+			temp_a[_loc3_]._x = temp_xmove;
+			temp_a[_loc3_]._y = temp_ymove;
+			temp_xmove += temp_l;
+			if (_root.宠物信息[_loc3_][5].基础训练 && _root.宠物信息[_loc3_][5].基础训练.次数)
+			{
+				var 后缀 =  _root.战宠进阶函数.基础训练.罗马数字[_root.宠物信息[_loc3_][5].基础训练.次数-1];
+				后缀 = 后缀 ? 后缀 : "";
+				temp_a[_loc3_].宠物名 = _root.宠物库[_root.宠物信息[_loc3_][0]].Name + 后缀;
+			}
+			if (_loc3_ % temp_j == 0)
+			{
+				temp_ymove += temp_height;
+			}
+			if (_loc3_ < _root.宠物领养限制 and this["宠物信息显示框" + _loc3_].宠物名 == undefined)
+			{
+				this["宠物信息显示框" + _loc3_].gotoAndStop(2);
+			}
+			else if (_loc3_ >= _root.宠物领养限制)
+			{
+				this["宠物信息显示框" + _loc3_].gotoAndStop(3);
+			}
+			temp_xmove = 15;
+		}
+		_loc3_ = _loc3_ + 1;
+	}
+}
+function 删除宠物图标()
+{
+	var _loc2_ = 0;
+	while (_loc2_ < 40)
+	{
+		this["宠物信息显示框" + _loc2_].removeMovieClip();
+		_loc2_ = _loc2_ + 1;
+	}
+	_root.宠物信息界面.宠物进阶页.removeMovieClip();
+}
+页数 = 1;
+排列宠物图标();
+stop();
+_root.全部翻译(this);
+this._visible = false;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="宠物" color="#E2F9DA" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物信息显示框" selected="true" centerPoint3DX="257.4" centerPoint3DY="433.4">
+                  <matrix>
+                    <Matrix a="0.9832763671875" tx="14.75" ty="402.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this._visible = 0;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="标题文字" color="#EF9B1C" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="237.1" height="15.85" isSelectable="false" variableName="标题">
+                  <matrix>
+                    <Matrix tx="43.7" ty="6.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>管理战宠与外来佣兵</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="关闭按钮" color="#54B3BD" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 729" symbolType="button">
+                  <matrix>
+                    <Matrix tx="716.95" ty="13.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _root.自动存盘();
+   this._visible = 0;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="拖拽按钮" color="#5CC265" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 728" symbolType="button">
+                  <matrix>
+                    <Matrix tx="26.4" ty="13.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   stopDrag();
+}
+on(press){
+   startDrag(this,0);
+   _root.鼠标.gotoAndStop("手型抓取");
+}
+on(rollOver){
+   _root.鼠标.gotoAndStop("手型准备抓取");
+}
+on(rollOut){
+   _root.鼠标.gotoAndStop("手型普通");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="下一页" color="#B0F30B" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" name="下一页" centerPoint3DX="452.05" centerPoint3DY="357.95">
+                  <matrix>
+                    <Matrix tx="406.25" ty="346.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.页数 = _parent.页数 + 1;
+   _parent.排列宠物图标();
+   if(_parent.页数 == 4)
+   {
+      this._visible = 0;
+   }
+   if(_parent.页数 > 1)
+   {
+      _parent.上一页._visible = 1;
+   }
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("下一页");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="上一页" color="#995CD6" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" name="上一页" centerPoint3DX="292.05" centerPoint3DY="357.95">
+                  <matrix>
+                    <Matrix tx="246.25" ty="346.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.页数--;
+   _parent.排列宠物图标();
+   if(_parent.页数 == 1)
+   {
+      this._visible = 0;
+   }
+   if(_parent.页数 < 4)
+   {
+      _parent.下一页._visible = 1;
+   }
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("上一页");
+   if(_parent.页数 == 1)
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="背景" color="#C71AAE" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 726" centerPoint3DX="240.25" centerPoint3DY="165.95">
+                  <matrix>
+                    <Matrix a="1.57440185546875" d="1.12353515625" tx="11.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
+                    <DropShadowFilter angle="44.9992520943067" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

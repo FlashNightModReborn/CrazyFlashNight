@@ -1,0 +1,855 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/进阶方案详情页" itemID="6729f488-00000269" lastModified="1747803527" lastUniqueIdentifier="12">
+  <timeline>
+    <DOMTimeline name="进阶方案详情页">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndStop(1);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="txt" fontRenderingMode="device" width="105.75" height="18.45" isSelectable="false" variableName="标题">
+                  <matrix>
+                    <Matrix tx="111.95" ty="8.05"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>多人按键设置</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText name="描述txt" fontRenderingMode="device" left="-804.1" width="196.85" height="534.2" isSelectable="false" variableName="注释" lineType="multiline">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="706.3" ty="118.95"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>得益于统合政府主导下科研机构的广泛研究，及其积累的实验数据，我们得以在百废待兴的末世中回收利用先进的人体改造技术。&#xD;不同于传统意义上的义体改造或者基因改造，我们所利用的技术的原理是：利用投放物质的生化反应改造人体的生理活动，以充分激发人体潜能。因动物之间的生理活动相似性，该改造依然可以运用于其他种类的生物。该方案副作用小，技术可靠。&#xD;近期的实验表明，如果要通过这种方式制造超级战士，循序渐进的培养方案是最稳妥的。我们不能寄希望于速成，因为人体（以及其他动物的身体）必须适应药物带来的变化，这需要时间。此外，药物试验需要与之匹配的工业产能，这必然需要资金投入。从客户手中获取改造资金已是必然选择，该领域的商业化推广已是箭在弦上。</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="13" bitmapSize="260" face="MicrosoftYaHei-Bold" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="txt" fontRenderingMode="device" width="86" height="18.45" isSelectable="false" variableName="标题">
+                  <matrix>
+                    <Matrix tx="120.75" ty="8.05"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>多人按键设置</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText name="描述txt" fontRenderingMode="device" left="-804.1" width="196.85" height="534.2" isSelectable="false" variableName="注释" lineType="multiline">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="706.3" ty="118.95"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>得益于统合政府主导下科研机构的广泛研究，及其积累的实验数据，我们得以在百废待兴的末世中回收利用先进的人体改造技术。&#xD;不同于传统意义上的义体改造或者基因改造，我们所利用的技术的原理是：利用投放物质的生化反应改造人体的生理活动，以充分激发人体潜能。因动物之间的生理活动相似性，该改造依然可以运用于其他种类的生物。该方案副作用小，技术可靠。&#xD;近期的实验表明，如果要通过这种方式制造超级战士，循序渐进的培养方案是最稳妥的。我们不能寄希望于速成，因为人体（以及其他动物的身体）必须适应药物带来的变化，这需要时间。此外，药物试验需要与之匹配的工业产能，这必然需要资金投入。从客户手中获取改造资金已是必然选择，该领域的商业化推广已是箭在弦上。</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="13" bitmapSize="260" face="MicrosoftYaHei-Bold" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="166.1" centerPoint3DY="329.95">
+                  <matrix>
+                    <Matrix a="0.77117919921875" d="0.77117919921875" tx="131.2" ty="320.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.25" y="12.45"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	显示文字 = "锁定";
+	if (_parent._parent.进阶方案)
+	{
+		if (_parent._parent.条件())
+		{
+			显示文字 = _parent._parent.当前方案.执行按钮文字? _parent._parent.当前方案.执行按钮文字 :"确认执行";
+		}
+	}
+}
+
+on (release) {
+	if (_parent._parent.进阶方案)
+	{
+		_parent._parent.刷新项数(_parent.当前项数);
+		if (_parent._parent.条件())
+		{
+			_parent._parent.执行();
+			_parent._parent.刷新详情页(_parent.当前项数);
+		}
+		else if (_parent._parent.失败提示)
+		{
+			_root.发布消息(_parent._parent.失败提示);
+		}
+	}
+	_parent.gotoAndStop(3);
+}
+on (rollOver) {
+	if (_parent._parent.进阶方案)
+	{
+		_parent._parent.刷新项数(_parent.当前项数);
+		if (_parent._parent.描述())
+		{
+			_root.注释(150,_parent._parent.描述());
+		}
+	}
+}
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="166.1" centerPoint3DY="329.95">
+                  <matrix>
+                    <Matrix a="0.77117919921875" d="0.77117919921875" tx="131.2" ty="320.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.25" y="12.45"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	显示文字 = "锁定";
+	if (_parent._parent.进阶方案)
+	{
+		if (_parent._parent.条件())
+		{
+			显示文字 = _parent._parent.当前方案.执行按钮文字? _parent._parent.当前方案.执行按钮文字 :"确认执行";
+		}
+	}
+}
+
+on (release) {
+	if (_parent._parent.进阶方案)
+	{
+		_parent._parent.刷新项数(_parent.当前项数);
+		if (_parent._parent.条件())
+		{
+			_parent._parent.执行();
+			_parent._parent.刷新详情页(_parent.当前项数);
+		}
+		else if (_parent._parent.失败提示)
+		{
+			_root.发布消息(_parent._parent.失败提示);
+		}
+	}
+	_parent.gotoAndStop(3);
+}
+on (rollOver) {
+	if (_parent._parent.进阶方案)
+	{
+		_parent._parent.刷新项数(_parent.当前项数);
+		if (_parent._parent.描述())
+		{
+			_root.注释(150,_parent._parent.描述());
+		}
+	}
+}
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 726" centerPoint3DX="144.4" centerPoint3DY="104.4">
+                  <matrix>
+                    <Matrix a="0.711776733398438" d="1.04142761230469" tx="1.85" ty="0.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[
+on (release) {
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
+                    <DropShadowFilter angle="44.9992520943067" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="强化弹窗背景图" name="背景图" centerPoint3DX="147.7" centerPoint3DY="240.6">
+                  <matrix>
+                    <Matrix a="0.792831420898438" d="0.792831420898438" ty="115.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="289.6"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (_parent.背景)
+	{
+		gotoAndStop(_parent.背景);
+	}
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0.25"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="第12帧/Layer 1/&amp;#060Group&amp;#062_18" blendMode="layer" centerPoint3DX="79.55" centerPoint3DY="19.85">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="62.45" ty="16.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.2" y="5.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="第12帧/Layer 1/&amp;#060Group&amp;#062_17" blendMode="layer" centerPoint3DX="105.85" centerPoint3DY="19.85">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="101.35" ty="16.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.2" y="5.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="第12帧/Layer 1/&amp;#060Group&amp;#062_16" blendMode="layer" centerPoint3DX="266.45" centerPoint3DY="19.85">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="218.7" ty="16.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="76.4" y="5.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMGroup>
+                  <members>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="0.625015258789063" d="0.625015258789063" tx="2.15" ty="-0.25"/>
+                      </matrix>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#CCCCCC"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="1" edges="!9890 684|9056 684!9056 684|9056 595!9056 595|9890 595!9890 595|9890 684"/>
+                        <Edge cubics="!9890 684(;9890,684 9056,684 9056,684q9890 684 9056 684);"/>
+                        <Edge cubics="!9056 684(;9056,684 9056,595 9056,595q9056 684 9056 595);"/>
+                        <Edge cubics="!9056 595(;9056,595 9890,595 9890,595q9056 595 9890 595);"/>
+                        <Edge cubics="!9890 595(;9890,595 9890,684 9890,684q9890 595 9890 684);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="0.625015258789063" d="0.625015258789063" tx="2.15" ty="-0.25"/>
+                      </matrix>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#CCCCCC"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!8970 595|8839 595!8839 595|8839 684!8839 684|8970 684!8970 684|8970 595"/>
+                        <Edge cubics="!8839 684(;8839,684 8970,684 8970,684q8839 684 8970 684);"/>
+                        <Edge cubics="!8970 684(;8970,684 8970,595 8970,595q8970 684 8970 595);"/>
+                        <Edge cubics="!8970 595(;8970,595 8839,595 8839,595q8970 595 8839 595);"/>
+                        <Edge cubics="!8839 595(;8839,595 8839,684 8839,684q8839 595 8839 684);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="1.9" ty="-0.15"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#666666"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!8759 917|8759 3258!8759 3258|8905 3258!8905 3258|8905 3285!8905 3285|8746 3285!8746 3285[8733 3285 8733 3271!8733 3271|8733 904!8733 904[8733 891 8746 891!8746 891|8905 891!8905 891|8905 917!8905 917|8759 917"/>
+                    <Edge cubics="!8905 3285(;8905,3285 8746,3285 8746,3285q8905 3285 8746 3285);"/>
+                    <Edge cubics="!8746 3285(;8739,3285 8733,3279 8733,3271q8746 3285Q8733 3285q8733 3271);"/>
+                    <Edge cubics="!8733 3271(;8733,3271 8733,904 8733,904q8733 3271 8733 904);"/>
+                    <Edge cubics="!8733 904(;8733,897 8739,891 8746,891q8733 904Q8733 891q8746 891);"/>
+                    <Edge cubics="!8746 891(;8746,891 8905,891 8905,891q8746 891 8905 891);"/>
+                    <Edge cubics="!8905 891(;8905,891 8905,917 8905,917q8905 891 8905 917);"/>
+                    <Edge cubics="!8905 917(;8905,917 8759,917 8759,917q8905 917 8759 917);"/>
+                    <Edge cubics="!8759 917(;8759,917 8759,3258 8759,3258q8759 917 8759 3258);"/>
+                    <Edge cubics="!8759 3258(;8759,3258 8905,3258 8905,3258q8759 3258 8905 3258);"/>
+                    <Edge cubics="!8905 3258(;8905,3258 8905,3285 8905,3285q8905 3258 8905 3285);"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="1.9" ty="-0.15"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#666666"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!9901 917|9028 917!9028 917|9028 891!9028 891|9901 891!9901 891|9901 917"/>
+                    <Edge cubics="!9901 917(;9901,917 9028,917 9028,917q9901 917 9028 917);"/>
+                    <Edge cubics="!9028 917(;9028,917 9028,891 9028,891q9028 917 9028 891);"/>
+                    <Edge cubics="!9028 891(;9028,891 9901,891 9901,891q9028 891 9901 891);"/>
+                    <Edge cubics="!9901 891(;9901,891 9901,917 9901,917q9901 891 9901 917);"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="1.9" ty="-0.15"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#666666"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!9901 3285|9063 3285!9063 3285|9063 3258!9063 3258|9901 3258!9901 3258|9901 3285"/>
+                    <Edge cubics="!9901 3285(;9901,3285 9063,3285 9063,3285q9901 3285 9063 3285);"/>
+                    <Edge cubics="!9063 3285(;9063,3285 9063,3258 9063,3258q9063 3285 9063 3258);"/>
+                    <Edge cubics="!9063 3258(;9063,3258 9901,3258 9901,3258q9063 3258 9901 3258);"/>
+                    <Edge cubics="!9901 3258(;9901,3258 9901,3285 9901,3285q9901 3258 9901 3285);"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="折线图" centerPoint3DX="148.05" centerPoint3DY="66.3">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="25.55" ty="30.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="194.1" y="57.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="内部文字" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="27.15" ty="8.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.95" y="12.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="右边框" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.692413330078125" tx="320.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.15" y="250.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="左边框" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.692413330078125" tx="1.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.15" y="250.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="左侧数字" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="14.9" ty="30.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.55" y="55.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="横线" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="2.4" ty="116.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="259.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 729" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.08163452148438" d="1.08163452148438" tx="317.8" ty="8.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   //_root.自动存盘();
+   this._visible = 0;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="柱状图" centerPoint3DX="295.2" centerPoint3DY="67.75">
+                  <matrix>
+                    <Matrix tx="279.1" ty="36.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.1" y="31.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 726" centerPoint3DX="144.4" centerPoint3DY="104.4">
+                  <matrix>
+                    <Matrix a="0.711776733398438" d="1.04142761230469" tx="1.85" ty="0.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
+                    <DropShadowFilter angle="44.9992520943067" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="强化弹窗背景图" name="背景" centerPoint3DX="147.7" centerPoint3DY="240.6">
+                  <matrix>
+                    <Matrix a="0.792831420898438" d="0.792831420898438" ty="115.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="289.6"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (_parent.背景)
+	{
+		gotoAndStop(_parent.背景);
+	}
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0.25"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="第12帧/Layer 1/&amp;#060Group&amp;#062_18" blendMode="layer" centerPoint3DX="79.55" centerPoint3DY="19.85">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="62.45" ty="16.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.2" y="5.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="第12帧/Layer 1/&amp;#060Group&amp;#062_17" blendMode="layer" centerPoint3DX="105.85" centerPoint3DY="19.85">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="101.35" ty="16.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.2" y="5.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="第12帧/Layer 1/&amp;#060Group&amp;#062_16" blendMode="layer" centerPoint3DX="266.45" centerPoint3DY="19.85">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="218.7" ty="16.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="76.4" y="5.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMGroup>
+                  <members>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="0.625015258789063" d="0.625015258789063" tx="2.15" ty="-0.25"/>
+                      </matrix>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#CCCCCC"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="1" edges="!9890 684|9056 684!9056 684|9056 595!9056 595|9890 595!9890 595|9890 684"/>
+                        <Edge cubics="!9890 684(;9890,684 9056,684 9056,684q9890 684 9056 684);"/>
+                        <Edge cubics="!9056 684(;9056,684 9056,595 9056,595q9056 684 9056 595);"/>
+                        <Edge cubics="!9056 595(;9056,595 9890,595 9890,595q9056 595 9890 595);"/>
+                        <Edge cubics="!9890 595(;9890,595 9890,684 9890,684q9890 595 9890 684);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape isDrawingObject="true">
+                      <matrix>
+                        <Matrix a="0.625015258789063" d="0.625015258789063" tx="2.15" ty="-0.25"/>
+                      </matrix>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#CCCCCC"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!8970 595|8839 595!8839 595|8839 684!8839 684|8970 684!8970 684|8970 595"/>
+                        <Edge cubics="!8839 684(;8839,684 8970,684 8970,684q8839 684 8970 684);"/>
+                        <Edge cubics="!8970 684(;8970,684 8970,595 8970,595q8970 684 8970 595);"/>
+                        <Edge cubics="!8970 595(;8970,595 8839,595 8839,595q8970 595 8839 595);"/>
+                        <Edge cubics="!8839 595(;8839,595 8839,684 8839,684q8839 595 8839 684);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="1.9" ty="-0.15"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#666666"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!8759 917|8759 3258!8759 3258|8905 3258!8905 3258|8905 3285!8905 3285|8746 3285!8746 3285[8733 3285 8733 3271!8733 3271|8733 904!8733 904[8733 891 8746 891!8746 891|8905 891!8905 891|8905 917!8905 917|8759 917"/>
+                    <Edge cubics="!8905 3285(;8905,3285 8746,3285 8746,3285q8905 3285 8746 3285);"/>
+                    <Edge cubics="!8746 3285(;8739,3285 8733,3279 8733,3271q8746 3285Q8733 3285q8733 3271);"/>
+                    <Edge cubics="!8733 3271(;8733,3271 8733,904 8733,904q8733 3271 8733 904);"/>
+                    <Edge cubics="!8733 904(;8733,897 8739,891 8746,891q8733 904Q8733 891q8746 891);"/>
+                    <Edge cubics="!8746 891(;8746,891 8905,891 8905,891q8746 891 8905 891);"/>
+                    <Edge cubics="!8905 891(;8905,891 8905,917 8905,917q8905 891 8905 917);"/>
+                    <Edge cubics="!8905 917(;8905,917 8759,917 8759,917q8905 917 8759 917);"/>
+                    <Edge cubics="!8759 917(;8759,917 8759,3258 8759,3258q8759 917 8759 3258);"/>
+                    <Edge cubics="!8759 3258(;8759,3258 8905,3258 8905,3258q8759 3258 8905 3258);"/>
+                    <Edge cubics="!8905 3258(;8905,3258 8905,3285 8905,3285q8905 3258 8905 3285);"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="1.9" ty="-0.15"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#666666"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!9901 917|9028 917!9028 917|9028 891!9028 891|9901 891!9901 891|9901 917"/>
+                    <Edge cubics="!9901 917(;9901,917 9028,917 9028,917q9901 917 9028 917);"/>
+                    <Edge cubics="!9028 917(;9028,917 9028,891 9028,891q9028 917 9028 891);"/>
+                    <Edge cubics="!9028 891(;9028,891 9901,891 9901,891q9028 891 9901 891);"/>
+                    <Edge cubics="!9901 891(;9901,891 9901,917 9901,917q9901 891 9901 917);"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="1.9" ty="-0.15"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#666666"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!9901 3285|9063 3285!9063 3285|9063 3258!9063 3258|9901 3258!9901 3258|9901 3285"/>
+                    <Edge cubics="!9901 3285(;9901,3285 9063,3285 9063,3285q9901 3285 9063 3285);"/>
+                    <Edge cubics="!9063 3285(;9063,3285 9063,3258 9063,3258q9063 3285 9063 3258);"/>
+                    <Edge cubics="!9063 3258(;9063,3258 9901,3258 9901,3258q9063 3258 9901 3258);"/>
+                    <Edge cubics="!9901 3258(;9901,3258 9901,3285 9901,3285q9901 3258 9901 3285);"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="1.9" ty="-0.15"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FF0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!8938 1523|8938 3166!8938 3166|8872 3166!8872 3166|8872 1523!8872 1523|8938 1523"/>
+                    <Edge cubics="!8938 3166(;8938,3166 8872,3166 8872,3166q8938 3166 8872 3166);"/>
+                    <Edge cubics="!8872 3166(;8872,3166 8872,1523 8872,1523q8872 3166 8872 1523);"/>
+                    <Edge cubics="!8872 1523(;8872,1523 8938,1523 8938,1523q8872 1523 8938 1523);"/>
+                    <Edge cubics="!8938 1523(;8938,1523 8938,3166 8938,3166q8938 1523 8938 3166);"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="1.9" ty="-0.15"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FF0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!9058 2165|9058 3166!9058 3166|8992 3166!8992 3166|8992 2165!8992 2165|9058 2165"/>
+                    <Edge cubics="!9058 3166(;9058,3166 8992,3166 8992,3166q9058 3166 8992 3166);"/>
+                    <Edge cubics="!8992 3166(;8992,3166 8992,2165 8992,2165q8992 3166 8992 2165);"/>
+                    <Edge cubics="!8992 2165(;8992,2165 9058,2165 9058,2165q8992 2165 9058 2165);"/>
+                    <Edge cubics="!9058 2165(;9058,2165 9058,3166 9058,3166q9058 2165 9058 3166);"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="1.9" ty="-0.15"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FF0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!9178 1180|9178 3166!9178 3166|9113 3166!9113 3166|9113 1180!9113 1180|9178 1180"/>
+                    <Edge cubics="!9178 3166(;9178,3166 9113,3166 9113,3166q9178 3166 9113 3166);"/>
+                    <Edge cubics="!9113 3166(;9113,3166 9113,1180 9113,1180q9113 3166 9113 1180);"/>
+                    <Edge cubics="!9113 1180(;9113,1180 9178,1180 9178,1180q9113 1180 9178 1180);"/>
+                    <Edge cubics="!9178 1180(;9178,1180 9178,3166 9178,3166q9178 1180 9178 3166);"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="1.9" ty="-0.15"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FF0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!9299 1715|9299 3166!9299 3166|9233 3166!9233 3166|9233 1715!9233 1715|9299 1715"/>
+                    <Edge cubics="!9299 3166(;9299,3166 9233,3166 9233,3166q9299 3166 9233 3166);"/>
+                    <Edge cubics="!9233 3166(;9233,3166 9233,1715 9233,1715q9233 3166 9233 1715);"/>
+                    <Edge cubics="!9233 1715(;9233,1715 9299,1715 9299,1715q9233 1715 9299 1715);"/>
+                    <Edge cubics="!9299 1715(;9299,1715 9299,3166 9299,3166q9299 1715 9299 3166);"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="1.9" ty="-0.15"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FF0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!9419 1252|9419 3166!9419 3166|9354 3166!9354 3166|9354 1252!9354 1252|9419 1252"/>
+                    <Edge cubics="!9419 3166(;9419,3166 9354,3166 9354,3166q9419 3166 9354 3166);"/>
+                    <Edge cubics="!9354 3166(;9354,3166 9354,1252 9354,1252q9354 3166 9354 1252);"/>
+                    <Edge cubics="!9354 1252(;9354,1252 9419,1252 9419,1252q9354 1252 9419 1252);"/>
+                    <Edge cubics="!9419 1252(;9419,1252 9419,3166 9419,3166q9419 1252 9419 3166);"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="1.9" ty="-0.15"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FF0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!9540 2489|9540 3166!9540 3166|9474 3166!9474 3166|9474 2489!9474 2489|9540 2489"/>
+                    <Edge cubics="!9540 3166(;9540,3166 9474,3166 9474,3166q9540 3166 9474 3166);"/>
+                    <Edge cubics="!9474 3166(;9474,3166 9474,2489 9474,2489q9474 3166 9474 2489);"/>
+                    <Edge cubics="!9474 2489(;9474,2489 9540,2489 9540,2489q9474 2489 9540 2489);"/>
+                    <Edge cubics="!9540 2489(;9540,2489 9540,3166 9540,3166q9540 2489 9540 3166);"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="1.9" ty="-0.15"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FF0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!9660 2665|9660 3166!9660 3166|9595 3166!9595 3166|9595 2665!9595 2665|9660 2665"/>
+                    <Edge cubics="!9660 3166(;9660,3166 9595,3166 9595,3166q9660 3166 9595 3166);"/>
+                    <Edge cubics="!9595 3166(;9595,3166 9595,2665 9595,2665q9595 3166 9595 2665);"/>
+                    <Edge cubics="!9595 2665(;9595,2665 9660,2665 9660,2665q9595 2665 9660 2665);"/>
+                    <Edge cubics="!9660 2665(;9660,2665 9660,3166 9660,3166q9660 2665 9660 3166);"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="1.9" ty="-0.15"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FF0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!9781 3166|9715 3166!9715 3166|9715 1523!9715 1523|9781 1523!9781 1523|9781 3166"/>
+                    <Edge cubics="!9781 3166(;9781,3166 9715,3166 9715,3166q9781 3166 9715 3166);"/>
+                    <Edge cubics="!9715 3166(;9715,3166 9715,1523 9715,1523q9715 3166 9715 1523);"/>
+                    <Edge cubics="!9715 1523(;9715,1523 9781,1523 9781,1523q9715 1523 9781 1523);"/>
+                    <Edge cubics="!9781 1523(;9781,1523 9781,3166 9781,3166q9781 1523 9781 3166);"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="1.9" ty="-0.15"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FF0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!9901 1848|9901 3166!9901 3166|9836 3166!9836 3166|9836 1848!9836 1848|9901 1848"/>
+                    <Edge cubics="!9901 3166(;9901,3166 9836,3166 9836,3166q9901 3166 9836 3166);"/>
+                    <Edge cubics="!9836 3166(;9836,3166 9836,1848 9836,1848q9836 3166 9836 1848);"/>
+                    <Edge cubics="!9836 1848(;9836,1848 9901,1848 9901,1848q9836 1848 9901 1848);"/>
+                    <Edge cubics="!9901 1848(;9901,1848 9901,3166 9901,3166q9901 1848 9901 3166);"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="折线图" centerPoint3DX="148.05" centerPoint3DY="66.3">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="25.55" ty="30.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="194.1" y="57.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="内部文字" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="27.15" ty="8.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.95" y="12.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="右边框" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.692413330078125" tx="320.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.15" y="250.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="左边框" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.692413330078125" tx="1.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.15" y="250.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="左侧数字" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="14.9" ty="30.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.55" y="55.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="横线" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.62493896484375" d="0.62493896484375" tx="2.4" ty="116.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="259.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="button/Symbol 729" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.08163452148438" d="1.08163452148438" tx="317.8" ty="8.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   //_root.自动存盘();
+   this._visible = 0;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

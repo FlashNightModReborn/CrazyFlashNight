@@ -1,0 +1,856 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/宠物信息显示框" itemID="6652eecd-00002a70" linkageExportForAS="true" linkageIdentifier="宠物信息显示框" lastModified="1747826311" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="宠物信息显示框" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;358&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="Labels Layer" color="#CAD31E">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" name="等待" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" name="成功" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="10" name="删除确认" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#4DDC62" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 虚拟币支付开格子(amount, 商品编号)
+{
+	if (_root.虚拟币 >= amount)
+	{
+		if (_root.最大宠物格子数 > _root.宠物领养限制)
+		{
+			_root.虚拟币 -= amount;
+			_root.最上层发布文字提示("支付成功！");
+			text = "购买成功！";
+			_root.播放音效("收银机.mp3");
+			_root.开宠物格子();
+			_root.获取虚拟币值();
+			_parent.排列宠物图标();
+		}
+		else
+		{
+			_root.最上层发布文字提示(_root.获得翻译("超出数量限制"));
+		}
+	}
+	else
+	{
+		_root.最上层发布文字提示(_root.获得翻译("K点不足！"));
+	}
+}
+function 虚拟币支付加体力(amount, 商品编号, 格子位置号)
+{
+	if (_root.金钱 >= amount)
+	{
+		_root.金钱 -= amount;
+		_root.最上层发布文字提示(_root.获得翻译("支付成功！"));
+		text = _root.获得翻译("购买成功！");
+		_root.播放音效("收银机.mp3");
+		_root.宠物信息[宠物信息数组号][2] = 200;
+		_root.获取虚拟币值();
+		_parent.排列宠物图标();
+		gotoAndStop("成功");
+	}
+	else
+	{
+		_root.最上层发布文字提示(_root.获得翻译("金钱不足！"));
+		text = _root.获得翻译("金钱不足！");
+	}
+}
+function 宠物升级(该宠物信息, 格子位置号, 强化石数量)
+{
+	if (_root.singleSubmit("战宠灵石", 强化石数量))
+	{
+		var 新等级 = _root.宠物信息[格子位置号][1] + 1;
+		_root.宠物信息[格子位置号][1] = 新等级;
+		//_root.最上层发布文字提示(_root.获得翻译("强化成功！"));
+		//计算经验
+		var 宠物数据 = _root.宠物库[_root.宠物信息[格子位置号][0]];
+		var 宠物兵种 = 宠物数据.Identifier;
+		_root.宠物信息[格子位置号][5].宠物升级所需经验 = _root.战宠UI函数.计算战宠升级所需经验(宠物兵种,新等级);
+		// 刷新在场宠物
+		for(i=0; i<_root.宠物mc库.length; i++){
+			if(_root.宠物mc库[i].宠物属性.宠物信息数组号 == 宠物信息数组号){
+				_root.宠物升级加载(i);
+				break;
+			}
+		}
+		/*
+		var 敌人属性 = _root.敌人属性表[宠物兵种];
+		if(敌人属性.最小经验值){
+			_root.宠物信息[格子位置号][5].宠物升级所需经验 = (敌人属性.最小经验值 + ((敌人属性.最大经验值 - 敌人属性.最小经验值) / (_root.最大等级 - 1)) * 新等级) * 新等级;
+			_root.发布消息(_root.宠物信息[格子位置号][5].宠物升级所需经验 + "/" + 敌人属性.最小经验值 + "/" + 敌人属性.等级);
+		}*/
+		_root.最上层发布文字提示("战宠升级！战宠灵石 -" + 强化石数量);
+		_parent.排列宠物图标();
+	}
+	else
+	{
+		_root.最上层发布文字提示(_root.获得翻译("战宠灵石不足，无法强化！"));
+	}
+}
+function 删除宠物(该宠物信息, 格子位置号)
+{
+	_root.最上层发布文字提示(_root.获得翻译("删除成功！"));
+	_root.删除场景宠物();
+	计算返还战宠灵石 = 0;
+	if (_root.宠物信息[宠物信息数组号][5].宠物升级所需经验)
+	{
+		计算返还战宠灵石 = Math.floor(Math.sqrt(_root.宠物信息[宠物信息数组号][1]) * 0.8 * _root.宠物信息[宠物信息数组号][5].宠物升级所需经验 / 10000);
+	}
+	if (计算返还战宠灵石)
+	{
+		if (_root.singleAquire("战宠灵石",计算返还战宠灵石))
+		{
+			_root.发布消息("战宠已解散，返还战宠灵石" + 计算返还战宠灵石 + "个");
+		}
+		else
+		{
+			_root.商城已购买物品.push(['S20130922000001', '战宠灵石', '常用材料', 60, 计算返还战宠灵石]);
+			_root.发布消息("战宠已解散，返还战宠灵石" + 计算返还战宠灵石 + "个。背包已满，已存放于商城");
+		}
+	}
+	_root.宠物信息[宠物信息数组号] = [];
+	_parent.排列宠物图标();
+}
+/*function 宠物升级加载计算并移除(i)
+{//地点X = _root.gameworld[_root.控制目标]._x;
+	//地点Y = _root.gameworld[_root.控制目标]._y;
+	地点X = 0;
+	地点Y = 0;
+	var 宠物数据 = _root.宠物库[_root.宠物信息[i][0]];
+	宠物兵种 = 宠物数据.Identifier;
+	宠物等级 = _root.宠物信息[i][1];
+	宠物名字 = 宠物数据.Name + "经验计算者";
+	宠物是否为敌人 = false;
+	宠物身高 = 3;
+	宠物僵尸型敌人newname = "宠物" + i + 宠物兵种 + "经验计算者";
+	if (_root.宠物信息[i].length < 6)
+	{
+		_root.宠物信息[i].push({});
+	}
+	if (_root.宠物信息[i][5] == undefined || !_root.宠物信息[i][5] || typeof _root.宠物信息[i][5] == "number")
+	{
+		_root.宠物信息[i][5] = {};
+	}
+	if (!_root.宠物信息[i][5].宠物升级经验)
+	{
+		_root.宠物信息[i][5].宠物升级经验 = 0;
+	}
+	宠物属性 = _root.宠物信息[i][5];
+	宠物属性.宠物库数组号 = _root.宠物信息[i][0];
+	宠物属性.宠物信息数组号 = i;
+	宠物属性.宠物刷新栏位 = this;
+	//_root.gameworld.attachMovie(宠物兵种,宠物僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{等级:this.宠物等级, 名字:this.宠物名字, 宠物属性:this.宠物属性, 是否为敌人:this.宠物是否为敌人, 身高:this.宠物身高, _x:地点X, _y:地点Y});
+	_root.加载游戏世界人物(宠物兵种,宠物僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{等级:this.宠物等级, 名字:this.宠物名字, 宠物属性:this.宠物属性, 是否为敌人:this.宠物是否为敌人, 身高:this.宠物身高, _x:地点X, _y:地点Y});
+	_root.gameworld[宠物僵尸型敌人newname].onEnterFrame = function()
+	{
+		if (this.最小经验值 > 0 || this.最大经验值 > 0)
+		{
+			_root.宠物信息[this.宠物属性.宠物信息数组号][5].宠物升级所需经验 = (this.最小经验值 + ((this.最大经验值 - this.最小经验值) / (_root.最大等级 - 1)) * this.等级) * this.等级;//_root.发布消息(_root.宠物信息[this.宠物属性.宠物信息数组号][5].宠物升级所需经验 + "/" + this.最小经验值 + "/" + this.等级);
+			this.removeMovieClip();
+		}
+	};
+	_root.gameworld[宠物僵尸型敌人newname].onUnload = function()
+	{
+		this.宠物属性.宠物刷新栏位._parent.排列宠物图标();
+	};
+}*/
+stop();
+_root.全部翻译(this);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="进阶方案" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="22" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#DE8BBB">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/通用按钮2" centerPoint3DX="214" centerPoint3DY="15.95">
+                  <matrix>
+                    <Matrix tx="168.2" ty="4.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_root.最大宠物出战数 = _root.战宠UI函数.计算战宠最大出战数();
+	if (_root.宠物信息[_parent.宠物信息数组号][4] == 0)
+	{
+		显示文字 = _root.获得翻译("出战");
+		if (_root.宠物mc库.length >= _root.最大宠物出战数)
+		{
+			显示文字 = _root.获得翻译("出战数达到上限");
+		}
+	}
+	else if (_root.宠物信息[_parent.宠物信息数组号][4] == 1)
+	{
+		显示文字 = _root.获得翻译("不出战");
+	}
+	else
+	{
+		this._visible = 0;
+	}
+	this.onRelease = _root.战宠UI函数.出战按钮函数;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#3BD0F0">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="68" height="15.85" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="71.05" ty="36.75"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>体力：</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#00FFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#A5F8EE">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="33.05" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="38.9" ty="36.9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>LV.</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#C6E81B">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 847" centerPoint3DX="358.8" centerPoint3DY="25.95">
+                  <matrix>
+                    <Matrix tx="346.3" ty="12.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	_parent.gotoAndStop("删除确认");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#4C81EF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="74" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="259.75" ty="7.1"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>删除</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="强化" color="#83BDC9" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="214" centerPoint3DY="44.1">
+                  <matrix>
+                    <Matrix tx="168.2" ty="32.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	var 当前宠物信息 = _root.宠物信息[_parent.宠物信息数组号];
+	消耗个数 = 当前宠物信息[1] * 2;
+	if (isNaN(当前宠物信息[5].宠物升级经验)){
+		当前宠物信息[5].宠物升级经验 = 0;
+	}
+	if (isNaN(当前宠物信息[5].宠物升级所需经验))
+	{
+		var 宠物数据 = _root.宠物库[当前宠物信息[0]];
+		var 宠物兵种 = 宠物数据.Identifier;
+		当前宠物信息[5].宠物升级所需经验 = _root.战宠UI函数.计算战宠升级所需经验(宠物兵种, 当前宠物信息[1]);
+	}
+	消耗个数 += Math.floor(当前宠物信息[5].宠物升级所需经验 / 10000);
+	显示文字 = _root.获得翻译("强化");
+	if (当前宠物信息[1] < _root.等级限制)
+	{
+		this._visible = 1;
+	}
+	else if (当前宠物信息[1] >= _root.等级限制)
+	{
+		this._visible = 0;
+	}
+	else
+	{
+		this._visible = 0;
+	}
+}
+on (rollOver) {
+	var 当前宠物信息 = _root.宠物信息[_parent.宠物信息数组号];
+	if (isNaN(当前宠物信息[5].宠物升级经验)){
+		当前宠物信息[5].宠物升级经验 = 0;
+	}
+	if (isNaN(当前宠物信息[5].宠物升级所需经验))
+	{
+		var 宠物数据 = _root.宠物库[当前宠物信息[0]];
+		var 宠物兵种 = 宠物数据.Identifier;
+		当前宠物信息[5].宠物升级所需经验 = _root.战宠UI函数.计算战宠升级所需经验(宠物兵种, 当前宠物信息[1]);
+	}
+	var str = 当前宠物信息[5].宠物升级经验 + " / " + 当前宠物信息[5].宠物升级所需经验 + "\n本次强化需要消耗战宠灵石个数为" + 消耗个数;
+	_root.注释(200, str);
+}
+on (rollOut) {
+	_root.注释结束();
+}
+on (release) {
+	if (_root.宠物信息[_parent.宠物信息数组号][1] < _root.等级限制)
+	{
+		_parent.宠物升级(_root.宠物信息[_parent.宠物信息数组号],_parent.宠物信息数组号,消耗个数);
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#D05E63">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 60" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.902069091796875" d="0.902069091796875" tx="23.5" ty="28.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="22" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#7BAFAF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 843" name="宠物头像" centerPoint3DX="47.4" centerPoint3DY="50.55">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="6.05" ty="9.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this.当前宠物信息 = _root.宠物信息[_parent.宠物信息数组号];
+	this.宠物数据 = _root.宠物库[this.当前宠物信息[0]];
+	/*if(this.宠物数据.Promo.tion){
+	if(!this.当前宠物信息[5]){
+	this.当前宠物信息[5] = {};
+	}
+	this.当前宠物属性 = this.当前宠物信息[5];
+	this.进阶方案 = {};
+	this.宠物进阶数组 = this.宠物数据.Promotion.Item;
+	for(var i = 0;i <  this.宠物进阶数组.length;i++){
+	this.进阶方案[ this.宠物进阶数组[i]] = _root.战宠进阶函数[宠物进阶数组[i]];
+	this.初始化 = this.进阶方案[this.宠物进阶数组[i]].初始化;
+	this.初始化();
+	}
+	}*/
+	gotoAndStop(_parent.宠物库数组号 + 1);
+}
+on (release) {
+	if (this.宠物数据.Promotion)
+	{
+		_root.宠物信息界面.宠物进阶页.removeMovieClip();
+		var 当前进阶方案 = _root.宠物信息界面.attachMovie("宠物进阶页", "宠物进阶页", _root.宠物信息界面.getNextHighestDepth(), {宠物信息数组号:_parent.宠物信息数组号});
+		当前进阶方案._x = 300;
+		当前进阶方案._y = 20;
+	}
+	/*if(this.进阶方案){
+	this.条件 = this.进阶方案[this.宠物进阶数组[0]].条件;
+	this.执行 = this.进阶方案[ this.宠物进阶数组[0]].执行;
+	if(this.条件()){
+	this.执行()
+	}else if(this.失败提示){
+	_root.发布消息(this.失败提示);
+	}
+	}*/ 
+	/*if(_parent.宠物库数组号==78){
+	if(_root.宠物信息[_parent.宠物信息数组号][5].发色=="橙"){
+	_root.宠物信息[_parent.宠物信息数组号][5].发色="白";
+	}else if(_root.宠物信息[_parent.宠物信息数组号][5].发色=="白"){
+	_root.宠物信息[_parent.宠物信息数组号][5].发色="橙";
+	}else{
+	_root.宠物信息[_parent.宠物信息数组号][5].发色="白";
+	}
+	   _root.删除场景宠物();
+	   _root.加载宠物(_root.gameworld[_root.控制目标]._x,_root.gameworld[_root.控制目标]._y);
+	this.JK.gotoAndStop(_root.宠物信息[_parent.宠物信息数组号][5].发色);
+	   }*/
+}
+on (rollOver) {
+	if (this.宠物数据.Promotion)
+	{
+		_root.注释(150,"点击查看战宠进阶方案");
+	}
+	/*if(this.进阶方案){
+	this.描述 =  this.进阶方案[this.宠物进阶数组[0]].描述;
+	if(this.描述()){
+	_root.注释(150,this.描述());
+	}
+	}*/ 
+	/*if(_parent.宠物库数组号==78){
+	if(!_root.宠物信息[_parent.宠物信息数组号][5].发色 || _root.宠物信息[_parent.宠物信息数组号][5].发色==undefined){
+	_root.宠物信息[_parent.宠物信息数组号][5].发色 = "橙";
+	}
+	   _root.注释(150,"染发：当前为"+_root.宠物信息[_parent.宠物信息数组号][5].发色+"发");
+	}*/
+}
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="10" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="275.4" height="15.85" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="41.35" ty="5.05"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>确认要永久删除该宠物吗？</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FF0000"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#B659E5">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="308.85" centerPoint3DY="44.1">
+                  <matrix>
+                    <Matrix tx="263.05" ty="32.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	消耗个数 = 1;
+	显示文字 = _root.获得翻译("补充体力");
+	if (_root.宠物信息[_parent.宠物信息数组号][2] < 100)
+	{
+		this._visible = 1;
+	}
+	else if (_root.宠物信息[_parent.宠物信息数组号][2] >= 100)
+	{
+		this._visible = 0;
+	}
+	else
+	{
+		this._visible = 0;
+	}
+}
+on (rollOver) {
+	_root.注释(100,_root.获得翻译("消耗1000金币回满体力。"));
+}
+on (rollOut) {
+	_root.注释结束();
+}
+on (release) {
+	if (_root.宠物信息[_parent.宠物信息数组号][2] < 100)
+	{
+		_parent.虚拟币支付加体力(1000,"S20130530000017",_parent.宠物信息数组号);
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="179.7" centerPoint3DY="29.95">
+                  <matrix>
+                    <Matrix tx="133.9" ty="18.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	_root.领养宠物界面._visible = true;
+	_root.领养宠物界面.格子位置号 = _parent.宠物信息数组号;
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("领养宠物");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="93.05" centerPoint3DY="28.95">
+                  <matrix>
+                    <Matrix tx="47.25" ty="17.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	打折 = _root.战宠格子折扣;
+	显示文字 = _root.获得翻译("解锁");//价格 = 500 * (_root.宠物领养限制 - 4) * 打折;//
+	价格 = 500;
+}
+on (release) {
+	_parent.虚拟币支付开格子(价格,"S20130530000016");
+}
+on (rollOver) {
+	_root.注释(100,_root.获得翻译("本次解锁宠物格子需要K点:") + 价格);
+}
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="109.6" centerPoint3DY="44.1">
+                  <matrix>
+                    <Matrix tx="63.8" ty="32.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	_parent.删除宠物(_root.宠物信息[_parent.宠物信息数组号],_parent.宠物信息数组号);
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("确认");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#42BDAE">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="42" height="15.85" isSelectable="false" variableName="宠物体力">
+                  <matrix>
+                    <Matrix tx="135.6" ty="36.75"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#00FFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#E9A3D4">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="26.95" height="15.85" isSelectable="false" variableName="宠物等级">
+                  <matrix>
+                    <Matrix tx="76" ty="36.75"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#869DA4">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="100" height="15.85" isSelectable="false" variableName="宠物名">
+                  <matrix>
+                    <Matrix tx="59" ty="8.3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="113" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="20.5" ty="9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>连接中！</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="223.45" height="15.85" isSelectable="false" variableName="text">
+                  <matrix>
+                    <Matrix tx="20.5" ty="9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>成功！</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="249.6" centerPoint3DY="44.1">
+                  <matrix>
+                    <Matrix tx="203.8" ty="32.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	_parent.gotoAndStop(1);
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("取消");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#99FC8A">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.03656005859375" c="-0.218460083007813" d="0" tx="179.2" ty="30.05"/>
+                        </matrix>
+                        <GradientEntry color="#31322C" ratio="0"/>
+                        <GradientEntry color="#111111" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!7163 1200|4 1200!4 1200|4 2!4 2|7163 2!7163 2|7163 1200"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="22" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.03656005859375" c="-0.2183837890625" d="0" tx="179.1" ty="30.05"/>
+                        </matrix>
+                        <GradientEntry color="#31322C" ratio="0"/>
+                        <GradientEntry color="#111111" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!7160 1200|3 1200!3 1200|3 2!3 2|7160 2!7160 2|7160 1200"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,44 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="折线图背景" itemID="672871c6-00000296" symbolType="graphic" lastModified="1730703848">
+  <timeline>
+    <DOMTimeline name="折线图背景">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!7684 2287|0 2287!0 2287|0 0!0 0|7684 0!7684 0|7684 2287"/>
+                    <Edge cubics="!7684 2287(;7684,2287 0,2287 0,2287q7684 2287 0 2287);"/>
+                    <Edge cubics="!0 2287(;0,2287 0,0 0,0q0 2287 0 0);"/>
+                    <Edge cubics="!0 0(;0,0 7684,0 7684,0q0 0 7684 0);"/>
+                    <Edge cubics="!7684 0(;7684,0 7684,2287 7684,2287q7684 0 7684 2287);"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!7684 2287|0 2287!0 2287|0 0!0 0|7684 0!7684 0|7684 2287"/>
+                    <Edge cubics="!7684 2287(;7684,2287 0,2287 0,2287q7684 2287 0 2287);"/>
+                    <Edge cubics="!0 2287(;0,2287 0,0 0,0q0 2287 0 0);"/>
+                    <Edge cubics="!0 0(;0,0 7684,0 7684,0q0 0 7684 0);"/>
+                    <Edge cubics="!7684 0(;7684,0 7684,2287 7684,2287q7684 0 7684 2287);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
