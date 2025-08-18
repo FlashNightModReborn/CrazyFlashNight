@@ -33,6 +33,8 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.StuckDete
         // 创建组件专用数据命名空间
         var data:Object = watchDogData[NAMESPACE] = {};
         
+        _root.服务器.发布服务器消息("init " + target._name)
+
         // 初始化检测数据
         data.stunCount = 0;      // 连续"硬直中"检测次数
         data.stuckCount = 0;     // 连续坐标不变的检测次数
@@ -147,7 +149,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.StuckDete
      */
     private static function _recoverFromStuck(target:MovieClip, data:Object):Void {
         // 添加日志插桩
-        // _root.服务器.发布服务器消息("[StuckDetector] 触发受击硬直卡死检测 - 目标: " + target + ", HP: " + target.hp + ", 状态: " + target.状态 + ", 硬直中: " + target.硬直中 + ", 浮空: " + target.浮空);
+        _root.服务器.发布服务器消息("[StuckDetector] 触发受击硬直卡死检测 - 目标: " + target + ", HP: " + target.hp + ", 状态: " + target.状态 + ", 硬直中: " + target.硬直中 + ", 浮空: " + target.浮空);
         
         // 调用恢复处理方法
         onStuckDetected(target);
@@ -198,10 +200,10 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.StuckDete
      */
     public static function onStuckDetected(target:MovieClip):Void {
         // 添加日志插桩 - 恢复操作
-        // _root.服务器.发布服务器消息("[StuckDetector] 执行恢复操作 - 目标: " + target + ", knockStiffID: " + target.knockStiffID + ", flyID: " + target.flyID);
+        _root.服务器.发布服务器消息("[StuckDetector] 执行恢复操作 - 目标: " + target + ", knockStiffID: " + target.knockStiffID + ", flyID: " + target.flyID);
         
-        // if(target.硬直中) printStuckTaskInfo(target.knockStiffID);
-        // else if(target.浮空) printStuckTaskInfo(target.flyID);
+        if(target.硬直中) printStuckTaskInfo(target.knockStiffID);
+        else if(target.浮空) printStuckTaskInfo(target.flyID);
 
         // 解除硬直状态
         target.硬直中 = false;
@@ -212,7 +214,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.StuckDete
             target.状态改变("空手站立");
         } else {
             var dispatcher:EventDispatcher = target.dispatcher;
-            // _root.服务器.发布服务器消息("[StuckDetector] 发布击杀事件 - 目标: " + target);
+            _root.服务器.发布服务器消息("[StuckDetector] 发布击杀事件 - 目标: " + target);
             dispatcher.publish("kill", target);
         }
         

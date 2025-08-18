@@ -22,7 +22,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogUpdater {
         // 初始化各监视组件
         // 1. 硬直卡死检测组件
         // StiffDetector.init(target, watchDogData); // 暂时禁用，测试中未触发
-        StuckDetector.init(target, watchDogData);
+        // StuckDetector.init(target, watchDogData);
 
         // 2. 0血不死检测组件
         ZeroHPDetector.init(target, watchDogData);
