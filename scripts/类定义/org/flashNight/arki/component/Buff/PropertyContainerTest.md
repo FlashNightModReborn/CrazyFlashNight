@@ -264,7 +264,9 @@ org.flashNight.arki.component.Buff.test.PropertyContainerTest.runAllTests();
     ✓ A calc = 11 (Expected: 11)
     ✓ B calc = 60 (Expected: 60)
     ✓ A stays frozen (plain data) = 11 (Expected: 11)
-  ❌ FAILED: Isolation across containers failed: B changes continue - Expected: 65, Got: 75, Diff: 10
+    ✓ B changes continue = 75 (Expected: 75)
+      Details: ADD 在固定类型顺序下先于 MULTIPLY： (20 + 5) * 3 = 75
+  ✅ PASSED
 
 🧪 Test 44: External write behavior: before vs after finalize
     ✓ Before finalize external set = 60 (Expected: 60)
@@ -274,23 +276,23 @@ org.flashNight.arki.component.Buff.test.PropertyContainerTest.runAllTests();
 
 === PropertyContainer Enhanced Test Suite Results ===
 📊 Total tests: 44
-✅ Passed: 43
-❌ Failed: 1
-📈 Success rate: 98%
-⚠️  1 test(s) failed. Please review the failures above.
+✅ Passed: 44
+❌ Failed: 0
+📈 Success rate: 100%
+🎉 All tests passed! System is functioning correctly.
 ====================================================
 
 === Performance Test Results ===
 📊 Many Buffs:
    buffCount: 100
-   addTime: 3
+   addTime: 2
    calcTime: 3
    avgCalcTime: 0.03
 
 📊 Frequent Access:
    accessCount: 10000
-   totalTime: 86
-   avgAccessTime: 0.0086
+   totalTime: 69
+   avgAccessTime: 0.0069
 
 📊 Cache Efficiency:
    firstCompute: 1

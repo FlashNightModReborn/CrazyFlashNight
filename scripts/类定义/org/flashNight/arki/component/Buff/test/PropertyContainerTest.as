@@ -1434,7 +1434,12 @@ class org.flashNight.arki.component.Buff.test.PropertyContainerTest {
             // 给 B 继续加 buff，应不影响 A（A 已变普通数据属性）
             cB.addBuff(new PodBuff("B", BuffCalculationType.ADD, 5)); // 65
             assertCalculation("A stays frozen (plain data)", 11, t.A, "");
-            assertCalculation("B changes continue", 65, t.B, "");
+            assertCalculation(
+            "B changes continue",
+            75,
+            t.B,
+            "ADD 在固定类型顺序下先于 MULTIPLY： (20 + 5) * 3 = 75"
+            );
 
             cA.destroy();
             cB.destroy();

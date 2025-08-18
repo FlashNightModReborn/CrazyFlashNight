@@ -295,6 +295,13 @@ class org.flashNight.arki.component.Buff.PropertyContainer {
         this._accessor.invalidate(); // 通知PropertyAccessor重新计算
     }
     
+    // 建议：容器持有底层 accessor 的引用，例如 this._accessor
+    public function finalizeToPlainProperty():Void {
+        if (this._accessor != null) {
+            this._accessor.detach();  // 固化“当前可见值”为普通数据属性，并与 target 解耦
+        }
+    }
+
     /**
      * 销毁容器
      */
