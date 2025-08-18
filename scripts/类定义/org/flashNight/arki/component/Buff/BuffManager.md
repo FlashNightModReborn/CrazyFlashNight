@@ -36,7 +36,8 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
   ✅ PASSED
 
 🧪 Test 8: MetaBuff State Transitions & Calculations
-  ❌ FAILED: MetaBuff state transitions failed: Calculation mismatch for Frame 3 calculation: expected 75, got 20
+  ✓ State transitions: 75 → 75 → 75 → 20 (expired)
+  ✅ PASSED
 
 🧪 Test 9: MetaBuff Dynamic Injection
   ✓ Dynamic injection: 120 → 198
@@ -91,7 +92,8 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
   ✅ PASSED
 
 🧪 Test 20: PropertyContainer Rebuild Accuracy
-  ❌ FAILED: PropertyContainer rebuild accuracy failed: Calculation mismatch for prop2 after rebuild: expected 360, got 312
+  ✓ Container rebuild: accurate calculations maintained
+  ✅ PASSED
 
 🧪 Test 21: Concurrent Property Updates
   ✓ Concurrent updates handled correctly
@@ -122,7 +124,7 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
   ✅ PASSED
 
 🧪 Test 27: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 102ms
+  ✓ Performance: 100 buffs, 100 updates in 88ms
   ✅ PASSED
 
 🧪 Test 28: Memory and Calculation Consistency
@@ -135,10 +137,10 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
   ✅ PASSED
 
 🧪 Test 30: unmanageProperty(finalize) then rebind uses plain value as base
-  ❌ FAILED: Unmanage+Rebind failed: Calculation mismatch for rebind base=123 then +1000: expected 1123, got 1173
+  ✅ PASSED
 
 🧪 Test 31: destroy() finalizes all managed properties
-  ❌ FAILED: Destroy finalize-all failed: Calculation mismatch for finalized value is kept: expected 40, got 20
+  ✅ PASSED
 
 🧪 Test 32: Base value: zero vs undefined
   ✅ PASSED
@@ -155,10 +157,10 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
 
 === Calculation Accuracy Test Results ===
 📊 Total tests: 35
-✅ Passed: 31
-❌ Failed: 4
-📈 Success rate: 89%
-⚠️  4 test(s) failed. Please review calculation issues above.
+✅ Passed: 35
+❌ Failed: 0
+📈 Success rate: 100%
+🎉 All calculation tests passed! BuffManager calculations are accurate.
 ==============================================
 
 === Calculation Performance Results ===
@@ -173,7 +175,7 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 102ms
-   avgUpdateTime: 1.02ms per update
+   totalTime: 88ms
+   avgUpdateTime: 0.88ms per update
 
 =======================================
