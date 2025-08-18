@@ -124,7 +124,7 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
   ✅ PASSED
 
 🧪 Test 27: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 88ms
+  ✓ Performance: 100 buffs, 100 updates in 97ms
   ✅ PASSED
 
 🧪 Test 28: Memory and Calculation Consistency
@@ -137,7 +137,7 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
   ✅ PASSED
 
 🧪 Test 30: unmanageProperty(finalize) then rebind uses plain value as base
-  ✅ PASSED
+  ❌ FAILED: Unmanage+Rebind failed: Calculation mismatch for rebind uses plain base(123) + existing Pod(+50) + new Pod(+1000): expected 1173, got 1123
 
 🧪 Test 31: destroy() finalizes all managed properties
   ✅ PASSED
@@ -157,16 +157,16 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
 
 === Calculation Accuracy Test Results ===
 📊 Total tests: 35
-✅ Passed: 35
-❌ Failed: 0
-📈 Success rate: 100%
-🎉 All calculation tests passed! BuffManager calculations are accurate.
+✅ Passed: 34
+❌ Failed: 1
+📈 Success rate: 97%
+⚠️  1 test(s) failed. Please review calculation issues above.
 ==============================================
 
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 12ms
+   calculationTime: 11ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -175,7 +175,7 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 88ms
-   avgUpdateTime: 0.88ms per update
+   totalTime: 97ms
+   avgUpdateTime: 0.97ms per update
 
 =======================================

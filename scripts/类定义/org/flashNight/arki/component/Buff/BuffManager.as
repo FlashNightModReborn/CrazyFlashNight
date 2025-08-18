@@ -47,21 +47,18 @@ class org.flashNight.arki.component.Buff.BuffManager {
         }
     }
     
-    // =========================
-    // 对外 API
-    // =========================
-    
     /**
-     * 添加Buff（支持 MetaBuff 和 PodBuff）
+     * 新增Buff（支持 Meta / Pod）
+     * - 同 ID：改为“同步移除旧实例”，避免 pendingRemovals 误删新实例
      */
     public function addBuff(buff:IBuff, buffId:String):String {
         if (!buff) return null;
         
         var finalId:String = buffId || buff.getId();
         
-        // 如果已存在同ID的Buff，先移除
+        // 如果已存在同ID的Buff，先同步移除旧实例（避免 pending 误伤新实例）
         if (buffId && this._idMap[buffId]) {
-            this.removeBuff(buffId);
+            this._removeByIdImmediate(buffId);
         }
 
         this._buffs.push(buff);
@@ -88,12 +85,28 @@ class org.flashNight.arki.component.Buff.BuffManager {
         return finalId;
     }
 
+
+    // 同步移除指定 ID（用于同 ID 替换，避免 pending 删除误伤新实例）
+    private function _removeByIdImmediate(buffId:String):Void {
+        var old:IBuff = this._idMap[buffId];
+        if (!old) return;
+        if (old.isPod()) {
+            this._removePodBuff(buffId);
+        } else {
+            this._removeMetaBuff(MetaBuff(old));
+        }
+    }
+    
     /**
      * 移除Buff（延迟处理，避免迭代冲突）
      */
     public function removeBuff(buffId:String):Boolean {
         if (this._idMap[buffId]) {
-            this._pendingRemovals.push(buffId);
+            var exists:Boolean = false;
+            for (var k:Number = 0; k < this._pendingRemovals.length; k++) {
+                if (this._pendingRemovals[k] == buffId) { exists = true; break; }
+            }
+            if (!exists) this._pendingRemovals.push(buffId);
             this._markDirty();
             return true;
         }
@@ -112,11 +125,14 @@ class org.flashNight.arki.component.Buff.BuffManager {
             }
         }
         
-        // 再移除剩余的独立 PodBuff
+        // 再移除剩余的独立 PodBuff（走统一逻辑以触发回调）
         for (var j:Number = this._buffs.length - 1; j >= 0; j--) {
             var podBuff:IBuff = this._buffs[j];
-            if (podBuff) {
-                podBuff.destroy();
+            if (podBuff && podBuff.isPod()) {
+                var pid:String = podBuff.getId();
+                if (!this._injectedPodBuffs[pid]) {
+                    this._removePodBuff(pid);
+                }
             }
         }
         
@@ -124,6 +140,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
         this._idMap = {};
         this._metaBuffInjections = {};
         this._injectedPodBuffs = {};
+        this._dirtyProps = {};
         
         this._markDirty();
         // 不销毁容器：仅清空所有容器的 buffs 并刷新为 base
@@ -153,11 +170,11 @@ class org.flashNight.arki.component.Buff.BuffManager {
         
         // 4. 重新分配（不销毁容器）
         if (this._isDirty) {
-            // 增量优先：如果有具体脏属性，仅确保这些属性存在
             if (this._hasAnyDirty()) {
                 for (var prop:String in this._dirtyProps) {
                     ensurePropertyContainerExists(prop);
                 }
+                this._redistributeDirtyProps(this._dirtyProps);
                 this._dirtyProps = {};
             } else {
                 // 兜底：为当前活跃 Pod 的属性确保容器
@@ -170,8 +187,8 @@ class org.flashNight.arki.component.Buff.BuffManager {
                     }
                 }
                 for (var p:String in affected) ensurePropertyContainerExists(p);
+                this._redistributePodBuffs();
             }
-            this._redistributePodBuffs();
             this._isDirty = false;
         }
     }
@@ -196,14 +213,30 @@ class org.flashNight.arki.component.Buff.BuffManager {
         }
         delete this._propertyContainers[propertyName];
         delete this._dirtyProps[propertyName];
+        
+        // 同步清理该属性上的独立 Pod（注入 Pod 交由 Meta 生命周期维护）
+        for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
+            var b:IBuff = this._buffs[i];
+            if (b && b.isPod()) {
+                var pb:PodBuff = PodBuff(b);
+                if (pb.getTargetProperty() == propertyName) {
+                    var bid:String = pb.getId();
+                    if (!this._injectedPodBuffs[bid]) {
+                        this._removePodBuff(bid);
+                    }
+                }
+            }
+        }
+        this._markDirty();
     }
 
     /**
-     * 管理器销毁：默认 finalize 全部属性，保留最终可见值为普通属性
+     * 销毁（用于宿主释放）
      */
     public function destroy():Void {
-        // 清空所有 Buff，但不销毁属性容器
+        // 先清所有Buff
         this.clearAllBuffs();
+        
         // 将现存容器 finalize 成普通数据属性，并解除管理
         this._finalizeAllProperties();
         this._propertyContainers = {};
@@ -251,7 +284,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
     }
 
     /**
-     * 处理待移除列表
+     * 处理延迟移除（包括注入 Pod 的关系维护）
      */
     private function _processPendingRemovals():Void {
         for (var i:Number = 0; i < this._pendingRemovals.length; i++) {
@@ -304,7 +337,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
                 }
                 
                 // 如果 MetaBuff 死亡，移除它
-                if (!stateInfo.alive) {
+                if (!metaBuff.isActive()) {
                     this._removeMetaBuff(metaBuff);
                 }
             }
@@ -336,6 +369,15 @@ class org.flashNight.arki.component.Buff.BuffManager {
             // 记录注入关系
             injectedIds.push(podId);
             this._injectedPodBuffs[podId] = metaId;
+            
+            // （可选）让 Meta 维护自身注入列表
+            if (typeof metaBuff["recordInjectedBuffId"] == "function") {
+                metaBuff["recordInjectedBuffId"](podId);
+            }
+            // 触发新增回调
+            if (this._onBuffAdded) {
+                this._onBuffAdded(podId, podBuff);
+            }
         }
         
         // 记录该 MetaBuff 注入的所有 PodBuff
@@ -381,6 +423,18 @@ class org.flashNight.arki.component.Buff.BuffManager {
             }
         }
         
+        // 若为注入 Pod，同步 Meta 内部记录
+        var parentMetaId:String = this._injectedPodBuffs[podId];
+        if (parentMetaId) {
+            var metaRef:IBuff = this._idMap[parentMetaId];
+            if (metaRef && !metaRef.isPod()) {
+                var metaObj:MetaBuff = MetaBuff(metaRef);
+                if (typeof metaObj["removeInjectedBuffId"] == "function") {
+                    metaObj["removeInjectedBuffId"](podId);
+                }
+            }
+        }
+        
         // 清理映射
         delete this._idMap[podId];
         delete this._injectedPodBuffs[podId];
@@ -414,10 +468,10 @@ class org.flashNight.arki.component.Buff.BuffManager {
         // 清理映射
         delete this._idMap[metaId];
         
-        // 销毁 Meta
+        // 销毁
         metaBuff.destroy();
         
-        // 回调
+        // 触发回调
         if (this._onBuffRemoved) {
             this._onBuffRemoved(metaId, metaBuff);
         }
@@ -463,8 +517,37 @@ class org.flashNight.arki.component.Buff.BuffManager {
     }
 
     /**
-     * 重新分配 PodBuff 到 PropertyContainer（不会销毁/创建容器）
+     * 仅重分配给定脏属性集合下的容器：先清空这些容器，再把活跃 Pod 归位到对应容器，并仅对这些容器重算
      */
+    private function _redistributeDirtyProps(dirty:Object):Void {
+        // 1) 清该集合内容器
+        for (var prop:String in dirty) {
+            var c:PropertyContainer = this._propertyContainers[prop];
+            if (c) c.clearBuffs(false);
+        }
+        // 2) 将活跃 Pod 按属性归位（仅目标在 dirty 内）
+        for (var i:Number = 0; i < this._buffs.length; i++) {
+            var buff:IBuff = this._buffs[i];
+            if (buff && buff.isPod() && buff.isActive()) {
+                var pb:PodBuff = PodBuff(buff);
+                var tp:String = pb.getTargetProperty();
+                if (dirty[tp]) {
+                    var pc:PropertyContainer = ensurePropertyContainerExists(tp);
+                    pc.addBuff(pb);
+                }
+            }
+        }
+        // 3) 只让脏属性容器触发重算
+        for (var prop2:String in dirty) {
+            var c2:PropertyContainer = this._propertyContainers[prop2];
+            if (c2 && typeof c2["forceRecalculate"] == "function") {
+                c2["forceRecalculate"]();
+            } else if (c2) {
+                // 回退：调用一次 clear+重加也会触发重算，已在上面完成
+            }
+        }
+    }
+    
     private function _redistributePodBuffs():Void {
         // 清空所有 PropertyContainer
         for (var propName:String in this._propertyContainers) {
@@ -478,63 +561,57 @@ class org.flashNight.arki.component.Buff.BuffManager {
         for (var i:Number = 0; i < this._buffs.length; i++) {
             var buff:IBuff = this._buffs[i];
             if (buff && buff.isPod() && buff.isActive()) {
-                var podBuff:PodBuff = PodBuff(buff);
-                var targetProp:String = podBuff.getTargetProperty();
-                var pc:PropertyContainer = ensurePropertyContainerExists(targetProp);
-                pc.addBuff(podBuff);
+                var pod:PodBuff = PodBuff(buff);
+                var prop:String = pod.getTargetProperty();
+                var c:PropertyContainer = ensurePropertyContainerExists(prop);
+                c.addBuff(pod);
             }
         }
         
-        // 触发重新计算
-        for (var prop:String in this._propertyContainers) {
-            var container2:PropertyContainer = this._propertyContainers[prop];
-            if (container2) {
-                container2.forceRecalculate();
+        // 触发容器重算
+        for (var pn:String in this._propertyContainers) {
+            var c2:PropertyContainer = this._propertyContainers[pn];
+            if (c2) {
+                if (typeof c2["forceRecalculate"] == "function") {
+                    c2["forceRecalculate"]();
+                } else {
+                    // 容器内部添加 Pod 时应已触发重算，这里仅兜底
+                }
             }
         }
     }
-    
-    /**
-     * 创建 PropertyContainer（保持单入口）
-     */
-    private function _createPropertyContainer(propertyName:String):Void {
-        // 使用 ensurePropertyContainerExists 替代直接创建（保持单入口）
-        ensurePropertyContainerExists(propertyName);
+
+    // ====== 旧式容器生命周期封装（保留以兼容老调用） ======
+    private function _createPropertyContainer(propName:String, baseValue:Number):PropertyContainer {
+        var c:PropertyContainer = this._propertyContainers[propName];
+        if (c) return c;
+        c = new PropertyContainer(this._target, propName, baseValue, this._onPropertyChanged);
+        this._propertyContainers[propName] = c;
+        return c;
     }
 
-    /**
-     * 显式销毁某属性的容器（仅在真正需要彻底清理时调用）
-     */
-    private function _destroyPropertyContainer(propertyName:String):Void {
-        var container:PropertyContainer = this._propertyContainers[propertyName];
-        if (container) {
-            container.destroy();
-            delete this._propertyContainers[propertyName];
-        }
-    }
-
-    /**
-     * （旧）清理所有容器 —— 现在默认改为 finalize+解除管理
-     */
-    private function _cleanupAllPropertyContainers():Void {
-        for (var propName:String in this._propertyContainers) {
-            var c:PropertyContainer = this._propertyContainers[propName];
-            if (!c) continue;
+    private function _destroyPropertyContainer(propName:String, finalize:Boolean):Void {
+        var c:PropertyContainer = this._propertyContainers[propName];
+        if (!c) return;
+        if (finalize) {
             if (typeof c["finalizeToPlainProperty"] == "function") {
                 c["finalizeToPlainProperty"]();
-            } else if (c["_accessor"] && typeof c["_accessor"].detach == "function") {
-                c["_accessor"].detach();
             } else {
                 c.destroy();
             }
-            delete this._propertyContainers[propName];
+        } else {
+            c.destroy();
         }
+        delete this._propertyContainers[propName];
     }
 
-    // =========================
-    // 工具 & 调试
-    // =========================
-    
+    private function _cleanupAllPropertyContainers(finalize:Boolean):Void {
+        for (var propName:String in this._propertyContainers) {
+            _destroyPropertyContainer(propName, finalize);
+        }
+        this._propertyContainers = {};
+    }
+
     /**
      * 获取当前激活Buff数量（Meta + 独立Pod；注入 Pod 计入 Pod）
      */
@@ -567,45 +644,32 @@ class org.flashNight.arki.component.Buff.BuffManager {
      */
     public function getDebugInfo():Object {
         var info:Object = {
-            totalBuffs: this._buffs.length,
-            metaBuffs: 0,
-            podBuffs: 0,
-            injectedPods: 0,
-            independentPods: 0,
-            properties: 0
+            total:this._buffs.length,
+            metaBuffs:0,
+            podBuffs:0,
+            injectedPods:0,
+            independentPods:0,
+            properties:0
         };
-        
-        // 统计各类型 Buff
         for (var i:Number = 0; i < this._buffs.length; i++) {
-            var buff:IBuff = this._buffs[i];
-            if (buff) {
-                if (buff.isPod()) {
+            var b:IBuff = this._buffs[i];
+            if (b) {
+                if (b.isPod()) {
                     info.podBuffs++;
-                    if (this._injectedPodBuffs[buff.getId()]) {
-                        info.injectedPods++;
-                    } else {
-                        info.independentPods++;
-                    }
+                    if (this._injectedPodBuffs[b.getId()]) info.injectedPods++;
+                    else info.independentPods++;
                 } else {
                     info.metaBuffs++;
                 }
             }
         }
-        
-        // 统计属性容器
-        for (var prop:String in this._propertyContainers) {
-            info.properties++;
-        }
-        
+        for (var pn:String in this._propertyContainers) info.properties++;
         return info;
     }
     
-    /**
-     * 调试信息
-     */
     public function toString():String {
-        var info:Object = this.getDebugInfo();
-        return "[BuffManager total: " + info.totalBuffs + 
+        var info:Object = getDebugInfo();
+        return "[BuffManager total: " + info.total + 
                " (meta: " + info.metaBuffs + 
                ", pods: " + info.podBuffs + 
                " [inj: " + info.injectedPods + 
