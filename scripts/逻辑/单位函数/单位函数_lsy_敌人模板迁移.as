@@ -33,17 +33,95 @@ _root.敌人函数.根据等级初始数值 = function(等级值) {
 };
 
 _root.敌人函数.获取线性插值经验值 = function(target, list:Array) {
-    var level = target.等级;
-    if (list.length > 2) {
-        for (var i = 0; i < list.length - 1; i++) {
-            if (level < list[i + 1].level)
-                break;
+    var level:Number = Number(target.等级);
+    var n:Number = (list == null) ? 0 : list.length;
+
+    // 0) 兜底：没有数据 / 只有一个点
+    if (n == 0) {
+        target.最小经验值 = 0;
+        target.最大经验值 = 0;
+        return;
+    }
+    if (n == 1) {
+        var v:Number = Number(list[0].value);
+        target.最小经验值 = v;
+        target.最大经验值 = v;
+        return;
+    }
+
+    // 1) 选择用于插值/外推的“段”索引 i（使用线段 [i, i+1]）
+    var i:Number;
+    if (level <= Number(list[0].level)) {
+        // 低于最小 level：用首段斜率外推
+        i = 0;
+    } else if (level >= Number(list[n - 1].level)) {
+        // 高于最大 level：用末段斜率外推
+        i = n - 2;
+    } else {
+        // 区间内：找到使 level < list[i+1].level 的 i
+        for (i = 0; i < n - 1; i++) {
+            if (level < Number(list[i + 1].level)) break;
+        }
+        if (i >= n - 1) i = n - 2; // 冗余保护
+    }
+
+    // 2) 读取段两端数据
+    var x0:Number = Number(list[i].level);
+    var x1:Number = Number(list[i + 1].level);
+    var y0:Number = Number(list[i].value);
+    var y1:Number = Number(list[i + 1].value);
+
+    // 3) 防重复 level（x1 == x0）导致的除零：向左右寻找最近的有效段
+    if (x1 == x0) {
+        var left:Number = i - 1;
+        var right:Number = i + 1;
+        var found:Boolean = false;
+
+        while (!found && (left >= 0 || right < n - 1)) {
+            if (left >= 0) {
+                if (Number(list[left + 1].level) != Number(list[left].level)) {
+                    i = left;
+                    x0 = Number(list[i].level);
+                    x1 = Number(list[i + 1].level);
+                    y0 = Number(list[i].value);
+                    y1 = Number(list[i + 1].value);
+                    found = true;
+                    break;
+                }
+                left--;
+            }
+            if (right < n - 1) {
+                if (Number(list[right + 1].level) != Number(list[right].level)) {
+                    i = right;
+                    x0 = Number(list[i].level);
+                    x1 = Number(list[i + 1].level);
+                    y0 = Number(list[i].value);
+                    y1 = Number(list[i + 1].value);
+                    found = true;
+                    break;
+                }
+                right++;
+            }
+        }
+
+        // 如果整张表所有相邻点 level 都相等，则退化为常量
+        if (!found) {
+            target.最小经验值 = y0;
+            target.最大经验值 = y0;
+            return;
         }
     }
-    target.最小经验值 = _root.常用工具函数.线性插值(1, list[i].level, list[i + 1].level, list[i].value, list[i + 1].value);
-    target.最大经验值 = _root.常用工具函数.线性插值(_root.最大等级, list[i].level, list[i + 1].level, list[i].value, list[i + 1].value);
-    // _root.发布消息(target.最小经验值 + " " + target.最大经验值);
-}
+
+    // 4) 使用所选“段”的斜率进行插值/外推
+    target.最小经验值 = _root.常用工具函数.线性插值(
+        1, x0, x1, y0, y1
+    );
+    target.最大经验值 = _root.常用工具函数.线性插值(
+        _root.最大等级, x0, x1, y0, y1
+    );
+    // _root.发布消息(target.最小经验值 + " / " + target.最大经验值);
+};
+
 
 _root.敌人函数.宠物属性初始化 = function() {
     if (this.宠物属性) {
