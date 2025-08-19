@@ -32,6 +32,10 @@ class org.flashNight.arki.camera.HorizontalScroller {
         if (!instance) {
             instance = new HorizontalScroller();
         }
+
+        HorizontalScroller.getInstance = function():HorizontalScroller {
+            return instance;
+        }
         return instance;
     }
     
