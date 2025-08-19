@@ -1,18 +1,18 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="强化度转换按钮" itemID="68a09107-00000b36" symbolType="button" lastModified="1755357550">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新强化界面/强化按钮" itemID="68a04233-00000b28" symbolType="button" lastModified="1755357559">
   <timeline>
-    <DOMTimeline name="强化度转换按钮" currentFrame="3">
+    <DOMTimeline name="强化按钮">
       <layers>
         <DOMLayer name="强化装备" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMStaticText fontRenderingMode="device" width="67.75" height="15.55" isSelectable="false">
+                <DOMStaticText fontRenderingMode="device" width="49.5" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="27" ty="2"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>强化度转换</characters>
+                      <characters>强化装备</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -29,21 +29,21 @@
             </DOMFrame>
             <DOMFrame index="1" duration="2" keyMode="9728">
               <elements>
-                <DOMStaticText fontRenderingMode="device" width="67.75" height="15.55" isSelectable="false">
+                <DOMStaticText fontRenderingMode="device" width="49.5" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="27" ty="2"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>强化度转换</characters>
+                      <characters>强化装备</characters>
                       <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFCC00"/>
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
                       <characters></characters>
                       <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFCC00"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
@@ -66,9 +66,11 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!363 190[363 257 315 305!315 305[289 332 257 344!257 344|270 378!270 378[309 362 341 331!341 331|341 332!341 332[400 273 400 190!400 190[400 107 341 48!341 48[309 16 270 2!270 2|257 36!257 36[289 47 315 73!315 73[363 122 363 190!147 34
-|135 0!135 0[114 7 97 18!97 18[76 30 58 48!58 48[0 107 0 190!0 190[0 272 58 331!58 331[76 349 97 362!97 362[114 372 135 380!135 380|147 345!147 345[131 340 116 331!116 331[98 320 83 305!83 305[36 258 36 190!36 190[36 122 84 73!84 73|83
- 73!83 73[98 59 115 50!115 50|116 49!116 49[131 40 147 34"/>
+                    <Edge fillStyle0="1" edges="!113 94|79 60!79 60|80 60!80 60[103 60 120 77!120 77[136 92 136 117!136 117[136 127 133 137!133 137|136 149!136 149|286 299!286 299|299 303!299 303[309 298 320 298!320 298[343 298 360 315!360 315[376 331 376 354!376 354|343 321!343 321
+|326 321!326 321|286 360!286 360|286 377!286 377|319 409!319 409[297 408 282 392!282 392|281 392!281 392[264 377 264 354!264 354[264 344 268 334!268 334|264 322!264 322|112 172!112 172|99 170!99 170[90 172 80 172!80 172[57 172 41 157
+!41 157|40 157!40 157[25 141 24 120!24 120|56 150!56 150|73 152!73 152|113 112!113 112|113 94!137 60[113 36 80 36!80 36[64 36 51 42!51 42|46 61!46 61|87 102!87 102|64 125!64 125|23 85!23 85|2 91!2 91[0 103 0 117!0 117[0 149 23 173!23
+ 173|23 175!23 175[47 196 80 196!80 196[90 196 99 194!99 194|242 334!242 334[240 344 240 354!240 354[240 386 264 409!264 409|264 411!264 411[287 434 320 434!320 434[335 434 347 430!347 430|352 409!352 409|312 368!312 368|335 346!335 346
+|375 386!375 386|394 383!394 383[400 369 400 354!400 354[400 321 377 298!377 298[353 274 320 274!320 274[308 274 298 277!298 277|158 137!158 137[160 127 160 117!160 117[160 83 137 60"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -83,9 +85,11 @@
                   </fills>
                   <edges>
                     <Edge fillStyle0="1" edges="
-!341 48[309 16 270 2!270 2|257 36!257 36[289 47 315 73!315 73[363 122 363 190!363 190[363 257 315 305!315 305[289 332 257 344!257 344|270 378!270 378[309 362 341 331!341 331|341 332!341 332[400 273 400 190!400 190[400 107 341 48!147 34
-|135 0!135 0[114 7 97 18!97 18[76 30 58 48!58 48[0 107 0 190!0 190[0 272 58 331!58 331[76 349 97 362!97 362[114 372 135 380!135 380|147 345!147 345[131 340 116 331!116 331[98 320 83 305!83 305[36 258 36 190!36 190[36 122 84 73!84 73|83
- 73!83 73[98 59 115 50!115 50|116 49!116 49[131 40 147 34"/>
+!137 60[113 36 80 36!80 36[64 36 51 42!51 42|46 61!46 61|87 102!87 102|64 125!64 125|23 85!23 85|2 91!2 91[0 103 0 117!0 117[0 149 23 173!23 173|23 175!23 175[47 196 80 196!80 196[90 196 99 194!99 194|242 334!242 334[240 344 240 354!240
+ 354[240 386 264 409!264 409|264 411!264 411[287 434 320 434!320 434[335 434 347 430!347 430|352 409!352 409|312 368!312 368|335 346!335 346|375 386!375 386|394 383!394 383[400 369 400 354!400 354[400 321 377 298!377 298[353 274 320 274
+!320 274[308 274 298 277!298 277|158 137!158 137[160 127 160 117!160 117[160 83 137 60!113 94|79 60!79 60|80 60!80 60[103 60 120 77!120 77[136 92 136 117!136 117[136 127 133 137!133 137|136 149!136 149|286 299!286 299|299 303!299 303
+[309 298 320 298!320 298[343 298 360 315!360 315[376 331 376 354!376 354|343 321!343 321|326 321!326 321|286 360!286 360|286 377!286 377|319 409!319 409[297 408 282 392!282 392|281 392!281 392[264 377 264 354!264 354[264 344 268 334!268
+ 334|264 322!264 322|112 172!112 172|99 170!99 170[90 172 80 172!80 172[57 172 41 157!41 157|40 157!40 157[25 141 24 120!24 120|56 150!56 150|73 152!73 152|113 112!113 112|113 94"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -100,7 +104,7 @@
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!1800 400|0 400!0 400|0 0!0 0|1800 0!1800 0|1800 400"/>
+!1500 400|0 400!0 400|0 0!0 0|1500 0!1500 0|1500 400"/>
                   </edges>
                 </DOMShape>
               </elements>

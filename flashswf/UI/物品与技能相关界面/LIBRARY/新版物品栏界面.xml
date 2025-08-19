@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1755353954" lastUniqueIdentifier="56">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1755592412" lastUniqueIdentifier="58">
   <timeline>
-    <DOMTimeline name="新版物品栏界面" currentFrame="9">
+    <DOMTimeline name="新版物品栏界面" currentFrame="7">
       <layers>
         <DOMLayer name="Labels Layer" color="#23D4A1">
           <frames>
@@ -485,9 +485,9 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="5" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新版装备强化界面" name="装备强化界面" selected="true" centerPoint3DX="-92" centerPoint3DY="160">
+                <DOMSymbolInstance libraryItemName="新版装备强化界面" name="装备强化界面" selected="true" centerPoint3DX="-87" centerPoint3DY="165">
                   <matrix>
-                    <Matrix tx="-220"/>
+                    <Matrix tx="-215" ty="5"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="128" y="160"/>
@@ -927,9 +927,9 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="排序图标" name="排序图标" centerPoint3DX="252.5" centerPoint3DY="312.15">
+                <DOMSymbolInstance libraryItemName="排序图标" name="排序图标" centerPoint3DX="252.5" centerPoint3DY="317.3">
                   <matrix>
-                    <Matrix tx="252.5" ty="312.15"/>
+                    <Matrix tx="252.5" ty="317.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1151,9 +1151,9 @@ onClipEvent (enterFrame) {
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 847" name="垃圾箱" centerPoint3DX="280.95" centerPoint3DY="325.85">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 847" name="垃圾箱" centerPoint3DX="280.95" centerPoint3DY="331">
                   <matrix>
-                    <Matrix tx="268.45" ty="312.85"/>
+                    <Matrix tx="268.45" ty="318"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1170,7 +1170,7 @@ on(rollOut){
                 </DOMSymbolInstance>
                 <DOMStaticText fontRenderingMode="device" width="52.25" height="14.25" isSelectable="false">
                   <matrix>
-                    <Matrix tx="204.85" ty="306.65"/>
+                    <Matrix tx="204.85" ty="311.8"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -1200,7 +1200,7 @@ on(rollOut){
               <elements>
                 <DOMStaticText fontRenderingMode="device" width="52.25" height="14.25" isSelectable="false">
                   <matrix>
-                    <Matrix tx="163.2" ty="306.65"/>
+                    <Matrix tx="163.2" ty="311.8"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -1253,48 +1253,7 @@ on(rollOut){
         <DOMLayer name="金币" color="#DBBC42" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
-              <elements>
-                <DOMStaticText fontRenderingMode="device" width="48.5" height="14.25" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="5.4" ty="306.65"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>金币</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFCC00"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFCC00"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMStaticText>
-                <DOMDynamicText fontRenderingMode="device" width="78.5" height="14.25" isSelectable="false" variableName="_root.金钱">
-                  <matrix>
-                    <Matrix tx="50.2" ty="306.6"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFCC00"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMDynamicText>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 1951" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-0.75" ty="0.25"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="23" duration="29" keyMode="9728">
               <elements/>
@@ -1570,13 +1529,13 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#F2FFEA" autoNamed="false">
+        <DOMLayer name="背景" color="#F2FFEA" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="38" keyMode="9728">
+            <DOMFrame index="0" duration="52" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 298" name="窗体area" centerPoint3DX="111" centerPoint3DY="165.95">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 298" name="窗体area" centerPoint3DX="111" centerPoint3DY="170.5">
                   <matrix>
-                    <Matrix a="1.25048828125" d="0.999847412109375" tx="-7"/>
+                    <Matrix a="1.25048828125" d="1.02726745605469" tx="-7"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1584,38 +1543,6 @@ on(rollOut){
                   <filters>
                     <DropShadowFilter angle="44.9992520943067" distance="3" strength="0.5"/>
                     <BevelFilter blurX="0" blurY="1" angle="43.9999681257848" distance="1" strength="0.3"/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="38" duration="7" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 298" name="窗体area" centerPoint3DX="108.85" centerPoint3DY="165.95">
-                  <matrix>
-                    <Matrix a="1.25048828125" d="1.02847290039063" tx="-9.15"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <DropShadowFilter angle="44.9992520943067" distance="3" strength="0.5"/>
-                    <BevelFilter blurX="1" blurY="1" angle="43.9999681257848" distance="1" strength="0.3"/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="45" duration="7" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 298" name="窗体area" centerPoint3DX="108.85" centerPoint3DY="165.95">
-                  <matrix>
-                    <Matrix a="1.25048828125" d="0.999847412109375" tx="-9.15"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <DropShadowFilter angle="44.9992520943067" distance="3" strength="0.5"/>
-                    <BevelFilter blurX="1" blurY="1" angle="43.9999681257848" distance="1" strength="0.3"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>

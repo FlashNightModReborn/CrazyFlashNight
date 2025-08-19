@@ -129,7 +129,7 @@ class org.flashNight.gesh.string.TooltipTextBuilder {
 
     switch (item.use) {
       case "刀":
-        result.push("锋利度：", data.power, "<FONT COLOR='" + TooltipConstants.COL_HL + "'>(+", (_root.强化计算(data.power, 等级)-data.power), ")</FONT><BR>");
+        addUpgradeLine(result, "锋利度", data.power, 等级);
         break;
       case "手雷":
         result.push("等级限制：", item.level, "<BR>威力：", data.power, "<BR>");
@@ -150,7 +150,7 @@ class org.flashNight.gesh.string.TooltipTextBuilder {
         
         var magazineCapacity = isNotMultiShot ? splitValue : 1;
         if (capacity > 0) result.push("弹夹容量：", (capacity * magazineCapacity), "<BR>");
-        result.push("子弹威力：", data.power, "<FONT COLOR='" + TooltipConstants.COL_HL + "'>(+", (_root.强化计算(data.power, 等级)-data.power), ")</FONT><BR>");
+        addUpgradeLine(result, "子弹威力", data.power, 等级);
         if (splitValue > 1) result.push(isNotMultiShot ? "点射弹数：" : "弹丸数量：", splitValue, "<BR>");
         
         // interval和impact的防护：确保是有效数值且非零
@@ -211,8 +211,8 @@ class org.flashNight.gesh.string.TooltipTextBuilder {
     }
 
     addUpgradeLine(result, "防御", data.defence, 等级);
-    if (data.hp) result.push("<FONT COLOR='" + TooltipConstants.COL_HP + "'>HP：", data.hp, "</FONT><FONT COLOR='" + TooltipConstants.COL_HL + "'>(+", (_root.强化计算(data.hp, 等级)-data.hp), ")</FONT><BR>");
-    if (data.mp) result.push("<FONT COLOR='" + TooltipConstants.COL_MP + "'>MP：", data.mp, "</FONT><FONT COLOR='" + TooltipConstants.COL_HL + "'>(+", (_root.强化计算(data.mp, 等级)-data.mp), ")</FONT><BR>");
+    addUpgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_HP + "'>HP</FONT>", data.hp, 等级);
+    addUpgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_MP + "'>MP</FONT>", data.hp, 等级);
 
     if (item.use == "药剂") {
       if (!isNaN(data.affecthp) && data.affecthp != 0) result.push("<FONT COLOR='" + TooltipConstants.COL_HP + "'>HP+", data.affecthp, "</FONT><BR>");
@@ -230,11 +230,35 @@ class org.flashNight.gesh.string.TooltipTextBuilder {
     return result;
   }
 
+  // === 生成装备强化数据属性块 ===
+  public static function buildEnhancementStats(itemData:Object, 等级:Number):Array {
+    var result = [];
+    var data = itemData.data;
+    if(itemData.use === "刀"){
+      addUpgradeLine(result, "锋利度", data.power, 等级, " -> ");
+    }else if(itemData.use === "长枪" || itemData.use === "手枪"){
+      addUpgradeLine(result, "子弹威力", data.power, 等级, " -> ");
+    }
+    addUpgradeLine(result, "内力加成", data.force, 等级, " -> ");
+    addUpgradeLine(result, "伤害加成", data.damage, 等级, " -> ");
+    addUpgradeLine(result, "空手加成", data.punch, 等级, " -> ");
+    addUpgradeLine(result, "冷兵器加成", data.knifepower, 等级, " -> ");
+    addUpgradeLine(result, "枪械加成", data.gunpower, 等级, " -> ");
+    addUpgradeLine(result, "防御", data.defence, 等级, " -> ");
+    addUpgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_HP + "'>HP</FONT>", data.hp, 等级, " -> ");
+    addUpgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_MP + "'>MP</FONT>", data.hp, 等级, " -> ");
+    return result;
+  }
+
+
+
+
   // === 辅助方法：添加升级属性行 ===
-  private static function addUpgradeLine(buffer:Array, title:String, baseValue:Number, level:Number):Void {
+  private static function addUpgradeLine(buffer:Array, title:String, baseValue:Number, level:Number, colon:String):Void {
     if (baseValue != undefined && !isNaN(baseValue) && baseValue != 0) {
       var upgradeBonus = _root.强化计算(baseValue, level) - baseValue;
-      buffer.push(title, "：", baseValue, "<FONT COLOR='" + TooltipConstants.COL_HL + "'>(+", upgradeBonus, ")</FONT><BR>");
+      if(colon == null) colon = "：";
+      buffer.push(title, colon, baseValue, "<FONT COLOR='" + TooltipConstants.COL_HL + "'>(+", upgradeBonus, ")</FONT><BR>");
     }
   }
 

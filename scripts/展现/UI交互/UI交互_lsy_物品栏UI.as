@@ -587,29 +587,110 @@ _root.物品UI函数.刷新情报信息 = function(){
 
 _root.物品UI函数.初始化强化界面 = function(UI:MovieClip){
 	UI.当前物品 = null;
-	UI.强化物品图标.itemIcon = new ItemIcon(UI.强化物品图标, null, null);
-	UI.强化物品图标.itemIcon.RollOver = function(){
-		_root.注释(150, "点击卸下装备");
-	};
-	UI.涂装图标.itemIcon = new ItemIcon(UI.涂装图标, null, null);
+	// UI.涂装图标.itemIcon = new ItemIcon(UI.涂装图标, null, null);
 	UI.物品选择框._visible = false;
 	UI.刷新强化物品 = this.刷新强化物品;
 	UI.清空强化物品 = this.清空强化物品;
+	UI.刷新强化装备界面 = this.刷新强化装备界面;
+	UI.计算强化装备等级 = this.计算强化装备等级;
+	UI.执行强化装备 = this.执行强化装备;
+
+	UI.gotoAndStop("空");
 }
 
-_root.物品UI函数.刷新强化物品 = function(item){
+_root.物品UI函数.刷新强化物品 = function(item, itemIcon){
 	if(this.当前物品 != null) return;
+	this.gotoAndStop("默认");
 	this.当前物品 = item;
-	this.强化物品图标.itemIcon.init(item.name, item);
+	this.当前物品图标 = itemIcon;
+	this.强化物品图标.itemIcon = new ItemIcon(this.强化物品图标, item.name, item);
+	this.强化物品图标.itemIcon.RollOver = function(){
+		//
+	};
+	itemIcon.lock();
 	this.名字文本.text = this.强化物品图标.itemIcon.itemData.displayname;
+	if(item.value.level > 1){
+		this.名字文本.text += " +" + item.value.level;
+	}
 	this.外观改造文本.text = "";
 	this.配件文本.text = "配件系统（开发中）";
 }
 
 _root.物品UI函数.清空强化物品 = function(){
-	this.强化物品图标.itemIcon.init(null,null);
+	this.强化物品图标.itemIcon.init(null, null);
+	this.当前物品图标.unlock();
+	this.当前物品图标 = null;
 	this.当前物品 = null;
-	this.名字文本.text = "";
-	this.外观改造文本.text = "";
-	this.配件文本.text = "";
+	this.gotoAndStop("空");
+}
+
+_root.物品UI函数.刷新强化装备界面 = function(){
+	var 当前等级 = this.当前物品.value.level;
+	this.强化上限等级 = _root.物品UI函数.强化上限检测();
+	this.强化上限文字.text = 强化上限等级;
+	if(当前等级 >= this.强化上限等级){
+		this.btn0._visible = false;
+		this.btn1._visible = false;
+		this.btn2._visible = false;
+		this.btn3._visible = false;
+		this.强化执行按钮._visible = false;
+		this.目标强化等级 = null;
+		this.目标强化等级文字.text = "";
+		this.强化详情文字.htmlText = this.强化上限等级 == 13
+			? "强化等级最高为13级，已经达到最大，不可继续强化！"
+			: "强化等级已经达到当前阶段的上限，不可继续强化！推进流程可获得更高级别的强化技术";
+		this.强化数值文字.htmlText = "";
+	}else{
+		this.btn0._visible = true;
+		this.btn1._visible = true;
+		this.btn2._visible = true;
+		this.btn3._visible = true;
+		this.强化执行按钮._visible = true;
+		this.计算强化装备等级(当前等级 + 1);
+	}
+}
+
+_root.物品UI函数.计算强化装备等级 = function(目标等级){
+	var 当前等级 = this.当前物品.value.level;
+	if(目标等级 > this.强化上限等级) 目标等级 = this.强化上限等级;
+	else if(目标等级 <= 当前等级) 目标等级 = 当前等级 + 1;
+	// 计算强化石倍率
+	var 强化石倍率 = (_root.主角被动技能.铁匠 && _root.主角被动技能.铁匠.启用) ? Math.max(1 - _root.主角被动技能.铁匠.等级 * 0.05, 0) : 1;
+	var 强化石持有数 = _root.收集品栏.材料.getValue("强化石");
+	var 强化石需要个数 = 0;
+	var 强化石节省个数 = 0;
+	for(var i = 当前等级; i < 目标等级; i++){
+		强化石需要个数 += Math.floor(强化石倍率 * (i - 1) * (i - 1) * (i - 1) + 1);
+		强化石节省个数 += Math.ceil((1 - 强化石倍率) * (i - 1) * (i - 1) * (i - 1));
+	}
+	//
+	this.目标强化等级文字.text = "强化到" + 目标等级 + "级";
+	var color = 强化石持有数 >= 强化石需要个数 ? "#33FF33" : "#FF3333";
+	this.强化详情文字.htmlText = "需要强化石： <FONT COLOR='" + color + "'>" + 强化石需要个数 + " / " + 强化石持有数 + "<FONT>";
+	if(强化石节省个数 > 0) this.强化详情文字.htmlText += "<BR>铁匠被动技能已节省 " + 强化石节省个数 + " 个";
+	this.强化数值文字.htmlText = org.flashNight.gesh.string.TooltipTextBuilder.buildEnhancementStats(this.当前物品图标.itemData, 目标等级).join("");
+	//
+	this.目标强化等级 = 目标等级;
+	this.强化石需要个数 = 强化石需要个数;
+}
+
+_root.物品UI函数.执行强化装备 = function(){
+	if(_root.singleSubmit("强化石", this.强化石需要个数)){
+		this.当前物品.value.level = this.目标强化等级;
+		_root.最上层发布文字提示("强化成功！");
+		this.当前物品图标.refreshValue();
+		this.强化物品图标.itemIcon.refreshValue();
+		this.gotoAndStop("默认");
+	}else{
+		_root.发布消息("强化石不足！");
+	}
+}
+
+
+
+_root.物品UI函数.强化上限检测 = function(){
+	if(_root.主线任务进度 > 129) return 13;
+	var 强化度上限 = _root.主线任务进度 > 74 ? 9 : 7;
+	if (_root.主角被动技能.铁匠.启用 && _root.主角被动技能.铁匠.等级 >= 10) 强化度上限++;
+	return 强化度上限;
 }

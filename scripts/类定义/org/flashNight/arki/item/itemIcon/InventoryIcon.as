@@ -70,12 +70,19 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
         icon._alpha = 30;
         _root.鼠标.gotoAndStop("手型抓取");
 
-        //高亮对应装备栏
+        // 高亮对应装备栏
         if(type == "武器" || type == "防具" || use == "手雷"){
             if(use == "手枪"){
                 icon.highlights = [_root.物品栏界面.手枪,_root.物品栏界面.手枪2];//对手枪2进行额外判定
             }else{
                 icon.highlights = [_root.物品栏界面[use]];
+            }
+            // 高亮物品栏强化界面
+            if(type == "武器" || type == "防具"){
+                var 装备强化界面 = _root.物品栏界面.装备强化界面;
+                if(装备强化界面 != null && 装备强化界面.当前物品 == null){
+                    装备强化界面.进入强化界面标志.gotoAndStop(2);
+                }
             }
         }else if(use == "药剂"){
             icon.highlights = _root.玩家信息界面.快捷药剂界面.药剂图标列表;
@@ -97,6 +104,7 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
             icon.highlights[i].互动提示.gotoAndStop("空");
         }
         icon.highlights = null;
+        _root.物品栏界面.装备强化界面.进入强化界面标志.gotoAndStop(1);
 
         // 装备栏
         if(_root.物品栏界面.窗体area.hitTest(xmouse, ymouse)){
@@ -160,33 +168,10 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
         }
 
         // 强化界面
-        // if((itemData.type == "武器" || itemData.type == "防具") && _root.装备强化界面._visible && _root.装备强化界面.窗体area.hitTest(xmouse, ymouse)){
-        //     if(_root.装备强化界面.强化图标.area.hitTest(xmouse, ymouse)) {
-        //         _root.装备强化界面.强化图标.itemIcon.init(name,item);
-        //         _root.装备强化界面.目标icon = this;
-        //         _root.装备强化界面.是否可强化检测();
-        //         return;
-        //     }
-        //     if(_root.装备强化界面.强化图标左.area.hitTest(xmouse, ymouse)) {
-        //         _root.装备强化界面.强化图标左.itemIcon.init(name,item);
-        //         _root.装备强化界面.目标icon1 = this;
-        //         _root.装备强化界面.是否可强化度转换检测();
-        //         return;
-        //     }
-        //     if(_root.装备强化界面.强化图标右.area.hitTest(xmouse, ymouse)) {
-        //         _root.装备强化界面.强化图标右.itemIcon.init(name,item);
-        //         _root.装备强化界面.目标icon2 = this;
-        //         _root.装备强化界面.是否可强化度转换检测();
-        //         return;
-        //     }
-        //     return;
-        // }
         if(itemData.type == "武器" || itemData.type == "防具"){
             var 装备强化界面 = _root.物品栏界面.装备强化界面;
-            if(装备强化界面._visible && 装备强化界面.物品图标容器.hitTest(xmouse, ymouse)){
-                if(装备强化界面.当前物品 == null){
-                    装备强化界面.刷新强化物品(this.item);
-                }
+            if(装备强化界面 != null && 装备强化界面.进入强化界面标志.area.hitTest(xmouse, ymouse)){
+                装备强化界面.刷新强化物品(this.item, this);
                 return;
             }
         }

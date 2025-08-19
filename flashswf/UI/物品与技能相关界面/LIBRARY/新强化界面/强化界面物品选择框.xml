@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新强化界面/强化界面物品选择框" itemID="68a02043-00000405" lastModified="1755360835">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新强化界面/强化界面物品选择框" itemID="68a02043-00000405" lastModified="1755536839">
   <timeline>
-    <DOMTimeline name="强化界面物品选择框" currentFrame="1">
+    <DOMTimeline name="强化界面物品选择框" currentFrame="8">
       <layers>
         <DOMLayer name="labels" color="#FF800A" autoNamed="false">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -28,7 +28,20 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 5" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="文字" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="按钮" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -59,9 +72,9 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!3660 1840|3100 1840!3100 1840|2540 1840!2540 1840|1980 1840!1980 1840|1420 1840!1420 1840|860 1840!860 1840|300 1840!300 1840|300 1280!300 1280|300 720!300 720|860 720!860 720|1420 720!1420 720|1980 720!1980 720|2540 720!2540 720|3100
- 720!3100 720|3660 720!3660 720|3660 1280!3660 1280|3660 1840!2540 1840|2540 1280!2540 1280|1980 1280!1980 1280|1980 1840!3100 1840|3100 1280!3100 1280|2540 1280!1980 720|1980 1280!2540 1280|2540 720!3100 720|3100 1280!3100 1280|3660
- 1280!1420 1840|1420 1280!1420 1280|860 1280!860 1280|860 1840!300 1280|860 1280!860 1280|860 720!1420 720|1420 1280!1420 1280|1980 1280"/>
+                    <Edge strokeStyle="1" edges="!3660 1840|3100 1840!3100 1840|3100 1280!3100 1280|3660 1280!3660 1280|3660 1840!3100 1280|3100 720!3100 720|3660 720!3660 720|3660 1280!3100 1840|2540 1840!2540 1840|2540 1280!2540 1280|2540 720!2540 720|3100 720!3100 1280|2540 1280
+!2540 1280|1980 1280!1980 1280|1420 1280!1420 1280|1420 720!1420 720|1980 720!1980 720|1980 1280!1980 1280|1980 1840!1980 1840|1420 1840!1420 1840|1420 1280!1980 720|2540 720!2540 1840|1980 1840!1420 1280|860 1280!860 1280|860 720!860
+ 720|1420 720!300 1280|860 1280!860 1280|860 1840!860 1840|300 1840!300 1840|300 1280!1420 1840|860 1840!300 1280|300 720!300 720|860 720"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -75,7 +88,13 @@
                 <DOMShape>
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#111111"/>
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0610198974609375" c="-0.0658416748046875" d="0" tx="248.05" ty="52"/>
+                        </matrix>
+                        <GradientEntry color="#31322C" ratio="0"/>
+                        <GradientEntry color="#111111" ratio="1"/>
+                      </LinearGradient>
                     </FillStyle>
                   </fills>
                   <edges>
