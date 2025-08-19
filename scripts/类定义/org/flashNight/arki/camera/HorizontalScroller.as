@@ -97,6 +97,19 @@ class org.flashNight.arki.camera.HorizontalScroller {
     private var updateFunction:Function;
 
     //================================================================================
+    // 栈式焦点系统
+    //================================================================================
+    
+    /** 焦点栈：每个元素包含 {target, expireFrame, snap, easeFactor, offsetTolerance, biasX, biasY} */
+    private var focusStack:Array;
+    
+    /** 默认跟随对象（通常是主角） */
+    private var defaultFollowTarget:MovieClip;
+    
+    /** 当前有效的焦点配置缓存 */
+    private var currentFocus:Object;
+
+    //================================================================================
     // 公共接口（保持向后兼容）
     //================================================================================
     
@@ -112,6 +125,50 @@ class org.flashNight.arki.camera.HorizontalScroller {
      */
     public static function onSceneChanged():Void {
         instance.initializeForNewScene();
+    }
+    
+    //================================================================================
+    // 栈式焦点系统 - 静态外观接口
+    //================================================================================
+    
+    /**
+     * 推入临时焦点目标（演出特写、开镜等场景）
+     * @param target 跟随目标对象
+     * @param frames 持续帧数，默认0表示永久直到手动pop
+     * @param snap 是否瞬移到位，默认false
+     * @param overrideEase 临时平滑系数，默认使用当前配置
+     * @param tol 临时死区容差，默认使用当前配置
+     * @param biasX 构图偏置X，默认0
+     * @param biasY 构图偏置Y，默认0
+     */
+    public static function pushFocus(target:MovieClip, frames:Number, snap:Boolean, 
+                                   overrideEase:Number, tol:Number, biasX:Number, biasY:Number):Void {
+        if (!instance) {
+            getInstance(); // 确保实例存在
+        }
+        instance.pushFocusInternal(target, frames || 0, snap || false, 
+                                 overrideEase || 0, tol || -1, biasX || 0, biasY || 0);
+    }
+    
+    /**
+     * 弹出栈顶的焦点配置，回退到上一个目标
+     */
+    public static function popFocus():Void {
+        if (!instance) {
+            return; // 实例不存在，无需操作
+        }
+        instance.popFocusInternal();
+    }
+    
+    /**
+     * 直接切换跟随对象，不使用栈（适合永久切换或关卡阶段切换）
+     * @param target 新的跟随目标，如果为null则回到默认主角
+     */
+    public static function switchFollowTo(target:MovieClip):Void {
+        if (!instance) {
+            getInstance(); // 确保实例存在
+        }
+        instance.switchFollowToInternal(target);
     }
 
     //================================================================================
@@ -266,21 +323,42 @@ class org.flashNight.arki.camera.HorizontalScroller {
      * @return 包含滚动结果的对象
      */
     private function processScrolling(zoomResult:Object):Object {
+        // 检查并更新焦点栈状态（自动过期检查和容错）
+        this.updateCurrentFocus();
+        
+        // 获取有效的滚动参数（支持临时参数覆盖）
+        var effectiveEase:Number = this.easeFactor;
+        var effectiveTolerance:Number = this.offsetTolerance;
+        var biasX:Number = 0;
+        var biasY:Number = 0;
+        
+        if (this.currentFocus) {
+            effectiveEase = this.currentFocus.easeFactor;
+            effectiveTolerance = this.currentFocus.offsetTolerance;
+            biasX = this.currentFocus.biasX;
+            biasY = this.currentFocus.biasY;
+        }
+        
         // 计算动态滚动中心点（根据缩放比例调整）
         var centerPoints:Object = this.calculateScrollCenters(zoomResult.newScale);
         
         // 获取角色在屏幕上的精确坐标
         var screenCoords:Object = this.calculateScreenCoordinates(zoomResult.newScale);
         
-        // 根据朝向决定目标中心点
+        // 根据朝向决定目标中心点，并应用构图偏置
         var isRightDirection:Boolean = (this.scrollObj._xscale > 0);
         var targetX:Number = isRightDirection ? centerPoints.rightCenter : centerPoints.leftCenter;
+        var targetY:Number = centerPoints.verticalCenter;
         
-        // 计算滚动偏移量
+        // 应用构图偏置
+        targetX += biasX;
+        targetY += biasY;
+        
+        // 计算滚动偏移量（使用有效的参数）
         var scrollParams:Object = ScrollLogic.computeScrollOffsets(
             screenCoords.screenX, screenCoords.screenY,
-            targetX, centerPoints.verticalCenter,
-            this.offsetTolerance, this.easeFactor
+            targetX, targetY,
+            effectiveTolerance, effectiveEase
         );
         
         // 检查是否需要滚动
@@ -372,6 +450,7 @@ class org.flashNight.arki.camera.HorizontalScroller {
     private function initializeForNewScene():Void {
         // 缓存常用引用，减少运行时解引用开销
         this.scrollObj = _root.gameworld[_root.控制目标];
+        this.defaultFollowTarget = this.scrollObj; // 设置默认跟随目标（通常是主角）
         this.gameWorld = _root.gameworld;
         this.bgLayer = _root.天空盒;
         this.frameTimer = _root.帧计时器;
@@ -418,6 +497,144 @@ class org.flashNight.arki.camera.HorizontalScroller {
         } else {
             this.updateFunction = this.updateWithoutParallax;
         }
+    }
+    
+    //================================================================================
+    // 栈式焦点系统实现
+    //================================================================================
+    
+    /**
+     * 推入一个临时焦点目标到栈顶（支持演出特写、开镜等场景）
+     * @param target 跟随目标对象
+     * @param frames 持续帧数，0表示永久直到手动pop
+     * @param snap 是否瞬移到位（默认false）
+     * @param overrideEase 临时平滑系数（默认使用当前配置）
+     * @param tol 临时死区容差（默认使用当前配置）
+     * @param biasX 构图偏置X（默认0）
+     * @param biasY 构图偏置Y（默认0）
+     */
+    private function pushFocusInternal(target:MovieClip, frames:Number, snap:Boolean, 
+                                     overrideEase:Number, tol:Number, biasX:Number, biasY:Number):Void {
+        if (!target || target._x == undefined) {
+            return; // 无效目标，忽略
+        }
+        
+        // 初始化焦点栈（延迟初始化）
+        if (!this.focusStack) {
+            this.focusStack = [];
+        }
+        
+        // 计算过期帧数
+        var expireFrame:Number = 0;
+        if (frames > 0) {
+            expireFrame = this.frameTimer.当前帧数 + frames;
+        }
+        
+        // 创建焦点配置对象
+        var focusConfig:Object = {
+            target: target,
+            expireFrame: expireFrame,
+            snap: (snap === true),
+            easeFactor: (overrideEase > 0) ? overrideEase : this.easeFactor,
+            offsetTolerance: (tol >= 0) ? tol : this.offsetTolerance,
+            biasX: (biasX != undefined) ? biasX : 0,
+            biasY: (biasY != undefined) ? biasY : 0
+        };
+        
+        // 推入栈顶
+        this.focusStack.push(focusConfig);
+        
+        // 更新当前焦点缓存
+        this.updateCurrentFocus();
+        
+        // 如果是瞬移模式，临时设置高平滑系数实现一帧到位
+        if (snap) {
+            focusConfig.easeFactor = 1;
+        }
+    }
+    
+    /**
+     * 弹出栈顶的焦点配置，回退到上一个目标
+     */
+    private function popFocusInternal():Void {
+        if (!this.focusStack || this.focusStack.length == 0) {
+            return; // 栈为空，无需操作
+        }
+        
+        // 弹出栈顶元素
+        this.focusStack.pop();
+        
+        // 更新当前焦点缓存
+        this.updateCurrentFocus();
+    }
+    
+    /**
+     * 直接切换跟随对象，不使用栈（适合永久切换或关卡阶段切换）
+     * @param target 新的跟随目标
+     */
+    private function switchFollowToInternal(target:MovieClip):Void {
+        if (!target || target._x == undefined) {
+            // 目标无效，切换到默认主角
+            target = this.defaultFollowTarget;
+        }
+        
+        // 更新当前滚动对象
+        this.scrollObj = target;
+        
+        // 清空焦点栈，因为是永久切换
+        if (this.focusStack) {
+            this.focusStack = [];
+        }
+        this.currentFocus = null;
+    }
+    
+    /**
+     * 更新当前有效的焦点配置缓存（性能优化版本）
+     * 只检查栈顶元素，懒惰清理无效元素
+     */
+    private function updateCurrentFocus():Void {
+        if (!this.focusStack || this.focusStack.length == 0) {
+            this.currentFocus = null;
+            this.scrollObj = this.defaultFollowTarget;
+            return;
+        }
+        
+        // 懒惰验证：只检查栈顶元素
+        var topFocus:Object = this.focusStack[this.focusStack.length - 1];
+        
+        // 检查栈顶元素是否有效
+        var isTopValid:Boolean = this.isFocusValid(topFocus);
+        
+        if (isTopValid) {
+            // 栈顶有效，直接使用
+            this.currentFocus = topFocus;
+            this.scrollObj = topFocus.target;
+        } else {
+            // 栈顶无效，移除并递归检查下一个
+            this.focusStack.pop(); // 只移除栈顶，O(1)操作
+            this.updateCurrentFocus(); // 尾递归，检查新的栈顶
+        }
+    }
+    
+    /**
+     * 检查单个焦点配置是否有效
+     * @param focus 焦点配置对象
+     * @return 是否有效
+     */
+    private function isFocusValid(focus:Object):Boolean {
+        if (!focus) return false;
+        
+        // 检查目标是否仍然有效
+        if (!focus.target || focus.target._x == undefined) {
+            return false;
+        }
+        
+        // 检查是否已过期
+        if (focus.expireFrame > 0 && this.frameTimer.当前帧数 >= focus.expireFrame) {
+            return false;
+        }
+        
+        return true;
     }
     
     //================================================================================
