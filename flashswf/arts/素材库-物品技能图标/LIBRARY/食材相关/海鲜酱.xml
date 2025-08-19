@@ -196,13 +196,19 @@
                     </DOMShape>
                   </members>
                 </DOMGroup>
-                <DOMStaticText selected="true" width="45.2" height="15.75" autoExpand="true" isSelectable="false">
+                <DOMStaticText selected="true" width="45.2" height="16.8" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="5.15" ty="48.5"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>海鲜酱</characters>
+                      <characters>海</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="15" bitmapSize="300" face="STXingkai"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>鲜酱</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="15" bitmapSize="300" face="STXingkai"/>
                       </textAttrs>
