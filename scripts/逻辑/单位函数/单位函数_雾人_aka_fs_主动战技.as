@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.scene.*;
 import org.flashNight.sara.util.*;
+import org.flashNight.neur.ScheduleTimer.*;
 
 _root.主动战技函数 = {空手:{},兵器:{},长枪:{}};
 
@@ -307,11 +308,13 @@ _root.主动战技函数.长枪.铁枪之锋 = {
         // 1. 清理所有射击相关的状态和任务
         自机.强制奔跑 = false;
         自机.射击最大后摇中 = false;
+
+        var instance:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
         
         // 清理可能干扰的帧计时器任务
-        _root.帧计时器.移除任务(自机.keepshooting);
-        _root.帧计时器.移除任务(自机.keepshooting2);
-        _root.帧计时器.移除任务("结束射击后摇");
+        instance.removeTask(自机.keepshooting);
+        instance.removeTask(自机.keepshooting2);
+        instance.removeTask(自机.taskLabel.结束射击后摇);
         
         // 2. 重置射击状态标志
         自机.主手射击中 = false;
@@ -322,16 +325,16 @@ _root.主动战技函数.长枪.铁枪之锋 = {
         var man = 自机.man;
         var lable:MovieClip = man.射击许可标签;
         man.射击许可标签 = true;
-
+        自机.动作A = true;
         
         // 4. 状态切换和攻击执行
         自机.状态改变("长枪站立");
-        自机.动作A = true;
         自机.铁枪之锋许可 = true;
         自机.上行 = !!自机.isRocketMode;
         
         // 5. 执行攻击
         自机.攻击();
+        
         
         // 6. 清理临时状态
         自机.上行 = false;
