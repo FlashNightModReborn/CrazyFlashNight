@@ -123,7 +123,7 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
   ✅ PASSED
 
 🧪 Test 27: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 97ms
+  ✓ Performance: 100 buffs, 100 updates in 176ms
   ✅ PASSED
 
 🧪 Test 28: Memory and Calculation Consistency
@@ -167,21 +167,21 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
   ❌ FAILED: clearAllBuffs removal-callback failed: Expected >=2 removals and 0 live pods; got removed=0, livePods=0
 
 🧪 Test 40: removeBuff de-dup removes only once
-  ✅ PASSED
+  ❌ FAILED: removeBuff de-dup failed: Expected 1 removal and 0 live pods; got removed=0, livePods=0
 
 
 === Calculation Accuracy Test Results ===
 📊 Total tests: 40
-✅ Passed: 35
-❌ Failed: 5
-📈 Success rate: 88%
-⚠️  5 test(s) failed. Please review calculation issues above.
+✅ Passed: 34
+❌ Failed: 6
+📈 Success rate: 85%
+⚠️  6 test(s) failed. Please review calculation issues above.
 ==============================================
 
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 11ms
+   calculationTime: 22ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -190,7 +190,7 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 97ms
-   avgUpdateTime: 0.97ms per update
+   totalTime: 176ms
+   avgUpdateTime: 1.76ms per update
 
 =======================================

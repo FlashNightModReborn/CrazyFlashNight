@@ -219,14 +219,8 @@ _root.子弹生命周期 = function()
 
             if(!collisionResult.isColliding)
             {
-                if(collisionResult.isOrdered)
-                {
-                    continue;
-                }
-                else
-                {
-                    break;
-                }
+                if(collisionResult.isOrdered) continue;
+                break;
             }
             if(isPointSet) {
                 this.polygonCollider.updateFromBullet(this, detectionArea);
