@@ -96,13 +96,14 @@ _root.学习界面技能图标注释 = function(对应数组号) {
 
 
 /**
- * 注释技能图标显示控制函数
+ * 通用图标注释核心函数
  * @param enable:Boolean 是否启用显示
- * @param skillName:String 技能名称
- * @param skillText:String 技能描述文本
- * @param textWidth:Number 文本宽度
+ * @param iconName:String 图标名称（用于构建 "图标-" + iconName）
+ * @param contentText:String 注释内容文本
+ * @param contentWidth:Number 内容宽度
+ * @param layoutType:String 布局类型（可选，默认为"装备"）
  */
-_root.注释技能图标 = function(enable:Boolean, skillName:String, skillText:String, textWidth:Number) {
+_root.注释图标核心 = function(enable:Boolean, iconName:String, contentText:String, contentWidth:Number, layoutType:String) {
     var target:MovieClip = _root.注释框.物品图标定位;
     var background:MovieClip = _root.注释框.简介背景;
     var text:MovieClip = _root.注释框.简介文本框;
@@ -114,17 +115,18 @@ _root.注释技能图标 = function(enable:Boolean, skillName:String, skillText:
 
         var tips:MovieClip = _root.注释框;
 
-        // 使用固定的技能布局（类似装备布局）
-        var layout:Object = TooltipLayout.applyIntroLayout("装备", target, background, text);
-        var stringWidth:Number = Math.max(textWidth, layout.width);
+        // 使用指定的布局类型，默认为装备布局
+        var layoutTypeToUse:String = layoutType ? layoutType : "装备";
+        var layout:Object = TooltipLayout.applyIntroLayout(layoutTypeToUse, target, background, text);
+        var stringWidth:Number = Math.max(contentWidth, layout.width);
         var backgroundHeightOffset:Number = layout.heightOffset;
 
-        // 显示技能文本
-        _root.注释(stringWidth, skillText, "简介");
+        // 显示注释文本
+        _root.注释(stringWidth, contentText, "简介");
 
-        // 技能图标挂载，使用 "图标-" + 技能名 的命名规则
+        // 图标挂载，使用 "图标-" + 图标名 的命名规则
         if (target.icon) target.icon.removeMovieClip();
-        var iconString:String = "图标-" + skillName;
+        var iconString:String = "图标-" + iconName;
         var icon:MovieClip = target.attachMovie(iconString, "icon", target.getNextHighestDepth());
         icon._xscale = icon._yscale = 150; // TODO: TooltipConstants.ICON_SCALE
         icon._x = icon._y = 19;            // TODO: TooltipConstants.ICON_OFFSET
@@ -148,6 +150,17 @@ _root.注释技能图标 = function(enable:Boolean, skillName:String, skillText:
 };
 
 /**
+ * 注释技能图标显示控制函数
+ * @param enable:Boolean 是否启用显示
+ * @param skillName:String 技能名称
+ * @param skillText:String 技能描述文本
+ * @param textWidth:Number 文本宽度
+ */
+_root.注释技能图标 = function(enable:Boolean, skillName:String, skillText:String, textWidth:Number) {
+    _root.注释图标核心(enable, skillName, skillText, textWidth);
+};
+
+/**
  * 注释物品图标显示控制函数
  * @param enable:Boolean 是否启用显示
  * @param name:String 物品名称
@@ -156,52 +169,26 @@ _root.注释技能图标 = function(enable:Boolean, skillName:String, skillText:
  * @param extraString:String 额外显示的文本（可选；用于把短描述并入简介面板）
  */
 _root.注释物品图标 = function(enable:Boolean, name:String, value:Object, introString:String, extraString:String) {
-    var target:MovieClip = _root.注释框.物品图标定位;
-    var background:MovieClip = _root.注释框.简介背景;
-    var text:MovieClip = _root.注释框.简介文本框;
-
     if (enable) {
-        target._visible = true;
-        text._visible = true;
-        background._visible = true;
-
         var data:Object = ItemUtil.getItemData(name);
-        var tips:MovieClip = _root.注释框;
-
+        
         // 交给布局模块决定尺寸与偏移
+        var target:MovieClip = _root.注释框.物品图标定位;
+        var background:MovieClip = _root.注释框.简介背景;
+        var text:MovieClip = _root.注释框.简介文本框;
         var layout:Object = TooltipLayout.applyIntroLayout(data.type, target, background, text);
         var stringWidth:Number = layout.width;
-        var backgroundHeightOffset:Number = layout.heightOffset;
 
         // 使用传入的简介文本；如有 extraString（短描述），并入简介面板
         var introduction:String = introString ? introString : "";
         if (extraString) {
             introduction += "<BR>" + extraString;
         }
-        _root.注释(stringWidth, introduction, "简介");
 
-        // 图标挂载
-        if (target.icon) target.icon.removeMovieClip();
-        var iconString:String = "图标-" + data.icon;
-        var icon:MovieClip = target.attachMovie(iconString, "icon", target.getNextHighestDepth());
-        icon._xscale = icon._yscale = 150; // TODO: TooltipConstants.ICON_SCALE
-        icon._x = icon._y = 19;            // TODO: TooltipConstants.ICON_OFFSET
-
-        // 确保图标层级在简介背景之上
-        if (tips.简介背景) {
-            var iconDepth:Number = target.getDepth();
-            var bgDepth:Number = tips.简介背景.getDepth();
-            if (iconDepth <= bgDepth) {
-                target.swapDepths(bgDepth + 1);
-            }
-        }
-
-        background._height = text._height + backgroundHeightOffset;
+        // 调用通用图标核心函数
+        _root.注释图标核心(true, data.icon, introduction, stringWidth, data.type);
     } else {
-        if (target.icon) target.icon.removeMovieClip();
-        target._visible = false;
-        text._visible = false;
-        background._visible = false;
+        _root.注释图标核心(false);
     }
 };
 
@@ -244,8 +231,7 @@ _root.注释 = function(宽度, 内容, 框体) {
  */
 _root.注释结束 = function() {
     _root.注释框._visible = false;
-    _root.注释物品图标(false);
-    _root.注释技能图标(false);
+    _root.注释图标核心(false);
     
     // 清理文本框内容
     _root.注释框.文本框.htmlText = "";
@@ -256,12 +242,6 @@ _root.注释结束 = function() {
     // 清理背景可见性
     _root.注释框.背景._visible = false;
     _root.注释框.简介背景._visible = false;
-    
-    // 清理物品图标定位和图标
-    _root.注释框.物品图标定位._visible = false;
-    if (_root.注释框.物品图标定位.icon) {
-        _root.注释框.物品图标定位.icon.removeMovieClip();
-    }
 };
 
 
