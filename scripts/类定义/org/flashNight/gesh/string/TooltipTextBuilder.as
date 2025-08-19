@@ -3,6 +3,7 @@ import org.flashNight.gesh.string.TooltipFormatter;
 import org.flashNight.gesh.string.TooltipConstants;
 import org.flashNight.gesh.string.TooltipDataSelector;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
+import org.flashNight.arki.component.Damage.*;
 
 /**
  * 注释文本构建器类
@@ -193,7 +194,7 @@ class org.flashNight.gesh.string.TooltipTextBuilder {
       if (data.damagetype == "魔法" && data.magictype) {
         addColorLine(result, TooltipConstants.COL_DMG, "伤害属性：" + data.magictype);
       } else if (data.damagetype == "破击" && data.magictype) {
-        if (_root.敌人函数.魔法伤害种类.indexOf(data.magictype) >= 0)
+        if (MagicDamageTypes.isMagicDamageType(data.magictype))
           addColorLine(result, TooltipConstants.COL_BREAK_LIGHT, "附加伤害：" + data.magictype);
         else
           addColorLine(result, TooltipConstants.COL_BREAK_MAIN, "破击类型：" + data.magictype);
