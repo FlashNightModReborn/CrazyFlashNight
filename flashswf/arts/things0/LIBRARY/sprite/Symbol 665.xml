@@ -1006,13 +1006,13 @@ _parent.动画完毕();
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.上挑 && _parent._parent.被动技能.上挑.等级){
-		子弹属性.子弹威力 +=   _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.上挑.等级 / 10;
+		子弹属性.子弹威力 +=   _parent._parent.刀属性.power *  _parent._parent.被动技能.上挑.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -1107,7 +1107,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -1170,13 +1170,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.上挑 && _parent._parent.被动技能.上挑.等级){
-		子弹属性.子弹威力 +=   _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.上挑.等级 / 10;
+		子弹属性.子弹威力 +=   _parent._parent.刀属性.power *  _parent._parent.被动技能.上挑.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -1271,7 +1271,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -1337,7 +1337,7 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2;
 	if (_parent._parent.mp攻击加成)
 	{
 	子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
@@ -1435,7 +1435,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -1501,13 +1501,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -1602,7 +1602,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -1665,13 +1665,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -1766,7 +1766,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -1829,13 +1829,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -1930,7 +1930,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -1996,13 +1996,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 2.5;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2.5;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -2097,7 +2097,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -2160,13 +2160,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -2261,7 +2261,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -2327,13 +2327,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -2428,7 +2428,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -2491,13 +2491,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -2592,7 +2592,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -2655,13 +2655,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 1;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -2756,7 +2756,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -2819,13 +2819,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 1;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -2920,7 +2920,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -2983,13 +2983,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 1;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -3084,7 +3084,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -3150,13 +3150,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 1;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.下劈 && _parent._parent.被动技能.下劈.等级){
-		子弹属性.子弹威力 +=   _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.下劈.等级 / 10;
+		子弹属性.子弹威力 +=   _parent._parent.刀属性.power *  _parent._parent.被动技能.下劈.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -3251,7 +3251,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -3314,13 +3314,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 5;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 5;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.下劈 && _parent._parent.被动技能.下劈.等级){
-		子弹属性.子弹威力 +=   _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.下劈.等级 / 10;
+		子弹属性.子弹威力 +=   _parent._parent.刀属性.power *  _parent._parent.被动技能.下劈.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -3415,7 +3415,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -3485,13 +3485,13 @@ onClipEvent(load){
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	var 滞空时间加成 = Math.max(Math.min((_parent.滞空时间 - 8) * 2,30),0);
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * (1 + 滞空时间加成 / 10);
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * (1 + 滞空时间加成 / 10);
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.下劈 && _parent._parent.被动技能.下劈.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.下劈.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.下劈.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -3586,7 +3586,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -3650,13 +3650,13 @@ onClipEvent(load){
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	var 滞空时间加成 = Math.max(Math.min((_parent.滞空时间 - 8) * 2,30),0);
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * (1 + 滞空时间加成 / 10);
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * (1 + 滞空时间加成 / 10);
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.下劈 && _parent._parent.被动技能.下劈.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.下劈.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.下劈.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -3751,7 +3751,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -3817,13 +3817,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.上挑 && _parent._parent.被动技能.上挑.等级){
-		子弹属性.子弹威力 +=   _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.上挑.等级 / 10;
+		子弹属性.子弹威力 +=   _parent._parent.刀属性.power *  _parent._parent.被动技能.上挑.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -3918,7 +3918,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -3981,13 +3981,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.上挑 && _parent._parent.被动技能.上挑.等级){
-		子弹属性.子弹威力 +=   _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.上挑.等级 / 10;
+		子弹属性.子弹威力 +=   _parent._parent.刀属性.power *  _parent._parent.被动技能.上挑.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -4082,7 +4082,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -4148,7 +4148,7 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2;
 	if (_parent._parent.mp攻击加成)
 	{
 	子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
@@ -4246,7 +4246,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -4312,13 +4312,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -4413,7 +4413,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -4476,13 +4476,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -4577,7 +4577,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -4640,13 +4640,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -4741,7 +4741,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -4807,13 +4807,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 2.5;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2.5;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -4908,7 +4908,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -4971,13 +4971,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -5072,7 +5072,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -5138,13 +5138,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -5239,7 +5239,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -5302,13 +5302,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 2;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -5403,7 +5403,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -5466,13 +5466,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 1;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -5567,7 +5567,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -5630,13 +5630,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 1;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -5731,7 +5731,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -5794,13 +5794,13 @@ onClipEvent(load){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * 1;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	if(_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.等级){
-		子弹属性.子弹威力 +=  _parent._parent.刀属性数组[13] *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
+		子弹属性.子弹威力 +=  _parent._parent.刀属性.power *  _parent._parent.被动技能.刀剑空中连招.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -5895,7 +5895,7 @@ onClipEvent(load){
    {
       temp = 5;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性数组[13] * temp + _parent._parent.mp * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * temp + _parent._parent.mp * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;

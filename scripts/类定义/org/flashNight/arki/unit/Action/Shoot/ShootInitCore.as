@@ -175,9 +175,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         var remainingMagProp:String = prefix + "剩余弹匣数";
         
         // 设置属性
-        target[speedProp] = config.weaponData[5];
-        target[magNameProp] = config.weaponData[11];
-        target[singleShotProp] = config.weaponData[3];
+        target[speedProp] = config.weaponData.interval;
+        target[magNameProp] = config.weaponData.clipname;
+        target[singleShotProp] = config.weaponData.singleshoot;
         target[remainingMagProp] = ItemUtil.getTotal(target[magNameProp]);
         
         // 生成子弹属性
@@ -263,9 +263,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         var extraParams:Object = config.extraParams || {};
         
         // 设置基础属性
-        target.射击速度      = weaponData[5];
-        target.使用弹匣名称  = weaponData[11];
-        target.是否单发      = weaponData[3];
+        target.射击速度      = weaponData.interval;
+        target.使用弹匣名称  = weaponData.clipname;
+        target.是否单发      = weaponData.singleshoot;
         target.剩余弹匣数    = ItemUtil.getTotal(target.使用弹匣名称);
         
         // 更新弹药UI显示
@@ -300,17 +300,17 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
 
         // 缓存 weaponData 数组中各个关键数据，使用具名属性提高可读性
         var wd:Object = {
-            霰弹值:         weaponData[1],
-            子弹散射度:     weaponData[2],
-            声音:           weaponData[8],
-            发射效果:       weaponData[9],
-            子弹种类:       weaponData[7],
-            子弹速度:       weaponData[6],
-            击中地图效果:   weaponData[10],
-            子弹威力Base:   weaponData[13],
-            Z轴攻击范围:    weaponData[12],
-            击倒率:        weaponData[14],
-            击中后子弹效果: weaponData[15]
+            霰弹值:         weaponData.split,
+            子弹散射度:     weaponData.diffusion,
+            声音:           weaponData.sound,
+            发射效果:       weaponData.muzzle,
+            子弹种类:       weaponData.bullet,
+            子弹速度:       weaponData.velocity,
+            击中地图效果:   weaponData.bullethit,
+            子弹威力Base:   weaponData.power,
+            Z轴攻击范围:    weaponData.bulletsize,
+            击倒率:        weaponData.impact,
+            击中后子弹效果: weaponData.targethit
         };
 
         // 设置基础属性
@@ -423,7 +423,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     public static function initLongGun(target:MovieClip, parentRef:Object):Void {
         var config:Object = {
             weaponType: "长枪",
-            weaponData: parentRef.长枪属性数组[14],
+            weaponData: parentRef.长枪属性,
             isDualGun : false,
             extraParams: {}
         };
@@ -440,7 +440,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     public static function initPistol(target:MovieClip, parentRef:Object):Void {
         var config:Object = {
             weaponType: "手枪",
-            weaponData: parentRef.手枪属性数组[14],
+            weaponData: parentRef.手枪属性,
             isDualGun : false,
             extraParams: {}
         };
@@ -457,7 +457,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     public static function initPistol2(target:MovieClip, parentRef:Object):Void {
         var config:Object = {
             weaponType: "手枪2",
-            weaponData: parentRef.手枪2属性数组[14],
+            weaponData: parentRef.手枪2属性,
             isDualGun : false,
             extraParams: {}
         };
@@ -499,8 +499,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         var config:Object = {
             weaponType     : "双枪",
             isDualGun      : true,
-            mainWeaponData : parentRef.手枪属性数组[14],
-            subWeaponData  : parentRef.手枪2属性数组[14],
+            mainWeaponData : parentRef.手枪属性,
+            subWeaponData  : parentRef.手枪2属性,
             extraParams    : { main: mainExtra, sub: subExtra }
         };
         

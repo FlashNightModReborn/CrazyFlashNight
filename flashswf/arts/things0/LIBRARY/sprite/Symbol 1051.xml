@@ -201,21 +201,21 @@ function 检查下是否有弹夹()
    }
    return 0;
 }
-射击速度 = _parent.手枪2属性数组[14][5];
-手枪是否单发 = _parent.手枪2属性数组[14][3];
-弹夹容量 = _parent.手枪2属性数组[14][0];
-使用弹夹名称 = _parent.手枪2属性数组[14][11];
-声音 = _parent.手枪2属性数组[14][8];
-霰弹值 = _parent.手枪2属性数组[14][1];
-子弹散射度 = _parent.手枪2属性数组[14][2];
-发射效果 = _parent.手枪2属性数组[14][9];
-子弹种类 = _parent.手枪2属性数组[14][7];
-子弹威力 = _parent.手枪2属性数组[14][13] + 20 + _parent.手枪2属性数组[14][13] * 2 * (_root.等级 / 100);
-子弹速度 = _parent.手枪2属性数组[14][6];
-击中地图效果 = _parent.手枪2属性数组[14][10];
-Z轴攻击范围 = _parent.手枪2属性数组[14][12];
-击倒率 = _parent.手枪2属性数组[14][14];
-击中后子弹的效果 = _parent.手枪2属性数组[14][15];
+射击速度 = _parent.手枪2属性.interval;
+手枪是否单发 = _parent.手枪2属性.singleshoot;
+弹夹容量 = _parent.手枪2属性.capacity;
+使用弹夹名称 = _parent.手枪2属性.clipname;
+声音 = _parent.手枪2属性.sound;
+霰弹值 = _parent.手枪2属性.split;
+子弹散射度 = _parent.手枪2属性.diffusion;
+发射效果 = _parent.手枪2属性.muzzle;
+子弹种类 = _parent.手枪2属性.bullet;
+子弹威力 = _parent.手枪2属性.power + 20 + _parent.手枪2属性.power * 2 * (_root.等级 / 100);
+子弹速度 = _parent.手枪2属性.velocity;
+击中地图效果 = _parent.手枪2属性.bullethit;
+Z轴攻击范围 = _parent.手枪2属性.bulletsize;
+击倒率 = _parent.手枪2属性.impact;
+击中后子弹的效果 = _parent.手枪2属性.targethit;
 if(_parent.是否为敌人 == true)
 {
    子弹敌我属性 = false;

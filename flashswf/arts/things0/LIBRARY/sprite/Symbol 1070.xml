@@ -75,7 +75,7 @@
    子弹散射度 = 0;
    发射效果 = "";
    子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 + _parent._parent.刀属性数组[13] + _parent._parent.mp * (_root.等级 / 100) * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 + _parent._parent.刀属性.power + _parent._parent.mp * (_root.等级 / 100) * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -136,7 +136,7 @@
    子弹散射度 = 0;
    发射效果 = "";
    子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 + _parent._parent.刀属性数组[13] + _parent._parent.mp * (_root.等级 / 100) * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 + _parent._parent.刀属性.power + _parent._parent.mp * (_root.等级 / 100) * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -197,7 +197,7 @@
    子弹散射度 = 0;
    发射效果 = "";
    子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 + _parent._parent.刀属性数组[13] + _parent._parent.mp * (_root.等级 / 100) * (_root.等级 / 100);
+   子弹威力 = _parent._parent.空手攻击力 + _parent._parent.刀属性.power + _parent._parent.mp * (_root.等级 / 100) * (_root.等级 / 100);
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;

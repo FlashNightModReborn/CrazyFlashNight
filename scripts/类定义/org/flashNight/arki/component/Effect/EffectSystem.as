@@ -130,7 +130,7 @@ class org.flashNight.arki.component.Effect.EffectSystem
      */
     public static function ScreenEffect(effectType:String, x:Number, y:Number, scaleX:Number, forceTrigger:Boolean):Void
     {
-        if (!effectType) return;
+        if (!effectType || effectType === "") return;
 
         if (_root.是否视觉元素 && 
             (currentScreenEffectCount <= EffectSystem.maxScreenEffectCount || RandomNumberEngine.successRate(EffectSystem.maxScreenEffectCount / 5)) || 

@@ -2404,7 +2404,7 @@ this.removeMovieClip();
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -2478,7 +2478,7 @@ this.removeMovieClip();
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;

@@ -70,7 +70,7 @@ _root.装备生命周期函数.XM214初始化 = function(ref:Object, param:Objec
 
     ref.gunString = ref.装备类型 + "_引用"; // target[gunString]
 
-    target.长枪属性数组[14][5] = ref.weaponAttributeValue;
+    target.长枪属性.interval = ref.weaponAttributeValue;
 };
 
 /* ---------------------------------------------------------

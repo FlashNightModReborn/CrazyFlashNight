@@ -415,7 +415,7 @@ _root.技能函数.凶斩攻击 = function(不硬直)
 	var temp = 1;
 	if(_root.技能函数.凶斩伤害乘数表[_parent.刀] > 1) temp = _root.技能函数.凶斩伤害乘数表[_parent.刀];
 	
-	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + 1.5 * _parent.内力 * (5 + _parent.技能等级) + _parent.刀属性数组[13] * temp * 0.125 * (10 + _parent.技能等级);
+	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + 1.5 * _parent.内力 * (5 + _parent.技能等级) + _parent.刀属性.power * temp * 0.125 * (10 + _parent.技能等级);
 	if (_parent.mp攻击加成)
 	{
 		子弹参数.子弹威力 += _parent.mp攻击加成;
@@ -466,7 +466,7 @@ _root.技能函数.瞬步斩攻击 = function()
 	var temp = 1;
 	if(_root.技能函数.瞬步斩伤害乘数表[_parent.刀] > 1) temp = _root.技能函数.瞬步斩伤害乘数表[_parent.刀];
 	
-	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + 0.5 * _parent.内力 * (5 + _parent.技能等级) + _parent.刀属性数组[13] * temp * 0.1 * (10 + _parent.技能等级);
+	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + 0.5 * _parent.内力 * (5 + _parent.技能等级) + _parent.刀属性.power * temp * 0.1 * (10 + _parent.技能等级);
 	if (_parent.mp攻击加成)
 	{
 		子弹参数.子弹威力 += _parent.mp攻击加成;
@@ -542,7 +542,7 @@ _root.技能函数.龙斩刀伤 = function(Z轴攻击范围)
 	var temp = 1;
 	if(_root.技能函数.龙斩刀伤乘数表[_parent.刀] > 1) temp = _root.技能函数.龙斩刀伤乘数表[_parent.刀];
 	
-	子弹.子弹威力 = 12 * _parent.内力 + _parent.空手攻击力 * 0.1 + (_parent.内力 + _parent.刀属性数组[13] * 0.2) * 0.5 * _parent.技能等级 + _parent.刀属性数组[13] * temp * 0.12 * (10 + _parent.技能等级);
+	子弹.子弹威力 = 12 * _parent.内力 + _parent.空手攻击力 * 0.1 + (_parent.内力 + _parent.刀属性.power * 0.2) * 0.5 * _parent.技能等级 + _parent.刀属性.power * temp * 0.12 * (10 + _parent.技能等级);
 	if (_parent.mp攻击加成)
 	{
 		子弹.子弹威力 += _parent.mp攻击加成 * 0.5;
@@ -626,9 +626,9 @@ _root.技能函数.拔刀术攻击 = function()
 	var temp = 1;
 	if(_root.技能函数.拔刀术伤害乘数表[_parent.刀] > 1) temp = _root.技能函数.拔刀术伤害乘数表[_parent.刀];
 	
-	if (_parent.刀属性数组[13] != undefined && _parent.刀属性数组[13] != NaN)
+	if (_parent.刀属性.power != undefined && _parent.刀属性.power != NaN)
 	{
-		子弹.子弹威力 = _parent.空手攻击力 * 0.1 + (0.25 * _parent.内力 + _parent.刀属性数组[13] * 0.12) * (4 + _parent.技能等级) + _parent.刀属性数组[13] * temp * 0.12 * (10 + _parent.技能等级);
+		子弹.子弹威力 = _parent.空手攻击力 * 0.1 + (0.25 * _parent.内力 + _parent.刀属性.power * 0.12) * (4 + _parent.技能等级) + _parent.刀属性.power * temp * 0.12 * (10 + _parent.技能等级);
 	}
 	else
 	{
@@ -673,9 +673,9 @@ _root.技能函数.六连攻击 = function()
 	子弹.子弹种类 = "近战子弹";
 	子弹.不硬直 = true;
 	
-	if (_parent.刀属性数组[13] != undefined && _parent.刀属性数组[13] != NaN)
+	if (_parent.刀属性.power != undefined && _parent.刀属性.power != NaN)
 	{
-		子弹.子弹威力 = _parent.空手攻击力 * 0.1 + (0.25 * _parent.内力 + _parent.刀属性数组[13] * 0.1) * (4 + _parent.技能等级) + _parent.刀属性数组[13] * 0.1 * (10 + _parent.技能等级);
+		子弹.子弹威力 = _parent.空手攻击力 * 0.1 + (0.25 * _parent.内力 + _parent.刀属性.power * 0.1) * (4 + _parent.技能等级) + _parent.刀属性.power * 0.1 * (10 + _parent.技能等级);
 	}
 	else
 	{
@@ -715,7 +715,7 @@ _root.技能函数.迅斩攻击 = function()
 {
 	var 子弹参数 = new Object();
 	
-	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + _parent.刀属性数组[13] * 0.5 * (3 + _parent.技能等级);
+	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + _parent.刀属性.power * 0.5 * (3 + _parent.技能等级);
 	// if (_parent.mp攻击加成)
 	// {
 	// 	子弹参数.子弹威力 += _parent.mp攻击加成;
@@ -752,21 +752,21 @@ _root.技能函数.翻滚换弹 = function(){
 		return;
 	}
 	
-	var 长枪使用弹夹名称 = _parent.长枪属性数组[14][11];
+	var 长枪使用弹夹名称 = _parent.长枪属性.clipname;
 	if (_parent.长枪射击次数[_parent.长枪] > 0){
 		if(org.flashNight.arki.item.ItemUtil.singleSubmit(长枪使用弹夹名称,1)){
 			_parent.长枪射击次数[_parent.长枪] = 0;
 			_parent.当前弹夹副武器已发射数 = 0;
 		}
 	}
-	var 手枪使用弹夹名称 = _parent.手枪属性数组[14][11];
+	var 手枪使用弹夹名称 = _parent.手枪属性.clipname;
 	if (_parent.手枪射击次数[_parent.手枪] > 0){
 		if(org.flashNight.arki.item.ItemUtil.singleSubmit(手枪使用弹夹名称,1)){
 			_parent.手枪射击次数[_parent.手枪] = 0;
 			_parent.当前弹夹副武器已发射数 = 0;
 		}
 	}
-	var 手枪2使用弹夹名称 = _parent.手枪2属性数组[14][11];
+	var 手枪2使用弹夹名称 = _parent.手枪2属性.clipname;
 	if (_parent.手枪2射击次数[_parent.手枪2] > 0){
 		if(org.flashNight.arki.item.ItemUtil.singleSubmit(手枪2使用弹夹名称,1)){
 			_parent.手枪2射击次数[_parent.手枪2] = 0;
@@ -783,8 +783,8 @@ _root.技能函数.火舞旋风攻击 = function(){
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "常规旋风";
 	子弹属性.子弹速度 = 0;
-	if (_parent.刀属性数组[13]){
-		子弹属性.子弹威力 = _parent.空手攻击力 * 0.1 + 2 * _parent.内力 * (3 + _parent.技能等级 * 0.5) + _parent.刀属性数组[13] * (10 + _parent.技能等级) / 10;
+	if (_parent.刀属性.power){
+		子弹属性.子弹威力 = _parent.空手攻击力 * 0.1 + 2 * _parent.内力 * (3 + _parent.技能等级 * 0.5) + _parent.刀属性.power * (10 + _parent.技能等级) / 10;
 	}else{
 		子弹属性.子弹威力 = _parent.空手攻击力 * 0.1 + 2 * _parent.内力 * (3 + _parent.技能等级 * 0.5);
 	}

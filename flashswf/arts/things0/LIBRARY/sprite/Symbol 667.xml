@@ -81,7 +81,7 @@
             </DOMFrame>
             <DOMFrame index="1" duration="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 + _parent.刀属性数组[13];
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 + _parent.刀属性.power;
 Z轴攻击范围 = 30;
 击倒率 = 10;
 水平击退速度 = 10;
@@ -91,7 +91,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="3" duration="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 * 1.5 + _parent.刀属性数组[13];
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 * 1.5 + _parent.刀属性.power;
 Z轴攻击范围 = 30;
 击倒率 = 10;
 水平击退速度 = 10;
@@ -111,7 +111,7 @@ if(_parent.特效刀口){
             </DOMFrame>
             <DOMFrame index="7" duration="11" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 * 2.5 + _parent.刀属性数组[13];
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 * 2.5 + _parent.刀属性.power;
 Z轴攻击范围 = 30;
 击倒率 = 1;
 水平击退速度 = 12;

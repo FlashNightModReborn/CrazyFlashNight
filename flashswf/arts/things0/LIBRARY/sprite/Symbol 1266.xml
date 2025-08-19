@@ -15734,7 +15734,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 1.8;
+   子弹威力 = _parent._parent.空手攻击力 / 5 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 1.8;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -15851,7 +15851,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 4 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 1.8;
+   子弹威力 = _parent._parent.空手攻击力 / 4 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 1.8;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -16820,7 +16820,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 5 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 1.8;
+   子弹威力 = _parent._parent.空手攻击力 / 5 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 1.8;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -16937,7 +16937,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 1.8;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 1.8;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -21487,7 +21487,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 4 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 1.8;
+   子弹威力 = _parent._parent.空手攻击力 / 4 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 1.8;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -22131,7 +22131,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 1.8;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 1.8;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -22248,7 +22248,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 1.8;
+   子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 1.8;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -22901,7 +22901,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 4 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 1.8;
+   子弹威力 = _parent._parent.空手攻击力 / 4 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 1.8;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -51133,7 +51133,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+   子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -51625,9 +51625,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -51709,9 +51709,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -51793,9 +51793,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -51877,9 +51877,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -52398,9 +52398,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -52482,9 +52482,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -52566,9 +52566,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -52650,9 +52650,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -53443,9 +53443,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -53527,9 +53527,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -53611,9 +53611,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -53695,9 +53695,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -54449,9 +54449,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -54533,9 +54533,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -54617,9 +54617,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -54701,9 +54701,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -55791,9 +55791,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -55875,9 +55875,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -55959,9 +55959,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -56043,9 +56043,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -56443,7 +56443,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -56604,7 +56604,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -57061,9 +57061,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -57145,9 +57145,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -57229,9 +57229,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -57313,9 +57313,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -57701,7 +57701,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -57766,7 +57766,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -57831,7 +57831,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -57896,7 +57896,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -57961,7 +57961,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -58026,7 +58026,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -58091,7 +58091,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -58156,7 +58156,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -58221,7 +58221,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -58286,7 +58286,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -58351,7 +58351,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -58416,7 +58416,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -58481,7 +58481,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -58546,7 +58546,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -59003,9 +59003,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -59087,9 +59087,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -59171,9 +59171,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -59255,9 +59255,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -59808,7 +59808,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -59882,7 +59882,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -59962,7 +59962,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -60036,7 +60036,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -60101,7 +60101,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -60175,7 +60175,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -60249,7 +60249,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -60323,7 +60323,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -60400,7 +60400,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -60474,7 +60474,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -60548,7 +60548,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -60622,7 +60622,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -60699,7 +60699,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -60773,7 +60773,7 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -61230,9 +61230,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -61314,9 +61314,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -61398,9 +61398,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -61482,9 +61482,9 @@ gotoAndPlay(811);
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -62277,7 +62277,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -62351,7 +62351,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -62413,7 +62413,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -62490,7 +62490,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -62564,7 +62564,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -62626,7 +62626,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -62703,7 +62703,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -62780,7 +62780,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -62845,7 +62845,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -62922,7 +62922,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -62984,7 +62984,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -63067,7 +63067,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -63141,7 +63141,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -63206,7 +63206,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -63283,7 +63283,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -63348,7 +63348,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -63431,7 +63431,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -63493,7 +63493,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -63579,7 +63579,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -63653,7 +63653,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -63718,7 +63718,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -63795,7 +63795,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -63872,7 +63872,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -63958,7 +63958,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -64020,7 +64020,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -64109,7 +64109,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -64174,7 +64174,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -64257,7 +64257,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -64334,7 +64334,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -64408,7 +64408,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -64485,7 +64485,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -64556,7 +64556,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 / 3 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -64633,7 +64633,7 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.hp;
+   子弹威力 = _parent._parent.空手攻击力 * (1 + _parent._parent.技能等级 * 0.5 * temp) + _parent._parent.刀属性.power + _parent._parent.hp;
    子弹速度 = 0;
    击中地图效果 = "";
    Z轴攻击范围 = 30;
@@ -65123,9 +65123,9 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -65207,9 +65207,9 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -65291,9 +65291,9 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {
@@ -65375,9 +65375,9 @@ onClipEvent(load){
    {
       temp = 3;
    }
-   if(_parent._parent.刀属性数组[13] != undefined && _parent._parent.刀属性数组[13] != NaN)
+   if(_parent._parent.刀属性.power != undefined && _parent._parent.刀属性.power != NaN)
    {
-      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性数组[13] + _parent._parent.mp * 2;
+      子弹威力 = _parent._parent.空手攻击力 / 2 * (1 + _parent._parent.技能等级 * 1 * temp) + _parent._parent.刀属性.power + _parent._parent.mp * 2;
    }
    else
    {

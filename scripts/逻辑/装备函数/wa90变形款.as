@@ -60,7 +60,6 @@ _root.装备生命周期函数.wa90变形款初始化 = function(reflector:Objec
             }
         };
     }
-    _root.服务器.发布服务器消息(org.flashNight.gesh.object.ObjectUtil.toString(reflector.自机.长枪属性数组[14]))
     // 调用通用变形初始化（内部会将 paramObj.config 注入 reflector）
     _root.装备生命周期函数.通用变形初始化(reflector, paramObj);
 };
