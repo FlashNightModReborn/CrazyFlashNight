@@ -4,6 +4,7 @@
 
 import org.flashNight.gesh.object.*;
 import org.flashNight.arki.camera.*;
+import org.flashNight.arki.unit.*;
 
 _root.装备生命周期函数.G1111初始化 = function (ref, param)
 {
@@ -119,6 +120,63 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
                 prop.霰弹值 = param.riflePellets || 1;
             }
         }
+
+        // 铁枪磁轨弹自瞄算法（充能和非充能模式均适用）
+        if (prop.子弹种类 == "铁枪磁轨弹") {
+            var aimTarget = ref.autoTarget;
+            if (aimTarget && aimTarget.hp > 0) {
+                // 计算到目标的轨迹
+                var distX:Number = aimTarget._x - prop.shootX;
+                var defaultHeight:Number = typeof UnitUtil !== "undefined" && UnitUtil.calculateCenterOffset ? 
+                                          UnitUtil.calculateCenterOffset(aimTarget) : 0;
+                var distY:Number = aimTarget._y - defaultHeight - prop.shootY;
+                var distZ:Number = aimTarget.Z轴坐标 - prop.shootZ;
+                
+                // 计算水平速度，保持子弹速度恒定
+                var speedX:Number = distX >= 0 ? prop.子弹速度 : -prop.子弹速度;
+                var speedY:Number = speedX * distY / distX;
+                
+                // 限制垂直速度，确保不超过子弹速度上限
+                if (speedY > prop.子弹速度 || speedY < -prop.子弹速度) {
+                    speedY = speedY >= 0 ? prop.子弹速度 : -prop.子弹速度;
+                    speedX = speedY * distX / distY;
+                }
+                
+                // 设置子弹速度和Z轴比例参数
+                prop.速度X = speedX;
+                prop.速度Y = speedY;
+                prop.ZY比例 = aimTarget.Z轴坐标 / (aimTarget._y - defaultHeight);
+            }
+        }
+    });
+
+    target.dispatcher.subscribe
+    ("processShot", function () {
+        if(target.攻击模式 !== "长枪") return;
+        var prop:Object = target.man.子弹属性;
+        if(prop.子弹种类 != "铁枪磁轨弹") return;
+        var aimTarget = ref.autoTarget;
+        if (!(aimTarget.hp > 0)) return;
+            // 计算到目标的轨迹
+        var distX:Number = aimTarget._x - prop.shootX;
+        var defaultHeight:Number = UnitUtil.calculateCenterOffset(aimTarget);
+        var distY:Number = aimTarget._y - defaultHeight - prop.shootY;
+        var distZ:Number = aimTarget.Z轴坐标 - prop.shootZ;
+        
+        // 计算水平速度，保持子弹速度恒定
+        var speedX:Number = distX >= 0 ? prop.子弹速度 : -prop.子弹速度;
+        var speedY:Number = speedX * distY / distX;
+        
+        // 限制垂直速度，确保不超过子弹速度上限
+        if (speedY > prop.子弹速度 || speedY < -prop.子弹速度) {
+            speedY = speedY >= 0 ? prop.子弹速度 : -prop.子弹速度;
+            speedX = speedY * distX / distY;
+        }
+        
+        // 设置子弹速度和Z轴比例参数
+        prop.速度X = speedX;
+        prop.速度Y = speedY;
+        prop.ZY比例 = aimTarget.Z轴坐标 / (aimTarget._y - defaultHeight);
     });
 
 
