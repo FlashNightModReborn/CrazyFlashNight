@@ -139,8 +139,11 @@ _root.子弹生命周期 = function()
     #include "../macros/FLAG_CHAIN.as"
     #include "../macros/FLAG_TRANSPARENCY.as" 
 
-    // 2. 执行一次位运算，并将布尔结果缓存到局部变量 isTransparent 中
-    var isTransparent:Boolean = (this.flags & FLAG_TRANSPARENCY) != 0;
+    // 2. 局部化 flags 以优化性能
+    var flags:Number = this.flags;
+    
+    // 3. 执行一次位运算，并将布尔结果缓存到局部变量 isTransparent 中
+    var isTransparent:Boolean = (flags & FLAG_TRANSPARENCY) != 0;
 
     // 如果没有 area 且不是透明，直接进行运动更新
     // 原来: if(!this.area && !this.透明检测)
@@ -155,7 +158,7 @@ _root.子弹生命周期 = function()
     var bullet_rotation:Number = this._rotation;
     
     // 使用位标志优化联弹检测性能 (这段代码保持不变)
-    var isPointSet:Boolean = ((this.flags & FLAG_CHAIN) != 0) && (bullet_rotation != 0 && bullet_rotation != 180);
+    var isPointSet:Boolean = ((flags & FLAG_CHAIN) != 0) && (bullet_rotation != 0 && bullet_rotation != 180);
     var bulletZOffset:Number = this.Z轴坐标;
     var bulletZRange:Number  = this.Z轴攻击范围;
     
@@ -275,8 +278,8 @@ _root.子弹生命周期 = function()
                 // 创建近战和爆炸的组合掩码（编译时计算：1 | 32 = 33）
                 var MELEE_EXPLOSIVE_MASK:Number = FLAG_MELEE | FLAG_EXPLOSIVE;
                 
-                // 一次位运算替代两次否定和逻辑与：!(this.flags & FLAG_MELEE) && !(this.flags & FLAG_EXPLOSIVE)
-                dispatcher.publish((this.flags & MELEE_EXPLOSIVE_MASK) === 0 ?
+                // 一次位运算替代两次否定和逻辑与：!(flags & FLAG_MELEE) && !(flags & FLAG_EXPLOSIVE)
+                dispatcher.publish((flags & MELEE_EXPLOSIVE_MASK) === 0 ?
                     "kill" : "death", hitTarget);
                 shooter.dispatcher.publish("enemyKilled", hitTarget, this);
 
@@ -286,11 +289,11 @@ _root.子弹生命周期 = function()
 
             damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
 
-            if ((this.flags & FLAG_MELEE) && !this.不硬直)
+            if ((flags & FLAG_MELEE) && !this.不硬直)
             {
                 shooter.硬直(shooter.man, _root.钝感硬直时间);
             }
-            else if ((this.flags & FLAG_PIERCE) == 0) 
+            else if ((flags & FLAG_PIERCE) == 0) 
             {
                 this.gotoAndPlay("消失");
             }
