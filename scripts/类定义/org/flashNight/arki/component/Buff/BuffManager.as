@@ -72,7 +72,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
             _markPropDirty(prop);
         } else {
             // 如果是 MetaBuff，立即处理初始注入（使用鸭子类型检测）
-            if (typeof buff.createPodBuffsForInjection == "function") {
+            if (typeof buff["createPodBuffsForInjection"] == "function") {
                 this._injectMetaBuffPods(buff);
             }
         }
@@ -326,8 +326,8 @@ class org.flashNight.arki.component.Buff.BuffManager {
             var buff:IBuff = this._buffs[i];
             if (buff && !buff.isPod()) {
                 // 鸭子类型检测：必须有update方法
-                if (typeof buff.update == "function") {
-                    var stateInfo:Object = buff.update(deltaFrames);
+                if (typeof buff["update"] == "function") {
+                    var stateInfo:Object = buff["update"](deltaFrames);
                     
                     // 处理状态变化
                     if (stateInfo && stateInfo.stateChanged) {
@@ -339,7 +339,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
                     }
                     
                     // 如果 MetaBuff 死亡，移除它
-                    if (typeof buff.isActive == "function" && !buff.isActive()) {
+                    if (typeof buff["isActive"] == "function" && !buff["isActive"]()) {
                         this._removeMetaBuff(buff);
                     }
                 }
@@ -351,14 +351,14 @@ class org.flashNight.arki.component.Buff.BuffManager {
      * 注入 MetaBuff 生成的 PodBuff（支持鸭子类型）
      */
     private function _injectMetaBuffPods(metaBuff:Object):Void {
-        if (!metaBuff || typeof metaBuff.getId != "function" || typeof metaBuff.createPodBuffsForInjection != "function") {
+        if (!metaBuff || typeof metaBuff["getId"] != "function" || typeof metaBuff["createPodBuffsForInjection"] != "function") {
             return;
         }
         
-        var metaId:String = metaBuff.getId();
+        var metaId:String = metaBuff["getId"]();
         
         // 创建并注入 PodBuff
-        var podBuffs:Array = metaBuff.createPodBuffsForInjection();
+        var podBuffs:Array = metaBuff["createPodBuffsForInjection"]();
         var injectedIds:Array = [];
         
         for (var i:Number = 0; i < podBuffs.length; i++) {
@@ -397,9 +397,9 @@ class org.flashNight.arki.component.Buff.BuffManager {
      * 弹出（移除）某个 MetaBuff 注入的所有 PodBuff（支持鸭子类型）
      */
     private function _ejectMetaBuffPods(metaBuff:Object):Void {
-        if (!metaBuff || typeof metaBuff.getId != "function") return;
+        if (!metaBuff || typeof metaBuff["getId"] != "function") return;
         
-        var metaId:String = metaBuff.getId();
+        var metaId:String = metaBuff["getId"]();
         var injectedIds:Array = this._metaBuffInjections[metaId];
         
         if (injectedIds) {
@@ -411,8 +411,8 @@ class org.flashNight.arki.component.Buff.BuffManager {
             
             // 清理注入记录
             delete this._metaBuffInjections[metaId];
-            if (typeof metaBuff.clearInjectedBuffIds == "function") {
-                metaBuff.clearInjectedBuffIds();
+            if (typeof metaBuff["clearInjectedBuffIds"] == "function") {
+                metaBuff["clearInjectedBuffIds"]();
             }
         }
         
@@ -480,9 +480,9 @@ class org.flashNight.arki.component.Buff.BuffManager {
      * 移除 MetaBuff（会顺带弹出其注入的 PodBuff）（支持鸭子类型）
      */
     private function _removeMetaBuff(metaBuff:Object):Void {
-        if (!metaBuff || typeof metaBuff.getId != "function") return;
+        if (!metaBuff || typeof metaBuff["getId"] != "function") return;
         
-        var metaId:String = metaBuff.getId();
+        var metaId:String = metaBuff["getId"]();
         
         // 先弹出它注入的所有Pod
         this._ejectMetaBuffPods(metaBuff);
@@ -499,8 +499,8 @@ class org.flashNight.arki.component.Buff.BuffManager {
         delete this._idMap[metaId];
         
         // 销毁
-        if (typeof metaBuff.destroy == "function") {
-            metaBuff.destroy();
+        if (typeof metaBuff["destroy"] == "function") {
+            metaBuff["destroy"]();
         }
         
         // 触发回调

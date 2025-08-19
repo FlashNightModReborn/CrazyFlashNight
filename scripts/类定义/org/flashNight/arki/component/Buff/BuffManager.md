@@ -123,7 +123,7 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
   ✅ PASSED
 
 🧪 Test 27: Calculation Performance
-  ✓ Performance: 100 buffs, 100 updates in 108ms
+  ✓ Performance: 100 buffs, 100 updates in 97ms
   ✅ PASSED
 
 🧪 Test 28: Memory and Calculation Consistency
@@ -155,16 +155,16 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
 
 --- Phase 8: Regression & Lifecycle Contracts ---
 🧪 Test 36: Same-ID replacement keeps only the new instance
-  ✅ PASSED
+  ❌ FAILED: Same-ID replacement failed: Expected 1 removal and 1 live pod; got removed=0, livePods=0
 
 🧪 Test 37: Injected Pods fire onBuffAdded for each injected pod
-  ✅ PASSED
+  ❌ FAILED: Injected Pods add-event failed: Expected at least 3 onBuffAdded events, got 0
 
 🧪 Test 38: Remove injected pod shrinks injected map by 1
-  ✅ PASSED
+  ❌ FAILED: Remove injected pod failed: Expected injected map to shrink by 1; before=0, after=0
 
 🧪 Test 39: clearAllBuffs emits onBuffRemoved for independent pods
-  ✅ PASSED
+  ❌ FAILED: clearAllBuffs removal-callback failed: Expected >=2 removals and 0 live pods; got removed=0, livePods=0
 
 🧪 Test 40: removeBuff de-dup removes only once
   ✅ PASSED
@@ -172,16 +172,16 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
 
 === Calculation Accuracy Test Results ===
 📊 Total tests: 40
-✅ Passed: 39
-❌ Failed: 1
-📈 Success rate: 98%
-⚠️  1 test(s) failed. Please review calculation issues above.
+✅ Passed: 35
+❌ Failed: 5
+📈 Success rate: 88%
+⚠️  5 test(s) failed. Please review calculation issues above.
 ==============================================
 
 === Calculation Performance Results ===
 📊 Large Scale Accuracy:
    buffCount: 100
-   calculationTime: 15ms
+   calculationTime: 11ms
    expectedValue: 6050
    actualValue: 6050
    accurate: true
@@ -190,7 +190,7 @@ org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
    totalBuffs: 100
    properties: 5
    updates: 100
-   totalTime: 108ms
-   avgUpdateTime: 1.08ms per update
+   totalTime: 97ms
+   avgUpdateTime: 0.97ms per update
 
 =======================================
