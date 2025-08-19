@@ -21,11 +21,12 @@ _root.物品图标注释 = function(name, value) {
 
     // 3) 以“信息 + 简介”的总长度作为分支依据
     var 阈值:Number = TooltipConstants.SPLIT_THRESHOLD;
-    var 总长度:Number = 描述文本.length + 简介文本.length;
+    var 描述长度:Number = 描述文本.length;
+    var 总长度:Number = 描述长度 + 简介文本.length;
 
     _root.注释结束(); // 保底清理
 
-    if (总长度 > 阈值) {
+    if (总长度 > 阈值 * 2 && 描述长度 > 阈值 / 2) {
         // 长内容：主框体展示“描述”，简介面板单独展示
         var 计算宽度:Number = TooltipLayout.estimateWidth(描述文本);
         _root.注释(计算宽度, 描述文本);
