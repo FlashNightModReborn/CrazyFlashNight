@@ -5586,6 +5586,50 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
       <attr_0>
         <init>
           <initRoutines>G1111初始化</initRoutines>
+          <param>
+            <!-- 帧区间配置 -->
+            <rifleStart>1</rifleStart>
+            <rifleEnd>15</rifleEnd>
+            <transStart>16</transStart>
+            <transEnd>30</transEnd>
+            <rocketStart>31</rocketStart>
+            <rocketEnd>45</rocketEnd>
+            
+            <!-- 变形冷却配置 -->
+            <transformInterval>30</transformInterval>
+            
+            <!-- 激光系统配置 -->
+            <laserRotationSpeed>0.15</laserRotationSpeed>
+            <laserMaxAngle>45</laserMaxAngle>
+            <laserMinAngle>-45</laserMinAngle>
+            <targetSearchInterval>10</targetSearchInterval>
+            <enemySearchDistance>5</enemySearchDistance>
+            
+            <!-- 子弹配置 - 步枪模式 -->
+            <rifleBulletType>铁枪磁轨弹</rifleBulletType>
+            <rifleDamageType>魔法</rifleDamageType>
+            <rifleMagicType>能</rifleMagicType>
+            <riflePellets>1</riflePellets>
+            
+            <!-- 子弹配置 - 火箭模式 -->
+            <rocketBulletType>横向拖尾追踪联弹-普通无壳子弹</rocketBulletType>
+            <rocketDamageType>破击</rocketDamageType>
+            <rocketMagicType>首领</rocketMagicType>
+            <rocketPellets>6</rocketPellets>
+            
+            <!-- 充能子弹配置 - 步枪模式 -->
+            <chargedRifleBulletType>近战联弹</chargedRifleBulletType>
+            <chargedRifleDamageType>真伤</chargedRifleDamageType>
+            <chargedRiflePellets>4</chargedRiflePellets>
+            
+            <!-- 充能子弹配置 - 火箭模式 -->
+            <chargedRocketPellets>16</chargedRocketPellets>
+            
+            <!-- 运镜配置 -->
+            <focusFrames>10</focusFrames>
+            <focusSnap>true</focusSnap>
+            <focusEaseSpeed>5</focusEaseSpeed>
+          </param>
         </init>
         <cycle>
           <cycleRoutines>G1111周期</cycleRoutines>

@@ -2,6 +2,9 @@
 // G1111 · 装备生命周期函数 (单向推进版)
 // =======================================================
 
+import org.flashNight.gesh.object.*;
+import org.flashNight.arki.camera.*;
+
 _root.装备生命周期函数.G1111初始化 = function (ref, param)
 {
     var target:MovieClip = ref.自机;
@@ -29,12 +32,13 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
 
     /* ---------- 4. 激光模组自动锁定系统 ---------- */
     ref.laserRotation = 0;              // 激光当前角度
-    ref.laserRotationSpeed = 0.15;      // 激光旋转平滑系数
-    ref.laserMaxAngle = 45;             // 最大向右旋转角度
-    ref.laserMinAngle = -45;            // 最大向左旋转角度
+    ref.laserRotationSpeed = param.laserRotationSpeed || 0.15;      // 激光旋转平滑系数
+    ref.laserMaxAngle = param.laserMaxAngle || 45;             // 最大向右旋转角度
+    ref.laserMinAngle = param.laserMinAngle || -45;            // 最大向左旋转角度
     ref.autoTarget = null;              // 自动锁定的目标
     ref.targetSearchCooldown = 0;       // 搜索目标冷却
-    ref.TARGET_SEARCH_INTERVAL = 10;    // 搜索间隔(帧)
+    ref.TARGET_SEARCH_INTERVAL = param.targetSearchInterval || 10;    // 搜索间隔(帧)
+    ref.ENEMY_SEARCH_DISTANCE = param.enemySearchDistance || 5;      // 敌人搜索距离
 
     /* ---------- 5. 全局主角同步 ---------- */
     if (ref.是否为主角) {
@@ -69,10 +73,51 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
         }
 
         var isCharged = target.铁枪之锋许可;
-        prop.子弹种类 = isRocketMode ? "横向拖尾追踪联弹-普通无壳子弹" : "铁枪磁轨弹";
-        prop.伤害类型 = isRocketMode ? "破击" : "魔法";
-        prop.魔法伤害属性 = isRocketMode ? "首领" : "能";
-        prop.霰弹值 = isRocketMode ? isCharged ? Math.ceil(16 * target.铁枪之锋倍率) : 6 : 1;
+        if(isCharged) {
+            if(isRocketMode) {
+                prop.子弹种类 = param.rocketBulletType || "横向拖尾追踪联弹-普通无壳子弹";
+                prop.伤害类型 = param.rocketDamageType || "破击";
+                prop.魔法伤害属性 = param.rocketMagicType || "首领";
+                prop.霰弹值 =  Math.ceil((param.chargedRocketPellets || 16) * target.铁枪之锋倍率);
+            } else {
+                var chargedProp:Object = ObjectUtil.clone(prop);
+
+                chargedProp.子弹种类 = param.chargedRifleBulletType || "近战联弹";
+                chargedProp.伤害类型 = param.chargedRifleDamageType || "真伤";
+                chargedProp.霰弹值 =  Math.ceil((param.chargedRiflePellets || 4) * target.铁枪之锋倍率);;
+
+                var autoTarget:MovieClip = ref.autoTarget;
+                chargedProp.区域定位area  = autoTarget.area;
+                chargedProp.shootX = autoTarget._x;
+                chargedProp.shootY = autoTarget._y;
+                chargedProp.shootZ = autoTarget.Z轴坐标;
+
+                _root.子弹区域shoot传递(chargedProp);
+
+                // 狙击运镜：切换到被狙击单位身上
+                var focusFrames = param.focusFrames || 10;
+                var focusSnap = (param.focusSnap == "true" || param.focusSnap === true) ? true : false;
+                var focusEaseSpeed = param.focusEaseSpeed || 5;
+                HorizontalScroller.pushFocus(autoTarget, focusFrames, focusSnap, focusEaseSpeed, 0, 0, 0);
+                
+                prop.子弹种类 = param.rifleBulletType || "铁枪磁轨弹";
+                prop.伤害类型 = param.rifleDamageType || "魔法";
+                prop.魔法伤害属性 = param.rifleMagicType || "能";
+                prop.霰弹值 = param.riflePellets || 1;
+            }
+        } else {
+            if(isRocketMode) {
+                prop.子弹种类 = param.rocketBulletType || "横向拖尾追踪联弹-普通无壳子弹";
+                prop.伤害类型 = param.rocketDamageType || "破击";
+                prop.魔法伤害属性 = param.rocketMagicType || "首领";
+                prop.霰弹值 = param.rocketPellets || 6;        
+            } else {
+                prop.子弹种类 = param.rifleBulletType || "铁枪磁轨弹";
+                prop.伤害类型 = param.rifleDamageType || "魔法";
+                prop.魔法伤害属性 = param.rifleMagicType || "能";
+                prop.霰弹值 = param.riflePellets || 1;
+            }
+        }
     });
 
 
@@ -143,6 +188,8 @@ _root.装备生命周期函数.G1111周期 = function (ref)
         ref.isFiring = true;
         ref.currentFrame = ref.isRocketMode ? ref.ROCKET_START : ref.RIFLE_START;
         长枪.gotoAndStop(ref.currentFrame);  // 立即绘制第一帧
+
+        自机.isRocketMode = ref.isRocketMode;
         return; // 本周期只绘制第一帧，下周期开始推进
     }
 
@@ -172,6 +219,8 @@ _root.装备生命周期函数.G1111周期 = function (ref)
                     ref.globalData.isRocketMode = false;
             }
         }
+
+        自机.isRocketMode = ref.isRocketMode;
         return; // 变形帧已绘制完毕
     }
 
@@ -195,8 +244,8 @@ _root.装备生命周期函数.G1111周期 = function (ref)
     }
 
 
-    /* ===== 6. 激光模组自动锁定（仅导弹模式） ===== */
-    if (ref.isRocketMode && ref.isWeaponActive) {
+    /* ===== 6. 激光模组自动锁定 ===== */
+    if (ref.isWeaponActive) {
         var laser = 长枪.激光模组;
         if (laser != undefined) {
             var RAD_TO_DEG = 180 / Math.PI;
@@ -214,9 +263,11 @@ _root.装备生命周期函数.G1111周期 = function (ref)
                 // 如果没有目标或当前目标无效，搜索新目标
                 if (ref.autoTarget == null || ref.autoTarget._x == undefined) {
                     if (typeof TargetCacheManager !== "undefined") {
-                        ref.autoTarget = TargetCacheManager.findNearestEnemy(自机, 5);
+                        ref.autoTarget = TargetCacheManager.findNearestEnemy(自机, ref.ENEMY_SEARCH_DISTANCE);
                     }
                 }
+
+                自机.autoTarget = ref.autoTarget;
             }
             
             // 如果有有效目标，计算追踪角度
@@ -246,7 +297,7 @@ _root.装备生命周期函数.G1111周期 = function (ref)
                         
                         // 渲染锁定视觉效果
                         if (ref.autoTarget.aabbCollider) {
-                            AABBRenderer.renderAABB(ref.autoTarget.aabbCollider, 0, "scan1");
+                            AABBRenderer.renderAABB(ref.autoTarget.aabbCollider, 0, ref.isRocketMode ? "scan4" : "scan1");
                         }
                     }
                 }
@@ -274,4 +325,5 @@ _root.装备生命周期函数.G1111周期 = function (ref)
 
     /* ===== 7. 绘制 ===== */
     长枪.gotoAndStop(ref.currentFrame);
+    自机.isRocketMode = ref.isRocketMode;
 };

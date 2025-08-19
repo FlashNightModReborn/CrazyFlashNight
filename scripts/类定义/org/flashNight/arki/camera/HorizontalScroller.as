@@ -179,12 +179,19 @@ class org.flashNight.arki.camera.HorizontalScroller {
      * 执行实际的更新逻辑
      */
     private function performUpdate():Void {
-        // 检查目标对象有效性
+        // 检查目标对象有效性和焦点栈防护
         if (!scrollObj || scrollObj._x == undefined) {
+            // 如果当前目标无效且不是默认目标，弹出当前焦点并重试
+            if (this.focusStack && this.focusStack.length > 0 && scrollObj !== this.defaultFollowTarget) {
+                this.popFocusInternal();
+                // 重新检查更新后的目标
+                if (scrollObj && scrollObj._x != undefined) {
+                    updateFunction.call(this);
+                }
+            }
             return;
         }
 
-        
         // 调用预组装的更新函数
         updateFunction.call(this);
     }
