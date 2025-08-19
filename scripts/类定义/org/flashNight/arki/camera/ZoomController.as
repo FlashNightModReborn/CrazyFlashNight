@@ -190,7 +190,9 @@ class org.flashNight.arki.camera.ZoomController {
         gameWorld:MovieClip,
         bgLayer:MovieClip,
         easeFactor:Number,
-        zoomScale:Number
+        zoomScale:Number,
+        // 新增：最小缩放钳制（来自焦点特写需求）；默认 0 表示不限制
+        minClamp:Number
     ):Object {
         // 0) 初始化卡尔曼滤波器
         _initializeFiltersIfNeeded();
@@ -240,16 +242,20 @@ class org.flashNight.arki.camera.ZoomController {
         
         var oldScale:Number = lastScale;
         
-        // 9) 轻度缓动（因为已有卡尔曼滤波，缓动可以更激进）
-        var newScale:Number = oldScale + (filteredZoomScale - oldScale) / Math.max(1, easeFactor * 0.5);
+        // 9) 先在"目标值"层面做最小阈值钳制（不压制更大的动态缩放）
+        var __min:Number = (minClamp != undefined && minClamp > 0) ? minClamp : 0;
+        var targetScale:Number = (filteredZoomScale < __min) ? __min : filteredZoomScale;
         
-        // 10) 判断是否需要真正更新缩放
+        // 10) 轻度缓动（已有卡尔曼滤波，可保持既有力度）
+        var newScale:Number = oldScale + (targetScale - oldScale) / Math.max(1, easeFactor * 0.5);
+        
+        // 11) 判断是否需要真正更新缩放
         if (Math.abs(newScale - oldScale) > SCALE_CHANGE_THRESHOLD) {
-            // 10.1) 记录缩放前 scrollObj 在屏幕上的坐标
+            // 11.1) 记录缩放前 scrollObj 在屏幕上的坐标
             var prePt:Object = { x: 0, y: 0 };
             scrollObj.localToGlobal(prePt);
             
-            // 10.2) 应用缩放到 gameWorld 与 bgLayer
+            // 11.2) 应用缩放到 gameWorld 与 bgLayer
             var pct:Number = newScale * 100;
             gameWorld._xscale = gameWorld._yscale = pct;
             bgLayer._xscale = bgLayer._yscale = pct;

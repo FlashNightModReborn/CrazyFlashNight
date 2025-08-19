@@ -140,14 +140,18 @@ class org.flashNight.arki.camera.HorizontalScroller {
      * @param tol 临时死区容差，默认使用当前配置
      * @param biasX 构图偏置X，默认0
      * @param biasY 构图偏置Y，默认0
+     * @param minZoom 最小绝对缩放倍率（特写用），当系统动态缩放小于此值时强制使用此倍率，默认0不限制
+     *                示例：minZoom=2.0 表示"确保至少2倍缩放"，而非"在当前基础上再乘以2"
      */
     public static function pushFocus(target:MovieClip, frames:Number, snap:Boolean, 
-                                   overrideEase:Number, tol:Number, biasX:Number, biasY:Number):Void {
+                                   overrideEase:Number, tol:Number, biasX:Number, biasY:Number,
+                                   minZoom:Number):Void {
         if (!instance) {
             getInstance(); // 确保实例存在
         }
         instance.pushFocusInternal(target, frames || 0, snap || false, 
-                                 overrideEase || 0, tol || -1, biasX || 0, biasY || 0);
+                                 overrideEase || 0, tol || -1, biasX || 0, biasY || 0,
+                                 minZoom || 0);
     }
     
     /**
@@ -261,9 +265,15 @@ class org.flashNight.arki.camera.HorizontalScroller {
         var hasZoomOffset:Boolean = false;
         
         if (this.enableCameraZoom) {
+            // 从当前焦点读取"最小缩放阈值"，无则为 0（不限制）
+            var __minClamp:Number = 0;
+            if (this.currentFocus && this.currentFocus.minZoom > 0) {
+                __minClamp = this.currentFocus.minZoom;
+            }
             var zoomResult:Object = ZoomController.updateScale(
                 this.scrollObj, this.gameWorld, this.bgLayer, 
-                this.easeFactor, _root.basicZoomScale
+                this.easeFactor, _root.basicZoomScale,
+                __minClamp
             );
             newScale = zoomResult.newScale;
             offsetX = zoomResult.offsetX;
@@ -519,9 +529,12 @@ class org.flashNight.arki.camera.HorizontalScroller {
      * @param tol 临时死区容差（默认使用当前配置）
      * @param biasX 构图偏置X（默认0）
      * @param biasY 构图偏置Y（默认0）
+     * @param minZoom 最小绝对缩放倍率（特写用），当系统动态缩放小于此值时强制使用此倍率（默认0）
+     *                示例：minZoom=2.0 表示"确保至少2倍缩放"，而非"在当前基础上再乘以2"
      */
     private function pushFocusInternal(target:MovieClip, frames:Number, snap:Boolean, 
-                                     overrideEase:Number, tol:Number, biasX:Number, biasY:Number):Void {
+                                     overrideEase:Number, tol:Number, biasX:Number, biasY:Number,
+                                     minZoom:Number):Void {
         if (!target || target._x == undefined) {
             return; // 无效目标，忽略
         }
@@ -545,7 +558,9 @@ class org.flashNight.arki.camera.HorizontalScroller {
             easeFactor: (overrideEase > 0) ? overrideEase : this.easeFactor,
             offsetTolerance: (tol >= 0) ? tol : this.offsetTolerance,
             biasX: (biasX != undefined) ? biasX : 0,
-            biasY: (biasY != undefined) ? biasY : 0
+            biasY: (biasY != undefined) ? biasY : 0,
+            // 新增：特写最小缩放阈值（仅当 >0 时生效）
+            minZoom: (minZoom != undefined && minZoom > 0) ? minZoom : 0
         };
         
         // 推入栈顶

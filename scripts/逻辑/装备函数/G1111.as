@@ -98,7 +98,7 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
                 var focusFrames = param.focusFrames || 10;
                 var focusSnap = (param.focusSnap == "true" || param.focusSnap === true) ? true : false;
                 var focusEaseSpeed = param.focusEaseSpeed || 5;
-                HorizontalScroller.pushFocus(autoTarget, focusFrames, focusSnap, focusEaseSpeed, 0, 0, 0);
+                HorizontalScroller.pushFocus(autoTarget, focusFrames, focusSnap, focusEaseSpeed, 0, 0, 0, 2);
                 
                 prop.子弹种类 = param.rifleBulletType || "铁枪磁轨弹";
                 prop.伤害类型 = param.rifleDamageType || "魔法";
