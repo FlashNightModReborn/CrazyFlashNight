@@ -78,8 +78,9 @@ _root.技能栏技能图标注释 = function(对应数组号) {
  */
 _root.学习界面技能图标注释 = function(对应数组号) {
     var 技能信息 = _root.技能表[对应数组号];
+    var 技能名 = 技能信息.Name;
 
-    var 文本数据 = "<B>" + 技能信息.Name + "</B>";
+    var 文本数据 = "<B>" + 技能名 + "</B>";
     文本数据 += "<BR>" + 技能信息.Type;
     文本数据 += "<BR>" + 技能信息.Description;
     文本数据 += "<BR>最高等级：" + 技能信息.MaxLevel;
@@ -90,8 +91,11 @@ _root.学习界面技能图标注释 = function(对应数组号) {
     文本数据 += "<BR>MP消耗：" + 技能信息.MP;
     文本数据 += "<BR>等级限制：" + 技能信息.UnlockLevel;
 
+    _root.注释结束(); // 保底清理
+
+    // 使用技能图标显示注释
     var 计算宽度 = TooltipLayout.estimateWidth(文本数据, TooltipConstants.MIN_W, TooltipConstants.MAX_W);
-    _root.注释(计算宽度, 文本数据);
+    TooltipLayout.renderIconTooltip(true, 技能名, 文本数据, 计算宽度, "技能");
 };
 
 
