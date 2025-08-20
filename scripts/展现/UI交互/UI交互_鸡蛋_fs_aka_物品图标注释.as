@@ -158,7 +158,7 @@ _root.注释图标核心 = function(enable:Boolean, iconName:String, contentText
  * @param textWidth:Number 文本宽度
  */
 _root.注释技能图标 = function(enable:Boolean, skillName:String, skillText:String, textWidth:Number) {
-    _root.注释图标核心(enable, skillName, skillText, textWidth);
+    _root.注释图标核心(enable, skillName, skillText, textWidth, "技能");
 };
 
 /**
