@@ -11,6 +11,11 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/Survival_mode_BG.swf</Background>
             <RogueMode>true</RogueMode>
+            <BGM>
+                <Command>play</Command>
+                <Title>Aenigmata</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Instances>
             <Instance id="0">
