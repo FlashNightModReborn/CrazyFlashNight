@@ -484,6 +484,19 @@
                 <Text>这大家伙是什么？！</Text>
             </Dialogue>
         </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>精英</Parameter>
+                    <Enemy>
+                        <Type>兵种358</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                        <IsHostile>false</IsHostile>
+                        <x>50</x>
+                        <y>520</y>
+                    </Enemy>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -491,22 +504,14 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种358</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>20</Level>
-                        <IsHostile>false</IsHostile>
-                        <x>530</x>
-                        <y>575</y>
-                    </Enemy>
-                    <Enemy>
                         <Type>兵种356</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
                         <IsHostile>false</IsHostile>
-                        <x>589</x>
-                        <y>440</y>
+                        <InstanceName>精英</InstanceName>
+                        <x>530</x>
+                        <y>575</y>
                     </Enemy>
                     <Enemy>
                         <Type>兵种55</Type>
