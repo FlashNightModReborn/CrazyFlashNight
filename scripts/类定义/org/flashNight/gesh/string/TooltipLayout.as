@@ -42,8 +42,6 @@ class org.flashNight.gesh.string.TooltipLayout {
                 bgHeightOffset = TooltipConstants.BASE_NUM + TooltipConstants.BG_HEIGHT_OFFSET;
                 break;
 
-
-
             default:
                 var scaledWidth:Number = TooltipConstants.BASE_NUM * TooltipConstants.RATE;
 
@@ -108,6 +106,53 @@ class org.flashNight.gesh.string.TooltipLayout {
 
             // 左背景高度自适应
             introBg._height = tips.简介文本框.textHeight + 10;
+        }
+    }
+
+    // === 渲染图标注释（1:1 复刻 _root.注释图标核心） ===
+    public static function renderIconTooltip(enable:Boolean, iconName:String, contentText:String, contentWidth:Number, layoutType:String):Void {
+        var target:MovieClip = _root.注释框.物品图标定位;
+        var background:MovieClip = _root.注释框.简介背景;
+        var text:MovieClip = _root.注释框.简介文本框;
+
+        if (enable) {
+            target._visible = true;
+            text._visible = true;
+            background._visible = true;
+
+            var tips:MovieClip = _root.注释框;
+
+            // 使用指定的布局类型，默认为装备布局
+            var layoutTypeToUse:String = layoutType ? layoutType : "装备";
+            var layout:Object = applyIntroLayout(layoutTypeToUse, target, background, text);
+            var stringWidth:Number = Math.max(contentWidth, layout.width);
+            var backgroundHeightOffset:Number = layout.heightOffset;
+
+            // 显示注释文本
+            _root.注释(stringWidth, contentText, "简介");
+
+            // 图标挂载，使用 "图标-" + 图标名 的命名规则
+            if (target.icon) target.icon.removeMovieClip();
+            var iconString:String = "图标-" + iconName;
+            var icon:MovieClip = target.attachMovie(iconString, "icon", target.getNextHighestDepth());
+            icon._xscale = icon._yscale = 150; // TODO: TooltipConstants.ICON_SCALE
+            icon._x = icon._y = 19;            // TODO: TooltipConstants.ICON_OFFSET
+
+            // 确保图标层级在简介背景之上
+            if (tips.简介背景) {
+                var iconDepth:Number = target.getDepth();
+                var bgDepth:Number = tips.简介背景.getDepth();
+                if (iconDepth <= bgDepth) {
+                    target.swapDepths(bgDepth + 1);
+                }
+            }
+
+            background._height = text._height + backgroundHeightOffset;
+        } else {
+            if (target.icon) target.icon.removeMovieClip();
+            target._visible = false;
+            text._visible = false;
+            background._visible = false;
         }
     }
 }

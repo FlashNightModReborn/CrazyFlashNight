@@ -70,7 +70,7 @@ _root.技能栏技能图标注释 = function(对应数组号) {
 
     // 使用技能图标显示注释
     var 计算宽度 = TooltipLayout.estimateWidth(文本数据, TooltipConstants.MIN_W, TooltipConstants.MAX_W);
-    _root.注释技能图标(true, 技能名, 文本数据, 计算宽度);
+    TooltipLayout.renderIconTooltip(true, 技能名, 文本数据, 计算宽度, "技能");
 };
 
 /**
@@ -96,70 +96,7 @@ _root.学习界面技能图标注释 = function(对应数组号) {
 };
 
 
-/**
- * 通用图标注释核心函数
- * @param enable:Boolean 是否启用显示
- * @param iconName:String 图标名称（用于构建 "图标-" + iconName）
- * @param contentText:String 注释内容文本
- * @param contentWidth:Number 内容宽度
- * @param layoutType:String 布局类型（可选，默认为"装备"）
- */
-_root.注释图标核心 = function(enable:Boolean, iconName:String, contentText:String, contentWidth:Number, layoutType:String) {
-    var target:MovieClip = _root.注释框.物品图标定位;
-    var background:MovieClip = _root.注释框.简介背景;
-    var text:MovieClip = _root.注释框.简介文本框;
 
-    if (enable) {
-        target._visible = true;
-        text._visible = true;
-        background._visible = true;
-
-        var tips:MovieClip = _root.注释框;
-
-        // 使用指定的布局类型，默认为装备布局
-        var layoutTypeToUse:String = layoutType ? layoutType : "装备";
-        var layout:Object = TooltipLayout.applyIntroLayout(layoutTypeToUse, target, background, text);
-        var stringWidth:Number = Math.max(contentWidth, layout.width);
-        var backgroundHeightOffset:Number = layout.heightOffset;
-
-        // 显示注释文本
-        _root.注释(stringWidth, contentText, "简介");
-
-        // 图标挂载，使用 "图标-" + 图标名 的命名规则
-        if (target.icon) target.icon.removeMovieClip();
-        var iconString:String = "图标-" + iconName;
-        var icon:MovieClip = target.attachMovie(iconString, "icon", target.getNextHighestDepth());
-        icon._xscale = icon._yscale = 150; // TODO: TooltipConstants.ICON_SCALE
-        icon._x = icon._y = 19;            // TODO: TooltipConstants.ICON_OFFSET
-
-        // 确保图标层级在简介背景之上
-        if (tips.简介背景) {
-            var iconDepth:Number = target.getDepth();
-            var bgDepth:Number = tips.简介背景.getDepth();
-            if (iconDepth <= bgDepth) {
-                target.swapDepths(bgDepth + 1);
-            }
-        }
-
-        background._height = text._height + backgroundHeightOffset;
-    } else {
-        if (target.icon) target.icon.removeMovieClip();
-        target._visible = false;
-        text._visible = false;
-        background._visible = false;
-    }
-};
-
-/**
- * 注释技能图标显示控制函数
- * @param enable:Boolean 是否启用显示
- * @param skillName:String 技能名称
- * @param skillText:String 技能描述文本
- * @param textWidth:Number 文本宽度
- */
-_root.注释技能图标 = function(enable:Boolean, skillName:String, skillText:String, textWidth:Number) {
-    _root.注释图标核心(enable, skillName, skillText, textWidth, "技能");
-};
 
 /**
  * 注释物品图标显示控制函数
@@ -187,9 +124,9 @@ _root.注释物品图标 = function(enable:Boolean, name:String, value:Object, i
         }
 
         // 调用通用图标核心函数
-        _root.注释图标核心(true, data.icon, introduction, stringWidth, data.type);
+        TooltipLayout.renderIconTooltip(true, data.icon, introduction, stringWidth, data.type);
     } else {
-        _root.注释图标核心(false);
+        TooltipLayout.renderIconTooltip(false);
     }
 };
 
@@ -232,7 +169,7 @@ _root.注释 = function(宽度, 内容, 框体) {
  */
 _root.注释结束 = function() {
     _root.注释框._visible = false;
-    _root.注释图标核心(false);
+    TooltipLayout.renderIconTooltip(false);
     
     // 清理文本框内容
     _root.注释框.文本框.htmlText = "";
