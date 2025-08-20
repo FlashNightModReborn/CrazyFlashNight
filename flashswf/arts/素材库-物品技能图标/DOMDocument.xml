@@ -69,7 +69,7 @@
           <DOMBitmapItem name="技能相关/图标素材/QQ截图20240130020129.png" itemID="65b7e860-00002247" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/QQ截图20240130020129.png" sourceLastImported="1706551291" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/QQ截图20240130020129.png" bitmapDataHRef="M 50 1740550143.dat" frameRight="14400" frameBottom="14400"/>
           <DOMBitmapItem name="技能相关/图标素材/QQ截图20240720173147 (1).png" itemID="669b84f0-00000521" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/QQ截图20240720173147 (1).png" sourceLastImported="1721468130" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/QQ截图20240720173147 (1).png" bitmapDataHRef="M 40 1740550143.dat" frameRight="3820" frameBottom="3820"/>
           <DOMBitmapItem name="消耗道具相关/各种图素材等/QQ图片20240114125757.jpg" itemID="65a369e5-000004a4" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/消耗道具相关/各种图素材等/QQ图片20240114125757.jpg" sourceLastImported="1705208239" quality="50" href="消耗道具相关/各种图素材等/QQ图片20240114125757.jpg" bitmapDataHRef="M 26 1740497968.dat" frameRight="10240" frameBottom="5760" isJPEG="true"/>
-          <DOMBitmapItem name="生活用品/020/u=1702814204,2418538836&amp;gp=22" itemID="46ef6b23-00000012" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" sourceLastImported="1190084491" quality="50" href="生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" bitmapDataHRef="M 1 1748966260.dat" frameRight="2780" frameBottom="2780" isJPEG="true"/>
+          <DOMBitmapItem name="生活用品/020/u=1702814204,2418538836&amp;gp=22" itemID="46ef6b23-00000012" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" sourceLastImported="1190084491" originalCompressionType="lossless" quality="50" href="生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" bitmapDataHRef="M 1 1748966260.dat" frameRight="2780" frameBottom="2780"/>
           <DOMBitmapItem name="技能相关/图标素材/位图 100" itemID="65e0a7bb-00002180" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/位图 100" sourceLastImported="1709221819" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/位图 100" bitmapDataHRef="M 41 1740550143.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="技能相关/图标素材/位图 103" itemID="663fa15d-00000e62" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/位图 103" sourceLastImported="1715446109" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/位图 103" bitmapDataHRef="M 42 1740550143.dat" frameRight="3940" frameBottom="3940"/>
           <DOMBitmapItem name="技能相关/图标素材/位图 104" itemID="663fa1fd-00000e72" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/位图 104" sourceLastImported="1715446269" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/位图 104" bitmapDataHRef="M 43 1740550143.dat" frameRight="2940" frameBottom="2940"/>
@@ -308,7 +308,7 @@
           <Include href="技能相关/Symbol 4669.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000115a" lastModified="1755656208"/>
           <Include href="技能相关/Symbol 4670.xml" itemID="668e7c1e-0000115b" lastModified="1755656515"/>
           <Include href="技能相关/Symbol 4673.xml" itemID="668e7c1e-0000115c" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4676.xml" itemID="668e7c1e-0000115d" lastModified="1720533000"/>
+          <Include href="技能相关/Symbol 4676.xml" itemID="668e7c1e-0000115d" lastModified="1755674440"/>
           <Include href="技能相关/Symbol 4679.xml" loadImmediate="false" itemID="668e7c1e-0000115e" lastModified="1720533000"/>
           <Include href="技能相关/Symbol 4680.xml" itemID="668e7c1e-0000115f" lastModified="1720533000"/>
           <Include href="技能相关/Symbol 4683.xml" loadImmediate="false" itemID="668e7c1e-00001160" lastModified="1720533000"/>
@@ -1035,6 +1035,7 @@
                     <SolidSwatchItem color="#9B7D1E" hue="31" saturation="163" brightness="87"/>
                     <SolidSwatchItem color="#614E13" hue="30" saturation="161" brightness="55"/>
                     <SolidSwatchItem color="#0F1110" hue="100" saturation="16" brightness="15"/>
+                    <SolidSwatchItem color="#7D0000" saturation="239" brightness="59"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1119,6 +1120,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3268193" publishTime="1755663841"/>
           <PublishItem publishSize="3266409" publishTime="1755660902"/>
           <PublishItem publishSize="3266413" publishTime="1755660790"/>
           <PublishItem publishSize="3266422" publishTime="1755660737"/>
@@ -1138,6 +1140,5 @@
           <PublishItem publishSize="2160587" publishTime="1751163787"/>
           <PublishItem publishSize="2160588" publishTime="1751129879"/>
           <PublishItem publishSize="2159582" publishTime="1751129258"/>
-          <PublishItem publishSize="2159583" publishTime="1751129135"/>
      </publishHistory>
 </DOMDocument>
