@@ -668,7 +668,7 @@ _root.物品UI函数.计算强化装备等级 = function(目标等级){
 	var color = 强化石持有数 >= 强化石需要个数 ? "#33FF33" : "#FF3333";
 	this.强化详情文字.htmlText = "需要强化石： <FONT COLOR='" + color + "'>" + 强化石需要个数 + " / " + 强化石持有数 + "<FONT>";
 	if(强化石节省个数 > 0) this.强化详情文字.htmlText += "<BR>铁匠被动技能已节省 " + 强化石节省个数 + " 个";
-	this.强化数值文字.htmlText = org.flashNight.gesh.string.TooltipTextBuilder.buildEnhancementStats(this.当前物品图标.itemData, 目标等级).join("");
+	this.强化数值文字.htmlText = org.flashNight.gesh.tooltip.TooltipTextBuilder.buildEnhancementStats(this.当前物品图标.itemData, 目标等级).join("");
 	//
 	this.目标强化等级 = 目标等级;
 	this.强化石需要个数 = 强化石需要个数;

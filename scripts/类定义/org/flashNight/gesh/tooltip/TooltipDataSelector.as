@@ -1,4 +1,4 @@
-class org.flashNight.gesh.string.TooltipDataSelector {
+﻿class org.flashNight.gesh.tooltip.TooltipDataSelector {
   public static function getEquipmentData(item:Object, tier:String):Object {
     if (tier == null) return item.data;
     switch (tier) {
@@ -10,4 +10,4 @@ class org.flashNight.gesh.string.TooltipDataSelector {
       default: return item.data;
     }
   }
-}
+} 

@@ -1,7 +1,7 @@
 ﻿import org.flashNight.arki.item.ItemUtil;
-import org.flashNight.gesh.string.TooltipFormatter;
-import org.flashNight.gesh.string.TooltipConstants;
-import org.flashNight.gesh.string.TooltipDataSelector;
+import org.flashNight.gesh.tooltip.TooltipFormatter;
+import org.flashNight.gesh.tooltip.TooltipConstants;
+import org.flashNight.gesh.tooltip.TooltipDataSelector;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.component.Damage.*;
 
@@ -10,14 +10,14 @@ import org.flashNight.arki.component.Damage.*;
  * 包含所有文本拼接的纯函数，用于生成各种类型的注释内容
  * 1:1 复刻 _root.注释文本 的功能
  */
-class org.flashNight.gesh.string.TooltipTextBuilder {
+class org.flashNight.gesh.tooltip.TooltipTextBuilder {
 
   // === 生成基础描述（1:1 复刻 _root.注释文本.生成基础描述） ===
   public static function buildBasicDescription(item:Object):Array {
     var result = [];
     if (item.description) result.push(item.description.split("\r\n").join("<BR>"), "<BR>");
     return result;
-  }
+  } 
   
   // === 生成剧情碎片提示（1:1 复刻 _root.注释文本.生成剧情碎片提示） ===
   public static function buildStoryTip(item:Object):Array {

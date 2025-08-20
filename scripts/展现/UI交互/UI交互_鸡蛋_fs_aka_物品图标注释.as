@@ -1,6 +1,6 @@
 ﻿import org.flashNight.arki.item.*;
 import org.flashNight.gesh.array.*;
-import org.flashNight.gesh.string.*;
+import org.flashNight.gesh.tooltip.*;
 
 /**
  * 物品图标注释主入口函数

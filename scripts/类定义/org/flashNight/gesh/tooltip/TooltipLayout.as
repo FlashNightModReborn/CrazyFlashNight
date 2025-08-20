@@ -1,6 +1,6 @@
-﻿import org.flashNight.gesh.string.TooltipConstants;
+﻿import org.flashNight.gesh.tooltip.TooltipConstants;
 
-class org.flashNight.gesh.string.TooltipLayout {
+class org.flashNight.gesh.tooltip.TooltipLayout {
 
     // === 估算文本宽度（1:1 复刻 _root.注释布局.估算宽度） ===
     public static function estimateWidth(html:String, minW:Number, maxW:Number):Number {
@@ -16,7 +16,7 @@ class org.flashNight.gesh.string.TooltipLayout {
         // _root.发布消息(minW,maxW,charCount,widthEst,Math.max(minW, Math.min(widthEst, maxW)));
         return Math.max(minW, Math.min(widthEst, maxW));
     }
-
+ 
 
     // === 应用简介布局（1:1 复刻 _root.注释布局.应用简介布局） ===
     // 返回 { width:Number, heightOffset:Number }

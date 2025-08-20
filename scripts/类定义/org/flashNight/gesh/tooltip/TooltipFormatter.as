@@ -1,4 +1,4 @@
-﻿class org.flashNight.gesh.string.TooltipFormatter {
+﻿class org.flashNight.gesh.tooltip.TooltipFormatter {
   public static function bold(s:String):String {
     return "<B>" + s + "</B>";
   }
@@ -15,7 +15,7 @@
     if (suffix === undefined) suffix = "";
     return label + "：" + val + suffix;
   }
-  
+   
   public static function numLine(buf:Array, label:String, val, suffix:String):Void {
     if (val === undefined || val === null) return;
     var n = Number(val);

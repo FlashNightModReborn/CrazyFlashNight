@@ -3,7 +3,7 @@
           <DOMFolderItem name="3.位图相关" itemID="6690e84b-000017e9"/>
           <DOMFolderItem name="材料相关" itemID="6690f5aa-00003203" isExpanded="true"/>
           <DOMFolderItem name="材料相关/材料元件" itemID="66e97f71-00001436"/>
-          <DOMFolderItem name="技能相关" itemID="67bdcc9b-00000d7f"/>
+          <DOMFolderItem name="技能相关" itemID="67bdcc9b-00000d7f" isExpanded="true"/>
           <DOMFolderItem name="技能相关/图标素材" itemID="669b8912-000011e2" isExpanded="true"/>
           <DOMFolderItem name="技能相关/图标素材/强震地(代码空缺)" itemID="67beafff-0000066f"/>
           <DOMFolderItem name="弃用图标" itemID="67bdcdc0-00000df9"/>
@@ -296,7 +296,7 @@
           <Include href="耳听怒 副本.xml" itemIcon="1" loadImmediate="false" itemID="688dd51d-000018e2" lastModified="1754125083"/>
           <Include href="技能相关/Symbol 6.xml" itemID="668e7c1e-000005b9" lastModified="1720533000"/>
           <Include href="技能相关/Symbol 4640.xml" itemID="668e7c1e-00001150" lastModified="1755660895"/>
-          <Include href="技能相关/Symbol 4643.xml" itemID="668e7c1e-00001151" lastModified="1720533000"/>
+          <Include href="技能相关/Symbol 4643.xml" itemID="668e7c1e-00001151" lastModified="1755680068"/>
           <Include href="技能相关/Symbol 4646.xml" itemID="668e7c1e-00001152" lastModified="1720533000"/>
           <Include href="技能相关/Symbol 4649.xml" itemID="668e7c1e-00001153" lastModified="1720533000"/>
           <Include href="技能相关/Symbol 4652.xml" itemID="668e7c1e-00001154" lastModified="1720533000"/>
@@ -547,7 +547,7 @@
           <Include href="食材相关/猪肉.xml" itemIcon="1" loadImmediate="false" itemID="67bdc63d-000000de" lastModified="1740490301"/>
           <Include href="食材相关/竹笋.xml" loadImmediate="false" itemID="6814918b-0000039e" lastModified="1746178443"/>
           <Include href="食材相关/柱侯酱.xml" loadImmediate="false" itemID="6814612e-000005fb" lastModified="1746166062"/>
-          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1755656506"/>
+          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1755679039"/>
           <Include href="图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="666e7c83-00000d39" lastModified="1718516867"/>
           <Include href="未命名文件夹 1/Symbol 34.xml" itemIcon="1" loadImmediate="false" itemID="664c57d7-0000029e" lastModified="1740222009"/>
           <Include href="无AS链接/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005b7" lastModified="1720533000"/>
@@ -1120,6 +1120,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3270627" publishTime="1755679825"/>
+          <PublishItem publishSize="3269564" publishTime="1755678441"/>
           <PublishItem publishSize="3269025" publishTime="1755674466"/>
           <PublishItem publishSize="3268193" publishTime="1755663841"/>
           <PublishItem publishSize="3266409" publishTime="1755660902"/>
@@ -1138,7 +1140,5 @@
           <PublishItem publishSize="2166473" publishTime="1751173728"/>
           <PublishItem publishSize="2166512" publishTime="1751173641"/>
           <PublishItem publishSize="2165339" publishTime="1751172447"/>
-          <PublishItem publishSize="2160587" publishTime="1751163787"/>
-          <PublishItem publishSize="2160588" publishTime="1751129879"/>
      </publishHistory>
 </DOMDocument>

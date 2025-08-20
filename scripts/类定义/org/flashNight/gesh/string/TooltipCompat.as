@@ -1,6 +1,6 @@
 ﻿import org.flashNight.arki.item.ItemUtil;
-import org.flashNight.gesh.string.TooltipComposer;
-import org.flashNight.gesh.string.TooltipLayout;
+import org.flashNight.gesh.tooltip.TooltipComposer;
+import org.flashNight.gesh.tooltip.TooltipLayout;
 
 /**
  * TooltipCompat.as
