@@ -37,7 +37,7 @@ class org.flashNight.gesh.string.TooltipLayout {
                 target._xscale = target._yscale = TooltipConstants.BASE_SCALE;
 
                 text._x = -TooltipConstants.BASE_NUM;
-                text._y = 210;
+                text._y = TooltipConstants.TEXT_Y_EQUIPMENT;
 
                 bgHeightOffset = TooltipConstants.BASE_NUM + TooltipConstants.BG_HEIGHT_OFFSET;
                 break;
@@ -54,7 +54,7 @@ class org.flashNight.gesh.string.TooltipLayout {
 
                 text._x = -scaledWidth;
                 // 保持原逻辑：text._y 依赖 text._x
-                text._y = 10 - text._x;
+                text._y = TooltipConstants.TEXT_Y_BASE - text._x;
 
                 bgHeightOffset = TooltipConstants.BG_HEIGHT_OFFSET + TooltipConstants.RATE * TooltipConstants.BASE_NUM;
                 break;
@@ -72,7 +72,7 @@ class org.flashNight.gesh.string.TooltipLayout {
         if (isAbbr) {
             // 简介背景隐藏时
             tips._x = Math.min(Stage.width - background._width, Math.max(0, mouseX - background._width));
-            tips._y = Math.min(Stage.height - background._height, Math.max(0, mouseY - background._height - 20));
+            tips._y = Math.min(Stage.height - background._height, Math.max(0, mouseY - background._height - TooltipConstants.MOUSE_OFFSET));
             return;
         }
         // 简介背景显示时 
@@ -85,27 +85,27 @@ class org.flashNight.gesh.string.TooltipLayout {
             var maxX:Number = Stage.width - rightBg._width;
 
             // Y 定位（与原逻辑一致）
-            tips._y = Math.min(Stage.height - tips._height, Math.max(0, mouseY - tips._height - 20));
+            tips._y = Math.min(Stage.height - tips._height, Math.max(0, mouseY - tips._height - TooltipConstants.MOUSE_OFFSET));
 
             var rightBottomHeight:Number = tips._y + rightBg._height;
-            var offset:Number = mouseY - rightBottomHeight - 20;
+            var offset:Number = mouseY - rightBottomHeight - TooltipConstants.MOUSE_OFFSET;
 
             if (offset > 0) {
                 tips.文本框._y = offset;
                 tips.背景._y = offset;
             } else {
                 var icon:MovieClip = tips.物品图标定位;
-                rightBg._height = Math.max(tips.文本框.textHeight, icon._height) + 10;
+                rightBg._height = Math.max(tips.文本框.textHeight, icon._height) + TooltipConstants.HEIGHT_ADJUST;
             }
 
             tips._x = Math.max(minX, Math.min(desiredX, maxX));
         } else {
             // 只有左背景可见时
             tips._x = Math.min(Stage.width - introBg._width, Math.max(0, mouseX - introBg._width)) + introBg._width;
-            tips._y = Math.min(Stage.height - introBg._height, Math.max(0, mouseY - introBg._height - 20));
+            tips._y = Math.min(Stage.height - introBg._height, Math.max(0, mouseY - introBg._height - TooltipConstants.MOUSE_OFFSET));
 
             // 左背景高度自适应
-            introBg._height = tips.简介文本框.textHeight + 10;
+            introBg._height = tips.简介文本框.textHeight + TooltipConstants.HEIGHT_ADJUST;
         }
     }
 
@@ -135,15 +135,15 @@ class org.flashNight.gesh.string.TooltipLayout {
             if (target.icon) target.icon.removeMovieClip();
             var iconString:String = "图标-" + iconName;
             var icon:MovieClip = target.attachMovie(iconString, "icon", target.getNextHighestDepth());
-            icon._xscale = icon._yscale = 150; // TODO: TooltipConstants.ICON_SCALE
-            icon._x = icon._y = 19;            // TODO: TooltipConstants.ICON_OFFSET
+            icon._xscale = icon._yscale = TooltipConstants.ICON_SCALE;
+            icon._x = icon._y = TooltipConstants.ICON_OFFSET;
 
             // 确保图标层级在简介背景之上
             if (tips.简介背景) {
                 var iconDepth:Number = target.getDepth();
                 var bgDepth:Number = tips.简介背景.getDepth();
                 if (iconDepth <= bgDepth) {
-                    target.swapDepths(bgDepth + 1);
+                    target.swapDepths(bgDepth + TooltipConstants.DEPTH_INCREMENT);
                 }
             }
 

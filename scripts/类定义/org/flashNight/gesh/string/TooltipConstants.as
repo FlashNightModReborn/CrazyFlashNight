@@ -35,4 +35,15 @@
 
   public static var OFFSET_X:Number = 0;
   public static var OFFSET_Y:Number = 0;
+
+  // 布局位置常量
+  public static var TEXT_Y_EQUIPMENT:Number = 210;        // 装备/武器/技能布局的文本Y位置
+  public static var TEXT_Y_BASE:Number = 10;              // 默认布局的文本Y位置基数
+  public static var MOUSE_OFFSET:Number = 20;             // 鼠标位置偏移量
+  public static var HEIGHT_ADJUST:Number = 10;            // 高度调整偏移量
+  
+  // 图标相关常量
+  public static var ICON_SCALE:Number = 150;              // 图标缩放比例
+  public static var ICON_OFFSET:Number = 19;              // 图标位置偏移
+  public static var DEPTH_INCREMENT:Number = 1;           // 层级增量
 }
