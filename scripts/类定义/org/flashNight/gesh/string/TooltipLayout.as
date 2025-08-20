@@ -129,7 +129,7 @@ class org.flashNight.gesh.string.TooltipLayout {
             var backgroundHeightOffset:Number = layout.heightOffset;
 
             // 显示注释文本
-            _root.注释(stringWidth, contentText, "简介");
+            showTooltip(stringWidth, contentText, "简介");
 
             // 图标挂载，使用 "图标-" + 图标名 的命名规则
             if (target.icon) target.icon.removeMovieClip();
@@ -154,5 +154,65 @@ class org.flashNight.gesh.string.TooltipLayout {
             text._visible = false;
             background._visible = false;
         }
+    }
+
+    // === 基础注释显示控制 ===
+
+    /**
+     * 显示注释框：
+     * - 设置文本内容和尺寸
+     * - 处理背景尺寸
+     * - 调用定位逻辑
+     * 
+     * @param 宽度:Number 注释框宽度
+     * @param 内容:String 注释内容HTML文本
+     * @param 框体:String 框体类型（可选，默认为主框体）
+     */
+    public static function showTooltip(宽度:Number, 内容:String, 框体:String):Void {
+        if(!框体) {
+            框体 = "";
+            _root.注释框.文本框._visible = true;
+            _root.注释框.背景._visible = true;
+        }
+
+        _root.注释框.文本框._y = 0;
+        _root.注释框.背景._y = 0;
+
+        var tips:MovieClip = _root.注释框;
+        var target:MovieClip = tips[框体 + "文本框"];
+        var background:MovieClip = tips[框体 + "背景"];
+
+        tips._visible = true;
+        target.htmlText = 内容;
+        target._width = 宽度;
+
+        background._width = target._width;
+        background._height = target.textHeight + TooltipConstants.TEXT_PAD;
+        target._height = target.textHeight + TooltipConstants.TEXT_PAD;
+
+        // 使用定位逻辑处理注释框定位
+        positionTooltip(tips, background, _root._xmouse, _root._ymouse);
+    }
+
+    /**
+     * 清理并隐藏所有注释相关的显示元素：
+     * - 隐藏主注释框
+     * - 隐藏图标注释
+     * - 清理文本内容
+     * - 重置可见性状态
+     */
+    public static function hideTooltip():Void {
+        _root.注释框._visible = false;
+        renderIconTooltip(false);
+        
+        // 清理文本框内容
+        _root.注释框.文本框.htmlText = "";
+        _root.注释框.文本框._visible = false;
+        _root.注释框.简介文本框.htmlText = "";
+        _root.注释框.简介文本框._visible = false;
+        
+        // 清理背景可见性
+        _root.注释框.背景._visible = false;
+        _root.注释框.简介背景._visible = false;
     }
 }

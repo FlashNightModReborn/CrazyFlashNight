@@ -23,12 +23,12 @@ _root.物品图标注释 = function(name, value) {
     var 描述长度:Number = 描述文本.length;
     var 总长度:Number = 描述长度 + 简介文本.length;
 
-    _root.注释结束(); // 保底清理
+    TooltipLayout.hideTooltip(); // 保底清理
 
     if (总长度 > 阈值 * 2 && 描述长度 > 阈值 / 2) {
         // 长内容：主框体展示"描述"，简介面板单独展示
         var 计算宽度:Number = TooltipLayout.estimateWidth(描述文本);
-        _root.注释(计算宽度, 描述文本);
+        TooltipLayout.showTooltip(计算宽度, 描述文本);
         TooltipComposer.renderItemIcon(true, name, value, 简介文本, null);
     } else {
         // 短内容：把"描述"并入简介面板，主框体隐藏
@@ -38,8 +38,6 @@ _root.物品图标注释 = function(name, value) {
         _root.注释框.背景._visible = false;
     }
 };
-
-
 
 
 /**
@@ -65,7 +63,7 @@ _root.技能栏技能图标注释 = function(对应数组号) {
     文本数据 += "<BR>技能等级：" + 主角技能信息[1];
     // 文本数据 += "<BR>" + 是否装备或启用;
 
-    _root.注释结束(); // 保底清理
+    TooltipLayout.hideTooltip(); // 保底清理
 
     // 使用技能图标显示注释
     var 计算宽度 = TooltipLayout.estimateWidth(文本数据, TooltipConstants.MIN_W, TooltipConstants.MAX_W);
@@ -91,7 +89,7 @@ _root.学习界面技能图标注释 = function(对应数组号) {
     文本数据 += "<BR>MP消耗：" + 技能信息.MP;
     文本数据 += "<BR>等级限制：" + 技能信息.UnlockLevel;
 
-    _root.注释结束(); // 保底清理
+    TooltipLayout.hideTooltip(); // 保底清理
 
     // 使用技能图标显示注释
     var 计算宽度 = TooltipLayout.estimateWidth(文本数据, TooltipConstants.MIN_W, TooltipConstants.MAX_W);
@@ -100,53 +98,20 @@ _root.学习界面技能图标注释 = function(对应数组号) {
 
 
 /**
- * 注释显示函数
+ * 注释显示函数 (兼容接口，转发到 TooltipLayout.showTooltip)
  * @param 宽度:Number 注释框宽度
  * @param 内容:String 注释内容HTML文本
  * @param 框体:String 框体类型（可选，默认为主框体）
  */
 _root.注释 = function(宽度, 内容, 框体) {
-    if(!框体) {
-        框体 = "";
-        _root.注释框.文本框._visible = true;
-        _root.注释框.背景._visible = true;
-    }
-
-    _root.注释框.文本框._y = 0;
-    _root.注释框.背景._y = 0;
-
-    var tips:MovieClip = _root.注释框;
-    var target:MovieClip = tips[框体 + "文本框"];
-    var background:MovieClip = tips[框体 + "背景"]
-
-    tips._visible = true;
-    target.htmlText = 内容;
-    target._width = 宽度;
-
-    background._width = target._width;
-    background._height = target.textHeight + TooltipConstants.TEXT_PAD;
-    target._height = target.textHeight + TooltipConstants.TEXT_PAD;
-
-    // 使用新的布局模块处理注释框定位
-    TooltipLayout.positionTooltip(tips, background, _root._xmouse, _root._ymouse);
+    TooltipLayout.showTooltip(宽度, 内容, 框体);
 };
 
 /**
- * 注释结束函数，清理所有注释相关的显示元素
+ * 注释结束函数 (兼容接口，转发到 TooltipLayout.hideTooltip)
  */
 _root.注释结束 = function() {
-    _root.注释框._visible = false;
-    TooltipLayout.renderIconTooltip(false);
-    
-    // 清理文本框内容
-    _root.注释框.文本框.htmlText = "";
-    _root.注释框.文本框._visible = false;
-    _root.注释框.简介文本框.htmlText = "";
-    _root.注释框.简介文本框._visible = false;
-    
-    // 清理背景可见性
-    _root.注释框.背景._visible = false;
-    _root.注释框.简介背景._visible = false;
+    TooltipLayout.hideTooltip();
 };
 
 
