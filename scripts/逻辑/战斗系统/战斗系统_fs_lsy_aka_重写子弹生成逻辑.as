@@ -323,10 +323,12 @@ _root.子弹生命周期 = function()
         if (this.击中地图) {
             this.霰弹值 = 1;
             EffectSystem.Effect(this.击中地图效果, this._x, this._y);
+            /*
             if(this.hitMark) {
                 // _root.发布消息("子弹击中标记", this.hitMark, this._x, this._y);
                 EffectSystem.Effect(this.hitMark, this._x, this._y, shooter._xscale / 2);
             }
+            */
 
             if (this.击中时触发函数) {
                 this.击中时触发函数();
