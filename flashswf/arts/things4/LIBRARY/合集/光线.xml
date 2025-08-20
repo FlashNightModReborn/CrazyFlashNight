@@ -1,0 +1,70 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="合集/光线" itemID="66b82fff-00000183" lastModified="1723352735">
+  <timeline>
+    <DOMTimeline name="光线" currentFrame="19">
+      <layers>
+        <DOMLayer name="光线" color="#00FFFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#FFFFF8.4B, -9.3125" startPointB="-1, -0.734375" strokeIndex1="0" strokeIndex2="0">
+                    <MorphCurves controlPointA="-3.96875, -4.59375" anchorPointA="-0.234375, #0.1F" controlPointB="-0.6171875, -0.3046875" anchorPointB="-0.234375, #0.1F" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.0127716064453125" b="0.0937957763671875" c="-0.0937957763671875" d="0.0127716064453125" tx="-50.8" ty="-58.8"/>
+                            </matrix>
+                            <GradientEntry color="#FFFFFF" ratio="0"/>
+                            <GradientEntry color="#FF66CC" ratio="0.780392156862745"/>
+                            <GradientEntry color="#FF66CC" alpha="0" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!-1973 -2384|-60 31"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.0127716064453125" b="0.0937957763671875" c="-0.0937957763671875" d="0.0127716064453125" tx="-50.8" ty="-58.8"/>
+                            </matrix>
+                            <GradientEntry color="#FFFFFF" ratio="0"/>
+                            <GradientEntry color="#FF66CC" ratio="0.780392156862745"/>
+                            <GradientEntry color="#FF66CC" alpha="0" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!-256 -188|-60 31"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

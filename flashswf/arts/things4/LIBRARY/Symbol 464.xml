@@ -1,0 +1,2003 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 464" itemID="6577f221-00000aae" lastModified="1707813703">
+  <timeline>
+    <DOMTimeline name="Symbol 464" currentFrame="6">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#B5D46A" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="20" name="空手" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" name="长枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" name="手枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="54" name="手枪2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="55" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="71" name="双枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="72" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="88" name="手雷" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="89" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="105" name="兵器" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#CF30E9" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 击飞炸弹攻击(攻击点)
+{
+	var 声音 = "";
+	var 霰弹值 = 1;
+	var 子弹散射度 = 0;
+	var 发射效果 = "";
+	var 子弹种类 = "子弹-集束炸药";
+	var 子弹威力 = _parent.空手攻击力 * 2;
+	var 子弹速度 = random(20) + 5;
+	var 击中地图效果 = "";
+	var Z轴攻击范围 = 25;
+	var 击倒率 = 1;
+	var 击中后子弹的效果 = "";
+	var 子弹敌我属性 = !_parent.是否为敌人;
+
+	var myPoint = {x:攻击点._x, y:攻击点._y};
+	//注意这里使用的是再上一级元件计算炸弹飞出点。虽然并不知道为什么但是不敢乱改
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+	shootX = myPoint.x;
+	shootY = myPoint.y;
+	_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._name,shootX,shootY,_parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+
+if(_parent.已加经验值 != true)
+{
+   _parent.击倒呐喊();
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="18" name="炸弹循环" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay("炸弹循环");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#5B79FC" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="12.5" centerPoint3DY="-34.35">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" ty="-46.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞炸弹攻击(this);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="12.5" centerPoint3DY="-76.05">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" ty="-88.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞炸弹攻击(this);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="12.5" centerPoint3DY="-55.1">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" ty="-67.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞炸弹攻击(this);
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="8" centerPoint3DY="-77.55">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-4.5" ty="-90.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="8" centerPoint3DY="-77.55">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-4.5" ty="-90.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="55" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="8" centerPoint3DY="-77.55">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-4.5" ty="-90.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="72" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="8" centerPoint3DY="-77.55">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-4.5" ty="-90.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="89" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="8" centerPoint3DY="-77.55">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-4.5" ty="-90.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="90" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="106" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="8" centerPoint3DY="-77.55">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-4.5" ty="-90.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#B39484" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="8" centerPoint3DY="-38.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-4.5" ty="-51.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="8" centerPoint3DY="-38.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-4.5" ty="-51.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="55" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="8" centerPoint3DY="-38.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-4.5" ty="-51.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="72" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="8" centerPoint3DY="-38.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-4.5" ty="-51.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="89" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="8" centerPoint3DY="-38.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-4.5" ty="-51.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="90" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="106" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="8" centerPoint3DY="-38.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-4.5" ty="-51.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#53E087" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="-6" centerPoint3DY="-56.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-18.5" ty="-69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="-6" centerPoint3DY="-56.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-18.5" ty="-69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="55" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="-6" centerPoint3DY="-56.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-18.5" ty="-69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="72" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="-6" centerPoint3DY="-56.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-18.5" ty="-69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="89" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="-6" centerPoint3DY="-56.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-18.5" ty="-69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="90" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="106" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="-6" centerPoint3DY="-56.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-18.5" ty="-69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#7FE72C" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="8" centerPoint3DY="-56.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-4.5" ty="-69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="8" centerPoint3DY="-56.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-4.5" ty="-69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="55" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="8" centerPoint3DY="-56.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-4.5" ty="-69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="72" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="8" centerPoint3DY="-56.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-4.5" ty="-69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="89" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="8" centerPoint3DY="-56.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-4.5" ty="-69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="90" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="106" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="8" centerPoint3DY="-56.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-4.5" ty="-69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#78D44F" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="30.95" centerPoint3DY="-56.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="18.45" ty="-69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="30.95" centerPoint3DY="-56.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="18.45" ty="-69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="55" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="30.95" centerPoint3DY="-56.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="18.45" ty="-69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="72" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="30.95" centerPoint3DY="-56.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="18.45" ty="-69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="89" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="30.95" centerPoint3DY="-56.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="18.45" ty="-69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="90" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="106" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="30.95" centerPoint3DY="-56.6">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="18.45" ty="-69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   声音 = "glock18-2.wav";
+   霰弹值 = 1;
+   子弹散射度 = 0;
+   发射效果 = "枪火";
+   子弹种类 = "子弹-集束炸药";
+   子弹威力 = _parent._parent.空手攻击力;
+   子弹速度 = random(20) + 5;
+   击中地图效果 = "火花";
+   Z轴攻击范围 = 25;
+   击倒率 = 1;
+   击中后子弹的效果 = "";
+   if(_parent._parent.是否为敌人 == true)
+   {
+      子弹敌我属性 = false;
+   }
+   else
+   {
+      子弹敌我属性 = true;
+   }
+   var myPoint = {x:this._x,y:this._y};
+   _parent._parent.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#E69BCB" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 446" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.192047119140625" b="0.449264526367188" c="0.449264526367188" d="0.192047119140625" tx="-6.9" ty="-84.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#26D6DE" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 445" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.306503295898438" b="0.382888793945313" c="0.382888793945313" d="0.306503295898438" tx="-35.8" ty="-103.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#D4E85C" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 444" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.192047119140625" b="0.449264526367188" c="0.449264526367188" d="0.192047119140625" tx="-20" ty="-87.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#F9882B" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 443" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.456344604492188" b="0.187393188476563" c="0.187393188476563" d="0.456344604492188" tx="-12.85" ty="-85.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#6AFAB3" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 433" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.126754760742188" b="-0.338104248046875" c="-0.338104248046875" d="0.126754760742188" tx="-25.2" ty="-74.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#B35AD0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 442" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.462692260742188" b="0.170989990234375" c="0.170989990234375" d="0.462692260742188" tx="-13.9" ty="-68.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#F70784" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 441" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.490814208984375" b="0.044647216796875" c="0.044647216796875" d="0.490814208984375" tx="-12" ty="-31.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#E157B0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 431" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.47735595703125" b="0.123641967773438" c="0.123641967773438" d="0.47735595703125" tx="-6.25" ty="-10.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#4DBAB8" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 440" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.456344604492188" b="0.187393188476563" c="0.187393188476563" d="0.456344604492188" tx="-13.45" ty="-90.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#DD7376" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 439" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.445327758789063" b="0.2052001953125" c="0.2052001953125" d="0.445327758789063" tx="-41.55" ty="-135.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#E610C3" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 438" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.40411376953125" b="0.280868530273438" c="0.280868530273438" d="0.40411376953125" tx="-34.8" ty="-114.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#FF0B7D" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 437" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.40411376953125" b="0.280868530273438" c="0.280868530273438" d="0.40411376953125" tx="-19.3" ty="-99.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 20" color="#E00CE1" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 436" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.40411376953125" b="0.280868530273438" c="0.280868530273438" d="0.40411376953125" tx="-22.5" ty="-90"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 21" color="#D85863" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 435" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.456344604492188" b="0.187393188476563" c="0.187393188476563" d="0.456344604492188" tx="-25.05" ty="-88.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 22" color="#B1CCA9" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 434" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.441970825195313" b="0.218978881835938" c="0.218978881835938" d="0.441970825195313" tx="-1.9" ty="-77.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 23" color="#AB9D93" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 433" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.116943359375" b="-0.317977905273438" c="-0.317977905273438" d="0.116943359375" tx="-5" ty="-84.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 24" color="#A2A83C" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 432" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.476715087890625" b="0.1260986328125" c="0.1260986328125" d="0.476715087890625" tx="7.4" ty="-48.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 25" color="#FF7E6D" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 431" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.476715087890625" b="0.1260986328125" c="0.1260986328125" d="0.476715087890625" tx="15.75" ty="-29.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 26" color="#E6D1DD" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 430" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0408172607421875" b="0.324859619140625" c="0.324859619140625" d="-0.0408172607421875" tx="-18.3" ty="-99.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 27" color="#6EBCFA" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 429" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.256362915039063" b="0.416488647460938" c="0.416488647460938" d="0.256362915039063" tx="11.75" ty="-108.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 28" color="#E7AE16" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 428" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.220626831054688" b="0.436325073242188" c="0.436325073242188" d="0.220626831054688" tx="-0.45" ty="-107.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 29" color="#7152CC" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="122" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 427" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.312973022460938" b="0.377853393554688" c="0.377853393554688" d="0.312973022460938" tx="-19.6" ty="-116.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

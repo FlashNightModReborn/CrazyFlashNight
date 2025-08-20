@@ -1,0 +1,1373 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="个人编辑单位/新浮士德/奶牛浮士德动画/浮士德-血腥死" itemID="66b22ad6-0000fa1b" lastModified="1749523297" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="浮士德-血腥死" currentFrame="61">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="61" name="a0" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.死亡检测();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="A染血白袖" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-99">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白袖" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.311279296875" b="0.0523834228515625" c="0.0523834228515625" d="0.311279296875" tx="-8.1" ty="-12.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-7.25" y="-33.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白袖" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.311279296875" b="0.0523834228515625" c="0.0523834228515625" d="0.311279296875" tx="10.05" ty="-8.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-7.25" y="-33.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白袖" symbolType="graphic" firstFrame="4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.311279296875" b="0.0523834228515625" c="0.0523834228515625" d="0.311279296875" tx="10.05" ty="-8.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-7.25" y="-33.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白袖" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.309249877929688" b="0.063201904296875" c="0.063201904296875" d="0.309249877929688" tx="28.15" ty="28.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-7.2" y="-33.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白袖" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.309402465820313" b="-0.0625" c="-0.0625" d="0.309402465820313" tx="27" ty="22.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-7.25" y="-33.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白袖" symbolType="graphic" firstFrame="4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.225433349609375" b="0.220306396484375" c="0.220306396484375" d="0.225433349609375" tx="54.6" ty="35.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-7.35" y="-33.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白袖" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0522613525390625" b="0.311294555664063" c="0.311294555664063" d="0.0522613525390625" tx="98.9" ty="46.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-7.5" y="-33.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Symbol 504" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-99">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 504" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.273635864257813" b="0.1568603515625" c="0.1568603515625" d="0.273635864257813" tx="-3.6" ty="2.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 504" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.273635864257813" b="0.1568603515625" c="0.1568603515625" d="0.273635864257813" tx="14.75" ty="5.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 504" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.273635864257813" b="0.1568603515625" c="0.1568603515625" d="0.273635864257813" tx="14.75" ty="5.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 504" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3116455078125" b="0.04852294921875" c="0.04852294921875" d="0.3116455078125" tx="33" ty="41.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 504" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3116455078125" b="0.04852294921875" c="0.04852294921875" d="0.3116455078125" tx="28" ty="38.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 504" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.20074462890625" b="0.242599487304688" c="0.242599487304688" d="0.20074462890625" tx="66.95" ty="43.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 504" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0045013427734375" b="0.31536865234375" c="0.31536865234375" d="0.0045013427734375" tx="112.4" ty="46.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="A染血上臂" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-99">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.316558837890625" b="-0.0342254638671875" c="-0.0342254638671875" d="0.316558837890625" tx="-4.55" ty="-34.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.6" y="-25.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.31365966796875" b="-0.054656982421875" c="-0.054656982421875" d="0.31365966796875" tx="13.75" ty="-30.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.45" y="-25.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血上臂" symbolType="graphic" firstFrame="4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3070068359375" b="-0.084381103515625" c="-0.084381103515625" d="0.3070068359375" tx="15.1" ty="-31.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.35" y="-25.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血上臂" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.306259155273438" b="-0.08697509765625" c="-0.08697509765625" d="0.306259155273438" tx="34.55" ty="6.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.65" y="-25.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血上臂" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.314971923828125" b="-0.046478271484375" c="-0.046478271484375" d="0.314971923828125" tx="32.4" ty="3.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.45" y="-25.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血上臂" symbolType="graphic" firstFrame="4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.305709838867188" b="0.087921142578125" c="0.087921142578125" d="0.305709838867188" tx="48.25" ty="13.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.35" y="-25.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血上臂" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.218032836914063" b="0.23199462890625" c="0.23199462890625" d="0.218032836914063" tx="81.05" ty="33.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.9" y="-25.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Symbol 496" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 496" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.246871948242188" b="-0.0848236083984375" c="0.0848236083984375" d="0.246871948242188" tx="-17.1" ty="9.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.15" y="-1.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 496" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.218246459960938" b="0.143157958984375" c="-0.143157958984375" d="0.218246459960938" tx="-17.35" ty="48.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.05" y="-1.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 496" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.236190795898438" b="-0.111083984375" c="0.111083984375" d="0.236190795898438" tx="-17.05" ty="51.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.15" y="-1.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 496" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.2523193359375" b="0.0667877197265625" c="-0.0667877197265625" d="0.2523193359375" tx="-15.4" ty="52.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.2" y="-1.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="42" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 496" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.260086059570313" b="0.021881103515625" c="-0.021881103515625" d="0.260086059570313" tx="-15.8" ty="55.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.25" y="-1.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="A染血白头" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-99">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白头" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.159576416015625" b="-0.276962280273438" c="-0.276962280273438" d="0.159576416015625" tx="19.85" ty="-51.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.75" y="15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白头" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.141281127929688" b="-0.286712646484375" c="-0.286712646484375" d="0.141281127929688" tx="43.9" ty="-42.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.8" y="14.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白头" symbolType="graphic" firstFrame="4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.113235473632813" b="-0.298904418945313" c="-0.298904418945313" d="0.113235473632813" tx="46.25" ty="-39.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.8" y="14.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白头" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="0.01226806640625" b="-0.319381713867188" c="-0.319381713867188" d="-0.01226806640625" tx="66.95" ty="6.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.7" y="14.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白头" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0293121337890625" b="-0.318283081054688" c="-0.318283081054688" d="0.0293121337890625" tx="64.55" ty="-0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.65" y="14.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白头" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0181884765625" b="-0.319046020507813" c="-0.319046020507813" d="-0.0181884765625" tx="68.6" ty="4.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.6" y="14.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白头" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0024261474609375" b="-0.319595336914063" c="-0.319595336914063" d="0.0024261474609375" tx="97.25" ty="35.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.25" y="14.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="A染血白巾" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-99">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白巾" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.28619384765625" b="-0.143829345703125" c="-0.143829345703125" d="0.28619384765625" tx="4.65" ty="-37.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-9.25" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白巾" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.22491455078125" b="-0.228057861328125" c="-0.228057861328125" d="0.22491455078125" tx="23.85" ty="-32.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-9.1" y="52.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白巾" symbolType="graphic" firstFrame="4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.202102661132813" b="-0.248519897460938" c="-0.248519897460938" d="0.202102661132813" tx="25.3" ty="-31.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-9.05" y="52.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白巾" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0891876220703125" b="-0.307632446289063" c="-0.307632446289063" d="0.0891876220703125" tx="44.45" ty="5.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-9" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白巾" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.128372192382813" b="-0.29345703125" c="-0.29345703125" d="0.128372192382813" tx="42.15" ty="2.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-9.1" y="52.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白巾" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.06219482421875" b="-0.314208984375" c="-0.314208984375" d="-0.06219482421875" tx="73.95" ty="32.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-9.1" y="52.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="A染血裤脚" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-99">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤脚" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.314315795898438" b="-0.059814453125" c="-0.059814453125" d="0.314315795898438" tx="-15.5" ty="40.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.45" y="-44.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤脚" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.195541381835938" b="-0.253250122070313" c="-0.253250122070313" d="0.195541381835938" tx="-21.05" ty="36"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.35" y="-44.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤脚" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.195541381835938" b="-0.253250122070313" c="-0.253250122070313" d="0.195541381835938" tx="-21.05" ty="36"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.35" y="-44.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤脚" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.00726318359375" b="-0.319869995117188" c="-0.319869995117188" d="-0.00726318359375" tx="-14.4" ty="48.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.3" y="-44.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤脚" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.00726318359375" b="-0.319869995117188" c="-0.319869995117188" d="-0.00726318359375" tx="-15.15" ty="48.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.3" y="-44.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤脚" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0277557373046875" b="-0.318756103515625" c="-0.318756103515625" d="-0.0277557373046875" tx="1.35" ty="43.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.65" y="-44.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="A染血鞋子" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-99">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.315109252929688" b="-0.04803466796875" c="-0.04803466796875" d="0.315109252929688" tx="-15.05" ty="60.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.203964233398438" b="-0.244964599609375" c="-0.244964599609375" d="0.203964233398438" tx="-34.2" ty="51.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.203964233398438" b="-0.244964599609375" c="-0.244964599609375" d="0.203964233398438" tx="-34.2" ty="51.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.155471801757813" b="-0.278274536132813" c="-0.278274536132813" d="-0.155471801757813" tx="-35.65" ty="50.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.155471801757813" b="-0.278274536132813" c="-0.278274536132813" d="-0.155471801757813" tx="-36.4" ty="50.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.172958374023438" b="-0.267745971679688" c="-0.267745971679688" d="-0.172958374023438" tx="-19.75" ty="44.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="A染血裤腿" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-99">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.31982421875" b="-0.0098114013671875" c="-0.0098114013671875" d="0.31982421875" tx="-11" ty="10.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.8" y="-47.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.296142578125" b="-0.121170043945313" c="-0.121170043945313" d="0.296142578125" tx="-2" ty="12.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.7" y="-47.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.296142578125" b="-0.121170043945313" c="-0.121170043945313" d="0.296142578125" tx="-2" ty="12.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.7" y="-47.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.296142578125" b="-0.121170043945313" c="-0.121170043945313" d="0.296142578125" tx="8.5" ty="33.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.7" y="-47.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.296142578125" b="-0.121170043945313" c="-0.121170043945313" d="0.296142578125" tx="7.75" ty="33.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.7" y="-47.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.171371459960938" b="-0.270187377929688" c="-0.270187377929688" d="0.171371459960938" tx="30.4" ty="38.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.75" y="-47.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="A染血裤衩" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-99">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤衩" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.313430786132813" b="-0.0660858154296875" c="-0.0660858154296875" d="0.313430786132813" tx="-3.9" ty="-14.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.3" y="18"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤衩" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.313430786132813" b="-0.0660858154296875" c="-0.0660858154296875" d="0.313430786132813" tx="10.1" ty="-13.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.3" y="18"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤衩" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.313430786132813" b="-0.0660858154296875" c="-0.0660858154296875" d="0.313430786132813" tx="10.1" ty="-13.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.3" y="18"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤衩" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.208602905273438" b="-0.243087768554688" c="-0.243087768554688" d="0.208602905273438" tx="24.35" ty="16.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.05" y="18"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤衩" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2384033203125" b="-0.213943481445313" c="-0.213943481445313" d="0.2384033203125" tx="23.6" ty="15.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.3" y="17.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤衩" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0882568359375" b="-0.307937622070313" c="-0.307937622070313" d="0.0882568359375" tx="53.5" ty="33.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.65" y="17.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="A染血裤腿2" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-99">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤腿2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.305450439453125" b="0.0965118408203125" c="0.0965118408203125" d="0.305450439453125" tx="4.55" ty="2.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.25" y="-39.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤腿2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.284744262695313" b="0.146743774414063" c="0.146743774414063" d="0.284744262695313" tx="19.4" ty="3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.25" y="-39.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤腿2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.255950927734375" b="0.192626953125" c="0.192626953125" d="0.255950927734375" tx="20.65" ty="2.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.4" y="-39.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤腿2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3013916015625" b="0.108535766601563" c="0.108535766601563" d="0.3013916015625" tx="28.75" ty="25.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.2" y="-39.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤腿2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.284744262695313" b="0.146743774414063" c="0.146743774414063" d="0.284744262695313" tx="29.15" ty="24"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.25" y="-39.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤腿2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.256912231445313" b="-0.19061279296875" c="-0.19061279296875" d="0.256912231445313" tx="25.45" ty="28.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.35" y="-39.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤腿2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.03289794921875" b="-0.318634033203125" c="-0.318634033203125" d="0.03289794921875" tx="36.05" ty="42.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.25" y="-39.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="A染血裤脚" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-99">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤脚" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.317901611328125" b="-0.0391998291015625" c="-0.0391998291015625" d="0.317901611328125" tx="5.9" ty="34.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.55" y="-48.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤脚" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.261489868164063" b="-0.184967041015625" c="-0.184967041015625" d="0.261489868164063" tx="16.3" ty="32.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.6" y="-48.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤脚" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.274444580078125" b="-0.165115356445313" c="-0.165115356445313" d="0.274444580078125" tx="21.2" ty="31.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.5" y="-48.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤脚" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.029449462890625" b="-0.318939208984375" c="-0.318939208984375" d="-0.0294342041015625" tx="20.4" ty="38.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.5" y="-49"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤脚" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.029449462890625" b="-0.318939208984375" c="-0.318939208984375" d="-0.0294342041015625" tx="19.65" ty="38.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.5" y="-49"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤脚" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0135650634765625" b="-0.319869995117188" c="-0.319869995117188" d="0.0135650634765625" tx="-0.85" ty="38.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.45" y="-48.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血裤脚" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0220184326171875" b="-0.319549560546875" c="-0.319549560546875" d="-0.022003173828125" tx="8.45" ty="41.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.6" y="-49.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="A染血鞋子" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-99">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.319168090820313" b="-0.005767822265625" c="-0.005767822265625" d="0.319168090820313" tx="7.25" ty="55.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.65" y="-5.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.306793212890625" b="-0.088165283203125" c="-0.088165283203125" d="0.306793212890625" tx="9" ty="51.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.6" y="-5.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.306793212890625" b="-0.088165283203125" c="-0.088165283203125" d="0.306793212890625" tx="15.25" ty="51.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.6" y="-5.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.229751586914063" b="-0.221588134765625" c="-0.221588134765625" d="-0.229736328125" tx="-3" ty="38.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.6" y="-5.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血鞋子" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.229751586914063" b="-0.221588134765625" c="-0.221588134765625" d="-0.229736328125" tx="-2.4" ty="41.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.6" y="-5.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.208450317382813" b="-0.241043090820313" c="-0.241043090820313" d="-0.20843505859375" tx="-20.45" ty="40.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.6" y="-5.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.158172607421875" b="-0.277267456054688" c="-0.277267456054688" d="-0.158172607421875" tx="-12.85" ty="42.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.7" y="-5.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="A染血白袖2" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-99">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白袖2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.311294555664063" b="0.05780029296875" c="0.05780029296875" d="0.311294555664063" tx="19.2" ty="-9.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.45" y="-34.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白袖2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.311294555664063" b="0.05780029296875" c="0.05780029296875" d="0.311294555664063" tx="31.65" ty="-1.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.45" y="-34.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白袖2" symbolType="graphic" firstFrame="4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.311294555664063" b="0.05780029296875" c="0.05780029296875" d="0.311294555664063" tx="31.65" ty="-1.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.45" y="-34.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白袖2" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.205429077148438" b="0.240921020507813" c="0.240921020507813" d="0.205429077148438" tx="56.1" ty="34.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.65" y="-34.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白袖2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.298370361328125" b="0.105926513671875" c="0.105926513671875" d="0.298370361328125" tx="53.4" ty="34.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.55" y="-34.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血白袖2" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0758514404296875" b="0.307403564453125" c="0.307403564453125" d="0.0758514404296875" tx="83.15" ty="37.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="-35.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Symbol 494" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-99">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 494" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.290771484375" b="0.125244140625" c="0.125244140625" d="0.290771484375" tx="26.95" ty="3.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 494" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.290771484375" b="0.125244140625" c="0.125244140625" d="0.290771484375" tx="39.4" ty="10.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 494" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.290771484375" b="0.125244140625" c="0.125244140625" d="0.290771484375" tx="39.4" ty="10.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 494" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.147018432617188" b="0.280380249023438" c="0.280380249023438" d="0.147018432617188" tx="70" ty="38.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 494" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26751708984375" b="0.1693115234375" c="0.1693115234375" d="0.26751708984375" tx="63.7" ty="44.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 494" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.133026123046875" b="0.287277221679688" c="0.287277221679688" d="0.133026123046875" tx="86.1" ty="34.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="A染血内臂" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-99">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血内臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3187255859375" b="-0.0040130615234375" c="-0.0040130615234375" d="0.3187255859375" tx="14.4" ty="-30.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.35" y="-21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血内臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.30059814453125" b="-0.106063842773438" c="-0.106063842773438" d="0.30059814453125" tx="31" ty="-22.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.4" y="-21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血内臂" symbolType="graphic" firstFrame="4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.289093017578125" b="-0.134307861328125" c="-0.134307861328125" d="0.289093017578125" tx="31.5" ty="-21.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.4" y="-21.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血内臂" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.303375244140625" b="-0.097808837890625" c="-0.097808837890625" d="0.303375244140625" tx="49.35" ty="19.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血内臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.313507080078125" b="-0.057586669921875" c="-0.057586669921875" d="0.313507080078125" tx="48.8" ty="15.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="-22.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/新浮士德/A染血内臂" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0812530517578125" b="-0.308212280273438" c="-0.308212280273438" d="0.0812530517578125" tx="71.95" ty="38.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-22.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Symbol 496" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 496" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.251708984375" b="-0.066802978515625" c="0.066802978515625" d="0.251708984375" tx="12.5" ty="8.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="59.95" y="-2.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 496" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.251388549804688" b="0.0680084228515625" c="-0.0680084228515625" d="0.251388549804688" tx="7.55" ty="39.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="59.95" y="-2.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 496" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.25958251953125" b="-0.019073486328125" c="0.019073486328125" d="0.25958251953125" tx="7.3" ty="39.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="59.95" y="-2.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 496" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.259918212890625" b="0.01373291015625" c="-0.01373291015625" d="0.259918212890625" tx="7.8" ty="42.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="59.85" y="-2.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="42" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 496" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.259567260742188" b="0.019378662109375" c="-0.019378662109375" d="0.259567260742188" tx="7.2" ty="42.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="59.9" y="-2.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

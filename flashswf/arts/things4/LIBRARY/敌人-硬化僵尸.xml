@@ -1,0 +1,655 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-硬化僵尸" itemID="66d0102e-00000552" linkageExportForAS="true" linkageIdentifier="敌人-硬化僵尸" lastModified="1747204575" lastUniqueIdentifier="10">
+  <timeline>
+    <DOMTimeline name="敌人-硬化僵尸">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#9C2CF7">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" name="空手站立" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" name="空手行走" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" name="空手跑" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" name="空手跳" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="6" name="近战" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" duration="10" name="空手攻击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="10" name="拾取" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" duration="10" name="躲闪-无" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="71" duration="8" name="被击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="79" duration="9" name="击倒-无" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="88" duration="7" name="倒地-无" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="95" duration="9" name="被投" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="104" duration="16" name="血腥死" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#D2678E">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[攻击欲望 = 3;
+
+免疫击退 = true;
+
+if(!身高){
+	身高 = 150 + random(200);
+	空手攻击力_min = 120 * 身高/150;
+	空手攻击力_max = 480 * 身高/150;
+	hp_min = 15000 * 身高/150;
+	hp_max = 35000 * 身高/150;
+}
+
+初始化敌人模板 = _root.初始化敌人模板;
+初始化敌人模板();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="118" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[hp = 0;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#626AD1">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 57" name="人物文字信息" centerPoint3DX="88" centerPoint3DY="-141.4">
+                  <matrix>
+                    <Matrix tx="1" ty="-170.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#B5FEDB">
+          <frames>
+            <DOMFrame index="0" duration="88" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 44" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 44" name="area" centerPoint3DX="-51.1" centerPoint3DY="-19.15">
+                  <matrix>
+                    <Matrix a="5.72386169433594" d="1.68096923828125" tx="-63.6" ty="-31.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 140" name="area" centerPoint3DX="12.5" centerPoint3DY="12.5">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48651123046875"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   this._rotation = _parent.man._rotation;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="104" duration="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#6441F8">
+          <frames>
+            <DOMFrame index="0" duration="127" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 42" name="隐身控制器" centerPoint3DX="-26.1" centerPoint3DY="-133.75">
+                  <matrix>
+                    <Matrix tx="-39.85" ty="-140"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#33D4B0" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 39" centerPoint3DX="104.95" centerPoint3DY="-28.7">
+                  <matrix>
+                    <Matrix a="2.62663269042969" d="0.72247314453125" tx="74.95" ty="-109.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   if(this._currentframe == 1)
+   {
+      if(this.hitTest(_root.gameworld[_parent.攻击目标].area) and Math.abs(_parent._y - _root.gameworld[_parent.攻击目标].Z轴坐标) <= _parent.y轴攻击范围)
+      {
+         play();
+         if(random(_parent.攻击欲望) == 0)
+         {
+            _parent.近战招式 = "a0";
+            _parent.状态改变("近战");
+         }
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="98" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#C3EC6B" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 39" centerPoint3DX="303.6" centerPoint3DY="-31.25">
+                  <matrix>
+                    <Matrix a="3.46624755859375" d="0.72247314453125" tx="273.6" ty="-112.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   if(this._currentframe == 1)
+   {
+      if(this.hitTest(_root.gameworld[_parent.攻击目标].area) and Math.abs(_parent._y - _root.gameworld[_parent.攻击目标].Z轴坐标) <= _parent.y轴攻击范围)
+      {
+         play();
+         if(random(_parent.攻击欲望) == 0)
+         {
+            _parent.近战招式 = "a2";
+            _parent.状态改变("近战");
+         }
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="98" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#87F392" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 39" centerPoint3DX="-21.8" centerPoint3DY="-33.65">
+                  <matrix>
+                    <Matrix a="3.95980834960938" d="0.72247314453125" tx="-51.8" ty="-114.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   if(this._currentframe == 1)
+   {
+      if(this.hitTest(_root.gameworld[_parent.攻击目标].area) and Math.abs(_parent._y - _root.gameworld[_parent.攻击目标].Z轴坐标) <= _parent.y轴攻击范围)
+      {
+         play();
+         if(random(_parent.攻击欲望) == 0)
+         {
+            _parent.近战招式 = "a1";
+            _parent.状态改变("空手攻击");
+         }
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="98" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#A850C3" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 39" centerPoint3DX="133.05" centerPoint3DY="-31.25">
+                  <matrix>
+                    <Matrix a="4.79196166992188" d="0.72247314453125" tx="103.05" ty="-112.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   if(this._currentframe == 1)
+   {
+      if(this.hitTest(_root.gameworld[_parent.攻击目标].area) and Math.abs(_parent._y - _root.gameworld[_parent.攻击目标].Z轴坐标) <= _parent.y轴攻击范围)
+      {
+         play();
+         if(random(_parent.攻击欲望) == 0)
+         {
+            _parent.近战招式 = "a1";
+            _parent.状态改变("近战");
+         }
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="98" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#9402F9" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="思考标签" centerPoint3DX="-33.5" centerPoint3DY="18.85">
+                  <matrix>
+                    <Matrix tx="-36" ty="16.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="98" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#BBCD1A" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 35" name="控制块" centerPoint3DX="120" centerPoint3DY="130.5">
+                  <matrix>
+                    <Matrix a="0.01446533203125" d="0.0158538818359375" tx="-31.5" ty="-21"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_parent.hp <= 0)
+   {
+      _parent.gotoAndStop("血腥死");
+   }
+}
+onClipEvent(enterFrame){
+   _parent.行走();
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="98" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#26D0B3" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 39" centerPoint3DX="-176.4" centerPoint3DY="-28.05">
+                  <matrix>
+                    <Matrix a="2.49639892578125" d="0.72247314453125" tx="-206.4" ty="-109.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   if(this._currentframe == 1)
+   {
+      if(this.hitTest(_root.gameworld[_parent.攻击目标].area) and Math.abs(_parent._y - _root.gameworld[_parent.攻击目标].Z轴坐标) <= _parent.y轴攻击范围)
+      {
+         play();
+         if(random(_parent.攻击欲望) == 0)
+         {
+            _parent.近战招式 = "";
+            _parent.状态改变("空手攻击");
+         }
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="108" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#A0CC45" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 263" name="man" centerPoint3DX="64.85" centerPoint3DY="32.7">
+                  <matrix>
+                    <Matrix tx="-19.05" ty="-57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay(random(15));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 273" name="man" centerPoint3DX="69.35" centerPoint3DY="31.95">
+                  <matrix>
+                    <Matrix tx="-18.05" ty="-58.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 281" name="man" centerPoint3DX="94.75" centerPoint3DY="34.25">
+                  <matrix>
+                    <Matrix tx="-18.05" ty="-58.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 334" name="man" centerPoint3DX="257.05" centerPoint3DY="-0.55">
+                  <matrix>
+                    <Matrix a="-1" tx="88.6" ty="-170.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   _parent.刚体 = true;
+}
+onClipEvent(unload){
+   _parent.刚体 = false;
+   _parent.锁定方向 = false;
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 369" name="man" centerPoint3DX="143.4" centerPoint3DY="91.75">
+                  <matrix>
+                    <Matrix tx="6.45" ty="-63.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   _parent.刚体 = true;
+}
+onClipEvent(unload){
+   _parent.刚体 = false;
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 263" name="man" centerPoint3DX="64.85" centerPoint3DY="32.7">
+                  <matrix>
+                    <Matrix tx="-19.05" ty="-57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay(random(15));
+   躲闪 = true;
+}
+onClipEvent(unload){
+   躲闪 = false;
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="71" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 375" name="man" centerPoint3DX="97.1" centerPoint3DY="26.65">
+                  <matrix>
+                    <Matrix tx="11.5" ty="-62.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   原防御力 = _parent.防御力;
+   _parent.防御力 = 99000;
+}
+onClipEvent(unload){
+   _parent.防御力 = 原防御力;
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="95" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 263" name="man" centerPoint3DX="64.85" centerPoint3DY="32.7">
+                  <matrix>
+                    <Matrix tx="-19.05" ty="-57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay(random(15));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="104" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 425" selected="true" centerPoint3DX="331.65" centerPoint3DY="76.2">
+                  <matrix>
+                    <Matrix tx="8.5" ty="-72"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay("a" + random(0));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

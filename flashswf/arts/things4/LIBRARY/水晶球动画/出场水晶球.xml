@@ -1,0 +1,158 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="水晶球动画/出场水晶球" itemID="66bc80c4-00000960" lastModified="1724913532" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="出场水晶球" currentFrame="39">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#CE8DE5" locked="true">
+          <frames>
+            <DOMFrame index="0" name="a0" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="39" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="元件3" centerPoint3DX="14.6" centerPoint3DY="-25.65">
+                  <matrix>
+                    <Matrix tx="-1.6" ty="-1.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="-23.85"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="10"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="元件3" centerPoint3DX="14.6" centerPoint3DY="-25.65">
+                  <matrix>
+                    <Matrix tx="-1.6" ty="-1.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.2" y="-23.85"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="32" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#DF2CB4">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="元件 2" centerPoint3DX="15.95" centerPoint3DY="0.2">
+                  <matrix>
+                    <Matrix tx="-38" ty="-57.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="53.95" y="57.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="30" tweenType="motion" motionTweenRotate="clockwise" motionTweenRotateTimes="1" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0309" y="0.0309"/>
+                  <Point x="0.0878" y="0.0317"/>
+                  <Point x="0.1423" y="0.0479"/>
+                  <Point x="0.1972" y="0.0644"/>
+                  <Point x="0.2498" y="0.0963"/>
+                  <Point x="0.3" y="0.1164"/>
+                  <Point x="0.4512" y="0.1771"/>
+                  <Point x="0.5728" y="0.2589"/>
+                  <Point x="0.6667" y="0.3527"/>
+                  <Point x="0.7872" y="0.4733"/>
+                  <Point x="0.861" y="0.5234"/>
+                  <Point x="0.9228" y="0.6781"/>
+                  <Point x="0.9413" y="0.7246"/>
+                  <Point x="0.963" y="0.7958"/>
+                  <Point x="0.9776" y="0.8733"/>
+                  <Point x="0.9824" y="0.8985"/>
+                  <Point x="0.9905" y="0.9124"/>
+                  <Point x="0.9934" y="0.9384"/>
+                  <Point x="0.9956" y="0.9576"/>
+                  <Point x="0.9912" y="0.9912"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="元件 2" centerPoint3DX="15.95" centerPoint3DY="0.2">
+                  <matrix>
+                    <Matrix tx="-38" ty="-57.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="53.95" y="57.7"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                    <GlowFilter blurX="0" blurY="0" strength="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" tweenType="motion" motionTweenRotate="clockwise" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="元件 2" centerPoint3DX="15.95" centerPoint3DY="0.2">
+                  <matrix>
+                    <Matrix tx="-38" ty="-57.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="53.95" y="57.7"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                    <GlowFilter blurX="20" blurY="20" color="#FF66CC"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 0" color="#F41F73">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="39" keyMode="9728" soundName="音效/soundice.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

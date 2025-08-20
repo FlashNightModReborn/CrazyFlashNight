@@ -953,6 +953,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         var threatFilter:Function = function(u:Object, target:Object, distance:Number):Boolean {
             return u.threat != undefined && u.threat >= threatThreshold;
         };
+        // _root.发布消息(t._name, "findNearestThreateningEnemy");
         return findNearestEnemyWithFilter(t, interval, threatFilter, searchLimit, undefined);
     }
 

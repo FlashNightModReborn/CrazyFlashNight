@@ -1,0 +1,255 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="水晶球动画/子弹-辉石箭雨" itemID="66d02590-0000075b" linkageExportForAS="true" linkageIdentifier="子弹-辉石箭雨" lastModified="1724921063" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="子弹-辉石箭雨" currentFrame="20">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="area" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 44" name="area" centerPoint3DY="5">
+                  <matrix>
+                    <Matrix a="2" d="1.99998474121094" tx="-25" ty="-20"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.垂直速度 = -1 - random(12);
+	_parent.Z轴速度 = -4 + random(9);
+
+	this.onEnterFrame = function()
+	{
+		_parent.Z轴坐标 += _parent.Z轴速度;
+		_parent._y += _parent.垂直速度 + _parent.Z轴速度;
+		_parent.垂直速度 += _root.重力加速度;
+		if (_parent._y >= _parent.Z轴坐标)
+		{
+			_parent._y = _parent.Z轴坐标;
+			delete this.onEnterFrame;
+			_parent.gotoAndPlay("消失");
+		}
+	};
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 44" name="area" centerPoint3DY="25">
+                  <matrix>
+                    <Matrix a="2" d="1.99998474121094" tx="-25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.垂直速度 = -1 - random(12);
+	_parent.Z轴速度 = -4 + random(9);
+
+	this.onEnterFrame = function()
+	{
+		_parent.Z轴坐标 += _parent.Z轴速度;
+		_parent._y += _parent.垂直速度 + _parent.Z轴速度;
+		_parent.垂直速度 += _root.重力加速度;
+		if (_parent._y >= _parent.Z轴坐标)
+		{
+			_parent._y = _parent.Z轴坐标;
+			delete this.onEnterFrame;
+			_parent.gotoAndPlay("消失");
+		}
+	};
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 44" name="area" centerPoint3DY="50">
+                  <matrix>
+                    <Matrix a="3.20001220703125" d="3.99996948242188" tx="-40"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.垂直速度 = -1 - random(12);
+	_parent.Z轴速度 = -4 + random(9);
+
+	this.onEnterFrame = function()
+	{
+		_parent.Z轴坐标 += _parent.Z轴速度;
+		_parent._y += _parent.垂直速度 + _parent.Z轴速度;
+		_parent.垂直速度 += _root.重力加速度;
+		if (_parent._y >= _parent.Z轴坐标)
+		{
+			_parent._y = _parent.Z轴坐标;
+			delete this.onEnterFrame;
+			_parent.gotoAndPlay("消失");
+		}
+	};
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 44" name="area" centerPoint3DY="175">
+                  <matrix>
+                    <Matrix a="6.4000244140625" d="3.99993896484375" tx="-80" ty="125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.垂直速度 = -1 - random(12);
+	_parent.Z轴速度 = -4 + random(9);
+
+	this.onEnterFrame = function()
+	{
+		_parent.Z轴坐标 += _parent.Z轴速度;
+		_parent._y += _parent.垂直速度 + _parent.Z轴速度;
+		_parent.垂直速度 += _root.重力加速度;
+		if (_parent._y >= _parent.Z轴坐标)
+		{
+			_parent._y = _parent.Z轴坐标;
+			delete this.onEnterFrame;
+			_parent.gotoAndPlay("消失");
+		}
+	};
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 44" name="area" centerPoint3DY="225">
+                  <matrix>
+                    <Matrix a="9.60003662109375" d="3.99996948242188" tx="-120" ty="175"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.垂直速度 = -1 - random(12);
+	_parent.Z轴速度 = -4 + random(9);
+
+	this.onEnterFrame = function()
+	{
+		_parent.Z轴坐标 += _parent.Z轴速度;
+		_parent._y += _parent.垂直速度 + _parent.Z轴速度;
+		_parent.垂直速度 += _root.重力加速度;
+		if (_parent._y >= _parent.Z轴坐标)
+		{
+			_parent._y = _parent.Z轴坐标;
+			delete this.onEnterFrame;
+			_parent.gotoAndPlay("消失");
+		}
+	};
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 44" name="area" centerPoint3DY="275">
+                  <matrix>
+                    <Matrix a="11.1999969482422" d="3.99993896484375" tx="-140" ty="225"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.垂直速度 = -1 - random(12);
+	_parent.Z轴速度 = -4 + random(9);
+
+	this.onEnterFrame = function()
+	{
+		_parent.Z轴坐标 += _parent.Z轴速度;
+		_parent._y += _parent.垂直速度 + _parent.Z轴速度;
+		_parent.垂直速度 += _root.重力加速度;
+		if (_parent._y >= _parent.Z轴坐标)
+		{
+			_parent._y = _parent.Z轴坐标;
+			delete this.onEnterFrame;
+			_parent.gotoAndPlay("消失");
+		}
+	};
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="水晶球动画/单次辉石箭雨" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0" b="0.335647583007813" c="-0.335662841796875" d="0"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.45" y="-5.35"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.80078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

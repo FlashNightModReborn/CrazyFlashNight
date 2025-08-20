@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-Itinerant" itemID="66a1374f-00000492" linkageExportForAS="true" linkageIdentifier="敌人-Itinerant" lastModified="1746435289" lastUniqueIdentifier="58">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-Itinerant" itemID="66a1374f-00000492" linkageExportForAS="true" linkageIdentifier="敌人-Itinerant" lastModified="1755702302" lastUniqueIdentifier="58">
   <timeline>
-    <DOMTimeline name="敌人-Itinerant" currentFrame="107">
+    <DOMTimeline name="敌人-Itinerant">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#A4EFED" locked="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="代码层" color="#A4EFED" locked="true" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -109,6 +109,11 @@ hp_max = 35000;
 基本防御力_min = 250;
 基本防御力_max = 900;
 装备防御力 = 0;
+
+魔法抗性 = {};
+魔法抗性.首领 = 25;
+魔法抗性.人类 = 25;
+魔法抗性.统合 = 40;
 
 /*宠物属性的应用示例：
 if(宠物属性.发色){
@@ -548,7 +553,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物层" color="#EECCB6" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="人物层" color="#EECCB6" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>

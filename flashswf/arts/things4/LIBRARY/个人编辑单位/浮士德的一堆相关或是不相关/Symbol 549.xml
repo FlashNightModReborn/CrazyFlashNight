@@ -1,0 +1,728 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 549" itemID="66b41505-00002f67" lastModified="1722958817">
+  <timeline>
+    <DOMTimeline name="Symbol 549">
+      <layers>
+        <DOMLayer name="Script Layer" color="#3FA1A7">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.hp <= 0)
+{
+   stop();
+   if(_parent.已加经验值 != true)
+   {
+      if(_parent.是否为敌人 == true)
+      {
+         _root.敌人死亡计数 = _root.敌人死亡计数 + 1;
+         _root.gameworld[_parent.产生源].僵尸型敌人场上实际人数--;
+         _root.gameworld[_parent.产生源].僵尸型敌人总个数--;
+         _parent.计算经验值();
+      }
+      _parent.人物文字信息._visible = 0;
+      _root.add2map(_parent,2);
+      _parent.removeMovieClip();
+   }
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.hp <= 0)
+{
+   stop();
+}
+if(_parent.hp <= 0)
+{
+   stop();
+}
+if(_parent.hp == 0)
+{
+   stop();
+}
+if(_parent.hp < 0)
+{
+   stop();
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="32" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="50" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#E2B6AE">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 173" centerPoint3DX="-372.1" centerPoint3DY="-138.55">
+                  <matrix>
+                    <Matrix a="0.444442749023438" d="0.444442749023438" tx="-390.1" ty="-156.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.控制目标 == _parent._parent._name)
+   {
+      stop();
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="52" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#D24AE1">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 519" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.317230224609375" b="-0.02813720703125" c="-0.02813720703125" d="0.317230224609375" tx="-472.5" ty="-253.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#51AD88">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 518" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.318374633789063" b="-0.010009765625" c="-0.010009765625" d="0.318374633789063" tx="-470.2" ty="-238.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#F7E1C9">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 517" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.277694702148438" b="-0.158050537109375" c="-0.158050537109375" d="0.277694702148438" tx="-463.75" ty="-276.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#65BFF0">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 509" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0513916015625" b="-0.227615356445313" c="-0.227615356445313" d="0.0513916015625" tx="-470.45" ty="-234.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#ABF178">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 516" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.319137573242188" b="-0.02685546875" c="-0.02685546875" d="0.319137573242188" tx="-453.35" ty="-247.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#E5F0D1">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 515" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.311309814453125" b="-0.0727386474609375" c="-0.0727386474609375" d="0.311309814453125" tx="-436.2" ty="-300.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#5467CA">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 514" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.295852661132813" b="-0.121841430664063" c="-0.121841430664063" d="0.295852661132813" tx="-444.95" ty="-278.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#C028CF">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 513" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.31390380859375" b="-0.06292724609375" c="-0.06292724609375" d="0.31390380859375" tx="-451.95" ty="-258.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#1CFE87">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 512" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.320358276367188" d="0.320358276367188" tx="-439.85" ty="-185"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#A0A9FA">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 511" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.301315307617188" b="-0.106674194335938" c="-0.106674194335938" d="0.301315307617188" tx="-438.25" ty="-203.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#E14CA1">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 512" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.320358276367188" d="0.320358276367188" tx="-473.6" ty="-176.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#BDE0FD">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 511" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.286880493164063" b="-0.140625" c="-0.140625" d="0.286880493164063" tx="-470.35" ty="-194.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#469DEB">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 510" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.318954467773438" b="0.02001953125" c="0.02001953125" d="0.318954467773438" tx="-460.85" ty="-226.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#C4A93A">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 510" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.262725830078125" b="0.181594848632813" c="0.181594848632813" d="0.262725830078125" tx="-438.95" ty="-233.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#5042F4">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 509" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.12530517578125" b="-0.196365356445313" c="-0.196365356445313" d="0.12530517578125" tx="-418.15" ty="-232.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#43EE75">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 508" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.297775268554688" b="0.110107421875" c="0.110107421875" d="0.297775268554688" tx="-428.65" ty="-247.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#C5DD85">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 507" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.297775268554688" b="0.110107421875" c="0.110107421875" d="0.297775268554688" tx="-420.35" ty="-235.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 20" color="#B2B12E">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 506" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.318817138671875" b="0.0038299560546875" c="0.0038299560546875" d="0.318817138671875" tx="-434.7" ty="-270.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 21" color="#14A3FB">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 505" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.293716430664063" b="-0.1156005859375" c="-0.1156005859375" d="0.293716430664063" tx="-384.15" ty="-255.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 22" color="#19F672">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 504" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.313583374023438" b="-0.0340728759765625" c="-0.0340728759765625" d="0.313583374023438" tx="-386.95" ty="-241.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 23" color="#6EF91B">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 503" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.318222045898438" b="0.0098114013671875" c="0.0098114013671875" d="0.318222045898438" tx="-375.45" ty="-277.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 24" color="#52F9B7">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 496" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.259506225585938" b="-0.0282135009765625" c="-0.0282135009765625" d="0.259506225585938" tx="-374.45" ty="-238.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 25" color="#CDFC9F">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 502" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.248748779296875" b="0.200836181640625" c="0.200836181640625" d="0.248748779296875" tx="-367.25" ty="-307.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 26" color="#939860">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 501" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.320358276367188" d="0.320358276367188" tx="-363.8" ty="-282.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 27" color="#F774B1">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 499" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.318466186523438" b="-0.0312347412109375" c="-0.0312347412109375" d="0.318466186523438" tx="-374.9" ty="-197.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 28" color="#95C5C2">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 498" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.318557739257813" b="-0.011688232421875" c="-0.011688232421875" d="0.318557739257813" tx="-372.6" ty="-176.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 29" color="#BBA584">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 497" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.318466186523438" b="-0.0312347412109375" c="-0.0312347412109375" d="0.318466186523438" tx="-369.7" ty="-230.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 30" color="#C2FD3B">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 500" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.320358276367188" d="0.320358276367188" tx="-362.85" ty="-256.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 31" color="#E0AE9B">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 499" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.320297241210938" b="0.000244140625" c="0.000244140625" d="0.320297241210938" tx="-359.2" ty="-204.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 32" color="#EC7342">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 498" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.318634033203125" b="0.0194854736328125" c="0.0194854736328125" d="0.318634033203125" tx="-355.3" ty="-184.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 33" color="#92EB3C">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 497" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.320205688476563" b="0.00872802734375" c="0.00872802734375" d="0.320205688476563" tx="-357.65" ty="-238.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 34" color="#9F5D91">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 496" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.17095947265625" b="0.19647216796875" c="0.19647216796875" d="0.17095947265625" tx="-319.55" ty="-262"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 35" color="#DA52B5">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 495" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2508544921875" b="0.19329833984375" c="0.19329833984375" d="0.2508544921875" tx="-341.35" ty="-260.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 36" color="#65D449">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 494" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2508544921875" b="0.19329833984375" c="0.19329833984375" d="0.2508544921875" tx="-330" ty="-252.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 37" color="#FB32F0">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 493" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.308944702148438" b="0.078521728515625" c="0.078521728515625" d="0.308944702148438" tx="-353.6" ty="-279.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 38" color="#D663CD">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 492" centerPoint3DX="-276.2" centerPoint3DY="-89.55">
+                  <matrix>
+                    <Matrix a="-0.354278564453125" d="0.130126953125" tx="-362.85" ty="-176.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 39" color="#C1FD00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="66" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/Symbol 492" centerPoint3DX="-367.6" centerPoint3DY="-91.55">
+                  <matrix>
+                    <Matrix a="-0.354278564453125" d="0.130126953125" tx="-454.25" ty="-178.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

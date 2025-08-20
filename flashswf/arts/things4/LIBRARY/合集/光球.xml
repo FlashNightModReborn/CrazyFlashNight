@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="合集/光球" itemID="66b82be5-00000177" lastModified="1723346395">
+  <timeline>
+    <DOMTimeline name="光球">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.061767578125" d="0.061767578125" tx="50.4" ty="50.4"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry color="#FF66CC" ratio="0.780392156862745"/>
+                        <GradientEntry color="#FF66CC" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1721 1721[1425 2016 1008 2016!1008 2016[591 2016 296 1721!296 1721[0 1425 0 1008!0 1008[0 591 296 296!296 296[591 0 1008 0!1008 0[1425 0 1721 296!1721 296[2016 591 2016 1008!2016 1008[2016 1425 1721 1721"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

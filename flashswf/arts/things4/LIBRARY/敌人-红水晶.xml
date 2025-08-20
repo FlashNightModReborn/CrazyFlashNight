@@ -1,0 +1,156 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-红水晶" itemID="66d01a3c-00000743" linkageExportForAS="true" linkageIdentifier="敌人-红水晶" lastModified="1749523256" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="敌人-红水晶" currentFrame="23">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#6DEEAF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="9" name="空手站立" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" name="血腥死" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#5BA2AF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[根据等级初始数值 = _root.敌人函数.根据等级初始数值;
+状态改变 = _root.敌人函数.状态改变;
+动画完毕 = _root.敌人函数.动画完毕;
+计算经验值 = _root.敌人函数.计算经验值;
+
+hp_min = 100;
+hp_max = 200;
+速度_min = 0;
+速度_max = 0;
+空手攻击力_min = 100;
+空手攻击力_max = 300;
+躲闪率_min = 100;
+躲闪率_max = 100;
+基本防御力_min = 70;
+基本防御力_max = 120;
+装备防御力 = 0;
+
+称号 = "";
+
+身高转换值 = _root.身高百分比转换(this.身高);
+this._xscale = 身高转换值;
+this._yscale = 身高转换值;
+this.swapDepths(this._y);
+
+攻击目标 = "无";
+
+攻击模式 = "空手";
+状态 = "空手站立";
+方向 = "右";
+格斗架势 = false;
+击中效果 = "火花";
+Z轴坐标 = this._y;
+myxscale = this._xscale;
+
+unitAIType = "None";
+
+_root.敌人函数.初始化单位(this);
+根据等级初始数值(等级);
+动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="18" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+this.Z轴坐标 = this._y;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[hp = 0;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#BE3AF7" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 44" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#F8CED8" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 605" name="man" centerPoint3DX="90.75" centerPoint3DY="31.55">
+                  <matrix>
+                    <Matrix tx="-19.05" ty="-57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay("a" + random(3));
+}
+onClipEvent(enterFrame){
+   if(_parent.hp <= 0)
+   {
+      _parent.gotoAndStop("血腥死");
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 622" selected="true" centerPoint3DX="262.2" centerPoint3DY="64.95">
+                  <matrix>
+                    <Matrix tx="8.5" ty="-72"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
