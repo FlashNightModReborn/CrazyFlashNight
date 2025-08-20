@@ -85,18 +85,18 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
    *
    * @param item:Object 物品数据对象
    * @param value:Object 数值对象（包含 tier、level 等）
-   * @param 强化等级:Number 强化等级（默认从 value.level 获取，最小值 1）
+   * @param upgradeLevel:Number 强化等级（默认从 value.level 获取，最小值 1）
    * @return String 拼装后的 HTML 字符串
    */
-  public static function generateIntroPanelContent(item:Object, value:Object, 强化等级:Number):String {
-    if (强化等级 == undefined || isNaN(强化等级) || 强化等级 < 1) {
-      强化等级 = (value && value.level > 0) ? value.level : 1;
+  public static function generateIntroPanelContent(item:Object, value:Object, upgradeLevel:Number):String {
+    if (upgradeLevel == undefined || isNaN(upgradeLevel) || upgradeLevel < 1) {
+      upgradeLevel = (value && value.level > 0) ? value.level : 1;
     }
     
     var buffer:Array = [];
     
-    append(buffer, TooltipTextBuilder.buildIntroHeader(item, value, 强化等级));
-    append(buffer, TooltipTextBuilder.buildEquipmentStats(item, value.tier, 强化等级));
+    append(buffer, TooltipTextBuilder.buildIntroHeader(item, value, upgradeLevel));
+    append(buffer, TooltipTextBuilder.buildEquipmentStats(item, value.tier, upgradeLevel));
     
     return buffer.join("");
   }
@@ -110,16 +110,16 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
    * 
    * @param item:Object 物品数据对象
    * @param value:Object 数值对象（包含 tier、level 等）
-   * @param 强化等级:Number 强化等级（默认从 value.level 获取，最小值 1）
+   * @param upgradeLevel:Number 强化等级（默认从 value.level 获取，最小值 1）
    * @return String 完整的 HTML 文本
    */
-  public static function generateItemFullText(item:Object, value:Object, 强化等级:Number):String {
-    if (强化等级 == undefined || isNaN(强化等级) || 强化等级 < 1) {
-      强化等级 = (value && value.level > 0) ? value.level : 1;
+  public static function generateItemFullText(item:Object, value:Object, upgradeLevel:Number):String {
+    if (upgradeLevel == undefined || isNaN(upgradeLevel) || upgradeLevel < 1) {
+      upgradeLevel = (value && value.level > 0) ? value.level : 1;
     }
 
     var descriptionText:String = generateItemDescriptionText(item);
-    var introText:String = generateIntroPanelContent(item, value, 强化等级);
+    var introText:String = generateIntroPanelContent(item, value, upgradeLevel);
     
     return descriptionText + introText; 
   }

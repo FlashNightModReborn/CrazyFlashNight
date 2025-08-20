@@ -18,24 +18,26 @@
    
   public static function numLine(buf:Array, label:String, val, suffix:String):Void {
     if (val === undefined || val === null) return;
-    var n = Number(val);
-    if (!isNaN(n)) {
-      if (n === 0) return;
-      buf.push(label, "：", n, (suffix ? suffix : ""), "<BR>");
-      return;
-    }
+    var n:Number = Number(val);
+    if (!isNaN(n) && n === 0) return;
     if (val === "" || val == "0" || val == "null") return;
-    buf.push(label, "：", val, (suffix ? suffix : ""), "<BR>");
+    buf.push(label, "：", (isNaN(n) ? val : n), (suffix ? suffix : ""), "<BR>");
   }
   
-  public static function upgradeLine(buf:Array, label:String, base:Number, lvl:Number, hlColor:String):Void {
-    if (base === undefined || base === 0) return;
-    buf.push(label, "：", base);
-    var enhanced = _root.强化计算(base, lvl);
+  public static function upgradeLine(
+    buf:Array, label:String, base:Number, lvl:Number,
+    hlColor:String, sep:String
+  ):Void {
+    if (base === undefined || isNaN(base) || base === 0) return;
+    if (hlColor == undefined) hlColor = org.flashNight.gesh.tooltip.TooltipConstants.COL_HL;
+    if (sep == undefined) sep = "：";
+    buf.push(label, sep, base);
+    var enhanced:Number = _root.强化计算(base, lvl);
     buf.push("<FONT COLOR='" + hlColor + "'>(+", (enhanced - base), ")</FONT><BR>");
   }
   
   public static function colorLine(buf:Array, hex:String, text:String):Void {
+    if (text == undefined || text == "") return;
     buf.push("<FONT COLOR='" + hex + "'>", text, "</FONT><BR>");
   }
 }

@@ -15,14 +15,21 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   // === 生成基础描述（1:1 复刻 _root.注释文本.生成基础描述） ===
   public static function buildBasicDescription(item:Object):Array {
     var result = [];
-    if (item.description) result.push(item.description.split("\r\n").join("<BR>"), "<BR>");
+    if (item.description) {
+      result.push(item.description.split("\r\n").join(TooltipFormatter.br()), TooltipFormatter.br());
+    }
     return result;
   } 
   
   // === 生成剧情碎片提示（1:1 复刻 _root.注释文本.生成剧情碎片提示） ===
   public static function buildStoryTip(item:Object):Array {
     var result = [];
-    if (item.use == "情报") result.push("<FONT COLOR='" + TooltipConstants.COL_INFO + "'>详细信息可在物品栏的情报界面查阅</FONT><BR>");
+    if (item.use == "情报") {
+      result.push(
+        TooltipFormatter.color("详细信息可在物品栏的情报界面查阅", TooltipConstants.COL_INFO),
+        TooltipFormatter.br()
+      );
+    }
     return result;
   }
 
@@ -55,8 +62,14 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
                  _root.技能函数.龙斩刀伤乘数表, _root.技能函数.拔刀术伤害乘数表];
       var skillNames = ["凶斩","瞬步斩","龙斩","拔刀术"];
       for (var i=0; i<multiplierTables.length; i++) {
-        var multiplier = multiplierTables[i][item.name];
-        if (multiplier > 1) result.push("<font color='" + TooltipConstants.COL_HL + "'>【技能加成】</font>使用", skillNames[i], "享受", String((multiplier-1)*100), TooltipConstants.SUF_PERCENT + "锋利度增益<BR>");
+        var multiplier = Number(multiplierTables[i][item.name]);
+        if (!isNaN(multiplier) && multiplier > 1) {
+          result.push(
+            TooltipFormatter.color("【技能加成】", TooltipConstants.COL_HL),
+            "使用", skillNames[i], "享受", String((multiplier-1)*100), TooltipConstants.SUF_PERCENT, "锋利度增益",
+            TooltipFormatter.br()
+          );
+        }
       }
     }
     return result;
@@ -92,15 +105,15 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   }
 
   // === 生成简介标题头（1:1 复刻 _root.注释文本.生成简介标题头） ===
-  public static function buildIntroHeader(item:Object, value:Object, 强化等级:Number):Array {
+  public static function buildIntroHeader(item:Object, value:Object, upgradeLevel:Number):Array {
     var result = [];
     result.push("<B>", (value.tier ? ("[" + value.tier + "]") : ""), item.displayname, "</B><BR>");
     result.push(item.type, "    ", item.use, "<BR>");
     if (item.type == "武器" || item.type == "防具") { result.push("等级限制：", item.level, "<BR>"); }
     result.push("$", item.price, "<BR>");
     if (item.weight != null && item.weight !== 0) result.push("重量：", item.weight, TooltipConstants.SUF_KG + "<BR>");
-    if (强化等级 > 1 && (item.type == "武器" || item.type == "防具")) {
-      result.push("<FONT COLOR='" + TooltipConstants.COL_HL + "'>强化等级：", 强化等级, "</FONT><BR>");
+    if (upgradeLevel > 1 && (item.type == "武器" || item.type == "防具")) {
+      result.push("<FONT COLOR='" + TooltipConstants.COL_HL + "'>强化等级：", upgradeLevel, "</FONT><BR>");
     } else {
       // 兼容多种形态：value 为数字 或 对象里带各种数量字段
       var quantity:Number = 0;
@@ -123,14 +136,14 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   }
 
   // === 生成装备属性块（1:1 复刻 _root.注释文本.生成装备属性块） ===
-  public static function buildEquipmentStats(item:Object, tier:String, 等级:Number):Array {
-    if (等级 == undefined || isNaN(等级) || 等级 < 1) 等级 = 1;
+  public static function buildEquipmentStats(item:Object, tier:String, level:Number):Array {
+    if (level == undefined || isNaN(level) || level < 1) level = 1;
     var result = [];
     var data = TooltipDataSelector.getEquipmentData(item, tier);
 
     switch (item.use) {
       case "刀":
-        addUpgradeLine(result, "锋利度", data.power, 等级);
+        addUpgradeLine(result, "锋利度", data.power, level);
         break;
       case "手雷":
         result.push("等级限制：", item.level, "<BR>威力：", data.power, "<BR>");
@@ -151,7 +164,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         
         var magazineCapacity = isNotMultiShot ? splitValue : 1;
         if (capacity > 0) result.push("弹夹容量：", (capacity * magazineCapacity), "<BR>");
-        addUpgradeLine(result, "子弹威力", data.power, 等级);
+        addUpgradeLine(result, "子弹威力", data.power, level);
         if (splitValue > 1) result.push(isNotMultiShot ? "点射弹数：" : "弹丸数量：", splitValue, "<BR>");
         
         // interval和impact的防护：确保是有效数值且非零
@@ -168,11 +181,11 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     }
 
     // 使用辅助方法生成属性行
-    addUpgradeLine(result, "内力加成", data.force, 等级);
-    addUpgradeLine(result, "伤害加成", data.damage, 等级);
-    addUpgradeLine(result, "空手加成", data.punch, 等级);
-    addUpgradeLine(result, "冷兵器加成", data.knifepower, 等级);
-    addUpgradeLine(result, "枪械加成", data.gunpower, 等级);
+    addUpgradeLine(result, "内力加成", data.force, level);
+    addUpgradeLine(result, "伤害加成", data.damage, level);
+    addUpgradeLine(result, "空手加成", data.punch, level);
+    addUpgradeLine(result, "冷兵器加成", data.knifepower, level);
+    addUpgradeLine(result, "枪械加成", data.gunpower, level);
 
     if (data.criticalhit !== undefined) {
       if (!isNaN(Number(data.criticalhit))) result.push("<FONT COLOR='" + TooltipConstants.COL_CRIT + "'>暴击：</FONT><FONT COLOR='" + TooltipConstants.COL_CRIT + "'>", data.criticalhit, TooltipConstants.SUF_PERCENT + "概率造成1.5倍伤害</FONT><BR>");
@@ -211,9 +224,9 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       }
     }
 
-    addUpgradeLine(result, "防御", data.defence, 等级);
-    addUpgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_HP + "'>HP</FONT>", data.hp, 等级);
-    addUpgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_MP + "'>MP</FONT>", data.hp, 等级);
+    addUpgradeLine(result, "防御", data.defence, level);
+    addUpgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_HP + "'>HP</FONT>", data.hp, level);
+    addUpgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_MP + "'>MP</FONT>", data.mp, level);
 
     if (item.use == "药剂") {
       if (!isNaN(data.affecthp) && data.affecthp != 0) result.push("<FONT COLOR='" + TooltipConstants.COL_HP + "'>HP+", data.affecthp, "</FONT><BR>");
@@ -232,48 +245,42 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   }
 
   // === 生成装备强化数据属性块 ===
-  public static function buildEnhancementStats(itemData:Object, 等级:Number):Array {
+  public static function buildEnhancementStats(itemData:Object, level:Number):Array {
     var result = [];
     var data = itemData.data;
     if(itemData.use === "刀"){
-      addUpgradeLine(result, "锋利度", data.power, 等级, " -> ");
+      addUpgradeLine(result, "锋利度", data.power, level, " -> ");
     }else if(itemData.use === "长枪" || itemData.use === "手枪"){
-      addUpgradeLine(result, "子弹威力", data.power, 等级, " -> ");
+      addUpgradeLine(result, "子弹威力", data.power, level, " -> ");
     }
-    addUpgradeLine(result, "内力加成", data.force, 等级, " -> ");
-    addUpgradeLine(result, "伤害加成", data.damage, 等级, " -> ");
-    addUpgradeLine(result, "空手加成", data.punch, 等级, " -> ");
-    addUpgradeLine(result, "冷兵器加成", data.knifepower, 等级, " -> ");
-    addUpgradeLine(result, "枪械加成", data.gunpower, 等级, " -> ");
-    addUpgradeLine(result, "防御", data.defence, 等级, " -> ");
-    addUpgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_HP + "'>HP</FONT>", data.hp, 等级, " -> ");
-    addUpgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_MP + "'>MP</FONT>", data.hp, 等级, " -> ");
+    addUpgradeLine(result, "内力加成", data.force, level, " -> ");
+    addUpgradeLine(result, "伤害加成", data.damage, level, " -> ");
+    addUpgradeLine(result, "空手加成", data.punch, level, " -> ");
+    addUpgradeLine(result, "冷兵器加成", data.knifepower, level, " -> ");
+    addUpgradeLine(result, "枪械加成", data.gunpower, level, " -> ");
+    addUpgradeLine(result, "防御", data.defence, level, " -> ");
+    addUpgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_HP + "'>HP</FONT>", data.hp, level, " -> ");
+    addUpgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_MP + "'>MP</FONT>", data.mp, level, " -> ");
     return result;
   }
 
 
 
 
-  // === 辅助方法：添加升级属性行 ===
+  // === 辅助方法：添加升级属性行（转发到 TooltipFormatter） ===
   private static function addUpgradeLine(buffer:Array, title:String, baseValue:Number, level:Number, colon:String):Void {
-    if (baseValue != undefined && !isNaN(baseValue) && baseValue != 0) {
-      var upgradeBonus = _root.强化计算(baseValue, level) - baseValue;
-      if(colon == null) colon = "：";
-      buffer.push(title, colon, baseValue, "<FONT COLOR='" + TooltipConstants.COL_HL + "'>(+", upgradeBonus, ")</FONT><BR>");
-    }
+    TooltipFormatter.upgradeLine(
+      buffer, title, baseValue, level, undefined /* 默认HL色 */, colon /* 可为" -> " */
+    );
   }
 
-  // === 辅助方法：添加数值行 ===
+  // === 辅助方法：添加数值行（转发） ===
   private static function addNumLine(buffer:Array, title:String, value, suffix:String):Void {
-    if (value != undefined && !isNaN(Number(value)) && Number(value) != 0) {
-      buffer.push(title, "：", value, (suffix || ""), "<BR>");
-    }
+    TooltipFormatter.numLine(buffer, title, value, suffix);
   }
 
-  // === 辅助方法：添加彩色行 ===
+  // === 辅助方法：添加彩色行（转发） ===
   private static function addColorLine(buffer:Array, color:String, text:String):Void {
-    if (text) {
-      buffer.push("<FONT COLOR='", color, "'>", text, "</FONT><BR>");
-    }
+    TooltipFormatter.colorLine(buffer, color, text);
   }
 }

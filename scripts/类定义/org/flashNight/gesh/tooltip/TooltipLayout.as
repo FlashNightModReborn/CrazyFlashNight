@@ -165,25 +165,25 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
      * - 处理背景尺寸
      * - 调用定位逻辑
      * 
-     * @param 宽度:Number 注释框宽度
-     * @param 内容:String 注释内容HTML文本
-     * @param 框体:String 框体类型（可选，默认为主框体）
+     * @param width:Number 注释框宽度
+     * @param content:String 注释内容HTML文本
+     * @param frameType:String 框体类型（可选，默认为主框体）
      */
-    public static function showTooltip(宽度:Number, 内容:String, 框体:String):Void {
-        if(!框体) {
-            框体 = "";
+    public static function showTooltip(width:Number, content:String, frameType:String):Void {
+        if(!frameType) {
+            frameType = "";
             TooltipBridge.showMainElements();
         }
 
         TooltipBridge.resetMainPositions();
 
         var tips:MovieClip = TooltipBridge.getTooltipContainer();
-        var target:MovieClip = tips[框体 + "文本框"];
-        var background:MovieClip = tips[框体 + "背景"];
+        var target:MovieClip = tips[frameType + "文本框"];
+        var background:MovieClip = tips[frameType + "背景"];
 
         tips._visible = true;
-        target.htmlText = 内容;
-        target._width = 宽度;
+        target.htmlText = content;
+        target._width = width;
 
         background._width = target._width;
         background._height = target.textHeight + TooltipConstants.TEXT_PAD;
