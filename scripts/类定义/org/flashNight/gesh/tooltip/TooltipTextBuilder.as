@@ -143,7 +143,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
 
     switch (item.use) {
       case "刀":
-        addUpgradeLine(result, "锋利度", data.power, level);
+        TooltipFormatter.upgradeLine(result, "锋利度", data.power, level, undefined, undefined);
         break;
       case "手雷":
         result.push("等级限制：", item.level, "<BR>威力：", data.power, "<BR>");
@@ -164,7 +164,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         
         var magazineCapacity = isNotMultiShot ? splitValue : 1;
         if (capacity > 0) result.push("弹夹容量：", (capacity * magazineCapacity), "<BR>");
-        addUpgradeLine(result, "子弹威力", data.power, level);
+        TooltipFormatter.upgradeLine(result, "子弹威力", data.power, level, undefined, undefined);
         if (splitValue > 1) result.push(isNotMultiShot ? "点射弹数：" : "弹丸数量：", splitValue, "<BR>");
         
         // interval和impact的防护：确保是有效数值且非零
@@ -181,38 +181,38 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     }
 
     // 使用辅助方法生成属性行
-    addUpgradeLine(result, "内力加成", data.force, level);
-    addUpgradeLine(result, "伤害加成", data.damage, level);
-    addUpgradeLine(result, "空手加成", data.punch, level);
-    addUpgradeLine(result, "冷兵器加成", data.knifepower, level);
-    addUpgradeLine(result, "枪械加成", data.gunpower, level);
+    TooltipFormatter.upgradeLine(result, "内力加成", data.force, level, undefined, undefined);
+    TooltipFormatter.upgradeLine(result, "伤害加成", data.damage, level, undefined, undefined);
+    TooltipFormatter.upgradeLine(result, "空手加成", data.punch, level, undefined, undefined);
+    TooltipFormatter.upgradeLine(result, "冷兵器加成", data.knifepower, level, undefined, undefined);
+    TooltipFormatter.upgradeLine(result, "枪械加成", data.gunpower, level, undefined, undefined);
 
     if (data.criticalhit !== undefined) {
       if (!isNaN(Number(data.criticalhit))) result.push("<FONT COLOR='" + TooltipConstants.COL_CRIT + "'>暴击：</FONT><FONT COLOR='" + TooltipConstants.COL_CRIT + "'>", data.criticalhit, TooltipConstants.SUF_PERCENT + "概率造成1.5倍伤害</FONT><BR>");
       else if (data.criticalhit == "满血暴击") result.push("<FONT COLOR='" + TooltipConstants.COL_CRIT + "'>暴击：对满血敌人造成1.5倍伤害</FONT><BR>");
     }
     
-    addNumLine(result, "斩杀线", data.slay, TooltipConstants.SUF_BLOOD);
-    addNumLine(result, "命中加成", data.accuracy, TooltipConstants.SUF_PERCENT);
-    addNumLine(result, "挡拆加成", data.evasion, TooltipConstants.SUF_PERCENT);
-    addNumLine(result, "韧性加成", data.toughness, TooltipConstants.SUF_PERCENT);
-    addNumLine(result, "高危回避", data.lazymiss, "");
+    TooltipFormatter.numLine(result, "斩杀线", data.slay, TooltipConstants.SUF_BLOOD);
+    TooltipFormatter.numLine(result, "命中加成", data.accuracy, TooltipConstants.SUF_PERCENT);
+    TooltipFormatter.numLine(result, "挡拆加成", data.evasion, TooltipConstants.SUF_PERCENT);
+    TooltipFormatter.numLine(result, "韧性加成", data.toughness, TooltipConstants.SUF_PERCENT);
+    TooltipFormatter.numLine(result, "高危回避", data.lazymiss, "");
     
     // 非药剂才在通用区显示"剧毒性"；药剂的剧毒由药剂分支统一输出
-    if (data.poison && item.use != "药剂") addColorLine(result, TooltipConstants.COL_POISON, "剧毒性：" + data.poison);
-    if (data.vampirism) addColorLine(result, TooltipConstants.COL_VAMP, "吸血：" + data.vampirism + TooltipConstants.SUF_PERCENT);
-    if (data.rout) addColorLine(result, TooltipConstants.COL_ROUT, "击溃：" + data.rout + TooltipConstants.SUF_PERCENT);
+    if (data.poison && item.use != "药剂") TooltipFormatter.colorLine(result, TooltipConstants.COL_POISON, "剧毒性：" + data.poison);
+    if (data.vampirism) TooltipFormatter.colorLine(result, TooltipConstants.COL_VAMP, "吸血：" + data.vampirism + TooltipConstants.SUF_PERCENT);
+    if (data.rout) TooltipFormatter.colorLine(result, TooltipConstants.COL_ROUT, "击溃：" + data.rout + TooltipConstants.SUF_PERCENT);
 
     if (data.damagetype) {
       if (data.damagetype == "魔法" && data.magictype) {
-        addColorLine(result, TooltipConstants.COL_DMG, "伤害属性：" + data.magictype);
+        TooltipFormatter.colorLine(result, TooltipConstants.COL_DMG, "伤害属性：" + data.magictype);
       } else if (data.damagetype == "破击" && data.magictype) {
         if (MagicDamageTypes.isMagicDamageType(data.magictype))
-          addColorLine(result, TooltipConstants.COL_BREAK_LIGHT, "附加伤害：" + data.magictype);
+          TooltipFormatter.colorLine(result, TooltipConstants.COL_BREAK_LIGHT, "附加伤害：" + data.magictype);
         else
-          addColorLine(result, TooltipConstants.COL_BREAK_MAIN, "破击类型：" + data.magictype);
+          TooltipFormatter.colorLine(result, TooltipConstants.COL_BREAK_MAIN, "破击类型：" + data.magictype);
       } else {
-        addColorLine(result, TooltipConstants.COL_DMG, "伤害类型：" + (data.damagetype == "魔法" ? "能量" : data.damagetype));
+        TooltipFormatter.colorLine(result, TooltipConstants.COL_DMG, "伤害类型：" + (data.damagetype == "魔法" ? "能量" : data.damagetype));
       }
     }
 
@@ -224,9 +224,9 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       }
     }
 
-    addUpgradeLine(result, "防御", data.defence, level);
-    addUpgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_HP + "'>HP</FONT>", data.hp, level);
-    addUpgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_MP + "'>MP</FONT>", data.mp, level);
+    TooltipFormatter.upgradeLine(result, "防御", data.defence, level, undefined, undefined);
+    TooltipFormatter.upgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_HP + "'>HP</FONT>", data.hp, level, undefined, undefined);
+    TooltipFormatter.upgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_MP + "'>MP</FONT>", data.mp, level, undefined, undefined);
 
     if (item.use == "药剂") {
       if (!isNaN(data.affecthp) && data.affecthp != 0) result.push("<FONT COLOR='" + TooltipConstants.COL_HP + "'>HP+", data.affecthp, "</FONT><BR>");
@@ -249,38 +249,22 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     var result = [];
     var data = itemData.data;
     if(itemData.use === "刀"){
-      addUpgradeLine(result, "锋利度", data.power, level, " -> ");
+      TooltipFormatter.upgradeLine(result, "锋利度", data.power, level, undefined, " -> ");
     }else if(itemData.use === "长枪" || itemData.use === "手枪"){
-      addUpgradeLine(result, "子弹威力", data.power, level, " -> ");
+      TooltipFormatter.upgradeLine(result, "子弹威力", data.power, level, undefined, " -> ");
     }
-    addUpgradeLine(result, "内力加成", data.force, level, " -> ");
-    addUpgradeLine(result, "伤害加成", data.damage, level, " -> ");
-    addUpgradeLine(result, "空手加成", data.punch, level, " -> ");
-    addUpgradeLine(result, "冷兵器加成", data.knifepower, level, " -> ");
-    addUpgradeLine(result, "枪械加成", data.gunpower, level, " -> ");
-    addUpgradeLine(result, "防御", data.defence, level, " -> ");
-    addUpgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_HP + "'>HP</FONT>", data.hp, level, " -> ");
-    addUpgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_MP + "'>MP</FONT>", data.mp, level, " -> ");
+    TooltipFormatter.upgradeLine(result, "内力加成", data.force, level, undefined, " -> ");
+    TooltipFormatter.upgradeLine(result, "伤害加成", data.damage, level, undefined, " -> ");
+    TooltipFormatter.upgradeLine(result, "空手加成", data.punch, level, undefined, " -> ");
+    TooltipFormatter.upgradeLine(result, "冷兵器加成", data.knifepower, level, undefined, " -> ");
+    TooltipFormatter.upgradeLine(result, "枪械加成", data.gunpower, level, undefined, " -> ");
+    TooltipFormatter.upgradeLine(result, "防御", data.defence, level, undefined, " -> ");
+    TooltipFormatter.upgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_HP + "'>HP</FONT>", data.hp, level, undefined, " -> ");
+    TooltipFormatter.upgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_MP + "'>MP</FONT>", data.mp, level, undefined, " -> ");
     return result;
   }
 
 
 
 
-  // === 辅助方法：添加升级属性行（转发到 TooltipFormatter） ===
-  private static function addUpgradeLine(buffer:Array, title:String, baseValue:Number, level:Number, colon:String):Void {
-    TooltipFormatter.upgradeLine(
-      buffer, title, baseValue, level, undefined /* 默认HL色 */, colon /* 可为" -> " */
-    );
-  }
-
-  // === 辅助方法：添加数值行（转发） ===
-  private static function addNumLine(buffer:Array, title:String, value, suffix:String):Void {
-    TooltipFormatter.numLine(buffer, title, value, suffix);
-  }
-
-  // === 辅助方法：添加彩色行（转发） ===
-  private static function addColorLine(buffer:Array, color:String, text:String):Void {
-    TooltipFormatter.colorLine(buffer, color, text);
-  }
 }
