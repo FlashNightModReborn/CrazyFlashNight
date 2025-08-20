@@ -1,0 +1,193 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-水晶球" itemID="66d021d1-0000074a" linkageExportForAS="true" linkageIdentifier="敌人-水晶球" lastModified="1749523223" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="敌人-水晶球" currentFrame="24">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#6DEEAF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" name="登场" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="10" name="空手站立" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="8" name="血腥死" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" duration="6" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#5BA2AF" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[根据等级初始数值 = _root.敌人函数.根据等级初始数值;
+移动 = _root.敌人函数.移动;
+状态改变 = _root.敌人函数.状态改变;
+动画完毕 = _root.敌人函数.动画完毕;
+
+function 方向改变(新方向){
+	this.方向 = 新方向;
+}
+
+hp_min = 1000;
+hp_max = 2000;
+速度_min = 60;
+速度_max = 60;
+空手攻击力_min = 100;
+空手攻击力_max = 300;
+躲闪率_min = 100;
+躲闪率_max = 100;
+基本防御力_min = 300;
+基本防御力_max = 300;
+装备防御力 = 0;
+身高转换值 = _root.身高百分比转换(this.身高);
+this._xscale = 身高转换值;
+this._yscale = 身高转换值;
+this.swapDepths(this._y);
+
+攻击模式 = "空手";
+状态 = "登场";
+方向 = "右";
+格斗架势 = false;
+击中效果 = "火花";
+Z轴坐标 = this._y;
+myxscale = this._xscale;
+
+unitAIType = "None";
+
+_root.敌人函数.初始化单位(this);
+根据等级初始数值(等级);
+状态改变(状态);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="18" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[hp = 0;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#BE3AF7" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 44" name="area" centerPoint3DX="-30.65" centerPoint3DY="-171.35">
+                  <matrix>
+                    <Matrix a="3.19944763183594" d="3.19940185546875" tx="-40" ty="-180"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#F8CED8" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="水晶球动画/出场水晶球" name="man" centerPoint3DX="60.15" centerPoint3DY="-87.35">
+                  <matrix>
+                    <Matrix a="0.631195068359375" d="0.630767822265625" tx="-9.15" ty="-143.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="水晶球动画/攻击水晶球" name="man" centerPoint3DX="60.15" centerPoint3DY="-87.35">
+                  <matrix>
+                    <Matrix a="0.631195068359375" d="0.630767822265625" tx="-9.15" ty="-143.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	if (_parent.hp <= 0)
+	{
+		_parent.gotoAndStop("血腥死");
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="水晶球动画/水晶球破碎" selected="true" centerPoint3DX="167.45" centerPoint3DY="-57.4">
+                  <matrix>
+                    <Matrix a="0.631195068359375" d="0.630767822265625" tx="7.3" ty="-143.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="阴影" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2" centerPoint3DX="117.3" centerPoint3DY="115.25">
+                  <matrix>
+                    <Matrix a="0.43267822265625" d="0.173095703125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (_root.是否阴影 == true)
+	{
+		this._visible = 1;
+	}
+	else
+	{
+		this._visible = 0;
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

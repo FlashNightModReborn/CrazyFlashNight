@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-Surveyor" itemID="6652fae0-000012d7" linkageExportForAS="true" linkageIdentifier="敌人-Surveyor" lastModified="1746435309" lastUniqueIdentifier="60">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-Surveyor" itemID="6652fae0-000012d7" linkageExportForAS="true" linkageIdentifier="敌人-Surveyor" lastModified="1755702531" lastUniqueIdentifier="60">
   <timeline>
-    <DOMTimeline name="敌人-Surveyor" currentFrame="107">
+    <DOMTimeline name="敌人-Surveyor">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#A4EFED" locked="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="代码层" color="#A4EFED" locked="true" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -123,6 +123,10 @@ x轴保持距离 = 100;
 
 重量 = 120;
 韧性系数 = 5;
+魔法抗性 = {};
+魔法抗性.首领 = 25;
+魔法抗性.人类 = 40;
+魔法抗性.统合 = 25;
 
 //以上为基础属性，以下为出招ai，在对应技能库中参考push方法添加技能，技能名对应近战元件中的帧名：
 
@@ -514,7 +518,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
