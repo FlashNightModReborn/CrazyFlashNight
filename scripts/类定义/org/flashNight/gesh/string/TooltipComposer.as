@@ -220,7 +220,7 @@ class org.flashNight.gesh.string.TooltipComposer {
       var target:MovieClip = _root.注释框.物品图标定位;
       var background:MovieClip = _root.注释框.简介背景;
       var text:MovieClip = _root.注释框.简介文本框;
-      var layout:Object = org.flashNight.gesh.string.TooltipLayout.applyIntroLayout(data.type, target, background, text);
+      var layout:Object = TooltipLayout.applyIntroLayout(data.type, target, background, text);
       var stringWidth:Number = layout.width;
 
       // 使用传入的简介文本；如有 extraString（短描述），并入简介面板
@@ -230,9 +230,50 @@ class org.flashNight.gesh.string.TooltipComposer {
       }
 
       // 调用通用图标核心函数
-      org.flashNight.gesh.string.TooltipLayout.renderIconTooltip(true, data.icon, introduction, stringWidth, data.type);
+      TooltipLayout.renderIconTooltip(true, data.icon, introduction, stringWidth, data.type);
     } else {
-      org.flashNight.gesh.string.TooltipLayout.renderIconTooltip(false);
+      TooltipLayout.renderIconTooltip(false);
+    }
+  }
+
+  /**
+   * 智能显示物品注释（自适应长短内容优化）：
+   * - 根据内容长度智能选择显示策略
+   * - 长内容：分离显示（主框体+图标面板）
+   * - 短内容：合并显示（仅图标面板）
+   * 
+   * @param name:String 物品名称
+   * @param value:Object 物品数值对象
+   * @param descriptionText:String 主要描述内容
+   * @param introText:String 简介面板内容
+   * @param options:Object 可选配置参数 { totalMultiplier:Number, descDivisor:Number }
+   */
+  public static function renderItemTooltipSmart(name:String, value:Object, descriptionText:String, introText:String, options:Object):Void {
+    // 获取配置参数（支持自定义，有默认值）
+    var totalMultiplier:Number = (options && options.totalMultiplier) ? options.totalMultiplier : TooltipConstants.SMART_TOTAL_MULTIPLIER;
+    var descDivisor:Number = (options && options.descDivisor) ? options.descDivisor : TooltipConstants.SMART_DESC_DIVISOR;
+    
+    // 智能长度判断
+    var threshold:Number = TooltipConstants.SPLIT_THRESHOLD;
+    var descLength:Number = descriptionText.length;
+    var totalLength:Number = descLength + introText.length;
+
+    // 保底清理
+    TooltipLayout.hideTooltip();
+
+    if (totalLength > threshold * totalMultiplier && descLength > threshold / descDivisor) {
+      // 长内容策略：分离显示
+      var calculatedWidth:Number = TooltipLayout.estimateWidth(descriptionText);
+      TooltipLayout.showTooltip(calculatedWidth, descriptionText);
+      renderItemIcon(true, name, value, introText, null);
+    } else {
+      // 短内容策略：合并显示
+      renderItemIcon(true, name, value, introText, descriptionText);
+      
+      // 隐藏主框体
+      _root.注释框.文本框.htmlText = "";
+      _root.注释框.文本框._visible = false;
+      _root.注释框.背景._visible = false;
     }
   }
 }

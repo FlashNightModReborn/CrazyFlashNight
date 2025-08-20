@@ -46,4 +46,8 @@
   public static var ICON_SCALE:Number = 150;              // 图标缩放比例
   public static var ICON_OFFSET:Number = 19;              // 图标位置偏移
   public static var DEPTH_INCREMENT:Number = 1;           // 层级增量
+
+  // 智能显示策略常量
+  public static var SMART_TOTAL_MULTIPLIER:Number = 2;    // 总长度阈值倍数
+  public static var SMART_DESC_DIVISOR:Number = 2;        // 描述长度阈值除数
 }

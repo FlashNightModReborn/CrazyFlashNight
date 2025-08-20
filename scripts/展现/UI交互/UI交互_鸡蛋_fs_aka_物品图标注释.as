@@ -2,7 +2,6 @@
 import org.flashNight.gesh.array.*;
 import org.flashNight.gesh.string.*;
 
-
 /**
  * 物品图标注释主入口函数
  * @param name:String 物品名称
@@ -18,25 +17,8 @@ _root.物品图标注释 = function(name, value) {
     // 2) 简介面板文本（简介头 + 装备段）
     var 简介文本:String = TooltipComposer.generateIntroPanelContent(物品数据, value, 强化等级);
 
-    // 3) 以“信息 + 简介”的总长度作为分支依据
-    var 阈值:Number = TooltipConstants.SPLIT_THRESHOLD;
-    var 描述长度:Number = 描述文本.length;
-    var 总长度:Number = 描述长度 + 简介文本.length;
-
-    TooltipLayout.hideTooltip(); // 保底清理
-
-    if (总长度 > 阈值 * 2 && 描述长度 > 阈值 / 2) {
-        // 长内容：主框体展示"描述"，简介面板单独展示
-        var 计算宽度:Number = TooltipLayout.estimateWidth(描述文本);
-        TooltipLayout.showTooltip(计算宽度, 描述文本);
-        TooltipComposer.renderItemIcon(true, name, value, 简介文本, null);
-    } else {
-        // 短内容：把"描述"并入简介面板，主框体隐藏
-        TooltipComposer.renderItemIcon(true, name, value, 简介文本, 描述文本);
-        _root.注释框.文本框.htmlText = "";
-        _root.注释框.文本框._visible = false;
-        _root.注释框.背景._visible = false;
-    }
+    // 3) 使用智能显示算法自动优化长短内容
+    TooltipComposer.renderItemTooltipSmart(name, value, 描述文本, 简介文本, null);
 };
 
 
