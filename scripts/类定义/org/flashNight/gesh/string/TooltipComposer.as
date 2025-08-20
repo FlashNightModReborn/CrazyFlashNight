@@ -196,5 +196,44 @@ class org.flashNight.gesh.string.TooltipComposer {
       index++;
     }
   }
+
+  // ──────────────── 图标渲染控制 ────────────────
+
+  /**
+   * 渲染物品图标注释：
+   * - 获取物品数据
+   * - 处理布局
+   * - 拼接文本内容
+   * - 调用渲染方法
+   * 
+   * @param enable:Boolean 是否启用显示
+   * @param name:String 物品名称
+   * @param value:Object 物品数值对象
+   * @param introString:String 预先拼好的简介面板文本（简介头 + 装备段）
+   * @param extraString:String 额外显示的文本（可选；用于把短描述并入简介面板）
+   */
+  public static function renderItemIcon(enable:Boolean, name:String, value:Object, introString:String, extraString:String):Void {
+    if (enable) {
+      var data:Object = org.flashNight.arki.item.ItemUtil.getItemData(name);
+      
+      // 交给布局模块决定尺寸与偏移
+      var target:MovieClip = _root.注释框.物品图标定位;
+      var background:MovieClip = _root.注释框.简介背景;
+      var text:MovieClip = _root.注释框.简介文本框;
+      var layout:Object = org.flashNight.gesh.string.TooltipLayout.applyIntroLayout(data.type, target, background, text);
+      var stringWidth:Number = layout.width;
+
+      // 使用传入的简介文本；如有 extraString（短描述），并入简介面板
+      var introduction:String = introString ? introString : "";
+      if (extraString) {
+        introduction += "<BR>" + extraString;
+      }
+
+      // 调用通用图标核心函数
+      org.flashNight.gesh.string.TooltipLayout.renderIconTooltip(true, data.icon, introduction, stringWidth, data.type);
+    } else {
+      org.flashNight.gesh.string.TooltipLayout.renderIconTooltip(false);
+    }
+  }
 }
 

@@ -3,7 +3,6 @@ import org.flashNight.gesh.array.*;
 import org.flashNight.gesh.string.*;
 
 
-
 /**
  * 物品图标注释主入口函数
  * @param name:String 物品名称
@@ -27,13 +26,13 @@ _root.物品图标注释 = function(name, value) {
     _root.注释结束(); // 保底清理
 
     if (总长度 > 阈值 * 2 && 描述长度 > 阈值 / 2) {
-        // 长内容：主框体展示“描述”，简介面板单独展示
+        // 长内容：主框体展示"描述"，简介面板单独展示
         var 计算宽度:Number = TooltipLayout.estimateWidth(描述文本);
         _root.注释(计算宽度, 描述文本);
-        _root.注释物品图标(true, name, value, 简介文本, null);
+        TooltipComposer.renderItemIcon(true, name, value, 简介文本, null);
     } else {
-        // 短内容：把“描述”并入简介面板，主框体隐藏
-        _root.注释物品图标(true, name, value, 简介文本, 描述文本);
+        // 短内容：把"描述"并入简介面板，主框体隐藏
+        TooltipComposer.renderItemIcon(true, name, value, 简介文本, 描述文本);
         _root.注释框.文本框.htmlText = "";
         _root.注释框.文本框._visible = false;
         _root.注释框.背景._visible = false;
@@ -94,42 +93,6 @@ _root.学习界面技能图标注释 = function(对应数组号) {
     var 计算宽度 = TooltipLayout.estimateWidth(文本数据, TooltipConstants.MIN_W, TooltipConstants.MAX_W);
     _root.注释(计算宽度, 文本数据);
 };
-
-
-
-
-/**
- * 注释物品图标显示控制函数
- * @param enable:Boolean 是否启用显示
- * @param name:String 物品名称
- * @param value:Object 物品数值对象
- * @param introString:String 预先拼好的简介面板文本（简介头 + 装备段）
- * @param extraString:String 额外显示的文本（可选；用于把短描述并入简介面板）
- */
-_root.注释物品图标 = function(enable:Boolean, name:String, value:Object, introString:String, extraString:String) {
-    if (enable) {
-        var data:Object = ItemUtil.getItemData(name);
-        
-        // 交给布局模块决定尺寸与偏移
-        var target:MovieClip = _root.注释框.物品图标定位;
-        var background:MovieClip = _root.注释框.简介背景;
-        var text:MovieClip = _root.注释框.简介文本框;
-        var layout:Object = TooltipLayout.applyIntroLayout(data.type, target, background, text);
-        var stringWidth:Number = layout.width;
-
-        // 使用传入的简介文本；如有 extraString（短描述），并入简介面板
-        var introduction:String = introString ? introString : "";
-        if (extraString) {
-            introduction += "<BR>" + extraString;
-        }
-
-        // 调用通用图标核心函数
-        TooltipLayout.renderIconTooltip(true, data.icon, introduction, stringWidth, data.type);
-    } else {
-        TooltipLayout.renderIconTooltip(false);
-    }
-};
-
 
 
 /**
