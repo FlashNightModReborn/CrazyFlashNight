@@ -163,9 +163,9 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
       var data:Object = org.flashNight.arki.item.ItemUtil.getItemData(name);
       
       // 交给布局模块决定尺寸与偏移
-      var target:MovieClip = _root.注释框.物品图标定位;
-      var background:MovieClip = _root.注释框.简介背景;
-      var text:MovieClip = _root.注释框.简介文本框;
+      var target:MovieClip = TooltipBridge.getIconTarget();
+      var background:MovieClip = TooltipBridge.getIntroBackground();
+      var text:MovieClip = TooltipBridge.getIntroTextBox();
       var layout:Object = TooltipLayout.applyIntroLayout(data.type, target, background, text);
       var stringWidth:Number = layout.width;
 
@@ -217,9 +217,9 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
       renderItemIcon(true, name, value, introText, descriptionText);
       
       // 隐藏主框体
-      _root.注释框.文本框.htmlText = "";
-      _root.注释框.文本框._visible = false;
-      _root.注释框.背景._visible = false;
+      TooltipBridge.setTextContent("main", "");
+      TooltipBridge.setVisibility("main", false);
+      TooltipBridge.setVisibility("mainBg", false);
     }
   }
 }

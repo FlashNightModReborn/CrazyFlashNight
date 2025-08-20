@@ -1,4 +1,5 @@
 ﻿import org.flashNight.gesh.tooltip.TooltipConstants;
+import org.flashNight.gesh.tooltip.TooltipBridge;
 
 class org.flashNight.gesh.tooltip.TooltipLayout {
 
@@ -111,16 +112,16 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
 
     // === 渲染图标注释（1:1 复刻 _root.注释图标核心） ===
     public static function renderIconTooltip(enable:Boolean, iconName:String, contentText:String, contentWidth:Number, layoutType:String):Void {
-        var target:MovieClip = _root.注释框.物品图标定位;
-        var background:MovieClip = _root.注释框.简介背景;
-        var text:MovieClip = _root.注释框.简介文本框;
+        var target:MovieClip = TooltipBridge.getIconTarget();
+        var background:MovieClip = TooltipBridge.getIntroBackground();
+        var text:MovieClip = TooltipBridge.getIntroTextBox();
 
         if (enable) {
-            target._visible = true;
-            text._visible = true;
-            background._visible = true;
+            TooltipBridge.setVisibility("icon", true);
+            TooltipBridge.setVisibility("intro", true);
+            TooltipBridge.setVisibility("introBg", true);
 
-            var tips:MovieClip = _root.注释框;
+            var tips:MovieClip = TooltipBridge.getTooltipContainer();
 
             // 使用指定的布局类型，默认为装备布局
             var layoutTypeToUse:String = layoutType ? layoutType : "装备";
@@ -150,9 +151,9 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
             background._height = text._height + backgroundHeightOffset;
         } else {
             if (target.icon) target.icon.removeMovieClip();
-            target._visible = false;
-            text._visible = false;
-            background._visible = false;
+            TooltipBridge.setVisibility("icon", false);
+            TooltipBridge.setVisibility("intro", false);
+            TooltipBridge.setVisibility("introBg", false);
         }
     }
 
@@ -171,14 +172,12 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
     public static function showTooltip(宽度:Number, 内容:String, 框体:String):Void {
         if(!框体) {
             框体 = "";
-            _root.注释框.文本框._visible = true;
-            _root.注释框.背景._visible = true;
+            TooltipBridge.showMainElements();
         }
 
-        _root.注释框.文本框._y = 0;
-        _root.注释框.背景._y = 0;
+        TooltipBridge.resetMainPositions();
 
-        var tips:MovieClip = _root.注释框;
+        var tips:MovieClip = TooltipBridge.getTooltipContainer();
         var target:MovieClip = tips[框体 + "文本框"];
         var background:MovieClip = tips[框体 + "背景"];
 
@@ -202,17 +201,8 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
      * - 重置可见性状态
      */
     public static function hideTooltip():Void {
-        _root.注释框._visible = false;
+        TooltipBridge.hideAllElements();
         renderIconTooltip(false);
-        
-        // 清理文本框内容
-        _root.注释框.文本框.htmlText = "";
-        _root.注释框.文本框._visible = false;
-        _root.注释框.简介文本框.htmlText = "";
-        _root.注释框.简介文本框._visible = false;
-        
-        // 清理背景可见性
-        _root.注释框.背景._visible = false;
-        _root.注释框.简介背景._visible = false;
+        TooltipBridge.clearAllContent();
     }
 }
