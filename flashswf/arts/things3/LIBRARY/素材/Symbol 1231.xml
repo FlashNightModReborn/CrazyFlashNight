@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 1231" itemID="6577faef-000016a5" lastModified="1701508661">
   <timeline>
-    <DOMTimeline name="Symbol 1231">
+    <DOMTimeline name="Symbol 1231" currentFrame="73">
       <layers>
         <DOMLayer name="Script Layer" color="#F74AF2">
           <frames>
@@ -83,7 +83,7 @@
             </DOMFrame>
             <DOMFrame index="71" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 1230" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1230" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.262466430664063" b="0.182205200195313" c="0.182205200195313" d="0.262466430664063" tx="21" ty="-36.15"/>
                   </matrix>
@@ -159,7 +159,7 @@
             </DOMFrame>
             <DOMFrame index="71" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 1217" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1217" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.215530395507813" b="0.257644653320313" c="0.257644653320313" d="0.215530395507813" tx="0.9" ty="-48.8"/>
                   </matrix>
@@ -171,7 +171,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#E178CF">
+        <DOMLayer name="Layer 4" color="#E178CF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
@@ -235,7 +235,7 @@
             </DOMFrame>
             <DOMFrame index="71" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 1229" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1229" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.261245727539063" b="-0.187606811523438" c="-0.187606811523438" d="0.261245727539063" tx="23.6" ty="-56.9"/>
                   </matrix>
@@ -1955,7 +1955,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 33" color="#4B82DF" current="true" isSelected="true">
+        <DOMLayer name="Layer 33" color="#4B82DF">
           <frames>
             <DOMFrame index="0" duration="83" keyMode="9728">
               <elements>

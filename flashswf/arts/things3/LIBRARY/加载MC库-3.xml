@@ -49,14 +49,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#4DEFE2">
+        <DOMLayer name="Layer 3" color="#4DEFE2" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="敌人-军阀突击兵" centerPoint3DX="649.05" centerPoint3DY="1145.4">
+                <DOMSymbolInstance libraryItemName="敌人-军阀突击兵" selected="true" centerPoint3DX="649.05" centerPoint3DY="1145.4">
                   <matrix>
                     <Matrix tx="294" ty="1019.8"/>
                   </matrix>
@@ -179,14 +179,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#EF5EAB" current="true" isSelected="true">
+        <DOMLayer name="Layer 7" color="#EF5EAB">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="敌人-黑铁会死士" selected="true" centerPoint3DX="-298.25" centerPoint3DY="646.5">
+                <DOMSymbolInstance libraryItemName="敌人-黑铁会死士" centerPoint3DX="-298.25" centerPoint3DY="646.5">
                   <matrix>
                     <Matrix tx="-663.3" ty="500.9"/>
                   </matrix>

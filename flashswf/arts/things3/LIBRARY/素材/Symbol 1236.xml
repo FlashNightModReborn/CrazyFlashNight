@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 1236" itemID="6577faef-000016a9" lastModified="1722409207">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 1236" itemID="6577faef-000016a9" lastModified="1755760181">
   <timeline>
-    <DOMTimeline name="Symbol 1236" currentFrame="28">
+    <DOMTimeline name="Symbol 1236" currentFrame="105">
       <layers>
         <DOMLayer name="Labels Layer" color="#EE19F9">
           <frames>
@@ -76,7 +76,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#D109F8">
+        <DOMLayer name="Layer 3" color="#D109F8" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -91,32 +91,40 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "m3-1.wav";
-   霰弹值 = 9;
-   子弹散射度 = 12;
-   发射效果 = "";
-   子弹种类 = "横向联弹-加强普通子弹";
-   子弹威力 = 50;
-   子弹速度 = 20;
-   击中地图效果 = "火花";
-   Z轴攻击范围 = 35;
-   击倒率 = 3;
-   击中后子弹的效果 = "";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+                    <script><![CDATA[onClipEvent (load) {
+    // 1) 初始化属性对象
+    var 子弹属性:Object = _root.子弹属性初始化(this);
+
+    // 2) 迁移旧参数（仅填写变化项）
+    子弹属性.声音 = "m3-1.wav";
+    子弹属性.霰弹值 = 9;
+    子弹属性.子弹散射度 = 12;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "横向联弹-加强普通子弹";
+    子弹属性.子弹威力 = 50;
+    子弹属性.子弹速度 = 20;
+    子弹属性.击中地图效果 = "火花";
+    子弹属性.Z轴攻击范围 = 35;
+    子弹属性.击倒率 = 3;
+    子弹属性.击中后子弹的效果 = "";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "装甲";
+
+    // 敌我属性（沿用旧逻辑）
+    子弹属性.子弹敌我属性 = (_parent._parent.是否为敌人 == true) ? false : true;
+
+    // 3) 坐标换算（与旧版一致）
+    var myPoint:Object = { x: this._x, y: this._y };
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 4) 统一入口
+    _root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
                   </Actionscript>
@@ -139,33 +147,40 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "re_Rifle_ak74.wav";
-   霰弹值 = 1;
-   子弹散射度 = 4;
-   发射效果 = "";
-   子弹种类 = "加强普通子弹";
-   子弹威力 = 120;
-   子弹速度 = 25;
-   击中地图效果 = "火花";
-   Z轴攻击范围 = 30;
-   击倒率 = 5;
-   击中后子弹的效果 = "";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+                    <script><![CDATA[
+onClipEvent (load) {
+    // 1) 初始化属性对象
+    var 子弹属性:Object = _root.子弹属性初始化(this);
+
+    // 2) 迁移旧参数（仅填写变化项）
+    子弹属性.声音 = "re_Rifle_ak74.wav";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 4;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "加强普通子弹";
+    子弹属性.子弹威力 = 120;
+    子弹属性.子弹速度 = 25;
+    子弹属性.击中地图效果 = "火花";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 5;
+    子弹属性.击中后子弹的效果 = "";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "人类";
+
+    // 3) 坐标换算（与旧版一致）
+    var myPoint:Object = { x: this._x, y: this._y };
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 4) 统一入口
+    _root.子弹区域shoot传递(子弹属性);
 }
+
 ]]></script>
                   </Actionscript>
                   <color>
@@ -187,33 +202,40 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "re_Rifle_ak74.wav";
-   霰弹值 = 1;
-   子弹散射度 = 4;
-   发射效果 = "";
-   子弹种类 = "加强普通子弹";
-   子弹威力 = 120;
-   子弹速度 = 25;
-   击中地图效果 = "火花";
-   Z轴攻击范围 = 30;
-   击倒率 = 5;
-   击中后子弹的效果 = "";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+                    <script><![CDATA[
+onClipEvent (load) {
+    // 1) 初始化属性对象
+    var 子弹属性:Object = _root.子弹属性初始化(this);
+
+    // 2) 迁移旧参数（仅填写变化项）
+    子弹属性.声音 = "re_Rifle_ak74.wav";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 4;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "加强普通子弹";
+    子弹属性.子弹威力 = 120;
+    子弹属性.子弹速度 = 25;
+    子弹属性.击中地图效果 = "火花";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 5;
+    子弹属性.击中后子弹的效果 = "";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "人类";
+
+    // 3) 坐标换算（与旧版一致）
+    var myPoint:Object = { x: this._x, y: this._y };
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 4) 统一入口
+    _root.子弹区域shoot传递(子弹属性);
 }
+
 ]]></script>
                   </Actionscript>
                   <color>
@@ -227,7 +249,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="105" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" name="攻击点" centerPoint3DX="16" centerPoint3DY="107.95">
+                <DOMSymbolInstance libraryItemName="素材/近战子弹" name="攻击点" selected="true" centerPoint3DX="16" centerPoint3DY="107.95">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="3.5" ty="95.45"/>
                   </matrix>
@@ -235,33 +257,40 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "re_Rifle_ak74.wav";
-   霰弹值 = 1;
-   子弹散射度 = 4;
-   发射效果 = "";
-   子弹种类 = "加强普通子弹";
-   子弹威力 = 120;
-   子弹速度 = 25;
-   击中地图效果 = "火花";
-   Z轴攻击范围 = 30;
-   击倒率 = 5;
-   击中后子弹的效果 = "";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+                    <script><![CDATA[
+onClipEvent (load) {
+    // 1) 初始化属性对象
+    var 子弹属性:Object = _root.子弹属性初始化(this);
+
+    // 2) 迁移旧参数（仅填写变化项）
+    子弹属性.声音 = "re_Rifle_ak74.wav";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 4;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "加强普通子弹";
+    子弹属性.子弹威力 = 120;
+    子弹属性.子弹速度 = 25;
+    子弹属性.击中地图效果 = "火花";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 5;
+    子弹属性.击中后子弹的效果 = "";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "人类";
+
+    // 3) 坐标换算（与旧版一致）
+    var myPoint:Object = { x: this._x, y: this._y };
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 4) 统一入口
+    _root.子弹区域shoot传递(子弹属性);
 }
+
 ]]></script>
                   </Actionscript>
                   <color>
@@ -11985,7 +12014,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 2" color="#F0AA11" current="true" isSelected="true">
+        <DOMLayer name="Sound Layer 2" color="#F0AA11">
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements/>

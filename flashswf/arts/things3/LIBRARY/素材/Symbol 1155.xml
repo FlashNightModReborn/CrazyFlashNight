@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 1155" itemID="6577faef-0000167b" lastModified="1707034497">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 1155" itemID="6577faef-0000167b" lastModified="1755759956">
   <timeline>
-    <DOMTimeline name="Symbol 1155" currentFrame="151">
+    <DOMTimeline name="Symbol 1155" currentFrame="205">
       <layers>
-        <DOMLayer name="Labels Layer" color="#81D4B3">
+        <DOMLayer name="Labels Layer" color="#81D4B3" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -24,7 +24,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#ADF86C">
+        <DOMLayer name="Script Layer" color="#ADF86C" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -76,7 +76,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#92FF02">
+        <DOMLayer name="Layer 3" color="#92FF02" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="258" keyMode="9728">
               <elements/>
@@ -227,7 +227,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#A8FF4E" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#A8FF4E" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -242,33 +242,41 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "re_sniper_SVD.wav";
-   霰弹值 = 1;
-   子弹散射度 = 1;
-   发射效果 = "";
-   子弹种类 = "穿刺子弹";
-   子弹威力 = 180;
-   子弹速度 = 40;
-   击中地图效果 = "火花";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "";
-   击退初速度 = 12;
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果,击退初速度);
+                    <script><![CDATA[onClipEvent (load) {
+    // 1) 初始化属性对象
+    var 子弹属性:Object = _root.子弹属性初始化(this);
+
+    // 2) 迁移旧参数（仅填写变化项）
+    子弹属性.声音 = "re_sniper_SVD.wav";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 1;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "穿刺子弹";
+    子弹属性.子弹威力 = 180;
+    子弹属性.子弹速度 = 40;
+    子弹属性.击中地图效果 = "火花";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "精英";
+
+    // 映射：击退初速度 -> 水平击退速度
+    子弹属性.水平击退速度 = 12;
+    // 如需垂直分量，可按需设置：子弹属性.垂直击退速度 = 0;
+
+    // 3) 坐标换算（与旧版一致）
+    var myPoint:Object = { x: this._x, y: this._y };
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 4) 统一入口
+    _root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
                   </Actionscript>
@@ -291,33 +299,41 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "re_sniper_SVD.wav";
-   霰弹值 = 1;
-   子弹散射度 = 1;
-   发射效果 = "";
-   子弹种类 = "穿刺子弹";
-   子弹威力 = 180;
-   子弹速度 = 40;
-   击中地图效果 = "火花";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "";
-   击退初速度 = 12;
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果,击退初速度);
+                    <script><![CDATA[onClipEvent (load) {
+    // 1) 初始化属性对象
+    var 子弹属性:Object = _root.子弹属性初始化(this);
+
+    // 2) 迁移旧参数（仅填写变化项）
+    子弹属性.声音 = "re_sniper_SVD.wav";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 1;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "穿刺子弹";
+    子弹属性.子弹威力 = 180;
+    子弹属性.子弹速度 = 40;
+    子弹属性.击中地图效果 = "火花";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "精英";
+
+    // 映射：击退初速度 -> 水平击退速度
+    子弹属性.水平击退速度 = 12;
+    // 如需垂直分量，可按需设置：子弹属性.垂直击退速度 = 0;
+
+    // 3) 坐标换算（与旧版一致）
+    var myPoint:Object = { x: this._x, y: this._y };
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 4) 统一入口
+    _root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
                   </Actionscript>
@@ -340,33 +356,41 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "re_sniper_SVD.wav";
-   霰弹值 = 1;
-   子弹散射度 = 1;
-   发射效果 = "";
-   子弹种类 = "穿刺子弹";
-   子弹威力 = 180;
-   子弹速度 = 40;
-   击中地图效果 = "火花";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "";
-   击退初速度 = 12;
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果,击退初速度);
+                    <script><![CDATA[onClipEvent (load) {
+    // 1) 初始化属性对象
+    var 子弹属性:Object = _root.子弹属性初始化(this);
+
+    // 2) 迁移旧参数（仅填写变化项）
+    子弹属性.声音 = "re_sniper_SVD.wav";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 1;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "穿刺子弹";
+    子弹属性.子弹威力 = 180;
+    子弹属性.子弹速度 = 40;
+    子弹属性.击中地图效果 = "火花";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 10;
+    子弹属性.击中后子弹的效果 = "";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "精英";
+
+    // 映射：击退初速度 -> 水平击退速度
+    子弹属性.水平击退速度 = 12;
+    // 如需垂直分量，可按需设置：子弹属性.垂直击退速度 = 0;
+
+    // 3) 坐标换算（与旧版一致）
+    var myPoint:Object = { x: this._x, y: this._y };
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 4) 统一入口
+    _root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
                   </Actionscript>
@@ -564,7 +588,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#F18FE0">
+        <DOMLayer name="Layer 5" color="#F18FE0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="291" keyMode="9728">
               <elements>
@@ -596,7 +620,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#D5C249">
+        <DOMLayer name="Layer 6" color="#D5C249" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="24" keyMode="9728">
               <elements/>
@@ -801,7 +825,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#C7DA23">
+        <DOMLayer name="Layer 7" color="#C7DA23" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -1360,7 +1384,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#C78DBB">
+        <DOMLayer name="Layer 8" color="#C78DBB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -1403,7 +1427,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#84B74B">
+        <DOMLayer name="Layer 9" color="#84B74B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -1434,7 +1458,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#B2F753">
+        <DOMLayer name="Layer 10" color="#B2F753" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -1465,7 +1489,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#F3EF85">
+        <DOMLayer name="Layer 11" color="#F3EF85" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -1496,7 +1520,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#F5F9E2">
+        <DOMLayer name="Layer 12" color="#F5F9E2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -1539,7 +1563,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 13" color="#ED683A">
+        <DOMLayer name="Layer 13" color="#ED683A" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -1561,7 +1585,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 14" color="#1AADD8">
+        <DOMLayer name="Layer 14" color="#1AADD8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -1583,7 +1607,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 15" color="#C1DE66">
+        <DOMLayer name="Layer 15" color="#C1DE66" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -1605,7 +1629,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 16" color="#78B0D1">
+        <DOMLayer name="Layer 16" color="#78B0D1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -1648,7 +1672,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 17" color="#B7DAA3">
+        <DOMLayer name="Layer 17" color="#B7DAA3" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -1691,7 +1715,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 18" color="#76A3C3">
+        <DOMLayer name="Layer 18" color="#76A3C3" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -1734,7 +1758,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 19" color="#4B9ED2">
+        <DOMLayer name="Layer 19" color="#4B9ED2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -1777,7 +1801,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 20" color="#C8BFAC">
+        <DOMLayer name="Layer 20" color="#C8BFAC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -1820,7 +1844,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 21" color="#AD9153">
+        <DOMLayer name="Layer 21" color="#AD9153" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -1863,7 +1887,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 22" color="#58DAEF">
+        <DOMLayer name="Layer 22" color="#58DAEF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -1894,7 +1918,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 23" color="#F7168D">
+        <DOMLayer name="Layer 23" color="#F7168D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -1925,7 +1949,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 24" color="#C7947F">
+        <DOMLayer name="Layer 24" color="#C7947F" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
@@ -1944,7 +1968,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 25" color="#8CCB76">
+        <DOMLayer name="Layer 25" color="#8CCB76" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -1975,7 +1999,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 26" color="#B2F4DB">
+        <DOMLayer name="Layer 26" color="#B2F4DB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -2270,7 +2294,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 27" color="#6B88D9">
+        <DOMLayer name="Layer 27" color="#6B88D9" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -2508,7 +2532,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 28" color="#3AFEFF">
+        <DOMLayer name="Layer 28" color="#3AFEFF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -2746,7 +2770,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 29" color="#E9D5E7">
+        <DOMLayer name="Layer 29" color="#E9D5E7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -3041,7 +3065,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 30" color="#D2299E" locked="true" layerType="mask">
+        <DOMLayer name="Layer 30" color="#D2299E" locked="true" outline="true" useOutlineView="true" layerType="mask">
           <frames>
             <DOMFrame index="0" duration="76" keyMode="9728">
               <elements/>
@@ -3096,7 +3120,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 31" color="#8EA9B4" parentLayerIndex="29" locked="true">
+        <DOMLayer name="Layer 31" color="#8EA9B4" parentLayerIndex="29" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="76" keyMode="9728">
               <elements/>
@@ -3151,7 +3175,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 32" color="#BB9D3B">
+        <DOMLayer name="Layer 32" color="#BB9D3B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="121" keyMode="9728">
               <elements/>
@@ -3185,7 +3209,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 33" color="#B7BE96">
+        <DOMLayer name="Layer 33" color="#B7BE96" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="121" keyMode="9728">
               <elements/>
@@ -3219,7 +3243,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 34" color="#7C9181">
+        <DOMLayer name="Layer 34" color="#7C9181" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -3448,7 +3472,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 35" color="#B966DF">
+        <DOMLayer name="Layer 35" color="#B966DF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -3710,7 +3734,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 36" color="#849BED">
+        <DOMLayer name="Layer 36" color="#849BED" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -3972,7 +3996,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 37" color="#CF73F7">
+        <DOMLayer name="Layer 37" color="#CF73F7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -4198,7 +4222,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 38" color="#E4C60B">
+        <DOMLayer name="Layer 38" color="#E4C60B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -4244,7 +4268,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 39" color="#E2F59C">
+        <DOMLayer name="Layer 39" color="#E2F59C" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -4290,7 +4314,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 40" color="#CCFD99">
+        <DOMLayer name="Layer 40" color="#CCFD99" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -4324,7 +4348,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 41" color="#DA95ED">
+        <DOMLayer name="Layer 41" color="#DA95ED" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -4358,7 +4382,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 42" color="#40DD72">
+        <DOMLayer name="Layer 42" color="#40DD72" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -4380,7 +4404,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 43" color="#DCE159">
+        <DOMLayer name="Layer 43" color="#DCE159" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -4414,7 +4438,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 44" color="#ADFEA9">
+        <DOMLayer name="Layer 44" color="#ADFEA9" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -4688,7 +4712,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 45" color="#7EF453">
+        <DOMLayer name="Layer 45" color="#7EF453" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -4998,7 +5022,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 46" color="#BCD2D7">
+        <DOMLayer name="Layer 46" color="#BCD2D7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="127" keyMode="9728">
               <elements/>
@@ -5032,7 +5056,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 47" color="#C4FD00">
+        <DOMLayer name="Layer 47" color="#C4FD00" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="127" keyMode="9728">
               <elements/>
@@ -5066,7 +5090,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 48" color="#23FDE9">
+        <DOMLayer name="Layer 48" color="#23FDE9" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="127" keyMode="9728">
               <elements/>
@@ -5100,7 +5124,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 49" color="#DAD2F1">
+        <DOMLayer name="Layer 49" color="#DAD2F1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -5410,7 +5434,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 50" color="#B1D3D2">
+        <DOMLayer name="Layer 50" color="#B1D3D2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="148" keyMode="9728">
               <elements/>
@@ -5432,7 +5456,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 51" color="#A7FA0D">
+        <DOMLayer name="Layer 51" color="#A7FA0D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="148" keyMode="9728">
               <elements/>
@@ -5454,7 +5478,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 52" color="#9ADEC0">
+        <DOMLayer name="Layer 52" color="#9ADEC0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="148" keyMode="9728">
               <elements/>
@@ -5476,7 +5500,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 53" color="#59E566">
+        <DOMLayer name="Layer 53" color="#59E566" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="127" keyMode="9728">
               <elements/>
@@ -5522,7 +5546,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 54" color="#A8CDAF">
+        <DOMLayer name="Layer 54" color="#A8CDAF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="127" keyMode="9728">
               <elements/>
@@ -5568,7 +5592,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 55" color="#EABE50">
+        <DOMLayer name="Layer 55" color="#EABE50" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="127" keyMode="9728">
               <elements/>
@@ -5614,7 +5638,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 56" color="#95B23B">
+        <DOMLayer name="Layer 56" color="#95B23B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="127" keyMode="9728">
               <elements/>
@@ -5660,7 +5684,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 57" color="#E4B4A3">
+        <DOMLayer name="Layer 57" color="#E4B4A3" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="127" keyMode="9728">
               <elements/>
@@ -5706,7 +5730,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 58" color="#804BC5">
+        <DOMLayer name="Layer 58" color="#804BC5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="127" keyMode="9728">
               <elements/>
@@ -5752,7 +5776,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 59" color="#2EE788">
+        <DOMLayer name="Layer 59" color="#2EE788" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="121" keyMode="9728">
               <elements/>
@@ -5810,7 +5834,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 60" color="#86B5D6">
+        <DOMLayer name="Layer 60" color="#86B5D6" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="121" keyMode="9728">
               <elements/>
@@ -5868,7 +5892,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 61" color="#4AEACF">
+        <DOMLayer name="Layer 61" color="#4AEACF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="121" keyMode="9728">
               <elements/>
@@ -5902,7 +5926,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 62" color="#924AB5">
+        <DOMLayer name="Layer 62" color="#924AB5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="121" keyMode="9728">
               <elements/>
@@ -5960,7 +5984,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 63" color="#FFA822">
+        <DOMLayer name="Layer 63" color="#FFA822" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="127" keyMode="9728">
               <elements/>
@@ -6234,7 +6258,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 64" color="#D4DBE6">
+        <DOMLayer name="Layer 64" color="#D4DBE6" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="151" keyMode="9728">
               <elements/>
@@ -6472,7 +6496,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 65" color="#AD7E8E">
+        <DOMLayer name="Layer 65" color="#AD7E8E" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="151" keyMode="9728">
               <elements/>
@@ -6710,7 +6734,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 66" color="#62EFFF">
+        <DOMLayer name="Layer 66" color="#62EFFF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="127" keyMode="9728">
               <elements/>
@@ -6984,7 +7008,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 67" color="#BCEC02" locked="true" layerType="mask">
+        <DOMLayer name="Layer 67" color="#BCEC02" locked="true" outline="true" useOutlineView="true" layerType="mask">
           <frames>
             <DOMFrame index="0" duration="218" keyMode="9728">
               <elements/>
@@ -7039,7 +7063,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 68" color="#8D5DFB" parentLayerIndex="66" locked="true">
+        <DOMLayer name="Layer 68" color="#8D5DFB" parentLayerIndex="66" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="218" keyMode="9728">
               <elements/>
@@ -7094,7 +7118,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 69" color="#4B89B0">
+        <DOMLayer name="Layer 69" color="#4B89B0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="151" keyMode="9728">
               <elements/>
@@ -7299,7 +7323,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 70" color="#D06469">
+        <DOMLayer name="Layer 70" color="#D06469" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="151" keyMode="9728">
               <elements/>
@@ -7537,7 +7561,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 71" color="#C5597B">
+        <DOMLayer name="Layer 71" color="#C5597B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="151" keyMode="9728">
               <elements/>
@@ -7775,7 +7799,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 72" color="#B47B91">
+        <DOMLayer name="Layer 72" color="#B47B91" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="151" keyMode="9728">
               <elements/>
@@ -7977,7 +8001,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 73" color="#44E756">
+        <DOMLayer name="Layer 73" color="#44E756" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="151" keyMode="9728">
               <elements/>
@@ -7999,7 +8023,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 74" color="#CBB063">
+        <DOMLayer name="Layer 74" color="#CBB063" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="151" keyMode="9728">
               <elements/>
@@ -8021,7 +8045,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 75" color="#6DD4F9">
+        <DOMLayer name="Layer 75" color="#6DD4F9" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="148" keyMode="9728">
               <elements/>
@@ -8055,7 +8079,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 76" color="#31AFCF">
+        <DOMLayer name="Layer 76" color="#31AFCF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="148" keyMode="9728">
               <elements/>
@@ -8089,7 +8113,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 77" color="#9DB657">
+        <DOMLayer name="Layer 77" color="#9DB657" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="148" keyMode="9728">
               <elements/>
@@ -8111,7 +8135,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 78" color="#C5EC03">
+        <DOMLayer name="Layer 78" color="#C5EC03" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="148" keyMode="9728">
               <elements/>
@@ -8145,7 +8169,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 79" color="#DFFE30">
+        <DOMLayer name="Layer 79" color="#DFFE30" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="151" keyMode="9728">
               <elements/>
@@ -8395,7 +8419,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 80" color="#8B28E4">
+        <DOMLayer name="Layer 80" color="#8B28E4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="151" keyMode="9728">
               <elements/>
@@ -8645,7 +8669,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 81" color="#CFCE76">
+        <DOMLayer name="Layer 81" color="#CFCE76" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="151" keyMode="9728">
               <elements/>
@@ -8895,7 +8919,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 0" color="#807DE9">
+        <DOMLayer name="Sound Layer 0" color="#807DE9" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
@@ -8908,7 +8932,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 1" color="#6897D2">
+        <DOMLayer name="Sound Layer 1" color="#6897D2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="77" keyMode="9728">
               <elements/>
@@ -8921,7 +8945,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 2" color="#30BFE0">
+        <DOMLayer name="Sound Layer 2" color="#30BFE0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="93" keyMode="9728">
               <elements/>
@@ -8934,7 +8958,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 3" color="#4FC8C6">
+        <DOMLayer name="Sound Layer 3" color="#4FC8C6" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="108" keyMode="9728">
               <elements/>

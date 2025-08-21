@@ -596,7 +596,7 @@ _root.刷新人物装扮 = function(目标) {
     目标人物.伤害类型 = undefined; //equipped.damagetype
     目标人物.魔法伤害属性 = undefined; //equipped.magictype
     目标人物.魔法抗性 = {全属性: 0, 基础: 10, 电: 10, 热: 10, 冷: 10, 波: 10, 蚀: 10, 毒: 10, 冲: 30 + 目标人物.等级 * 0.5}; //equipped.magicdefence
-
+    目标人物.魔法抗性.人类 = 目标人物.等级;
     目标人物.基础毒 = 0;
     目标人物.基础吸血 = 0;
     目标人物.基础击溃 = 0;
