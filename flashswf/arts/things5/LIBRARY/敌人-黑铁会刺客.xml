@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-黑铁会刺客" itemID="67e615c4-000008d4" linkageExportForAS="true" linkageIdentifier="敌人-黑铁会刺客" lastModified="1755740615">
   <timeline>
-    <DOMTimeline name="敌人-黑铁会刺客">
+    <DOMTimeline name="敌人-黑铁会刺客" currentFrame="38">
       <layers>
         <DOMLayer name="Labels Layer" color="#68DFEF">
           <frames>
@@ -208,7 +208,7 @@ if(!方向) 方向 = "左";
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="思考标签" selected="true" centerPoint3DX="-33.5" centerPoint3DY="18.85">
+                <DOMSymbolInstance libraryItemName="思考标签" centerPoint3DX="-33.5" centerPoint3DY="18.85">
                   <matrix>
                     <Matrix tx="-36" ty="16.35"/>
                   </matrix>
@@ -223,11 +223,11 @@ if(!方向) 方向 = "左";
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#F807B1" current="true" isSelected="true">
+        <DOMLayer name="Layer 8" color="#F807B1">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 21" selected="true" centerPoint3DX="65.55" centerPoint3DY="-37.45">
+                <DOMSymbolInstance libraryItemName="Symbol 21" centerPoint3DX="65.55" centerPoint3DY="-37.45">
                   <matrix>
                     <Matrix a="2.63262939453125" d="0.72247314453125" tx="35.55" ty="-118.5"/>
                   </matrix>
@@ -367,7 +367,7 @@ if(!方向) 方向 = "左";
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#F4F628">
+        <DOMLayer name="Layer 12" color="#F4F628" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -416,7 +416,7 @@ if(!方向) 方向 = "左";
             </DOMFrame>
             <DOMFrame index="38" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 975" name="man" centerPoint3DX="392.7" centerPoint3DY="-12.8">
+                <DOMSymbolInstance libraryItemName="Symbol 975" name="man" selected="true" centerPoint3DX="392.7" centerPoint3DY="-12.8">
                   <matrix>
                     <Matrix a="-1" tx="87.1" ty="-173.95"/>
                   </matrix>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 975" itemID="6577efbc-0000054e" lastModified="1755740557">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 975" itemID="6577efbc-0000054e" lastModified="1755746131">
   <timeline>
-    <DOMTimeline name="Symbol 975" currentFrame="176">
+    <DOMTimeline name="Symbol 975" currentFrame="108">
       <layers>
         <DOMLayer name="Labels Layer" color="#3AFDDA" outline="true" useOutlineView="true">
           <frames>
@@ -152,7 +152,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="108" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="近战子弹" centerPoint3DX="66.05" centerPoint3DY="144.2">
+                <DOMSymbolInstance libraryItemName="近战子弹" selected="true" centerPoint3DX="66.05" centerPoint3DY="144.2">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="53.55" ty="131.7"/>
                   </matrix>
@@ -4064,7 +4064,7 @@ gotoAndPlay(_parent.近战招式);
 	子弹属性.霰弹值 = 3;
 	子弹属性.子弹散射度 = 5;
 	子弹属性.发射效果 = "";
-	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹种类 = "近战联弹";
 	子弹属性.子弹威力 = _parent._parent.空手攻击力;
 	子弹属性.子弹速度 = 0;
 	子弹属性.击中地图效果 = "";
@@ -4116,7 +4116,7 @@ gotoAndPlay(_parent.近战招式);
 	子弹属性.霰弹值 = 3;
 	子弹属性.子弹散射度 = 5;
 	子弹属性.发射效果 = "";
-	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹种类 = "近战联弹";
 	子弹属性.子弹威力 = _parent._parent.空手攻击力;
 	子弹属性.子弹速度 = 0;
 	子弹属性.击中地图效果 = "";
@@ -4168,7 +4168,7 @@ gotoAndPlay(_parent.近战招式);
 	子弹属性.霰弹值 = 3;
 	子弹属性.子弹散射度 = 5;
 	子弹属性.发射效果 = "";
-	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹种类 = "近战联弹";
 	子弹属性.子弹威力 = _parent._parent.空手攻击力;
 	子弹属性.子弹速度 = 0;
 	子弹属性.击中地图效果 = "";
@@ -4220,7 +4220,7 @@ gotoAndPlay(_parent.近战招式);
 	子弹属性.霰弹值 = 3;
 	子弹属性.子弹散射度 = 5;
 	子弹属性.发射效果 = "";
-	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹种类 = "近战联弹";
 	子弹属性.子弹威力 = _parent._parent.空手攻击力;
 	子弹属性.子弹速度 = 0;
 	子弹属性.击中地图效果 = "";
@@ -4272,7 +4272,7 @@ gotoAndPlay(_parent.近战招式);
 	子弹属性.霰弹值 = 3;
 	子弹属性.子弹散射度 = 5;
 	子弹属性.发射效果 = "";
-	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹种类 = "近战联弹";
 	子弹属性.子弹威力 = _parent._parent.空手攻击力;
 	子弹属性.子弹速度 = 0;
 	子弹属性.击中地图效果 = "";
@@ -4324,7 +4324,7 @@ gotoAndPlay(_parent.近战招式);
 	子弹属性.霰弹值 = 3;
 	子弹属性.子弹散射度 = 5;
 	子弹属性.发射效果 = "";
-	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹种类 = "近战联弹";
 	子弹属性.子弹威力 = _parent._parent.空手攻击力;
 	子弹属性.子弹速度 = 0;
 	子弹属性.击中地图效果 = "";
@@ -4376,7 +4376,7 @@ gotoAndPlay(_parent.近战招式);
 	子弹属性.霰弹值 = 3;
 	子弹属性.子弹散射度 = 5;
 	子弹属性.发射效果 = "";
-	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹种类 = "近战联弹";
 	子弹属性.子弹威力 = _parent._parent.空手攻击力;
 	子弹属性.子弹速度 = 0;
 	子弹属性.击中地图效果 = "";
@@ -4428,7 +4428,7 @@ gotoAndPlay(_parent.近战招式);
 	子弹属性.霰弹值 = 3;
 	子弹属性.子弹散射度 = 5;
 	子弹属性.发射效果 = "";
-	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹种类 = "近战联弹";
 	子弹属性.子弹威力 = _parent._parent.空手攻击力;
 	子弹属性.子弹速度 = 0;
 	子弹属性.击中地图效果 = "";
@@ -4480,7 +4480,7 @@ gotoAndPlay(_parent.近战招式);
 	子弹属性.霰弹值 = 3;
 	子弹属性.子弹散射度 = 5;
 	子弹属性.发射效果 = "";
-	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹种类 = "近战联弹";
 	子弹属性.子弹威力 = _parent._parent.空手攻击力;
 	子弹属性.子弹速度 = 0;
 	子弹属性.击中地图效果 = "";
@@ -4532,7 +4532,7 @@ gotoAndPlay(_parent.近战招式);
 	子弹属性.霰弹值 = 3;
 	子弹属性.子弹散射度 = 5;
 	子弹属性.发射效果 = "";
-	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹种类 = "近战联弹";
 	子弹属性.子弹威力 = _parent._parent.空手攻击力;
 	子弹属性.子弹速度 = 0;
 	子弹属性.击中地图效果 = "";
@@ -4591,7 +4591,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="88" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 934" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 934" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.44720458984375" b="-0.019439697265625" c="0.019439697265625" d="0.44720458984375" tx="76.95" ty="69.7"/>
                   </matrix>
