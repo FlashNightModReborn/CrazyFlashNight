@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-黑铁会刺客" itemID="67e615c4-000008d4" linkageExportForAS="true" linkageIdentifier="敌人-黑铁会刺客" lastModified="1747143986">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-黑铁会刺客" itemID="67e615c4-000008d4" linkageExportForAS="true" linkageIdentifier="敌人-黑铁会刺客" lastModified="1755740615">
   <timeline>
-    <DOMTimeline name="敌人-黑铁会刺客" currentFrame="97">
+    <DOMTimeline name="敌人-黑铁会刺客">
       <layers>
         <DOMLayer name="Labels Layer" color="#68DFEF">
           <frames>
@@ -208,7 +208,7 @@ if(!方向) 方向 = "左";
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="思考标签" centerPoint3DX="-33.5" centerPoint3DY="18.85">
+                <DOMSymbolInstance libraryItemName="思考标签" selected="true" centerPoint3DX="-33.5" centerPoint3DY="18.85">
                   <matrix>
                     <Matrix tx="-36" ty="16.35"/>
                   </matrix>
@@ -223,11 +223,11 @@ if(!方向) 方向 = "左";
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#F807B1">
+        <DOMLayer name="Layer 8" color="#F807B1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 21" centerPoint3DX="65.55" centerPoint3DY="-37.45">
+                <DOMSymbolInstance libraryItemName="Symbol 21" selected="true" centerPoint3DX="65.55" centerPoint3DY="-37.45">
                   <matrix>
                     <Matrix a="2.63262939453125" d="0.72247314453125" tx="35.55" ty="-118.5"/>
                   </matrix>
@@ -367,7 +367,7 @@ if(!方向) 方向 = "左";
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#F4F628" current="true" isSelected="true">
+        <DOMLayer name="Layer 12" color="#F4F628">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -384,9 +384,6 @@ if(!方向) 方向 = "左";
 }
 ]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -399,24 +396,18 @@ if(!方向) 方向 = "左";
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="19" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 945" name="man" selected="true" centerPoint3DX="59.8" centerPoint3DY="13.05">
+                <DOMSymbolInstance libraryItemName="Symbol 945" name="man" centerPoint3DX="59.8" centerPoint3DY="13.05">
                   <matrix>
                     <Matrix tx="-18.05" ty="-58.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -439,9 +430,6 @@ onClipEvent(unload){
 }
 ]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -454,9 +442,6 @@ onClipEvent(unload){
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -482,9 +467,6 @@ onClipEvent(unload){
 }
 ]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -503,15 +485,12 @@ onClipEvent(unload){
 }
 ]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="87" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 984" name="man" selected="true" centerPoint3DX="48.65" centerPoint3DY="72.65">
+                <DOMSymbolInstance libraryItemName="Symbol 984" name="man" centerPoint3DX="48.65" centerPoint3DY="72.65">
                   <matrix>
                     <Matrix tx="0.4" ty="-1.55"/>
                   </matrix>
@@ -523,9 +502,6 @@ onClipEvent(unload){
 	_parent.击飞浮空();
 }]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -543,9 +519,6 @@ onClipEvent(unload){
 	_parent.击飞倒地();
 }]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -564,15 +537,12 @@ onClipEvent(unload){
 }
 ]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="112" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1051" selected="true" centerPoint3DX="300.95" centerPoint3DY="62.55">
+                <DOMSymbolInstance libraryItemName="Symbol 1051" centerPoint3DX="300.95" centerPoint3DY="62.55">
                   <matrix>
                     <Matrix tx="8.5" ty="-72"/>
                   </matrix>
@@ -585,9 +555,6 @@ onClipEvent(unload){
 }
 ]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

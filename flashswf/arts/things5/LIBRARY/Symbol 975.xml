@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 975" itemID="6577efbc-0000054e" lastModified="1722600967">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 975" itemID="6577efbc-0000054e" lastModified="1755740557">
   <timeline>
-    <DOMTimeline name="Symbol 975" currentFrame="108">
+    <DOMTimeline name="Symbol 975" currentFrame="176">
       <layers>
-        <DOMLayer name="Labels Layer" color="#3AFDDA">
+        <DOMLayer name="Labels Layer" color="#3AFDDA" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -24,7 +24,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#F1DACC">
+        <DOMLayer name="Script Layer" color="#F1DACC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -86,7 +86,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#FC991B">
+        <DOMLayer name="Layer 3" color="#FC991B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="108" keyMode="9728">
               <elements/>
@@ -101,34 +101,38 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 2;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	// 初始化属性对象（会预填常用字段）
+	var 子弹属性:Object = _root.子弹属性初始化(this);
+
+	// 迁移旧参数（仅填变化项）
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 5;
+	子弹属性.发射效果 = "";
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹速度 = 0;
+	子弹属性.击中地图效果 = "";
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 1;
+	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "精英";
+
+	// 坐标换算（与旧版一致）
+	var myPoint:Object = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+
+	子弹属性.shootX = myPoint.x;
+	子弹属性.shootY = myPoint.y;
+	子弹属性.shootZ = _parent._parent.Z轴坐标;
+	子弹属性.发射者 = _parent._parent._name;
+
+	// 统一入口
+	_root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -141,7 +145,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#F5F53A">
+        <DOMLayer name="Layer 4" color="#F5F53A" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="108" keyMode="9728">
               <elements/>
@@ -156,34 +160,38 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	// 初始化属性对象（会预填常用字段）
+	var 子弹属性:Object = _root.子弹属性初始化(this);
+
+	// 迁移旧参数（仅填变化项）
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 5;
+	子弹属性.发射效果 = "";
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 = _parent._parent.空手攻击力 * 3;
+	子弹属性.子弹速度 = 0;
+	子弹属性.击中地图效果 = "";
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 1;
+	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "精英";
+
+	// 坐标换算（与旧版一致）
+	var myPoint:Object = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+
+	子弹属性.shootX = myPoint.x;
+	子弹属性.shootY = myPoint.y;
+	子弹属性.shootZ = _parent._parent.Z轴坐标;
+	子弹属性.发射者 = _parent._parent._name;
+
+	// 统一入口
+	_root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -196,7 +204,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#EC5FB0">
+        <DOMLayer name="Layer 5" color="#EC5FB0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="108" keyMode="9728">
               <elements/>
@@ -211,34 +219,38 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 4;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 1;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	// 初始化属性对象（会预填常用字段）
+	var 子弹属性:Object = _root.子弹属性初始化(this);
+
+	// 迁移旧参数（仅填变化项）
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 5;
+	子弹属性.发射效果 = "";
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 = _parent._parent.空手攻击力 * 4;
+	子弹属性.子弹速度 = 0;
+	子弹属性.击中地图效果 = "";
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 1;
+	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "精英";
+
+	// 坐标换算（与旧版一致）
+	var myPoint:Object = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+
+	子弹属性.shootX = myPoint.x;
+	子弹属性.shootY = myPoint.y;
+	子弹属性.shootZ = _parent._parent.Z轴坐标;
+	子弹属性.发射者 = _parent._parent._name;
+
+	// 统一入口
+	_root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -251,14 +263,14 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#F5C4D6" current="true" isSelected="true">
+        <DOMLayer name="Layer 6" color="#F5C4D6" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="108" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="108" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="近战子弹" selected="true" centerPoint3DX="-67.9" centerPoint3DY="124.2">
+                <DOMSymbolInstance libraryItemName="近战子弹" centerPoint3DX="-67.9" centerPoint3DY="124.2">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="-80.4" ty="111.7"/>
                   </matrix>
@@ -266,34 +278,38 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 5;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 100;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	// 初始化属性对象（会预填常用字段）
+	var 子弹属性:Object = _root.子弹属性初始化(this);
+
+	// 迁移旧参数（仅填变化项）
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 5;
+	子弹属性.发射效果 = "";
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 = _parent._parent.空手攻击力 * 5;
+	子弹属性.子弹速度 = 0;
+	子弹属性.击中地图效果 = "";
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 100;
+	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "精英";
+
+	// 坐标换算（与旧版一致）
+	var myPoint:Object = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+
+	子弹属性.shootX = myPoint.x;
+	子弹属性.shootY = myPoint.y;
+	子弹属性.shootZ = _parent._parent.Z轴坐标;
+	子弹属性.发射者 = _parent._parent._name;
+
+	// 统一入口
+	_root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -306,7 +322,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#E182A6">
+        <DOMLayer name="Layer 7" color="#E182A6" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="94" keyMode="9728">
               <elements/>
@@ -370,7 +386,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#9875F5">
+        <DOMLayer name="Layer 8" color="#9875F5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -608,7 +624,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#C9FBCC">
+        <DOMLayer name="Layer 9" color="#C9FBCC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -654,7 +670,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#F5D290">
+        <DOMLayer name="Layer 10" color="#F5D290" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -700,7 +716,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#63C7EA">
+        <DOMLayer name="Layer 11" color="#63C7EA" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -722,7 +738,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#F06032">
+        <DOMLayer name="Layer 12" color="#F06032" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -768,7 +784,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 13" color="#29DC96">
+        <DOMLayer name="Layer 13" color="#29DC96" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -814,7 +830,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 14" color="#B49EAC">
+        <DOMLayer name="Layer 14" color="#B49EAC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -860,7 +876,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 15" color="#8764BF">
+        <DOMLayer name="Layer 15" color="#8764BF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -906,7 +922,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 16" color="#5E7FEF">
+        <DOMLayer name="Layer 16" color="#5E7FEF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -952,7 +968,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 17" color="#77F1C2">
+        <DOMLayer name="Layer 17" color="#77F1C2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -998,7 +1014,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 18" color="#76B2AF">
+        <DOMLayer name="Layer 18" color="#76B2AF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -1032,7 +1048,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 19" color="#5AEE3D">
+        <DOMLayer name="Layer 19" color="#5AEE3D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -1066,7 +1082,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 20" color="#F74AF7">
+        <DOMLayer name="Layer 20" color="#F74AF7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -1100,7 +1116,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 21" color="#73AD9A">
+        <DOMLayer name="Layer 21" color="#73AD9A" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -1134,7 +1150,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 22" color="#9BF869">
+        <DOMLayer name="Layer 22" color="#9BF869" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -1168,7 +1184,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 23" color="#92D685">
+        <DOMLayer name="Layer 23" color="#92D685" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -1202,7 +1218,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 24" color="#B428DC">
+        <DOMLayer name="Layer 24" color="#B428DC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -1236,7 +1252,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 25" color="#90E782">
+        <DOMLayer name="Layer 25" color="#90E782" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -1270,7 +1286,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 26" color="#FFE4B1">
+        <DOMLayer name="Layer 26" color="#FFE4B1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -1304,7 +1320,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 27" color="#5AADDA">
+        <DOMLayer name="Layer 27" color="#5AADDA" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -1326,7 +1342,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 28" color="#4D57FB">
+        <DOMLayer name="Layer 28" color="#4D57FB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -1372,7 +1388,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 29" color="#1FD8BE">
+        <DOMLayer name="Layer 29" color="#1FD8BE" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -1418,7 +1434,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 30" color="#5DF372">
+        <DOMLayer name="Layer 30" color="#5DF372" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -1596,7 +1612,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 31" color="#96CD43">
+        <DOMLayer name="Layer 31" color="#96CD43" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements/>
@@ -1738,7 +1754,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 32" color="#AFB740">
+        <DOMLayer name="Layer 32" color="#AFB740" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements/>
@@ -1868,7 +1884,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 33" color="#939662">
+        <DOMLayer name="Layer 33" color="#939662" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements/>
@@ -2010,7 +2026,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 34" color="#D87C3F">
+        <DOMLayer name="Layer 34" color="#D87C3F" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements/>
@@ -2152,7 +2168,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 35" color="#EE5DCA">
+        <DOMLayer name="Layer 35" color="#EE5DCA" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements/>
@@ -2294,7 +2310,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 36" color="#E0A01D">
+        <DOMLayer name="Layer 36" color="#E0A01D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements/>
@@ -2436,7 +2452,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 37" color="#9A14F1">
+        <DOMLayer name="Layer 37" color="#9A14F1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -2614,7 +2630,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 38" color="#DE05FE">
+        <DOMLayer name="Layer 38" color="#DE05FE" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements/>
@@ -2792,7 +2808,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 39" color="#7B87D6">
+        <DOMLayer name="Layer 39" color="#7B87D6" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="84" keyMode="9728">
               <elements/>
@@ -2946,7 +2962,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 40" color="#E8F001">
+        <DOMLayer name="Layer 40" color="#E8F001" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="84" keyMode="9728">
               <elements/>
@@ -3100,7 +3116,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 41" color="#D363AF">
+        <DOMLayer name="Layer 41" color="#D363AF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="84" keyMode="9728">
               <elements/>
@@ -3254,7 +3270,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 42" color="#8BF837">
+        <DOMLayer name="Layer 42" color="#8BF837" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="84" keyMode="9728">
               <elements/>
@@ -3408,7 +3424,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 43" color="#AA94DD">
+        <DOMLayer name="Layer 43" color="#AA94DD" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="84" keyMode="9728">
               <elements/>
@@ -3562,7 +3578,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 44" color="#F0B052">
+        <DOMLayer name="Layer 44" color="#F0B052" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="84" keyMode="9728">
               <elements/>
@@ -3716,7 +3732,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 45" color="#4BD472">
+        <DOMLayer name="Layer 45" color="#4BD472" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="84" keyMode="9728">
               <elements/>
@@ -3870,7 +3886,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 46" color="#B4ED7C">
+        <DOMLayer name="Layer 46" color="#B4ED7C" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="84" keyMode="9728">
               <elements/>
@@ -4024,7 +4040,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 47" color="#62AF95">
+        <DOMLayer name="Layer 47" color="#62AF95" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -4039,34 +4055,38 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 3;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	// 初始化属性对象（会预填常用字段）
+	var 子弹属性:Object = _root.子弹属性初始化(this);
+
+	// 迁移旧参数（仅填变化项）
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 5;
+	子弹属性.发射效果 = "";
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 = _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.击中地图效果 = "";
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "精英";
+
+	// 坐标换算（与旧版一致）
+	var myPoint:Object = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+
+	子弹属性.shootX = myPoint.x;
+	子弹属性.shootY = myPoint.y;
+	子弹属性.shootZ = _parent._parent.Z轴坐标;
+	子弹属性.发射者 = _parent._parent._name;
+
+	// 统一入口
+	_root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -4087,34 +4107,38 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 3;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	// 初始化属性对象（会预填常用字段）
+	var 子弹属性:Object = _root.子弹属性初始化(this);
+
+	// 迁移旧参数（仅填变化项）
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 5;
+	子弹属性.发射效果 = "";
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 = _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.击中地图效果 = "";
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "精英";
+
+	// 坐标换算（与旧版一致）
+	var myPoint:Object = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+
+	子弹属性.shootX = myPoint.x;
+	子弹属性.shootY = myPoint.y;
+	子弹属性.shootZ = _parent._parent.Z轴坐标;
+	子弹属性.发射者 = _parent._parent._name;
+
+	// 统一入口
+	_root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -4135,34 +4159,38 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 3;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	// 初始化属性对象（会预填常用字段）
+	var 子弹属性:Object = _root.子弹属性初始化(this);
+
+	// 迁移旧参数（仅填变化项）
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 5;
+	子弹属性.发射效果 = "";
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 = _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.击中地图效果 = "";
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "精英";
+
+	// 坐标换算（与旧版一致）
+	var myPoint:Object = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+
+	子弹属性.shootX = myPoint.x;
+	子弹属性.shootY = myPoint.y;
+	子弹属性.shootZ = _parent._parent.Z轴坐标;
+	子弹属性.发射者 = _parent._parent._name;
+
+	// 统一入口
+	_root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -4183,34 +4211,38 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 3;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	// 初始化属性对象（会预填常用字段）
+	var 子弹属性:Object = _root.子弹属性初始化(this);
+
+	// 迁移旧参数（仅填变化项）
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 5;
+	子弹属性.发射效果 = "";
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 = _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.击中地图效果 = "";
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "精英";
+
+	// 坐标换算（与旧版一致）
+	var myPoint:Object = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+
+	子弹属性.shootX = myPoint.x;
+	子弹属性.shootY = myPoint.y;
+	子弹属性.shootZ = _parent._parent.Z轴坐标;
+	子弹属性.发射者 = _parent._parent._name;
+
+	// 统一入口
+	_root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -4231,34 +4263,38 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 3;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	// 初始化属性对象（会预填常用字段）
+	var 子弹属性:Object = _root.子弹属性初始化(this);
+
+	// 迁移旧参数（仅填变化项）
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 5;
+	子弹属性.发射效果 = "";
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 = _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.击中地图效果 = "";
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "精英";
+
+	// 坐标换算（与旧版一致）
+	var myPoint:Object = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+
+	子弹属性.shootX = myPoint.x;
+	子弹属性.shootY = myPoint.y;
+	子弹属性.shootZ = _parent._parent.Z轴坐标;
+	子弹属性.发射者 = _parent._parent._name;
+
+	// 统一入口
+	_root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -4279,34 +4315,38 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 3;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	// 初始化属性对象（会预填常用字段）
+	var 子弹属性:Object = _root.子弹属性初始化(this);
+
+	// 迁移旧参数（仅填变化项）
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 5;
+	子弹属性.发射效果 = "";
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 = _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.击中地图效果 = "";
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "精英";
+
+	// 坐标换算（与旧版一致）
+	var myPoint:Object = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+
+	子弹属性.shootX = myPoint.x;
+	子弹属性.shootY = myPoint.y;
+	子弹属性.shootZ = _parent._parent.Z轴坐标;
+	子弹属性.发射者 = _parent._parent._name;
+
+	// 统一入口
+	_root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -4327,34 +4367,38 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 3;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	// 初始化属性对象（会预填常用字段）
+	var 子弹属性:Object = _root.子弹属性初始化(this);
+
+	// 迁移旧参数（仅填变化项）
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 5;
+	子弹属性.发射效果 = "";
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 = _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.击中地图效果 = "";
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "精英";
+
+	// 坐标换算（与旧版一致）
+	var myPoint:Object = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+
+	子弹属性.shootX = myPoint.x;
+	子弹属性.shootY = myPoint.y;
+	子弹属性.shootZ = _parent._parent.Z轴坐标;
+	子弹属性.发射者 = _parent._parent._name;
+
+	// 统一入口
+	_root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -4375,34 +4419,38 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 3;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	// 初始化属性对象（会预填常用字段）
+	var 子弹属性:Object = _root.子弹属性初始化(this);
+
+	// 迁移旧参数（仅填变化项）
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 5;
+	子弹属性.发射效果 = "";
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 = _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.击中地图效果 = "";
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "精英";
+
+	// 坐标换算（与旧版一致）
+	var myPoint:Object = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+
+	子弹属性.shootX = myPoint.x;
+	子弹属性.shootY = myPoint.y;
+	子弹属性.shootZ = _parent._parent.Z轴坐标;
+	子弹属性.发射者 = _parent._parent._name;
+
+	// 统一入口
+	_root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -4423,34 +4471,38 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 3;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	// 初始化属性对象（会预填常用字段）
+	var 子弹属性:Object = _root.子弹属性初始化(this);
+
+	// 迁移旧参数（仅填变化项）
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 5;
+	子弹属性.发射效果 = "";
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 = _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.击中地图效果 = "";
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "精英";
+
+	// 坐标换算（与旧版一致）
+	var myPoint:Object = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+
+	子弹属性.shootX = myPoint.x;
+	子弹属性.shootY = myPoint.y;
+	子弹属性.shootZ = _parent._parent.Z轴坐标;
+	子弹属性.发射者 = _parent._parent._name;
+
+	// 统一入口
+	_root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -4471,34 +4523,38 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 3;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	// 初始化属性对象（会预填常用字段）
+	var 子弹属性:Object = _root.子弹属性初始化(this);
+
+	// 迁移旧参数（仅填变化项）
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 5;
+	子弹属性.发射效果 = "";
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 = _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.击中地图效果 = "";
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "精英";
+
+	// 坐标换算（与旧版一致）
+	var myPoint:Object = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+
+	子弹属性.shootX = myPoint.x;
+	子弹属性.shootY = myPoint.y;
+	子弹属性.shootZ = _parent._parent.Z轴坐标;
+	子弹属性.发射者 = _parent._parent._name;
+
+	// 统一入口
+	_root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -4658,7 +4714,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 48" color="#F6C8EC">
+        <DOMLayer name="Layer 48" color="#F6C8EC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -5103,7 +5159,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 49" color="#EAB9B2">
+        <DOMLayer name="Layer 49" color="#EAB9B2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -5425,7 +5481,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 50" color="#D0EE8B">
+        <DOMLayer name="Layer 50" color="#D0EE8B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -5615,7 +5671,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 51" color="#F93C9E">
+        <DOMLayer name="Layer 51" color="#F93C9E" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -5877,7 +5933,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 52" color="#B4CBA4">
+        <DOMLayer name="Layer 52" color="#B4CBA4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -5983,7 +6039,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 53" color="#4E53F4">
+        <DOMLayer name="Layer 53" color="#4E53F4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -6113,7 +6169,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 54" color="#5173F0">
+        <DOMLayer name="Layer 54" color="#5173F0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -6243,7 +6299,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 55" color="#30D1C2">
+        <DOMLayer name="Layer 55" color="#30D1C2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -6373,7 +6429,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 56" color="#83ABC3">
+        <DOMLayer name="Layer 56" color="#83ABC3" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -6503,7 +6559,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 57" color="#97E243">
+        <DOMLayer name="Layer 57" color="#97E243" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -6633,7 +6689,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 58" color="#C7CEE3">
+        <DOMLayer name="Layer 58" color="#C7CEE3" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -6895,7 +6951,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 59" color="#BA478D">
+        <DOMLayer name="Layer 59" color="#BA478D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -7136,7 +7192,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 60" color="#3FAAA2">
+        <DOMLayer name="Layer 60" color="#3FAAA2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -7257,7 +7313,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 61" color="#9BC459">
+        <DOMLayer name="Layer 61" color="#9BC459" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -7378,7 +7434,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 62" color="#F377DC">
+        <DOMLayer name="Layer 62" color="#F377DC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -7499,7 +7555,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 63" color="#B4FC1D">
+        <DOMLayer name="Layer 63" color="#B4FC1D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -7620,7 +7676,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 64" color="#04F1C4">
+        <DOMLayer name="Layer 64" color="#04F1C4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -7741,7 +7797,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 65" color="#908E82">
+        <DOMLayer name="Layer 65" color="#908E82" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -7862,7 +7918,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 66" color="#EA81C1">
+        <DOMLayer name="Layer 66" color="#EA81C1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -7983,7 +8039,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 67" color="#7FC372">
+        <DOMLayer name="Layer 67" color="#7FC372" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -8104,7 +8160,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 68" color="#FBFEAB">
+        <DOMLayer name="Layer 68" color="#FBFEAB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="39" keyMode="9728">
               <elements>
@@ -8174,7 +8230,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 69" color="#F780A5">
+        <DOMLayer name="Layer 69" color="#F780A5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -8304,7 +8360,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 70" color="#8AFAB2">
+        <DOMLayer name="Layer 70" color="#8AFAB2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -8434,7 +8490,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 71" color="#72E77E">
+        <DOMLayer name="Layer 71" color="#72E77E" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -8648,7 +8704,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 72" color="#C7B74D">
+        <DOMLayer name="Layer 72" color="#C7B74D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements/>
@@ -8805,7 +8861,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 73" color="#C683B4">
+        <DOMLayer name="Layer 73" color="#C683B4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements/>
@@ -8914,7 +8970,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 74" color="#A1E8D5">
+        <DOMLayer name="Layer 74" color="#A1E8D5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements/>
@@ -9023,7 +9079,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 75" color="#4C73CB">
+        <DOMLayer name="Layer 75" color="#4C73CB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements/>
@@ -9156,7 +9212,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 76" color="#74CB5E">
+        <DOMLayer name="Layer 76" color="#74CB5E" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements/>
@@ -9289,7 +9345,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 77" color="#908C82">
+        <DOMLayer name="Layer 77" color="#908C82" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements/>
@@ -9422,7 +9478,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 78" color="#9AC498">
+        <DOMLayer name="Layer 78" color="#9AC498" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements/>
@@ -9555,7 +9611,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 79" color="#A18B7C">
+        <DOMLayer name="Layer 79" color="#A18B7C" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements/>
@@ -9712,7 +9768,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 80" color="#7C1CFE">
+        <DOMLayer name="Layer 80" color="#7C1CFE" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements/>
@@ -9824,7 +9880,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 81" color="#653AEE">
+        <DOMLayer name="Layer 81" color="#653AEE" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements/>
@@ -9912,7 +9968,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 82" color="#BEBD30">
+        <DOMLayer name="Layer 82" color="#BEBD30" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements/>
@@ -10000,7 +10056,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 83" color="#49A1BC">
+        <DOMLayer name="Layer 83" color="#49A1BC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements/>
@@ -10088,7 +10144,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 84" color="#8E74FA">
+        <DOMLayer name="Layer 84" color="#8E74FA" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements/>
@@ -10176,7 +10232,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 85" color="#B3D538">
+        <DOMLayer name="Layer 85" color="#B3D538" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements/>
@@ -10264,7 +10320,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 86" color="#3CFE71">
+        <DOMLayer name="Layer 86" color="#3CFE71" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements/>
@@ -10352,7 +10408,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 87" color="#DDF5A5">
+        <DOMLayer name="Layer 87" color="#DDF5A5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements/>
@@ -10440,7 +10496,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 88" color="#CB0DE3">
+        <DOMLayer name="Layer 88" color="#CB0DE3" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements/>
@@ -10528,7 +10584,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 89" color="#C0F977">
+        <DOMLayer name="Layer 89" color="#C0F977" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements/>
@@ -10625,7 +10681,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 90" color="#EDC1C2">
+        <DOMLayer name="Layer 90" color="#EDC1C2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements/>
@@ -10734,7 +10790,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 91" color="#EFF15D">
+        <DOMLayer name="Layer 91" color="#EFF15D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements/>
@@ -10867,7 +10923,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 92" color="#CDC2BA">
+        <DOMLayer name="Layer 92" color="#CDC2BA" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="69" keyMode="9728">
               <elements/>
@@ -10964,7 +11020,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 93" color="#DAFFDB">
+        <DOMLayer name="Layer 93" color="#DAFFDB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -11190,7 +11246,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 94" color="#A0F41D">
+        <DOMLayer name="Layer 94" color="#A0F41D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -11416,7 +11472,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 95" color="#32A2BD">
+        <DOMLayer name="Layer 95" color="#32A2BD" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -11453,7 +11509,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="23" duration="2" keyMode="9728">
               <elements>
-                <DOMShape isFloating="true">
+                <DOMShape>
                   <strokes>
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal">
@@ -11561,7 +11617,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="35" duration="2" keyMode="9728">
               <elements>
-                <DOMShape isFloating="true">
+                <DOMShape>
                   <strokes>
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal">
@@ -11612,7 +11668,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="47" duration="2" keyMode="9728">
               <elements>
-                <DOMShape isFloating="true">
+                <DOMShape>
                   <strokes>
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal">
@@ -11648,7 +11704,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="51" duration="2" keyMode="9728">
               <elements>
-                <DOMShape isFloating="true">
+                <DOMShape>
                   <strokes>
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal">
@@ -11780,7 +11836,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 96" color="#CAB973">
+        <DOMLayer name="Layer 96" color="#CAB973" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -11943,7 +11999,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 97" color="#D5ACED">
+        <DOMLayer name="Layer 97" color="#D5ACED" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -12106,7 +12162,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 98" color="#A7987D">
+        <DOMLayer name="Layer 98" color="#A7987D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -12269,7 +12325,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 99" color="#75B5E5">
+        <DOMLayer name="Layer 99" color="#75B5E5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -12432,7 +12488,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 100" color="#CF902B">
+        <DOMLayer name="Layer 100" color="#CF902B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -12595,7 +12651,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 101" color="#FB5549">
+        <DOMLayer name="Layer 101" color="#FB5549" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -12758,7 +12814,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 102" color="#F4699E">
+        <DOMLayer name="Layer 102" color="#F4699E" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -12921,7 +12977,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 103" color="#8271DF">
+        <DOMLayer name="Layer 103" color="#8271DF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -13084,7 +13140,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 104" color="#80B7E5">
+        <DOMLayer name="Layer 104" color="#80B7E5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -13193,7 +13249,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="43" duration="2" keyMode="9728">
               <elements>
-                <DOMShape isFloating="true">
+                <DOMShape>
                   <strokes>
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal">
@@ -13367,14 +13423,14 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="106" duration="2" keyMode="9728">
               <elements>
-                <DOMShape isFloating="true">
+                <DOMShape>
                   <fills>
                     <FillStyle index="1">
                       <SolidColor color="#FFFFFF"/>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!-405 1612|-90 1927!-90 1927[-317 1979 -526 1952!-526 1952|-464 2033!-464 2033[-2503 1885 -2118 153!-2118 153[-2247 1042 -1363 1448!-1363 1448[-1676 1083 -1934 457!-1934 457[-1145 1548 -414 1611!-414 1611|-405 1612"/>
+                    <Edge fillStyle1="1" edges="!-90 1927[-317 1979 -526 1952!-526 1952|-464 2033!-464 2033[-2503 1885 -2118 153!-2118 153[-2247 1042 -1363 1448!-1363 1448[-1676 1083 -1934 457!-1934 457[-1145 1548 -414 1611!-414 1611|-405 1612!-405 1612|-90 1927"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -13543,7 +13599,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 105" color="#4ED097">
+        <DOMLayer name="Layer 105" color="#4ED097" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="198" keyMode="9728">
               <elements>
@@ -13578,7 +13634,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 0" color="#9A29C7">
+        <DOMLayer name="Sound Layer 0" color="#9A29C7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -13591,7 +13647,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 1" color="#CCAFA7">
+        <DOMLayer name="Sound Layer 1" color="#CCAFA7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -13604,7 +13660,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 2" color="#F58F4F">
+        <DOMLayer name="Sound Layer 2" color="#F58F4F" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -13617,7 +13673,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 3" color="#A0C2A7">
+        <DOMLayer name="Sound Layer 3" color="#A0C2A7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements/>
@@ -13630,7 +13686,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 4" color="#E2D593">
+        <DOMLayer name="Sound Layer 4" color="#E2D593" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="41" keyMode="9728">
               <elements/>
@@ -13643,7 +13699,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 5" color="#9EDEB9">
+        <DOMLayer name="Sound Layer 5" color="#9EDEB9" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="46" keyMode="9728">
               <elements/>
@@ -13656,7 +13712,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 6" color="#E95C9B">
+        <DOMLayer name="Sound Layer 6" color="#E95C9B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="49" keyMode="9728">
               <elements/>
@@ -13669,7 +13725,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 7" color="#F32C80">
+        <DOMLayer name="Sound Layer 7" color="#F32C80" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="52" keyMode="9728">
               <elements/>
@@ -13682,7 +13738,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 8" color="#E86AF1">
+        <DOMLayer name="Sound Layer 8" color="#E86AF1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="96" keyMode="9728">
               <elements/>
@@ -13695,7 +13751,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 9" color="#E71ACA">
+        <DOMLayer name="Sound Layer 9" color="#E71ACA" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
