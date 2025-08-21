@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 605" itemID="6577efbc-00000435" lastModified="1722592999" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 605" itemID="6577efbc-00000435" lastModified="1755743905" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="Symbol 605" currentFrame="41">
+    <DOMTimeline name="Symbol 605" currentFrame="15">
       <layers>
-        <DOMLayer name="Labels Layer" color="#FDF2B2">
+        <DOMLayer name="Labels Layer" color="#FDF2B2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -24,7 +24,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#D5ABC5">
+        <DOMLayer name="Script Layer" color="#D5ABC5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -86,7 +86,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#5999D7">
+        <DOMLayer name="Layer 3" color="#5999D7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -129,7 +129,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#D5B7CE">
+        <DOMLayer name="Layer 4" color="#D5B7CE" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -172,7 +172,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#F1941D">
+        <DOMLayer name="Layer 5" color="#F1941D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -215,7 +215,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#85B554">
+        <DOMLayer name="Layer 6" color="#85B554" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -258,7 +258,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#4DE986">
+        <DOMLayer name="Layer 7" color="#4DE986" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -301,7 +301,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#B6F88E">
+        <DOMLayer name="Layer 8" color="#B6F88E" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -352,35 +352,43 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 1;
-   子弹散射度 = 0;
-   发射效果 = "";
-   子弹种类 = "回旋风刃";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 10;
-   击中后子弹的效果 = "空手攻击火花";
-   击退初速度 = 20;
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果,击退初速度);
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	// 1) 初始化属性对象
+	var 子弹属性:Object = _root.子弹属性初始化(this);
+
+	// 2) 迁移旧参数（仅需改动项）
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.发射效果 = "";
+	子弹属性.子弹种类 = "回旋风刃";
+	子弹属性.子弹威力 = _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.击中地图效果 = "";
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "首领";
+
+	// 映射：击退初速度 -> 水平击退速度
+	子弹属性.水平击退速度 = 20;// 原：击退初速度 = 20
+	// 若需要垂直分量，可按需补充：子弹属性.垂直击退速度 = 0;
+
+
+	// 3) 坐标换算（与旧版一致）
+	var myPoint:Object = {x:this._x, y:this._y};
+	_parent.localToGlobal(myPoint);
+	_root.gameworld.globalToLocal(myPoint);
+
+	子弹属性.shootX = myPoint.x;
+	子弹属性.shootY = myPoint.y;
+	子弹属性.shootZ = _parent._parent.Z轴坐标;
+	子弹属性.发射者 = _parent._parent._name;
+
+	// 4) 统一入口
+	_root.子弹区域shoot传递(子弹属性);
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -489,7 +497,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#CA65F3">
+        <DOMLayer name="Layer 9" color="#CA65F3" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -532,7 +540,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#659FEB">
+        <DOMLayer name="Layer 10" color="#659FEB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -671,7 +679,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#EB639E">
+        <DOMLayer name="Layer 11" color="#EB639E" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -714,7 +722,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#83DF5B">
+        <DOMLayer name="Layer 12" color="#83DF5B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -853,7 +861,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 13" color="#A7F230">
+        <DOMLayer name="Layer 13" color="#A7F230" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -896,7 +904,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 14" color="#0CF290">
+        <DOMLayer name="Layer 14" color="#0CF290" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1035,7 +1043,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 15" color="#58D454">
+        <DOMLayer name="Layer 15" color="#58D454" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1078,7 +1086,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 16" color="#C582C0">
+        <DOMLayer name="Layer 16" color="#C582C0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1217,7 +1225,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 17" color="#F8AC83">
+        <DOMLayer name="Layer 17" color="#F8AC83" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1260,7 +1268,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 18" color="#DACB14">
+        <DOMLayer name="Layer 18" color="#DACB14" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1399,7 +1407,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 19" color="#A68EF5">
+        <DOMLayer name="Layer 19" color="#A68EF5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1442,7 +1450,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 20" color="#2DC1D7">
+        <DOMLayer name="Layer 20" color="#2DC1D7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1581,7 +1589,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 21" color="#507ABA">
+        <DOMLayer name="Layer 21" color="#507ABA" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1624,7 +1632,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 22" color="#EEBE99">
+        <DOMLayer name="Layer 22" color="#EEBE99" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1697,7 +1705,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 23" color="#7D45F5">
+        <DOMLayer name="Layer 23" color="#7D45F5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1764,7 +1772,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 24" color="#FA51E2">
+        <DOMLayer name="Layer 24" color="#FA51E2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1831,7 +1839,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 25" color="#CD7E99">
+        <DOMLayer name="Layer 25" color="#CD7E99" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1874,7 +1882,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 26" color="#E09DA8">
+        <DOMLayer name="Layer 26" color="#E09DA8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1917,7 +1925,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 27" color="#9DD477">
+        <DOMLayer name="Layer 27" color="#9DD477" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1960,7 +1968,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 28" color="#7DEFE1">
+        <DOMLayer name="Layer 28" color="#7DEFE1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -2003,7 +2011,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 29" color="#B99FED">
+        <DOMLayer name="Layer 29" color="#B99FED" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -2046,7 +2054,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 30" color="#ABEE34">
+        <DOMLayer name="Layer 30" color="#ABEE34" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -2089,7 +2097,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 31" color="#C4A57B">
+        <DOMLayer name="Layer 31" color="#C4A57B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -2132,7 +2140,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 32" color="#4DE76E">
+        <DOMLayer name="Layer 32" color="#4DE76E" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -2214,7 +2222,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 33" color="#C65C9A">
+        <DOMLayer name="Layer 33" color="#C65C9A" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -2341,7 +2349,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 34" color="#64FC57">
+        <DOMLayer name="Layer 34" color="#64FC57" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -2456,7 +2464,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 35" color="#F8DAD0">
+        <DOMLayer name="Layer 35" color="#F8DAD0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -2583,7 +2591,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 36" color="#B7DB62">
+        <DOMLayer name="Layer 36" color="#B7DB62" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -2710,7 +2718,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 37" color="#E2B2C5">
+        <DOMLayer name="Layer 37" color="#E2B2C5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -2837,7 +2845,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 38" color="#FA3353">
+        <DOMLayer name="Layer 38" color="#FA3353" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -2964,7 +2972,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 39" color="#E7DD6A">
+        <DOMLayer name="Layer 39" color="#E7DD6A" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -3091,7 +3099,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 40" color="#D38C59">
+        <DOMLayer name="Layer 40" color="#D38C59" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -3218,7 +3226,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 41" color="#EC5564">
+        <DOMLayer name="Layer 41" color="#EC5564" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -3353,32 +3361,40 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 4;
-   子弹散射度 = 6;
-   发射效果 = "";
-   子弹种类 = "白色手里剑";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 20;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 100;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+                    <script><![CDATA[onClipEvent (load) {
+    // 1) 初始化属性对象
+    var 子弹属性:Object = _root.子弹属性初始化(this);
+
+    // 2) 迁移旧参数（仅填写变化项）
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 4;
+    子弹属性.子弹散射度 = 6;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "白色手里剑";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 20;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 100;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";    
+	子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "首领";
+
+    // 敌我属性（沿用旧逻辑；如新管线自动推断，可删去此行）
+    子弹属性.子弹敌我属性 = (_parent._parent.是否为敌人 == true) ? false : true;
+
+    // 3) 坐标换算（与旧版一致）
+    var myPoint:Object = { x: this._x, y: this._y };
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 4) 统一入口
+    _root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
                   </Actionscript>
@@ -3393,7 +3409,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 42" color="#C304FD">
+        <DOMLayer name="Layer 42" color="#C304FD" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -3508,7 +3524,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 43" color="#31D7DD">
+        <DOMLayer name="Layer 43" color="#31D7DD" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -3550,32 +3566,40 @@ gotoAndPlay(_parent.近战招式);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 3;
-   子弹散射度 = 7;
-   发射效果 = "";
-   子弹种类 = "白色手里剑";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 20;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 100;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+                    <script><![CDATA[onClipEvent (load) {
+    // 1) 初始化属性对象
+    var 子弹属性:Object = _root.子弹属性初始化(this);
+
+    // 2) 迁移旧参数（仅填写变化项）
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 3;
+    子弹属性.子弹散射度 = 7;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "白色手里剑";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 20;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 100;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";    
+	子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "首领";
+
+    // 敌我属性（沿用旧逻辑；如新管线自动推断，可删去此行）
+    子弹属性.子弹敌我属性 = (_parent._parent.是否为敌人 == true) ? false : true;
+
+    // 3) 坐标换算（与旧版一致）
+    var myPoint:Object = { x: this._x, y: this._y };
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 4) 统一入口
+    _root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
                   </Actionscript>
@@ -3638,7 +3662,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 44" color="#E9C313">
+        <DOMLayer name="Layer 44" color="#E9C313" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -3672,7 +3696,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 45" color="#A927DF">
+        <DOMLayer name="Layer 45" color="#A927DF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -3836,7 +3860,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 46" color="#A335DC">
+        <DOMLayer name="Layer 46" color="#A335DC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -3957,7 +3981,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 47" color="#8381A4">
+        <DOMLayer name="Layer 47" color="#8381A4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -4054,7 +4078,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 48" color="#8EBCDC">
+        <DOMLayer name="Layer 48" color="#8EBCDC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -4151,7 +4175,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 49" color="#7AEAFA">
+        <DOMLayer name="Layer 49" color="#7AEAFA" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -4248,7 +4272,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 50" color="#DB7B73">
+        <DOMLayer name="Layer 50" color="#DB7B73" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -4345,7 +4369,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 51" color="#FB37D2">
+        <DOMLayer name="Layer 51" color="#FB37D2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -4442,7 +4466,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 52" color="#DE0D95">
+        <DOMLayer name="Layer 52" color="#DE0D95" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -4539,7 +4563,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 53" color="#BDDDB0">
+        <DOMLayer name="Layer 53" color="#BDDDB0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -4636,7 +4660,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 54" color="#E615EB">
+        <DOMLayer name="Layer 54" color="#E615EB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -4685,7 +4709,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 55" color="#FD4B45">
+        <DOMLayer name="Layer 55" color="#FD4B45" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -4782,7 +4806,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 56" color="#8F678D">
+        <DOMLayer name="Layer 56" color="#8F678D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -4879,7 +4903,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 57" color="#F6E0A7">
+        <DOMLayer name="Layer 57" color="#F6E0A7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -4976,7 +5000,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 58" color="#5972E9">
+        <DOMLayer name="Layer 58" color="#5972E9" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -5073,7 +5097,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 59" color="#F894C9">
+        <DOMLayer name="Layer 59" color="#F894C9" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -5170,7 +5194,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 60" color="#962AC7">
+        <DOMLayer name="Layer 60" color="#962AC7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -5267,7 +5291,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 61" color="#D8ABAA">
+        <DOMLayer name="Layer 61" color="#D8ABAA" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -5364,7 +5388,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 62" color="#53D598">
+        <DOMLayer name="Layer 62" color="#53D598" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -5461,7 +5485,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 63" color="#C7E6B4">
+        <DOMLayer name="Layer 63" color="#C7E6B4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -5558,7 +5582,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 64" color="#A714E6">
+        <DOMLayer name="Layer 64" color="#A714E6" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -5688,7 +5712,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 65" color="#21B3E5">
+        <DOMLayer name="Layer 65" color="#21B3E5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -5818,7 +5842,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 66" color="#48E390">
+        <DOMLayer name="Layer 66" color="#48E390" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -5915,7 +5939,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 67" color="#6B9EE2">
+        <DOMLayer name="Layer 67" color="#6B9EE2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -6012,7 +6036,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 68" color="#D256F8">
+        <DOMLayer name="Layer 68" color="#D256F8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -6109,7 +6133,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 69" color="#89C933">
+        <DOMLayer name="Layer 69" color="#89C933" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -6206,7 +6230,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 70" color="#D772CF">
+        <DOMLayer name="Layer 70" color="#D772CF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -6303,7 +6327,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 71" color="#EED93D">
+        <DOMLayer name="Layer 71" color="#EED93D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -6400,7 +6424,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 72" color="#E11CF9">
+        <DOMLayer name="Layer 72" color="#E11CF9" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -6497,7 +6521,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 73" color="#AEC810">
+        <DOMLayer name="Layer 73" color="#AEC810" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -6675,7 +6699,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 74" color="#EB23B6">
+        <DOMLayer name="Layer 74" color="#EB23B6" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -6820,7 +6844,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 75" color="#FA8B58">
+        <DOMLayer name="Layer 75" color="#FA8B58" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -6989,7 +7013,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 76" color="#FFAA33">
+        <DOMLayer name="Layer 76" color="#FFAA33" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -7122,7 +7146,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 77" color="#DF36E9">
+        <DOMLayer name="Layer 77" color="#DF36E9" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -7279,7 +7303,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 78" color="#C0DD78">
+        <DOMLayer name="Layer 78" color="#C0DD78" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -7412,7 +7436,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 79" color="#FB5899">
+        <DOMLayer name="Layer 79" color="#FB5899" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements/>
@@ -7497,7 +7521,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 80" color="#FAFC6F">
+        <DOMLayer name="Layer 80" color="#FAFC6F" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -7630,7 +7654,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 81" color="#80BBE6">
+        <DOMLayer name="Layer 81" color="#80BBE6" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -7763,7 +7787,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 82" color="#4768E2">
+        <DOMLayer name="Layer 82" color="#4768E2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -7896,7 +7920,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 83" color="#E86DAC">
+        <DOMLayer name="Layer 83" color="#E86DAC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -8029,7 +8053,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 84" color="#B4A49C">
+        <DOMLayer name="Layer 84" color="#B4A49C" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -8162,7 +8186,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 85" color="#BBABFB">
+        <DOMLayer name="Layer 85" color="#BBABFB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -8303,32 +8327,40 @@ onClipEvent(enterFrame){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 10;
-   发射效果 = "";
-   子弹种类 = "白色手里剑";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 20;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 100;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+                    <script><![CDATA[onClipEvent (load) {
+    // 1) 初始化属性对象
+    var 子弹属性:Object = _root.子弹属性初始化(this);
+
+    // 2) 迁移旧参数（仅填写变化项）
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 5;
+    子弹属性.子弹散射度 = 10;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "白色手里剑";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 20;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 100;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";    
+	子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "首领";
+
+    // 敌我属性（沿用旧逻辑；如新管线自动推断，可删去此行）
+    子弹属性.子弹敌我属性 = (_parent._parent.是否为敌人 == true) ? false : true;
+
+    // 3) 坐标换算（与旧版一致）
+    var myPoint:Object = { x: this._x, y: this._y };
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 4) 统一入口
+    _root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
                   </Actionscript>
@@ -8343,7 +8375,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 86" color="#2BD6DF">
+        <DOMLayer name="Layer 86" color="#2BD6DF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -8476,7 +8508,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 87" color="#A79FAC">
+        <DOMLayer name="Layer 87" color="#A79FAC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -8657,7 +8689,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 88" color="#14DDD7">
+        <DOMLayer name="Layer 88" color="#14DDD7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -8802,7 +8834,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 89" color="#F9CEE5">
+        <DOMLayer name="Layer 89" color="#F9CEE5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -8981,7 +9013,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 90" color="#E0AA50">
+        <DOMLayer name="Layer 90" color="#E0AA50" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -9102,7 +9134,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 91" color="#28D1CA">
+        <DOMLayer name="Layer 91" color="#28D1CA" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -9223,7 +9255,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 92" color="#74E12C">
+        <DOMLayer name="Layer 92" color="#74E12C" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -9344,7 +9376,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 93" color="#27CB9A">
+        <DOMLayer name="Layer 93" color="#27CB9A" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -9465,7 +9497,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 94" color="#70FA82">
+        <DOMLayer name="Layer 94" color="#70FA82" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -9586,7 +9618,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 95" color="#50AFC1">
+        <DOMLayer name="Layer 95" color="#50AFC1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -9707,7 +9739,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 96" color="#DD419F">
+        <DOMLayer name="Layer 96" color="#DD419F" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -9828,7 +9860,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 97" color="#1FDEA5">
+        <DOMLayer name="Layer 97" color="#1FDEA5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -9913,7 +9945,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 98" color="#B7A27D">
+        <DOMLayer name="Layer 98" color="#B7A27D" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -9998,7 +10030,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 99" color="#65E8A5">
+        <DOMLayer name="Layer 99" color="#65E8A5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -10083,7 +10115,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 100" color="#FAEABC">
+        <DOMLayer name="Layer 100" color="#FAEABC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -10168,7 +10200,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 101" color="#D504C2">
+        <DOMLayer name="Layer 101" color="#D504C2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -10277,7 +10309,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 102" color="#30B8A2">
+        <DOMLayer name="Layer 102" color="#30B8A2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -10362,7 +10394,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 103" color="#A856AE">
+        <DOMLayer name="Layer 103" color="#A856AE" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -10447,7 +10479,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 104" color="#5F8F9B">
+        <DOMLayer name="Layer 104" color="#5F8F9B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -10532,7 +10564,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 105" color="#5AE881">
+        <DOMLayer name="Layer 105" color="#5AE881" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -10617,7 +10649,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 106" color="#23FDD0">
+        <DOMLayer name="Layer 106" color="#23FDD0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -10702,7 +10734,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 107" color="#8DD6F6">
+        <DOMLayer name="Layer 107" color="#8DD6F6" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -10787,7 +10819,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 108" color="#DA7548">
+        <DOMLayer name="Layer 108" color="#DA7548" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -10872,7 +10904,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 109" color="#A4B9CA">
+        <DOMLayer name="Layer 109" color="#A4B9CA" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements/>
@@ -10921,7 +10953,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 110" color="#7A5ED1">
+        <DOMLayer name="Layer 110" color="#7A5ED1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -10958,7 +10990,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 111" color="#DF4E56">
+        <DOMLayer name="Layer 111" color="#DF4E56" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -10995,7 +11027,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 112" color="#6B84AA">
+        <DOMLayer name="Layer 112" color="#6B84AA" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -11032,7 +11064,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 113" color="#904FF3">
+        <DOMLayer name="Layer 113" color="#904FF3" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -11069,7 +11101,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 114" color="#84E221">
+        <DOMLayer name="Layer 114" color="#84E221" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -11106,7 +11138,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 115" color="#9B1AF1">
+        <DOMLayer name="Layer 115" color="#9B1AF1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -11143,7 +11175,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 116" color="#D4B1DE">
+        <DOMLayer name="Layer 116" color="#D4B1DE" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -11180,7 +11212,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 117" color="#597DE8">
+        <DOMLayer name="Layer 117" color="#597DE8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -11217,7 +11249,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 118" color="#C8A9E2">
+        <DOMLayer name="Layer 118" color="#C8A9E2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -11254,7 +11286,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 119" color="#59A5E1">
+        <DOMLayer name="Layer 119" color="#59A5E1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -11291,7 +11323,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 120" color="#99FF9B">
+        <DOMLayer name="Layer 120" color="#99FF9B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements/>
@@ -11340,7 +11372,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 121" color="#B5D52B">
+        <DOMLayer name="Layer 121" color="#B5D52B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements/>
@@ -11389,7 +11421,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 122" color="#D8F937">
+        <DOMLayer name="Layer 122" color="#D8F937" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -11438,7 +11470,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 123" color="#73A5D4">
+        <DOMLayer name="Layer 123" color="#73A5D4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
@@ -11475,7 +11507,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 124" color="#AA956F">
+        <DOMLayer name="Layer 124" color="#AA956F" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
@@ -11512,7 +11544,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 125" color="#BEB515">
+        <DOMLayer name="Layer 125" color="#BEB515" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
@@ -11597,7 +11629,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 126" color="#4AEB6E">
+        <DOMLayer name="Layer 126" color="#4AEB6E" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
@@ -11634,7 +11666,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 127" color="#91CC6E">
+        <DOMLayer name="Layer 127" color="#91CC6E" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
@@ -11715,32 +11747,40 @@ onClipEvent(enterFrame){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 6;
-   子弹散射度 = 9;
-   发射效果 = "";
-   子弹种类 = "白色手里剑";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 20;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 100;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+                    <script><![CDATA[onClipEvent (load) {
+    // 1) 初始化属性对象
+    var 子弹属性:Object = _root.子弹属性初始化(this);
+
+    // 2) 迁移旧参数（仅填写变化项）
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 6;
+    子弹属性.子弹散射度 = 9;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "白色手里剑";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 20;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 100;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";    
+	子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "首领";
+
+    // 敌我属性（沿用旧逻辑；如新管线自动推断，可删去此行）
+    子弹属性.子弹敌我属性 = (_parent._parent.是否为敌人 == true) ? false : true;
+
+    // 3) 坐标换算（与旧版一致）
+    var myPoint:Object = { x: this._x, y: this._y };
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 4) 统一入口
+    _root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
                   </Actionscript>
@@ -11755,7 +11795,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 128" color="#88F089">
+        <DOMLayer name="Layer 128" color="#88F089" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
@@ -11828,7 +11868,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 129" color="#BCCEA1">
+        <DOMLayer name="Layer 129" color="#BCCEA1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
@@ -11923,7 +11963,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 130" color="#EFF397">
+        <DOMLayer name="Layer 130" color="#EFF397" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
@@ -12068,7 +12108,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 131" color="#D6C2CD">
+        <DOMLayer name="Layer 131" color="#D6C2CD" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
@@ -12249,7 +12289,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 132" color="#56DDE3">
+        <DOMLayer name="Layer 132" color="#56DDE3" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -12418,7 +12458,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 133" color="#B97195">
+        <DOMLayer name="Layer 133" color="#B97195" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -12448,32 +12488,40 @@ onClipEvent(enterFrame){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 2;
-   子弹散射度 = 8;
-   发射效果 = "";
-   子弹种类 = "白色手里剑";
-   子弹威力 = _parent._parent.空手攻击力;
-   子弹速度 = 20;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 100;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+                    <script><![CDATA[onClipEvent (load) {
+    // 1) 初始化属性对象
+    var 子弹属性:Object = _root.子弹属性初始化(this);
+
+    // 2) 迁移旧参数（仅填写变化项）
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 2;
+    子弹属性.子弹散射度 = 8;
+    子弹属性.发射效果 = "";
+    子弹属性.子弹种类 = "白色手里剑";
+    子弹属性.子弹威力 = _parent._parent.空手攻击力;
+    子弹属性.子弹速度 = 20;
+    子弹属性.击中地图效果 = "";
+    子弹属性.Z轴攻击范围 = 30;
+    子弹属性.击倒率 = 100;
+    子弹属性.击中后子弹的效果 = "空手攻击火花";    
+	子弹属性.伤害类型 = "破击";
+    子弹属性.魔法伤害属性 = "首领";
+
+    // 敌我属性（沿用旧逻辑；如新管线自动推断，可删去此行）
+    子弹属性.子弹敌我属性 = (_parent._parent.是否为敌人 == true) ? false : true;
+
+    // 3) 坐标换算（与旧版一致）
+    var myPoint:Object = { x: this._x, y: this._y };
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+
+    子弹属性.shootX = myPoint.x;
+    子弹属性.shootY = myPoint.y;
+    子弹属性.shootZ = _parent._parent.Z轴坐标;
+    子弹属性.发射者 = _parent._parent._name;
+
+    // 4) 统一入口
+    _root.子弹区域shoot传递(子弹属性);
 }
 ]]></script>
                   </Actionscript>
@@ -12635,7 +12683,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 134" color="#9F66CF">
+        <DOMLayer name="Layer 134" color="#9F66CF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -12804,7 +12852,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 135" color="#CD8B92">
+        <DOMLayer name="Layer 135" color="#CD8B92" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -13021,7 +13069,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 136" color="#AFE43C">
+        <DOMLayer name="Layer 136" color="#AFE43C" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -13190,7 +13238,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 137" color="#FFA045">
+        <DOMLayer name="Layer 137" color="#FFA045" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -13380,7 +13428,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 138" color="#CA527A">
+        <DOMLayer name="Layer 138" color="#CA527A" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -13585,7 +13633,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 139" color="#F2A9B0">
+        <DOMLayer name="Layer 139" color="#F2A9B0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -13769,7 +13817,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 140" color="#AAA0CA">
+        <DOMLayer name="Layer 140" color="#AAA0CA" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
@@ -14106,7 +14154,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 141" color="#959368">
+        <DOMLayer name="Layer 141" color="#959368" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -14380,7 +14428,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 142" color="#DF0ED1">
+        <DOMLayer name="Layer 142" color="#DF0ED1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -14606,7 +14654,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 143" color="#DD39F0">
+        <DOMLayer name="Layer 143" color="#DD39F0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -14832,7 +14880,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 144" color="#E5BA7B">
+        <DOMLayer name="Layer 144" color="#E5BA7B" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -15058,7 +15106,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 145" color="#E23B72">
+        <DOMLayer name="Layer 145" color="#E23B72" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -15284,7 +15332,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 146" color="#9FFEE9">
+        <DOMLayer name="Layer 146" color="#9FFEE9" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -15510,7 +15558,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 147" color="#BD7571">
+        <DOMLayer name="Layer 147" color="#BD7571" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -15736,7 +15784,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 148" color="#E5AA69">
+        <DOMLayer name="Layer 148" color="#E5AA69" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -15962,7 +16010,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 149" color="#F2BECE">
+        <DOMLayer name="Layer 149" color="#F2BECE" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -16188,7 +16236,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 150" color="#5DBCDD">
+        <DOMLayer name="Layer 150" color="#5DBCDD" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -16414,7 +16462,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 151" color="#FA7AE9">
+        <DOMLayer name="Layer 151" color="#FA7AE9" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -16820,7 +16868,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 152" color="#D9605A">
+        <DOMLayer name="Layer 152" color="#D9605A" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -17226,7 +17274,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 153" color="#F9F4A9">
+        <DOMLayer name="Layer 153" color="#F9F4A9" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -17623,7 +17671,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 154" color="#8ABBE8">
+        <DOMLayer name="Layer 154" color="#8ABBE8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -18020,7 +18068,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 155" color="#FA3EB5">
+        <DOMLayer name="Layer 155" color="#FA3EB5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -18417,7 +18465,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 156" color="#F89140">
+        <DOMLayer name="Layer 156" color="#F89140" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -18814,7 +18862,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 157" color="#88B5DF">
+        <DOMLayer name="Layer 157" color="#88B5DF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -19211,7 +19259,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 158" color="#9FC9F3">
+        <DOMLayer name="Layer 158" color="#9FC9F3" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -19608,7 +19656,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 159" color="#8CC4BE">
+        <DOMLayer name="Layer 159" color="#8CC4BE" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -20005,7 +20053,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 160" color="#93CCB5">
+        <DOMLayer name="Layer 160" color="#93CCB5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -20402,7 +20450,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 161" color="#C6D76E">
+        <DOMLayer name="Layer 161" color="#C6D76E" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -20799,7 +20847,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 162" color="#F88361">
+        <DOMLayer name="Layer 162" color="#F88361" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -21196,7 +21244,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 163" color="#9CB290">
+        <DOMLayer name="Layer 163" color="#9CB290" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -21602,7 +21650,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 164" color="#BA6FB1">
+        <DOMLayer name="Layer 164" color="#BA6FB1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -22008,7 +22056,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 165" color="#EC7593">
+        <DOMLayer name="Layer 165" color="#EC7593" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -22414,7 +22462,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 166" color="#B3777E">
+        <DOMLayer name="Layer 166" color="#B3777E" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -22820,7 +22868,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 167" color="#6073D5">
+        <DOMLayer name="Layer 167" color="#6073D5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -23226,7 +23274,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 168" color="#E76CA1">
+        <DOMLayer name="Layer 168" color="#E76CA1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -23632,7 +23680,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 169" color="#B28EAE">
+        <DOMLayer name="Layer 169" color="#B28EAE" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements/>
@@ -24038,7 +24086,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 170" color="#AF9E5E">
+        <DOMLayer name="Layer 170" color="#AF9E5E" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -24468,7 +24516,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 171" color="#DBD5C1">
+        <DOMLayer name="Layer 171" color="#DBD5C1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -24922,7 +24970,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 172" color="#A5CD64">
+        <DOMLayer name="Layer 172" color="#A5CD64" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -25412,7 +25460,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 173" color="#A890AD">
+        <DOMLayer name="Layer 173" color="#A890AD" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -25794,7 +25842,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 174" color="#5A3EE8">
+        <DOMLayer name="Layer 174" color="#5A3EE8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -26176,7 +26224,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 175" color="#24DEEC">
+        <DOMLayer name="Layer 175" color="#24DEEC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -26558,7 +26606,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 176" color="#7F6DC7">
+        <DOMLayer name="Layer 176" color="#7F6DC7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -26940,7 +26988,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 177" color="#C94EEE">
+        <DOMLayer name="Layer 177" color="#C94EEE" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -27322,7 +27370,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 178" color="#C3FCE1">
+        <DOMLayer name="Layer 178" color="#C3FCE1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -27704,7 +27752,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 179" color="#1FD4F7">
+        <DOMLayer name="Layer 179" color="#1FD4F7" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -28086,7 +28134,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 180" color="#1A9CFF">
+        <DOMLayer name="Layer 180" color="#1A9CFF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -28564,7 +28612,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 181" color="#F1BC5A">
+        <DOMLayer name="Layer 181" color="#F1BC5A" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
@@ -28970,7 +29018,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 182" color="#C3F5C3">
+        <DOMLayer name="Layer 182" color="#C3F5C3" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -29352,7 +29400,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 183" color="#34FA6A">
+        <DOMLayer name="Layer 183" color="#34FA6A" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -29734,7 +29782,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 184" color="#E13ABC">
+        <DOMLayer name="Layer 184" color="#E13ABC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -30236,7 +30284,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 185" color="#D8CFA5" current="true" isSelected="true">
+        <DOMLayer name="Layer 185" color="#D8CFA5" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="161" keyMode="9728">
               <elements>
@@ -30268,7 +30316,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 0" color="#C6CA2F">
+        <DOMLayer name="Sound Layer 0" color="#C6CA2F" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -30281,7 +30329,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 1" color="#8820DF">
+        <DOMLayer name="Sound Layer 1" color="#8820DF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="51" keyMode="9728">
               <elements/>
@@ -30294,7 +30342,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 2" color="#8783B4">
+        <DOMLayer name="Sound Layer 2" color="#8783B4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="58" keyMode="9728">
               <elements/>
@@ -30307,7 +30355,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 3" color="#C94FF8">
+        <DOMLayer name="Sound Layer 3" color="#C94FF8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="82" keyMode="9728">
               <elements/>
@@ -30320,7 +30368,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 4" color="#8B06FD">
+        <DOMLayer name="Sound Layer 4" color="#8B06FD" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="96" keyMode="9728">
               <elements/>
@@ -30333,7 +30381,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 5" color="#D50BD1">
+        <DOMLayer name="Sound Layer 5" color="#D50BD1" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="99" keyMode="9728">
               <elements/>
@@ -30346,7 +30394,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 6" color="#5291D3">
+        <DOMLayer name="Sound Layer 6" color="#5291D3" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="113" keyMode="9728">
               <elements/>
@@ -30359,7 +30407,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 7" color="#C4C616">
+        <DOMLayer name="Sound Layer 7" color="#C4C616" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="116" keyMode="9728">
               <elements/>
@@ -30372,7 +30420,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 8" color="#5AB4A6">
+        <DOMLayer name="Sound Layer 8" color="#5AB4A6" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="133" keyMode="9728">
               <elements/>
@@ -30385,7 +30433,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 9" color="#C5DA97">
+        <DOMLayer name="Sound Layer 9" color="#C5DA97" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="141" keyMode="9728">
               <elements/>

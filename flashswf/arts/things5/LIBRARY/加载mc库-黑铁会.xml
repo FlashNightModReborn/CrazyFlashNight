@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="加载mc库-黑铁会" itemID="67e615e0-000008e1" linkageExportForAS="true" linkageIdentifier="加载mc库-黑铁会" lastModified="1743132128">
   <timeline>
-    <DOMTimeline name="加载mc库-黑铁会" currentFrame="2">
+    <DOMTimeline name="加载mc库-黑铁会" currentFrame="1">
       <layers>
         <DOMLayer name="Script Layer" color="#E64CE6">
           <frames>
@@ -296,7 +296,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#F1AED9" current="true" isSelected="true">
+        <DOMLayer name="Layer 10" color="#F1AED9">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -332,14 +332,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#EAA3B0">
+        <DOMLayer name="Layer 11" color="#EAA3B0" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="敌人-飞刀小子" centerPoint3DX="171.85" centerPoint3DY="223.3">
+                <DOMSymbolInstance libraryItemName="敌人-飞刀小子" selected="true" centerPoint3DX="171.85" centerPoint3DY="223.3">
                   <matrix>
                     <Matrix tx="-321.75" ty="82.6"/>
                   </matrix>
