@@ -484,23 +484,10 @@
                 <Text>这大家伙是什么？！</Text>
             </Dialogue>
         </Event>
-        <Event>
-            <EventName>UnitDeath</EventName>
-            <Parameter>精英</Parameter>
-                    <Enemy>
-                        <Type>兵种358</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>20</Level>
-                        <IsHostile>false</IsHostile>
-                        <x>50</x>
-                        <y>520</y>
-                    </Enemy>
-        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
-                    <Duration>0</Duration>
+                    <Duration>8</Duration>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
@@ -509,15 +496,22 @@
                         <Quantity>1</Quantity>
                         <Level>20</Level>
                         <IsHostile>false</IsHostile>
-                        <InstanceName>精英</InstanceName>
-                        <x>530</x>
+                        <x>730</x>
                         <y>575</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种56</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>22</Level>
+                        <x>689</x>
+                        <y>564</y>
                     </Enemy>
                     <Enemy>
                         <Type>兵种55</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>32</Level>
+                        <Level>35</Level>
                         <x>1150</x>
                         <y>500</y>
                     </Enemy>
@@ -548,6 +542,42 @@
                         <Type>兵种56</Type>
                         <Interval>2000</Interval>
                         <Quantity>4</Quantity>
+                        <Level>22</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种358</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                        <IsHostile>false</IsHostile>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种56</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>22</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种54</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>22</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种56</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
                         <Level>22</Level>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
