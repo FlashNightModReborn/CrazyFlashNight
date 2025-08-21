@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关界面 1024*576" itemID="663b46a2-000023af" linkageExportForAS="true" linkageIdentifier="选关界面" lastModified="1755512439" lastUniqueIdentifier="211">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关界面 1024*576" itemID="663b46a2-000023af" linkageExportForAS="true" linkageIdentifier="选关界面" lastModified="1755813758" lastUniqueIdentifier="212">
   <timeline>
-    <DOMTimeline name="选关界面 1024*576" currentFrame="140">
+    <DOMTimeline name="选关界面 1024*576" currentFrame="16">
       <layers>
         <DOMLayer name="Labels Layer" color="#5E5DCA">
           <frames>
@@ -1561,7 +1561,7 @@ onClipEvent(load){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="外交地图-堕落城商业街" selected="true" centerPoint3DX="626.45" centerPoint3DY="104.05">
+                <DOMSymbolInstance libraryItemName="外交地图-堕落城商业街" centerPoint3DX="626.45" centerPoint3DY="104.05">
                   <matrix>
                     <Matrix tx="613.95" ty="104.05"/>
                   </matrix>
@@ -1572,6 +1572,21 @@ onClipEvent(load){
                     <script><![CDATA[onClipEvent(load){
    this.配置关卡属性 = _root.配置关卡属性;
    this.配置关卡属性("外交-堕落城商业街");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="938.95" centerPoint3DY="303.35">
+                  <matrix>
+                    <Matrix tx="687.95" ty="80.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("堕落城保卫战");
 }
 ]]></script>
                   </Actionscript>
@@ -3997,7 +4012,7 @@ on(rollOut){
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!20480 -2111|20480 11442!20480 11442|-130 11442!-130 11442|-130 -2111!-130 -2111|20480 -2111"/>
+                    <Edge fillStyle1="1" edges="!20480 11442|-130 11442!-130 11442|-130 -2111!-130 -2111|20480 -2111!20480 -2111|20480 11442"/>
                   </edges>
                 </DOMShape>
               </elements>
