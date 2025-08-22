@@ -315,6 +315,12 @@
                         <y>450</y>
                         <Parameters>
                             <threat>30</threat>
+                            <extra>
+                                <add>
+                                    <hp>10000</hp>
+                                    <hp满血值>10000</hp>
+                                </add>
+                            </extra>
                         </Parameters>
                     </Enemy>
                     <Enemy>
@@ -471,6 +477,12 @@
                         <y>436</y>
                         <Parameters>
                             <threat>30</threat>
+                            <extra>
+                                <add>
+                                    <hp>5000</hp>
+                                    <hp满血值>10000</hp>
+                                </add>
+                            </extra>
                         </Parameters>
                     </Enemy>
                     <Enemy>
@@ -644,6 +656,11 @@
                         <y>450</y>
                         <Parameters>
                             <threat>30</threat>
+                            <extra>
+                                <add>
+                                    <hp满血值>10000</hp>
+                                </add>
+                            </extra>
                         </Parameters>
                     </Enemy>
                     <Enemy>

@@ -29,7 +29,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         ParameterInitializer.initialize(target);
         EventInitializer.initialize(target);
         DisplayNameInitializer.initialize(target);
+
         TargetCacheUpdater.addUnit(target);
+        
+        ExtraPropertyInitializer.initialize(target);
         BuffManagerInitializer.initialize(target);
     }
 
