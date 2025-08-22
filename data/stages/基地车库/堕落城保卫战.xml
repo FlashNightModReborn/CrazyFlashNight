@@ -1527,7 +1527,7 @@
         </SpawnPoint>
         <Event>
             <EventName>UnitDeath</EventName>
-            <Parameter>仪器</Parameter>
+            <Parameter>保护仪器</Parameter>
             <Message>重要角色阵亡！</Message>
             <StageProgress>Fail</StageProgress>
         </Event>
