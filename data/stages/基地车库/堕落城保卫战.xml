@@ -438,6 +438,11 @@
                         <Level>60</Level>
                         <IsHostile>false</IsHostile>
                         <InstanceName>lee</InstanceName>
+                        <Parameters>
+                            <宠物属性>
+                                <冲腿龙息>true</冲腿龙息>
+                            </宠物属性>
+                        </Parameters>
                         <x>1700</x>
                         <y>575</y>
                     </Enemy>
@@ -966,6 +971,11 @@
                         <Level>60</Level>
                         <IsHostile>false</IsHostile>
                         <InstanceName>魔女</InstanceName>
+                        <Parameters>
+                            <宠物属性>
+                                <晶能者>true</晶能者>
+                            </宠物属性>
+                        </Parameters>
                         <x>1000</x>
                         <y>525</y>
                     </Enemy>
@@ -1336,6 +1346,11 @@
                         <IsHostile>false</IsHostile>
                         <SpawnIndex>left</SpawnIndex>
                         <InstanceName>翅虎</InstanceName>
+                        <Parameters>
+                            <宠物属性>
+                                <超级血清>true</超级血清>
+                            </宠物属性>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种270</Type>
@@ -1472,6 +1487,11 @@
                         <IsHostile>false</IsHostile>
                         <SpawnIndex>left</SpawnIndex>
                         <InstanceName>火凤</InstanceName>
+                        <Parameters>
+                            <宠物属性>
+                                <涅槃重生>true</涅槃重生>
+                            </宠物属性>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种268</Type>
@@ -1863,6 +1883,52 @@
                 <Text>当然能赢，因为我们团结起来就是最优质的末日战士！</Text>
             </Dialogue>
         </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>2</Parameter>
+            <Dialogue id="0">
+                <Name>Tomboy</Name>
+                <Title>荒漠猎手</Title>
+                <Char>Tomboy</Char>
+                <Text>这可真是我打过的规模最大的战役。</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#微笑</Char>
+                <Text>但我们赢了，这肯定是诺亚最后一次主动出击了，他们已经被逼上绝路了！</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>Singer</Name>
+                <Title>摇滚女皇-主唱</Title>
+                <Char>Singer</Char>
+                <Text>啊呀，这修缮工作可不好做啊···</Text>
+            </Dialogue>
+            <Dialogue id="3">
+                <Name>Guitar</Name>
+                <Title>摇滚女皇-吉他</Title>
+                <Char>Guitar</Char>
+                <Text>没办法嘛，我总不能不用火和炮——</Text>
+            </Dialogue>
+            <Dialogue id="4">
+                <Name>Keyboard</Name>
+                <Title>摇滚女皇-键盘</Title>
+                <Char>Keyboard</Char>
+                <Text>···</Text>
+            </Dialogue>
+            <Dialogue id="5">
+                <Name>Boy</Name>
+                <Title>BPK战队-队长</Title>
+                <Char>boy（无线电）</Char>
+                <Text>麻烦尽快赶回来，我们需要商讨下一步计划。</Text>
+            </Dialogue>
+            <Dialogue id="6">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>明白！</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -1872,9 +1938,9 @@
                     <Enemy>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>1</Level>
-                        <x>1300</x>
-                        <y>650</y>
+                        <Level>10</Level>
+                        <x>1200</x>
+                        <y>750</y>
                         <spritename>特殊友军-保护仪器</spritename>
                         <Name>仪器</Name>
                         <InstanceName>保护仪器</InstanceName>
@@ -1890,8 +1956,13 @@
                         <Level>60</Level>
                         <IsHostile>false</IsHostile>
                         <InstanceName>吉他</InstanceName>
-                        <x>1300</x>
-                        <y>573</y>
+                        <Parameters>
+                            <宠物属性>
+                                <导弹烈炎炮>true</导弹烈炎炮>
+                            </宠物属性>
+                        </Parameters>
+                        <x>1100</x>
+                        <y>593</y>
                     </Enemy>
                     <Enemy>
                         <Type>兵种94</Type>
@@ -1900,6 +1971,11 @@
                         <Level>60</Level>
                         <IsHostile>false</IsHostile>
                         <InstanceName>键盘</InstanceName>
+                        <Parameters>
+                            <宠物属性>
+                                <弹射弧光斩>true</弹射弧光斩>
+                            </宠物属性>
+                        </Parameters>
                         <x>1200</x>
                         <y>623</y>
                     </Enemy>
@@ -1910,7 +1986,12 @@
                         <Level>60</Level>
                         <IsHostile>false</IsHostile>
                         <InstanceName>主唱</InstanceName>
-                        <x>1400</x>
+                        <Parameters>
+                            <宠物属性>
+                                <广域裂空斩>true</广域裂空斩>
+                            </宠物属性>
+                        </Parameters>
+                        <x>1300</x>
                         <y>653</y>
                     </Enemy>
                     <Enemy>
@@ -1919,6 +2000,11 @@
                         <Quantity>1</Quantity>
                         <Level>60</Level>
                         <InstanceName>tomboy</InstanceName>
+                        <Parameters>
+                            <宠物属性>
+                                <强化药剂>true</强化药剂>
+                            </宠物属性>
+                        </Parameters>
                         <x>1500</x>
                         <y>638</y>
                     </Enemy>
@@ -1927,8 +2013,8 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>45</Level>
-                        <x>1200</x>
-                        <y>410</y>
+                        <x>1000</x>
+                        <y>550</y>
                         <IsHostile>false</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
@@ -1940,7 +2026,7 @@
                         <Quantity>1</Quantity>
                         <Level>45</Level>
                         <x>1400</x>
-                        <y>410</y>
+                        <y>550</y>
                         <IsHostile>false</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
@@ -2034,8 +2120,8 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>45</Level>
-                        <x>1200</x>
-                        <y>410</y>
+                        <x>1000</x>
+                        <y>550</y>
                         <IsHostile>false</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
@@ -2047,7 +2133,7 @@
                         <Quantity>1</Quantity>
                         <Level>45</Level>
                         <x>1400</x>
-                        <y>410</y>
+                        <y>550</y>
                         <IsHostile>false</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
@@ -2191,8 +2277,8 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>45</Level>
-                        <x>1300</x>
-                        <y>410</y>
+                        <x>1200</x>
+                        <y>550</y>
                         <IsHostile>false</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
@@ -2203,8 +2289,8 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>45</Level>
-                        <x>1200</x>
-                        <y>410</y>
+                        <x>1000</x>
+                        <y>550</y>
                         <IsHostile>false</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
@@ -2216,7 +2302,7 @@
                         <Quantity>1</Quantity>
                         <Level>45</Level>
                         <x>1400</x>
-                        <y>410</y>
+                        <y>550</y>
                         <IsHostile>false</IsHostile>
                         <Parameters>
                             <登场动画>索降</登场动画>
