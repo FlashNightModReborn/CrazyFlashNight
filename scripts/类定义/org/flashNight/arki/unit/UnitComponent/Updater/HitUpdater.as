@@ -65,6 +65,18 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
         _root.玩家信息界面.刷新hp显示();
     }
     
+    public static function doStageEventUnitUpdate(hitTarget:MovieClip, shooter:MovieClip, bullet:MovieClip, collisionResult:CollisionResult, damageResult:DamageResult):Void {
+        doHitUpdate(hitTarget, shooter, bullet, collisionResult, damageResult);
+        var hp:Number = hitTarget.hp;
+        var hpMax:Number = hitTarget.hp满血值;
+        var currentFrame:Number = _root.帧计时器.当前帧数;
+
+        if(hp < hpMax * 0.3 && (currentFrame - hitTarget.lastEmergencyFrame) > 2 * 30) {
+            _root.gameworld.dispatcher.publish("UnitEmergency", hitTarget._name);
+            hitTarget.lastEmergencyFrame = currentFrame;
+        }
+    }
+
     /**
      * 根据目标单位返回对应的受击事件处理函数
      * 若目标为主角，则返回一个包装了hp刷新逻辑的函数；否则直接返回核心逻辑函数
@@ -77,6 +89,12 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
             return doHeroUpdate;
         } else {
             // 非主角：直接返回核心逻辑函数
+
+            if(target.publishStageEvent) {
+                target.lastEmergencyFrame = 0;
+                return doStageEventUnitUpdate;
+            }
+
             return doHitUpdate;
         }
     }

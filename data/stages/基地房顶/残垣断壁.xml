@@ -293,6 +293,11 @@
             <Message>人质死亡！</Message>
             <StageProgress>Fail</StageProgress>
         </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>键盘</Parameter>
+            <Message>人质情况紧急！</Message>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -443,6 +448,11 @@
             </Enemy>
             <Message>人质死亡！</Message>
             <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>键盘</Parameter>
+            <Message>人质情况紧急！</Message>
         </Event>
         <Wave>
             <SubWave id="0">
@@ -611,6 +621,11 @@
             </Enemy>
             <Message>人质死亡！</Message>
             <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>键盘</Parameter>
+            <Message>人质情况紧急！</Message>
         </Event>
         <Wave>
             <SubWave id="0">
