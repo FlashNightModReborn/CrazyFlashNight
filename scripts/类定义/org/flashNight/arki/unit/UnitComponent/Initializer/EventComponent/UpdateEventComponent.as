@@ -6,19 +6,23 @@ import org.flashNight.arki.component.Buff.*;
 import org.flashNight.arki.component.Buff.Component.*;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEventComponent {
+
+    // --- 屏外剔除：可按需调节缓冲 ---
+    // 设为 0 表示严格以屏幕边缘为界；>0 则加入缓冲，减少边缘闪烁
+    private static var CULL_PAD:Number = 50;
+
     /**
      * 初始化单位的死亡事件监听
      * @param target 目标单位( MovieClip )
      */
     public static function initialize(target:MovieClip):Void {
         if(target.updateEventComponentID != null) {
-            // _root.发布消息("existingUpdate",target._name);
             return;
         }
-        
+
         var dispatcher:EventDispatcher = target.dispatcher;
-        // 订阅 UpdateEventComponent 事件到 onUpdate 逻辑
-        var func;
+
+        var func:Function;
         if(target._name === _root.控制目标) {
             func = UpdateEventComponent.onHeroUpdate;
         } else if(target.element) {
@@ -27,22 +31,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
             func = UpdateEventComponent.onUpdate;
         }
         dispatcher.subscribeSingle("UpdateEventComponent", func, target);
-
-        
-        // 主角换装不会销毁自身，因此直接使用相同的标签会导致生命周期函数多次设置
-        // 利用版本号进行区分
-
-        // var label:String = "UpdateEventComponent" + target.version;
-        // if(target.updateEventComponentID) {
-        //     //_root.发布消息("移除任务: " + target.updateEventComponentID)
-        //     _root.帧计时器.移除任务(target.updateEventComponentID);
-        // }
-        
-        // 以4帧为间隔加入生命周期任务
-        // target.updateEventComponentID = _root.帧计时器.添加生命周期任务(target, label, function ()
-        // {
-        //     this.dispatcher.publish("UpdateEventComponent", this);
-        // }, 130)
 
         // 用 UnitUpdateWheel 托管刷新事件
         target.updateEventComponentID = _root.帧计时器.unitUpdateWheel.add(target);
@@ -54,7 +42,33 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
         }
     }
 
+    // ===== 可见性剔除（仅控制渲染，不影响逻辑） =====
+    private static function applyVisibilityCulling(target:MovieClip):Void {
+        // 取得 target 在 _root 坐标系下的包围框
+        var b:Object = target.getBounds(_root);
+        var sw:Number = Stage.width;
+        var sh:Number = Stage.height;
+        var pad:Number = CULL_PAD;
+
+        // “完全不在屏幕范围内”判定（加入可选 pad）
+        var outside:Boolean =
+            (b.xMax < -pad) || (b.xMin > sw + pad) ||
+            (b.yMax < -pad) || (b.yMin > sh + pad);
+
+        var shouldVisible:Boolean = !outside;
+
+        // 仅在状态变化时切换，避免无谓赋值
+        if (target._visible != shouldVisible) {
+            target._visible = shouldVisible;
+            // _root.发布消息(target._name, target._visible)
+        }
+    }
+
     public static function onUpdate(target:MovieClip):Void {
+        // —— 屏外渲染剔除（非主角） ——
+        applyVisibilityCulling(target);
+
+        // —— 原有刷新逻辑（ ——
         ImpactUpdater.update(target);
         InformationComponentUpdater.update(target);
         target.unitAI.update();
@@ -63,6 +77,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
     }
 
     public static function onHeroUpdate(target:MovieClip):Void {
+        // 主角不做渲染剔除
         ImpactUpdater.updateHero(target);
         InformationComponentUpdater.update(target);
         target.buffManager.update(4);
@@ -71,6 +86,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
     }
 
     public static function onMapElementUpdate(target:MovieClip):Void {
+        // —— 地图元素也做渲染剔除 ——
+        applyVisibilityCulling(target);
         target.swapDepths(target._y);
     }
 
@@ -79,20 +96,17 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
             target.dispatcher.publish("hit", target);
             target.hitPointText.text = target.hitPoint;
         }
-        
     }
 
     public static function getMapElementUpdate(target:MovieClip):Function {
         var basicFunc:Function = UpdateEventComponent.onMapElementUpdate;
 
         if(target.taunt) {
-            return function(target:MovieClip):Void
-            {
-                basicFunc(target);
-                onTauntMapElementUpdate(target);
+            return function(target:MovieClip):Void {
+                basicFunc(target);                // 含可见性剔除
+                onTauntMapElementUpdate(target);  // 额外嘲讽逻辑
             }
         }
-        
-        return UpdateEventComponent.onMapElementUpdate;
+        return UpdateEventComponent.onMapElementUpdate; // 含可见性剔除
     }
 }
