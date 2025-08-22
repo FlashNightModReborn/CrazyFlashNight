@@ -53,7 +53,7 @@ _root.色彩引擎.根据光照调整颜色 = function(影片剪辑, 光照等�
         影片剪辑.transform.colorTransform = _root.色彩引擎.空调整颜色;
         return;//光照等级为7时不使用任何变换，节约性能
     }
-    //_root.服务器.发布服务器消息(视觉情况 + " " + _root.常用工具函数.对象转JSON(_root.色彩引擎.光照等级映射表[视觉情况],true))
+    
     // 检查是否需要切换调整模式
     if (影片剪辑.使用矩阵变换 !== 使用矩阵变换) 
     {
@@ -69,55 +69,16 @@ _root.色彩引擎.根据光照调整颜色 = function(影片剪辑, 光照等�
         }
     }
 
-    //_root.服务器.发布服务器消息("映射表" + _root.常用工具函数.对象转JSON(_root.色彩引擎.光照等级映射表,true));
-
-    // 应用当前选择的色彩调整
+    // 实时计算并应用色彩调整
+    var 参数 = this.生成光照调整参数(真实光照, 视觉情况);
     if (使用矩阵变换) 
     {
-        var 缓存滤镜 = this.光照参数缓存滤镜[视觉情况][真实光照];
-        if(缓存滤镜)
-        {
-            this.设置滤镜(影片剪辑, 缓存滤镜, flash.filters.ColorMatrixFilter);//_root.服务器.发布服务器消息("高级色彩引擎：" + 缓存滤镜);
-        }
-        else
-        {
-            this.光照参数缓存滤镜[视觉情况][真实光照] = this.调整颜色(影片剪辑, this.生成光照调整参数(真实光照, 视觉情况));//_root.服务器.发布服务器消息("渲染高级色彩引擎：" + 缓存滤镜);
-        }
+        this.调整颜色(影片剪辑, 参数);
     } 
     else 
     {
-        var 缓存变换 = this.光照参数缓存变换[视觉情况][真实光照];
-        //var 参数 = _root.色彩引擎.生成光照调整参数(真实光照 ,视觉情况);
-        //_root.服务器.发布服务器消息(光照等级 + " " + 真实光照 + " : " +  视觉情况 + "  参数：" + _root.常用工具函数.对象转JSON(参数,true));
-        if(缓存变换)
-        {
-            影片剪辑.transform.colorTransform = 缓存变换;//_root.服务器.发布服务器消息("初级色彩引擎：" + 缓存变换);
-        }
-        else
-        {
-            this.光照参数缓存变换[视觉情况][真实光照] = this.初级调整颜色(影片剪辑, this.生成光照调整参数(真实光照, 视觉情况));//_root.服务器.发布服务器消息("渲染初级色彩引擎：" + 缓存变换);
-        } 
+        this.初级调整颜色(影片剪辑, 参数);
     }
 };
 
 
-_root.色彩引擎.初始化光照参数缓存 = function() 
-{
-    _root.色彩引擎.光照参数缓存滤镜 = {};
-    _root.色彩引擎.光照参数缓存变换 = {};
-
-    //_root.服务器.发布服务器消息("初始化光照参数缓存" + _root.常用工具函数.对象转JSON(_root.色彩引擎.光照等级映射表,true));
-    
-    for(var visual_condition in _root.色彩引擎.光照等级映射表)
-    {
-        _root.色彩引擎.光照参数缓存滤镜[visual_condition] = {};
-        _root.色彩引擎.光照参数缓存变换[visual_condition] = {};
-        for (var level = 0; level <= 100; level++) 
-        {
-            var realLevel = level / 10;
-            var 参数 = _root.色彩引擎.生成光照调整参数(realLevel ,visual_condition);
-            _root.色彩引擎.光照参数缓存滤镜[visual_condition][realLevel] = _root.色彩引擎.调整颜色(null, 参数);
-            _root.色彩引擎.光照参数缓存变换[visual_condition][realLevel] = _root.色彩引擎.初级调整颜色(null, 参数);
-        }
-    }
-};
