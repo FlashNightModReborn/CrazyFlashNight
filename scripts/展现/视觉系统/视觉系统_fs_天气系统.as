@@ -1,6 +1,7 @@
 ﻿import org.flashNight.neur.Event.*;
 import org.flashNight.naki.Interpolation.*;
 import org.flashNight.gesh.xml.LoadXml.WeatherSystemConfigLoader;
+import org.flashNight.arki.component.Effect.*;
 
 _root.天气系统 = {};
 //_root.开启昼夜系统 = true;
@@ -255,11 +256,11 @@ _root.天气系统.设置当前天气 = function()
         this.人物信息透明度 = 100;
     }
 
-    _root.色彩引擎.根据光照调整颜色(_root.gameworld, 光照等级, 视觉情况, this.使用滤镜渲染);
+    LightingEngine.applyLighting(_root.gameworld, 光照等级, 视觉情况, this.使用滤镜渲染);
     //_root.服务器.发布服务器消息(光照等级 + " : " + this.最大光照 + " : " + this.最小光照 + " " + 视觉情况);
     //_root.服务器.发布服务器消息(this.金币时间倍率);
     //
-    _root.色彩引擎.根据光照调整颜色(_root.天空盒, 光照等级, 视觉情况, false);
+    LightingEngine.applyLighting(_root.天空盒, 光照等级, 视觉情况, false);
     // switch(this.空间情况)
     // {
     //     case "室外":_root.色彩引擎.根据光照调整颜色(_root.天空盒, 光照等级, 视觉情况, false);break;

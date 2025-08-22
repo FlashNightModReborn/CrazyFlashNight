@@ -281,8 +281,8 @@ class org.flashNight.arki.component.Effect.ColorEngine {
      */
     public static function basicAdjustColor(target:MovieClip, params:Object):ColorTransform {
         if (params instanceof ColorTransform) {
-            target.transform.colorTransform = params;
-            return params;
+            target.transform.colorTransform = ColorTransform(params);
+            return ColorTransform(params);
         }
         if (!params) {
             target.transform.colorTransform = ColorEngine.emptyColorTransform;
@@ -442,14 +442,14 @@ class org.flashNight.arki.component.Effect.ColorEngine {
      *
      * @return 返回生成的 ColorMatrixFilter 对象
      */
-    public static function adjustColor(target:MovieClip, params:Object):Object {
+    public static function adjustColor(target:MovieClip, params:Object):ColorMatrixFilter {
         if (params instanceof ColorMatrixFilter) {
             ColorEngine.setFilter(target, params, ColorMatrixFilter);
-            return;
+            return ColorMatrixFilter(params);
         }
         if (!params) {
             ColorEngine.checkAndRemoveFilter(target, ColorMatrixFilter);
-            return;
+            return null;
         }
         // 默认矩阵为恒等矩阵
         var matrix:Array = [1, 0, 0, 0, 0,
