@@ -1971,6 +1971,9 @@
                         <Quantity>2</Quantity>
                         <Level>45</Level>
                         <SpawnIndex>1</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种373</Type>
@@ -1978,6 +1981,9 @@
                         <Quantity>2</Quantity>
                         <Level>45</Level>
                         <SpawnIndex>0</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种372</Type>
@@ -1985,6 +1991,9 @@
                         <Quantity>2</Quantity>
                         <Level>45</Level>
                         <SpawnIndex>2</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种373</Type>
@@ -1992,6 +2001,9 @@
                         <Quantity>2</Quantity>
                         <Level>45</Level>
                         <SpawnIndex>3</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种347</Type>
@@ -1999,6 +2011,9 @@
                         <Quantity>1</Quantity>
                         <Level>45</Level>
                         <SpawnIndex>4</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
