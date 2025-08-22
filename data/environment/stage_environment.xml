@@ -2869,4 +2869,56 @@
         <Width>1920</Width>
         <Height>770</Height>
     </Environment>
+    <Environment>
+        <BackgroundURL>堕落城保卫战2.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1900</Xmax>
+        <Ymin>350</Ymin>
+        <Ymax>850</Ymax>
+        <Width>1900</Width>
+        <Height>850</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>1200</x0>
+            <y0>300</y0>
+            <x1>1650</x1>
+            <y1>370</y1>
+        </Door>
+    </Environment>
+    <Environment>
+        <BackgroundURL>堕落城保卫战3.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1400</Xmax>
+        <Ymin>350</Ymin>
+        <Ymax>550</Ymax>
+        <Width>1450</Width>
+        <Height>550</Height>
+        <Collision>
+            <Point>1100,350</Point>
+            <Point>1400,350</Point>
+            <Point>1400,550</Point>
+        </Collision>
+    </Environment>
+    <Environment>
+        <BackgroundURL>堕落城保卫战4.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>2100</Xmax>
+        <Ymin>400</Ymin>
+        <Ymax>900</Ymax>
+        <Width>2200</Width>
+        <Height>900</Height>
+        <Horizon>0</Horizon>
+        <Skybox>
+            <url>堕落城远景.swf</url>
+            <SpeedRate>6</SpeedRate>
+        </Skybox>
+        <Skybox>
+            <url>大学远山天空.swf</url>
+            <SpeedRate>8</SpeedRate>
+        </Skybox>
+    </Environment>
 </EnvironmentSettings>
