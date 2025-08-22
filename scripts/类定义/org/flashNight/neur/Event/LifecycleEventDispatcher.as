@@ -95,17 +95,17 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
     public function transferToNewTarget(newTarget:MovieClip, clearOldTarget:Boolean, 
                                        transferMode:String, eventFilter:Array):Object {
         if (this._destroyed) {
-            trace("[LifecycleEventDispatcher] Error: Cannot transfer destroyed instance");
+            // trace("[LifecycleEventDispatcher] Error: Cannot transfer destroyed instance");
             return null;
         }
         
         if (!newTarget) {
-            trace("[LifecycleEventDispatcher] Error: New target cannot be null");
+            // trace("[LifecycleEventDispatcher] Error: New target cannot be null");
             return null;
         }
         
         if (this._target === newTarget) {
-            trace("[LifecycleEventDispatcher] Warning: New target is same as current target");
+            // trace("[LifecycleEventDispatcher] Warning: New target is same as current target");
             return {};
         }
         
@@ -115,7 +115,7 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
         if (clearOldTarget === undefined) clearOldTarget = true;
         if (transferMode === undefined) transferMode = "all";
         
-        trace("[LifecycleEventDispatcher] Starting transfer from " + oldTarget + " to " + newTarget);
+        // trace("[LifecycleEventDispatcher] Starting transfer from " + oldTarget + " to " + newTarget);
         
         // 【修复】先解除旧目标的生命周期绑定，防止转移后旧目标onUnload仍然触发
         this.unbindLifecycle(oldTarget);
@@ -134,7 +134,7 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
                         oldTarget, newTarget, eventFilter, clearOldTarget
                     );
                 } else {
-                    trace("[LifecycleEventDispatcher] Warning: 'specific' mode requires eventFilter");
+                    // trace("[LifecycleEventDispatcher] Warning: 'specific' mode requires eventFilter");
                     idMap = {};
                 }
                 break;
@@ -175,7 +175,7 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
                 break;
                 
             default:
-                trace("[LifecycleEventDispatcher] Warning: Unknown transfer mode: " + transferMode);
+                // trace("[LifecycleEventDispatcher] Warning: Unknown transfer mode: " + transferMode);
                 idMap = EventCoordinator.transferEventListeners(oldTarget, newTarget, clearOldTarget);
                 break;
         }
@@ -186,7 +186,7 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
         // 3. 绑定到新目标的生命周期
         this.bindLifecycle(newTarget);
         
-        trace("[LifecycleEventDispatcher] Transfer completed successfully");
+        // trace("[LifecycleEventDispatcher] Transfer completed successfully");
         
         return idMap || {};
     }
@@ -258,12 +258,12 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
                                                     transferMode:String, 
                                                     eventFilter:Array):Object {
         if (!source || !targetDispatcher) {
-            trace("[LifecycleEventDispatcher] Error: Source and target dispatchers cannot be null");
+            // trace("[LifecycleEventDispatcher] Error: Source and target dispatchers cannot be null");
             return null;
         }
         
         if (source._destroyed || targetDispatcher._destroyed) {
-            trace("[LifecycleEventDispatcher] Error: Cannot transfer with destroyed instances");
+            // trace("[LifecycleEventDispatcher] Error: Cannot transfer with destroyed instances");
             return null;
         }
         
@@ -307,7 +307,7 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
         // 标记为已销毁，防止销毁过程中的递归或重入调用
         this._destroyed = true;
         
-        trace("[LifecycleEventDispatcher] Destroying instance for target: " + this._target);
+        // trace("[LifecycleEventDispatcher] Destroying instance for target: " + this._target);
         
         // 1. 解除生命周期绑定，移除 onUnload 监听器
         //    这一步很重要，特别是手动调用 destroy 时，可以防止未来的 onUnload 再次触发
@@ -325,7 +325,7 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
         // 4. 最后释放对 target 的引用，防止内存泄漏
         this._target = null;
         
-        trace("[LifecycleEventDispatcher] Destroyed successfully.");
+        // trace("[LifecycleEventDispatcher] Destroyed successfully.");
     }
     
     /**
@@ -355,7 +355,7 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
      */
     public function subscribeTargetEvent(eventName:String, callback:Function, scope:Object):String {
         if (this._destroyed || !this._target) {
-            trace("[LifecycleEventDispatcher] Warning: Cannot subscribe on destroyed or null target");
+            // trace("[LifecycleEventDispatcher] Warning: Cannot subscribe on destroyed or null target");
             return null;
         }
         
@@ -374,7 +374,7 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
      */
     public function unsubscribeTargetEvent(eventName:String, handlerID:String):Void {
         if (this._destroyed || !this._target) {
-            trace("[LifecycleEventDispatcher] Warning: Cannot unsubscribe on destroyed or null target");
+            // trace("[LifecycleEventDispatcher] Warning: Cannot unsubscribe on destroyed or null target");
             return;
         }
         
@@ -390,7 +390,7 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
      */
     public function enableTargetEvents(enable:Boolean):Void {
         if (this._destroyed || !this._target) {
-            trace("[LifecycleEventDispatcher] Warning: Cannot enable/disable events on destroyed or null target");
+            // trace("[LifecycleEventDispatcher] Warning: Cannot enable/disable events on destroyed or null target");
             return;
         }
         

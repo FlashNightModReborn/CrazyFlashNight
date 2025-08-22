@@ -29,6 +29,12 @@ class org.flashNight.arki.unit.UnitComponent.Deinitializer.StaticDeinitializer
                 _root.gameworld.dispatcher.publish("UnitRemoved", target._name);
             }
 
+            // 检查并销毁dispatcher以解除所有事件订阅
+            if(target.dispatcher)
+            {
+                target.dispatcher.destroy();
+            }
+
             target._deInitialized = true;
         } 
     }
