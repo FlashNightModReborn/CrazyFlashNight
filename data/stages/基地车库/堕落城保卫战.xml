@@ -1002,6 +1002,24 @@
             <StageProgress>Fail</StageProgress>
         </Event>
         <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>翅虎</Parameter>
+            <Message>重要角色阵亡！</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>火凤</Parameter>
+            <Message>重要角色阵亡！</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>黑龙</Parameter>
+            <Message>重要角色阵亡！</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
             <EventName>Start</EventName>
             <Dialogue id="0">
                 <Name>$PC</Name>
@@ -1152,6 +1170,7 @@
                         <Level>60</Level>
                         <IsHostile>false</IsHostile>
                         <SpawnIndex>left</SpawnIndex>
+                        <InstanceName>翅虎</InstanceName>
                     </Enemy>
                     <Enemy>
                         <Type>兵种270</Type>
@@ -1232,6 +1251,7 @@
                         <Level>60</Level>
                         <IsHostile>false</IsHostile>
                         <SpawnIndex>left</SpawnIndex>
+                        <InstanceName>火凤</InstanceName>
                     </Enemy>
                     <Enemy>
                         <Type>兵种268</Type>
@@ -1312,6 +1332,7 @@
                         <Level>60</Level>
                         <IsHostile>false</IsHostile>
                         <SpawnIndex>left</SpawnIndex>
+                        <InstanceName>黑龙</InstanceName>
                     </Enemy>
                     <Enemy>
                         <Type>兵种269</Type>
@@ -1407,6 +1428,103 @@
                 </Door>
             </Environment>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>800</x>
+                <y>500</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1700</x>
+                <y>500</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="2">
+                <x>800</x>
+                <y>900</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="3">
+                <x>1700</x>
+                <y>900</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="4">
+                <x>1300</x>
+                <y>700</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="5">
+                <x>100</x>
+                <y>600</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="6">
+                <x>100</x>
+                <y>500</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="7">
+                <x>1900</x>
+                <y>500</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="8">
+                <x>1900</x>
+                <y>600</y>
+                <Identifier>出生点-超时空特效</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="9">
+                <x>1600</x>
+                <y>520</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>3</QuantityMax>
+                <Hide>true</Hide>
+            </Point>
+            <Point id="10">
+                <x>400</x>
+                <y>510</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>3</QuantityMax>
+                <Hide>true</Hide>
+            </Point>
+            <Point id="11">
+                <x>800</x>
+                <y>530</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>3</QuantityMax>
+                <Hide>true</Hide>
+                <Parameters>
+                    <方向>左</方向>
+                </Parameters>
+            </Point>
+            <Point id="12">
+                <x>1200</x>
+                <y>580</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>3</QuantityMax>
+                <Hide>true</Hide>
+                <Parameters>
+                    <方向>左</方向>
+                </Parameters>
+            </Point>
+            <Point id="13">
+                <x>200</x>
+                <y>572</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>3</QuantityMax>
+                <Hide>true</Hide>
+            </Point>
+        </SpawnPoint>
         <Event>
             <EventName>UnitDeath</EventName>
             <Parameter>仪器</Parameter>
@@ -1524,10 +1642,363 @@
                         <Type>兵种387</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>50</Level>
+                        <Level>60</Level>
                         <InstanceName>tomboy</InstanceName>
                         <x>1500</x>
                         <y>638</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种354</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>1200</x>
+                        <y>410</y>
+                        <IsHostile>false</IsHostile>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种354</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>1400</x>
+                        <y>410</y>
+                        <IsHostile>false</IsHostile>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种372</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>5</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种373</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>6</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种372</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>7</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种373</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>8</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种357</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>1200</x>
+                        <y>410</y>
+                        <IsHostile>false</IsHostile>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种358</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>1400</x>
+                        <y>410</y>
+                        <IsHostile>false</IsHostile>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种70</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>5</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种74</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>6</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种70</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>7</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种74</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>8</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种372</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>9</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种373</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>10</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种372</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>11</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种373</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>12</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种347</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>13</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种356</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>1300</x>
+                        <y>410</y>
+                        <IsHostile>false</IsHostile>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种357</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>1200</x>
+                        <y>410</y>
+                        <IsHostile>false</IsHostile>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种358</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>1400</x>
+                        <y>410</y>
+                        <IsHostile>false</IsHostile>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种75</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>5</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种75</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>6</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种75</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>7</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种75</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>8</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种74</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>9</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种70</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>10</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种74</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>11</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种70</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>12</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种74</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>13</SpawnIndex>
+                        <Parameters>
+                            <threatThreshold>15</threatThreshold>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种372</Type>
+                        <Interval>1600</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种373</Type>
+                        <Interval>1600</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种372</Type>
+                        <Interval>1600</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种373</Type>
+                        <Interval>1600</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种347</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>4</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
