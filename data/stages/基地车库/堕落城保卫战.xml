@@ -57,17 +57,45 @@
         </Event>
         <Event>
             <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>Itinerant</Name>
+                <Title>后勤部长</Title>
+                <Char>Itinerant</Char>
+                <Text>坚持住！</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>gazer</Name>
+                <Title>火力侦察专家</Title>
+                <Char>gazer</Char>
+                <Text>注意，情况有点不太对——</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
             <Parameter>2</Parameter>
             <Dialogue id="0">
                 <Name>gazer</Name>
                 <Title>火力侦察专家</Title>
                 <Char>gazer</Char>
-                <Text>这就是超时空传送吗？真是危险···那么，请你尽快突入，我会带人把守这里。</Text>
+                <Text>这就是超时空传送吗？真是危险···那么，请你尽快突入，我们会把守这里，surveyor可能已经先一步进入堕落城市区了。</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>Itinerant</Name>
+                <Title>后勤部长</Title>
+                <Char>Itinerant</Char>
+                <Text>能量检测出了问题，大概是仪器被诺亚发动了信号攻击，天网可能正在涌来，时间不多了。</Text>
             </Dialogue>
         </Event>
         <Event>
             <EventName>UnitDeath</EventName>
             <Parameter>gazer</Parameter>
+            <Message>重要角色阵亡！</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>itinerant</Parameter>
             <Message>重要角色阵亡！</Message>
             <StageProgress>Fail</StageProgress>
         </Event>
@@ -175,8 +203,17 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种264</Type>
+                        <Type>兵种371</Type>
                         <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                        <IsHostile>false</IsHostile>
+                        <InstanceName>itinerant</InstanceName>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种264</Type>
+                        <Interval>300</Interval>
                         <Quantity>1</Quantity>
                         <Level>45</Level>
                         <IsHostile>false</IsHostile>
@@ -184,7 +221,7 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种267</Type>
-                        <Interval>100</Interval>
+                        <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>45</Level>
                         <IsHostile>false</IsHostile>
@@ -386,7 +423,13 @@
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR</Char>
-                <Text>Lee也在，我们定要让诺亚为自己的可耻偷袭付出代价！</Text>
+                <Text>surveyor···Lee也在，我们定要让诺亚为自己的可耻偷袭付出代价！</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>surveyor</Name>
+                <Title>火力支援学说专家</Title>
+                <Char>surveyor</Char>
+                <Text>天网信号越来越强了···速战速决！</Text>
             </Dialogue>
         </Event>
         <Event>
@@ -418,10 +461,22 @@
                 <Char>$PC_CHAR</Char>
                 <Text>我得尽快赶到酒吧，牛仔他们肯定在那！</Text>
             </Dialogue>
+            <Dialogue id="1">
+                <Name>surveyor</Name>
+                <Title>火力支援学说专家</Title>
+                <Char>surveyor</Char>
+                <Text>这里我们留下断后——</Text>
+            </Dialogue>
         </Event>
         <Event>
             <EventName>UnitDeath</EventName>
             <Parameter>lee</Parameter>
+            <Message>重要角色阵亡！</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>surveyor</Parameter>
             <Message>重要角色阵亡！</Message>
             <StageProgress>Fail</StageProgress>
         </Event>
@@ -445,6 +500,16 @@
                         </Parameters>
                         <x>1700</x>
                         <y>575</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种360</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                        <IsHostile>false</IsHostile>
+                        <InstanceName>surveyor</InstanceName>
+                        <x>1000</x>
+                        <y>543</y>
                     </Enemy>
                     <Enemy>
                         <Type>兵种44</Type>
