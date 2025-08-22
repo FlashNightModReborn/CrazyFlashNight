@@ -99,6 +99,16 @@
             <Message>itinerant阵亡！</Message>
             <StageProgress>Fail</StageProgress>
         </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>gazer</Parameter>
+            <Message>gazer情况危急！</Message>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>itinerant</Parameter>
+            <Message>itinerant情况危急！</Message>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -479,6 +489,16 @@
             <Parameter>surveyor</Parameter>
             <Message>surveyor阵亡！</Message>
             <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>lee</Parameter>
+            <Message>lee情况危急！</Message>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>surveyor</Parameter>
+            <Message>surveyor情况危急！</Message>
         </Event>
         <Wave>
             <SubWave id="0">
@@ -1013,6 +1033,16 @@
             <Message>魔女阵亡！</Message>
             <StageProgress>Fail</StageProgress>
         </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>牛仔</Parameter>
+            <Message>牛仔情况危急！</Message>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>魔女</Parameter>
+            <Message>魔女情况危急！</Message>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -1258,6 +1288,26 @@
             <Parameter>黑龙</Parameter>
             <Message>黑龙阵亡！</Message>
             <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>浮士德</Parameter>
+            <Message>浮士德情况危急！</Message>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>翅虎</Parameter>
+            <Message>翅虎情况危急！</Message>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>火凤</Parameter>
+            <Message>火凤情况危急！</Message>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>黑龙</Parameter>
+            <Message>黑龙情况危急！</Message>
         </Event>
         <Event>
             <EventName>Start</EventName>
@@ -1914,6 +1964,31 @@
             <Parameter>tomboy</Parameter>
             <Message>tomboy阵亡！</Message>
             <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>仪器</Parameter>
+            <Message>仪器受损程度严重！</Message>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>主唱</Parameter>
+            <Message>主唱情况危急！</Message>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>键盘</Parameter>
+            <Message>键盘情况危急！</Message>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>吉他</Parameter>
+            <Message>吉他情况危急！</Message>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>tomboy</Parameter>
+            <Message>tomboy情况危急！</Message>
         </Event>
         <Event>
             <EventName>Start</EventName>
