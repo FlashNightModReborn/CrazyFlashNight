@@ -1,5 +1,6 @@
 ﻿import org.flashNight.neur.Event.*;
 import org.flashNight.naki.RandomNumberEngine.*;
+import org.flashNight.sara.util.*;
 
 /**
  * EffectSystem
@@ -40,6 +41,9 @@ class org.flashNight.arki.component.Effect.EffectSystem
 
     public static var isDeathEffect:Boolean = true;
 
+    private static var __pt:Vector; // 复用的临时点，避免分配
+
+
     // ------------------------------
     // 1. 初始化效果池
     // ------------------------------
@@ -51,6 +55,10 @@ class org.flashNight.arki.component.Effect.EffectSystem
      */
     public static function initializeEffectPool():Void
     {
+        if(!__pt) {
+            __pt = new Vector(0,0);
+        }
+        
         var gameWorld:MovieClip = _root.gameworld;
         if (!gameWorld) return;
 
@@ -78,8 +86,19 @@ class org.flashNight.arki.component.Effect.EffectSystem
      */
     public static function Effect(effectType:String, x:Number, y:Number, scaleX:Number, forceTrigger:Boolean):MovieClip
     {
-        if (!effectType) return null;
+        if (!effectType) return null; // 提前过滤空特效
 
+        __pt.x = x; __pt.y = y;
+        _root.gameworld.localToGlobal(__pt);
+
+        var locX:Number = __pt.x;
+        var locY:Number = __pt.y;
+
+        if (locX < 0 || locX > Stage.width ||
+            locY < 0 || locY > Stage.height) {
+            // _root.发布消息(effectType, effectType.length, __pt.toString(), "滤除-越界");
+            return null;
+        }
         // 判断是否满足触发条件（包括是否视觉元素、数量上限和触发概率）
         if (_root.是否视觉元素 && 
             (currentEffectCount <= EffectSystem.maxEffectCount || RandomNumberEngine.successRate(EffectSystem.maxEffectCount / 5)) || 
