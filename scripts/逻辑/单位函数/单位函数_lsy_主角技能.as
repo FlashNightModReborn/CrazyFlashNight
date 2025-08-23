@@ -413,7 +413,7 @@ _root.技能函数.凶斩攻击 = function(不硬直)
 {
 	var 子弹参数 = new Object();
 	var temp = 1;
-	if(_root.技能函数.凶斩伤害乘数表[_parent.刀] > 1) temp = _root.技能函数.凶斩伤害乘数表[_parent.刀];
+	if(_root.技能函数.凶斩伤害乘数表[_parent.刀.name] > 1) temp = _root.技能函数.凶斩伤害乘数表[_parent.刀.name];
 	
 	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + 1.5 * _parent.内力 * (5 + _parent.技能等级) + _parent.刀属性.power * temp * 0.125 * (10 + _parent.技能等级);
 	if (_parent.mp攻击加成)
@@ -464,7 +464,7 @@ _root.技能函数.瞬步斩攻击 = function()
 {
 	var 子弹参数 = new Object();
 	var temp = 1;
-	if(_root.技能函数.瞬步斩伤害乘数表[_parent.刀] > 1) temp = _root.技能函数.瞬步斩伤害乘数表[_parent.刀];
+	if(_root.技能函数.瞬步斩伤害乘数表[_parent.刀.name] > 1) temp = _root.技能函数.瞬步斩伤害乘数表[_parent.刀.name];
 	
 	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + 0.5 * _parent.内力 * (5 + _parent.技能等级) + _parent.刀属性.power * temp * 0.1 * (10 + _parent.技能等级);
 	if (_parent.mp攻击加成)
@@ -540,7 +540,7 @@ _root.技能函数.龙斩刀伤 = function(Z轴攻击范围)
 	子弹.子弹散射度 = 0;
 	子弹.子弹种类 = "近战联弹";
 	var temp = 1;
-	if(_root.技能函数.龙斩刀伤乘数表[_parent.刀] > 1) temp = _root.技能函数.龙斩刀伤乘数表[_parent.刀];
+	if(_root.技能函数.龙斩刀伤乘数表[_parent.刀.name] > 1) temp = _root.技能函数.龙斩刀伤乘数表[_parent.刀.name];
 	
 	子弹.子弹威力 = 12 * _parent.内力 + _parent.空手攻击力 * 0.1 + (_parent.内力 + _parent.刀属性.power * 0.2) * 0.5 * _parent.技能等级 + _parent.刀属性.power * temp * 0.12 * (10 + _parent.技能等级);
 	if (_parent.mp攻击加成)
@@ -624,7 +624,7 @@ _root.技能函数.拔刀术攻击 = function()
 	子弹.子弹种类 = "近战子弹";
 
 	var temp = 1;
-	if(_root.技能函数.拔刀术伤害乘数表[_parent.刀] > 1) temp = _root.技能函数.拔刀术伤害乘数表[_parent.刀];
+	if(_root.技能函数.拔刀术伤害乘数表[_parent.刀.name] > 1) temp = _root.技能函数.拔刀术伤害乘数表[_parent.刀.name];
 	
 	if (_parent.刀属性.power != undefined && _parent.刀属性.power != NaN)
 	{
@@ -711,8 +711,7 @@ _root.技能函数.六连攻击 = function()
 	_root.子弹区域shoot传递(子弹);
 }
 
-_root.技能函数.迅斩攻击 = function()
-{
+_root.技能函数.迅斩攻击 = function(){
 	var 子弹参数 = new Object();
 	
 	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + _parent.刀属性.power * 0.5 * (3 + _parent.技能等级);
@@ -745,31 +744,31 @@ _root.技能函数.迅斩攻击 = function()
 
 _root.技能函数.翻滚换弹 = function(){
 	if (_root.控制目标 != _parent._name) {
-		_parent.长枪射击次数[_parent.长枪] = 0;
+		_parent.长枪.value.shot = 0;
 		_parent.当前弹夹副武器已发射数 = 0;
-		_parent.手枪射击次数[_parent.手枪] = 0;
-		_parent.手枪2射击次数[_parent.手枪2] = 0;
+		_parent.手枪.value.shot = 0;
+		_parent.手枪2.value.shot = 0;
 		return;
 	}
 	
 	var 长枪使用弹夹名称 = _parent.长枪属性.clipname;
-	if (_parent.长枪射击次数[_parent.长枪] > 0){
+	if (_parent.长枪.value.shot > 0){
 		if(org.flashNight.arki.item.ItemUtil.singleSubmit(长枪使用弹夹名称,1)){
-			_parent.长枪射击次数[_parent.长枪] = 0;
+			_parent.长枪.value.shot = 0;
 			_parent.当前弹夹副武器已发射数 = 0;
 		}
 	}
 	var 手枪使用弹夹名称 = _parent.手枪属性.clipname;
-	if (_parent.手枪射击次数[_parent.手枪] > 0){
+	if (_parent.手枪.value.shot > 0){
 		if(org.flashNight.arki.item.ItemUtil.singleSubmit(手枪使用弹夹名称,1)){
-			_parent.手枪射击次数[_parent.手枪] = 0;
+			_parent.手枪.value.shot = 0;
 			_parent.当前弹夹副武器已发射数 = 0;
 		}
 	}
 	var 手枪2使用弹夹名称 = _parent.手枪2属性.clipname;
-	if (_parent.手枪2射击次数[_parent.手枪2] > 0){
+	if (_parent.手枪2.value.shot > 0){
 		if(org.flashNight.arki.item.ItemUtil.singleSubmit(手枪2使用弹夹名称,1)){
-			_parent.手枪2射击次数[_parent.手枪2] = 0;
+			_parent.手枪2.value.shot = 0;
 			_parent.当前弹夹副武器已发射数 = 0;
 		}
 	}

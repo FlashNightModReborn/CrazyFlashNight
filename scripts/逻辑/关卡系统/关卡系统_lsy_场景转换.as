@@ -7,15 +7,15 @@ import org.flashNight.arki.scene.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 _root.转场景记录数据 = function(){
-	转场景记录数据第一次记录 = true;
+	_root.转场景记录数据第一次记录 = true;
 
 	var 操控对象 = _root.gameworld[_root.控制目标];
-	_root.转场景数据[i][0] = 操控对象.hp;
-	_root.转场景数据[i][1] = 操控对象.mp;
-	_root.转场景数据[i][2] = 操控对象.攻击模式;
-	_root.转场景数据[i][3] = 操控对象.长枪射击次数;
-	_root.转场景数据[i][4] = 操控对象.手枪射击次数;
-	_root.转场景数据[i][5] = 操控对象.手枪2射击次数;
+	_root.转场景数据[0] = 操控对象.hp;
+	_root.转场景数据[1] = 操控对象.mp;
+	_root.转场景数据[2] = 操控对象.攻击模式;
+	// _root.转场景数据[3] = 操控对象.长枪射击次数;
+	// _root.转场景数据[4] = 操控对象.手枪射击次数;
+	// _root.转场景数据[5] = 操控对象.手枪2射击次数;
 
 	佣兵同伴血量记录 = [-1, -1, -1];
 	var _loc3_ = 0;
@@ -31,15 +31,15 @@ _root.转场景记录数据 = function(){
 _root.转场景数据传递 = function(){
 	_root.加载我方人物(_root.场景进入横坐标,_root.场景进入纵坐标);
 	if (_root.新出生){
-		_root.转场景数据 = [[0, 0, "空手", 0, 0, 0], [0, 0, "空手", 0, 0, 0], [0, 0, "空手", 0, 0, 0], [0, 0, "空手", 0, 0, 0]];
+		_root.转场景数据 = [0, 0, "空手"];
 		佣兵同伴血量记录 = [-1, -1, -1];
 
 		var hero:MovieClip = TargetCacheManager.findHero();
 		_root.场景转换_主角hp = hero.hp满血值;
 		_root.场景转换_主角mp = hero.mp满血值;
-		_root.场景转换_主角长枪射击次数 = 0;
-		_root.场景转换_主角手枪射击次数 = 0;
-		_root.场景转换_主角手枪2射击次数 = 0;
+		// _root.场景转换_主角长枪射击次数 = 0;
+		// _root.场景转换_主角手枪射击次数 = 0;
+		// _root.场景转换_主角手枪2射击次数 = 0;
 		i = 0;
 		while (i < _root.同伴数){
 			if (_root.gameworld["同伴" + i].hp满血值 > 0){
@@ -53,30 +53,30 @@ _root.转场景数据传递 = function(){
 	}
 
 	var 操控对象 = _root.gameworld[_root.控制目标];
-	if (_root.转场景数据[i][0] > 0){
-		操控对象.hp = _root.转场景数据[i][0];
+	if (_root.转场景数据[0] > 0){
+		操控对象.hp = _root.转场景数据[0];
 	}
-	if (_root.转场景数据[i][1] > 0){
+	if (_root.转场景数据[1] > 0){
 		操控对象.mp = _root.转场景数据[i][1];
 	}
 	if (转场景记录数据第一次记录){
-		操控对象.攻击模式切换(_root.转场景数据[i][2]);
-		操控对象.攻击模式 = _root.转场景数据[i][2];
-		操控对象.长枪射击次数 = _root.转场景数据[i][3];
-		操控对象.手枪射击次数 = _root.转场景数据[i][4];
-		操控对象.手枪2射击次数 = _root.转场景数据[i][5];
+		操控对象.攻击模式切换(_root.转场景数据[2]);
+		操控对象.攻击模式 = _root.转场景数据[2];
+		// 操控对象.长枪射击次数 = _root.转场景数据[3];
+		// 操控对象.手枪射击次数 = _root.转场景数据[4];
+		// 操控对象.手枪2射击次数 = _root.转场景数据[5];
 	}
 
-	i = 0;
+	var i = 0;
 	while (i < _root.同伴数){
 		if (_root.佣兵同伴血量记录[i] > 0){
 			_root.gameworld["同伴" + i].hp = _root.佣兵同伴血量记录[i];
 		}
-		i += 1;
+		i ++;
 	}
 }
 
-_root.转场景数据 = [[0, 0, "空手", 0, 0, 0], [0, 0, "空手", 0, 0, 0], [0, 0, "空手", 0, 0, 0], [0, 0, "空手", 0, 0, 0]];
+_root.转场景数据 = [0, 0, "空手"];
 _root.新出生 = true;
 _root.转场景记录数据第一次记录 = false;
 
@@ -221,19 +221,19 @@ _root.加载敌方人物 = function(地点X, 地点Y){
 		//配置角斗场敌人的掉落物
 		敌人.掉落物 = [];
 		//斩马刀必定掉落，佩戴对应项链的敌人有概率掉落对应的武器和防具
-		if(敌人.刀 === "斩马刀") {
+		if(敌人.刀.name === "斩马刀") {
 			敌人.掉落物.push({名字:"斩马刀", 概率:100});
 		}else if (敌人.颈部装备 === "角斗高手项链" || 敌人.颈部装备 === "角斗王者项链"){
 			var jjcDropItem = ["次品蓝晶", "巨兽", "冰魄斩", "合金", "烈焰", "异形", "巴雷特", "方舟武士"];
 			for(var j=0; j<jjcDropItem.length; j++){
-				if(敌人.长枪.indexOf(jjcDropItem[j]) > -1) {
-					敌人.掉落物.push({名字:敌人.长枪, 概率:25});
+				if(敌人.长枪.name.indexOf(jjcDropItem[j]) > -1) {
+					敌人.掉落物.push({名字:敌人.长枪.name, 概率:25});
 					break;
 				}
 			}
 			for(var j=0; j<jjcDropItem.length; j++){
-				if(敌人.刀.indexOf(jjcDropItem[j]) > -1) {
-					敌人.掉落物.push({名字:敌人.刀, 概率:25});
+				if(敌人.刀.name.indexOf(jjcDropItem[j]) > -1) {
+					敌人.掉落物.push({名字:敌人.刀.name, 概率:25});
 					break;
 				}
 			}
@@ -241,7 +241,7 @@ _root.加载敌方人物 = function(地点X, 地点Y){
 			var 对应防具 = 防具列表[random(7)];
 			if(对应防具 != null){
 				for(var j=0; j<jjcDropItem.length; j++){
-					if(敌人[对应防具].indexOf(jjcDropItem[j]) > -1) 敌人.掉落物.push({名字:敌人[对应防具], 概率:100});
+					if(敌人[对应防具].name.indexOf(jjcDropItem[j]) > -1) 敌人.掉落物.push({名字:敌人[对应防具].name, 概率:100});
 				}
 			}
 		}

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1752572939">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1755667939">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="3">
+    <DOMTimeline name="asLoader" currentFrame="62">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -361,6 +361,7 @@ ItemDataLoader.loadItemData(
 		var itemDataArray = new Array();
 		var itemNamesByID = new Object();
 		var maxID = 0;
+		var equipmentDict = new Object();
 		var informationMaxValueDict = new Object();
 		for(var i in combinedData){
 			var itemData = combinedData[i];
@@ -368,7 +369,8 @@ ItemDataLoader.loadItemData(
 			itemNamesByID[itemData.id] = itemData.name;
 			itemDataArray.push(itemData);
 			if(itemData.id > maxID) maxID = itemData.id;
-			if(itemData.use =="情报") informationMaxValueDict[itemData.name] = itemData.maxvalue;
+			if(itemData.type ==="武器" || itemData.type ==="防具") equipmentDict[itemData.name] = true;
+			if(itemData.use ==="情报") informationMaxValueDict[itemData.name] = itemData.maxvalue;
 		}
 		itemDataArray = org.flashNight.naki.Sort.QuickSort.adaptiveSort(itemDataArray, function(a, b) {
             return a.id - b.id; // Numeric comparison
@@ -377,6 +379,7 @@ ItemDataLoader.loadItemData(
 		org.flashNight.arki.item.ItemUtil.itemDataArray = itemDataArray;
 		org.flashNight.arki.item.ItemUtil.itemNamesByID = itemNamesByID;
 		org.flashNight.arki.item.ItemUtil.maxID = maxID;
+		org.flashNight.arki.item.ItemUtil.equipmentDict = equipmentDict;
 		org.flashNight.arki.item.ItemUtil.informationMaxValueDict = informationMaxValueDict;
 		_root.物品属性列表 = itemDataDict;
 		_root.物品属性数组 = itemDataArray;

@@ -52,7 +52,7 @@ _root.主动战技函数.空手.震地 = {初始化: null,
 _root.主动战技函数.长枪.发射榴弹 = {初始化: function(自机) {
     自机.当前弹夹副武器已发射数 = 0;
     //再次读取物品属性取得传参
-    var 长枪物品信息 = _root.getItemData(自机.长枪);
+    var 长枪物品信息 = 自机.长枪数据;
     var skill = 长枪物品信息.skill;
     自机.副武器子弹威力 = skill.power && skill.power > 0 ? Number(skill.power) : 2500;
     自机.副武器可发射数 = skill.bulletsize > 0 ? Number(skill.bulletsize) : 1;
@@ -102,9 +102,6 @@ _root.主动战技函数.长枪.发射榴弹 = {初始化: function(自机) {
             子弹属性.shootX = myPoint.x;
             子弹属性.shootY = myPoint.y;
             子弹属性.shootZ = 自机.Z轴坐标;
-            var 长枪物品信息 = _root.getItemData(自机.长枪);
-            var skill = 长枪物品信息.skill;
-            //子弹属性.子弹威力 = skill.power > 0 ? Number(skill.power) : 2500;
             _root.子弹区域shoot传递(子弹属性);
         }};
 
@@ -145,18 +142,10 @@ _root.主动战技函数.长枪.气锤地雷 = {初始化: null,
 _root.主动战技函数.长枪.混凝土切割机超载打击 = {初始化: function(自机) {
     自机.混凝土切割机超载打击许可 = false;
 
-    var skill:Object = _root.getItemData(自机.长枪).skill;
+    var skill:Object = 自机.长枪数据.skill;
     var duration:Number = skill.duration || 5;
 
-    var upgradeLevel:Number;
-
-    if (_root.控制目标 == 自机._name) {
-        var equipment = _root.物品栏.装备栏;
-        upgradeLevel = equipment.getLevel("长枪");
-    } else {
-        upgradeLevel = _root.主角函数.获取人形怪强化等级(自机.等级, 自机.名字);
-    }
-
+    var upgradeLevel:Number = 自机.长枪.level;
     duration += upgradeLevel;
     var overRideCountMax:Number = duration * 30;
     自机.混凝土切割机超载打击持续时间 = overRideCountMax;
@@ -180,18 +169,10 @@ _root.主动战技函数.长枪.混凝土切割机超载打击 = {初始化: fun
 _root.主动战技函数.长枪.MACSIII超载打击 = {初始化: function(自机) {
     自机.MACSIII超载打击许可 = false;
 
-    var skill:Object = _root.getItemData(自机.长枪).skill;
+    var skill:Object = 自机.长枪数据.skill;
     var duration:Number = skill.duration || 5;
 
-    var upgradeLevel:Number;
-
-    if (_root.控制目标 == 自机._name) {
-        var equipment = _root.物品栏.装备栏;
-        upgradeLevel = equipment.getLevel("长枪");
-    } else {
-        upgradeLevel = _root.主角函数.获取人形怪强化等级(自机.等级, 自机.名字);
-    }
-
+    var upgradeLevel:Number = 自机.长枪.level;
     duration += upgradeLevel;
     var overRideCountMax:Number = duration * 30;
     自机.MACSIII超载打击持续时间 = overRideCountMax;
@@ -278,15 +259,7 @@ _root.主动战技函数.长枪.投影召唤 = {
 
 _root.主动战技函数.长枪.铁枪之锋 = {初始化: function(自机) {
     自机.铁枪之锋许可 = false;
-    var upgradeLevel:Number;
-
-    if (_root.控制目标 == 自机._name) {
-        var equipment = _root.物品栏.装备栏;
-        upgradeLevel = equipment.getLevel("长枪");
-    } else {
-        upgradeLevel = _root.主角函数.获取人形怪强化等级(自机.等级, 自机.名字);
-    }
-
+    var upgradeLevel:Number = 自机.长枪.level;
     自机.铁枪之锋倍率 = 1 + upgradeLevel * 0.1;
 },
 
@@ -351,8 +324,7 @@ _root.主动战技函数.长枪.气锤光炮 = {初始化: function(自机) {
         prop.子弹种类 = 自机.气锤光炮弹药类型;
         自机.气锤光炮原伤害 = prop.子弹威力;
         var magazineCapName:String = "长枪弹匣容量";
-        var shootCountName:String = "长枪射击次数";
-        var rate:Number = (自机[magazineCapName] - 自机[shootCountName][自机["长枪"]]) * prop.霰弹值 / 2;
+        var rate:Number = (自机[magazineCapName] - 自机.长枪.value.shot) * prop.霰弹值 / 2;
         // _root.发布消息(自机.气锤光炮原伤害, rate)
         prop.子弹威力 *= rate;
         prop.霰弹值 = 1;
@@ -371,9 +343,8 @@ _root.主动战技函数.长枪.气锤光炮 = {初始化: function(自机) {
             if (!(自机.状态 === "长枪行走" || 自机.状态 === "长枪站立") || 自机.换弹中)
                 return false;
             var magazineCapName:String = "长枪弹匣容量";
-            var shootCountName:String = "长枪射击次数";
 
-            if (自机[shootCountName][自机["长枪"]] + 1 > 自机[magazineCapName])
+            if (自机.长枪.value.shot + 1 > 自机[magazineCapName])
                 return false;
             if (自机.浮空 || 自机.倒地)
                 return false;
@@ -390,14 +361,14 @@ _root.主动战技函数.长枪.气锤光炮 = {初始化: function(自机) {
 
             自机.气锤光炮开启 = false;
 
-            var data:Object = _root.getItemData(自机.长枪);
+            var data:Object = 自机.长枪属性;
             var prop:Object = 自机.man.子弹属性;
 
-            prop.子弹种类 = data.data.bullet;
-            prop.霰弹值 = data.data.split;
-            prop.sound = data.data.sound;
-            prop.发射效果 = data.data.muzzle;
-            prop.站立子弹散射度 = data.data.diffusion;
+            prop.子弹种类 = data.bullet;
+            prop.霰弹值 = data.split;
+            prop.sound = data.sound;
+            prop.发射效果 = data.muzzle;
+            prop.站立子弹散射度 = data.diffusion;
             prop.子弹威力 = 自机.气锤光炮原伤害;
 
             // _root.发布消息("back", prop.子弹威力)
@@ -407,8 +378,7 @@ _root.主动战技函数.长枪.气锤光炮 = {初始化: function(自机) {
             // 自机.动作A = currentA;
 
             var magazineCapName:String = "长枪弹匣容量";
-            var shootCountName:String = "长枪射击次数";
-            自机[shootCountName][自机["长枪"]] = 自机[magazineCapName];
+            自机.长枪.value.shot = 自机[magazineCapName];
             if (_root.控制目标 == 自机._name) {
                 _root.玩家信息界面.玩家必要信息界面["子弹数"] = 0;
             }
@@ -420,16 +390,7 @@ _root.主动战技函数.长枪.突击者之眼 = {初始化: function(自机) {
     自机.突击者之眼数 = skill.split && skill.split > 0 ? Number(skill.split) : 3;
     自机.突击者之眼音效 = skill.sound ? skill.sound : "re_GL_under.wav";
 
-    if (_root.控制目标 == 自机._name) {
-        var equipment = _root.物品栏.装备栏;
-        upgradeLevel = equipment.getLevel("长枪");
-    } else {
-        upgradeLevel = _root.主角函数.获取人形怪强化等级(自机.等级, 自机.名字);
-    }
-
-
-
-
+    var upgradeLevel:Number = 自机.长枪.level;
 
     var k:Number = 22 / 1029; // ≈ 0.02138
     var level:Number = upgradeLevel; // 1–13
@@ -442,11 +403,10 @@ _root.主动战技函数.长枪.突击者之眼 = {初始化: function(自机) {
         if (!自机.突击者之眼开启)
             return;
         var prop:Object = 自机.man.子弹属性;
-        var shootCountName:String = "长枪射击次数";
         prop.子弹种类 = 自机.突击者之眼弹药类型;
         prop.霰弹值 = 自机.突击者之眼数;
         prop.sound = 自机.突击者之眼音效;
-        自机[shootCountName][自机["长枪"]] += 自机.突击者之眼数 - 1;
+        自机.长枪.value.shot += 自机.突击者之眼数 - 1;
         自机.突击者之眼开启 = false;
     });
 },
@@ -454,9 +414,8 @@ _root.主动战技函数.长枪.突击者之眼 = {初始化: function(自机) {
             if (自机["主手射击中"])
                 return false;
             var magazineCapName:String = "长枪弹匣容量";
-            var shootCountName:String = "长枪射击次数";
 
-            if (自机[shootCountName][自机["长枪"]] + 自机.突击者之眼数 > 自机[magazineCapName])
+            if (自机.长枪.value.shot + 自机.突击者之眼数 > 自机[magazineCapName])
                 return false;
             if (自机.浮空 || 自机.倒地)
                 return false;
@@ -471,12 +430,12 @@ _root.主动战技函数.长枪.突击者之眼 = {初始化: function(自机) {
             自机.突击者之眼开启 = true;
             自机.攻击();
 
-            var data:Object = _root.getItemData(自机.长枪);
+            var data:Object = 自机.长枪属性;
             var prop:Object = 自机.man.子弹属性;
 
-            prop.子弹种类 = data.data.bullet;
-            prop.霰弹值 = data.data.split;
-            prop.sound = data.data.sound;
+            prop.子弹种类 = data.bullet;
+            prop.霰弹值 = data.split;
+            prop.sound = data.sound;
 
             // 自机.动作A = currentA;
         }}
@@ -487,13 +446,7 @@ _root.主动战技函数.长枪.突击者之怒 = {初始化: function(自机) {
     自机.突击者之怒倍率 = skill.power && skill.power > 0 ? Number(skill.power) : 9;
     自机.突击者之怒音效 = skill.sound ? skill.sound : "re_GL_under.wav";
 
-    if (_root.控制目标 == 自机._name) {
-        var equipment = _root.物品栏.装备栏;
-        upgradeLevel = equipment.getLevel("长枪");
-    } else {
-        upgradeLevel = _root.主角函数.获取人形怪强化等级(自机.等级, 自机.名字);
-    }
-
+    var upgradeLevel:Number = 自机.长枪.level;
     自机.突击者之怒倍率 += upgradeLevel;
 
     自机.dispatcher.subscribe("长枪射击", function() {
@@ -520,9 +473,8 @@ _root.主动战技函数.长枪.突击者之怒 = {初始化: function(自机) {
             if (!自机.chargeComplete)
                 return false;
             var magazineCapName:String = "长枪弹匣容量";
-            var shootCountName:String = "长枪射击次数";
 
-            if (自机[shootCountName][自机["长枪"]] + 1 > 自机[magazineCapName])
+            if (自机.长枪.value.shot + 1 > 自机[magazineCapName])
                 return false;
             if (自机.浮空 || 自机.倒地)
                 return false;
@@ -539,13 +491,13 @@ _root.主动战技函数.长枪.突击者之怒 = {初始化: function(自机) {
 
             自机.突击者之怒开启 = false;
 
-            var data:Object = _root.getItemData(自机.长枪);
+            var data:Object = 自机.长枪属性;
             var prop:Object = 自机.man.子弹属性;
 
-            prop.子弹种类 = data.data.bullet;
-            prop.霰弹值 = data.data.split;
-            prop.sound = data.data.sound;
-            prop.发射效果 = data.data.muzzle;
+            prop.子弹种类 = data.bullet;
+            prop.霰弹值 = data.split;
+            prop.sound = data.sound;
+            prop.发射效果 = data.muzzle;
             prop.子弹威力 = 自机.突击者之怒原伤害;
 
             // _root.发布消息(prop.子弹种类, prop.霰弹值, prop.子弹威力)

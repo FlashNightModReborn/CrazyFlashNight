@@ -15,7 +15,34 @@ class org.flashNight.arki.item.ItemUtil{
     public static var itemDataArray:Array;
     public static var itemNamesByID:Object;
     public static var maxID:Number;
-    public static var informationMaxValueDict:Object;
+    public static var equipmentDict:Object; // 装备字典，快速判断物品是否为武器或防具
+    public static var informationMaxValueDict:Object; // 情报持有上限字典
+
+    private static var equipmentTierDict:Object = {
+        二阶: "data_2",
+        三阶: "data_3",
+        四阶: "data_4",
+        墨冰: "data_ice",
+        狱火: "data_fire"
+    };
+
+    // 强化数值列表
+    private static var equipmentLevelList:Array = [
+        1,
+        1,
+        1.06,
+        1.14,
+        1.24,
+        1.36,
+        1.5,
+        1.66,
+        1.84,
+        2.04,
+        2.26,
+        2.5,
+        2.76,
+        3.04
+    ];
 
 
     /*
@@ -37,20 +64,85 @@ class org.flashNight.arki.item.ItemUtil{
         return null;
     }
 
+    /*
+     * 计算并返回装备数据
+     */
+    public static function getEquipmentData(item:Object):Object{
+        if(!isEquipment(item.name)) return null;
+        var itemData = getItemData(item.name);
+        var data = itemData.data;
+        // 获取对应的多阶装备数据
+        if(item.value.tier){
+            var tierKey = equipmentTierDict[item.value.tier];
+            var tierData = itemData[tierKey];
+            if(tierData){
+                for(var key in tierData){
+                   data[key] = tierData[key];
+                }
+                itemData[tierKey] = null;
+            }
+        }
+        // 计算强化数值
+        if(item.value.level > 1){
+            if(item.value.level > 13) item.value.level = 13;
+            var levelMultiplier = equipmentLevelList[item.value.level];
+            if(data.power) data.power = data.power * levelMultiplier >> 0;
+            if(data.defence) data.defence = data.defence * levelMultiplier >> 0;
+            if(data.damage) data.damage = data.damage * levelMultiplier >> 0;
+            if(data.force) data.force = data.force * levelMultiplier >> 0;
+            if(data.punch) data.punch = data.punch * levelMultiplier >> 0;
+            if(data.knifepower) data.knifepower = data.knifepower * levelMultiplier >> 0;
+            if(data.gunpower) data.gunpower = data.gunpower * levelMultiplier >> 0;
+            if(data.hp) data.hp = data.hp * levelMultiplier >> 0;
+            if(data.mp) data.mp = data.mp * levelMultiplier >> 0;
+        }
+        return itemData;
+    }
+
+    /*
+     * 判断物品是否为武器或防具
+     */
+    public static function isEquipment(name:String):Boolean{
+        return equipmentDict[name] === true;
+    }
+
 
     /*
      * 创建物品对象
      */
     public static function createItem(name:String, value, lastUpdate:Number):Object{
-        var itemData = getItemData(name);
+        var itemData = getRawItemData(name);
         if(itemData == null || value <= 0) return null;
         var newItem = {
             name: name, 
             lastUpdate: isNaN(lastUpdate) ? new Date().getTime() : lastUpdate
         };
-        if(itemData.type == "武器" || itemData.type == "防具") {
+        if(itemData.type === "武器" || itemData.type === "防具") {
             if(value > 13 || value <= 1) value = 1;
             newItem.value = {level: value};
+        } else {
+            newItem.value = value;
+        }
+        return newItem;
+    }
+
+    /*
+     * 创建物品对象
+     */
+    public static function createItemByString(str:String):Object{
+        var strArr = str.split("#");
+        var itemData = getRawItemData(strArr[0]);
+        var value = Number(strArr[1]);
+        if(itemData == null) return null;
+        if(value <= 0) value = 1;
+        var newItem = {
+            name: strArr[0], 
+            lastUpdate: new Date().getTime()
+        };
+        if(itemData.type === "武器" || itemData.type === "防具") {
+            if(value > 13) value = 1;
+            newItem.value = {level: value};
+            if(strArr[2] != null) newItem.value.tier = strArr[2];
         } else {
             newItem.value = value;
         }
@@ -98,7 +190,6 @@ class org.flashNight.arki.item.ItemUtil{
                 _root.玩家称号 = 控制对象.称号;
             }
         }
-        // _root[index] = name;
         _root.soundEffectManager.playSound(音效);
         _root.发布消息("成功装备[" + use + "][" + itemData.displayname + "]");
         _root.刷新人物装扮(_root.控制目标);
@@ -158,12 +249,12 @@ class org.flashNight.arki.item.ItemUtil{
                 list[name] = value;
                 continue;
             }
-            var itemData:Object = ItemUtil.getItemData(name);
-            if(itemData.use == "材料"){
+            var itemData:Object = ItemUtil.getRawItemData(name);
+            if(itemData.use === "材料"){
                 list.材料[name] = value;
-            } else if(itemData.use == "情报"){
+            } else if(itemData.use === "情报"){
                 list.情报[name] = value;
-            } else if(itemData.type != "武器" && itemData.type != "防具"){
+            } else if(itemData.type !== "武器" && itemData.type !== "防具"){
                 // 可合并物品
                 if(mergables[name] != undefined){
                     mergables[name] += value;
@@ -348,11 +439,11 @@ class org.flashNight.arki.item.ItemUtil{
         for(var i = 0; i < itemArray.length; i++){
             var name = itemArray[i].name;
             var value = itemArray[i].value;
-            var itemData = ItemUtil.getItemData(name);
-            if(itemData.use == "材料"){
+            var itemData = ItemUtil.getRawItemData(name);
+            if(itemData.use === "材料"){
                 if(材料.getValue(name) < value) return null;
                 list.材料[name] = value;
-            }else if(itemData.use == "情报"){
+            }else if(itemData.use === "情报"){
                 if(情报.getValue(name) < value) return null;
                 list.情报[name] = value;
             }else{
@@ -361,7 +452,7 @@ class org.flashNight.arki.item.ItemUtil{
                     var index = indexArr[arri];
                     var bagItem = 背包.getItem(index);
                     if(name != bagItem.name) continue;
-                    if((itemData.type == "武器" || itemData.type == "防具") && bagItem.value.level >= value){
+                    if((itemData.type === "武器" || itemData.type === "防具") && bagItem.value.level >= value){
                         list.背包[index] = value;
                         value = 0;
                         break;
@@ -455,9 +546,9 @@ class org.flashNight.arki.item.ItemUtil{
     
     //查找物品总数
     public static function getTotal(__name:String):Number{
-        var itemData = ItemUtil.getItemData(__name);
-        if(itemData.use == "材料") return _root.收集品栏.材料.getValue(__name);
-        if(itemData.use == "情报") return _root.收集品栏.情报.getValue(__name);
+        var itemData = ItemUtil.getRawItemData(__name);
+        if(itemData.use === "材料") return _root.收集品栏.材料.getValue(__name);
+        if(itemData.use === "情报") return _root.收集品栏.情报.getValue(__name);
         //遍历背包
         var 背包 = _root.物品栏.背包;
         var total = 0;

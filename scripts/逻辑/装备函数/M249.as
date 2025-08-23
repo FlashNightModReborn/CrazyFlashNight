@@ -20,5 +20,5 @@ _root.装备生命周期函数.M249周期 = function(ref:Object, param:Object) {
     var gunAnim:MovieClip = gun.动画;
     var laser:MovieClip = gun.激光模组;
 
-    gunAnim._visible = !(target["长枪射击次数"][target["长枪"]] == ref.capacity);
+    gunAnim._visible = !(target.长枪.value.shot == ref.capacity);
 };

@@ -19,10 +19,8 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
     private var subWeaponType:String;
     
     // 缓存的属性名称
-    private var mainShotCountArray:String;
     private var mainShotCountIndex:String;
     private var mainMagCapacity:String;
-    private var subShotCountArray:String;
     private var subShotCountIndex:String;
     private var subMagCapacity:String;
     
@@ -47,11 +45,9 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
         this.subWeaponType = subType;
         
         // 初始化属性名
-        mainShotCountArray = mainWeaponType + "射击次数";
         mainShotCountIndex = mainWeaponType;
         mainMagCapacity = mainWeaponType + "弹匣容量";
         
-        subShotCountArray = subWeaponType + "射击次数";
         subShotCountIndex = subWeaponType;
         subMagCapacity = subWeaponType + "弹匣容量";
         
@@ -65,8 +61,8 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
      */
     public function updateState():Void {
         // 获取当前射击次数
-        mainNumber = parentRef[mainShotCountArray][parentRef[mainShotCountIndex]];
-        subNumber = parentRef[subShotCountArray][parentRef[subShotCountIndex]];
+        mainNumber = parentRef[mainShotCountIndex].value.shot;
+        subNumber = parentRef[subShotCountIndex].value.shot;
         
         // 计算状态标志
         _mainIsEmpty = mainNumber >= parentRef[mainMagCapacity];

@@ -172,18 +172,6 @@ this.初始化玩家模板();]]></script>
             <DOMFrame index="1" duration="665" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this.swapDepths(this._y);
-if(长枪射击次数 == undefined)
-{
-   长枪射击次数 = 0;
-}
-if(手枪射击次数 == undefined)
-{
-   手枪射击次数 = 0;
-}
-if(手枪2射击次数 == undefined)
-{
-   手枪2射击次数 = 0;
-}
 ]]></script>
               </Actionscript>
               <elements/>

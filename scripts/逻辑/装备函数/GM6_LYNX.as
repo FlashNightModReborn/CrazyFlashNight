@@ -98,14 +98,13 @@ _root.装备生命周期函数.GM6_LYNX初始化 = function(ref, param) {
             
             effect._xscale = effect._yscale = 20;
             effect.动画.gotoAndPlay(level + 1); // 根据精英等级播放不同动画
-            var fireCount:Number = (actor["长枪射击次数"][actor["长枪"]] -= rewardBulletCount);
+            var fireCount:Number = (actor.长枪.value.shot -= rewardBulletCount);
             var cap:Number = actor["长枪弹匣容量"];
             if(fireCount + ref.rewarMax < 0) {
                 fireCount = -ref.rewarMax; // 限制最小值
-                actor["长枪射击次数"][actor["长枪"]] = fireCount;
+                actor.长枪.value.shot = fireCount;
             }
             var bulletDisplayCount = cap - fireCount;
-            // _root.发布消息(rewardBulletCount, actor["长枪射击次数"][actor["长枪"]],bulletDisplayCount);
             actor.dispatcher.publish("updateBullet", actor, "长枪射击中", bulletDisplayCount, "子弹数");
         }
 

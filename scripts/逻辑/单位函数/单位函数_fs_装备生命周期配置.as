@@ -5,13 +5,12 @@
     if(!this.生命周期函数列表) this.生命周期函数列表 = [];
 
     var 是否为主角 = this._name === _root.控制目标
-    var 装备名称 = 是否为主角 ? _root[装备类型] : this[装备类型];
-    var 装备种类 = _root.getItemData(装备名称).use;
+    var 装备名称 = this[装备类型].name;
+    var 装备种类 = this[装备类型 + "数据"].use;
     var 战技种类 = null;
     var 威力基数;
 
-    switch(装备种类)
-    {
+    switch(装备种类){
         case "刀": 
             战技种类 = "兵器"; 
             威力基数 = this.刀属性.power;
@@ -184,7 +183,7 @@ _root.装备生命周期函数.移除异常周期函数 = function(反射对象)
     }
     else
     {
-        if(反射对象.自机[反射对象.装备类型] !== 反射对象.装备名称) {
+        if(反射对象.自机[反射对象.装备类型].name !== 反射对象.装备名称) {
             _root.装备生命周期函数.移除周期函数(反射对象);
         }
     }

@@ -6,7 +6,7 @@
     "height": 165,
     "face": 0,
     "hair": 27,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "黑框眼镜",
       "body": "红黑色功夫装",
@@ -28,33 +28,21 @@
     "height": 171,
     "face": 0,
     "hair": 23,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": null,
-      "body": "黑灰色深V紧身衣",
+      "body": "黑灰色深V紧身衣#2",
       "hand": null,
-      "leg": "SM女王吊带袜",
-      "foot": "黑色高跟皮鞋",
-      "neck": "新手军牌",
+      "leg": "SM女王吊带袜#2",
+      "foot": "黑色高跟皮鞋#2",
+      "neck": "新手军牌#2",
       "primary": null,
       "secondary1": null,
       "secondary2": null,
-      "melee": "匕首",
+      "melee": "匕首#2",
       "grenade": null
     },
-    "price": 0.7,
-    "enhancement": {
-      "头部装备": 2,
-      "上装装备": 2,
-      "手部装备": 2,
-      "下装装备": 2,
-      "脚部装备": 2,
-      "颈部装备": 2,
-      "长枪": 2,
-      "手枪": 2,
-      "手枪2": 2,
-      "刀": 2
-    },
+    "pricemultiplier": 0.7,
     "passive":{
       "口才":{"技能名":"口才", "等级":1, "启用":true}
     }
@@ -66,7 +54,7 @@
     "height": 150,
     "face": 0,
     "hair": 28,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "科技潜入头盔",
       "body": "黑白女仆装",
@@ -80,7 +68,7 @@
       "melee": null,
       "grenade": null
     },
-    "price": 0.3,
+    "pricemultiplier": 0.3,
     "hidden": true
   },
   {
@@ -90,7 +78,7 @@
     "height": 160,
     "face": 0,
     "hair": 26,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "红色风镜",
       "body": "新手衣服",
@@ -112,7 +100,7 @@
     "height": 172,
     "face": 1,
     "hair": 35,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": null,
       "body": "新手衣服",
@@ -134,7 +122,7 @@
     "height": 172,
     "face": 1,
     "hair": 17,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "盗贼猪鼻式防毒面具",
       "body": "盗贼无袖皮马甲",
@@ -156,7 +144,7 @@
     "height": 170,
     "face": 1,
     "hair": 35,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "黑色X蒙面",
       "body": "褐色皮衣",
@@ -178,7 +166,7 @@
     "height": 175,
     "face": 1,
     "hair": 17,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "红外线滤光镜",
       "body": "黑色功夫高手装",
@@ -200,7 +188,7 @@
     "height": 160,
     "face": 0,
     "hair": 28,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": null,
       "body": "白色短袖校服",
@@ -222,7 +210,7 @@
     "height": 181,
     "face": 1,
     "hair": 35,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "沙漠军装头盔",
       "body": "沙漠军装背心",
@@ -244,7 +232,7 @@
     "height": 172,
     "face": 1,
     "hair": 14,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "警用防爆服头盔",
       "body": "警用防爆服背心",
@@ -266,7 +254,7 @@
     "height": 170,
     "face": 1,
     "hair": 35,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "黑色摩托头盔",
       "body": "军绿防弹衣",
@@ -288,7 +276,7 @@
     "height": 175,
     "face": 1,
     "hair": 14,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "战术猪鼻式防毒面具",
       "body": "A兵团制式战术背心",
@@ -310,7 +298,7 @@
     "height": 167,
     "face": 0,
     "hair": 23,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "战术猪鼻式防毒面具",
       "body": "A兵团制式战术背心",
@@ -332,7 +320,7 @@
     "height": 170,
     "face": 1,
     "hair": 14,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": null,
       "body": "褐色皮带装",
@@ -354,7 +342,7 @@
     "height": 185,
     "face": 1,
     "hair": 35,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "黑色X蒙面",
       "body": "军绿防弹衣",
@@ -376,7 +364,7 @@
     "height": 177,
     "face": 1,
     "hair": 35,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "黑色X蒙面",
       "body": "军绿防弹衣",
@@ -398,7 +386,7 @@
     "height": 168,
     "face": 0,
     "hair": 21,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "战术猪鼻式防毒面具",
       "body": "红黑色功夫装",
@@ -420,7 +408,7 @@
     "height": 171,
     "face": 1,
     "hair": 16,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": null,
       "body": "褐色皮衣",
@@ -442,7 +430,7 @@
     "height": 180,
     "face": 1,
     "hair": 35,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "战术猪鼻式防毒面具",
       "body": "A兵团制式战术背心",
@@ -464,7 +452,7 @@
     "height": 170,
     "face": 1,
     "hair": 35,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "双色巧克力味小熊头",
       "body": "双色巧克力味小熊上装",
@@ -486,7 +474,7 @@
     "height": 170,
     "face": 1,
     "hair": 35,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "黑色X蒙面",
       "body": "黑灰色连帽马甲",
@@ -508,7 +496,7 @@
     "height": 181,
     "face": 1,
     "hair": 2,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "战术猪鼻式防毒面具",
       "body": "A兵团制式战术背心",
@@ -530,7 +518,7 @@
     "height": 179,
     "face": 1,
     "hair": 8,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "战术猪鼻式防毒面具",
       "body": "A兵团制式战术背心",
@@ -552,7 +540,7 @@
     "height": 165,
     "face": 0,
     "hair": 22,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "战术猪鼻式防毒面具",
       "body": "A兵团制式战术背心",
@@ -574,7 +562,7 @@
     "height": 170,
     "face": 1,
     "hair": 35,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "Andy装头",
       "body": "Andy上装",
@@ -588,7 +576,7 @@
       "melee": "大剑",
       "grenade": "压缩胶囊之61套士兵"
     },
-    "price": 1.5
+    "pricemultiplier": 1.5
   },
   {
     "level": 21,
@@ -597,7 +585,7 @@
     "height": 195,
     "face": 1,
     "hair": 35,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "装甲头盔",
       "body": "军阀重装兵衣服",
@@ -619,7 +607,7 @@
     "height": 175,
     "face": 1,
     "hair": 17,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "精致战术猪鼻式防毒面具",
       "body": "A兵团精致战术背心",
@@ -641,7 +629,7 @@
     "height": 172,
     "face": 1,
     "hair": 17,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "61式头部装甲",
       "body": "61式胸甲",
@@ -663,7 +651,7 @@
     "height": 170,
     "face": 1,
     "hair": 35,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "幻影头部装甲",
       "body": "幻影胸甲",
@@ -685,7 +673,7 @@
     "height": 188,
     "face": 1,
     "hair": 41,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "兽王虎甲盔",
       "body": "兽王虎甲",
@@ -699,7 +687,7 @@
       "melee": null,
       "grenade": null
     },
-    "price": 1.2
+    "pricemultiplier": 1.2
   },
   {
     "level": 70,
@@ -708,7 +696,7 @@
     "height": 191,
     "face": 1,
     "hair": 42,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "兽王战甲盔",
       "body": "兽王战甲",
@@ -730,7 +718,7 @@
     "height": 150,
     "face": 1,
     "hair": 39,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "钢铁小熊头",
       "body": "钢铁小熊上装",
@@ -752,7 +740,7 @@
     "height": 160,
     "face": 1,
     "hair": 39,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": null,
       "body": null,
@@ -766,7 +754,7 @@
       "melee": null,
       "grenade": null
     },
-    "price": 0.9
+    "pricemultiplier": 0.9
   },
   {
     "level": 20,
@@ -775,7 +763,7 @@
     "height": 150,
     "face": 0,
     "hair": 23,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "草莓味小熊头",
       "body": "草莓味小熊上装",
@@ -797,11 +785,11 @@
     "height": 160,
     "face": 0,
     "hair": 30,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": null,
       "body": "白色短袖校服",
-      "hand": "小型拳套",
+      "hand": "小型拳套#3",
       "leg": "红色百褶短裙",
       "foot": "黑色白底皮鞋",
       "neck": "空手小加成项链",
@@ -810,18 +798,6 @@
       "secondary2": null,
       "melee": null,
       "grenade": null
-    },
-    "enhancement": {
-      "头部装备": 1,
-      "上装装备": 1,
-      "手部装备": 3,
-      "下装装备": 1,
-      "脚部装备": 1,
-      "颈部装备": 1,
-      "长枪": 1,
-      "手枪": 1,
-      "手枪2": 1,
-      "刀": 1
     }
   },
   {
@@ -831,7 +807,7 @@
     "height": 170,
     "face": 1,
     "hair": 32,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": null,
       "body": null,
@@ -853,7 +829,7 @@
     "height": 170,
     "face": 1,
     "hair": 2,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "次品蓝晶面具",
       "body": "次品蓝晶战斗服",
@@ -875,7 +851,7 @@
     "height": 178,
     "face": 0,
     "hair": 23,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "次品蓝晶面具",
       "body": "次品蓝晶战斗服",
@@ -897,7 +873,7 @@
     "height": 182,
     "face": 1,
     "hair": 5,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "合金盔",
       "body": "合金甲",
@@ -911,7 +887,7 @@
       "melee": "烈焰斩",
       "grenade": null
     },
-    "price": 1.2
+    "pricemultiplier": 1.2
   },
   {
     "level": 39,
@@ -920,7 +896,7 @@
     "height": 162,
     "face": 0,
     "hair": 21,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "合金盔",
       "body": "合金甲",
@@ -934,7 +910,7 @@
       "melee": "烈焰斩",
       "grenade": null
     },
-    "price": 1.2
+    "pricemultiplier": 1.2
   },
   {
     "level": 42,
@@ -943,7 +919,7 @@
     "height": 200,
     "face": 1,
     "hair": 11,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "异形骨盔",
       "body": "异形骨甲",
@@ -965,7 +941,7 @@
     "height": 170,
     "face": 0,
     "hair": 22,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "方舟武士盔",
       "body": "方舟武士甲",
@@ -987,7 +963,7 @@
     "height": 191,
     "face": 1,
     "hair": 4,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "方舟武士盔",
       "body": "方舟武士甲",
@@ -1001,7 +977,7 @@
       "melee": "忍者佩剑",
       "grenade": null
     },
-    "price": 1.3
+    "pricemultiplier": 1.3
   },
   {
     "level": 45,
@@ -1010,12 +986,12 @@
     "height": 175,
     "face": 1,
     "hair": 8,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "四阶红外夜视仪",
-      "body": "三阶黑色重甲",
+      "head": "红外夜视仪##四阶",
+      "body": "黑色重甲##三阶",
       "hand": "92式手甲",
-      "leg": "四阶新手裤子",
+      "leg": "新手裤子##四阶",
       "foot": "幻影装甲鞋",
       "neck": "余烬-“与光同尘”",
       "primary": "M4A1战术版",
@@ -1024,7 +1000,7 @@
       "melee": "激光剑",
       "grenade": null
     },
-    "price": 1.5
+    "pricemultiplier": 1.5
   },
   {
     "level": 45,
@@ -1033,10 +1009,10 @@
     "height": 182,
     "face": 0,
     "hair": 50,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
-      "head": "四阶防毒面具1号",
-      "body": "三阶外置能量战纹",
+      "head": "防毒面具1号##四阶",
+      "body": "盗贼纹身装##三阶",
       "hand": "幻影手甲",
       "leg": "黑铁死士制式裤",
       "foot": "幻影装甲鞋",
@@ -1047,7 +1023,7 @@
       "melee": "巨尸长斧",
       "grenade": null
     },
-    "price": 1.5
+    "pricemultiplier": 1.5
   },
   {
     "level": 41,
@@ -1056,12 +1032,12 @@
     "height": 168,
     "face": 1,
     "hair": 52,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "四阶黑色棒球帽",
-      "body": "四阶绿色马甲",
-      "hand": "四阶黑色皮手套",
-      "leg": "四阶新手裤子",
+      "head": "黑色棒球帽##四阶",
+      "body": "绿色马甲##四阶",
+      "hand": "黑色皮手套##四阶",
+      "leg": "新手裤子##四阶",
       "foot": "幻影装甲鞋",
       "neck": "余烬-“三位一体”",
       "primary": null,
@@ -1070,7 +1046,7 @@
       "melee": null,
       "grenade": null
     },
-    "price": 1.5
+    "pricemultiplier": 1.5
   },
   {
     "level": 12,
@@ -1079,13 +1055,13 @@
     "height": 150,
     "face": 0,
     "hair": 28,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "科技潜入头盔",
-      "body": "二阶黑白女仆装",
+      "body": "黑白女仆装##二阶",
       "hand": "科技潜入手套",
-      "leg": "二阶黑白女仆蕾丝短裙",
-      "foot": "二阶黑色白底皮鞋",
+      "leg": "黑白女仆蕾丝短裙##二阶",
+      "foot": "黑色白底皮鞋##二阶",
       "neck": "余烬-“白夜弥撒”",
       "primary": "G36",
       "secondary1": "Glock 18",
@@ -1101,7 +1077,7 @@
     "height": 180,
     "face": 1,
     "hair": 13,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "剑圣头部装甲",
       "body": "剑圣胸甲",
@@ -1115,7 +1091,7 @@
       "melee": "上古饮血大太刀",
       "grenade": null
     },
-    "price": 1.5
+    "pricemultiplier": 1.5
   },
   {
     "level": 23,
@@ -1124,9 +1100,9 @@
     "height": 165,
     "face": 0,
     "hair": 46,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
-      "head": "二阶棕色墨镜",
+      "head": "棕色墨镜##二阶",
       "body": "A兵团精致战术背心",
       "hand": "Andy装手套",
       "leg": "黑丝灰色格子短裙",
@@ -1146,13 +1122,13 @@
     "height": 178,
     "face": 1,
     "hair": 11,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "二阶杰森面具",
-      "body": "二阶bob自由牛仔衫",
+      "head": "杰森面具##二阶",
+      "body": "bob自由牛仔衫##二阶",
       "hand": null,
-      "leg": "二阶bob自由喇叭裤",
-      "foot": "二阶bob自由火箭皮鞋",
+      "leg": "bob自由喇叭裤##二阶",
+      "foot": "bob自由火箭皮鞋##二阶",
       "neck": "金牌打手项链",
       "primary": "KRISS突击版",
       "secondary1": "KRISS",
@@ -1168,13 +1144,13 @@
     "height": 175,
     "face": 0,
     "hair": 29,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "圣诞帽",
-      "body": "二阶黑灰色连帽马甲",
-      "hand": "二阶牛皮手套",
-      "leg": "二阶黑灰色毛边短裤",
-      "foot": "二阶黑灰色白底皮鞋",
+      "body": "黑灰色连帽马甲##二阶",
+      "hand": "牛皮手套##二阶",
+      "leg": "黑灰色毛边短裤##二阶",
+      "foot": "黑灰色白底皮鞋##二阶",
       "neck": "金牌打手项链",
       "primary": null,
       "secondary1": null,
@@ -1190,12 +1166,12 @@
     "height": 156,
     "face": 0,
     "hair": 53,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
-      "head": "二阶黑框眼镜",
-      "body": "二阶白色短袖校服",
+      "head": "黑框眼镜##二阶",
+      "body": "白色短袖校服##二阶",
       "hand": null,
-      "leg": "二阶红色百褶短裙",
+      "leg": "红色百褶短裙##二阶",
       "foot": "白色袜子",
       "neck": "金牌打手项链",
       "primary": null,
@@ -1212,7 +1188,7 @@
     "height": 150,
     "face": 1,
     "hair": 51,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "双色巧克力味小熊头",
       "body": "钢铁小熊上装",
@@ -1234,7 +1210,7 @@
     "height": 175,
     "face": 1,
     "hair": 33,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "黑框眼镜",
       "body": "黑色西装",
@@ -1248,7 +1224,7 @@
       "melee": null,
       "grenade": null
     },
-    "price": 1.2
+    "pricemultiplier": 1.2
   },
   {
     "level": 12,
@@ -1257,13 +1233,13 @@
     "height": 180,
     "face": 1,
     "hair": 7,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "二阶黑色摩托头盔",
-      "body": "二阶褐色皮衣",
-      "hand": "二阶道钉手套",
-      "leg": "二阶盗贼褐色皮裤",
-      "foot": "二阶褐色厚底皮鞋",
+      "head": "黑色摩托头盔##二阶",
+      "body": "褐色皮衣##二阶",
+      "hand": "道钉手套##二阶",
+      "leg": "盗贼褐色皮裤##二阶",
+      "foot": "褐色厚底皮鞋##二阶",
       "neck": "新手军牌",
       "primary": null,
       "secondary1": null,
@@ -1279,13 +1255,13 @@
     "height": 185,
     "face": 1,
     "hair": 7,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "二阶黑色摩托头盔",
-      "body": "二阶橘色赛车夹克",
-      "hand": "二阶黑色皮手套",
-      "leg": "二阶墨绿军用下装",
-      "foot": "二阶墨绿军用鞋",
+      "head": "黑色摩托头盔##二阶",
+      "body": "橘色赛车夹克##二阶",
+      "hand": "黑色皮手套##二阶",
+      "leg": "墨绿军用下装##二阶",
+      "foot": "墨绿军用鞋##二阶",
       "neck": "新手军牌",
       "primary": null,
       "secondary1": null,
@@ -1301,7 +1277,7 @@
     "height": 172,
     "face": 1,
     "hair": 41,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "红色风镜",
       "body": "褐色皮带装",
@@ -1323,7 +1299,7 @@
     "height": 175,
     "face": 1,
     "hair": 5,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": null,
       "body": "休闲马甲",
@@ -1345,7 +1321,7 @@
     "height": 175,
     "face": 1,
     "hair": 16,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": null,
       "body": "蓝色西式校服",
@@ -1367,7 +1343,7 @@
     "height": 174,
     "face": 1,
     "hair": 15,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "黑框眼镜",
       "body": "黑色立领校服",
@@ -1389,7 +1365,7 @@
     "height": 175,
     "face": 0,
     "hair": 40,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "医用口罩",
       "body": "白色短袖校服",
@@ -1411,7 +1387,7 @@
     "height": 182,
     "face": 1,
     "hair": 34,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "远古忍者盔",
       "body": "诛神胸甲",
@@ -1433,7 +1409,7 @@
     "height": 175,
     "face": 1,
     "hair": 34,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "诛神头盔",
       "body": "诛神胸甲",
@@ -1455,13 +1431,13 @@
     "height": 178,
     "face": 1,
     "hair": 6,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "三阶黑色太阳镜",
-      "body": "三阶沙漠军装背心",
-      "hand": "三阶道钉手套",
-      "leg": "三阶沙漠军装裤",
-      "foot": "三阶沙漠军装皮鞋",
+      "head": "黑色太阳镜##三阶",
+      "body": "沙漠军装背心##三阶",
+      "hand": "道钉手套##三阶",
+      "leg": "沙漠军装裤##三阶",
+      "foot": "沙漠军装皮鞋##三阶",
       "neck": "爱国者军牌",
       "primary": "中国88式狙击步枪改造版",
       "secondary1": "中国54式手枪",
@@ -1469,7 +1445,7 @@
       "melee": "爪刀",
       "grenade": null
     },
-    "price": 0.8
+    "pricemultiplier": 0.8
   },
   {
     "level": 15,
@@ -1478,13 +1454,13 @@
     "height": 175,
     "face": 1,
     "hair": 35,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": null,
-      "body": "二阶白色中山上装",
-      "hand": "二阶白色手套",
-      "leg": "二阶白色中山装裤子",
-      "foot": "二阶褐色简单皮鞋",
+      "body": "白色中山上装##二阶",
+      "hand": "白色手套##二阶",
+      "leg": "白色中山装裤子##二阶",
+      "foot": "褐色简单皮鞋##二阶",
       "neck": "轶事奇人",
       "primary": null,
       "secondary1": "毛瑟手枪",
@@ -1500,13 +1476,13 @@
     "height": 165,
     "face": 0,
     "hair": 24,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": null,
-      "body": "二阶红黑色功夫装",
+      "body": "红黑色功夫装##二阶",
       "hand": "福袋",
-      "leg": "二阶黑色功夫短裤",
-      "foot": "二阶红色功夫布鞋",
+      "leg": "黑色功夫短裤##二阶",
+      "foot": "红色功夫布鞋##二阶",
       "neck": "轶事奇人",
       "primary": null,
       "secondary1": null,
@@ -1522,13 +1498,13 @@
     "height": 180,
     "face": 0,
     "hair": 22,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": null,
-      "body": "二阶黑色长袖学生制服",
+      "body": "黑色长袖学生制服##二阶",
       "hand": null,
-      "leg": "二阶红色格子短裙",
-      "foot": "二阶咖啡色学生皮鞋",
+      "leg": "红色格子短裙##二阶",
+      "foot": "咖啡色学生皮鞋##二阶",
       "neck": "轶事奇人",
       "primary": null,
       "secondary1": "MK23手枪",
@@ -1544,7 +1520,7 @@
     "height": 165,
     "face": 0,
     "hair": 42,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "红外线滤光镜",
       "body": "黑灰色深V紧身衣",
@@ -1566,10 +1542,10 @@
     "height": 165,
     "face": 0,
     "hair": 13,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "圆框墨镜",
-      "body": "二阶绿色马甲",
+      "body": "绿色马甲##二阶",
       "hand": "棕色手套",
       "leg": "黑色功夫短裤",
       "foot": "深灰色皮鞋",
@@ -1588,7 +1564,7 @@
     "height": 168,
     "face": 0,
     "hair": 28,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "方舟武士盔",
       "body": "黑铁死士绑带",
@@ -1602,7 +1578,7 @@
       "melee": null,
       "grenade": null
     },
-    "price": 0.6
+    "pricemultiplier": 0.6
   },
   {
     "level": 31,
@@ -1611,11 +1587,11 @@
     "height": 165,
     "face": 0,
     "hair": 26,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "锐刻幻影夜视仪",
       "body": "keyboard衣服",
-      "hand": "三阶黑色皮手套",
+      "hand": "黑色皮手套##三阶",
       "leg": "次品蓝晶下装",
       "foot": "幻影装甲鞋",
       "neck": "余烬队徽",
@@ -1633,7 +1609,7 @@
     "height": 185,
     "face": 0,
     "hair": 26,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "炎魔盔",
       "body": "61式胸甲",
@@ -1655,7 +1631,7 @@
     "height": 180,
     "face": 0,
     "hair": 22,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "蓝晶面具",
       "body": "方舟武士甲",
@@ -1677,7 +1653,7 @@
     "height": 190,
     "face": 1,
     "hair": 44,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "精致战术猪鼻式防毒面具",
       "body": "钛合金61式胸甲",
@@ -1699,13 +1675,13 @@
     "height": 160,
     "face": 0,
     "hair": 13,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "复镕望远热感仪",
-      "body": "四阶新手衣服",
+      "body": "新手衣服##四阶",
       "hand": "61式手甲",
       "leg": "幻影腿甲",
-      "foot": "四阶新手皮鞋",
+      "foot": "新手皮鞋##四阶",
       "neck": "余烬队徽",
       "primary": "M202火箭发射器",
       "secondary1": null,
@@ -1721,33 +1697,21 @@
     "height": 180,
     "face": 1,
     "hair": 44,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "天山黑侠帽子",
-      "body": "天山黑侠上装",
-      "hand": "兽王虎甲手套",
-      "leg": "天山黑侠裤子",
-      "foot": "天山黑侠棕色皮鞋",
-      "neck": "战斗专家军牌",
+      "head": "天山黑侠帽子#10",
+      "body": "天山黑侠上装#10",
+      "hand": "兽王虎甲手套#13",
+      "leg": "天山黑侠裤子#10",
+      "foot": "天山黑侠棕色皮鞋#10",
+      "neck": "战斗专家军牌#10",
       "primary": null,
       "secondary1": null,
       "secondary2": null,
       "melee": null,
       "grenade": null
     },
-    "price": 0.9,
-    "enhancement": {
-      "头部装备": 10,
-      "上装装备": 10,
-      "手部装备": 13,
-      "下装装备": 10,
-      "脚部装备": 10,
-      "颈部装备": 10,
-      "长枪": 1,
-      "手枪": 1,
-      "手枪2": 1,
-      "刀": 1
-    }
+    "pricemultiplier": 0.9
   },
   {
     "level": 13,
@@ -1756,7 +1720,7 @@
     "height": 175,
     "face": 1,
     "hair": 43,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "咖啡色条纹蒙面",
       "body": "褐色背带背心",
@@ -1778,12 +1742,12 @@
     "height": 156,
     "face": 0,
     "hair": 28,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
-      "head": "二阶棕色墨镜",
+      "head": "棕色墨镜##二阶",
       "body": "沙漠军装背心",
-      "hand": "二阶牛皮手套",
-      "leg": "二阶棕色带腿包短裤",
+      "hand": "牛皮手套##二阶",
+      "leg": "棕色带腿包短裤##二阶",
       "foot": "军阀棕色皮靴",
       "neck": "僵尸克星军牌",
       "primary": "AUG",
@@ -1800,11 +1764,11 @@
     "height": 182,
     "face": 1,
     "hair": 35,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "二阶沙漠军装头盔",
+      "head": "沙漠军装头盔##二阶",
       "body": "军阀突击兵衣服",
-      "hand": "二阶牛皮手套",
+      "hand": "牛皮手套##二阶",
       "leg": "沙漠军装裤",
       "foot": "沙漠军装皮鞋",
       "neck": "僵尸克星军牌",
@@ -1822,7 +1786,7 @@
     "height": 160,
     "face": 0,
     "hair": 22,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "科技潜入头盔",
       "body": "远古忍者甲",
@@ -1844,7 +1808,7 @@
     "height": 188,
     "face": 1,
     "hair": 34,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "远古忍者盔",
       "body": "远古忍者甲",
@@ -1866,7 +1830,7 @@
     "height": 179,
     "face": 1,
     "hair": 18,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "锐刻幻影夜视仪",
       "body": "沙漠军装背心",
@@ -1888,10 +1852,10 @@
     "height": 180,
     "face": 1,
     "hair": 43,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "三阶圆框墨镜",
-      "body": "三阶军绿防弹衣",
+      "head": "圆框墨镜##三阶",
+      "body": "军绿防弹衣##三阶",
       "hand": null,
       "leg": "军阀装甲裤",
       "foot": "军阀棕色皮靴",
@@ -1910,31 +1874,19 @@
     "height": 180,
     "face": 1,
     "hair": 2,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "次品蓝晶面具",
-      "body": "蓝晶战斗服",
-      "hand": "钛合金61式手甲",
-      "leg": "次品蓝晶下装",
-      "foot": "幻影装甲鞋",
-      "neck": "战斗狂人军牌",
-      "primary": "极品巨兽",
-      "secondary1": "牛仔的左轮",
-      "secondary2": "牛仔的左轮",
-      "melee": "镜之虎彻",
+      "head": "次品蓝晶面具#6",
+      "body": "蓝晶战斗服#6",
+      "hand": "钛合金61式手甲#10",
+      "leg": "次品蓝晶下装#6",
+      "foot": "幻影装甲鞋#6",
+      "neck": "战斗狂人军牌#6",
+      "primary": "极品巨兽#6",
+      "secondary1": "牛仔的左轮#6",
+      "secondary2": "牛仔的左轮#6",
+      "melee": "镜之虎彻#6",
       "grenade": null
-    },
-    "enhancement": {
-      "头部装备": 6,
-      "上装装备": 6,
-      "手部装备": 10,
-      "下装装备": 6,
-      "脚部装备": 6,
-      "颈部装备": 6,
-      "长枪": 6,
-      "手枪": 6,
-      "手枪2": 6,
-      "刀": 6
     }
   },
   {
@@ -1944,7 +1896,7 @@
     "height": 160,
     "face": 1,
     "hair": 4,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "幻影头部装甲",
       "body": "幻影胸甲",
@@ -1966,13 +1918,13 @@
     "height": 200,
     "face": 1,
     "hair": 34,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "兽王虎甲盔",
       "body": "军阀重装兵衣服",
       "hand": "A兵团制式战术手套",
       "leg": "92式腿甲",
-      "foot": "四阶墨绿军用鞋",
+      "foot": "墨绿军用鞋##四阶",
       "neck": "战斗狂人军牌",
       "primary": "M202火箭发射器",
       "secondary1": null,
@@ -1988,7 +1940,7 @@
     "height": 182,
     "face": 1,
     "hair": 44,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "精致战术猪鼻式防毒面具",
       "body": "A兵团精致战术背心",
@@ -2002,7 +1954,7 @@
       "melee": "十文字大剑",
       "grenade": null
     },
-    "price": 0.8
+    "pricemultiplier": 0.8
   },
   {
     "level": 45,
@@ -2011,7 +1963,7 @@
     "height": 160,
     "face": 0,
     "hair": 28,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "精致战术猪鼻式防毒面具",
       "body": "A兵团精致战术背心",
@@ -2033,13 +1985,13 @@
     "height": 180,
     "face": 1,
     "hair": 2,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "二阶防毒面具2号",
+      "head": "防毒面具2号##二阶",
       "body": "A兵团制式战术背心",
       "hand": "A兵团制式战术手套",
-      "leg": "二阶新手裤子",
-      "foot": "二阶新手皮鞋",
+      "leg": "新手裤子##二阶",
+      "foot": "新手皮鞋##二阶",
       "neck": "调停者军牌",
       "primary": "G36",
       "secondary1": "TMP",
@@ -2055,13 +2007,13 @@
     "height": 182,
     "face": 1,
     "hair": 12,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "A兵团三相猪鼻式防毒面具",
-      "body": "二阶警用防爆服背心",
+      "body": "警用防爆服背心##二阶",
       "hand": "A兵团制式战术手套",
-      "leg": "二阶新手裤子",
-      "foot": "二阶黑色军用皮鞋",
+      "leg": "新手裤子##二阶",
+      "foot": "黑色军用皮鞋##二阶",
       "neck": "调停者军牌",
       "primary": "汤姆逊冲锋枪",
       "secondary1": "Mp5 pdw",
@@ -2077,13 +2029,13 @@
     "height": 156,
     "face": 0,
     "hair": 13,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "黑铁死士围巾",
-      "body": "二阶新手衣服",
-      "hand": "二阶牛皮手套",
+      "body": "新手衣服##二阶",
+      "hand": "牛皮手套##二阶",
       "leg": "黑铁死士制式裤",
-      "foot": "二阶新手皮鞋",
+      "foot": "新手皮鞋##二阶",
       "neck": "调停者军牌",
       "primary": "M4A1",
       "secondary1": "Glock 18",
@@ -2099,13 +2051,13 @@
     "height": 187,
     "face": 1,
     "hair": 4,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "二阶新手面具",
-      "body": "二阶黑短袖",
+      "head": "新手面具##二阶",
+      "body": "黑短袖##二阶",
       "hand": null,
-      "leg": "二阶新手裤子",
-      "foot": "二阶新手皮鞋",
+      "leg": "新手裤子##二阶",
+      "foot": "新手皮鞋##二阶",
       "neck": "调停者军牌",
       "primary": "M249",
       "secondary1": null,
@@ -2121,12 +2073,12 @@
     "height": 182,
     "face": 1,
     "hair": 9,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "仿制A兵团战术猪鼻式防毒面具",
-      "body": "二阶黑色功夫装",
+      "body": "黑色功夫装##二阶",
       "hand": "钢铁小熊手套",
-      "leg": "二阶警用防爆服裤",
+      "leg": "警用防爆服裤##二阶",
       "foot": "天山黑侠棕色皮鞋",
       "neck": "调停者军牌",
       "primary": null,
@@ -2143,11 +2095,11 @@
     "height": 178,
     "face": 0,
     "hair": 48,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "黑铁死士围巾",
       "body": "黑铁死士绑带",
-      "hand": "二阶牛皮手套",
+      "hand": "牛皮手套##二阶",
       "leg": "A兵团制式战术裤",
       "foot": "黑铁死士鞋",
       "neck": "屠戮者项链",
@@ -2165,10 +2117,10 @@
     "height": 150,
     "face": 0,
     "hair": 25,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "黑铁死士围巾",
-      "body": "二阶SM女王皮衣",
+      "body": "SM女王皮衣##二阶",
       "hand": "黑铁死士手套",
       "leg": "黑铁死士制式裤",
       "foot": "黑铁死士鞋",
@@ -2187,7 +2139,7 @@
     "height": 179,
     "face": 1,
     "hair": 54,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "A兵团独眼龙防毒面具",
       "body": "A兵团精致战术背心",
@@ -2209,7 +2161,7 @@
     "height": 189,
     "face": 0,
     "hair": 23,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "A兵团半遮脸猪鼻式防毒面具",
       "body": "黑铁行刑者绑带",
@@ -2231,9 +2183,9 @@
     "height": 183,
     "face": 0,
     "hair": 13,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
-      "head": "三阶红外夜视仪",
+      "head": "红外夜视仪##三阶",
       "body": "A兵团精致战术背心",
       "hand": "黑铁行刑者手套",
       "leg": "黑铁行刑者制式裤",
@@ -2253,7 +2205,7 @@
     "height": 190,
     "face": 0,
     "hair": 47,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "般若赤鬼半覆面",
       "body": "剑圣胸甲",
@@ -2275,7 +2227,7 @@
     "height": 160,
     "face": 1,
     "hair": 19,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "次品蓝晶面具",
       "body": "Andy上装",
@@ -2297,13 +2249,13 @@
     "height": 200,
     "face": 0,
     "hair": 52,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
-      "head": "三阶警用防爆服头盔",
+      "head": "警用防爆服头盔##三阶",
       "body": "92式胸甲",
       "hand": "A兵团精致战术手套",
       "leg": "A兵团制式战术裤",
-      "foot": "三阶墨绿军用鞋",
+      "foot": "墨绿军用鞋##三阶",
       "neck": "守护者军牌",
       "primary": "XM1014战术版",
       "secondary1": null,
@@ -2319,10 +2271,10 @@
     "height": 170,
     "face": 1,
     "hair": 6,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "红色风镜",
-      "body": "二阶红黑色功夫装",
+      "body": "红黑色功夫装##二阶",
       "hand": "红色皮手套",
       "leg": "沙漠军装裤",
       "foot": "沙漠军装皮鞋",
@@ -2341,13 +2293,13 @@
     "height": 177,
     "face": 0,
     "hair": 43,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
-      "head": "四阶防毒面具1号",
+      "head": "防毒面具1号##四阶",
       "body": "A兵团精致战术背心",
-      "hand": "四阶牛皮手套",
+      "hand": "牛皮手套##四阶",
       "leg": "Andy下装",
-      "foot": "四阶沙漠军装皮鞋",
+      "foot": "沙漠军装皮鞋##四阶",
       "neck": "战斗专家军牌",
       "primary": "芬兰之星",
       "secondary1": "韦森686改装版",
@@ -2363,13 +2315,13 @@
     "height": 165,
     "face": 0,
     "hair": 31,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
-      "head": "四阶防毒面具2号",
+      "head": "防毒面具2号##四阶",
       "body": "A兵团精致战术背心",
-      "hand": "四阶黑色皮手套",
-      "leg": "四阶警用防爆服裤",
-      "foot": "四阶黑色军用皮鞋",
+      "hand": "黑色皮手套##四阶",
+      "leg": "警用防爆服裤##四阶",
+      "foot": "黑色军用皮鞋##四阶",
       "neck": "调停者军牌",
       "primary": "牛仔的温切斯特",
       "secondary1": null,
@@ -2385,7 +2337,7 @@
     "height": 170,
     "face": 0,
     "hair": 3,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "次品蓝晶面具",
       "body": "科技潜入上装",
@@ -2407,12 +2359,12 @@
     "height": 170,
     "face": 1,
     "hair": 13,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "三阶黑色棒球帽",
+      "head": "黑色棒球帽##三阶",
       "body": "Andy上装",
       "hand": "A兵团精致战术手套",
-      "leg": "四阶墨绿军用下装",
+      "leg": "墨绿军用下装##四阶",
       "foot": "A兵团精致战术皮鞋",
       "neck": "未羊项链",
       "primary": "AK200",
@@ -2429,7 +2381,7 @@
     "height": 187,
     "face": 1,
     "hair": 35,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "般若影鬼半覆面",
       "body": "A兵团精致战术背心",
@@ -2451,12 +2403,12 @@
     "height": 189,
     "face": 1,
     "hair": 48,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "四阶杰森面具",
+      "head": "杰森面具##四阶",
       "body": "剑圣胸甲",
-      "hand": "四阶弗莱迪手套",
-      "leg": "四阶墨绿军用下装",
+      "hand": "弗莱迪手套##四阶",
+      "leg": "墨绿军用下装##四阶",
       "foot": "剑圣装甲鞋",
       "neck": "战斗狂人军牌",
       "primary": "中国湖榴弹发射器",
@@ -2473,13 +2425,13 @@
     "height": 182,
     "face": 1,
     "hair": 15,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "战术耳机加遮阳帽",
-      "body": "二阶绿色马甲",
-      "hand": "二阶黑色皮手套",
+      "body": "绿色马甲##二阶",
+      "hand": "黑色皮手套##二阶",
       "leg": "战术套装裤子",
-      "foot": "二阶新手皮鞋",
+      "foot": "新手皮鞋##二阶",
       "neck": "僵尸割草机军牌",
       "primary": "FNSLP半自动霰弹枪",
       "secondary1": null,
@@ -2495,13 +2447,13 @@
     "height": 173,
     "face": 1,
     "hair": 43,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "二阶黑色太阳镜",
-      "body": "二阶军阀弹药兵衣服",
-      "hand": "二阶牛皮手套",
-      "leg": "二阶军阀普通带腿包军裤",
-      "foot": "二阶新手皮鞋",
+      "head": "黑色太阳镜##二阶",
+      "body": "军阀弹药兵衣服##二阶",
+      "hand": "牛皮手套##二阶",
+      "leg": "军阀普通带腿包军裤##二阶",
+      "foot": "新手皮鞋##二阶",
       "neck": "僵尸割草机军牌",
       "primary": "Sniper",
       "secondary1": null,
@@ -2517,13 +2469,13 @@
     "height": 178,
     "face": 1,
     "hair": 44,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": null,
       "body": "战术套装上衣",
-      "hand": "二阶牛皮手套",
-      "leg": "二阶新手裤子",
-      "foot": "二阶新手皮鞋",
+      "hand": "牛皮手套##二阶",
+      "leg": "新手裤子##二阶",
+      "foot": "新手皮鞋##二阶",
       "neck": "僵尸克星军牌",
       "primary": "AK200",
       "secondary1": "Desert Eagle",
@@ -2539,7 +2491,7 @@
     "height": 185,
     "face": 1,
     "hair": 7,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "蓝晶面具",
       "body": "钛合金61式胸甲",
@@ -2561,7 +2513,7 @@
     "height": 174,
     "face": 0,
     "hair": 13,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "诛神头盔",
       "body": "异形女王甲",
@@ -2583,7 +2535,7 @@
     "height": 180,
     "face": 1,
     "hair": 16,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "锐刻幻影夜视仪",
       "body": "蓝晶战斗服",
@@ -2605,7 +2557,7 @@
     "height": 177,
     "face": 1,
     "hair": 36,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "精致战术猪鼻式防毒面具",
       "body": "黑色重甲",
@@ -2627,12 +2579,12 @@
     "height": 182,
     "face": 1,
     "hair": 7,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "92式头部装甲",
       "body": "幻影胸甲",
       "hand": "92式手甲",
-      "leg": "三阶新手裤子",
+      "leg": "新手裤子##三阶",
       "foot": "幻影装甲鞋",
       "neck": "战斗专家军牌",
       "primary": "QBZ95",
@@ -2649,9 +2601,9 @@
     "height": 198,
     "face": 1,
     "hair": 17,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "四阶骷髅面具",
+      "head": "骷髅面具##四阶",
       "body": "兽王虎甲",
       "hand": "诛神手套",
       "leg": "剑圣腿甲",
@@ -2663,7 +2615,7 @@
       "melee": null,
       "grenade": null
     },
-    "price": 0.7
+    "pricemultiplier": 0.7
   },
   {
     "level": 48,
@@ -2672,9 +2624,9 @@
     "height": 178,
     "face": 1,
     "hair": 48,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "四阶防毒面具2号",
+      "head": "防毒面具2号##四阶",
       "body": "合金甲",
       "hand": "异形女王手套",
       "leg": "幻影腿甲",
@@ -2694,7 +2646,7 @@
     "height": 190,
     "face": 1,
     "hair": 34,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "61式头部装甲",
       "body": "剑圣胸甲",
@@ -2716,13 +2668,13 @@
     "height": 168,
     "face": 0,
     "hair": 34,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "幻影头部装甲",
       "body": "singer衣服",
       "hand": "keyboard手套",
       "leg": "异形女王腿甲",
-      "foot": "四阶黑色高跟皮鞋",
+      "foot": "黑色高跟皮鞋##四阶",
       "neck": "战斗狂人军牌",
       "primary": "巴雷特",
       "secondary1": null,
@@ -2730,7 +2682,7 @@
       "melee": "金蛇剑",
       "grenade": null
     },
-    "price": 0.6
+    "pricemultiplier": 0.6
   },
   {
     "level": 25,
@@ -2739,12 +2691,12 @@
     "height": 162,
     "face": 0,
     "hair": 10,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
-      "head": "二阶黑色X蒙面",
+      "head": "黑色X蒙面##二阶",
       "body": "keyboard衣服",
       "hand": "keyboard手套",
-      "leg": "二阶新手裤子",
+      "leg": "新手裤子##二阶",
       "foot": "BOSS2鞋子",
       "neck": "金牌打手项链",
       "primary": "Sniper",
@@ -2761,13 +2713,13 @@
     "height": 157,
     "face": 0,
     "hair": 21,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
-      "head": "二阶新手面具",
-      "body": "二阶SM女王皮衣",
-      "hand": "二阶SM女王黑色皮手套",
-      "leg": "二阶SM女王吊带袜",
-      "foot": "二阶黑色高跟皮鞋",
+      "head": "新手面具##二阶",
+      "body": "SM女王皮衣##二阶",
+      "hand": "SM女王黑色皮手套##二阶",
+      "leg": "SM女王吊带袜##二阶",
+      "foot": "黑色高跟皮鞋##二阶",
       "neck": "调停者军牌",
       "primary": null,
       "secondary1": null,
@@ -2775,7 +2727,7 @@
       "melee": null,
       "grenade": null
     },
-    "price": 0.5
+    "pricemultiplier": 0.5
   },
   {
     "level": 14,
@@ -2784,13 +2736,13 @@
     "height": 175,
     "face": 1,
     "hair": 17,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "二阶黑色X蒙面",
-      "body": "二阶护肩夹克",
-      "hand": "二阶红色皮手套",
-      "leg": "二阶新手裤子",
-      "foot": "二阶新手皮鞋",
+      "head": "黑色X蒙面##二阶",
+      "body": "护肩夹克##二阶",
+      "hand": "红色皮手套##二阶",
+      "leg": "新手裤子##二阶",
+      "foot": "新手皮鞋##二阶",
       "neck": "僵尸割草机军牌",
       "primary": null,
       "secondary1": null,
@@ -2806,13 +2758,13 @@
     "height": 169,
     "face": 1,
     "hair": 38,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "精致盗贼猪鼻猪鼻式面具",
-      "body": "二阶褐色背带背心",
+      "body": "褐色背带背心##二阶",
       "hand": null,
-      "leg": "二阶新手裤子",
-      "foot": "二阶褐色简单皮鞋",
+      "leg": "新手裤子##二阶",
+      "foot": "褐色简单皮鞋##二阶",
       "neck": "僵尸割草机军牌",
       "primary": "雷明登870",
       "secondary1": null,
@@ -2828,12 +2780,12 @@
     "height": 175,
     "face": 1,
     "hair": 52,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "二阶杰森面具",
-      "body": "二阶弗莱迪毛衣",
+      "head": "杰森面具##二阶",
+      "body": "弗莱迪毛衣##二阶",
       "hand": "弗莱迪手套",
-      "leg": "二阶金色腰带破洞牛仔裤",
+      "leg": "金色腰带破洞牛仔裤##二阶",
       "foot": "黑色板鞋",
       "neck": "僵尸割草机军牌",
       "primary": null,
@@ -2850,13 +2802,13 @@
     "height": 180,
     "face": 1,
     "hair": -1,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "二阶红色风镜",
+      "head": "红色风镜##二阶",
       "body": "绿色马甲",
-      "hand": "二阶红色皮手套",
-      "leg": "二阶墨绿军用下装",
-      "foot": "二阶墨绿军用鞋",
+      "hand": "红色皮手套##二阶",
+      "leg": "墨绿军用下装##二阶",
+      "foot": "墨绿军用鞋##二阶",
       "neck": "僵尸克星军牌",
       "primary": null,
       "secondary1": null,
@@ -2872,7 +2824,7 @@
     "height": 160,
     "face": 0,
     "hair": 21,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "骷髅面具",
       "body": "盗贼无袖皮马甲",
@@ -2894,31 +2846,19 @@
     "height": 177,
     "face": 1,
     "hair": 16,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "二阶黑色礼帽",
-      "body": "二阶黑色西装",
-      "hand": "二阶红色皮手套",
-      "leg": "二阶黑色西装裤",
-      "foot": "二阶黑色军用皮鞋",
+      "head": "黑色礼帽##二阶",
+      "body": "黑色西装##二阶",
+      "hand": "红色皮手套#5##二阶",
+      "leg": "黑色西装裤##二阶",
+      "foot": "黑色军用皮鞋##二阶",
       "neck": "调停者军牌",
       "primary": "汤姆逊冲锋枪",
       "secondary1": null,
       "secondary2": null,
       "melee": "maddog疯狗刀",
       "grenade": null
-    },
-    "enhancement": {
-      "头部装备": 1,
-      "上装装备": 1,
-      "手部装备": 5,
-      "下装装备": 1,
-      "脚部装备": 1,
-      "颈部装备": 1,
-      "长枪": 1,
-      "手枪": 1,
-      "手枪2": 1,
-      "刀": 1
     }
   },
   {
@@ -2928,13 +2868,13 @@
     "height": 175,
     "face": 1,
     "hair": 45,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "二阶棕色墨镜",
-      "body": "二阶黑白女仆装",
-      "hand": "二阶白色手套",
-      "leg": "二阶黑白女仆蕾丝短裙",
-      "foot": "二阶黑色白底皮鞋",
+      "head": "棕色墨镜##二阶",
+      "body": "黑白女仆装##二阶",
+      "hand": "白色手套##二阶",
+      "leg": "黑白女仆蕾丝短裙##二阶",
+      "foot": "黑色白底皮鞋##二阶",
       "neck": "戌狗项链",
       "primary": "MG42",
       "secondary1": "P90",
@@ -2950,7 +2890,7 @@
     "height": 175,
     "face": 1,
     "hair": -1,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "方舟武士盔",
       "body": "方舟武士甲",
@@ -2972,7 +2912,7 @@
     "height": 180,
     "face": 1,
     "hair": 34,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "诛神头盔",
       "body": "诛神胸甲",
@@ -2994,13 +2934,13 @@
     "height": 182,
     "face": 1,
     "hair": 2,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "四阶防毒面具2号",
+      "head": "防毒面具2号##四阶",
       "body": "幻影胸甲",
       "hand": "Pig手-NPC",
-      "leg": "四阶墨绿军用下装",
-      "foot": "四阶墨绿军用鞋",
+      "leg": "墨绿军用下装##四阶",
+      "foot": "墨绿军用鞋##四阶",
       "neck": "余烬队徽",
       "primary": "Fire Gun",
       "secondary1": null,
@@ -3016,12 +2956,12 @@
     "height": 179,
     "face": 1,
     "hair": 41,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "黑铁死士围巾",
-      "body": "四阶黑色功夫装",
+      "body": "黑色功夫装##四阶",
       "hand": "幻影手甲",
-      "leg": "四阶新手裤子",
+      "leg": "新手裤子##四阶",
       "foot": "幻影装甲鞋",
       "neck": "余烬队徽",
       "primary": "穿刺QBZ95",
@@ -3038,7 +2978,7 @@
     "height": 175,
     "face": 1,
     "hair": 35,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "炎魔盔",
       "body": "炎魔甲",
@@ -3060,10 +3000,10 @@
     "height": 150,
     "face": 0,
     "hair": 28,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "61式头部装甲",
-      "body": "四阶外置能量战纹",
+      "body": "盗贼纹身装##四阶",
       "hand": "61式手甲",
       "leg": "61式腿甲",
       "foot": "61式装甲鞋",
@@ -3082,7 +3022,7 @@
     "height": 185,
     "face": 1,
     "hair": 35,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "92式头部装甲",
       "body": "92式胸甲",
@@ -3104,13 +3044,13 @@
     "height": 153,
     "face": 0,
     "hair": 27,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "仿制A兵团战术猪鼻式防毒面具",
       "body": "guitar衣服",
-      "hand": "二阶牛皮手套",
-      "leg": "二阶红色格子短裙",
-      "foot": "二阶红色功夫布鞋",
+      "hand": "牛皮手套##二阶",
+      "leg": "红色格子短裙##二阶",
+      "foot": "红色功夫布鞋##二阶",
       "neck": "金牌打手项链",
       "primary": "KRISS突击版",
       "secondary1": "Mossberg500",
@@ -3126,7 +3066,7 @@
     "height": 175,
     "face": 1,
     "hair": -1,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "黄金骑士牙狼头盔",
       "body": "黄金骑士牙狼胸甲",
@@ -3148,31 +3088,19 @@
     "height": 185,
     "face": 1,
     "hair": -1,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "黄金骑士牙狼头盔",
-      "body": "四阶外置能量战纹",
-      "hand": "黄金骑士牙狼手套",
-      "leg": "黄金骑士牙狼腿甲",
-      "foot": "黄金骑士牙狼战鞋",
-      "neck": "远古诛神项链",
-      "primary": "M134暴力版",
+      "head": "黄金骑士牙狼头盔#10",
+      "body": "盗贼纹身装#13#四阶",
+      "hand": "黄金骑士牙狼手套#10",
+      "leg": "黄金骑士牙狼腿甲#10",
+      "foot": "黄金骑士牙狼战鞋#10",
+      "neck": "远古诛神项链#10",
+      "primary": "M134暴力版#10",
       "secondary1": null,
       "secondary2": null,
       "melee": null,
       "grenade": null
-    },
-    "enhancement": {
-      "头部装备": 10,
-      "上装装备": 13,
-      "手部装备": 10,
-      "下装装备": 10,
-      "脚部装备": 10,
-      "颈部装备": 10,
-      "长枪": 10,
-      "手枪": 10,
-      "手枪2": 10,
-      "刀": 10
     }
   },
   {
@@ -3182,31 +3110,19 @@
     "height": 185,
     "face": 1,
     "hair": -1,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "黄金骑士牙狼头盔",
-      "body": "黄金骑士牙狼胸甲",
-      "hand": "黄金骑士牙狼手套",
-      "leg": "黄金骑士牙狼腿甲",
-      "foot": "黄金骑士牙狼战鞋",
-      "neck": "远古诛神项链",
-      "primary": "诛神枪",
+      "head": "黄金骑士牙狼头盔#10",
+      "body": "黄金骑士牙狼胸甲#10",
+      "hand": "黄金骑士牙狼手套#10",
+      "leg": "黄金骑士牙狼腿甲#10",
+      "foot": "黄金骑士牙狼战鞋#10",
+      "neck": "远古诛神项链#10",
+      "primary": "诛神枪#13",
       "secondary1": null,
       "secondary2": null,
-      "melee": "远古诛神剑",
+      "melee": "远古诛神剑#10",
       "grenade": null
-    },
-    "enhancement": {
-      "头部装备": 10,
-      "上装装备": 10,
-      "手部装备": 10,
-      "下装装备": 10,
-      "脚部装备": 10,
-      "颈部装备": 10,
-      "长枪": 13,
-      "手枪": 10,
-      "手枪2": 10,
-      "刀": 10
     }
   },
   {
@@ -3216,10 +3132,10 @@
     "height": 185,
     "face": 0,
     "hair": 45,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": null,
-      "body": "四阶外置能量战纹",
+      "body": "盗贼纹身装##四阶",
       "hand": null,
       "leg": "兽王虎甲腿甲",
       "foot": "远古忍者鞋",
@@ -3238,11 +3154,11 @@
     "height": 151,
     "face": 0,
     "hair": 45,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "白色盗贼猪鼻式防毒面具",
       "body": "战术JK上衣",
-      "hand": "二阶牛皮手套",
+      "hand": "牛皮手套##二阶",
       "leg": "战术JK裙",
       "foot": "战术JK鞋子",
       "neck": "金牌打手项链",
@@ -3260,7 +3176,7 @@
     "height": 160,
     "face": 1,
     "hair": 7,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": null,
       "body": "风衣战术服",
@@ -3282,13 +3198,13 @@
     "height": 158,
     "face": 1,
     "hair": 36,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "白色盗贼猪鼻式防毒面具",
-      "body": "二阶浅灰背心",
-      "hand": "二阶黑色皮手套",
-      "leg": "二阶墨绿军用下装",
-      "foot": "二阶墨绿军用鞋",
+      "body": "浅灰背心##二阶",
+      "hand": "黑色皮手套##二阶",
+      "leg": "墨绿军用下装##二阶",
+      "foot": "墨绿军用鞋##二阶",
       "neck": "新手军牌",
       "primary": null,
       "secondary1": "双管猎枪",
@@ -3304,7 +3220,7 @@
     "height": 181,
     "face": 1,
     "hair": -1,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "钛合金61式头部装甲",
       "body": "钛合金61式胸甲",
@@ -3326,7 +3242,7 @@
     "height": 170,
     "face": 1,
     "hair": 26,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "次品蓝晶面具",
       "body": "次品蓝晶战斗服",
@@ -3348,7 +3264,7 @@
     "height": 178,
     "face": 0,
     "hair": 22,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "次品蓝晶面具",
       "body": "次品蓝晶战斗服",
@@ -3370,7 +3286,7 @@
     "height": 182,
     "face": 1,
     "hair": 5,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "合金盔",
       "body": "合金甲",
@@ -3392,7 +3308,7 @@
     "height": 162,
     "face": 0,
     "hair": 21,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "合金盔",
       "body": "合金甲",
@@ -3406,7 +3322,7 @@
       "melee": "烈焰斩",
       "grenade": null
     },
-    "price": 1.2
+    "pricemultiplier": 1.2
   },
   {
     "level": 45,
@@ -3415,7 +3331,7 @@
     "height": 170,
     "face": 1,
     "hair": 44,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "蓝晶面具",
       "body": "次品蓝晶战斗服",
@@ -3429,7 +3345,7 @@
       "melee": "冰魄神斩",
       "grenade": null
     },
-    "price": 1.2
+    "pricemultiplier": 1.2
   },
   {
     "level": 33,
@@ -3438,7 +3354,7 @@
     "height": 178,
     "face": 0,
     "hair": 51,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "次品蓝晶面具",
       "body": "次品蓝晶战斗服",
@@ -3460,7 +3376,7 @@
     "height": 182,
     "face": 1,
     "hair": 5,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "合金盔",
       "body": "合金甲",
@@ -3482,7 +3398,7 @@
     "height": 162,
     "face": 0,
     "hair": 21,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "合金盔",
       "body": "合金甲",
@@ -3504,7 +3420,7 @@
     "height": 162,
     "face": 0,
     "hair": 21,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "合金盔",
       "body": "合金甲",
@@ -3526,7 +3442,7 @@
     "height": 182,
     "face": 1,
     "hair": 5,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "合金盔",
       "body": "合金甲",
@@ -3540,7 +3456,7 @@
       "melee": "烈焰斩",
       "grenade": null
     },
-    "price": 1.2
+    "pricemultiplier": 1.2
   },
   {
     "level": 100,
@@ -3549,31 +3465,19 @@
     "height": 155,
     "face": 1,
     "hair": -1,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "黄金骑士牙狼头盔",
-      "body": "黄金骑士牙狼胸甲",
-      "hand": "黄金骑士牙狼手套",
-      "leg": "黄金骑士牙狼腿甲",
-      "foot": "黄金骑士牙狼战鞋",
-      "neck": "亥猪项链",
-      "primary": "黄金QBZ",
-      "secondary1": "MP7极品战术版",
-      "secondary2": "MP7极品战术版",
-      "melee": "金蛇剑",
+      "head": "黄金骑士牙狼头盔#10",
+      "body": "黄金骑士牙狼胸甲#10",
+      "hand": "黄金骑士牙狼手套#10",
+      "leg": "黄金骑士牙狼腿甲#10",
+      "foot": "黄金骑士牙狼战鞋#10",
+      "neck": "亥猪项链#10",
+      "primary": "黄金QBZ#13",
+      "secondary1": "MP7极品战术版#13",
+      "secondary2": "MP7极品战术版#13",
+      "melee": "金蛇剑#13",
       "grenade": null
-    },
-    "enhancement": {
-      "头部装备": 10,
-      "上装装备": 10,
-      "手部装备": 10,
-      "下装装备": 10,
-      "脚部装备": 10,
-      "颈部装备": 10,
-      "长枪": 13,
-      "手枪": 13,
-      "手枪2": 13,
-      "刀": 13
     }
   },
   {
@@ -3583,7 +3487,7 @@
     "height": 150,
     "face": 0,
     "hair": 45,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "蓝晶面具",
       "body": "蓝晶战斗服",
@@ -3605,31 +3509,19 @@
     "height": 200,
     "face": 1,
     "hair": 7,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "兽王战甲盔",
-      "body": "兽王战甲",
-      "hand": "兽王战甲手套",
-      "leg": "兽王战甲腿甲",
-      "foot": "兽王战甲鞋",
-      "neck": "空手大加成项链",
+      "head": "兽王战甲盔#10",
+      "body": "兽王战甲#10",
+      "hand": "兽王战甲手套#13",
+      "leg": "兽王战甲腿甲#10",
+      "foot": "兽王战甲鞋#10",
+      "neck": "空手大加成项链#13",
       "primary": null,
       "secondary1": null,
       "secondary2": null,
       "melee": null,
       "grenade": null
-    },
-    "enhancement": {
-      "头部装备": 10,
-      "上装装备": 10,
-      "手部装备": 13,
-      "下装装备": 10,
-      "脚部装备": 10,
-      "颈部装备": 13,
-      "长枪": 10,
-      "手枪": 10,
-      "手枪2": 10,
-      "刀": 10
     }
   },
   {
@@ -3639,31 +3531,19 @@
     "height": 173,
     "face": 0,
     "hair": 45,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
-      "head": "芬里尔头甲",
-      "body": "芬里尔胸甲",
-      "hand": "芬里尔手甲",
-      "leg": "芬里尔腿甲",
-      "foot": "芬里尔鞋",
-      "neck": "地球卫士项链",
-      "primary": "紫色幻想",
-      "secondary1": "轻量化量子能量枪",
-      "secondary2": "轻量化量子能量枪",
+      "head": "芬里尔头甲#13",
+      "body": "芬里尔胸甲#13",
+      "hand": "芬里尔手甲#13",
+      "leg": "芬里尔腿甲#13",
+      "foot": "芬里尔鞋#13",
+      "neck": "地球卫士项链#13",
+      "primary": "紫色幻想#13",
+      "secondary1": "轻量化量子能量枪#13",
+      "secondary2": "轻量化量子能量枪#13",
       "melee": "绝地武士佩剑",
       "grenade": null
-    },
-    "enhancement": {
-      "头部装备": 13,
-      "上装装备": 13,
-      "手部装备": 13,
-      "下装装备": 13,
-      "脚部装备": 13,
-      "颈部装备": 13,
-      "长枪": 13,
-      "手枪": 13,
-      "手枪2": 13,
-      "刀": 13
     }
   },
   {
@@ -3673,7 +3553,7 @@
     "height": 195,
     "face": 1,
     "hair": 20,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "试作型原种共生头盔",
       "body": "试作型原种共生上装",
@@ -3695,7 +3575,7 @@
     "height": 187,
     "face": 0,
     "hair": 47,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "异形女王盔",
       "body": "异形女王甲",
@@ -3717,7 +3597,7 @@
     "height": 162,
     "face": 1,
     "hair": 17,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "异形骨盔",
       "body": "异形骨甲",
@@ -3739,7 +3619,7 @@
     "height": 197,
     "face": 1,
     "hair": 3,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "芬里尔头甲",
       "body": "芬里尔胸甲",
@@ -3761,7 +3641,7 @@
     "height": 187,
     "face": 0,
     "hair": 27,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "重甲头部",
       "body": "重甲上衣",
@@ -3783,7 +3663,7 @@
     "height": 166,
     "face": 1,
     "hair": 2,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "重甲头部",
       "body": "重甲上衣",
@@ -3805,7 +3685,7 @@
     "height": 176,
     "face": 1,
     "hair": 2,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "重甲头部",
       "body": "重甲上衣",
@@ -3827,7 +3707,7 @@
     "height": 175,
     "face": 0,
     "hair": 1,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "夜行侦查盔",
       "body": "夜行侦查上装",
@@ -3841,7 +3721,7 @@
       "melee": "周波匕首",
       "grenade": null
     },
-    "price": 1.5
+    "pricemultiplier": 1.5
   },
   {
     "level": 40,
@@ -3850,7 +3730,7 @@
     "height": 180,
     "face": 1,
     "hair": 33,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "牛仔风帽",
       "body": "牛仔上衣",
@@ -3872,7 +3752,7 @@
     "height": 170,
     "face": 1,
     "hair": 9,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "锐刻幻影夜视仪",
       "body": "C级防化服上装",
@@ -3894,7 +3774,7 @@
     "height": 175,
     "face": 0,
     "hair": 22,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "B级防化服头套",
       "body": "B级防化服上装",
@@ -3916,7 +3796,7 @@
     "height": 190,
     "face": 1,
     "hair": 15,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "A级防化服头套",
       "body": "A级防化服上装",
@@ -3938,7 +3818,7 @@
     "height": 180,
     "face": 0,
     "hair": 45,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "远古忍者盔",
       "body": "远古忍者甲",
@@ -3960,7 +3840,7 @@
     "height": 176,
     "face": 1,
     "hair": 54,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "特战队员头部装备",
       "body": "特战队员战术背心",
@@ -3982,7 +3862,7 @@
     "height": 165,
     "face": 0,
     "hair": 46,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "特战队员头部装备",
       "body": "特战队员战术背心",
@@ -4004,7 +3884,7 @@
     "height": 169,
     "face": 1,
     "hair": 7,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "61式头部装甲",
       "body": "61式胸甲",
@@ -4026,7 +3906,7 @@
     "height": 175,
     "face": 1,
     "hair": 8,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "61式头部装甲",
       "body": "61式胸甲",
@@ -4048,7 +3928,7 @@
     "height": 175,
     "face": 1,
     "hair": 44,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "战术猪鼻式防毒面具",
       "body": "A兵团制式战术背心",
@@ -4062,7 +3942,7 @@
       "melee": "虎彻",
       "grenade": null
     },
-    "price": 3.0,
+    "pricemultiplier": 3.0,
     "hidden": true
   },
   {
@@ -4072,7 +3952,7 @@
     "height": 185,
     "face": 0,
     "hair": 27,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "自由骑士头甲",
       "body": "自由骑士胸甲",
@@ -4094,31 +3974,19 @@
     "height": 169,
     "face": 1,
     "hair": 17,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "自由骑士头甲",
-      "body": "自由骑士胸甲",
-      "hand": "自由骑士手甲",
-      "leg": "自由骑士腿甲",
-      "foot": "自由骑士鞋",
-      "neck": "冷兵器大加成项链",
+      "head": "自由骑士头甲#10",
+      "body": "自由骑士胸甲#10",
+      "hand": "自由骑士手甲#10",
+      "leg": "自由骑士腿甲#10",
+      "foot": "自由骑士鞋#10",
+      "neck": "冷兵器大加成项链#13",
       "primary": "",
       "secondary1": "",
       "secondary2": "",
-      "melee": "审判日夜闪",
+      "melee": "审判日夜闪#13",
       "grenade": null
-    },
-    "enhancement": {
-      "头部装备": 10,
-      "上装装备": 10,
-      "手部装备": 10,
-      "下装装备": 10,
-      "脚部装备": 10,
-      "颈部装备": 13,
-      "长枪": 10,
-      "手枪": 10,
-      "手枪2": 10,
-      "刀": 13
     }
   },
   {
@@ -4128,7 +3996,7 @@
     "height": 188,
     "face": 1,
     "hair": 6,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "黑犀头甲",
       "body": "黑犀胸甲",
@@ -4150,31 +4018,19 @@
     "height": 188,
     "face": 1,
     "hair": 6,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "黑犀头甲",
-      "body": "黑犀胸甲",
-      "hand": "黑犀手甲",
-      "leg": "黑犀腿甲",
-      "foot": "黑犀鞋",
-      "neck": "地球卫士项链",
+      "head": "黑犀头甲#13",
+      "body": "黑犀胸甲#13",
+      "hand": "黑犀手甲#13",
+      "leg": "黑犀腿甲#13",
+      "foot": "黑犀鞋#13",
+      "neck": "地球卫士项链#13",
       "primary": "",
       "secondary1": "",
       "secondary2": "",
-      "melee": "流星枪",
+      "melee": "流星枪#13",
       "grenade": null
-    },
-    "enhancement": {
-      "头部装备": 13,
-      "上装装备": 13,
-      "手部装备": 13,
-      "下装装备": 13,
-      "脚部装备": 13,
-      "颈部装备": 13,
-      "长枪": 13,
-      "手枪": 13,
-      "手枪2": 13,
-      "刀": 13
     }
   },
   {
@@ -4184,34 +4040,22 @@
     "height": 180,
     "face": 1,
     "hair": 4,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "废城军装帽",
-      "body": "废城防弹军装上装",
-      "hand": "废城军装手套",
-      "leg": "废城军装下装",
-      "foot": "废城军装鞋",
-      "neck": "克隆体",
-      "primary": "L85A1",
-      "secondary1": "m9",
-      "secondary2": "m9",
+      "head": "废城军装帽#7",
+      "body": "废城防弹军装上装#7",
+      "hand": "废城军装手套#7",
+      "leg": "废城军装下装#7",
+      "foot": "废城军装鞋#7",
+      "neck": "克隆体#7",
+      "primary": "L85A1#7",
+      "secondary1": "m9#7",
+      "secondary2": "m9#7",
       "melee": "匕首",
       "grenade": null
     },
-    "price": 2.5,
-    "hidden": true,
-    "enhancement": {
-      "头部装备": 7,
-      "上装装备": 7,
-      "手部装备": 7,
-      "下装装备": 7,
-      "脚部装备": 7,
-      "颈部装备": 7,
-      "长枪": 7,
-      "手枪": 7,
-      "手枪2": 7,
-      "刀": 7
-    }
+    "pricemultiplier": 2.5,
+    "hidden": true
   },
   {
     "level": 7,
@@ -4220,7 +4064,7 @@
     "height": 165,
     "face": 1,
     "hair": 4,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "废城军装帽",
       "body": "废城军装上装",
@@ -4242,7 +4086,7 @@
     "height": 175,
     "face": 1,
     "hair": 4,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": "废城军装面具帽",
       "body": "废城防弹军装上装",
@@ -4264,7 +4108,7 @@
     "height": 170,
     "face": 1,
     "hair": 4,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "废城军装面具帽",
       "body": "废城防弹军装上装",
@@ -4286,7 +4130,7 @@
     "height": 180,
     "face": 1,
     "hair": 40,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
       "head": null,
       "body": null,
@@ -4308,7 +4152,7 @@
     "height": 199,
     "face": 0,
     "hair": 26,
-    "gender": 0,
+    "gender": "女",
     "equipment": {
       "head": "般若赤鬼半覆面",
       "body": "剑圣胸甲",
@@ -4330,31 +4174,19 @@
     "height": 218,
     "face": 1,
     "hair": 0,
-    "gender": 1,
+    "gender": "男",
     "equipment": {
-      "head": "觉醒者.L33T墨镜",
-      "body": "黄金骑士牙狼胸甲",
-      "hand": "末日铁拳",
-      "leg": "黄金骑士牙狼腿甲",
-      "foot": "黄金骑士牙狼战鞋",
-      "neck": "空手大加成项链",
+      "head": "觉醒者.L33T墨镜#13",
+      "body": "黄金骑士牙狼胸甲#10",
+      "hand": "末日铁拳#13",
+      "leg": "黄金骑士牙狼腿甲#10",
+      "foot": "黄金骑士牙狼战鞋#10",
+      "neck": "空手大加成项链#13",
       "primary": "",
       "secondary1": "",
       "secondary2": "",
       "melee": "",
       "grenade": null
-    },
-    "enhancement": {
-      "头部装备": 13,
-      "上装装备": 10,
-      "手部装备": 13,
-      "下装装备": 10,
-      "脚部装备": 10,
-      "颈部装备": 13,
-      "长枪": 10,
-      "手枪": 10,
-      "手枪2": 10,
-      "刀": 10
     }
   }
 ]

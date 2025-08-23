@@ -115,7 +115,6 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         // 预计算需要调用的函数和属性名
         var shootMethodName:String  = attackMode + "射击";
         var magazineCapName:String  = attackMode + "弹匣容量";
-        var shootCountName:String   = attackMode + "射击次数";
 
         // 执行射击逻辑
         core[shootStateName] = false;
@@ -136,7 +135,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             core[shootStateName] = core[shootMethodName](gunRef, bulletAttr);
 
             // 更新弹匣剩余子弹数量
-            var magazineRemaining:Number = bulletAttr.ammoCost * (core[magazineCapName] - core[shootCountName][core[attackMode]]);
+            var magazineRemaining:Number = bulletAttr.ammoCost * (core[magazineCapName] - core[attackMode].value.shot);
             dispatcher.publish("updateBullet", core, shootStateName, magazineRemaining, config.playerBulletField);
             if (shootSpeed > 300) {
                 // 使用增强型时间轮调度后摇解除任务（若存在则重置）
@@ -207,14 +206,12 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         // 缓存攻击模式与射击速度
         var attackMode:String = core.攻击模式;
         var interval:Number = protagonist.射击速度;
-
-        // 弹匣容量与射击次数键名
+        // 弹匣容量键名
         var magazineCapName:String = attackMode + "弹匣容量";
-        var shootCountName:String = attackMode + "射击次数";
 
 
         // 检查弹匣是否打空
-        if (core[shootCountName][core[attackMode]] >= core[magazineCapName]) {
+        if (core[attackMode].value.shot >= core[magazineCapName]) {
             // 若剩余弹匣>0 或非控制目标，触发换弹
             if (protagonist.剩余弹匣数 > 0 || _root.控制目标 != core._name) {
                 protagonist.开始换弹();

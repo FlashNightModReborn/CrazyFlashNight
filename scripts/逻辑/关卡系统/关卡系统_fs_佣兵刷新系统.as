@@ -766,7 +766,7 @@ _root.载入新佣兵库数据 = function(人数, 等级下限, 等级上限, �
 		mercData[14] = rawMercData.equipment.secondary2 == null ? "" : rawMercData.equipment.secondary2;//14
 		mercData[15] = rawMercData.equipment.melee == null ? "" : rawMercData.equipment.melee;//15
 		mercData[16] = rawMercData.equipment.gerenade == null ? "" : rawMercData.equipment.gerenade;//16
-		mercData[17] = rawMercData.gender == 1 ? "男" : "女";//17
+		mercData[17] = rawMercData.gender;//17
 		mercData[18] = _root.计算佣兵金币价格(rawMercData.level);//18
 		mercData[19] = {是否杂交:false};//19
 		if(rawMercData.price){

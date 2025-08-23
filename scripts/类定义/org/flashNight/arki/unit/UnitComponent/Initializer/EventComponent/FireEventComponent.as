@@ -40,7 +40,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.FireEven
      */
     public static function processShot(target:MovieClip, weaponType:String, muzzlePosition:MovieClip, bulletProps:Object):Void {
         // 增加射击计数
-        target[weaponType + "射击次数"][target[weaponType]]++;
+        target[weaponType].value.shot++;
         
         // 更新枪口位置
         WeaponFireCore.updateMuzzlePosition(target, muzzlePosition, bulletProps);

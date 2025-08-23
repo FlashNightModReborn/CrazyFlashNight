@@ -56,7 +56,12 @@ _root.存档系统.读取设置 = function(设置){
 _root.存档系统.mydata数据组包 = function(){
     _root.身价 = _root.基础身价值 * _root.等级;
     var 主角储存数据 = [_root.角色名,_root.性别,_root.金钱,_root.等级,_root.经验值,_root.身高,_root.技能点数,_root.玩家称号,_root.身价,_root.虚拟币,_root.键值设定,_root.difficultyMode,_root.佣兵是否出战信息,_root.easterEgg];
-    var 装备储存数据 = [_root.脸型,_root.发型,_root.头部装备,_root.上装装备,_root.手部装备,_root.下装装备,_root.脚部装备,_root.颈部装备,_root.长枪,_root.手枪,_root.手枪2,_root.刀,_root.手雷,_root.快捷物品栏1,_root.快捷物品栏2,_root.快捷物品栏3,_root.快捷技能栏1,_root.快捷技能栏2,_root.快捷技能栏3,_root.快捷技能栏4,_root.快捷技能栏5,_root.快捷技能栏6,_root.快捷技能栏7,_root.快捷技能栏8,_root.快捷技能栏9,_root.快捷技能栏10,_root.快捷技能栏11,_root.快捷技能栏12,_root.快捷物品栏4];
+    var 装备储存数据 = [
+        _root.脸型,
+        _root.发型,
+        null, null, null, null, null, null, null, null, null, null, null, // 装备名（弃用）
+        null, null, null, // 药剂栏（弃用）
+        _root.快捷技能栏1,_root.快捷技能栏2,_root.快捷技能栏3,_root.快捷技能栏4,_root.快捷技能栏5,_root.快捷技能栏6,_root.快捷技能栏7,_root.快捷技能栏8,_root.快捷技能栏9,_root.快捷技能栏10,_root.快捷技能栏11,_root.快捷技能栏12,_root.快捷物品栏4];
     var 主角技能表储存数据 = _root.主角技能表;
     // var 物品储存数据 = _root.物品栏;
     var 物品储存数据 = {

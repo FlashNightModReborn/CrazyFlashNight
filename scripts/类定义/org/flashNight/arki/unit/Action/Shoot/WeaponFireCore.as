@@ -61,11 +61,11 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
      */
     public static function executeShot(owner, weaponType:String, muzzlePosition:MovieClip, bulletProps:Object):Boolean {
         // 获取当前武器的弹药信息
-        var currentAmmo:Number = owner[weaponType + "射击次数"][owner[weaponType]];
+        var currentShot:Number = owner[weaponType].value.shot;
         var maxAmmo:Number = owner[weaponType + "弹匣容量"];
         
         // 检查是否有足够的弹药
-        if (currentAmmo >= maxAmmo)
+        if (currentShot >= maxAmmo)
             return false;
         
         var dispatcher:EventDispatcher = owner.dispatcher;

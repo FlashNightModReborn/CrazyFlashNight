@@ -23,7 +23,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         var attackMode:String = parentRef.攻击模式;
         
         // 如果已在换弹或弹匣已满，则直接返回
-        if (target.换弹标签 || parentRef[attackMode + "射击次数"][parentRef[attackMode]] == 0) {
+        if (target.换弹标签 || parentRef[attackMode].value.shot == 0) {
             return;
         }
         
@@ -49,7 +49,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         var attackMode:String = parentRef.攻击模式;
         
         // 重置射击次数
-        parentRef[attackMode + "射击次数"][parentRef[attackMode]] = 0;
+        parentRef[attackMode].value.shot = 0;
         
         // 检查是否为玩家控制的角色
         if (rootRef.控制目标 === parentRef._name) {
@@ -63,9 +63,6 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             if (target.剩余弹匣数 === 0) {
                 rootRef.发布消息("弹匣耗尽！");
             }
-            
-            // 更新物品栏
-            rootRef.排列物品图标();
             
             // 重置副武器发射数据
             parentRef.当前弹夹副武器已发射数 = 0;
@@ -104,9 +101,9 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         if (mode === "双枪") {
             // 主手武器配置
             weapons.push({
-                weapon: parentRef.手枪,
+                data: parentRef.手枪属性,
                 capacity: parentRef.手枪弹匣容量,
-                shot: parentRef.手枪射击次数[parentRef.手枪],
+                shot: parentRef.手枪.value.shot,
                 uiBullet: "子弹数",
                 uiMag: "弹夹数",
                 magCount: target.主手剩余弹匣数
@@ -114,18 +111,18 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             
             // 副手武器配置
             weapons.push({
-                weapon: parentRef.手枪2,
+                data: parentRef.手枪2属性,
                 capacity: parentRef.手枪2弹匣容量,
-                shot: parentRef.手枪2射击次数[parentRef.手枪2],
+                shot: parentRef.手枪2.value.shot,
                 uiBullet: "子弹数_2",
                 uiMag: "弹夹数_2",
                 magCount: target.副手剩余弹匣数
             });
         } else {
             // 单武器配置
-            var singleShot:Number = parentRef[mode + "射击次数"][parentRef[mode]];
+            var singleShot:Number = parentRef[mode].value.shot;
             weapons.push({
-                weapon: parentRef.长枪, // 注：这里使用长枪引用但实际以mode判断类型
+                data: parentRef[mode + "属性"],
                 capacity: parentRef[mode + "弹匣容量"],
                 shot: singleShot,
                 uiBullet: "子弹数",
@@ -137,11 +134,9 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         // 遍历更新每个武器的UI显示
         for (var i:Number = 0; i < weapons.length; i++) {
             var w:Object = weapons[i];
-            var data:Object = ItemUtil.getRawItemData(w.weapon);
-            var dataData:Object = data.data;
             
             // 计算子弹消耗系数
-            var cost:Number = BulletTypesetter.isVertical(dataData.bullet) ? dataData.split : 1;
+            var cost:Number = BulletTypesetter.isVertical(w.data.bullet) ? w.data.split : 1;
             
             // 计算剩余子弹数
             var remaining:Number = w.capacity - w.shot;
@@ -220,15 +215,11 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         var weaponType:String = config.weaponType;
         var magNameProp:String = handPrefix + "使用弹匣名称";
         
-        // 弹匣相关属性
-        var shotCountArray:String = weaponType + "射击次数";
-        var shotCountIndex:String = weaponType;
-        
         return function():Void {
             var that:MovieClip = self;
             
             // 重置射击次数
-            parentRef[shotCountArray][parentRef[shotCountIndex]] = 0;
+            parentRef[weaponType].value.shot = 0;
             
             if (rootRef.控制目标 === parentRef._name) {
                 // 使用弹匣
@@ -244,7 +235,6 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                 }
                 
                 // 更新物品与显示
-                rootRef.排列物品图标();
                 ReloadManager.updateAmmoDisplay(that, parentRef, rootRef);
                 
                 // 更新武器状态

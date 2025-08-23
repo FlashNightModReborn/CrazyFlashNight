@@ -51,7 +51,7 @@ _root.装备生命周期函数.XM214初始化 = function(ref:Object, param:Objec
 
         // 子弹属性设置 (原逻辑)
         var prop:Object = target.man.子弹属性;
-        var bulletCount:Number = target["长枪射击次数"][target["长枪"]];
+        var bulletCount:Number = target.长枪.value.shot;
         prop.霰弹值 = Math.min(ref.shotgunValue, ref.maxBulletCapacity - bulletCount);
 
         // _root.服务器.发布服务器消息("fire:" + prop.霰弹值);
@@ -61,8 +61,8 @@ _root.装备生命周期函数.XM214初始化 = function(ref:Object, param:Objec
         if (target.攻击模式 != "长枪")
             return;
         var prop:Object = target.man.子弹属性;
-        var bulletCount:Number = target["长枪射击次数"][target["长枪"]];
-        var bulletDisplay:Number = target["长枪射击次数"][target["长枪"]] = Math.min(ref.maxBulletCapacity, bulletCount + prop.霰弹值 - 1);
+        var bulletCount:Number = target.长枪.value.shot;
+        var bulletDisplay:Number = target.长枪.value.shot = Math.min(ref.maxBulletCapacity, bulletCount + prop.霰弹值 - 1);
         _root.玩家信息界面.玩家必要信息界面["子弹数"] = ref.maxBulletCapacity - bulletDisplay;
 
         // _root.服务器.发布服务器消息("bulletCount:" + bulletDisplay);

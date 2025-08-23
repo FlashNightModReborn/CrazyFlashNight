@@ -2,8 +2,12 @@
 
 _root.装备引用配置.配置装扮 = function(影片剪辑, 配置装扮, 实例名, 引用名) {
     var 自机 = 影片剪辑._parent._parent._parent;
+    if(!配置装扮) {
+        自机[引用名] = null;
+        return null;
+    }
     if (自机.空手动作类型 == "巨拳" && (引用名 == "右下臂_引用" || 引用名 == "左下臂_引用")) {
-        return false;
+        return null;
     }
     var 装扮 = 影片剪辑.attachMovie(配置装扮, 实例名, 影片剪辑.getNextHighestDepth());
 

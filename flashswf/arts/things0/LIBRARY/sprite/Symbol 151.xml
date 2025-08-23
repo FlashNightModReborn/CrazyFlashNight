@@ -236,7 +236,7 @@
 	子弹属性.霰弹值 = 3;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战联弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5  + 3 * _parent._parent.长枪属性数组[4];
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5  + 3 * _parent._parent.长枪数据.weight;
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}

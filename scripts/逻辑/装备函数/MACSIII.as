@@ -13,14 +13,7 @@ _root.装备生命周期函数.MACSIII初始化 = function(ref:Object, param:Obj
     ref.transitionCounter = 0;       // 过渡动画播放计数器
 
     // ... 您原有的等级判断和事件绑定代码保持不变 ...
-    var upgradeLevel:Number;
-    if(_root.控制目标 == target._name) {
-        var equipment = _root.物品栏.装备栏;
-        upgradeLevel = equipment.getLevel("长枪");
-    } else {
-        upgradeLevel = _root.主角函数.获取人形怪强化等级(target.等级, target.名字);
-    }
-    
+    var upgradeLevel:Number = 自机.长枪.level;
     var executeLevel:Number = param.executeLevel || 3;
     var lifeStealLevel:Number = param.lifeStealLevel || 6;
     
