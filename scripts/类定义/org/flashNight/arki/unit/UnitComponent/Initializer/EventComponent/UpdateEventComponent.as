@@ -45,7 +45,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
     // ===== 可见性剔除（仅控制渲染，不影响逻辑） =====
     private static function applyVisibilityCulling(target:MovieClip):Void {
         // 取得 target 在 _root 坐标系下的包围框
-        var b:Object = target.getBounds(_root);
+        var b:Object = target.man.getBounds(_root);
         var sw:Number = Stage.width;
         var sh:Number = Stage.height;
         var pad:Number = CULL_PAD;
