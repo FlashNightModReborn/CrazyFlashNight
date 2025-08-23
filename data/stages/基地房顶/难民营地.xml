@@ -91,11 +91,20 @@
                 <Text>不要放弃反抗！A兵团杀到！</Text>
             </Dialogue>
         </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>好像还有人，摇滚派了别人来吗？</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
                     <Duration>0</Duration>
-                    <FinishRequirement>2</FinishRequirement>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
@@ -220,12 +229,61 @@
                 <QuantityMax>1</QuantityMax>
             </Point>
         </SpawnPoint>
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#愤怒</Char>
+                <Text>盗贼？</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>盗贼</Name>
+                <Title></Title>
+                <Char></Char>
+                <Text>摇滚派来的，先干掉眼前的军阀！</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>呃好···</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>盗贼</Name>
+                <Title></Title>
+                <Char></Char>
+                <Text>前面还有军阀，我们赶紧消灭他们！</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
                     <Duration>0</Duration>
                 </WaveInformation>
                 <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种44</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>24</Level>
+                        <IsHostile>false</IsHostile>
+                        <x>520</x>
+                        <y>521</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种49</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>24</Level>
+                        <IsHostile>false</IsHostile>
+                        <x>650</x>
+                        <y>472</y>
+                    </Enemy>
                     <Enemy>
                         <Type>兵种54</Type>
                         <Interval>100</Interval>
@@ -281,6 +339,35 @@
                 <QuantityMax>1</QuantityMax>
             </Point>
         </SpawnPoint>
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#愤怒</Char>
+                <Text>啧，那几个盗贼跑了吗？</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>盗贼</Name>
+                <Title></Title>
+                <Char></Char>
+                <Text>哈哈多亏你干掉军阀，受死吧！</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>1</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#愤怒</Char>
+                <Text>不值得信任的垃圾！</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -323,6 +410,41 @@
                         <Quantity>2</Quantity>
                         <Level>24</Level>
                         <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种44</Type>
+                        <Interval>900</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>24</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种45</Type>
+                        <Interval>800</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>24</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种48</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>24</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种49</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>24</Level>
+                        <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
