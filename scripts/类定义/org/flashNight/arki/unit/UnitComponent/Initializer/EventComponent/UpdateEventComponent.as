@@ -11,6 +11,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
     // 设为 0 表示严格以屏幕边缘为界；>0 则加入缓冲，减少边缘闪烁
     private static var CULL_PAD:Number = 50;
 
+    // —— 防抖用：隐藏门槛（连续多少帧在屏外才隐藏）——
+    private static var HIDE_AFTER:Number = 3;
+
+
     /**
      * 初始化单位的死亡事件监听
      * @param target 目标单位( MovieClip )
@@ -44,25 +48,37 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
 
     // ===== 可见性剔除（仅控制渲染，不影响逻辑） =====
     private static function applyVisibilityCulling(target:MovieClip):Void {
-        // 取得 target 在 _root 坐标系下的包围框
+        // 用 man 做精确边界
         var b:Object = target.man.getBounds(_root);
         var sw:Number = Stage.width;
         var sh:Number = Stage.height;
         var pad:Number = CULL_PAD;
 
-        // “完全不在屏幕范围内”判定（加入可选 pad）
         var outside:Boolean =
             (b.xMax < -pad) || (b.xMin > sw + pad) ||
             (b.yMax < -pad) || (b.yMin > sh + pad);
 
-        var shouldVisible:Boolean = !outside;
+        // 轻量状态：仅记录“连续在外”的帧数
+        var st:Object = target.__cullState;
+        if (st == undefined) st = (target.__cullState = { outCount: 0 });
 
-        // 仅在状态变化时切换，避免无谓赋值
-        if (target._visible != shouldVisible) {
-            target._visible = shouldVisible;
-            // _root.发布消息(target._name, target._visible)
+        if (outside) {
+            st.outCount++; // 直接自增，不做上限夹紧
+            if (st.outCount >= HIDE_AFTER && target._visible) {
+                target._visible = false;
+                // _root.发布消息(target.man, false);
+            }
+        } else {
+            // 一回到视界就显示 & 清零计数
+            if (!target._visible) {
+                target._visible = true;
+                // _root.发布消息(target.man, true);
+            }
+            st.outCount = 0;
         }
     }
+
+
 
     public static function onUpdate(target:MovieClip):Void {
         // —— 屏外渲染剔除（非主角） ——

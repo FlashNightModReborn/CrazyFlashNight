@@ -43,11 +43,13 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!3485 1305|3649 1160!3649 1160|3649 252!3649 252|3398 0!3398 0|3385 0"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="!3385 0|3636 252!3636 252|3636 590"/>
                     <Edge fillStyle1="3" strokeStyle="1" edges="!3636 590|3636 1160!3636 1160|3472 1305"/>
                     <Edge fillStyle1="2" strokeStyle="1" edges="!3472 1305|3485 1305"/>
+                    <Edge strokeStyle="1" edges="!3485 1305|3649 1160!3649 1160|3649 252!3649 252|3398 0!3398 0|3385 0"/>
                     <Edge fillStyle0="2" strokeStyle="1" edges="!4258 3171|4258 2753!4258 2753[4232 2471 4007 2319!4007 2319[3559 2149 3485 1864!3485 1864|3485 1305"/>
+                    <Edge fillStyle0="2" edges="!4195 3171[4197 3171 4198 3171!4198 3171[4213 3171 4228 3171!4228 3171[4232 3171 4236 3171!4236 3171|4258 3171"/>
+                    <Edge fillStyle1="5" edges="!4195 3171|4195 3190"/>
                     <Edge fillStyle1="4" edges="!4195 3190[4210 3190 4225 3190!4225 3190[4229 3190 4233 3190!4233 3190|4255 3190"/>
                     <Edge fillStyle1="4" strokeStyle="1" edges="!4255 3190|4258 5927"/>
                     <Edge fillStyle1="4" edges="!4258 5927[4260 5942 4263 5957"/>
@@ -61,22 +63,20 @@
                     <Edge fillStyle1="5" strokeStyle="1" edges="!3 3171|3 2753!3 2753[41 2467 254 2319!254 2319[628 2204 776 1864!776 1864|776 1305"/>
                     <Edge strokeStyle="1" edges="!776 1305|612 1160!612 1160|612 252!612 252|863 0!863 0|876 0"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="!876 0|3385 0"/>
-                    <Edge fillStyle1="5" edges="!4195 3171|4195 3190"/>
-                    <Edge fillStyle0="2" edges="!4195 3171[4197 3171 4198 3171!4198 3171[4213 3171 4228 3171!4228 3171[4232 3171 4236 3171!4236 3171|4258 3171"/>
-                    <Edge fillStyle0="3" fillStyle1="5" strokeStyle="1" edges="!2148 1305|2396 1305"/>
-                    <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="!2396 1305|3472 1305"/>
-                    <Edge fillStyle0="3" fillStyle1="5" edges="!2113 1305|2148 1305"/>
                     <Edge fillStyle0="3" fillStyle1="1" edges="!3636 590[3520 1197 2397 1175!2397 1175[2385 1175 2372 1175!2372 1175[2268 1172 2156 1164!2156 1164[1524 1120 625 909"/>
                     <Edge fillStyle0="3" strokeStyle="1" edges="!625 909|625 1160!625 1160|789 1305"/>
                     <Edge fillStyle0="3" fillStyle1="5" strokeStyle="1" edges="!789 1305|2113 1305"/>
+                    <Edge fillStyle0="3" fillStyle1="5" edges="!2113 1305|2148 1305"/>
+                    <Edge fillStyle0="3" fillStyle1="5" strokeStyle="1" edges="!2148 1305|2396 1305"/>
+                    <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="!2396 1305|3472 1305"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="!625 909|625 252!625 252|876 0"/>
                     <Edge fillStyle1="5" strokeStyle="1" edges="!776 1305|789 1305"/>
-                    <Edge fillStyle0="6" fillStyle1="7" edges="!4258 6532|4182 6532"/>
-                    <Edge fillStyle0="6" fillStyle1="4" edges="!4182 6532[3946 8086 4 7441"/>
-                    <Edge fillStyle0="7" fillStyle1="4" edges="!4258 6518|4182 6532"/>
                     <Edge fillStyle0="8" fillStyle1="4" strokeStyle="1" edges="!4263 5957|4258 6518"/>
-                    <Edge fillStyle0="5" fillStyle1="4" edges="!3 3190|4195 3190"/>
+                    <Edge fillStyle0="7" fillStyle1="4" edges="!4258 6518|4182 6532"/>
+                    <Edge fillStyle0="7" fillStyle1="6" edges="!4182 6532|4258 6532"/>
                     <Edge fillStyle0="2" fillStyle1="5" edges="!2396 1305[3020 3132 4195 3171"/>
+                    <Edge fillStyle0="5" fillStyle1="4" edges="!3 3190|4195 3190"/>
+                    <Edge fillStyle0="6" fillStyle1="4" edges="!4182 6532[3946 8086 4 7441"/>
                   </edges>
                 </DOMShape>
                 <DOMSymbolInstance libraryItemName="消耗道具相关/各种图素材等/元件 7" centerPoint3DX="106.6" centerPoint3DY="261.7">

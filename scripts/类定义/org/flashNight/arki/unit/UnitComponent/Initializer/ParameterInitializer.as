@@ -26,6 +26,9 @@
         if (isNaN(target.icY)) target.icY = ic._y;
         if (target.状态 == "登场") ic._visible = false;
 
+        // UpdateEventComponent 用于记录渲染剔除
+        if(isNaN(target.__cullState)) target.__cullState = { outCount: 0 };
+
         target.updateEventComponentID = null;
 
         if(_root.控制目标 === target._name) {

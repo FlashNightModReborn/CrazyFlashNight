@@ -226,6 +226,9 @@ _root.敌人函数.状态改变 = function(新状态名) {
 
     // this.旧状态 = this.状态; // 记录上一个状态名
     this.gotoAndStop(this.状态 = 新状态名);
+
+    // 标记完成了切换，防止异步污染
+    // this.man.updateFlag = true;
 };
 
 
