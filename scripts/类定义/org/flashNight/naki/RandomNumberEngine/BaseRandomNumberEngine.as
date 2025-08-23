@@ -314,7 +314,7 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
     // @param range: 偏移范围
     // @return 生成的随机整数偏移
     public function randomOffset(range:Number):Number {
-        trace("range: " + range);
+        // trace("range: " + range);
         return Math.floor(nextFloat() * (range * 2 + 1)) - range;
     }
 
