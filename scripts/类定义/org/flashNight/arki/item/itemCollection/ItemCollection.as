@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.item.itemCollection.ICollection;
 import org.flashNight.neur.Event.LifecycleEventDispatcher;
+import org.flashNight.gesh.object.ObjectUtil;
 
 /*
  * 物品集合基类
@@ -36,9 +37,22 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
         return items;
     }
 
+    // 获取全部物品集合数据的深度拷贝
+    public function getClonalItems():Object{
+        var clonalItems = {};
+        for(var key in items){
+            var item = items[key];
+            clonalItems[key] = {
+                name: item.name,
+                value: ObjectUtil.clone(item.value),
+                lastUpdate: item.lastUpdate
+            }
+        }
+        return clonalItems;
+    }
+
     // 设置物品集合数据
-    public function setItems(items:Object):Void
-    {
+    public function setItems(items:Object):Void{
         this.items = items;
     }
 

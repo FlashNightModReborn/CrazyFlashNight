@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="底部UI/底部UI组" itemID="6636575b-0000211d" lastModified="1755331043" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="底部UI/底部UI组" itemID="6636575b-0000211d" lastModified="1755969522" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="底部UI组" currentFrame="3" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="底部UI组" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="label" color="#4FFFFF" autoNamed="false">
           <frames>
@@ -36,11 +36,11 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="功能展开" color="#FF800A" autoNamed="false">
+        <DOMLayer name="功能展开" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/佣兵按钮" centerPoint3DX="349.95" centerPoint3DY="6.65">
+                <DOMSymbolInstance libraryItemName="sprite/佣兵按钮" selected="true" centerPoint3DX="349.95" centerPoint3DY="6.65">
                   <matrix>
                     <Matrix tx="315.9" ty="-5.65"/>
                   </matrix>
@@ -50,15 +50,6 @@ else
                   <Actionscript>
                     <script><![CDATA[on(release){
    _root.佣兵信息界面._visible = !_root.佣兵信息界面._visible;
-}
-onClipEvent(load){
-   显示文字 = _root.获得翻译("佣兵");
-}
-on(rollOver){
-   _root.注释(100,_root.获得翻译("佣兵"));
-}
-on(rollOut){
-   _root.注释结束();
 }
 ]]></script>
                   </Actionscript>
@@ -77,15 +68,6 @@ on(rollOut){
                     <script><![CDATA[on(release){
    _root.宠物信息界面.排列宠物图标();
    _root.宠物信息界面._visible = !_root.宠物信息界面._visible;
-}
-onClipEvent(load){
-   显示文字 = _root.获得翻译("战宠");
-}
-on(rollOver){
-   _root.注释(100,_root.获得翻译("战宠"));
-}
-on(rollOut){
-   _root.注释结束();
 }
 ]]></script>
                   </Actionscript>
@@ -107,15 +89,7 @@ on(rollOut){
 		_root.平板电脑界面.初始化();
 	}
 }
-/*onClipEvent (load) {
-	显示文字 = _root.获得翻译("材料一览");
-}
-on (rollOver) {
-	_root.注释(150,_root.获得翻译(this.显示文字));
-}
-on (rollOut) {
-	_root.注释结束();
-}*/]]></script>
+]]></script>
                   </Actionscript>
                   <filters>
                     <DropShadowFilter alpha="0.8" blurX="0" blurY="0" distance="2"/>
@@ -128,7 +102,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="按钮" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="按钮" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>

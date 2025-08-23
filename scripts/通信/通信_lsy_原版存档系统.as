@@ -65,20 +65,20 @@ _root.存档系统.mydata数据组包 = function(){
     var 主角技能表储存数据 = _root.主角技能表;
     // var 物品储存数据 = _root.物品栏;
     var 物品储存数据 = {
-        背包:  ObjectUtil.clone(_root.物品栏.背包.getItems()),
-        装备栏:ObjectUtil.clone(_root.物品栏.装备栏.getItems()),
-        药剂栏:ObjectUtil.clone(_root.物品栏.药剂栏.getItems()),
-        仓库:  ObjectUtil.clone(_root.物品栏.仓库.getItems()),
-        战备箱:ObjectUtil.clone(_root.物品栏.战备箱.getItems())
+        背包:  _root.物品栏.背包.getClonalItems(),
+        装备栏:_root.物品栏.装备栏.getClonalItems(),
+        药剂栏:_root.物品栏.药剂栏.getClonalItems(),
+        仓库:  _root.物品栏.仓库.getClonalItems(),
+        战备箱:_root.物品栏.战备箱.getClonalItems()
     }
     var 收集品储存数据 = {
-        材料:ObjectUtil.clone(_root.收集品栏.材料.getItems()),
-        情报:ObjectUtil.clone(_root.收集品栏.情报.getItems())
+        材料:_root.收集品栏.材料.getClonalItems(),
+        情报:_root.收集品栏.情报.getClonalItems()
     }
     var 同伴储存数据 = [_root.同伴数据,_root.同伴数];
     var 任务储存数据 = _root.主线任务进度;
     // var 仓库储存数据 = _root.仓库栏;
-    var 健身储存数据 = [_root.全局健身HP加成,_root.全局健身MP加成,_root.全局健身空攻加成,_root.全局健身防御加成,_root.全局健身内力加成];
+    var 健身储存数据 = [_root.全局健身HP加成, _root.全局健身MP加成, _root.全局健身空攻加成, _root.全局健身防御加成, _root.全局健身内力加成];
     var 其他存储数据 = {设置:_root.存档系统.存储设置()};
 
      // 获取当前时间并格式化为字符串
@@ -228,6 +228,11 @@ _root.读取存盘 = function(){
     _root.全局健身空攻加成 = Math.floor(Number(健身储存数据[2]));
     _root.全局健身防御加成 = Math.floor(Number(健身储存数据[3]));
     _root.全局健身内力加成 = Math.floor(Number(健身储存数据[4]));
+    if (isNaN(_root.全局健身HP加成)) _root.全局健身HP加成 = 0;
+    if (isNaN(_root.全局健身MP加成)) _root.全局健身MP加成 = 0;
+    if (isNaN(_root.全局健身空攻加成)) _root.全局健身空攻加成 = 0;
+    if (isNaN(_root.全局健身内力加成)) _root.全局健身内力加成 = 0;
+    if (isNaN(_root.全局健身防御加成)) _root.全局健身防御加成 = 0;
     if(主角储存数据[10].length > 0)
     {
         _root.键值设定 = 主角储存数据[10];
@@ -361,13 +366,19 @@ _root.新建角色 = function(){
     _root.下装装备 = undefined;
     _root.脚部装备 = undefined;
     _root.难度 = undefined;
-    //
+    // 存档数据
     _root.存档系统.mydata数据组包();
     _root.金钱 = 0;
     _root.虚拟币 = 0;
     _root.宠物信息 = [[],[],[],[],[]];
     _root.宠物领养限制 = 5;
-    //
+    // 全局加成
+    _root.全局健身HP加成 = 0;
+    _root.全局健身MP加成 = 0;
+    _root.全局健身空攻加成 = 0;
+    _root.全局健身内力加成 = 0;
+    _root.全局健身防御加成 = 0;
+    // 基建
     _root.基建系统.infrastructure = {};
     //
     _root.soundEffectManager.stopBGM();

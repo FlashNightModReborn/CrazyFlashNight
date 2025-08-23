@@ -93,6 +93,10 @@ _root.根据等级计算值 = function(最小值, 最大值, 目前等级, 允�
     return 1;
 }
 
+_root.主角函数.获取人形怪强化等级 = function(targetLevel:Number, targetName:String):Number{
+    return DressupInitializer.getEquipmentDefaultLevel(targetLevel, targetName);
+}
+
 _root.主角函数.获取基准负重 = function(等级值:Number):Number {
     return 12 + Math.floor(等级值 * 0.6);
 }
@@ -248,13 +252,9 @@ _root.主角函数.初始化可用技能 = function() {
         //_root.发布调试消息("写入技能缓存" + 缓存键);
 
     }
-    //var 等级:Number = 60;// 假设当前等级是 20 
-    //var 名字:String = "测试人员";
+    
     var 可学技能数:Number = 3 + Math.floor(等级 / 5);
-    //var 刀 = "镜之虎彻";
-    //var 手枪 = "镜之虎彻";
-    //var 手枪2 = "镜之虎彻";
-    //var 长枪 = "镜之虎彻";
+
     var 持刀检测 = 刀 ? false : true;
     var 持枪检测 = (长枪 || 手枪 || 手枪2) ? false : true;
     var 种子:Number = _root.初始化种子(名字, 等级);
@@ -339,8 +339,6 @@ _root.主角函数.初始化可用技能 = function() {
        //_root.发布调试消息("技能名: " + this.已学技能表[j].技能名 + ", 等级: " + this.已学技能表[j].技能等级 + " 消耗点数 " + this.已学技能表[j].技能等级 * this.已学技能表[j].点数);
        //_root.发布调试消息(技能点总数);
      */
-    if (_root.技能缓存 == undefined)
-        _root.技能缓存 = new Object();
     _root.技能缓存[缓存键] = this.已学技能表;
 
 };
@@ -360,8 +358,6 @@ _root.主角函数.行走_玩家 = function() {
     var isActionA = self.动作A;
     var isActionB = self.动作B;
 
-    // _root.服务器.发布服务器消息("射击最大后摇中:" + 射击最大后摇中);
-
     // 提前计算复合条件
     var isShooting = isMainHandShooting || isOffHandShooting;
     var isMoving = rightMove || leftMove || upMove || downMove;
@@ -375,85 +371,85 @@ _root.主角函数.行走_玩家 = function() {
 
     // 重置旋转
     self._rotation = 0;
-    移动射击倒退 = false;
+    self.移动射击倒退 = false;
 
     // 射击时移动限制
     if (shouldRestrictMovement) {
         强制奔跑 = false;
 
-        if (!移动射击) {
+        if (!self.移动射击) {
             rightMove = leftMove = false;
         }
 
-        if (!上下移动射击) {
+        if (!self.上下移动射击) {
             upMove = downMove = false;
         }
     }
 
     // 处理移动逻辑
     if (isMoving) {
-        var isWalking = 状态 != 攻击模式 + "跑" && !强制奔跑;
+        var isWalking = self.状态 != self.攻击模式 + "跑" && !强制奔跑;
 
         // 行走状态处理
         if (isWalking) {
             // 水平移动处理
             if (rightMove) {
-                if (移动射击 && isShooting && currentDirection === "左") {
+                if (self.移动射击 && isShooting && currentDirection === "左") {
                     isBackwardsShooting = true;
                 } else {
-                    方向改变("右");
+                    self.方向改变("右");
                 }
-                移动("右", 行走X速度);
-                状态改变(攻击模式 + "行走");
+                self.移动("右", self.行走X速度);
+                self.状态改变(self.攻击模式 + "行走");
             } else if (leftMove) {
-                if (移动射击 && isShooting && currentDirection === "右") {
+                if (self.移动射击 && isShooting && currentDirection === "右") {
                     isBackwardsShooting = true;
                 } else {
-                    方向改变("左");
+                    self.方向改变("左");
                 }
-                移动("左", 行走X速度);
-                状态改变(攻击模式 + "行走");
+                self.移动("左", self.行走X速度);
+                self.状态改变(self.攻击模式 + "行走");
             }
 
             // 垂直移动处理
             if (downMove) {
-                移动("下", 行走Y速度);
-                状态改变(攻击模式 + "行走");
+                self.移动("下", self.行走Y速度);
+                self.状态改变(self.攻击模式 + "行走");
             } else if (upMove) {
-                移动("上", 行走Y速度);
-                状态改变(攻击模式 + "行走");
+                self.移动("上", self.行走Y速度);
+                self.状态改变(self.攻击模式 + "行走");
             }
         }
         // 奔跑状态处理
         else {
             // 水平奔跑处理
             if (rightMove) {
-                方向改变("右");
-                移动("右", 跑X速度);
-                状态改变(攻击模式 + "跑");
+                self.方向改变("右");
+                self.移动("右", self.跑X速度);
+                self.状态改变(self.攻击模式 + "跑");
             } else if (leftMove) {
-                方向改变("左");
-                移动("左", 跑X速度);
-                状态改变(攻击模式 + "跑");
+                self.方向改变("左");
+                self.移动("左", self.跑X速度);
+                self.状态改变(self.攻击模式 + "跑");
             }
 
             // 垂直奔跑处理
             if (downMove) {
-                移动("下", 跑Y速度);
-                状态改变(攻击模式 + "跑");
+                self.移动("下", self.跑Y速度);
+                self.状态改变(self.攻击模式 + "跑");
             } else if (upMove) {
-                移动("上", 跑Y速度);
-                状态改变(攻击模式 + "跑");
+                self.移动("上", self.跑Y速度);
+                self.状态改变(self.攻击模式 + "跑");
             }
         }
     }
     // 站立状态处理
     else {
-        状态改变(攻击模式 + "站立");
+        self.状态改变(self.攻击模式 + "站立");
     }
 
     // 更新移动射击倒退状态
-    移动射击倒退 = isBackwardsShooting;
+    self.移动射击倒退 = isBackwardsShooting;
 };
 
 _root.主角函数.行走 = function() {
@@ -478,7 +474,7 @@ _root.主角函数.行走 = function() {
     var isBackwardsShooting = false;
 
     // 重置移动射击倒退状态
-    移动射击倒退 = false;
+    self.移动射击倒退 = false;
 
     // 射击时移动限制
     if (shouldRestrictMovement) {
@@ -556,7 +552,7 @@ _root.主角函数.行走 = function() {
     }
 
     // 更新移动射击倒退状态
-    移动射击倒退 = isBackwardsShooting;
+    self.移动射击倒退 = isBackwardsShooting;
 };
 
 _root.主角函数.人物暂停 = function() {
@@ -590,20 +586,18 @@ _root.主角函数.获取键值 = function() {
 };
 
 _root.主角函数.根据等级初始数值 = function(等级值) {
-    hp基本满血值 = _root.根据等级计算值(hp_min, hp_max, 等级值);
-    mp基本满血值 = _root.根据等级计算值(mp_min, mp_max, 等级值);
-    hp满血值 = hp基本满血值 + this.hp满血值装备加层;
-    mp满血值 = mp基本满血值 + mp满血值装备加层;
-    if (是否为敌人 == false && _root.控制目标 != this._name) {
-        hp满血值 *= 3;
-        mp满血值 /= 10;
+    this.hp基本满血值 = _root.根据等级计算值(this.hp_min, this.hp_max, 等级值);
+    this.mp基本满血值 = _root.根据等级计算值(this.mp_min, this.mp_max, 等级值);
+    this.hp满血值 = this.hp基本满血值 + this.hp满血值装备加层;
+    this.mp满血值 = this.mp基本满血值 + this.mp满血值装备加层;
+    if (this.是否为敌人 == false && _root.控制目标 != this._name) {
+        this.hp满血值 *= 3;
+        this.mp满血值 /= 10;
     }
-
-    空手攻击力 = _root.根据等级计算值(空手攻击力_min, 空手攻击力_max, 等级值);
-
-    基本防御力 = _root.根据等级计算值(基本防御力_min, 基本防御力_max, 等级值);
-    防御力 = 基本防御力 + this.装备防御力;
-    躲闪率 = _root.根据等级计算值(躲闪率_min, 躲闪率_max, 等级值, true, true); // 允许小数，且在60级后不再增长防止出现小于1的躲闪率
+    this.空手攻击力 = _root.根据等级计算值(this.空手攻击力_min, this.空手攻击力_max, 等级值);
+    this.基本防御力 = _root.根据等级计算值(this.基本防御力_min, this.基本防御力_max, 等级值);
+    this.防御力 = this.基本防御力 + this.装备防御力;
+    this.躲闪率 = _root.根据等级计算值(this.躲闪率_min, this.躲闪率_max, 等级值, true, true); // 允许小数，且在60级后不再增长防止出现小于1的躲闪率
     _root.刷新人物装扮(this._name);
 };
 
@@ -811,78 +805,28 @@ _root.主角函数.方向改变 = function(新方向) {
     }
 };
 
-/*
-   _root.主角函数.联机2015单纯方向改变 = function(新方向)
-   {
-   旧方向 = 方向;
-   if (新方向 === "右")
-   {
-   方向 = "右";
-   this._xscale = myxscale;
-   人物文字信息._xscale = 100;
-   }
-   else if (新方向 === "左")
-   {
-   方向 = "左";
-   this._xscale = -myxscale;
-   人物文字信息._xscale = -100;
-   }
-   };
-
-   _root.主角函数.状态改变新状态机实装前使用 = function(新状态名)
-   {
-   if (攻击模式 === undefined)
-   {
-   攻击模式 = "空手";
-   }
-   旧状态 = 状态;
-   状态 = 新状态名;
-   this.gotoAndStop(新状态名);
-   if (旧状态 != 新状态名)
-   {
-   联机2015发送角色数据();
-   }
-   _root.最上层发布文字提示("状态状态/" + 状态);
-   };
-
-   _root.主角函数.联机2015单纯状态改变 = function(新状态名)
-   {
-   if (攻击模式 === undefined)
-   {
-   攻击模式 = "空手";
-   }
-   旧状态 = 状态;
-   状态 = 新状态名;
-   if(this.hp <= 0){
-   状态 = "血腥死";
-   this.gotoAndStop("血腥死");
-   return;
-   }
-   this.gotoAndStop(新状态名);
-   };
- */
 
 _root.主角函数.动画完毕 = function() {
-    技能名 = undefined;
+    this.技能名 = null;
     if (this.hp <= 0) {
-        状态改变("血腥死");
+        this.状态改变("血腥死");
         return;
     }
-    if (状态 === 攻击模式 + "跳" && 跳横移速度 === 跑X速度 && (左行 || 右行 || 上行 || 下行)) {
-        状态改变(攻击模式 + "跑");
+    if (this.状态 === this.攻击模式 + "跳" && 跳横移速度 === 跑X速度 && (this.左行 || this.右行 || this.上行 || this.下行)) {
+        this.状态改变(this.攻击模式 + "跑");
         return;
     }
-    if (_root.技能浮空 && this._name === _root.控制目标) {
+    if (this._name === _root.控制目标 && _root.技能浮空) {
         // _root.是否阴影 = true;
-        if (攻击模式 === "空手" || 攻击模式 === "兵器") {
-            状态改变(攻击模式 + "跳");
+        if (this.攻击模式 === "空手" || this.攻击模式 === "兵器") {
+            this.状态改变(this.攻击模式 + "跳");
             return;
         } else {
-            状态改变("空手跳");
+            this.状态改变("空手跳");
             return;
         }
     }
-    状态改变(攻击模式 + "站立");
+    this.状态改变(this.攻击模式 + "站立");
     this.aabbCollider.updateFromUnitArea(this);
 };
 
@@ -1336,27 +1280,26 @@ _root.主角函数.读取当前飞行状态 = function(type) {
 
 
 _root.主角函数.状态改变 = function(新状态名) {
+    var self = this;
     //_root.发布调试消息("状态改变"+this.shadow._x+"/"+this.shadow._y+"/"+this.shadow._visible+"/"+this.状态+"/"+_root.是否阴影);
-    if (this._name === _root.控制目标 && (新状态名 === 攻击模式 + "攻击" || 新状态名 === 攻击模式 + "站立")) {
-        //_root.发布调试消息("测试测试"+this._name+"/"+_root.控制目标);
-        存储当前飞行状态("状态改变");
+    if (self._name === _root.控制目标 && (新状态名 === self.攻击模式 + "攻击" || 新状态名 === self.攻击模式 + "站立")) {
+        self.存储当前飞行状态("状态改变");
     }
-    if (this.飞行浮空 && 新状态名.indexOf("跑") > -1)
+    if (self.飞行浮空 && 新状态名.indexOf("跑") > -1)
         return;
-    //_root.发布调试消息(新状态名);
-    if (!攻击模式)
-        攻击模式 = "空手";
-    旧状态 = 状态;
-    if (旧状态 != 新状态名) {
-        状态 = 新状态名;
-        this.gotoAndStop(新状态名);
-
-            // 只保留一个状态历史，不再使用state数组
-            // state.push(新状态名);
-            // if (state.length > 6)
-            // {
-            // 	state.shift();
-            // }
+    
+    if (!self.攻击模式)
+        self.攻击模式 = "空手";
+    self.旧状态 = self.状态;
+    if (self.旧状态 != 新状态名) {
+        self.状态 = 新状态名;
+        self.gotoAndStop(新状态名);
+        // 只保留一个状态历史，不再使用state数组
+        // state.push(新状态名);
+        // if (state.length > 6)
+        // {
+        // 	state.shift();
+        // }
     }
 
     // 标记完成了切换，防止异步污染

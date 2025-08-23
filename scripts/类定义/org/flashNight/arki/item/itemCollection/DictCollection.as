@@ -38,4 +38,14 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
         if(items[key] <= 0) remove(key);
         else if(this.hasDispatcher()) dispatcher.publish("ItemValueChanged", this, key); // 发布ItemValueChanged事件
     }
+
+
+    // 重写获取深度拷贝功能
+    public function getClonalItems():Object{
+        var clonalItems = {};
+        for(var key in items){
+            clonalItems[key] = items[key];
+        }
+        return clonalItems;
+    }
 }

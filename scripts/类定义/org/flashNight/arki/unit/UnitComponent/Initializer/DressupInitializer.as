@@ -308,11 +308,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
 
         // 健身房加成
         if (_root.控制目标 === target._name) {
-            if (isNaN(_root.全局健身HP加成)) _root.全局健身HP加成 = 0;
-            if (isNaN(_root.全局健身MP加成)) _root.全局健身MP加成 = 0;
-            if (isNaN(_root.全局健身空攻加成)) _root.全局健身空攻加成 = 0;
-            if (isNaN(_root.全局健身内力加成)) _root.全局健身内力加成 = 0;
-            if (isNaN(_root.全局健身防御加成)) _root.全局健身防御加成 = 0;
             target.hp满血值 += _root.全局健身HP加成;
             target.mp满血值 += _root.全局健身MP加成;
             target.空手攻击力 += _root.全局健身空攻加成;

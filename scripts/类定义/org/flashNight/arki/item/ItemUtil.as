@@ -18,7 +18,7 @@ class org.flashNight.arki.item.ItemUtil{
     public static var equipmentDict:Object; // 装备字典，快速判断物品是否为武器或防具
     public static var informationMaxValueDict:Object; // 情报持有上限字典
 
-    private static var equipmentTierDict:Object = {
+    public static var equipmentTierDict:Object = {
         二阶: "data_2",
         三阶: "data_3",
         四阶: "data_4",
@@ -69,13 +69,13 @@ class org.flashNight.arki.item.ItemUtil{
      */
     public static function getEquipmentData(item:Object):Object{
         if(!isEquipment(item.name)) return null;
-        var itemData = getItemData(item.name);
-        var data = itemData.data;
+        var itemData:Object = getItemData(item.name);
+        var data:Object = itemData.data;
         // 获取对应的多阶装备数据
         if(item.value.tier){
             var tierKey = equipmentTierDict[item.value.tier];
             var tierData = itemData[tierKey];
-            if(tierData){
+            if(tierKey && tierData){
                 for(var key in tierData){
                    data[key] = tierData[key];
                 }
@@ -134,7 +134,7 @@ class org.flashNight.arki.item.ItemUtil{
         var itemData = getRawItemData(strArr[0]);
         var value = Number(strArr[1]);
         if(itemData == null) return null;
-        if(value <= 0) value = 1;
+        if(value <= 0) value = 1; // 若value不为正数或不为数字则修改为1
         var newItem = {
             name: strArr[0], 
             lastUpdate: new Date().getTime()

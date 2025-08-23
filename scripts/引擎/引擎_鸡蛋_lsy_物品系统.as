@@ -202,11 +202,11 @@ _root.仓库栏总数 = 1240;
 
 
 
-/* 创建物品函数在root上的引用，暂未启用
-_root.createItem = function(name, value):Object{
-    return org.flashNight.arki.item.ItemUtil.createItem(name, value);
-}
-*/
+// 根据字符串创建物品函数 在root上的引用，暂未启用
+// _root.createItemByString = function(str:String):Object{
+//     return org.flashNight.arki.item.ItemUtil.createItemByString(str);
+// }
+
 
 //对新物品提交与获取函数的引用
 _root.itemAcquire = function(itemArray):Boolean{
