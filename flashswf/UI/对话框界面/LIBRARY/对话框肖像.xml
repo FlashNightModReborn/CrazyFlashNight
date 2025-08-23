@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1754846177" lastUniqueIdentifier="227">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1755954802" lastUniqueIdentifier="227">
   <timeline>
-    <DOMTimeline name="对话框肖像" currentFrame="14">
+    <DOMTimeline name="对话框肖像" currentFrame="9">
       <layers>
         <DOMLayer name="Labels Layer" color="#FC2986">
           <frames>
@@ -148,7 +148,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!5804 -5026|5804 2159!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026"/>
+                    <Edge fillStyle1="1" edges="!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026!5804 -5026|5804 2159"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -193,7 +193,7 @@
             </DOMFrame>
             <DOMFrame index="7" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="对话框UI/对话-玩家" name="肖像" centerPoint3DX="178.85" centerPoint3DY="373.65">
+                <DOMSymbolInstance libraryItemName="对话框UI/对话-玩家" name="肖像" selected="true" centerPoint3DX="178.85" centerPoint3DY="373.65">
                   <matrix>
                     <Matrix a="1.17088317871094" d="1.17088317871094" tx="50.1" ty="94.95"/>
                   </matrix>
@@ -203,45 +203,58 @@
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
 	gotoAndStop(_root.性别);
+	var 控制对象 = _root.gameworld[_root.控制目标];
 	//
-	var 装备栏 = _root.物品栏.装备栏;
-	头部装备 = 装备栏.getNameString("头部装备");
-	上装装备 = 装备栏.getNameString("上装装备");
-	手部装备 = 装备栏.getNameString("手部装备");
-	下装装备 = 装备栏.getNameString("下装装备");
-	脚部装备 = 装备栏.getNameString("脚部装备");
-	//颈部装备 = 装备栏.getNameString("颈部装备");
-	长枪 = 装备栏.getNameString("长枪");
-	手枪 = 装备栏.getNameString("手枪");
-	手枪2 = 装备栏.getNameString("手枪2");
-	刀 = 装备栏.getNameString("刀");
-	//
-	面具 = _root.根据物品名查找属性(头部装备, 15);
-	身体 = _root.性别 + _root.根据物品名查找属性(上装装备, 15) + "身体";
-	上臂 = _root.性别 + _root.根据物品名查找属性(上装装备, 15) + "上臂";
-	左下臂 = _root.性别 + _root.根据物品名查找属性(上装装备, 15) + "左下臂";
-	右下臂 = _root.性别 + _root.根据物品名查找属性(上装装备, 15) + "右下臂";
-	左手 = _root.根据物品名查找属性(手部装备, 15) + "左手";
-	右手 = _root.根据物品名查找属性(手部装备, 15) + "右手";
-	屁股 = _root.性别 + _root.根据物品名查找属性(下装装备, 15) + "屁股";
-	左大腿 = _root.性别 + _root.根据物品名查找属性(下装装备, 15) + "左大腿";
-	右大腿 = _root.性别 + _root.根据物品名查找属性(下装装备, 15) + "右大腿";
-	小腿 = _root.性别 + _root.根据物品名查找属性(下装装备, 15) + "小腿";
-	脚 = _root.根据物品名查找属性(脚部装备, 15);
-	刀 = _root.根据物品名查找属性(刀, 15);
-	长枪 = _root.根据物品名查找属性(长枪, 15);
-	手枪 = _root.根据物品名查找属性(手枪, 15);
-	手枪2 = _root.根据物品名查找属性(手枪2, 15);
-	this.发型 = _root.发型;
-	if (_root.getItemData(头部装备).helmet)
+	if (!isNaN(控制对象.version))
 	{
-		this.发型 = "";
+		面具 = 控制对象.面具;
+		身体 = 控制对象.身体;
+		上臂 = 控制对象.上臂;
+		左下臂 = 控制对象.左下臂;
+		右下臂 = 控制对象.右下臂;
+		左手 = 控制对象.左手;
+		右手 = 控制对象.右手;
+		屁股 = 控制对象.屁股;
+		左大腿 = 控制对象.左大腿;
+		右大腿 = 控制对象.右大腿;
+		小腿 = 控制对象.小腿;
+		脚 = 控制对象.脚;
+		刀 = 控制对象.刀;
+		长枪 = 控制对象.长枪;
+		手枪 = 控制对象.手枪;
+		手枪2 = 控制对象.手枪2;
+	}
+	else
+	{
+		var 头部装备 = _root.getItemData(装备栏.getNameString("头部装备"));
+		var 上装装备 = _root.getItemData(装备栏.getNameString("上装装备"));
+		var 手部装备 = _root.getItemData(装备栏.getNameString("手部装备"));
+		var 下装装备 = _root.getItemData(装备栏.getNameString("下装装备"));
+		面具 = 头部装备.dressup;
+		身体 = 性别 + 上装装备.dressup + "身体";
+		上臂 = 性别 + 上装装备.dressup + "上臂";
+		左下臂 = 性别 + 上装装备.dressup + "左下臂";
+		右下臂 = 性别 + 上装装备.dressup + "右下臂";
+		左手 = 手部装备.dressup + "左手";
+		右手 = 手部装备.dressup + "右手";
+		屁股 = 性别 + 下装装备.dressup + "屁股";
+		左大腿 = 性别 + 下装装备.dressup + "左大腿";
+		右大腿 = 性别 + 下装装备.dressup + "右大腿";
+		小腿 = 性别 + 下装装备.dressup + "小腿";
+		脚 = _root.getItemData(装备栏.getNameString("脚部装备")).dressup;
+		刀 = _root.getItemData(装备栏.getNameString("刀")).dressup;
+		长枪 = _root.getItemData(装备栏.getNameString("长枪")).dressup;
+		手枪 = _root.getItemData(装备栏.getNameString("手枪")).dressup;
+		手枪2 = _root.getItemData(装备栏.getNameString("手枪2")).dressup;
+		if (头部装备.helmet)
+		{
+			this.发型 = "";
+		}
 	}
 	//
 	_parent.aa.text = _parent._parent.人物表情;
 	this.man.头.头.基本款.gotoAndStop(_parent._parent.人物表情);
-}
-]]></script>
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
