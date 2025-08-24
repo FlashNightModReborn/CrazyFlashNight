@@ -814,7 +814,7 @@
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
           <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1752295529"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1755954802"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1756055682"/>
           <Include href="发型/Symbol 799.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000814" lastModified="1710653981"/>
           <Include href="歌留多/歌留多胯.xml" loadImmediate="false" itemID="67096725-00000045" lastModified="1728669954"/>
           <Include href="歌留多/歌留多身体.xml" loadImmediate="false" itemID="67095275-0000000f" lastModified="1728665563"/>
@@ -899,7 +899,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="对话框界面" name="对话框界面" selected="true" centerPoint3DX="351.4" centerPoint3DY="367.95">
+                                        <DOMSymbolInstance libraryItemName="对话框界面" name="对话框界面" centerPoint3DX="351.4" centerPoint3DY="367.95">
                                              <transformationPoint>
                                                   <Point/>
                                              </transformationPoint>
@@ -1266,6 +1266,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="682922" publishTime="1756055688"/>
           <PublishItem publishSize="682910" publishTime="1755954805"/>
           <PublishItem publishSize="682908" publishTime="1755954756"/>
           <PublishItem publishSize="682868" publishTime="1755954554"/>
@@ -1285,6 +1286,5 @@
           <PublishItem publishSize="3342327" publishTime="1749054694"/>
           <PublishItem publishSize="3254180" publishTime="1747902707"/>
           <PublishItem publishSize="2897668" publishTime="1747202318"/>
-          <PublishItem publishSize="2814378" publishTime="1747123493"/>
      </publishHistory>
 </DOMDocument>

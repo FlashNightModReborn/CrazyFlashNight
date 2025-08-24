@@ -677,7 +677,7 @@ _root.物品UI函数.计算强化装备等级 = function(目标等级){
 _root.物品UI函数.执行强化装备 = function(){
 	if(_root.singleSubmit("强化石", this.强化石需要个数)){
 		this.当前物品.value.level = this.目标强化等级;
-		_root.最上层发布文字提示("强化成功！");
+		_root.最上层发布文字提示(this.强化物品图标.itemIcon.itemData.displayname + " 成功强化到 +" + this.目标强化等级);
 		this.当前物品图标.refreshValue();
 		this.强化物品图标.itemIcon.refreshValue();
 		this.gotoAndStop("默认");
