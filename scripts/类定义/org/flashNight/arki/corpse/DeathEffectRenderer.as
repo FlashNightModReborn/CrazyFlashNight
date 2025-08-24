@@ -30,6 +30,12 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
 
     private static var CORPSE_CULL_PAD:Number = 60; // 适当缓冲，减少边缘误杀
     
+    /** @private {Boolean} 是否启用尸体效果渲染 */
+    public static var isEnabled:Boolean = true;
+    
+    /** @private {Boolean} 是否启用离屏剔除优化 */
+    public static var enableCulling:Boolean = true;
+    
     
     // ------------------ 公共方法 ------------------
 
@@ -47,21 +53,27 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
      * @return {Void}
      */
     public static function renderCorpse(target:MovieClip, layerIndex:Number):Void {
-        if (!EffectSystem.isDeathEffect) return;
+        //_root.发布消息(DeathEffectRenderer.isEnabled, DeathEffectRenderer.enableCulling)
+
+        if (!DeathEffectRenderer.isEnabled) return;
+        
+        var gameWorld:MovieClip = _root.gameworld;
 
         // 离屏剔除（gameworld 平移+缩放闭式映射）
+        if (DeathEffectRenderer.enableCulling) {
+            
+            var sx:Number = gameWorld._xscale * 0.01;
+            var off:Vector = SceneCoordinateManager.effectOffset;
 
-        var gameWorld:MovieClip = _root.gameworld;
-        var sx:Number = gameWorld._xscale * 0.01;
-        var off:Vector = SceneCoordinateManager.effectOffset;
+            // 局部(世界)中心 → 屏幕坐标
+            var gx:Number = gameWorld._x + (target._x + off.x) * sx;
+            var gy:Number = gameWorld._y + (target._y + off.y) * sx;
 
-        // 局部(世界)中心 → 屏幕坐标
-        var gx:Number = gameWorld._x + (target._x + off.x) * sx;
-        var gy:Number = gameWorld._y + (target._y + off.y) * sx;
-
-        if (gx < -CORPSE_CULL_PAD || gx > Stage.width + CORPSE_CULL_PAD ||
-            gy < -CORPSE_CULL_PAD || gy > Stage.height + CORPSE_CULL_PAD) {
-            return; // 离屏：直接拒绝绘制
+            if (gx < -CORPSE_CULL_PAD || gx > Stage.width + CORPSE_CULL_PAD ||
+                gy < -CORPSE_CULL_PAD || gy > Stage.height + CORPSE_CULL_PAD) {
+                //_root.发布消息("离屏：直接拒绝绘制")
+                return; // 离屏：直接拒绝绘制
+            }
         }
 
         var effectOffset:Vector = SceneCoordinateManager.effectOffset;
@@ -97,20 +109,22 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
      * @param {Number} layerIndex - 渲染到的尸体图层索引
      */
     public static function renderRotatedCorpse(target:MovieClip, layerIndex:Number):Void {
-        if (!EffectSystem.isDeathEffect) return;
-
-        // 离屏剔除（gameworld 平移+缩放闭式映射）
+        if (!DeathEffectRenderer.isEnabled) return;
         var gameWorld:MovieClip = _root.gameworld;
-        var sx:Number = gameWorld._xscale * 0.01;
-        var off:Vector = SceneCoordinateManager.effectOffset;
+        // 离屏剔除（gameworld 平移+缩放闭式映射）
+        if (DeathEffectRenderer.enableCulling) {
+            
+            var sx:Number = gameWorld._xscale * 0.01;
+            var off:Vector = SceneCoordinateManager.effectOffset;
 
-        // 局部(世界)中心 → 屏幕坐标
-        var gx:Number = gameWorld._x + (target._x + off.x) * sx;
-        var gy:Number = gameWorld._y + (target._y + off.y) * sx;
+            // 局部(世界)中心 → 屏幕坐标
+            var gx:Number = gameWorld._x + (target._x + off.x) * sx;
+            var gy:Number = gameWorld._y + (target._y + off.y) * sx;
 
-        if (gx < -CORPSE_CULL_PAD || gx > Stage.width + CORPSE_CULL_PAD ||
-            gy < -CORPSE_CULL_PAD || gy > Stage.height + CORPSE_CULL_PAD) {
-            return; // 离屏：直接拒绝绘制
+            if (gx < -CORPSE_CULL_PAD || gx > Stage.width + CORPSE_CULL_PAD ||
+                gy < -CORPSE_CULL_PAD || gy > Stage.height + CORPSE_CULL_PAD) {
+                return; // 离屏：直接拒绝绘制
+            }
         }
 
         // 将目标的角度（度）转换为弧度，以便 Math.cos/sin 计算
@@ -139,7 +153,7 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
         reusableTransformMatrix.ty = target._y + offset.y;
 
         // 将目标 MovieClip 按照计算好的矩阵绘制到指定尸体层
-        _root.gameworld.deadbody.layers[layerIndex].draw(
+        gameWorld.deadbody.layers[layerIndex].draw(
             target,
             reusableTransformMatrix,
             DeathEffectRenderer.createDarkenCT(target.transform.colorTransform),

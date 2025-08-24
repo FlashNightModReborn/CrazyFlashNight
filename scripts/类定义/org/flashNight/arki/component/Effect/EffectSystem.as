@@ -38,7 +38,9 @@ class org.flashNight.arki.component.Effect.EffectSystem
     /** 随机数引擎（用于特效触发概率计算） */
     private static var RandomNumberEngine:LinearCongruentialEngine = LinearCongruentialEngine.getInstance();
 
+    /** 是否启用特效对象池回收机制 */
     public static var isDeathEffect:Boolean = true;
+
 
     // ------------------------------
     // 1. 初始化效果池

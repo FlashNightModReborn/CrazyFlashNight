@@ -1,6 +1,7 @@
 ﻿import org.flashNight.neur.PerformanceOptimizer.PerformanceAction;
 import org.flashNight.arki.component.Effect.EffectSystem;
 import org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem;
+import org.flashNight.arki.corpse.DeathEffectRenderer;
 import org.flashNight.arki.render.TrailRenderer;
 import org.flashNight.arki.render.ClipFrameRenderer;
 import org.flashNight.arki.render.BladeMotionTrailsRenderer;
@@ -122,6 +123,8 @@ class org.flashNight.neur.PerformanceOptimizer.QualityApplier {
             EffectSystem.maxEffectCount = 20;
             EffectSystem.maxScreenEffectCount = 20;
             EffectSystem.isDeathEffect = true;
+            DeathEffectRenderer.isEnabled = true;
+            DeathEffectRenderer.enableCulling = false;
         }
         
         _root.面积系数 = 300000;
@@ -157,6 +160,8 @@ class org.flashNight.neur.PerformanceOptimizer.QualityApplier {
             EffectSystem.maxEffectCount = 15;
             EffectSystem.maxScreenEffectCount = 15;
             EffectSystem.isDeathEffect = true;
+            DeathEffectRenderer.isEnabled = true;
+            DeathEffectRenderer.enableCulling = true;
         }
         
         _root.面积系数 = 450000;
@@ -192,6 +197,8 @@ class org.flashNight.neur.PerformanceOptimizer.QualityApplier {
             EffectSystem.maxEffectCount = 10;
             EffectSystem.maxScreenEffectCount = 10;
             EffectSystem.isDeathEffect = false;
+            DeathEffectRenderer.isEnabled = false;
+            DeathEffectRenderer.enableCulling = true;
         }
         
         _root.面积系数 = 600000;
@@ -227,6 +234,8 @@ class org.flashNight.neur.PerformanceOptimizer.QualityApplier {
             EffectSystem.maxEffectCount = 0;
             EffectSystem.maxScreenEffectCount = 5;
             EffectSystem.isDeathEffect = false;
+            DeathEffectRenderer.isEnabled = false;
+            DeathEffectRenderer.enableCulling = true;
         }
         
         _root.面积系数 = 3000000;

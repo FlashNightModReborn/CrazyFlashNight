@@ -60,7 +60,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
 
         // 轻量状态：仅记录“连续在外”的帧数
         var st:Object = target.__cullState;
-        if (st == undefined) st = (target.__cullState = { outCount: 0 });
 
         if (outside) {
             st.outCount++; // 直接自增，不做上限夹紧

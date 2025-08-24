@@ -100,8 +100,19 @@ _root.获取可用数字 = function(控制字符串, 数字, myX, myY) {
 
 // 处理打击数字特效
 _root.打击数字特效 = function(控制字符串, 数字, myX, myY, 必然触发) {
+    // 视野渲染剔除
+    var gameWorld:MovieClip = _root.gameworld;
+    var sx:Number = gameWorld._xscale * 0.01;
+    var locX:Number = gameWorld._x + myX * sx;
+    var locY:Number = gameWorld._y + myY * sx;
+    
+    // 视野外剔除
+    if (locX < 0 || locX > Stage.width || locY < 0 || locY > Stage.height) {
+        return;
+    }
+    
     if (_root.是否打击数字特效 && (_root.当前打击数字特效总数 <= _root.同屏打击数字特效上限 || _root.成功率(_root.同屏打击数字特效上限 / 5)) || 必然触发) {
-        if (_root.gameworld.可用数字池 == undefined) {
+        if (gameWorld.可用数字池 == undefined) {
             _root.初始化打击伤害数字池(5);
         }
 

@@ -6,6 +6,7 @@ import org.flashNight.neur.Server.*;
 import org.flashNight.neur.Event.*;
 import org.flashNight.arki.bullet.BulletComponent.Shell.*;
 import org.flashNight.arki.component.Collider.*;
+import org.flashNight.arki.corpse.DeathEffectRenderer;
 import org.flashNight.gesh.arguments.*;
 import org.flashNight.arki.unit.UnitComponent.Initializer.*;
 import org.flashNight.arki.component.Effect.*;
@@ -334,9 +335,11 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
         case 0:
             EffectSystem.maxEffectCount = 20;
             EffectSystem.maxScreenEffectCount = 20;
+            EffectSystem.isDeathEffect = true;
             _root.面积系数 = 300000;
             _root.同屏打击数字特效上限 = 25;
-            EffectSystem.isDeathEffect = true;
+            DeathEffectRenderer.isEnabled = true;
+            DeathEffectRenderer.enableCulling = false;
             _root._quality = this.预设画质;
             _root.天气系统.光照等级更新阈值 = 0.1;
             ShellSystem.setMaxShellCountLimit(25);
@@ -349,9 +352,11 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
         case 1:
             EffectSystem.maxEffectCount = 15;
             EffectSystem.maxScreenEffectCount = 15;
+            EffectSystem.isDeathEffect = true;
             _root.面积系数 = 450000; 
             _root.同屏打击数字特效上限 = 18;
-            EffectSystem.isDeathEffect = true;
+            DeathEffectRenderer.isEnabled = true;
+            DeathEffectRenderer.enableCulling = true;
             _root._quality = this.预设画质 === 'LOW' ? this.预设画质 : 'MEDIUM';
             _root.天气系统.光照等级更新阈值 = 0.2;
             ShellSystem.setMaxShellCountLimit(18);
@@ -364,9 +369,11 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
         case 2:
             EffectSystem.maxEffectCount = 10;
             EffectSystem.maxScreenEffectCount = 10;
+            EffectSystem.isDeathEffect = false;
             _root.面积系数 = 600000; //刷佣兵数量砍半
             _root.同屏打击数字特效上限 = 12;
-            EffectSystem.isDeathEffect = false;
+            DeathEffectRenderer.isEnabled = false;
+            DeathEffectRenderer.enableCulling = true;
             _root.天气系统.光照等级更新阈值 = 0.5;
             _root._quality = 'LOW';
             ShellSystem.setMaxShellCountLimit(12);
@@ -379,9 +386,11 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
         default:
             EffectSystem.maxEffectCount = 0;  // 禁用效果
             EffectSystem.maxScreenEffectCount = 5;  // 最低上限
+            EffectSystem.isDeathEffect = false;
             _root.面积系数 = 3000000;  //刷佣兵为原先十分之一
             _root.同屏打击数字特效上限 = 10;
-            EffectSystem.isDeathEffect = false;
+            DeathEffectRenderer.isEnabled = false;
+            DeathEffectRenderer.enableCulling = true;
             _root.天气系统.光照等级更新阈值 = 1;
             _root._quality = 'LOW';
             ShellSystem.setMaxShellCountLimit(10);
