@@ -145,11 +145,21 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
         // 直接调用 engine.successRate 避免了 Delegate 包装的性能损耗
         var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
         
-        if (activeShells.length < maxShellCount || engine.successRate(maxShellCount) || 必然触发) {
-            var 游戏世界 = _root.gameworld;
-            if (!游戏世界)
-                return;
+        // 视野渲染剔除：计算弹壳的屏幕坐标
+        var gameWorld:MovieClip = _root.gameworld;
+        if (!gameWorld)
+            return;
+        
+        var sx:Number = gameWorld._xscale * 0.01;
+        var locX:Number = gameWorld._x + myX * sx;
+        var locY:Number = gameWorld._y + myY * sx;
+        
+        // 视野外剔除
+        if (locX < 0 || locX > Stage.width || locY < 0 || locY > Stage.height) {
+            return;
+        }
 
+        if (activeShells.length < maxShellCount || engine.successRate(maxShellCount) || 必然触发) {
             var 弹壳信息 = shellMap[子弹类型];
             if (!弹壳信息)
                 return;

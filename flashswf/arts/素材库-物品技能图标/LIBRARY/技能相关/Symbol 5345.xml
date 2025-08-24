@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能相关/Symbol 5345" itemID="668e7c1e-00001213" linkageExportForAS="true" linkageIdentifier="图标-六连" lastModified="1720533000">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能相关/Symbol 5345" itemID="668e7c1e-00001213" linkageExportForAS="true" linkageIdentifier="图标-六连" lastModified="1755995569" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="Symbol 5345">
       <layers>
@@ -11,11 +11,8 @@
                     <Point/>
                   </transformationPoint>
                   <filters>
-                    <GlowFilter blurX="18" blurY="18" color="#3366FF"/>
+                    <AdjustColorFilter hue="-100"/>
                   </filters>
-                  <color>
-                    <Color redOffset="-120" blueOffset="240" greenOffset="-120"/>
-                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

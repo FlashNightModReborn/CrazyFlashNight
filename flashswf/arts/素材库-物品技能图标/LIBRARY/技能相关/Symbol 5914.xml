@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能相关/Symbol 5914" itemID="668e7c1e-0000131c" linkageExportForAS="true" linkageIdentifier="图标-一瞬千击" lastModified="1720533000">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能相关/Symbol 5914" itemID="668e7c1e-0000131c" linkageExportForAS="true" linkageIdentifier="图标-一瞬千击" lastModified="1755995603">
   <timeline>
     <DOMTimeline name="Symbol 5914">
       <layers>
@@ -6,13 +6,13 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="技能相关/Symbol 4669" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="技能相关/Symbol 4669" selected="true" centerPoint3DX="-0.5" centerPoint3DY="-0.05">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <color>
-                    <Color redOffset="-120" blueOffset="240" greenOffset="-100"/>
-                  </color>
+                  <filters>
+                    <AdjustColorFilter saturation="100" hue="180"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

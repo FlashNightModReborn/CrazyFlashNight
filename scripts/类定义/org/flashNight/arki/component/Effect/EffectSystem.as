@@ -38,11 +38,7 @@ class org.flashNight.arki.component.Effect.EffectSystem
     /** 随机数引擎（用于特效触发概率计算） */
     private static var RandomNumberEngine:LinearCongruentialEngine = LinearCongruentialEngine.getInstance();
 
-
     public static var isDeathEffect:Boolean = true;
-
-    private static var __pt:Vector; // 复用的临时点，避免分配
-
 
     // ------------------------------
     // 1. 初始化效果池
@@ -55,10 +51,6 @@ class org.flashNight.arki.component.Effect.EffectSystem
      */
     public static function initializeEffectPool():Void
     {
-        if(!__pt) {
-            __pt = new Vector(0,0);
-        }
-        
         var gameWorld:MovieClip = _root.gameworld;
         if (!gameWorld) return;
 
@@ -88,15 +80,16 @@ class org.flashNight.arki.component.Effect.EffectSystem
     {
         if (!effectType) return null; // 提前过滤空特效
 
-        __pt.x = x; __pt.y = y;
-        _root.gameworld.localToGlobal(__pt);
+        // 2) 直接用 gameworld 的平移 + 缩放做闭式变换（无对象分配、无函数调用）
+        var gameWorld:MovieClip = _root.gameworld;
+        var sx:Number = gameWorld._xscale * 0.01; // 当前项目保证等比缩放，不需要sy，直接复用 sx
 
-        var locX:Number = __pt.x;
-        var locY:Number = __pt.y;
+        var locX:Number = gameWorld._x + x * sx;
+        var locY:Number = gameWorld._y + y * sx;
 
-        if (locX < 0 || locX > Stage.width ||
-            locY < 0 || locY > Stage.height) {
-            // _root.发布消息(effectType, effectType.length, __pt.toString(), "滤除-越界");
+        // 3) 视野外剔除
+        if (locX < 0 || locX > Stage.width || locY < 0 || locY > Stage.height) {
+            // _root.服务器.发布服务器消息("from ("+x+","+y+") to ("+locX+","+locY+") gameWorld("+gameWorld._x+","+gameWorld._y+","+gameWorld._xscale+") 滤除-越界");
             return null;
         }
         // 判断是否满足触发条件（包括是否视觉元素、数量上限和触发概率）
@@ -104,7 +97,6 @@ class org.flashNight.arki.component.Effect.EffectSystem
             (currentEffectCount <= EffectSystem.maxEffectCount || RandomNumberEngine.successRate(EffectSystem.maxEffectCount / 5)) || 
             forceTrigger
         ) {
-            var gameWorld:MovieClip = _root.gameworld;
             // if (!gameWorld.effectPools) initializeEffectPool();
 
             var effectPool:Array = gameWorld.effectPools[effectType];
