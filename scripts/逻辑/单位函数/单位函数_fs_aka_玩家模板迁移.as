@@ -10,7 +10,7 @@ import org.flashNight.arki.spatial.animation.*;
 import org.flashNight.arki.component.Effect.*;
 import org.flashNight.arki.item.*;
 import org.flashNight.sara.util.*;
-
+import org.flashNight.neur.ScheduleTimer.*;
 // _root.玩家与佣兵区分装扮刷新 = false;
 _root.超重惩罚 = 0.25;
 
@@ -836,10 +836,10 @@ _root.主角函数.硬直 = function(目标, 时间) {
     var 自机:Object = this; // 在外部保存对当前对象的引用
     目标.stop();
 
-    this.stiffID = _root.帧计时器.添加或更新任务(目标, "硬直", function() {
+    this.stiffID = EnhancedCooldownWheel.I().addTask(function() {
         自机.stiffID = null;
         目标.play();
-    }, 时间);
+    }, 时间, 1);
 
     if (_root.控制目标 === this._name && this.浮空) {
         if (this.垂直速度 > -1 && this.状态 != "技能" && !this.man.坠地中) {
@@ -881,10 +881,10 @@ _root.主角函数.移动钝感硬直 = function(时间) {
     var 自机:Object = this; // 在外部保存对当前对象的引用
 
     this.硬直中 = true;
-    this.knockStiffID = _root.帧计时器.添加或更新任务(this, "移动钝感硬直", function() {
+    this.knockStiffID = EnhancedCooldownWheel.I().addTask(function() {
         自机.knockStiffID = null;
         自机.硬直中 = false;
-    }, 时间);
+    }, 时间, 1);
 };
 
 //切换武器
