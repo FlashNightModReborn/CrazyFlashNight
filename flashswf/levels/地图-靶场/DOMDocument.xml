@@ -68,11 +68,9 @@
           <Include href="shape/Symbol 2386.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b38" lastModified="1704196122"/>
           <Include href="shape/Symbol 51880.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ceb" lastModified="1714661909"/>
           <Include href="sprite/Symbol 2363.xml" loadImmediate="false" itemID="6597607e-00000b21" lastModified="1707199899"/>
-          <Include href="sprite/Symbol 2392.xml" loadImmediate="false" itemID="6597607e-00000b3d" lastModified="1714658981"/>
-          <Include href="sprite/Symbol 2393.xml" loadImmediate="false" itemID="6597607e-00000b3e" lastModified="1724945655"/>
           <Include href="sprite/场景门.xml" loadImmediate="false" itemID="66f59e0d-00000a63" lastModified="1727373129"/>
           <Include href="sprite/高一点的障碍.xml" loadImmediate="false" itemID="66338a86-000011ea" lastModified="1714658546"/>
-          <Include href="sprite/怪物堆.xml" loadImmediate="false" itemID="66339dee-00000c0b" lastModified="1749727202"/>
+          <Include href="sprite/怪物堆.xml" loadImmediate="false" itemID="66339dee-00000c0b" lastModified="1756038732"/>
           <Include href="sprite/怪物堆素材.xml" loadImmediate="false" itemID="6633a36b-00000ce0" lastModified="1714660203"/>
           <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
           <Include href="sprite/图层很高的沙袋.xml" loadImmediate="false" itemID="6633a522-00000d00" lastModified="1714660652"/>
@@ -81,7 +79,7 @@
           <Include href="靶子1号.xml" loadImmediate="false" itemID="6633a760-00000d20" lastModified="1714661216"/>
           <Include href="靶子2号.xml" loadImmediate="false" itemID="6633a77b-00000d38" lastModified="1714661243"/>
           <Include href="靶子3号.xml" loadImmediate="false" itemID="6633a787-00000d4b" lastModified="1714661255"/>
-          <Include href="地图-靶场.xml" itemID="66337922-00000dda" lastModified="1755154738"/>
+          <Include href="地图-靶场.xml" itemID="66337922-00000dda" lastModified="1756038129"/>
           <Include href="地图碰撞箱.xml" loadImmediate="false" itemID="67d7e0f1-0000163a" lastModified="1749722631"/>
           <Include href="素材/Symbol 2.xml" loadImmediate="false" itemID="6577f78a-00000f72" lastModified="1701306521"/>
           <Include href="素材/Symbol 3.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-00000f73" lastModified="1701306521"/>
@@ -120,9 +118,9 @@
           <Include href="素材/Symbol 784.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000010b0" lastModified="1705237883"/>
           <Include href="素材/Symbol 785.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000010b1" lastModified="1705237842"/>
           <Include href="素材/Symbol 786.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000010b2" lastModified="1705237360"/>
-          <Include href="素材/靶子1.xml" loadImmediate="false" itemID="65a3dae6-000001f5" lastModified="1724945343"/>
-          <Include href="素材/靶子2.xml" loadImmediate="false" itemID="65a3dfca-00000236" lastModified="1724945327"/>
-          <Include href="素材/靶子3.xml" loadImmediate="false" itemID="65a3e2f5-00000271" lastModified="1724945350"/>
+          <Include href="素材/靶子1.xml" loadImmediate="false" itemID="65a3dae6-000001f5" lastModified="1756038673"/>
+          <Include href="素材/靶子2.xml" loadImmediate="false" itemID="65a3dfca-00000236" lastModified="1756038690"/>
+          <Include href="素材/靶子3.xml" loadImmediate="false" itemID="65a3e2f5-00000271" lastModified="1756038682"/>
           <Include href="素材/靶子纸.xml" loadImmediate="false" itemID="65a3dd23-00000220" lastModified="1705238129"/>
           <Include href="素材/背景.xml" loadImmediate="false" itemID="65aa3a7c-00000b85" lastModified="1737184406"/>
           <Include href="素材/侧棱柱.xml" loadImmediate="false" itemID="65a3d238-00000088" lastModified="1705235000"/>
@@ -195,6 +193,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3130184" publishTime="1756038088"/>
+          <PublishItem publishSize="3130168" publishTime="1756038012"/>
+          <PublishItem publishSize="3130173" publishTime="1756037926"/>
           <PublishItem publishSize="922581" publishTime="1746453785"/>
           <PublishItem publishSize="914570" publishTime="1737184189"/>
           <PublishItem publishSize="914733" publishTime="1737184148"/>
@@ -212,8 +213,5 @@
           <PublishItem publishSize="799981" publishTime="1714661425"/>
           <PublishItem publishSize="800032" publishTime="1714661263"/>
           <PublishItem publishSize="799980" publishTime="1714661080"/>
-          <PublishItem publishSize="800120" publishTime="1714660979"/>
-          <PublishItem publishSize="799881" publishTime="1714660398"/>
-          <PublishItem publishSize="799882" publishTime="1714660297"/>
      </publishHistory>
 </DOMDocument>

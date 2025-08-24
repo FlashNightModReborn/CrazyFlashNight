@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/靶子3" itemID="65a3e2f5-00000271" lastModified="1724945350" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/靶子3" itemID="65a3e2f5-00000271" lastModified="1756038682" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="靶子3">
       <layers>
@@ -23,7 +23,7 @@ hp = 10000000;
 躲闪率 = 2;
 击中效果 = "火花";
 Z轴坐标 = this._y;
-
+_root.敌人函数.初始化单位(this);
 function 状态改变(新状态名)
 {
 	hp = 10000000;

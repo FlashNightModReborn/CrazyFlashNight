@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-靶场" itemID="66337922-00000dda" linkageExportForAS="true" linkageIdentifier="地图-靶场" lastModified="1755154738" lastUniqueIdentifier="108">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-靶场" itemID="66337922-00000dda" linkageExportForAS="true" linkageIdentifier="地图-靶场" lastModified="1756038129" lastUniqueIdentifier="108">
   <timeline>
     <DOMTimeline name="地图-靶场">
       <layers>
@@ -202,7 +202,7 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/背景" selected="true" centerPoint3DX="1692.55" centerPoint3DY="518" exportAsBitmap="true">
+                <DOMSymbolInstance libraryItemName="素材/背景" centerPoint3DX="1692.55" centerPoint3DY="518" exportAsBitmap="true">
                   <matrix>
                     <Matrix tx="582.55" ty="88"/>
                   </matrix>
@@ -754,7 +754,7 @@ onClipEvent(load){
                     <Point x="68.45" y="51.55"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/怪物堆" centerPoint3DX="2433.15" centerPoint3DY="728.8">
+                <DOMSymbolInstance libraryItemName="sprite/怪物堆" selected="true" centerPoint3DX="2433.15" centerPoint3DY="728.8">
                   <matrix>
                     <Matrix tx="2270.25" ty="635"/>
                   </matrix>

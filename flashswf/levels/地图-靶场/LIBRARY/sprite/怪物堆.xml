@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/怪物堆" itemID="66339dee-00000c0b" lastModified="1749727202" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/怪物堆" itemID="66339dee-00000c0b" lastModified="1756038732" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="怪物堆">
       <layers>
@@ -23,7 +23,7 @@ hp = 10000000;
 躲闪率 = 2;
 击中效果 = "火花";
 Z轴坐标 = this._y;
-
+_root.敌人函数.初始化单位(this);
 function 状态改变(新状态名)
 {
 	hp = 10000000;
@@ -69,7 +69,7 @@ stop();]]></script>
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/怪物堆素材" centerPoint3DX="-3.15" centerPoint3DY="-83.25">
+                <DOMSymbolInstance libraryItemName="sprite/怪物堆素材" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="-166.05" ty="-177.05"/>
                   </matrix>
