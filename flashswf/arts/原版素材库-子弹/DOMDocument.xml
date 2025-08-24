@@ -9,10 +9,10 @@
           <DOMFolderItem name="联弹/白色手里剑" itemID="68368bd3-000028df"/>
           <DOMFolderItem name="联弹/联弹爆炸" itemID="68368bd3-000028e6"/>
           <DOMFolderItem name="联弹/纸飞机" itemID="68368bd3-000028e3"/>
-          <DOMFolderItem name="诺亚" itemID="6551e7c0-00001580"/>
+          <DOMFolderItem name="诺亚" itemID="6551e7c0-00001580" isExpanded="true"/>
           <DOMFolderItem name="其他" itemID="656cb4b0-0000042a"/>
           <DOMFolderItem name="其他武器" itemID="6551e8df-000015b7"/>
-          <DOMFolderItem name="手雷" itemID="689365e6-00002ce7" isExpanded="true"/>
+          <DOMFolderItem name="手雷" itemID="689365e6-00002ce7"/>
           <DOMFolderItem name="手雷/BBPLAYER炸弹" itemID="66d5f180-00001b06" isExpanded="true"/>
           <DOMFolderItem name="手雷/鞭炮" itemID="66a5e01d-000014f1" isExpanded="true"/>
           <DOMFolderItem name="手雷/地瓜手雷" itemID="6896ec0b-00003d51" isExpanded="true"/>
@@ -603,7 +603,7 @@
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 663.xml" itemIcon="1" loadImmediate="false" itemID="668b9cdd-000001df" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 664.xml" loadImmediate="false" itemID="668b9cdd-000001e0" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 1217.xml" itemIcon="1" loadImmediate="false" itemID="668b9f53-000001d0" lastModified="1720426265"/>
-          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1755485069"/>
+          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1756077891"/>
           <Include href="子弹-持续组/电球.xml" itemID="669d343b-00001740" lastModified="1722876120"/>
           <Include href="子弹-持续组/火焰.xml" itemID="669d3404-00001734" lastModified="1754922735"/>
           <Include href="子弹-持续组/声波.xml" itemID="669d34bf-0000176e" lastModified="1722875808"/>
@@ -632,12 +632,12 @@
           <Include href="子弹-普通与穿刺组/加强普通子弹.xml" itemID="669d3477-0000174e" lastModified="1721578615"/>
           <Include href="子弹-普通与穿刺组/能量子弹.xml" itemID="669d33e2-0000172c" lastModified="1721578466"/>
           <Include href="子弹-普通与穿刺组/普通弩箭.xml" itemID="669d3432-0000173e" lastModified="1722661273"/>
+          <Include href="子弹-普通与穿刺组/普通无壳子弹.xml" itemID="68ab9f43-00000456" lastModified="1756077891"/>
           <Include href="子弹-普通与穿刺组/山猫反器材普通子弹.xml" itemID="689818c0-0000266c" lastModified="1754798272"/>
           <Include href="子弹-普通与穿刺组/糖果子弹.xml" itemID="669d3450-00001745" lastModified="1721578576"/>
           <Include href="子弹-普通与穿刺组/铁枪磁轨弹.xml" itemID="68786a09-00004fe9" lastModified="1752807102"/>
           <Include href="子弹-普通与穿刺组/铁枪磁轨弹动画.xml" itemIcon="1" loadImmediate="false" itemID="6879b5cc-00001095" lastModified="1752807115"/>
           <Include href="子弹-普通与穿刺组/无壳穿刺子弹.xml" itemID="687775d5-00002db3" lastModified="1752659449"/>
-          <Include href="子弹-普通与穿刺组/无壳子弹.xml" itemID="68775c6d-0000179e" lastModified="1752654007"/>
           <Include href="子弹-气功组/气功弹.xml" itemID="668b9d18-000001e7" lastModified="1722856067"/>
           <Include href="子弹-气功组/气功弹爆炸.xml" itemID="668b9d1d-000001e8" lastModified="1723547810"/>
           <Include href="子弹-气功组/屎块爆炸.xml" itemID="66bb409c-00001c97" lastModified="1754669881"/>
@@ -981,7 +981,7 @@
                     <SolidSwatchItem color="#FFE843" hue="35" saturation="239" brightness="152"/>
                     <SolidSwatchItem color="#FEE99A" hue="32" saturation="235" brightness="192"/>
                     <SolidSwatchItem color="#E14001" alpha="0.498039215686275" hue="11" saturation="238" brightness="107"/>
-                    <SolidSwatchItem color="#FFA700" alpha="0.733333333333333" hue="26" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FFA700" alpha="0.729411764705882" hue="26" saturation="239" brightness="120"/>
                     <SolidSwatchItem color="#E14001" alpha="0.298039215686275" hue="11" saturation="238" brightness="107"/>
                     <SolidSwatchItem color="#FFA700" alpha="0.447058823529412" hue="26" saturation="239" brightness="120"/>
                     <SolidSwatchItem color="#FFDE39" alpha="0.6" hue="33" saturation="239" brightness="147"/>
@@ -1003,6 +1003,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4075039" publishTime="1756077905"/>
           <PublishItem publishSize="4074766" publishTime="1755483513"/>
           <PublishItem publishSize="4074762" publishTime="1755483469"/>
           <PublishItem publishSize="4074360" publishTime="1754922198"/>
@@ -1022,6 +1023,5 @@
           <PublishItem publishSize="3973644" publishTime="1754836936"/>
           <PublishItem publishSize="3971836" publishTime="1754798317"/>
           <PublishItem publishSize="3971792" publishTime="1754798068"/>
-          <PublishItem publishSize="3971428" publishTime="1754778053"/>
      </publishHistory>
 </DOMDocument>
