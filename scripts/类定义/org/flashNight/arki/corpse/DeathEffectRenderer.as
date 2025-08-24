@@ -27,6 +27,8 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
     private static var reusableTransformMatrix:Matrix = new Matrix();
     /** @private {Object} 缓存暗化 ColorTransform 对象，key 为位运算生成的唯一数字 */
     private static var darkenCTCache:Object = {};
+
+    private static var CORPSE_CULL_PAD:Number = 60; // 适当缓冲，减少边缘误杀
     
     
     // ------------------ 公共方法 ------------------
@@ -46,19 +48,29 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
      */
     public static function renderCorpse(target:MovieClip, layerIndex:Number):Void {
         if (!EffectSystem.isDeathEffect) return;
-        
+
+        // 离屏剔除（gameworld 平移+缩放闭式映射）
+
         var gameWorld:MovieClip = _root.gameworld;
+        var sx:Number = gameWorld._xscale * 0.01;
+        var off:Vector = SceneCoordinateManager.effectOffset;
+
+        // 局部(世界)中心 → 屏幕坐标
+        var gx:Number = gameWorld._x + (target._x + off.x) * sx;
+        var gy:Number = gameWorld._y + (target._y + off.y) * sx;
+
+        if (gx < -CORPSE_CULL_PAD || gx > Stage.width + CORPSE_CULL_PAD ||
+            gy < -CORPSE_CULL_PAD || gy > Stage.height + CORPSE_CULL_PAD) {
+            return; // 离屏：直接拒绝绘制
+        }
+
         var effectOffset:Vector = SceneCoordinateManager.effectOffset;
-        
-        // 更新 reusableMatrix 的属性（复用 Matrix 对象减少内存分配）
+
         reusableMatrix.a  = target._xscale / 100;
-        // reusableMatrix.b  = 0;
-        // reusableMatrix.c  = 0;
         reusableMatrix.d  = target._yscale / 100;
         reusableMatrix.tx = target._x + effectOffset.x;
         reusableMatrix.ty = target._y + effectOffset.y;
-        
-        // 使用更新后的矩阵绘制暗化尸体
+
         gameWorld.deadbody.layers[layerIndex].draw(
             target,
             reusableMatrix,
@@ -68,6 +80,7 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
             true
         );
     }
+
     
     /**
      * 渲染带旋转和翻转的尸体效果。
@@ -85,6 +98,20 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
      */
     public static function renderRotatedCorpse(target:MovieClip, layerIndex:Number):Void {
         if (!EffectSystem.isDeathEffect) return;
+
+        // 离屏剔除（gameworld 平移+缩放闭式映射）
+        var gameWorld:MovieClip = _root.gameworld;
+        var sx:Number = gameWorld._xscale * 0.01;
+        var off:Vector = SceneCoordinateManager.effectOffset;
+
+        // 局部(世界)中心 → 屏幕坐标
+        var gx:Number = gameWorld._x + (target._x + off.x) * sx;
+        var gy:Number = gameWorld._y + (target._y + off.y) * sx;
+
+        if (gx < -CORPSE_CULL_PAD || gx > Stage.width + CORPSE_CULL_PAD ||
+            gy < -CORPSE_CULL_PAD || gy > Stage.height + CORPSE_CULL_PAD) {
+            return; // 离屏：直接拒绝绘制
+        }
 
         // 将目标的角度（度）转换为弧度，以便 Math.cos/sin 计算
         var rotationRadians:Number = target._rotation * DEG_TO_RAD;
