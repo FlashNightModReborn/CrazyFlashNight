@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/男模" itemID="668be6f9-0000064e" linkageExportForAS="true" linkageIdentifier="男模" lastModified="1720444665" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/男模" itemID="668be6f9-0000064e" lastModified="1756119026" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="男模">
+    <DOMTimeline name="男模" currentFrame="4">
       <layers>
-        <DOMLayer name="Labels Layer" color="#DFDAC5">
+        <DOMLayer name="Labels Layer" color="#DFDAC5" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -33,11 +33,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#F6C4BA" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#F6C4BA">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/空手待机" name="man" selected="true" centerPoint3DX="185.3" centerPoint3DY="282.15">
+                <DOMSymbolInstance libraryItemName="sprite/空手待机" name="man" centerPoint3DX="185.3" centerPoint3DY="282.15">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276901245117188" tx="-2.9" ty="1.8"/>
                   </matrix>

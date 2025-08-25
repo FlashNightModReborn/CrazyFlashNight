@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1756055682" lastUniqueIdentifier="227">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1756120029" lastUniqueIdentifier="227">
   <timeline>
-    <DOMTimeline name="对话框肖像" currentFrame="10">
+    <DOMTimeline name="对话框肖像" currentFrame="8">
       <layers>
         <DOMLayer name="Labels Layer" color="#FC2986">
           <frames>
@@ -148,7 +148,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!5804 -5026|5804 2159!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026"/>
+                    <Edge fillStyle1="1" edges="!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026!5804 -5026|5804 2159"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -229,9 +229,11 @@
 	else
 	{
 		var 头部装备 = _root.getItemData(装备栏.getNameString("头部装备"));
-		var 上装装备 = _root.getItemData(装备栏.getNameString("上装装备"));
-		var 手部装备 = _root.getItemData(装备栏.getNameString("手部装备"));
-		var 下装装备 = _root.getItemData(装备栏.getNameString("下装装备"));
+		if (头部装备.helmet) this.发型 = "";
+		头部装备 = 头部装备.data;
+		var 上装装备 = _root.getItemData(装备栏.getNameString("上装装备")).data;
+		var 手部装备 = _root.getItemData(装备栏.getNameString("手部装备")).data;
+		var 下装装备 = _root.getItemData(装备栏.getNameString("下装装备")).data;
 		面具 = 头部装备.dressup;
 		身体 = 性别 + 上装装备.dressup + "身体";
 		上臂 = 性别 + 上装装备.dressup + "上臂";
@@ -243,15 +245,11 @@
 		左大腿 = 性别 + 下装装备.dressup + "左大腿";
 		右大腿 = 性别 + 下装装备.dressup + "右大腿";
 		小腿 = 性别 + 下装装备.dressup + "小腿";
-		脚 = _root.getItemData(装备栏.getNameString("脚部装备")).dressup;
-		刀 = _root.getItemData(装备栏.getNameString("刀")).dressup;
-		长枪 = _root.getItemData(装备栏.getNameString("长枪")).dressup;
-		手枪 = _root.getItemData(装备栏.getNameString("手枪")).dressup;
-		手枪2 = _root.getItemData(装备栏.getNameString("手枪2")).dressup;
-		if (头部装备.helmet)
-		{
-			this.发型 = "";
-		}
+		脚 = _root.getItemData(装备栏.getNameString("脚部装备")).data.dressup;
+		刀 = _root.getItemData(装备栏.getNameString("刀")).data.dressup;
+		长枪 = _root.getItemData(装备栏.getNameString("长枪")).data.dressup;
+		手枪 = _root.getItemData(装备栏.getNameString("手枪")).data.dressup;
+		手枪2 = _root.getItemData(装备栏.getNameString("手枪2")).data.dressup;
 	}
 	//
 	_parent.aa.text = _parent._parent.人物表情;

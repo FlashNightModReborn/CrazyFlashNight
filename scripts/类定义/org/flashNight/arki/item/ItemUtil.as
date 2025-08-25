@@ -68,8 +68,8 @@ class org.flashNight.arki.item.ItemUtil{
      * 计算并返回装备数据
      */
     public static function getEquipmentData(item:Object):Object{
-        if(!isEquipment(item.name)) return null;
         var itemData:Object = getItemData(item.name);
+        if(!isEquipment(item.name)) return itemData;
         var data:Object = itemData.data;
         // 获取对应的多阶装备数据
         if(item.value.tier){

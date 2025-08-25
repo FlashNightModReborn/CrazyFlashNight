@@ -1398,11 +1398,11 @@ else if(_parent.格斗架势 == true)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 30" color="#EC03E6">
+        <DOMLayer name="Layer 30" color="#EC03E6" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="45" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/刀" centerPoint3DX="175" centerPoint3DY="-34.95">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/刀" selected="true" centerPoint3DX="175" centerPoint3DY="-34.95">
                   <matrix>
                     <Matrix a="0.692703247070313" b="0.714859008789063" c="-0.714859008789063" d="0.692703247070313" tx="138.45" ty="-236.7"/>
                   </matrix>
@@ -1764,7 +1764,7 @@ else if(_parent.格斗架势 == true)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 36" color="#9835BC" current="true" isSelected="true">
+        <DOMLayer name="Layer 36" color="#9835BC">
           <frames>
             <DOMFrame index="0" duration="115" keyMode="9728">
               <elements>
