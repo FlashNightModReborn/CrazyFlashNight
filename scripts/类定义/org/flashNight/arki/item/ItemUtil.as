@@ -4,6 +4,8 @@ import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.arki.item.itemCollection.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
+import org.flashNight.naki.Sort.QuickSort;
+
 /*
  * ItemUtil 静态类，存储物品数据与物品工具函数
  * 
@@ -16,7 +18,8 @@ class org.flashNight.arki.item.ItemUtil{
     public static var itemNamesByID:Object;
     public static var maxID:Number;
     public static var equipmentDict:Object; // 装备字典，快速判断物品是否为武器或防具
-    public static var informationMaxValueDict:Object; // 情报持有上限字典
+    public static var materialDict:Object; // 材料字典，快速判断物品是否为材料
+    public static var informationMaxValueDict:Object; // 情报持有上限字典，可以顺便判断物品是否为情报
 
     public static var equipmentTierDict:Object = {
         二阶: "data_2",
@@ -45,6 +48,50 @@ class org.flashNight.arki.item.ItemUtil{
     ];
 
 
+
+    /*
+     * 加载物品数据
+     */
+    public static function loadItemData(combinedData):Void{
+        var _itemDataDict = new Object();
+        var _itemDataArray = new Array();
+        var _itemNamesByID = new Object();
+        var _maxID = 0;
+        var _equipmentDict = new Object();
+        var _materialDict = new Object();
+        var _informationMaxValueDict = new Object();
+
+        for(var i in combinedData){
+            var itemData = combinedData[i];
+            var itemName = itemData.name;
+            _itemDataDict[itemName] = itemData;
+            _itemNamesByID[itemData.id] = itemName;
+            _itemDataArray.push(itemData);
+            if(itemData.id > _maxID) _maxID = itemData.id;
+            if(itemData.type === "武器" || itemData.type === "防具") _equipmentDict[itemName] = true;
+            else if(itemData.use === "材料") _materialDict[itemName] = true;
+            else if(itemData.use === "情报") _informationMaxValueDict[itemName] = itemData.maxvalue;
+        }
+        _itemDataArray = QuickSort.adaptiveSort(_itemDataArray, function(a, b) {
+            return a.id - b.id; // Numeric comparison
+        });
+
+        itemDataDict = _itemDataDict;
+        itemDataArray = _itemDataArray;
+        itemNamesByID = _itemNamesByID;
+        maxID = _maxID;
+        equipmentDict = _equipmentDict;
+        materialDict = _materialDict;
+        informationMaxValueDict = _informationMaxValueDict;
+        _root.物品属性列表 = _itemDataDict;
+        _root.物品属性数组 = _itemDataArray;
+        _root.id物品名对应表 = _itemNamesByID;
+        _root.物品最大id = _maxID;
+        _root.物品总数 = _itemDataDict.length;
+    }
+
+
+
     /*
      * 获取物品数据
      */
@@ -69,7 +116,7 @@ class org.flashNight.arki.item.ItemUtil{
      */
     public static function getEquipmentData(item:Object):Object{
         var itemData:Object = getItemData(item.name);
-        if(!isEquipment(item.name)) return itemData;
+        if(!isEquipment(item.name)) return itemData; // 若不为装备则返回原始物品数据
         var data:Object = itemData.data;
         // 获取对应的多阶装备数据
         if(item.value.tier){
@@ -100,10 +147,16 @@ class org.flashNight.arki.item.ItemUtil{
     }
 
     /*
-     * 判断物品是否为武器或防具
+     * 三个辅助函数，判断物品是否为武器或防具 / 材料 / 情报
      */
     public static function isEquipment(name:String):Boolean{
         return equipmentDict[name] === true;
+    }
+    public static function isMaterial(name:String):Boolean{
+        return materialDict[name] === true;
+    }
+    public static function isInformation(name:String):Boolean{
+        return informationMaxValueDict[name] > 0;
     }
 
 
@@ -249,12 +302,11 @@ class org.flashNight.arki.item.ItemUtil{
                 list[name] = value;
                 continue;
             }
-            var itemData:Object = ItemUtil.getRawItemData(name);
-            if(itemData.use === "材料"){
+            if(isMaterial(name)){
                 list.材料[name] = value;
-            } else if(itemData.use === "情报"){
+            } else if(isInformation(name)){
                 list.情报[name] = value;
-            } else if(itemData.type !== "武器" && itemData.type !== "防具"){
+            } else if(!isEquipment(name)){
                 // 可合并物品
                 if(mergables[name] != undefined){
                     mergables[name] += value;
@@ -439,11 +491,10 @@ class org.flashNight.arki.item.ItemUtil{
         for(var i = 0; i < itemArray.length; i++){
             var name = itemArray[i].name;
             var value = itemArray[i].value;
-            var itemData = ItemUtil.getRawItemData(name);
-            if(itemData.use === "材料"){
+            if(isMaterial(name)){
                 if(材料.getValue(name) < value) return null;
                 list.材料[name] = value;
-            }else if(itemData.use === "情报"){
+            }else if(isInformation(name)){
                 if(情报.getValue(name) < value) return null;
                 list.情报[name] = value;
             }else{
@@ -452,7 +503,7 @@ class org.flashNight.arki.item.ItemUtil{
                     var index = indexArr[arri];
                     var bagItem = 背包.getItem(index);
                     if(name != bagItem.name) continue;
-                    if((itemData.type === "武器" || itemData.type === "防具") && bagItem.value.level >= value){
+                    if(isEquipment(name) && bagItem.value.level >= value){
                         list.背包[index] = value;
                         value = 0;
                         break;
@@ -546,9 +597,8 @@ class org.flashNight.arki.item.ItemUtil{
     
     //查找物品总数
     public static function getTotal(__name:String):Number{
-        var itemData = ItemUtil.getRawItemData(__name);
-        if(itemData.use === "材料") return _root.收集品栏.材料.getValue(__name);
-        if(itemData.use === "情报") return _root.收集品栏.情报.getValue(__name);
+        if(isMaterial(__name)) return _root.收集品栏.材料.getValue(__name);
+        if(isInformation(__name)) return _root.收集品栏.情报.getValue(__name);
         //遍历背包
         var 背包 = _root.物品栏.背包;
         var total = 0;

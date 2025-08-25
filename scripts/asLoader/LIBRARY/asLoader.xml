@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1755966123">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1756143340">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="42">
+    <DOMTimeline name="asLoader" currentFrame="62">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -62,7 +62,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="文件夹 1" color="#FF800A" layerType="folder"/>
-        <DOMLayer name="load脚本1" color="#9933CC" autoNamed="false">
+        <DOMLayer name="load脚本1" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -356,36 +356,7 @@ ItemDataLoader.loadItemData(
     function(combinedData:Object):Void {
         trace("主程序：物品数据加载成功！");
 		_root.发布消息("物品数据加载完毕");
-        // 在此处处理合并后的物品数据
-		var itemDataDict = new Object();
-		var itemDataArray = new Array();
-		var itemNamesByID = new Object();
-		var maxID = 0;
-		var equipmentDict = new Object();
-		var informationMaxValueDict = new Object();
-		for(var i in combinedData){
-			var itemData = combinedData[i];
-			itemDataDict[itemData.name] = itemData;
-			itemNamesByID[itemData.id] = itemData.name;
-			itemDataArray.push(itemData);
-			if(itemData.id > maxID) maxID = itemData.id;
-			if(itemData.type ==="武器" || itemData.type ==="防具") equipmentDict[itemData.name] = true;
-			if(itemData.use ==="情报") informationMaxValueDict[itemData.name] = itemData.maxvalue;
-		}
-		itemDataArray = org.flashNight.naki.Sort.QuickSort.adaptiveSort(itemDataArray, function(a, b) {
-            return a.id - b.id; // Numeric comparison
-        });
-		org.flashNight.arki.item.ItemUtil.itemDataDict = itemDataDict;
-		org.flashNight.arki.item.ItemUtil.itemDataArray = itemDataArray;
-		org.flashNight.arki.item.ItemUtil.itemNamesByID = itemNamesByID;
-		org.flashNight.arki.item.ItemUtil.maxID = maxID;
-		org.flashNight.arki.item.ItemUtil.equipmentDict = equipmentDict;
-		org.flashNight.arki.item.ItemUtil.informationMaxValueDict = informationMaxValueDict;
-		_root.物品属性列表 = itemDataDict;
-		_root.物品属性数组 = itemDataArray;
-		_root.id物品名对应表 = itemNamesByID;
-		_root.物品最大id = maxID;
-		_root.物品总数 = _root.itemDataDict.length;
+		org.flashNight.arki.item.ItemUtil.loadItemData(combinedData);
     },
     function():Void {
         trace("主程序：物品数据加载失败！");
@@ -717,7 +688,7 @@ this.removeMovieClip();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="load脚本5" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="load脚本5" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>

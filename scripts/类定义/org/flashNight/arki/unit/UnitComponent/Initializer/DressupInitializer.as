@@ -60,7 +60,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             result = 7 + Math.floor((targetLevel - 50) / 15);
         }
         if(result <= 0) return 1;
-        if (result > 13) return 13;
+        if(result > 13) return 13;
         return result;
     }
 
