@@ -7,6 +7,7 @@ import org.flashNight.arki.unit.Action.Shoot.*;
 import org.flashNight.neur.Event.*;
 import org.flashNight.naki.RandomNumberEngine.*
 import org.flashNight.arki.spatial.animation.*;
+import org.flashNight.arki.component.StatHandler.DodgeHandler;
 import org.flashNight.arki.component.Effect.*;
 import org.flashNight.arki.item.*;
 import org.flashNight.sara.util.*;
@@ -967,7 +968,7 @@ _root.主角函数.根据模式重新读取武器加成 = function(模式) {
     } else {
         this.命中加成 = this.基础命中加成;
     }
-    this.命中率 = Math.max(this.基础命中率 * (1 + this.命中加成 / 100), _root.命中率极限);
+    this.命中率 = Math.max(this.基础命中率 * (1 + this.命中加成 / 100), DodgeHandler.HIT_RATE_LIMIT);
 }
 
 _root.主角函数.按键控制攻击模式 = function() {

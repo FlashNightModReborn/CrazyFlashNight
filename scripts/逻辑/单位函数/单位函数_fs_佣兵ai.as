@@ -1,4 +1,5 @@
 ﻿import org.flashNight.naki.RandomNumberEngine.*;
+import org.flashNight.arki.component.StatHandler.DamageResistanceHandler;
 
 _root.佣兵思考时间间隔 = 1.5 * _root.帧计时器.帧率;
 
@@ -64,10 +65,10 @@ _root.主角模板ai函数.思考 = function() {
     var 当前时间:Number = _root.帧计时器.当前帧数;
     if (_parent.血包数量 > 0 && 当前时间 - _parent.上次使用血包时间 > _parent.血包使用间隔) {
         // 计算己方肉度：考虑防御减伤比
-        var 自机肉度:Number = _parent.hp / _root.防御减伤比(_parent.防御力);
+        var 自机肉度:Number = _parent.hp / DamageResistanceHandler.defenseDamageRatio(_parent.防御力);
         // 安全计算敌方肉度，如目标不存在则取己方肉度的1/5作为参考
         var enemy = 游戏世界[_parent.攻击目标];
-        var 敌机肉度:Number = (enemy && enemy.hp != undefined) ? enemy.hp / _root.防御减伤比(enemy.防御力) : NaN;
+        var 敌机肉度:Number = (enemy && enemy.hp != undefined) ? enemy.hp / DamageResistanceHandler.defenseDamageRatio(enemy.防御力) : NaN;
         if (isNaN(敌机肉度)) {
             敌机肉度 = 自机肉度 / 5;
         }

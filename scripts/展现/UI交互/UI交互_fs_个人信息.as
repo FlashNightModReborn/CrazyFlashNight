@@ -1,10 +1,11 @@
 ﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.arki.component.StatHandler.DamageResistanceHandler;
 
 _root.人物信息函数 = new Object();
 
 _root.人物信息函数.获得韧性负荷 = function(自机){
 	var 自机 = TargetCacheManager.findHero();
-	var 韧性上限 = 自机.韧性系数 * 自机.hp / _root.防御减伤比(自机.防御力 / 1000);
+	var 韧性上限 = 自机.韧性系数 * 自机.hp / DamageResistanceHandler.defenseDamageRatio(自机.防御力 / 1000);
 	return Math.floor(韧性上限 / 自机.躲闪率) + " / " + Math.floor(韧性上限);
 };
 

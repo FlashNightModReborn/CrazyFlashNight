@@ -2,22 +2,18 @@
 import org.flashNight.neur.Event.*;
 
 //计算闪避
-_root.躲闪率极限 = 0.01;
-_root.命中率极限 = 0.01;
-_root.闪避系统闪避率上限 = 0.5 * 100;
-_root.基准躲闪率 = 3;
-_root.基准命中率 = 10;
-_root.跳弹基准重量 = 100;
-_root.过穿基准重量 = 20;
-_root.跳弹防御系数 = 5;
+// 已移至 DodgeHandler 类中的常量：
+// - _root.躲闪率极限 → DodgeHandler.DODGE_RATE_LIMIT
+// - _root.命中率极限 → DodgeHandler.HIT_RATE_LIMIT
+// - _root.闪避系统闪避率上限 → DodgeHandler.DODGE_SYSTEM_MAX
+// - _root.基准躲闪率 → DodgeHandler.BASE_DODGE_RATE
+// - _root.基准命中率 → DodgeHandler.BASE_HIT_RATE
+// - _root.跳弹基准重量 → DodgeHandler.JUMP_BOUNCE_BASE_WEIGHT
+// - _root.过穿基准重量 → DodgeHandler.PENETRATION_BASE_WEIGHT
 
-//防御计算公式
-_root.防御减伤比 = Delegate.create(DamageResistanceHandler, DamageResistanceHandler.defenseDamageRatio);
-
-//跳弹模式可以减法过滤掉轻火力，最低伤害为1
+//防御计算公式 - 已移至 DamageResistanceHandler 类
+// 直接调用 DamageResistanceHandler.defenseDamageRatio() 替代委托
 _root.跳弹伤害计算 = Delegate.create(DamageResistanceHandler, DamageResistanceHandler.bounceDamageCalculation);
-
-//过穿模式可以二次减伤重火力，最低伤害为1
 _root.过穿伤害计算 = Delegate.create(DamageResistanceHandler, DamageResistanceHandler.penetrationDamageCalculation);
 
 
