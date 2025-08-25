@@ -202,6 +202,7 @@ _root.子弹生命周期 = function()
 
     for (var i:Number = startIndex; i < len ; ++i)
     {
+        if (this.霰弹耗尽) break; // 霰弹耗尽立即退出，避免后续0伤害
         hitTarget = this.hitTarget = unitMap[i];
         // 计算子弹与目标在 z 轴上的相对偏移值
         zOffset = bulletZOffset - hitTarget.Z轴坐标;
