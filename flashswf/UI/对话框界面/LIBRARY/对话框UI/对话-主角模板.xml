@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框UI/对话-主角模板" itemID="662fd6a4-00000c50" lastModified="1756120012" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框UI/对话-主角模板" itemID="662fd6a4-00000c50" lastModified="1756142806" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="对话-主角模板">
       <layers>
@@ -25,7 +25,7 @@
 	var 性别 = 对话对象.性别;
 
 	this.发型 = 对话对象.发型;
-	if (!isNaN(对话对象.version))
+	if (对话对象.hasDressup === true)
 	{
 		面具 = 对话对象.面具;
 		身体 = 对话对象.身体;

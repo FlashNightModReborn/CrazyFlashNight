@@ -86,7 +86,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
 
     public static function updateDressupKeys(target:MovieClip):Void{
         // 军牌
-        var 称号文本 = target.颈部装备数据.title ? target.颈部装备数据.title : "菜鸟";
+        var 称号文本 = target.颈部装备数据.data.title ? target.颈部装备数据.data.title : "菜鸟";
         target.称号 = 称号文本;
         if (target._name == _root.控制目标) {
             _root.玩家称号 = target.称号;
@@ -266,7 +266,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
 
         target.hp满血值 = target.hp基本满血值 + target.hp满血值装备加层;
         target.mp满血值 = target.mp基本满血值 + target.mp满血值装备加层;
-        // if(target.version == 0)
         
         target.防御力 = target.基本防御力 + target.装备防御力;
 
@@ -408,8 +407,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
 
 
     public static function initialize(target:MovieClip):Void{
-        if(isNaN(target.version)) target.version = 0;
-        else target.version++;
+        if(target.hasDressup !== true) return;
 
         var loadFunc = target._name === _root.控制目标 ? loadHeroEquipment : loadEquipment;
         var defaultLevel = getEquipmentDefaultLevel(target.等级, target.名字);

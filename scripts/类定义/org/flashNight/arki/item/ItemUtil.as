@@ -29,19 +29,19 @@ class org.flashNight.arki.item.ItemUtil{
     // 强化数值列表
     private static var equipmentLevelList:Array = [
         1,
-        1,
-        1.06,
-        1.14,
-        1.24,
-        1.36,
-        1.5,
-        1.66,
-        1.84,
-        2.04,
-        2.26,
-        2.5,
-        2.76,
-        3.04
+        1,    // Lv1
+        1.06, // Lv2
+        1.14, // Lv3
+        1.24, // Lv4
+        1.36, // Lv5
+        1.5,  // Lv6
+        1.66, // Lv7
+        1.84, // Lv8
+        2.04, // Lv9
+        2.26, // Lv10
+        2.5,  // Lv11
+        2.76, // Lv12
+        3.04  // Lv13
     ];
 
 

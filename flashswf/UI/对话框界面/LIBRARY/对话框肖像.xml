@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1756120029" lastUniqueIdentifier="227">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1756142751" lastUniqueIdentifier="227">
   <timeline>
-    <DOMTimeline name="对话框肖像" currentFrame="8">
+    <DOMTimeline name="对话框肖像" currentFrame="17">
       <layers>
         <DOMLayer name="Labels Layer" color="#FC2986">
           <frames>
@@ -193,7 +193,7 @@
             </DOMFrame>
             <DOMFrame index="7" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="对话框UI/对话-玩家" name="肖像" selected="true" centerPoint3DX="178.85" centerPoint3DY="373.65">
+                <DOMSymbolInstance libraryItemName="对话框UI/对话-玩家" name="肖像" centerPoint3DX="178.85" centerPoint3DY="373.65">
                   <matrix>
                     <Matrix a="1.17088317871094" d="1.17088317871094" tx="50.1" ty="94.95"/>
                   </matrix>
@@ -206,8 +206,10 @@
 	var 控制对象 = _root.gameworld[_root.控制目标];
 	this.发型 = _root.发型;
 	this.脸型 = _root.脸型;
+	var 头部装备数据 = _root.getItemData(装备栏.getNameString("头部装备"));
+	if (头部装备数据.helmet) this.发型 = "";
 	//
-	if (!isNaN(控制对象.version))
+	if (控制对象.hasDressup === true)
 	{
 		面具 = 控制对象.面具;
 		身体 = 控制对象.身体;
@@ -228,9 +230,7 @@
 	}
 	else
 	{
-		var 头部装备 = _root.getItemData(装备栏.getNameString("头部装备"));
-		if (头部装备.helmet) this.发型 = "";
-		头部装备 = 头部装备.data;
+		头部装备 = 头部装备数据.data;
 		var 上装装备 = _root.getItemData(装备栏.getNameString("上装装备")).data;
 		var 手部装备 = _root.getItemData(装备栏.getNameString("手部装备")).data;
 		var 下装装备 = _root.getItemData(装备栏.getNameString("下装装备")).data;
@@ -264,7 +264,7 @@
             </DOMFrame>
             <DOMFrame index="12" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="对话框UI/对话-主角模板" name="肖像" centerPoint3DX="178.85" centerPoint3DY="397.65">
+                <DOMSymbolInstance libraryItemName="对话框UI/对话-主角模板" name="肖像" selected="true" centerPoint3DX="178.85" centerPoint3DY="397.65">
                   <matrix>
                     <Matrix a="1.17088317871094" d="1.17088317871094" tx="50.1" ty="118.4"/>
                   </matrix>

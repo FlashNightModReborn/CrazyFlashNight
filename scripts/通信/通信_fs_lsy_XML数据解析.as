@@ -136,15 +136,6 @@ _root.解析单次对话 = function(对话列表:Array){
 		if (!对话){
 			return null;
 		}
-		/*
-		var sentence = [];
-		var charsplit = 对话.Char.split("#");
-		sentence.push(_root.getDialogueSpecialString(对话.Name));
-		sentence.push(_root.getDialogueSpecialString(对话.Title));
-		sentence.push(_root.getDialogueSpecialString(charsplit[0]));
-		sentence.push(对话.Text);
-		sentence.push(charsplit[1] != undefined ? charsplit[1] : "普通");
-		*/
 		var 对话对象 = _root.解析敌人属性(对话);
 		输出对话[i] = {name:对话.Name, title:对话.Title, char:对话.Char, text:对话.Text, target:对话对象, imageurl:对话.ImageUrl};
 	}
@@ -158,14 +149,6 @@ _root.载入关卡数据 = function(stageType, url){
 		var 奖励品配置 = _root.配置数据为数组(data.Rewards.Reward);
 		_root.关卡可获得奖励品 = 奖励品配置[0] != null ? _root.解析并设置奖励品配置(奖励品配置) : [];
 		if(stageType == "无限过图"){
-			// _root.无限过图模式关卡计数 = -1;
-			// var subStageData = _root.配置数据为数组(data.SubStage);
-			// _root.无限过图基本配置 = _root.解析并设置基本配置(subStageData);
-			// _root.无限过图总关卡 = _root.解析并设置关卡配置(subStageData);
-			// _root.无限过图实例 = _root.解析并设置实例配置(subStageData);
-			// _root.无限过图出生点 = _root.解析并设置出生点配置(subStageData);
-			// _root.副本对话 = _root.解析并设置对话配置(subStageData);
-			// //
 			// _root.rogue敌人集合表 = _root.解析rogue敌人集合(data.Unions);
 			org.flashNight.arki.scene.StageManager.instance.initialize(data.SubStage);
 		}

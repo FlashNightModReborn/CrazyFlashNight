@@ -28,6 +28,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         ComponentInitializer.initialize(target);
         ParameterInitializer.initialize(target);
         EventInitializer.initialize(target);
+
+        DressupInitializer.initialize(target); // 只有主角模板会执行
         DisplayNameInitializer.initialize(target);
 
         TargetCacheUpdater.addUnit(target);

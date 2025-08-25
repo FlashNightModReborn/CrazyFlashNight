@@ -182,15 +182,15 @@ _root.佣兵装备位映射数组[16] = "手雷";
 
 _root.刷新人物装扮 = function(目标) {
     var 目标人物 = _root.gameworld[目标];
+    目标人物.hasDressup = true;
 
-    StaticInitializer.initializeUnit(目标人物);
-    DressupInitializer.initialize(目标人物); // 整理后的刷新装扮函数
-    
     if (!目标人物.新版人物文字信息) {
         目标人物.新版人物文字信息 = 目标人物.人物文字信息;
         目标人物.新版人物文字信息._name = "新版人物文字信息";
         目标人物.人物文字信息 = null;
     }
+
+    StaticInitializer.initializeUnit(目标人物); // 包含了整理后的刷新装扮函数
 
     //佣兵战力强化修正                                                                                                              
     if (目标人物.是否为敌人 == false && _root.控制目标 != 目标) {
