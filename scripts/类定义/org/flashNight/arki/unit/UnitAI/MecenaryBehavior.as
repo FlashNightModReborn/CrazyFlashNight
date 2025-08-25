@@ -135,7 +135,7 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
             var isStuck:Boolean = data.stuckProbeByDiffChange(true, 8, 3);
             if (isStuck) {
                 this.superMachine.ChangeState("Wandering");
-                _root.发布消息(data.self, "检测到卡死，切换到漫游模式");
+                // _root.发布消息(data.self, "检测到卡死，切换到漫游模式");
                 return;
             }
 
