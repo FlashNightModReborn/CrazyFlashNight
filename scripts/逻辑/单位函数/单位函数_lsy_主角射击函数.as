@@ -20,20 +20,24 @@ _root.主角函数.手枪2射击 = WeaponFireCore.PISTOL2_SHOOT;
 
 // 初始化长枪射击函数
 _root.主角函数.初始化长枪射击函数 = function():Void {
+    // _root.发布消息("初始化长枪射击函数");
     ShootInitCore.initLongGun(this, _parent);
 };
 
 // 初始化手枪射击函数
 _root.主角函数.初始化手枪射击函数 = function():Void {
+    // _root.发布消息("初始化手枪射击函数");
     ShootInitCore.initPistol(this, _parent);
 };
 
 // 初始化手枪2射击函数
 _root.主角函数.初始化手枪2射击函数 = function():Void {
+    // _root.发布消息("初始化手枪2射击函数");
     ShootInitCore.initPistol2(this, _parent);
 };
 
 // 初始化双枪射击函数
 _root.主角函数.初始化双枪射击函数 = function():Void {
+    // _root.发布消息("初始化双枪射击函数");
     ShootInitCore.initDualGun(this, _parent);
 };

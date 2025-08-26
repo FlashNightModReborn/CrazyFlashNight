@@ -3,6 +3,7 @@ import org.flashNight.arki.unit.Action.Shoot.WeaponStateManager;
 import org.flashNight.arki.unit.Action.Shoot.ReloadManager;
 import org.flashNight.arki.unit.Action.Shoot.ShootCore;
 import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
+import org.flashNight.gesh.object.*;
 
 /**
  * ShootInitCore.as
@@ -377,6 +378,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             bulletProps.斩杀 = Number(killValue);
         }
 
+        //_root.服务器.发布服务器消息(weaponType + " 子弹数据: " + ObjectUtil.toString(wd) + " 返回子弹数据: " + ObjectUtil.toString(bulletProps));
+
         return bulletProps;
     }
 
@@ -503,7 +506,12 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             subWeaponData  : parentRef.手枪2属性,
             extraParams    : { main: mainExtra, sub: subExtra }
         };
-        
+
+        /*
+        _root.服务器.发布服务器消息(target._name + " 初始化双枪系统 " + parentRef + " " + 
+        ObjectUtil.toString(config));
+        */
+
         // 调用通用初始化函数
         ShootInitCore.initWeaponSystem(target, parentRef, config);
     }
