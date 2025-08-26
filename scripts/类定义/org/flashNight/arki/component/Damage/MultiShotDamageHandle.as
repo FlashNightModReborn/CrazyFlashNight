@@ -146,8 +146,8 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
         //    然后将这个提取出的状态与我们期望的状态 (EXPECTED_STATE) 进行比较。
         if ((bullet.flags & RELEVANT_BITS_MASK) == EXPECTED_STATE) 
         {
-            // 只有非透明的普通子弹才会进入这里，压行优化寄存器使用
-            bullet.霰弹耗尽 = (bullet.霰弹值 -= actualScatterUsed) <= 0;
+            // 只有非透明的普通子弹才会进入这里
+            bullet.霰弹值 -= actualScatterUsed;
         }
 
         result.finalScatterValue = bullet.霰弹值;
