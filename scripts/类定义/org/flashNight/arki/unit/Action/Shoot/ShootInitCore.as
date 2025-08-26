@@ -2,6 +2,7 @@
 import org.flashNight.arki.unit.Action.Shoot.WeaponStateManager;
 import org.flashNight.arki.unit.Action.Shoot.ReloadManager;
 import org.flashNight.arki.unit.Action.Shoot.ShootCore;
+import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 
 /**
  * ShootInitCore.as
@@ -238,11 +239,10 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             // 开始持续射击
             var continueShooting:Boolean = that[continueMethodName](parentRef, weaponType, that[speedProp], that);
             if (continueShooting) {
-                parentRef[timerProp] = _root.帧计时器.添加生命周期任务(
-                    parentRef,
-                    handPrefix + "开始射击",
+                parentRef[timerProp] = EnhancedCooldownWheel.I().addTask(
                     that[continueMethodName],
                     that[speedProp],
+                    0,
                     parentRef, weaponType, that[speedProp]
                 );
             }
