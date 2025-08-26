@@ -284,3 +284,9 @@ EventBus.getInstance().subscribe("WeatherTimeRateUpdated", function(光照等级
 
     // _root.发布消息(this.金币时间倍率, this.经验时间倍率, this.人物信息透明度)
 }, _root.天气系统);
+
+EventBus.getInstance().subscribe("SceneChanged", function() {
+	var bus:EventBus = EventBus.getInstance();
+	var 光照等级 = this.获得当前光照等级();
+	bus.publish("WeatherTimeRateUpdated", 光照等级);
+}, _root.天气系统); // 地图变动时，重新初始化子弹池
