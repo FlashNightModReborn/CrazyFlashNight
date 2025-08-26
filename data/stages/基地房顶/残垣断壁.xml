@@ -569,28 +569,6 @@
             <PlayerX>316</PlayerX>
             <PlayerY>415</PlayerY>
         </BasicInformation>
-        <SpawnPoint>
-            <Point id="0">
-                <x>1600</x>
-                <y>429</y>
-                <QuantityMax>1</QuantityMax>
-            </Point>
-            <Point id="1">
-                <x>1600</x>
-                <y>648</y>
-                <QuantityMax>1</QuantityMax>
-            </Point>
-            <Point id="2">
-                <x>1600</x>
-                <y>768</y>
-                <QuantityMax>1</QuantityMax>
-            </Point>
-            <Point id="3">
-                <x>1600</x>
-                <y>548</y>
-                <QuantityMax>1</QuantityMax>
-            </Point>
-        </SpawnPoint>
         <Event>
             <EventName>Start</EventName>
             <Dialogue id="0">
@@ -703,7 +681,6 @@
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>26</Level>
-                        <SpawnIndex>0</SpawnIndex>
                         <Parameters>
                             <threatThreshold>15</threatThreshold>
                         </Parameters>
@@ -713,7 +690,6 @@
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>26</Level>
-                        <SpawnIndex>1</SpawnIndex>
                         <Parameters>
                             <threatThreshold>15</threatThreshold>
                         </Parameters>
@@ -723,7 +699,6 @@
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>26</Level>
-                        <SpawnIndex>2</SpawnIndex>
                         <Parameters>
                             <threatThreshold>15</threatThreshold>
                         </Parameters>
@@ -733,7 +708,6 @@
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>20</Level>
-                        <SpawnIndex>3</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
