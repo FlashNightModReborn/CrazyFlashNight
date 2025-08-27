@@ -61,6 +61,7 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
 
     /* ---------- 5. 射击事件监听 ---------- */
     target.dispatcher.subscribe("长枪射击", function () {
+        if(target.攻击模式 !== "长枪") return;
         var prop:Object = target.man.子弹属性;
 
         // 根据当前帧判断子弹类型，处理变形阶段
