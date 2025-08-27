@@ -108,7 +108,6 @@ class org.flashNight.arki.scene.WaveSpawner {
     }
 
     public function close():Void{
-        _root.当前为战斗地图 = false;
         _root.d_剩余敌人数._visible = false;
         
         waveSpawnWheel.clear();

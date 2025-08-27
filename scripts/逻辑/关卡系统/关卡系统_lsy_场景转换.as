@@ -292,10 +292,12 @@ _root.返回基地 = function(){
 	}else{
 		_root.淡出动画.淡出跳转帧(_root.关卡地图帧值);
 	}
-	//清空限制词条
+	// 清空限制词条
 	_root.限制系统.clearEntries();
-	//停止背景音乐
+	// 停止背景音乐
 	_root.soundEffectManager.stopBGM();
+	// 清除StageManager
+	StageManager.instance.clear();
 }
 
 
@@ -389,6 +391,19 @@ _root.加载共享场景 = function(加载场景名){
 }
 
 
+_root.场景转换函数.场景切换时补充玩家弹药 = function(){
+	if(_root.当前为战斗地图) return;
+	var 装备栏 = _root.物品栏.装备栏;
+	var keys = ["长枪", "手枪", "手枪2"];
+	for(var i=0; i<keys.length; i++){
+		var item = 装备栏.getItem(keys[i]);
+		if(item.value.level > 0){
+			item.value.shot = 0;
+		}
+	}
+}
+
+
 
 // 转换场景画面完全淡出时移除组件
 _root.清除游戏世界组件 = function(){
@@ -418,6 +433,9 @@ _root.清除游戏世界组件 = function(){
 	_root.商城主mc = null;
 	_root.关卡结束界面._visible = false;
 	_root.关卡结束界面.关卡是否结束 = false;
+
+	// 补充玩家弹药
+	_root.场景转换函数.场景切换时补充玩家弹药();
 
     _root.注释结束();
 }

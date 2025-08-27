@@ -331,6 +331,7 @@ class org.flashNight.arki.scene.StageManager {
     }
 
     public function clear():Void{
+        _root.当前为战斗地图 = false;
         isActive = false;
         stageInfoList = null;
         currentStage = -1;
