@@ -31,6 +31,14 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         手部装备: "空手", 
         手雷: "手雷"
     };
+    private static var removePropertiesFunc:Object = {
+        长枪: removePrimaryProperties, 
+        手枪: removeSecondary1Properties, 
+        手枪2: removeSecondary2Properties, 
+        刀: removeMeleeProperties, 
+        手部装备: removeHandProperties, 
+        手雷: removeGrenadeProperties
+    };
 
 
 
@@ -161,7 +169,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.懒闪避 = 0; //equipped.lazymiss
 
         target.伤害加成 = 0; //equipped.damage
-        target.重量 = 0; //weight
         target.空手攻击力 = _root.根据等级计算值(target.空手攻击力_min, target.空手攻击力_max, target.等级); //equipped.punch
         target.内力 = 65 + Math.floor(target.等级 * 0.56); //equipped.force
         target.装备刀锋利度加成 = 0; //equipped.knifepower
@@ -182,84 +189,12 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.基础命中加成 = 0;
         target.佣兵技能概率抑制基数 = 0;
 
-        var 韧性加成:Number = target.身高 - 105 - 50; //equipped.toughness
-        var 闪避加成:Number = 0; //equipped.evasion
+        target.韧性加成 = target.身高 - 105 - 50; //equipped.toughness
+        target.闪避加成 = 0; //equipped.evasion
 
-        var equipmentDataList:Array = [];
-        var data:Object;
+        // 刷新装备数值核心函数
         for(var key in equipmentKeys){
-            data = target[equipmentKeys[key]].data;
-            if(data) equipmentDataList.push(data);
-        }
-
-        for (var i=0; i<equipmentDataList.length; i++) {
-            data = equipmentDataList[i];
-
-            if (data.hp) {
-                target.hp满血值装备加层 += data.hp;
-            }
-            if (data.mp) {
-                target.mp满血值装备加层 += data.mp;
-            }
-            if (data.defence) {
-                target.装备防御力 += data.defence;
-            }
-            if (data.damage) {
-                target.伤害加成 += data.damage;
-            }
-            if (data.punch) {
-                var 空手加成 = data.punch;
-                target.空手攻击力 += 空手加成;
-                target.佣兵技能概率抑制基数 += Math.sqrt(空手加成);
-            }
-            if (data.force) {
-                target.内力 += data.force;
-            }
-            if (data.knifepower) {
-                target.装备刀锋利度加成 += data.knifepower;
-            }
-            if (data.gunpower) {
-                target.装备枪械威力加成 += data.gunpower;
-            }
-            if (data.lazymiss) {
-                target.懒闪避 += data.lazymiss / 100;
-            }
-
-            var prefix = weaponPrefixKeys[key];
-
-            // 
-            if(prefix){
-                target[prefix + "伤害类型"] = data.damagetype ? data.damagetype : null;
-                target[prefix + "魔法伤害属性"] = data.magictype ? data.magictype : null;
-                //
-                target[prefix + "毒"] = data.poison ? data.poison : 0;
-                target[prefix + "吸血"] = data.vampirism ? data.vampirism : 0;
-                target[prefix + "击溃"] = data.rout ? data.rout : 0;
-                target[prefix + "命中加成"] = data.accuracy ? data.accuracy : 0;
-                target[prefix + "暴击"] = data.criticalhit ? data.criticalhit : 0;
-                target[prefix + "斩杀"] = data.slay ? data.slay : 0;
-            }else{
-                if(data.poison) target.基础毒 += data.poison;
-                if(data.vampirism) target.基础吸血 += data.vampirism;
-                if(data.rout) target.基础击溃 += data.rout;
-                if(data.accuracy) target.基础命中加成 += data.accuracy;
-            }
-
-            if (data.magicdefence) {
-                for (var mdKey in data.magicdefence) {
-                    if (!isNaN(target.魔法抗性[mdKey]) || target.魔法抗性[mdKey] === 0) {
-                        target.魔法抗性[mdKey] += Number(data.magicdefence[mdKey]);
-                    } else {
-                        target.魔法抗性[mdKey] = 10 + Number(data.magicdefence[mdKey]);
-                    }
-                }
-            }
-            if (data.toughness) {
-                韧性加成 += data.toughness;
-            }
-            if (data.evasion) {
-                闪避加成 += data.evasion;
-            }
+            updateProperty(target, key, target[equipmentKeys[key]].data);
         }
 
         target.根据模式重新读取武器加成(target.攻击模式);
@@ -270,10 +205,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.防御力 = target.基本防御力 + target.装备防御力;
 
         target.命中率 = Math.max(target.基础命中率 * (1 + target.命中加成 / 100), DodgeHandler.HIT_RATE_LIMIT);
-        target.韧性系数 = target.韧性系数 * (1 + 韧性加成 / 100);
+        target.韧性系数 = target.韧性系数 * (1 + target.韧性加成 / 100);
 
         var 躲闪能力:Number = 1 / target.躲闪率;
-        躲闪能力 = Math.max(target.躲闪率 * (1 + 闪避加成 / 100), DodgeHandler.DODGE_RATE_LIMIT);
+        躲闪能力 = Math.max(target.躲闪率 * (1 + target.闪避加成 / 100), DodgeHandler.DODGE_RATE_LIMIT);
         target.躲闪率 = 1 / 躲闪能力;
         if (target.懒闪避 > 0.95) {
             target.懒闪避 = 0.95;
@@ -319,7 +254,132 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         if(isNaN(target.mp)) target.mp = target.mp满血值;
     }
 
+    private static function updateProperty(target:MovieClip, key:String, data:Object){
+        var prefix = weaponPrefixKeys[key];
+        if(!data){
+            if(prefix){
+                target[prefix + "伤害类型"] = null;
+                target[prefix + "魔法伤害属性"] = null;
+                target[prefix + "毒"] = 0;
+                target[prefix + "吸血"] = 0;
+                target[prefix + "击溃"] = 0;
+                target[prefix + "命中加成"] = 0;
+                target[prefix + "暴击"] = null;
+                target[prefix + "斩杀"] = 0;
+            }
+            return;
+        }
+
+        if (data.hp) target.hp满血值装备加层 += data.hp;
+        if (data.mp) target.mp满血值装备加层 += data.mp;
+        if (data.defence) target.装备防御力 += data.defence;
+        if (data.damage) target.伤害加成 += data.damage;
+        if (data.force) target.内力 += data.force;
+        if (data.knifepower) target.装备刀锋利度加成 += data.knifepower;
+        if (data.gunpower) target.装备枪械威力加成 += data.gunpower;
+        if (data.punch) {
+            var 空手加成 = data.punch;
+            target.空手攻击力 += 空手加成;
+            target.佣兵技能概率抑制基数 += Math.sqrt(空手加成);
+        }
+        if (data.toughness) target.韧性加成 += data.toughness;
+        if (data.evasion) target.闪避加成 += data.evasion;
+        if (data.lazymiss) target.懒闪避 += data.lazymiss / 100;
+
+        //
+        if(prefix){
+            target[prefix + "伤害类型"] = data.damagetype ? data.damagetype : null;
+            target[prefix + "魔法伤害属性"] = data.magictype ? data.magictype : null;
+            //
+            target[prefix + "毒"] = data.poison ? data.poison : 0;
+            target[prefix + "吸血"] = data.vampirism ? data.vampirism : 0;
+            target[prefix + "击溃"] = data.rout ? data.rout : 0;
+            target[prefix + "命中加成"] = data.accuracy ? data.accuracy : 0;
+            target[prefix + "暴击"] = data.criticalhit ? data.criticalhit : null;
+            target[prefix + "斩杀"] = data.slay ? data.slay : 0;
+        }else{
+            if(data.poison) target.基础毒 += data.poison;
+            if(data.vampirism) target.基础吸血 += data.vampirism;
+            if(data.rout) target.基础击溃 += data.rout;
+            if(data.accuracy) target.基础命中加成 += data.accuracy;
+        }
+
+        if (data.magicdefence) {
+            for (var mdKey in data.magicdefence) {
+                if (!isNaN(target.魔法抗性[mdKey]) || target.魔法抗性[mdKey] === 0) {
+                    target.魔法抗性[mdKey] += Number(data.magicdefence[mdKey]);
+                } else {
+                    target.魔法抗性[mdKey] = 10 + Number(data.magicdefence[mdKey]);
+                }
+            }
+        }
+    }
+
+    private static function removePrimaryProperties(target:MovieClip){
+        target.长枪伤害类型 = null;
+        target.长枪魔法伤害属性 = null;
+        target.长枪毒 = 0;
+        target.长枪吸血 = 0;
+        target.长枪击溃 = 0;
+        target.长枪命中加成 = 0;
+        target.长枪暴击 = null;
+        target.长枪斩杀 = 0;
+    }
+    private static function removeSecondary1Properties(target:MovieClip){
+        target.手枪伤害类型 = null;
+        target.手枪魔法伤害属性 = null;
+        target.手枪毒 = 0;
+        target.手枪吸血 = 0;
+        target.手枪击溃 = 0;
+        target.手枪命中加成 = 0;
+        target.手枪暴击 = null;
+        target.手枪斩杀 = 0;
+    }
+    private static function removeSecondary2Properties(target:MovieClip){
+        target.手枪2伤害类型 = null;
+        target.手枪2魔法伤害属性 = null;
+        target.手枪2毒 = 0;
+        target.手枪2吸血 = 0;
+        target.手枪2击溃 = 0;
+        target.手枪2命中加成 = 0;
+        target.手枪2暴击 = null;
+        target.手枪2斩杀 = 0;
+    }
+    private static function removeMeleeProperties(target:MovieClip){
+        target.兵器伤害类型 = null;
+        target.兵器魔法伤害属性 = null;
+        target.兵器毒 = 0;
+        target.兵器吸血 = 0;
+        target.兵器击溃 = 0;
+        target.兵器命中加成 = 0;
+        target.兵器暴击 = null;
+        target.兵器斩杀 = 0;
+    }
+    private static function removeHandProperties(target:MovieClip){
+        target.空手伤害类型 = null;
+        target.空手魔法伤害属性 = null;
+        target.空手毒 = 0;
+        target.空手吸血 = 0;
+        target.空手击溃 = 0;
+        target.空手命中加成 = 0;
+        target.空手暴击 = null;
+        target.空手斩杀 = 0;
+    }
+    private static function removeGrenadeProperties(target:MovieClip){
+        target.手雷伤害类型 = null;
+        target.手雷魔法伤害属性 = null;
+        target.手雷毒 = 0;
+        target.手雷吸血 = 0;
+        target.手雷击溃 = 0;
+        target.手雷命中加成 = 0;
+        target.手雷暴击 = null;
+        target.手雷斩杀 = 0;
+    }
+
+
+
     public static function updateWeightAndSpeed(target:MovieClip):Void{
+        target.重量 = 0; //weight
         for(var key in equipmentKeys){
             var weight = target[equipmentKeys[key]].weight;
             if(!isNaN(weight)) target.重量 += weight;
