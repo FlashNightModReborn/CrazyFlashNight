@@ -31,13 +31,13 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         手部装备: "空手", 
         手雷: "手雷"
     };
-    private static var removePropertiesFunc:Object = {
-        长枪: removePrimaryProperties, 
-        手枪: removeSecondary1Properties, 
-        手枪2: removeSecondary2Properties, 
-        刀: removeMeleeProperties, 
-        手部装备: removeHandProperties, 
-        手雷: removeGrenadeProperties
+    private static var removePropertyFunc:Object = {
+        长枪: removePrimaryProperty, 
+        手枪: removeSecondary1Property, 
+        手枪2: removeSecondary2Property, 
+        刀: removeMeleeProperty, 
+        手部装备: removeHandProperty, 
+        手雷: removeGrenadeProperty
     };
 
 
@@ -72,7 +72,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         return result;
     }
 
-    public static function loadEquipmentData(target:MovieClip, equipKey:String, loadFunc:Function, defaultLevel:Number){
+    public static function loadEquipmentData(__target:MovieClip, equipKey:String, loadFunc:Function, defaultLevel:Number){
+        var target:MovieClip = __target;
+
         var equipment:Object = loadFunc(target, equipKey, defaultLevel);
         if(equipment){
             target[equipKey] = equipment;
@@ -92,7 +94,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
     }
 
 
-    public static function updateDressupKeys(target:MovieClip):Void{
+    public static function updateDressupKeys(__target:MovieClip):Void{
+        var target:MovieClip = __target;
+
         // 军牌
         var 称号文本 = target.颈部装备数据.data.title ? target.颈部装备数据.data.title : "菜鸟";
         target.称号 = 称号文本;
@@ -160,8 +164,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
     }
 
 
-    public static function updateProperties(target:MovieClip):Void{
-        target.命中加成 = 0;
+    public static function updateProperties(__target:MovieClip):Void{
+        var target:MovieClip = __target;
 
         target.hp满血值装备加层 = 0;
         target.mp满血值装备加层 = 0;
@@ -188,7 +192,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.基础魔法伤害属性 = undefined;
         target.基础命中加成 = 0;
         target.佣兵技能概率抑制基数 = 0;
-
+        
+        target.命中加成 = 0;
         target.韧性加成 = target.身高 - 105 - 50; //equipped.toughness
         target.闪避加成 = 0; //equipped.evasion
 
@@ -254,19 +259,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         if(isNaN(target.mp)) target.mp = target.mp满血值;
     }
 
-    private static function updateProperty(target:MovieClip, key:String, data:Object){
-        var prefix = weaponPrefixKeys[key];
+    private static function updateProperty(__target:MovieClip, key:String, __data:Object){
+        var target:MovieClip = __target;
+        var data:Object = __data;
         if(!data){
-            if(prefix){
-                target[prefix + "伤害类型"] = null;
-                target[prefix + "魔法伤害属性"] = null;
-                target[prefix + "毒"] = 0;
-                target[prefix + "吸血"] = 0;
-                target[prefix + "击溃"] = 0;
-                target[prefix + "命中加成"] = 0;
-                target[prefix + "暴击"] = null;
-                target[prefix + "斩杀"] = 0;
-            }
+            removePropertyFunc[key](target);
             return;
         }
 
@@ -287,6 +284,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         if (data.lazymiss) target.懒闪避 += data.lazymiss / 100;
 
         //
+        var prefix = weaponPrefixKeys[key];
         if(prefix){
             target[prefix + "伤害类型"] = data.damagetype ? data.damagetype : null;
             target[prefix + "魔法伤害属性"] = data.magictype ? data.magictype : null;
@@ -315,7 +313,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         }
     }
 
-    private static function removePrimaryProperties(target:MovieClip){
+    private static function removePrimaryProperty(target:MovieClip){
         target.长枪伤害类型 = null;
         target.长枪魔法伤害属性 = null;
         target.长枪毒 = 0;
@@ -325,7 +323,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.长枪暴击 = null;
         target.长枪斩杀 = 0;
     }
-    private static function removeSecondary1Properties(target:MovieClip){
+    private static function removeSecondary1Property(target:MovieClip){
         target.手枪伤害类型 = null;
         target.手枪魔法伤害属性 = null;
         target.手枪毒 = 0;
@@ -335,7 +333,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.手枪暴击 = null;
         target.手枪斩杀 = 0;
     }
-    private static function removeSecondary2Properties(target:MovieClip){
+    private static function removeSecondary2Property(target:MovieClip){
         target.手枪2伤害类型 = null;
         target.手枪2魔法伤害属性 = null;
         target.手枪2毒 = 0;
@@ -345,7 +343,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.手枪2暴击 = null;
         target.手枪2斩杀 = 0;
     }
-    private static function removeMeleeProperties(target:MovieClip){
+    private static function removeMeleeProperty(target:MovieClip){
         target.兵器伤害类型 = null;
         target.兵器魔法伤害属性 = null;
         target.兵器毒 = 0;
@@ -355,7 +353,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.兵器暴击 = null;
         target.兵器斩杀 = 0;
     }
-    private static function removeHandProperties(target:MovieClip){
+    private static function removeHandProperty(target:MovieClip){
         target.空手伤害类型 = null;
         target.空手魔法伤害属性 = null;
         target.空手毒 = 0;
@@ -365,7 +363,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.空手暴击 = null;
         target.空手斩杀 = 0;
     }
-    private static function removeGrenadeProperties(target:MovieClip){
+    private static function removeGrenadeProperty(target:MovieClip){
         target.手雷伤害类型 = null;
         target.手雷魔法伤害属性 = null;
         target.手雷毒 = 0;
@@ -378,7 +376,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
 
 
 
-    public static function updateWeightAndSpeed(target:MovieClip):Void{
+    public static function updateWeightAndSpeed(__target:MovieClip):Void{
+        var target:MovieClip = __target;
+
         target.重量 = 0; //weight
         for(var key in equipmentKeys){
             var weight = target[equipmentKeys[key]].weight;
@@ -435,14 +435,18 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
     }
 
 
-    public static function updateWeqaponSkills(target:MovieClip):Void{
+    public static function updateWeqaponSkills(__target:MovieClip):Void{
+        var target:MovieClip = __target;
+
         target.主动战技 = {空手: null, 兵器: null, 长枪: null};
         target.装载主动战技(target.手部装备数据.skill, "空手");
         target.装载主动战技(target.刀数据.skill, "兵器");
         target.装载主动战技(target.长枪数据.skill, "长枪");
     }
 
-    public static function updateLifeCycles(target:MovieClip):Void{
+    public static function updateLifeCycles(__target:MovieClip):Void{
+        var target:MovieClip = __target;
+
         for (var id = target.生命周期函数列表.length; id > 0; --id) {
             var 卸载对象 = target.生命周期函数列表[id];
             卸载对象.动作(卸载对象.额外参数);
@@ -469,11 +473,12 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
     public static function initialize(target:MovieClip):Void{
         if(target.hasDressup !== true) return;
 
-        var loadFunc = target._name === _root.控制目标 ? loadHeroEquipment : loadEquipment;
-        var defaultLevel = getEquipmentDefaultLevel(target.等级, target.名字);
+        var loadFunc:Function = target._name === _root.控制目标 ? loadHeroEquipment : loadEquipment;
+        var defaultLevel:Number = getEquipmentDefaultLevel(target.等级, target.名字);
+        var loadEquipmentDataFunc:Function = loadEquipmentData;
         // 逐个检查装备并附加装备数据
         for(var key in equipmentKeys){
-            loadEquipmentData(target, key, loadFunc, defaultLevel);
+            loadEquipmentDataFunc(target, key, loadFunc, defaultLevel);
         }
         // 更新装扮数据
         updateDressupKeys(target);
