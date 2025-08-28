@@ -83,10 +83,12 @@ class org.flashNight.arki.item.EquipmentUtil{
     */
     public static function addProperty(prop:Object, addProp:Object, initValue:Number):Void {
         for (var key:String in addProp) {
+            var addVal = addProp[key];
+            if(isNaN(addVal)) continue;
             if (prop[key]) {
-                prop[key] += addProp[key];
+                prop[key] += addVal;
             }else{
-                prop[key] = initValue + addProp[key];
+                prop[key] = initValue + addVal;
             }
         }
     }
@@ -101,9 +103,10 @@ class org.flashNight.arki.item.EquipmentUtil{
     */
     public static function multiplyProperty(prop:Object, multiProp:Object):Void {
         for (var key:String in multiProp) {
+            var multiVal = multiProp[key];
             var val = prop[key];
-            if (val) {
-                prop[key] = (val * multiProp[key]) >> 0;
+            if (val && !isNaN(multiVal)) {
+                prop[key] = (val * multiVal) >> 0;
             }
         }
     }

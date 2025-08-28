@@ -1,33 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
     <!-- 初级材料 -->
-     <mod>
+    <mod>
         <name>军用帆布</name>
-        <type>装甲</type>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <flat>
-                <defence>30</defence>
+                <defence>20</defence>
+            </flat>
+        </stats>
+    </mod>
+    <mod>
+        <name>上色涂料</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <override>
+                <magicdefence>
+                    <热>5</热>
+                </magicdefence>
+            </override>
+        </stats>
+    </mod>
+    <mod>
+        <name>弹簧</name>
+        <use>长枪,手枪</use>
+        <stats>
+            <!-- 这游戏怎么没有后坐力啊？这让我怎么编数值？ -->
+        </stats>
+    </mod>
+    <mod>
+        <name>增效剂</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备,刀,手枪,长枪</use>
+        <stats>
+            <percentage>
+                <power>10</power>
+                <defence>10</defence>
+                <damage>10</damage>
+            </percentage>
+        </stats>
+    </mod>
+    <mod>
+        <name>可塑式钢板</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <flat>
+                <defence>50</defence>
+                <weight>2</weight><!-- 其实weight属性还没移到data里 -->
             </flat>
         </stats>
     </mod>
     <mod>
         <name>战术导轨</name>
-        <type>导轨</type>
+        <use>长枪</use>
+        <tag>导轨</tag>
         <!-- 导轨类插件具体如何发挥作用，是否直接影响插件槽位等还需要进一步讨论 -->
     </mod>
     <mod>
         <name>螺丝套件</name>
-        <type>枪机</type>
+        <use>长枪,手枪</use>
+        <tag>枪机</tag>
         <stats>
             <flat>
-                <power>30</power>
+                <power>20</power>
             </flat>
         </stats>
     </mod>
     <!-- 中级材料 -->
     <mod>
         <name>战术背带</name>
-        <type>下挂</type>
+        <use>长枪</use>
+        <tag>下挂</tag>
         <stats>
             <percentage>
                 <accuracy>20</accuracy>
@@ -39,16 +81,28 @@
     </mod>
     <mod>
         <name>防沙皮革</name>
-        <type>装甲</type>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <percentage>
-                <defence>20</defence>
+                <defence>30</defence>
             </percentage>
         </stats>
     </mod>
     <mod>
+        <name>生物催化剂</name>
+        <use>刀,手枪,长枪</use>
+        <stats>
+            <override>
+                <damagetype>破击</damagetype>
+                <magictype>生化</magictype>
+                <!-- 瞎填的，展示一下override怎么用 -->
+            </override>
+        </stats>
+    </mod>
+    <mod>
         <name>护手</name>
-        <type>刀身</type>
+        <use>刀</use>
+        <tag>刀身</tag>
         <stats>
             <percentage>
                 <power>30</power>
@@ -61,7 +115,7 @@
     </mod>
     <mod>
         <name>石英磨刀石</name>
-        <type>刀刃</type>
+        <use>刀</use>
         <stats>
             <percentage>
                 <power>30</power>
@@ -72,8 +126,35 @@
         </stats>
     </mod>
     <mod>
+        <name>不锈钢材</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <flat>
+                <defence>100</defence>
+                <weight>4</weight>
+            </flat>
+        </stats>
+    </mod>
+    <mod>
+        <name>高耐力橡胶</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <override>
+                <magicdefence>
+                    <冷>5</冷>
+                    <热>5</热>
+                    <电>8</电>
+                </magicdefence>
+            </override>
+            <flat>
+                <toughness>5</toughness>
+            </flat>
+        </stats>
+    </mod>
+    <mod>
         <name>强化金属管</name>
-        <type>枪机</type>
+        <use>长枪,手枪</use>
+        <tag>枪机</tag>
         <stats>
             <percentage>
                 <power>60</power>
@@ -82,78 +163,118 @@
         </stats>
     </mod>
     <mod>
+        <name>复合式军用塑料</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <override>
+                <magicdefence>
+                    <蚀>8</蚀>
+                </magicdefence>
+            </override>
+            <percentage>
+                <weight>-20</weight>
+            </percentage>
+        </stats>
+    </mod>
+    <mod>
+        <name>强力胶</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <override>
+                <magicdefence>
+                    <冲>8</冲>
+                </magicdefence>
+            </override>
+        </stats>
+    </mod>
+    <mod>
         <name>枪械内构强化套件</name>
-        <type>枪机</type>
+        <use>长枪,手枪</use>
+        <tag>枪机</tag>
         <stats>
             <percentage>
                 <power>30</power>
             </percentage>
             <flat>
                 <power>30</power>
+            </flat>
+        </stats>
+    </mod>
+    <mod>
+        <name>高级木料</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <flat>
+                <defence>70</defence>
+                <weight>3</weight>
+                <evasion>3</evasion>
             </flat>
         </stats>
     </mod>
     <!-- 高级材料 -->
     <mod>
         <name>动力液压杆</name>
-        <type>装甲</type>
+        <use>上装装备,下装装备,手部装备</use>
         <stats>
             <flat>
                 <punch>20</punch>
-                <weightbearing>5</weightbearing><!-- 尚未实装的负重属性，后面直接改成扣重量也行 -->
+                <weightbearing>2</weightbearing><!-- 尚未实装的负重属性，后面直接改成扣重量也行 -->
             </flat>
         </stats>
     </mod>
     <mod>
         <name>碳纤维布料</name>
-        <type>装甲</type>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <percentage>
-                <defence>20</defence>
-                <hp>20</hp>
-                <mp>20</mp>
+                <defence>30</defence>
+                <hp>30</hp>
+                <mp>30</mp>
             </percentage>
         </stats>
     </mod>
     <mod>
         <name>电脑芯片</name>
-        <type>待定</type>
+        <use>头部装备,待定</use>
         <stats>
             <!--  -->
         </stats>
     </mod>
     <mod>
         <name>传感器</name>
-        <type>待定</type>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <percentage>
-                <damage>30</damage>
-                <punch>30</punch>
-                <knifepower>30</knifepower>
-                <gunpower>30</gunpower>
+                <force>30</force>
             </percentage>
             <flat>
-                <evasion>5</evasion>
+                <evasion>20</evasion>
             </flat>
         </stats>
     </mod>
     <mod>
         <name>水冷机构</name>
-        <type>枪机</type>
+        <use>长枪</use>
+        <tag>枪机</tag>
         <stats>
             <percentage>
                 <interval>-10</interval><!-- 这里也是待定 减射击间隔不管在代码还是平衡上都是极度危险的设计 -->
             </percentage>
+            <flat>
+                <weight>2</weight>
+            </flat>
         </stats>
     </mod>
     <mod>
         <name>战术鱼骨零件</name>
-        <type>导轨</type>
+        <use>长枪</use>
+        <tag>导轨</tag>
         <!-- 导轨类插件具体如何发挥作用，是否直接影响插件槽位等还需要进一步讨论 -->
     </mod>
     <mod>
         <name>突击型光学瞄具</name>
-        <type>枪口</type>
+        <use>长枪,手枪</use>
+        <tag>枪口</tag>
         <stats>
             <override>
                 <criticalhit>满血暴击</criticalhit>
@@ -165,7 +286,8 @@
     </mod>
     <mod>
         <name>KM型消声器</name>
-        <type>枪口</type>
+        <use>长枪,手枪</use>
+        <tag>枪口</tag>
         <stats>
             <override>
                 <sound>null</sound>
@@ -176,7 +298,8 @@
     </mod>
     <mod>
         <name>镭射瞄准具</name>
-        <type>下挂</type>
+        <use>长枪,手枪</use>
+        <tag>下挂</tag>
         <stats>
             <flat>
                 <accuracy>20</accuracy>
@@ -186,7 +309,8 @@
     </mod>
     <mod>
         <name>加长弹匣</name>
-        <type>弹匣</type>
+        <use>长枪,手枪</use>
+        <tag>弹匣</tag>
         <stats>
             <percentage>
                 <capacity>20</capacity>
@@ -195,7 +319,8 @@
     </mod>
     <mod>
         <name>战术握把</name>
-        <type>下挂</type>
+        <use>长枪</use>
+        <tag>下挂</tag>
         <stats>
             <percentage>
                 <diffusion>-20</diffusion>
@@ -208,7 +333,8 @@
     </mod>
     <mod>
         <name>非栓式机构</name>
-        <type>枪机</type>
+        <use>长枪,手枪</use>
+        <tag>枪机</tag>
         <stats>
             <!-- 所以这到底是什么东西啊.jpg 等描述更新之后再填数值吧 -->
         </stats>
@@ -216,7 +342,8 @@
     <!-- 后面可能实装的新插件举例 -->
     <mod>
         <name>霰弹枪口收束器</name>
-        <type>枪口</type>
+        <use>长枪,手枪</use>
+        <tag>枪口</tag>
         <stats>
             <percentage>
                 <diffusion>-50</diffusion>
@@ -228,13 +355,19 @@
     </mod>
     <mod>
         <name>M203榴弹发射器</name>
-        <type>下挂</type>
+        <use>长枪</use>
+        <tag>下挂</tag>
+        <stats>
+            <flat>
+                <weight>2</weight>
+            </flat>
+        </stats>
         <skill>
             <skillname>发射榴弹</skillname>
             <description>持枪瞄准时可以发射榴弹，可射击一发，换弹后可再次发射，需消耗榴弹弹药。</description>
             <cd>1000</cd>
             <mp>0</mp>
-            <power>3500</power>
+            <power>2500</power>
             <bulletsize>1</bulletsize>
             <clipname>榴弹弹药</clipname>
             <bullet>榴弹</bullet>
@@ -247,19 +380,21 @@
     </mod>
     <mod>
         <name>纳米执行单元</name>
-        <type>装甲</type>
+        <use>上装装备,待定</use>
         <stats>
-            <flat>
-                <force>50</force>
-                <hp>200</hp>
-                <mp>200</mp>
-            </flat>
+            <percentage>
+                <damage>30</damage>
+                <punch>30</punch>
+                <knifepower>30</knifepower>
+                <gunpower>30</gunpower>
+                <force>30</force>
+            </percentage>
         </stats>
     </mod>
     <!-- 可能的进阶平替插件。由于加算数值不会享受乘算收益，这里可能需要填得比原本更高以适配原数值 -->
     <mod>
         <name>二阶平替插件 名称待定</name>
-        <type>装甲</type>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <flat>
                 <defence>80</defence>
@@ -271,7 +406,7 @@
     </mod>
     <mod>
         <name>三阶平替插件 名称待定</name>
-        <type>装甲</type>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <flat>
                 <defence>180</defence>
@@ -283,7 +418,7 @@
     </mod>
     <mod>
         <name>四阶平替插件 名称待定</name>
-        <type>装甲</type>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <flat>
                 <defence>255</defence>
