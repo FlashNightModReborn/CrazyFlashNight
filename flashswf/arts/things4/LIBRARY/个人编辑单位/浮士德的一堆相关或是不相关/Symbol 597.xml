@@ -244,7 +244,7 @@ _root.加载游戏世界人物(兵种,僵尸型敌人newname,_root.gameworld.get
 	_root.创建可拾取物("黑无常面具",1,_parent._x,_parent._y,true);
 	_root.创建可拾取物("浮士德装备碎片",5,_parent._x,_parent._y,true);
 }
-_parent.死亡检测();]]></script>
+_parent.死亡检测({noCount:true});]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
