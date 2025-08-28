@@ -22,33 +22,6 @@ class org.flashNight.arki.item.ItemUtil{
     public static var materialDict:Object; // 材料字典，快速判断物品是否为材料
     public static var informationMaxValueDict:Object; // 情报持有上限字典，可以顺便判断物品是否为情报
 
-    public static var equipmentTierDict:Object = {
-        二阶: "data_2",
-        三阶: "data_3",
-        四阶: "data_4",
-        墨冰: "data_ice",
-        狱火: "data_fire"
-    };
-
-    // 强化数值列表
-    public static var equipmentLevelList:Array = [
-        1,
-        1,    // Lv1
-        1.06, // Lv2
-        1.14, // Lv3
-        1.24, // Lv4
-        1.36, // Lv5
-        1.5,  // Lv6
-        1.66, // Lv7
-        1.84, // Lv8
-        2.04, // Lv9
-        2.26, // Lv10
-        2.5,  // Lv11
-        2.76, // Lv12
-        3.04  // Lv13
-    ];
-
-
 
     /*
      * 加载物品数据
