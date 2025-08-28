@@ -35,6 +35,12 @@ _root.装备生命周期函数.主唱光剑初始化 = function(ref:Object, para
    var saberBladeYOffset3:Array = [216, 102];
    ref.saberBladeYOffset1 = saberBladeYOffset1;
    ref.saberBladeYOffset3 = saberBladeYOffset3;
+
+
+   target.dispatcher.subscribe("StatusChange", function(unit) {
+       _root.装备生命周期函数.主唱光剑动画更新(ref);
+       // _root.发布消息("主唱光剑状态变更为[" + unit.状态 + "]");
+   });
 };
 
 _root.装备生命周期函数.主唱光剑周期 = function(ref:Object, param:Object) {
@@ -51,11 +57,8 @@ _root.装备生命周期函数.主唱光剑周期 = function(ref:Object, param:O
        }
    }
    
-   // 动画控制
+   // 动画控制和更新
    _root.装备生命周期函数.主唱光剑动画控制(ref);
-   
-   // 刀口位置动态调整
-   _root.装备生命周期函数.主唱光剑动态调整光剑刀口(ref);
 }
 
 
@@ -81,12 +84,11 @@ _root.装备生命周期函数.主唱光剑切换武器形态 = function(ref:Obj
    }
 };
 
-// 动画控制函数
+// 动画控制函数 - 负责决定动画状态
 _root.装备生命周期函数.主唱光剑动画控制 = function(ref:Object) {
    var target:MovieClip = ref.自机;
-   var saber:MovieClip = target.刀_引用;
    
-   // 判断是否展开
+   // 判断是否应该展开光剑
    var shouldExpand = function() {
        if (!_root.兵器使用检测(target) && target.攻击模式 != "兵器" || target[ref.saberLabel] == "话筒支架") {
            return false;
@@ -94,13 +96,14 @@ _root.装备生命周期函数.主唱光剑动画控制 = function(ref:Object) {
        
        var currentFrame = target.man._currentframe;
        if (currentFrame >= 370 && currentFrame <= 413) {
+           // 攻击动作中快速展开到2/3
            target[ref.animFrameName] = Math.max(target[ref.animFrameName], Math.floor(ref.animDuration * 2 / 3));
        }
        
        return true;
    };
    
-   // 展开或折叠动画
+   // 根据状态调整动画帧值
    if (shouldExpand()) {
        if (target[ref.animFrameName] < ref.animDuration) {
            target[ref.animFrameName]++;
@@ -111,17 +114,21 @@ _root.装备生命周期函数.主唱光剑动画控制 = function(ref:Object) {
        }
    }
    
+   // 调用动画更新函数
+   _root.装备生命周期函数.主唱光剑动画更新(ref);
+};
+
+// 动画更新函数 - 负责实际更新动画显示（包括动画帧和刀口位置）
+_root.装备生命周期函数.主唱光剑动画更新 = function(ref:Object) {
+   var target:MovieClip = ref.自机;
+   var saber:MovieClip = target.刀_引用;
+   
    // 更新动画帧
    if (saber.动画) {
        saber.动画.gotoAndStop(target[ref.animFrameName]);
    }
-};
-
-// 刀口位置动态调整函数
-_root.装备生命周期函数.主唱光剑动态调整光剑刀口 = function(ref:Object) {
-   var target:MovieClip = ref.自机;
-   var saber:MovieClip = target.刀_引用;
-
+   
+   // 更新刀口位置
    var isLightsaber:Boolean = (target[ref.saberLabel] == "光剑");
    var yOffsetIndex:Number = Number(isLightsaber);
 
