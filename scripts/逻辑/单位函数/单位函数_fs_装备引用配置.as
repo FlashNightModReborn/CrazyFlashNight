@@ -27,8 +27,11 @@ _root.装备引用配置.配置装扮 = function(movieClip:MovieClip,
             return null;
         }
     }
+    // var depth:Number = movieClip.getNextHighestDepth();
+    //_root.服务器.发布服务器消息("配置装扮: " + referenceName + " 使用 " + skinConfig + " at depth " + depth);
 
-    var skin:MovieClip = movieClip.attachMovie(skinConfig, instanceName, movieClip.getNextHighestDepth());
+    var depth:Number = 10; // 固定深度，以降低性能开销
+    var skin:MovieClip = movieClip.attachMovie(skinConfig, instanceName, depth);
 
     unit[referenceName] = skin || null;
     
