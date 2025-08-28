@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主唱光剑/主唱光剑" itemID="65548de7-00006134" linkageExportForAS="true" linkageIdentifier="刀-主唱光剑" lastModified="1756366195" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主唱光剑/主唱光剑" itemID="65548de7-00006134" linkageExportForAS="true" linkageIdentifier="刀-主唱光剑" lastModified="1756366683" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="主唱光剑">
       <layers>
@@ -333,119 +333,13 @@
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="主唱光剑/主唱光剑动画" name="动画" centerPoint3DX="36.8" centerPoint3DY="71.85">
+                <DOMSymbolInstance libraryItemName="主唱光剑/主唱光剑动画" name="动画" selected="true" centerPoint3DX="36.8" centerPoint3DY="71.85">
                   <matrix>
                     <Matrix a="0" b="-4.19134521484375" c="4.19134521484375" d="0" tx="-561.15" ty="770.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="181.7" y="134.75"/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	var 自机 = _root.获得父节点(this, 5);
-	var 动画时长 = 15;
-	var 变形时间间隔 = 1 * 1000;
-	var 时间戳名 = 自机.刀 + "时间戳";
-	var 武器类型名 = "武器类型名" + 自机.刀;
-
-	var 动画帧名 = 自机.刀 + "动画帧";
-	this.切换为话筒支架 = function()
-	{
-		自机[武器类型名] = "话筒支架";
-		自机.刀属性.power = 自机.话筒支架基础伤害 * 0.8;
-	};
-	this.切换为光剑 = function()
-	{
-		自机[武器类型名] = "光剑";
-		自机.刀属性.power = 自机.话筒支架基础伤害;
-	};
-
-	this.切换武器形态 = function()
-	{
-		(自机[武器类型名] == "光剑") ? this.切换为话筒支架() : this.切换为光剑();
-	};
-	if (自机[动画帧名] == undefined)
-	{
-		自机[动画帧名] = 1;
-	}
-
-	this.保存武装类型 = function()
-	{
-		if (_root.控制目标 == 自机._name)
-		{
-			_root[武器类型名] = 自机[武器类型名];//_root.发布调试消息(_root[武器类型名] + " " + 自机.武器类型);
-		}
-	};
-
-	this.读取武装类型 = function()
-	{
-		if (_root.控制目标 == 自机._name and _root[武器类型名] == "话筒支架")
-		{
-			this.切换为话筒支架();
-			//_root.发布调试消息(_root[武器类型名] + " " + 自机.武器类型);
-		}
-	};
-
-	if (isNaN(自机.话筒支架基础伤害))
-	{//初始化话筒支架数据
-
-		自机.话筒支架基础伤害 = 自机.刀属性.power;
-		自机[武器类型名] = "光剑";
-		this.读取武装类型();
-	}
-
-
-	gotoAndStop(自机[动画帧名]);
-	this.判断是否展开 = function()
-	{
-		if (!_root.兵器使用检测(自机) and 自机.攻击模式 != "兵器" or 自机[武器类型名] == "话筒支架")
-		{
-			return false;
-		}
-
-		var 当前帧 = 自机.man._currentframe;
-		if (当前帧 >= 370 and 当前帧 <= 413)
-		{
-			自机[动画帧名] = Math.max(自机[动画帧名], Math.floor(动画时长 * 2 / 3));// 凶斩的帧区间  
-		}
-
-		return true;
-	};
-	this.展开动画 = function()
-	{
-		if (自机[动画帧名] < 动画时长)
-		{
-			自机[动画帧名] += 1;
-		}
-	};
-	this.折叠动画 = function()
-	{
-		if (自机[动画帧名] > 1)
-		{
-			自机[动画帧名] -= 1;
-		}
-	};
-
-	this.检查并执行时间间隔动作 = _root.检查并执行时间间隔动作;
-
-	this.执行武器切换 = function()
-	{
-		this.切换武器形态();
-		_root.发布消息("话筒支架武器类型切换为[" + 自机[武器类型名] + "]");
-		this.保存武装类型();
-	};
-	this.onEnterFrame = function()
-	{
-		if (Key.isDown(_root.武器变形键) and 自机.攻击模式 == "兵器")
-		{
-			this.检查并执行时间间隔动作(自机,变形时间间隔,"执行武器切换",时间戳名);
-		}
-
-		this[this.判断是否展开() ? '展开动画' : '折叠动画']();
-		gotoAndStop(自机[动画帧名]);
-	};
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
