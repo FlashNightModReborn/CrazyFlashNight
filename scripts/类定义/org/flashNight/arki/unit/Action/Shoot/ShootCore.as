@@ -118,8 +118,10 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
         // 执行射击逻辑
         core[shootStateName] = false;
-        dispatcher.publish(attackMode + "射击");
+
         if (core[actionFlagName]) {
+            dispatcher.publish(attackMode + "射击");
+            // _root.发布消息(attackMode + "射击");
             man.gotoAndPlay(jumpFrameName);
 
             // 利用缓存的 gunPathArray 快速获取枪口位置引用
