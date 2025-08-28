@@ -13,6 +13,8 @@ _root.装备生命周期函数.主唱光剑初始化 = function(ref:Object, para
    ref.animDuration = 15;
    ref.transformInterval = 1000;
    ref.timestampName = target.刀 + "时间戳";
+
+   target.syncRequiredEquips.刀_引用 = true; // 触发StatusChange 中刀_引用的加载状态
    
    // 初始化基础伤害数据
    if (isNaN(target.话筒支架基础伤害)) {

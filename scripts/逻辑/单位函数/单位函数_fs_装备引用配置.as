@@ -8,12 +8,8 @@ _root.装备引用配置.巨拳排除引用 = {
     左下臂_引用: true
 };
 
-// 需要等待加载完成才发布事件的装备
-_root.装备引用配置.需要同步的装备 = {
-    长枪_引用: true,
-    刀_引用: true,
-    手枪_引用: true
-};
+// 需要同步的装备现在由各单位自行定义
+// 单位可以设置 unit.syncRequiredEquips = { 长枪_引用: true, 刀_引用: true, ... }
 
 _root.装备引用配置.配置装扮 = function(movieClip:MovieClip, 
                                      skinConfig:String, 
@@ -36,22 +32,19 @@ _root.装备引用配置.配置装扮 = function(movieClip:MovieClip,
 
     unit[referenceName] = skin || null;
     
-    // 检查是否是需要同步的装备
-    if (_root.装备引用配置.需要同步的装备[referenceName]) {
-        var currentFrame = _root.帧计时器.当前帧数;
-        
-        // 初始化装备加载状态
-        if (!unit.装备加载状态) {
-            unit.装备加载状态 = {};
-        }
+    // 检查是否是需要同步的装备（直接访问单位属性）
+    var syncRequiredEquips:Object = unit.syncRequiredEquips;
+    if (syncRequiredEquips && syncRequiredEquips[referenceName]) {
+        var currentFrame:Number = _root.帧计时器.当前帧数;
+        var equipLoadStatus:Object = unit.equipLoadStatus;
         
         // 记录该装备已加载
-        unit.装备加载状态[referenceName] = currentFrame;
+        equipLoadStatus[referenceName] = currentFrame;
         
         // 检查所有需要同步的装备是否都已加载
         var allLoaded = true;
-        for (var key in _root.装备引用配置.需要同步的装备) {
-            if (unit[key] !== undefined && unit.装备加载状态[key] !== currentFrame) {
+        for (var key in syncRequiredEquips) {
+            if (unit[key] !== undefined && equipLoadStatus[key] !== currentFrame) {
                 allLoaded = false;
                 break;
             }

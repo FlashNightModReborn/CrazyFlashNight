@@ -29,6 +29,8 @@
 
         if (target.状态 == "登场") ic._visible = false;
         if (isNaN(target.lastStatusChangeFrame)) target.lastStatusChangeFrame = currentFrame;
+        if (!target.equipLoadStatus) target.equipLoadStatus = {};
+        if (!target.syncRequiredEquips) target.syncRequiredEquips = {};
 
         // UpdateEventComponent 用于记录渲染剔除
         if(isNaN(target.__cullState)) target.__cullState = { outCount: 0 };
