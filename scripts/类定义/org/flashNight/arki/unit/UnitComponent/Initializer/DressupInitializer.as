@@ -1,4 +1,5 @@
-﻿import org.flashNight.arki.item.ItemUtil;
+﻿import org.flashNight.arki.item.BaseItem;
+import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.component.StatHandler.DodgeHandler;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
@@ -42,21 +43,17 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
 
 
 
-    public static function loadEquipment(target:MovieClip, equipKey:String, defaultLevel:Number):Object{
+    public static function loadEquipment(target:MovieClip, equipKey:String, defaultLevel:Number):BaseItem{
         var 装备 = target[equipKey];
         if(typeof 装备 === "string"){
-            装备 = ItemUtil.createItemByString(装备);
+            装备 = BaseItem.createFromString(装备);
             if(装备.value.level == 1 && defaultLevel > 1) 装备.value.level = defaultLevel;
-        } else {
-            装备.toString = function() { return this.name; };
         }
         return 装备;
     }
 
-    public static function loadHeroEquipment(target:MovieClip, equipKey:String):Object{
-        var equipment:Object = _root.物品栏.装备栏.getItem(equipKey);
-        equipment.toString = function() { return this.name; };
-        return equipment;
+    public static function loadHeroEquipment(target:MovieClip, equipKey:String):BaseItem{
+        return _root.物品栏.装备栏.getItem(equipKey);
     }
 
     public static function getEquipmentDefaultLevel(targetLevel:Number, targetName:String):Number{
@@ -79,10 +76,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
     public static function loadEquipmentData(__target:MovieClip, equipKey:String, loadFunc:Function, defaultLevel:Number){
         var target:MovieClip = __target;
 
-        var equipment:Object = loadFunc(target, equipKey, defaultLevel);
+        var equipment:BaseItem = loadFunc(target, equipKey, defaultLevel);
         if(equipment){
             target[equipKey] = equipment;
-            var itemData = ItemUtil.getEquipmentData(equipment); // 获取计算完毕的装备数据
+            var itemData:Object = equipment.getData(); // 获取计算完毕的装备数据
             target[equipmentKeys[equipKey]] = itemData;
             // 将所有武器的data数据另设一个储存键
             if(weaponKeys[equipKey]){

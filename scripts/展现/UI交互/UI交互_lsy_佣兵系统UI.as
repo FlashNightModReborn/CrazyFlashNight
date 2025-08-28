@@ -7,7 +7,7 @@ _root.佣兵系统UI = new Object();
 _root.佣兵系统UI.创建佣兵装备图标 = function(UI:MovieClip, 佣兵数据:Array, startx:Number, starty:Number){
 	var 计算强化度 = _root.主角函数.获取人形怪强化等级(佣兵数据[0], 佣兵数据[1]);	
 	for (var equipIndex = 6; equipIndex < 17; equipIndex++){
-		var 装备物品 = ItemUtil.createItemByString(佣兵数据[equipIndex]);
+		var 装备物品 = BaseItem.createFromString(佣兵数据[equipIndex]);
 		if (装备物品){
 			if (装备物品.value.level == 1){
 				装备物品.value.level = 计算强化度;

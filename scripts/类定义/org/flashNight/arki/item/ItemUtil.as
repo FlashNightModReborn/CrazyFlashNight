@@ -1,6 +1,7 @@
 ﻿// import org.flashNight.arki.item.itemCollection.DictCollection;
 import org.flashNight.neur.Server.ServerManager;
 import org.flashNight.gesh.object.ObjectUtil;
+import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.itemCollection.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
@@ -30,7 +31,7 @@ class org.flashNight.arki.item.ItemUtil{
     };
 
     // 强化数值列表
-    private static var equipmentLevelList:Array = [
+    public static var equipmentLevelList:Array = [
         1,
         1,    // Lv1
         1.06, // Lv2
@@ -111,39 +112,13 @@ class org.flashNight.arki.item.ItemUtil{
         return null;
     }
 
+
+
     /*
-     * 计算并返回装备数据
+     * 辅助函数，判断物品是否存在
      */
-    public static function getEquipmentData(item:Object):Object{
-        var itemData:Object = getItemData(item.name);
-        if(!isEquipment(item.name)) return itemData; // 若不为装备则返回原始物品数据
-        var data:Object = itemData.data;
-        // 获取对应的多阶装备数据
-        if(item.value.tier){
-            var tierKey = equipmentTierDict[item.value.tier];
-            var tierData = itemData[tierKey];
-            if(tierKey && tierData){
-                for(var key in tierData){
-                   data[key] = tierData[key];
-                }
-                itemData[tierKey] = null;
-            }
-        }
-        // 计算强化数值
-        if(item.value.level > 1){
-            if(item.value.level > 13) item.value.level = 13;
-            var levelMultiplier = equipmentLevelList[item.value.level];
-            if(data.power) data.power = data.power * levelMultiplier >> 0;
-            if(data.defence) data.defence = data.defence * levelMultiplier >> 0;
-            if(data.damage) data.damage = data.damage * levelMultiplier >> 0;
-            if(data.force) data.force = data.force * levelMultiplier >> 0;
-            if(data.punch) data.punch = data.punch * levelMultiplier >> 0;
-            if(data.knifepower) data.knifepower = data.knifepower * levelMultiplier >> 0;
-            if(data.gunpower) data.gunpower = data.gunpower * levelMultiplier >> 0;
-            if(data.hp) data.hp = data.hp * levelMultiplier >> 0;
-            if(data.mp) data.mp = data.mp * levelMultiplier >> 0;
-        }
-        return itemData;
+    public static function isItem(name:String):Boolean{
+        return itemDataDict[name] != null;
     }
 
     /*
@@ -160,47 +135,6 @@ class org.flashNight.arki.item.ItemUtil{
     }
 
 
-    /*
-     * 创建物品对象
-     */
-    public static function createItem(name:String, value, lastUpdate:Number):Object{
-        var itemData = getRawItemData(name);
-        if(itemData == null || value <= 0) return null;
-        var newItem = {
-            name: name, 
-            lastUpdate: isNaN(lastUpdate) ? new Date().getTime() : lastUpdate
-        };
-        if(itemData.type === "武器" || itemData.type === "防具") {
-            if(value > 13 || value <= 1) value = 1;
-            newItem.value = {level: value};
-        } else {
-            newItem.value = value;
-        }
-        return newItem;
-    }
-
-    /*
-     * 创建物品对象
-     */
-    public static function createItemByString(str:String):Object{
-        var strArr = str.split("#");
-        var itemData = getRawItemData(strArr[0]);
-        var value = Number(strArr[1]);
-        if(itemData == null) return null;
-        if(value <= 0) value = 1; // 若value不为正数或不为数字则修改为1
-        var newItem = {
-            name: strArr[0], 
-            lastUpdate: new Date().getTime()
-        };
-        if(itemData.type === "武器" || itemData.type === "防具") {
-            if(value > 13) value = 1;
-            newItem.value = {level: value};
-            if(strArr[2] != null) newItem.value.tier = strArr[2];
-        } else {
-            newItem.value = value;
-        }
-        return newItem;
-    }
 
     /*
      * 玩家的物品移动操作
@@ -423,13 +357,12 @@ class org.flashNight.arki.item.ItemUtil{
             // 对于已有项，直接增加数量
             if(药剂栏.isEmpty(drugIndex)){
                 // 格子为空的情况原则上不会触发
-                var newDrugItem = createItem(req.name, req.value, acquireLastUpdate);
+                var newDrugItem = BaseItem.create(req.name, req.value, acquireLastUpdate);
                 药剂栏.add(drugIndex, newDrugItem);
             } else {
                 // 已有物品更新数量和时间戳
                 药剂栏.addValue(drugIndex, req.value);
-                var existingDrug = 药剂栏.getItem(drugIndex);
-                existingDrug.lastUpdate = acquireLastUpdate; // 更新时间戳
+                药剂栏.getItem(drugIndex).update(acquireLastUpdate); // 更新时间戳
             }
         }
 
@@ -446,11 +379,10 @@ class org.flashNight.arki.item.ItemUtil{
                     // 找到同名物品，合并到该位置
                     var indexFound:Number = Number(indexFoundStr);
                     背包.addValue(indexFound, req.value);
-                    var existingItem = 背包.getItem(indexFound);
-                    existingItem.lastUpdate = acquireLastUpdate; // 更新时间戳
+                    背包.getItem(indexFound).update(acquireLastUpdate); // 更新时间戳
                 } else {
                     // 没有同名物品，创建新物品并添加到空格子
-                    var newItem = createItem(req.name, req.value, acquireLastUpdate);
+                    var newItem = BaseItem.create(req.name, req.value, acquireLastUpdate);
                     背包.add(-1, newItem);
                 }
             } else {
@@ -459,13 +391,12 @@ class org.flashNight.arki.item.ItemUtil{
 
                 if(背包.isEmpty(bagIndex)){
                     // 如果该格子为空，添加新物品
-                    var newItem = createItem(req.name, req.value, acquireLastUpdate);
+                    var newItem = BaseItem.create(req.name, req.value, acquireLastUpdate);
                     背包.add(bagIndex, newItem);
                 } else {
                     // 已有物品更新数量和时间戳
                     背包.addValue(bagIndex, req.value);
-                    var existingItem = 背包.getItem(bagIndex);
-                    existingItem.lastUpdate = acquireLastUpdate; // 更新时间戳
+                    背包.getItem(bagIndex).update(acquireLastUpdate); // 更新时间戳
                 }
             }
         }

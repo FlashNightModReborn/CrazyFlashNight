@@ -40,12 +40,21 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
     }
 
 
-    // 重写获取深度拷贝功能
-    public function getClonalItems():Object{
-        var clonalItems = {};
-        for(var key in items){
-            clonalItems[key] = items[key];
+    // 重写设置物品集合功能
+    public function setItems(_items:Object):Void{
+        var newItems = {};
+        for(var key in _items){
+            if(_items[key] > 0) newItems[key] = _items[key];
         }
-        return clonalItems;
+        this.items = newItems;
+    }
+
+    // 重写深度拷贝功能
+    public function toObject():Object{
+        var obj = {};
+        for(var key in items){
+            obj[key] = items[key];
+        }
+        return obj;
     }
 }

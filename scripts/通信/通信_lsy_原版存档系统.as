@@ -65,15 +65,15 @@ _root.存档系统.mydata数据组包 = function(){
     var 主角技能表储存数据 = _root.主角技能表;
     // var 物品储存数据 = _root.物品栏;
     var 物品储存数据 = {
-        背包:  _root.物品栏.背包.getClonalItems(),
-        装备栏:_root.物品栏.装备栏.getClonalItems(),
-        药剂栏:_root.物品栏.药剂栏.getClonalItems(),
-        仓库:  _root.物品栏.仓库.getClonalItems(),
-        战备箱:_root.物品栏.战备箱.getClonalItems()
+        背包:  _root.物品栏.背包.toObject(),
+        装备栏:_root.物品栏.装备栏.toObject(),
+        药剂栏:_root.物品栏.药剂栏.toObject(),
+        仓库:  _root.物品栏.仓库.toObject(),
+        战备箱:_root.物品栏.战备箱.toObject()
     }
     var 收集品储存数据 = {
-        材料:_root.收集品栏.材料.getClonalItems(),
-        情报:_root.收集品栏.情报.getClonalItems()
+        材料:_root.收集品栏.材料.toObject(),
+        情报:_root.收集品栏.情报.toObject()
     }
     var 同伴储存数据 = [_root.同伴数据,_root.同伴数];
     var 任务储存数据 = _root.主线任务进度;
@@ -347,13 +347,13 @@ _root.是否存过盘 = function(){
 
 _root.新建角色 = function(){
     if (_root.上装装备 != ""){
-        _root.物品栏.装备栏.add("上装装备", org.flashNight.arki.item.ItemUtil.createItem(_root.上装装备, 1));
+        _root.物品栏.装备栏.add("上装装备", org.flashNight.arki.item.BaseItem.create(_root.上装装备, 1));
     }
     if (_root.下装装备 != ""){
-        _root.物品栏.装备栏.add("下装装备", org.flashNight.arki.item.ItemUtil.createItem(_root.下装装备, 1));
+        _root.物品栏.装备栏.add("下装装备", org.flashNight.arki.item.BaseItem.create(_root.下装装备, 1));
     }
     if (_root.脚部装备 != ""){
-        _root.物品栏.装备栏.add("脚部装备", org.flashNight.arki.item.ItemUtil.createItem(_root.脚部装备, 1));
+        _root.物品栏.装备栏.add("脚部装备", org.flashNight.arki.item.BaseItem.create(_root.脚部装备, 1));
     }
     if (_root.难度 == "逆天模式（简单）"){
         _root.difficultyMode = 1;

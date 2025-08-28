@@ -417,18 +417,18 @@ _root.敌人函数.fly = function(target:MovieClip) {
 }
 
 _root.敌人函数.击飞浮空 = function() {
-    if (this.flyID != null)
-        return;
-    this.浮空 = true;
-    this.倒地 = false;
-    this.man.落地 = false;
-    if (this._y >= this.Z轴坐标)
-        this._y = this.Z轴坐标 - 1;
-    if (this.垂直速度 >= this.起跳速度)
-        this.垂直速度 = this.起跳速度;
-
     var self:MovieClip = this;
-    this.flyID = EnhancedCooldownWheel.I().addTask(function() {
+    if (self.flyID != null)
+        return;
+    self.浮空 = true;
+    self.倒地 = false;
+    self.man.落地 = false;
+    if (self._y >= self.Z轴坐标)
+        self._y = self.Z轴坐标 - 1;
+    if (self.垂直速度 >= self.起跳速度)
+        self.垂直速度 = self.起跳速度;
+
+    self.flyID = EnhancedCooldownWheel.I().addTask(function() {
         _root.敌人函数.fly(self);
     }, 33, -1);
 }

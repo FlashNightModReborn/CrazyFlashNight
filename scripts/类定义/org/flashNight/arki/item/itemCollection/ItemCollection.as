@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.item.itemCollection.ICollection;
+import org.flashNight.arki.item.BaseItem;
 import org.flashNight.neur.Event.LifecycleEventDispatcher;
 import org.flashNight.gesh.object.ObjectUtil;
 
@@ -15,7 +16,7 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
 
     public function ItemCollection(_items:Object) {
         if(!_items) this.items = new Object();
-        else this.items = _items;
+        else setItems(_items);
     }
 
     //获取物品对象
@@ -37,23 +38,23 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
         return items;
     }
 
-    // 获取全部物品集合数据的深度拷贝
-    public function getClonalItems():Object{
-        var clonalItems = {};
+    // 获取全部物品集合数据的Object形式的拷贝
+    public function toObject():Object{
+        var obj = {};
         for(var key in items){
-            var item = items[key];
-            clonalItems[key] = {
-                name: item.name,
-                value: ObjectUtil.clone(item.value),
-                lastUpdate: item.lastUpdate
-            }
+            var item:BaseItem = items[key];
+            obj[key] = item.toObject();
         }
-        return clonalItems;
+        return obj;
     }
 
     // 设置物品集合数据
-    public function setItems(items:Object):Void{
-        this.items = items;
+    public function setItems(_items:Object):Void{
+        var newItems = {};
+        for(var key in _items){
+            newItems[key] = BaseItem.createFromObject(_items[key]);
+        }
+        this.items = newItems;
     }
 
     //判断某个键是否为空

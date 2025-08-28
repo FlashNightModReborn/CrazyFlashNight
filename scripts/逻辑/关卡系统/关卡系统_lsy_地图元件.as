@@ -96,7 +96,7 @@ _root.地图元件.掉落物创建物品 = function(item) {
         if (item.总数 < 数量)
             数量 = item.总数;
         item.总数 -= 数量;
-        return ItemUtil.createItem(item.名字, 数量);
+        return BaseItem.create(item.名字, 数量);
     }
     return null;
 }
