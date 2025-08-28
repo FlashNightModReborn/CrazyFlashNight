@@ -1,12 +1,12 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主唱光剑/主唱光剑" itemID="65548de7-00006134" linkageExportForAS="true" linkageIdentifier="刀-主唱光剑" lastModified="1734949623" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主唱光剑/主唱光剑" itemID="65548de7-00006134" linkageExportForAS="true" linkageIdentifier="刀-主唱光剑" lastModified="1756366195" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="主唱光剑">
       <layers>
-        <DOMLayer name="Layer 6" color="#FFFF00" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 6" color="#FFFF00" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="刀口位置3" selected="true" centerPoint3DX="2.4" centerPoint3DY="97.65">
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="刀口位置3" centerPoint3DX="2.4" centerPoint3DY="97.65">
                   <matrix>
                     <Matrix a="0.692108154296875" d="2.19259643554688" tx="-6" ty="88.05"/>
                   </matrix>
@@ -24,17 +24,7 @@
 	{
 		自机[增幅次数] = {};
 	}
-	this.动态调整位置 = function()
-	{//镰刀模式切换位移
-		if (自机[武器类型名] == "光剑")
-		{
-			this._y = 102;
-		}
-		else
-		{
-			this._y = 216;
-		}
-	};
+	
 	this.是否兵器跳 = function()
 	{
 		if (自机._currentframe >= 599 and 自机._currentframe <= 618)
@@ -187,7 +177,6 @@
 		var 回血量 = 猩红增幅耗蓝量 * 8;
 		this.集体加血(900,600,回血量);
 
-
 	};
 	var 主唱光刃标识 = 自机.刀 + "主唱光刃";
 	var 主唱光刃时间戳名 = 主唱光刃标识 + "时间戳";
@@ -224,10 +213,7 @@
 		{
 			自机.mp -= 主唱光刃耗蓝量;
 		}
-
-
 	};
-	this.动态调整位置();
 	this.onEnterFrame = function()
 	{
 		if (_root.兵器攻击检测(自机) and 自机.mp >= 主唱光刃耗蓝量)
@@ -303,7 +289,6 @@
 			}
 
 		}
-		this.动态调整位置();
 	};
 }]]></script>
                   </Actionscript>
@@ -339,34 +324,12 @@
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	var 自机 = _root.获得父节点(this, 5);
-	var 武器类型名 = "武器类型名" + 自机.刀;
-	this.动态调整位置 = function()
-	{//镰刀模式切换位移
-		if (自机[武器类型名] == "光剑")
-		{
-			this._y = 164;
-		}
-		else
-		{
-			this._y = 363;
-		}
-	};
-	this.动态调整位置();
-	this.onEnterFrame = function()
-	{
-		this.动态调整位置();
-	};
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#FFFF00">
+        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <elements>
@@ -384,6 +347,7 @@
 	var 变形时间间隔 = 1 * 1000;
 	var 时间戳名 = 自机.刀 + "时间戳";
 	var 武器类型名 = "武器类型名" + 自机.刀;
+
 	var 动画帧名 = 自机.刀 + "动画帧";
 	this.切换为话筒支架 = function()
 	{

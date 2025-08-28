@@ -47,12 +47,16 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         if(typeof 装备 === "string"){
             装备 = ItemUtil.createItemByString(装备);
             if(装备.value.level == 1 && defaultLevel > 1) 装备.value.level = defaultLevel;
+        } else {
+            装备.toString = function() { return this.name; };
         }
         return 装备;
     }
 
     public static function loadHeroEquipment(target:MovieClip, equipKey:String):Object{
-        return _root.物品栏.装备栏.getItem(equipKey);
+        var equipment:Object = _root.物品栏.装备栏.getItem(equipKey);
+        equipment.toString = function() { return this.name; };
+        return equipment;
     }
 
     public static function getEquipmentDefaultLevel(targetLevel:Number, targetName:String):Number{

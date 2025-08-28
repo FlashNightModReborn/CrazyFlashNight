@@ -1955,6 +1955,19 @@
       <mp>0</mp>
       <defence>10</defence>
     </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>主唱光剑初始化</initRoutines>
+          <initParam>
+            <basicStyle>落日鎏金</basicStyle>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>主唱光剑周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <id>690</id>
