@@ -1,4 +1,35 @@
 ﻿class org.flashNight.gesh.tooltip.TooltipFormatter {
+
+  public static var dict:Object = {
+    defence: "防御",
+    hp: "hp",
+    mp: "mp",
+    //
+    damage: "伤害加成",
+    punch: "空手加成",
+    knifepower: "冷兵器加成",
+    gunpower: "枪械加成",
+    force: "内力加成",
+    //
+    weight: "重量",
+    //
+    clipname: "使用弹夹",
+    capacity: "弹夹容量",
+    impact: "冲击力",
+    //
+    accuracy: "命中加成",
+    evasion: "挡拆加成",
+    toughness: "韧性加成",
+    lazymiss: "高危回避",
+    //
+    poison: "剧毒性",
+    vampirism: "吸血",
+    rout: "击溃",
+    slay: "斩杀线",
+    //
+    magictype: "伤害属性"
+  };
+
   public static function bold(s:String):String {
     return "<B>" + s + "</B>";
   }

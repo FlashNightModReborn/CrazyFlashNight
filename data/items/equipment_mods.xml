@@ -244,9 +244,6 @@
         <name>传感器</name>
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
-            <percentage>
-                <force>30</force>
-            </percentage>
             <flat>
                 <evasion>20</evasion>
             </flat>
@@ -387,7 +384,6 @@
                 <punch>30</punch>
                 <knifepower>30</knifepower>
                 <gunpower>30</gunpower>
-                <force>30</force>
             </percentage>
         </stats>
     </mod>
@@ -397,6 +393,7 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <flat>
+                <level>10</level>
                 <defence>80</defence>
                 <hp>50</hp>
                 <mp>50</mp>
@@ -409,6 +406,7 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <flat>
+                <level>20</level>
                 <defence>180</defence>
                 <hp>80</hp>
                 <mp>80</mp>
@@ -421,6 +419,7 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <flat>
+                <level>30</level>
                 <defence>255</defence>
                 <hp>100</hp>
                 <mp>100</mp>

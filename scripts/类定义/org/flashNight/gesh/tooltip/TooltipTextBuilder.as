@@ -264,6 +264,9 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     return result;
   }
 
+  // === 生成插件数据属性块 ===
+  public static function buildModStats(item:Object, tier:String, level:Number):Array {
+  }
 
 
 
