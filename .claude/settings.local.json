@@ -4,7 +4,17 @@
       "Bash(mkdir:*)",
       "Bash(cp:*)",
       "Bash(rm:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "WebSearch",
+      "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Read(C:\\/**)",
+      "Bash(for line in 2513 2564 2613 2641 2669 2719 2750 2802 2834 2863 2916 2945 2974 3005 3035)",
+      "Bash(do echo \"Line $line:\")",
+      "Bash(done)",
+      "Bash(for line in 3084 3135 3174 3228 3259 3289 3341 3379 3416 3444 3475)",
+      "Bash(for line in 3530 3560 3591 3620 3649 3678)",
+      "Bash(sed:*)"
     ],
     "deny": [],
     "ask": []
