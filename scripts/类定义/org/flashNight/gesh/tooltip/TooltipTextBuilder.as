@@ -109,6 +109,10 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     var result = [];
     result.push("<B>", (value.tier ? ("[" + value.tier + "]") : ""), item.displayname, "</B><BR>");
     result.push(item.type, "    ", item.use, "<BR>");
+    // 为手枪和长枪显示具体武器类型
+    if ((item.use == "手枪" || item.use == "长枪") && item.data && item.data.weapontype) {
+      result.push("武器类型：", item.data.weapontype, "<BR>");
+    }
     if (item.type == "武器" || item.type == "防具") { result.push("等级限制：", item.level, "<BR>"); }
     result.push("$", item.price, "<BR>");
     if (item.weight != null && item.weight !== 0) result.push("重量：", item.weight, TooltipConstants.SUF_KG + "<BR>");
@@ -266,6 +270,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
 
   // === 生成插件数据属性块 ===
   public static function buildModStats(item:Object, tier:String, level:Number):Array {
+    return null; // TODO
   }
 
 
