@@ -110,8 +110,8 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     result.push("<B>", (value.tier ? ("[" + value.tier + "]") : ""), item.displayname, "</B><BR>");
     result.push(item.type, "    ", item.use, "<BR>");
     // 为手枪和长枪显示具体武器类型
-    if ((item.use == "手枪" || item.use == "长枪") && item.data && item.data.weapontype) {
-      result.push("武器类型：", item.data.weapontype, "<BR>");
+    if ((item.use == "手枪" || item.use == "长枪") && item.data && item.weapontype) {
+      result.push("武器类型：", item.weapontype, "<BR>");
     }
     if (item.type == "武器" || item.type == "防具") { result.push("等级限制：", item.level, "<BR>"); }
     result.push("$", item.price, "<BR>");
