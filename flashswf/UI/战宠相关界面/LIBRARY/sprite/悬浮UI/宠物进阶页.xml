@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/宠物进阶页" itemID="6728ff35-00000954" linkageExportForAS="true" linkageIdentifier="宠物进阶页" lastModified="1756583963" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/宠物进阶页" itemID="6728ff35-00000954" linkageExportForAS="true" linkageIdentifier="宠物进阶页" lastModified="1756584337" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="宠物进阶页">
       <layers>
@@ -58,6 +58,7 @@ function 刷新详情页(项数)
 	this.条件 = this.当前方案.条件;
 	this.执行 = this.当前方案.执行;
 	this.描述 = this.当前方案.描述;
+	this.排列宠物图标 = this.当前方案.排列宠物图标;
 	this.详情页描述 = this.当前方案.详情页描述;
 	this.详情页.当前项数 = 项数;
 	//this.详情页.标题 = this.宠物进阶数组[项数];
@@ -84,6 +85,7 @@ function 刷新项数(项数)
 	this.条件 = this.当前方案.条件;
 	this.执行 = this.当前方案.执行;
 	this.描述 = this.当前方案.描述;
+	this.排列宠物图标 = this.当前方案.排列宠物图标;
 	this.详情页描述 = this.当前方案.详情页描述;
 	//_root.发布消息(this.宠物进阶数组[当前项数] + "/" +this.描述() + "/" + this.详情页.注释 + "/" + 当前项数);
 }
@@ -139,6 +141,9 @@ this.刷新当前宠物 = function()
 
 			break;
 		}
+	}
+	if(排列宠物图标){
+		_root.宠物信息界面.排列宠物图标();
 	}
 };
 if (this.宠物数据.Promotion)

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/进阶方案详情页" itemID="6729f488-00000269" lastModified="1756583747" lastUniqueIdentifier="12">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/进阶方案详情页" itemID="6729f488-00000269" lastModified="1756584157" lastUniqueIdentifier="12">
   <timeline>
     <DOMTimeline name="进阶方案详情页">
       <layers>
@@ -95,11 +95,11 @@ stop();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A">
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="166.1" centerPoint3DY="329.95">
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" selected="true" centerPoint3DX="166.1" centerPoint3DY="329.95">
                   <matrix>
                     <Matrix a="0.77117919921875" d="0.77117919921875" tx="131.2" ty="320.35"/>
                   </matrix>
@@ -215,7 +215,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F" locked="true" current="true" isSelected="true">
+        <DOMLayer name="图层 1" color="#4FFF4F" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -477,7 +477,7 @@ on (release) {
                     <DropShadowFilter angle="44.9992520943067" strength="0.5"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="强化弹窗背景图" name="背景" centerPoint3DX="147.7" centerPoint3DY="240.6">
+                <DOMSymbolInstance libraryItemName="强化弹窗背景图" name="背景" selected="true" centerPoint3DX="147.7" centerPoint3DY="240.6">
                   <matrix>
                     <Matrix a="0.792831420898438" d="0.792831420898438" ty="115.05"/>
                   </matrix>
