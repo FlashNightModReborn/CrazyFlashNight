@@ -43,7 +43,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种148</Type>
+                        <Type>兵种21</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>60</Level>
@@ -57,7 +57,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种150</Type>
+                        <Type>兵种22</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>60</Level>
@@ -71,16 +71,16 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种21</Type>
+                        <Type>兵种23</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
-                        <Level>60</Level>
+                        <Level>100</Level>
                         <Parameters>
                             <宠物属性>
                                 <强化药剂>true</强化药剂>
                                 <超级血清>true</超级血清>
                                 <常驻淬毒>true</常驻淬毒>
-                                <追踪飞弹>true</追踪飞弹>
+                                <驯鹰者>true</驯鹰者>
                             </宠物属性>
                         </Parameters>
                     </Enemy>
@@ -108,7 +108,7 @@
                     <Enemy id="1">
                         <Type>兵种150</Type>
                         <Interval>500</Interval>
-                        <Quantity>4</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>60</Level>
                         <Parameters>
                             <宠物属性>
@@ -120,16 +120,16 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种22</Type>
+                        <Type>兵种152</Type>
                         <Interval>500</Interval>
-                        <Quantity>3</Quantity>
-                        <Level>60</Level>
+                        <Quantity>2</Quantity>
+                        <Level>100</Level>
                         <Parameters>
                             <宠物属性>
                                 <强化药剂>true</强化药剂>
                                 <超级血清>true</超级血清>
                                 <常驻淬毒>true</常驻淬毒>
-                                <追踪飞弹>true</追踪飞弹>
+                                <驯鹰者>true</驯鹰者>
                             </宠物属性>
                         </Parameters>
                     </Enemy>
@@ -176,18 +176,10 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种21</Type>
+                        <Type>兵种426</Type>
                         <Interval>500</Interval>
-                        <Quantity>4</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>60</Level>
-                        <Parameters>
-                            <宠物属性>
-                                <强化药剂>true</强化药剂>
-                                <超级血清>true</超级血清>
-                                <常驻淬毒>true</常驻淬毒>
-                                <追踪飞弹>true</追踪飞弹>
-                            </宠物属性>
-                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -211,30 +203,28 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种150</Type>
+                        <Type>兵种152</Type>
                         <Interval>500</Interval>
-                        <Quantity>3</Quantity>
-                        <Level>60</Level>
+                        <Quantity>2</Quantity>
+                        <Level>100</Level>
                         <Parameters>
                             <宠物属性>
                                 <强化药剂>true</强化药剂>
                                 <超级血清>true</超级血清>
                                 <常驻淬毒>true</常驻淬毒>
-                                <追踪飞弹>true</追踪飞弹>
+                                <驯鹰者>true</驯鹰者>
                             </宠物属性>
                         </Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种22</Type>
+                        <Type>兵种426</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>60</Level>
                         <Parameters>
                             <宠物属性>
+                                <基础训练>true</基础训练>
                                 <强化药剂>true</强化药剂>
-                                <超级血清>true</超级血清>
-                                <常驻淬毒>true</常驻淬毒>
-                                <追踪飞弹>true</追踪飞弹>
                             </宠物属性>
                         </Parameters>
                     </Enemy>
@@ -246,7 +236,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种148</Type>
+                        <Type>兵种150</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>60</Level>
@@ -260,30 +250,29 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种150</Type>
+                        <Type>兵种152</Type>
                         <Interval>500</Interval>
-                        <Quantity>3</Quantity>
-                        <Level>60</Level>
+                        <Quantity>2</Quantity>
+                        <Level>100</Level>
                         <Parameters>
                             <宠物属性>
                                 <强化药剂>true</强化药剂>
                                 <超级血清>true</超级血清>
                                 <常驻淬毒>true</常驻淬毒>
-                                <追踪飞弹>true</追踪飞弹>
+                                <驯鹰者>true</驯鹰者>
                             </宠物属性>
                         </Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种22</Type>
+                        <Type>兵种426</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>60</Level>
                         <Parameters>
                             <宠物属性>
+                                <基础训练>true</基础训练>
                                 <强化药剂>true</强化药剂>
                                 <超级血清>true</超级血清>
-                                <常驻淬毒>true</常驻淬毒>
-                                <追踪飞弹>true</追踪飞弹>
                             </宠物属性>
                         </Parameters>
                     </Enemy>
@@ -304,7 +293,7 @@
                     <Enemy id="0">
                         <Type>兵种148</Type>
                         <Interval>500</Interval>
-                        <Quantity>4</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>60</Level>
                         <Parameters>
                             <宠物属性>
@@ -316,32 +305,24 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种150</Type>
+                        <Type>兵种152</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
-                        <Level>60</Level>
+                        <Level>100</Level>
                         <Parameters>
                             <宠物属性>
                                 <强化药剂>true</强化药剂>
                                 <超级血清>true</超级血清>
                                 <常驻淬毒>true</常驻淬毒>
-                                <追踪飞弹>true</追踪飞弹>
+                                <驯鹰者>true</驯鹰者>
                             </宠物属性>
                         </Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种21</Type>
+                        <Type>兵种427</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>60</Level>
-                        <Parameters>
-                            <宠物属性>
-                                <强化药剂>true</强化药剂>
-                                <超级血清>true</超级血清>
-                                <常驻淬毒>true</常驻淬毒>
-                                <追踪飞弹>true</追踪飞弹>
-                            </宠物属性>
-                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -367,7 +348,7 @@
                     <Enemy id="1">
                         <Type>兵种150</Type>
                         <Interval>500</Interval>
-                        <Quantity>4</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>60</Level>
                         <Parameters>
                             <宠物属性>
@@ -379,7 +360,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种22</Type>
+                        <Type>兵种427</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>60</Level>
@@ -387,8 +368,6 @@
                             <宠物属性>
                                 <强化药剂>true</强化药剂>
                                 <超级血清>true</超级血清>
-                                <常驻淬毒>true</常驻淬毒>
-                                <追踪飞弹>true</追踪飞弹>
                             </宠物属性>
                         </Parameters>
                     </Enemy>
@@ -428,7 +407,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种22</Type>
+                        <Type>兵种427</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>60</Level>
@@ -436,8 +415,7 @@
                             <宠物属性>
                                 <强化药剂>true</强化药剂>
                                 <超级血清>true</超级血清>
-                                <常驻淬毒>true</常驻淬毒>
-                                <追踪飞弹>true</追踪飞弹>
+                                <追猎>true</追猎>
                             </宠物属性>
                         </Parameters>
                     </Enemy>
@@ -484,18 +462,10 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种21</Type>
+                        <Type>兵种428</Type>
                         <Interval>500</Interval>
-                        <Quantity>4</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>60</Level>
-                        <Parameters>
-                            <宠物属性>
-                                <强化药剂>true</强化药剂>
-                                <超级血清>true</超级血清>
-                                <常驻淬毒>true</常驻淬毒>
-                                <追踪飞弹>true</追踪飞弹>
-                            </宠物属性>
-                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -530,7 +500,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种22</Type>
+                        <Type>兵种428</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>60</Level>
@@ -538,8 +508,6 @@
                             <宠物属性>
                                 <强化药剂>true</强化药剂>
                                 <超级血清>true</超级血清>
-                                <常驻淬毒>true</常驻淬毒>
-                                <追踪飞弹>true</追踪飞弹>
                             </宠物属性>
                         </Parameters>
                     </Enemy>
@@ -551,16 +519,16 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种148</Type>
+                        <Type>兵种152</Type>
                         <Interval>500</Interval>
-                        <Quantity>3</Quantity>
-                        <Level>60</Level>
+                        <Quantity>2</Quantity>
+                        <Level>100</Level>
                         <Parameters>
                             <宠物属性>
                                 <强化药剂>true</强化药剂>
                                 <超级血清>true</超级血清>
                                 <常驻淬毒>true</常驻淬毒>
-                                <追踪飞弹>true</追踪飞弹>
+                                <驯鹰者>true</驯鹰者>
                             </宠物属性>
                         </Parameters>
                     </Enemy>
@@ -579,7 +547,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种23</Type>
+                        <Type>兵种428</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>60</Level>
@@ -587,8 +555,7 @@
                             <宠物属性>
                                 <强化药剂>true</强化药剂>
                                 <超级血清>true</超级血清>
-                                <常驻淬毒>true</常驻淬毒>
-                                <驯鹰者>true</驯鹰者>
+                                <追猎>true</追猎>
                             </宠物属性>
                         </Parameters>
                     </Enemy>
@@ -607,44 +574,41 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种148</Type>
+                        <Type>兵种427</Type>
                         <Interval>500</Interval>
-                        <Quantity>4</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>60</Level>
                         <Parameters>
                             <宠物属性>
                                 <强化药剂>true</强化药剂>
                                 <超级血清>true</超级血清>
-                                <常驻淬毒>true</常驻淬毒>
-                                <追踪飞弹>true</追踪飞弹>
+                                <追猎>true</追猎>
                             </宠物属性>
                         </Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种150</Type>
+                        <Type>兵种428</Type>
                         <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>60</Level>
                         <Parameters>
                             <宠物属性>
                                 <强化药剂>true</强化药剂>
                                 <超级血清>true</超级血清>
-                                <常驻淬毒>true</常驻淬毒>
-                                <追踪飞弹>true</追踪飞弹>
+                                <追猎>true</追猎>
                             </宠物属性>
                         </Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种21</Type>
+                        <Type>兵种426</Type>
                         <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>60</Level>
                         <Parameters>
                             <宠物属性>
+                                <基础训练>true</基础训练>
                                 <强化药剂>true</强化药剂>
                                 <超级血清>true</超级血清>
-                                <常驻淬毒>true</常驻淬毒>
-                                <追踪飞弹>true</追踪飞弹>
                             </宠物属性>
                         </Parameters>
                     </Enemy>
@@ -669,7 +633,7 @@
                     <Enemy id="1">
                         <Type>兵种150</Type>
                         <Interval>500</Interval>
-                        <Quantity>4</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>60</Level>
                         <Parameters>
                             <宠物属性>
@@ -755,23 +719,22 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种21</Type>
+                        <Type>兵种427</Type>
                         <Interval>500</Interval>
-                        <Quantity>3</Quantity>
-                        <Level>100</Level>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
                         <Parameters>
                             <宠物属性>
                                 <强化药剂>true</强化药剂>
                                 <超级血清>true</超级血清>
-                                <常驻淬毒>true</常驻淬毒>
-                                <追踪飞弹>true</追踪飞弹>
+                                <追猎>true</追猎>
                             </宠物属性>
                         </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种41</Type>
                         <Interval>500</Interval>
-                        <Quantity>5</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>100</Level>
                         <Parameters>
                             <宠物属性>
@@ -780,16 +743,15 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种23</Type>
+                        <Type>兵种426</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>60</Level>
                         <Parameters>
                             <宠物属性>
+                                <基础训练>true</基础训练>
                                 <强化药剂>true</强化药剂>
                                 <超级血清>true</超级血清>
-                                <常驻淬毒>true</常驻淬毒>
-                                <驯鹰者>true</驯鹰者>
                             </宠物属性>
                         </Parameters>
                     </Enemy>
@@ -831,7 +793,7 @@
                     <Enemy id="2">
                         <Type>兵种154</Type>
                         <Interval>500</Interval>
-                        <Quantity>5</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>100</Level>
                         <Parameters>
                             <宠物属性>
