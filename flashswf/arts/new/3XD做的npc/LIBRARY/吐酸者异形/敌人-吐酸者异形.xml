@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吐酸者异形/敌人-吐酸者异形" itemID="68ac408a-000000af" linkageExportForAS="true" linkageIdentifier="敌人-吐酸者异形" lastModified="1756578394" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吐酸者异形/敌人-吐酸者异形" itemID="68ac408a-000000af" linkageExportForAS="true" linkageIdentifier="敌人-吐酸者异形" lastModified="1756585791" lastUniqueIdentifier="5">
   <timeline>
     <DOMTimeline name="敌人-吐酸者异形">
       <layers>
@@ -84,7 +84,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#C8B468">
+        <DOMLayer name="Script Layer" color="#C8B468" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -116,7 +116,6 @@
 中程技能库.push("刺");
 远程技能库.push("扑");
 
-this.宠物属性 = {追猎:true};
 
 初始化敌人模板 = _root.初始化敌人模板;
 初始化敌人模板();]]></script>
@@ -440,11 +439,11 @@ this.宠物属性 = {追猎:true};
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#78C9CA" current="true" isSelected="true">
+        <DOMLayer name="Layer 11" color="#78C9CA">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 145" name="man" selected="true" centerPoint3DX="95.85" centerPoint3DY="20.45">
+                <DOMSymbolInstance libraryItemName="Symbol 145" name="man" centerPoint3DX="95.85" centerPoint3DY="20.45">
                   <matrix>
                     <Matrix a="1.09814453125" d="1.09814453125" tx="-14.75" ty="-63.9"/>
                   </matrix>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="徘徊者异形/敌人-徘徊者异形" itemID="68ac4294-0000023f" linkageExportForAS="true" linkageIdentifier="敌人-徘徊者异形" lastModified="1756578175" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="徘徊者异形/敌人-徘徊者异形" itemID="68ac4294-0000023f" linkageExportForAS="true" linkageIdentifier="敌人-徘徊者异形" lastModified="1756585796" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="敌人-徘徊者异形">
       <layers>
@@ -81,7 +81,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#BF21DB" locked="true">
+        <DOMLayer name="Script Layer" color="#BF21DB" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -115,7 +115,6 @@
 远程技能库.push("刺");
 超远程技能库.push("长扑");
 
-this.宠物属性 = {追猎:true};
 初始化敌人模板 = _root.初始化敌人模板;
 初始化敌人模板();]]></script>
               </Actionscript>
@@ -214,7 +213,7 @@ this.宠物属性 = {追猎:true};
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="徘徊者异形/一些复用信息元件/Symbol 151" selected="true" centerPoint3DX="188.95" centerPoint3DY="-27.05">
+                <DOMSymbolInstance libraryItemName="徘徊者异形/一些复用信息元件/Symbol 151" centerPoint3DX="188.95" centerPoint3DY="-27.05">
                   <matrix>
                     <Matrix a="10.5693359375" d="0.72247314453125" tx="26.15" ty="-108.1"/>
                   </matrix>
@@ -420,11 +419,11 @@ this.宠物属性 = {追猎:true};
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#FE26F5" current="true" isSelected="true">
+        <DOMLayer name="Layer 12" color="#FE26F5">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="徘徊者异形/单独动作/Symbol 383" name="man" selected="true" centerPoint3DX="105.6" centerPoint3DY="8.15">
+                <DOMSymbolInstance libraryItemName="徘徊者异形/单独动作/Symbol 383" name="man" centerPoint3DX="105.6" centerPoint3DY="8.15">
                   <matrix>
                     <Matrix tx="-19.05" ty="-57.85"/>
                   </matrix>
