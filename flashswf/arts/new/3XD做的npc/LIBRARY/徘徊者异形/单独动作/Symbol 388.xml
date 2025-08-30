@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="徘徊者异形/单独动作/Symbol 388" itemID="68b2e308-0000123f" lastModified="1756556836" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="徘徊者异形/单独动作/Symbol 388" itemID="68b2e308-0000123f" lastModified="1756574213" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="Symbol 388" currentFrame="9">
+    <DOMTimeline name="Symbol 388" currentFrame="41">
       <layers>
         <DOMLayer name="Labels Layer" color="#6AD8A7" outline="true" useOutlineView="true">
           <frames>
@@ -27,7 +27,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="追踪代码" color="#6A83E3" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="追踪代码" color="#6A83E3" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -82,7 +82,13 @@ gotoAndPlay(_parent.近战招式);
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="8" keyMode="9728">
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" name="追踪攻击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="9" duration="42" keyMode="9728">
@@ -157,7 +163,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#F528D4" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#F528D4" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -2208,7 +2214,7 @@ else
             </DOMFrame>
             <DOMFrame index="13" duration="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="徘徊者异形/好像是血/Symbol 75" selected="true" centerPoint3DX="111.25" centerPoint3DY="208.1">
+                <DOMSymbolInstance libraryItemName="徘徊者异形/好像是血/Symbol 75" centerPoint3DX="111.25" centerPoint3DY="208.1">
                   <matrix>
                     <Matrix a="0.32000732421875" d="0.32000732421875" tx="98.75" ty="195.6"/>
                   </matrix>

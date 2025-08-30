@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吐酸者异形/敌人-吐酸者异形" itemID="68ac408a-000000af" linkageExportForAS="true" linkageIdentifier="敌人-吐酸者异形" lastModified="1756557267" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吐酸者异形/敌人-吐酸者异形" itemID="68ac408a-000000af" linkageExportForAS="true" linkageIdentifier="敌人-吐酸者异形" lastModified="1756574758" lastUniqueIdentifier="5">
   <timeline>
     <DOMTimeline name="敌人-吐酸者异形">
       <layers>
@@ -107,9 +107,16 @@
 中程技能距离 = 230;
 远程技能距离 = 390;
 //以下攻击范围在对应技能库启用时生效
+横向攻击Z轴范围 = 120;
+横向攻击X轴范围 = 350;//最大范围
+横向攻击X轴最小范围 = 120; //可选属性，如有需要可开启
+范围外攻击最小距离 = 130; //可选属性，如有需要可开启
+范围外攻击最大距离 = 500; //可选属性，如有需要可开启
 
 中程技能库.push("刺");
 远程技能库.push("扑");
+
+this.宠物属性 = {追猎:true};
 
 初始化敌人模板 = _root.初始化敌人模板;
 初始化敌人模板();]]></script>
@@ -310,7 +317,8 @@
 		}
 		*/
 		/*有横向招式时激活下列内容
-		else if (距离X < _parent.横向攻击X轴范围 && _parent.横向技能库.length > 0 && 距离Z <= _parent.横向攻击Z轴范围 && random(_parent.攻击欲望 * 2) == 0)
+		*/
+		else if (距离X < _parent.横向攻击X轴范围 && _parent.横向技能库.length > 0 && 距离Z <= _parent.横向攻击Z轴范围 && (!_parent.横向攻击X轴最小范围 || 距离X > _parent.横向攻击X轴最小范围) && random(_parent.攻击欲望 * 2) == 0)
 		{
 
 			if (_parent._x > 敌方目标._x)
@@ -324,11 +332,11 @@
 			_parent.近战招式 = _parent.横向技能库[random(_parent.横向技能库.length)];
 			_parent.状态改变("近战");
 		}
-		*/
 		/*有范围外招式时激活下列内容
+		*/
 		else
 		{
-			if (_parent.范围外技能库.length > 0 && random(_parent.攻击欲望 * 15) == 0)
+			if (_parent.范围外技能库.length > 0 && (!_parent.范围外攻击最小距离 || 距离X * 距离Z > _parent.范围外攻击最小距离 *  _parent.范围外攻击最小距离)  && (!_parent.范围外攻击最大距离 || 距离X * 距离Z < _parent.范围外攻击最大距离 *  _parent.范围外攻击最大距离)  && random(_parent.攻击欲望 * 15) == 0)
 			{
 				if (_parent._x > 敌方目标._x)
 				{
@@ -342,7 +350,6 @@
 				_parent.状态改变("近战");
 			}
 		}
-		*/
 
 	}
 }]]></script>
