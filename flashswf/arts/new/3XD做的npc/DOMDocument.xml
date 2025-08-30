@@ -1,6 +1,6 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#333333" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" guidesSnapTo="false" snapAlign="false" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
      <folders>
-          <DOMFolderItem name="刀狙少女" itemID="663e1bab-000006ad" isExpanded="true"/>
+          <DOMFolderItem name="刀狙少女" itemID="663e1bab-000006ad"/>
           <DOMFolderItem name="刀狙少女/动画合集" itemID="65ad2501-00002acd"/>
           <DOMFolderItem name="刀狙少女/基础元件" itemID="66153686-00000444"/>
           <DOMFolderItem name="刀狙少女/基础元件/其余部件" itemID="663e1be6-000006bd" isExpanded="true"/>
@@ -89,6 +89,14 @@
           <DOMFolderItem name="劫掠少女/基础部件/部件2 副本" itemID="68566cdf-00000fe9"/>
           <DOMFolderItem name="劫掠少女/基础部件/部件2/头1" itemID="663dc41b-000002b1" isExpanded="true"/>
           <DOMFolderItem name="劫掠少女/基础部件/部件3" itemID="663e2429-0000084a"/>
+          <DOMFolderItem name="美洲狮异形" itemID="68b2e2fb-000010cf"/>
+          <DOMFolderItem name="徘徊者异形" itemID="68b2e308-000011ae" isExpanded="true"/>
+          <DOMFolderItem name="徘徊者异形/单独动作" itemID="68ac44e6-00000276"/>
+          <DOMFolderItem name="徘徊者异形/好像是血" itemID="68ac4514-0000027a"/>
+          <DOMFolderItem name="徘徊者异形/徘徊者身体素材" itemID="68ac4404-00000255"/>
+          <DOMFolderItem name="徘徊者异形/迫真音效" itemID="68ac4481-0000026c"/>
+          <DOMFolderItem name="徘徊者异形/一些复用信息元件" itemID="68ac44c4-00000271"/>
+          <DOMFolderItem name="徘徊者异形/疑似原版身体素材以及尸块" itemID="68ac45bb-00000283"/>
           <DOMFolderItem name="思考标签（与旧思考块）" itemID="67e51b4a-00000f3a"/>
           <DOMFolderItem name="特警僵尸" itemID="671db3dc-000001b7"/>
           <DOMFolderItem name="特警僵尸/代码层" itemID="671dc166-00000537" isExpanded="true"/>
@@ -112,7 +120,8 @@
           <DOMFolderItem name="特警僵尸/做的动画/身体/军阀人物1/其他" itemID="6707c7ad-00001510"/>
           <DOMFolderItem name="特警僵尸/做的动画/身体/军阀人物1/人物身体的部件" itemID="6709e6f0-00000181"/>
           <DOMFolderItem name="特警僵尸/做的动画/重复项目文件夹" itemID="671dbd38-000002ef"/>
-          <DOMFolderItem name="未命名文件夹 1" itemID="663f2163-00000148" isExpanded="true"/>
+          <DOMFolderItem name="吐酸者异形" itemID="68b2e367-00001665" isExpanded="true"/>
+          <DOMFolderItem name="未命名文件夹 1" itemID="663f2163-00000148"/>
           <DOMFolderItem name="重复项目文件夹" itemID="68566cdf-00000e7a"/>
      </folders>
      <media>
@@ -122,6 +131,21 @@
           <DOMSoundItem name="刀狙少女/基础元件/枪声/m24_ok.wav" itemID="6819d74c-00005209" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/new/3XD做的npc/LIBRARY/刀狙少女/基础元件/枪声/m24_ok.wav" sourceLastImported="1746523971" externalFileCRC32="1676004011" externalFileSize="83986" href="刀狙少女/基础元件/枪声/m24_ok.wav" soundDataHRef="M 26 1715493941.dat" format="44kHz 16bit Mono" sampleCount="41971" exportFormat="14" exportBits="18"/>
           <DOMSoundItem name="刀狙少女/基础元件/枪声/m24拉栓.wav" itemID="663e18b5-00000604" sourceExternalFilepath="./LIBRARY/刀狙少女/基础元件/枪声/m24拉栓.wav" sourceLastImported="1715345571" href="刀狙少女/基础元件/枪声/m24拉栓.wav" soundDataHRef="M 9 1715405845.dat" format="44kHz 16bit Mono" sampleCount="25998" exportFormat="5" exportBits="17" dataLength="51996"/>
           <DOMSoundItem name="劫掠少女/sound/re_shotgun_m1887_reload.wav" itemID="65ab2a8f-00000a04" linkageExportForAS="true" linkageIdentifier="re_shotgun_m1887_reload.wav" sourceExternalFilepath="./LIBRARY/劫掠少女/sound/re_shotgun_m1887_reload.wav" sourceLastImported="1705333427" href="劫掠少女/sound/re_shotgun_m1887_reload.wav" soundDataHRef="M 23 1715484047.dat" format="44kHz 16bit Mono" sampleCount="22039" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="徘徊者异形/迫真音效/sound186.wav" itemID="668ba452-00000521" sourceExternalFilepath="./LIBRARY/sound186.wav" sourceLastImported="1720427674" href="徘徊者异形/迫真音效/sound186.wav" soundDataHRef="M 40 1756553992.dat" format="44kHz 16bit Stereo" sampleCount="63430" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="美洲狮异形/sound186.wav" itemID="68b2ed26-00000703" sourceExternalFilepath="../../../../Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/new/LIBRARY/sound186.wav" sourceLastImported="1720427674" href="美洲狮异形/sound186.wav" soundDataHRef="M 35 1756553979.dat" format="44kHz 16bit Stereo" sampleCount="63430" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="吐酸者异形/sound186.wav" itemID="68b2ed26-00000704" sourceExternalFilepath="./LIBRARY/sound186.wav" sourceLastImported="1720427674" href="吐酸者异形/sound186.wav" soundDataHRef="M 30 1756553969.dat" format="44kHz 16bit Stereo" sampleCount="63430" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="徘徊者异形/迫真音效/sound187.wav" itemID="668c4c17-00000554" sourceExternalFilepath="./LIBRARY/sound187.wav" sourceLastImported="1720470571" href="徘徊者异形/迫真音效/sound187.wav" soundDataHRef="M 41 1756553992.dat" format="44kHz 16bit Stereo" sampleCount="77562" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="美洲狮异形/sound187.wav" itemID="68b2ed26-00000705" sourceExternalFilepath="../../../../Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/new/LIBRARY/sound187.wav" sourceLastImported="1720470571" href="美洲狮异形/sound187.wav" soundDataHRef="M 36 1756553979.dat" format="44kHz 16bit Stereo" sampleCount="77562" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="吐酸者异形/sound187.wav" itemID="68b2ed26-00000706" sourceExternalFilepath="./LIBRARY/sound187.wav" sourceLastImported="1720470571" href="吐酸者异形/sound187.wav" soundDataHRef="M 31 1756553969.dat" format="44kHz 16bit Stereo" sampleCount="77562" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="徘徊者异形/迫真音效/sound189.wav" itemID="668cdc98-0000055d" sourceExternalFilepath="./LIBRARY/sound189.wav" sourceLastImported="1720507496" href="徘徊者异形/迫真音效/sound189.wav" soundDataHRef="M 42 1756553992.dat" format="44kHz 16bit Stereo" sampleCount="45651" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="美洲狮异形/sound189.wav" itemID="68b2ed26-00000707" sourceExternalFilepath="../../../../Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/new/LIBRARY/sound189.wav" sourceLastImported="1720507496" href="美洲狮异形/sound189.wav" soundDataHRef="M 37 1756553980.dat" format="44kHz 16bit Stereo" sampleCount="45651" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="吐酸者异形/sound189.wav" itemID="68b2ed26-00000708" sourceExternalFilepath="./LIBRARY/sound189.wav" sourceLastImported="1720507496" href="吐酸者异形/sound189.wav" soundDataHRef="M 32 1756553969.dat" format="44kHz 16bit Stereo" sampleCount="45651" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="徘徊者异形/迫真音效/sound198.wav" itemID="668cefa8-00000562" sourceExternalFilepath="./LIBRARY/sound198.wav" sourceLastImported="1720512522" href="徘徊者异形/迫真音效/sound198.wav" soundDataHRef="M 43 1756553993.dat" format="44kHz 16bit Stereo" sampleCount="91301" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="美洲狮异形/sound198.wav" itemID="68b2ed26-00000709" sourceExternalFilepath="../../../../Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/new/LIBRARY/sound198.wav" sourceLastImported="1720512522" href="美洲狮异形/sound198.wav" soundDataHRef="M 38 1756553980.dat" format="44kHz 16bit Stereo" sampleCount="91301" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="吐酸者异形/sound198.wav" itemID="68b2ed26-0000070a" sourceExternalFilepath="./LIBRARY/sound198.wav" sourceLastImported="1720512522" href="吐酸者异形/sound198.wav" soundDataHRef="M 33 1756553969.dat" format="44kHz 16bit Stereo" sampleCount="91301" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="徘徊者异形/迫真音效/sound226.wav" itemID="668d2764-00000524" sourceExternalFilepath="./LIBRARY/sound226.wav" sourceLastImported="1720526811" href="徘徊者异形/迫真音效/sound226.wav" soundDataHRef="M 44 1756553993.dat" format="44kHz 16bit Stereo" sampleCount="63911" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="美洲狮异形/sound226.wav" itemID="68b2ed26-0000070b" sourceExternalFilepath="../../../../Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/new/LIBRARY/sound226.wav" sourceLastImported="1720526811" href="美洲狮异形/sound226.wav" soundDataHRef="M 39 1756553980.dat" format="44kHz 16bit Stereo" sampleCount="63911" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="吐酸者异形/sound226.wav" itemID="68b2ed26-0000070c" sourceExternalFilepath="./LIBRARY/sound226.wav" sourceLastImported="1720526811" href="吐酸者异形/sound226.wav" soundDataHRef="M 34 1756553969.dat" format="44kHz 16bit Stereo" sampleCount="63911" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="刀狙少女/基础元件/原版的套皮部件/sound232.mp3" itemID="6577faef-00001364" sourceExternalFilepath="./LIBRARY/刀狙少女/基础元件/原版的套皮部件/sound232.mp3" sourceLastImported="1702361839" href="刀狙少女/基础元件/原版的套皮部件/sound232.mp3" soundDataHRef="M 11 1715405845.dat" format="11kHz 16bit Mono" sampleCount="9216" exportFormat="5" exportBits="7" dataLength="1664" exportNative="true" cachedSampleCount="4608"/>
           <DOMSoundItem name="劫掠少女/基础部件/部件2/sound232.mp3" itemID="663f142a-00000146" sourceExternalFilepath="./LIBRARY/劫掠少女/基础部件/部件2/sound232.mp3" sourceLastImported="1702361839" href="劫掠少女/基础部件/部件2/sound232.mp3" soundDataHRef="M 2 1715322537.dat" format="11kHz 16bit Mono" sampleCount="9216" exportFormat="5" exportBits="7" dataLength="1664" exportNative="true" cachedSampleCount="4608"/>
           <DOMSoundItem name="劫掠少女/基础部件/部件3/sound232.mp3" itemID="663e248c-0000336c" sourceExternalFilepath="./LIBRARY/劫掠少女/基础部件/部件3/sound232.mp3" sourceLastImported="1702361839" href="劫掠少女/基础部件/部件3/sound232.mp3" soundDataHRef="M 2 1715348284.dat" format="11kHz 16bit Mono" sampleCount="9216" exportFormat="5" exportBits="7" dataLength="1664" exportNative="true" cachedSampleCount="4608"/>
@@ -147,6 +171,7 @@
           <DOMSoundItem name="刀狙少女/基础元件/普通刀用力竖斩.wav" itemID="65a29b24-000005a0" linkageExportForAS="true" linkageIdentifier="普通刀用力竖斩.wav" sourceExternalFilepath="./LIBRARY/刀狙少女/基础元件/普通刀用力竖斩.wav" sourceLastImported="1705159192" href="刀狙少女/基础元件/普通刀用力竖斩.wav" soundDataHRef="M 18 1715405849.dat" format="44kHz 16bit Mono" sampleCount="11021" exportFormat="5" exportBits="17"/>
      </media>
      <symbols>
+          <Include href="Symbol 145.xml" loadImmediate="false" itemID="65e1d4ea-000002bd" lastModified="1756119203"/>
           <Include href="补间 1.xml" itemIcon="1" loadImmediate="false" itemID="673638e5-00000b84" lastModified="1731606757"/>
           <Include href="补间 2.xml" itemIcon="1" loadImmediate="false" itemID="673638e5-00000b86" lastModified="1731606757"/>
           <Include href="补间 3.xml" itemIcon="1" loadImmediate="false" itemID="673639c2-00000bbb" lastModified="1731606978"/>
@@ -281,8 +306,8 @@
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="65ae694d-0000373f" lastModified="1705929037"/>
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/area框/索敌框载体.xml" loadImmediate="false" itemID="65ae6931-0000373d" lastModified="1705929009"/>
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/死亡消失元件/Symbol 39.xml" loadImmediate="false" itemID="6570b322-000003ec" lastModified="1701884437"/>
-          <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="65ae68fb-00003739" lastModified="1705928955"/>
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="65ae68f0-00003738" lastModified="1705929134"/>
+          <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="65ae68fb-00003739" lastModified="1705928955"/>
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="65ae6c3a-000037f7" lastModified="1705929879"/>
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-000003e2" lastModified="1701884437"/>
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="6570b322-000003e3" lastModified="1701884437"/>
@@ -722,6 +747,229 @@
           <Include href="劫掠少女/基础部件/部件3/Symbol 456.xml" loadImmediate="false" itemID="6577faef-000014a2" lastModified="1751703492"/>
           <Include href="劫掠少女/基础部件/部件3/拾取.xml" loadImmediate="false" itemID="66a916ab-00002d84" lastModified="1751703492"/>
           <Include href="劫掠少女/基础部件/部件3/元件 1.xml" loadImmediate="false" itemID="663dc52f-000002bf" lastModified="1715324207"/>
+          <Include href="美洲狮异形/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="68b2e2fb-00001198" lastModified="1701884437"/>
+          <Include href="美洲狮异形/Symbol 14.xml" loadImmediate="false" itemID="68b2e2fb-00001197" lastModified="1701884437"/>
+          <Include href="美洲狮异形/Symbol 74.xml" itemIcon="1" loadImmediate="false" itemID="68b2e2fb-000011a0" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 75.xml" loadImmediate="false" itemID="68b2e2fb-0000119f" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 76.xml" loadImmediate="false" itemID="68b2e2fb-0000119e" lastModified="1712337393"/>
+          <Include href="美洲狮异形/Symbol 124.xml" loadImmediate="false" itemID="68b2e2fc-000011a9" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 147.xml" loadImmediate="false" itemID="68b2e2fb-00001157" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 151.xml" loadImmediate="false" itemID="68b2e2fb-00001155" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 153.xml" itemIcon="1" loadImmediate="false" itemID="68b2e2fb-0000114f" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 155.xml" loadImmediate="false" itemID="68b2e2fb-00001150" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 156.xml" loadImmediate="false" itemID="68b2e2fb-0000114e" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 158.xml" loadImmediate="false" itemID="68b2e2fb-0000114c" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 164.xml" loadImmediate="false" itemID="68b2e2fb-0000114b" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 194.xml" loadImmediate="false" itemID="68b2e2fc-000011a8" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 369.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-0000038b" lastModified="1755248163"/>
+          <Include href="美洲狮异形/Symbol 370.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-0000038c" lastModified="1755248130"/>
+          <Include href="美洲狮异形/Symbol 371.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-0000038d" lastModified="1755248022"/>
+          <Include href="美洲狮异形/Symbol 372.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-0000038e" lastModified="1755248075"/>
+          <Include href="美洲狮异形/Symbol 373.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-0000038f" lastModified="1755248007"/>
+          <Include href="美洲狮异形/Symbol 374.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000390" lastModified="1755247811"/>
+          <Include href="美洲狮异形/Symbol 375.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000391" lastModified="1755248191"/>
+          <Include href="美洲狮异形/Symbol 376.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000392" lastModified="1755247797"/>
+          <Include href="美洲狮异形/Symbol 377.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000393" lastModified="1755247772"/>
+          <Include href="美洲狮异形/Symbol 378.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000394" lastModified="1755247747"/>
+          <Include href="美洲狮异形/Symbol 379.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000395" lastModified="1755247687"/>
+          <Include href="美洲狮异形/Symbol 380.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000396" lastModified="1755247844"/>
+          <Include href="美洲狮异形/Symbol 381.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000397" lastModified="1755247988"/>
+          <Include href="美洲狮异形/Symbol 382.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000398" lastModified="1755248099"/>
+          <Include href="美洲狮异形/Symbol 383.xml" loadImmediate="false" itemID="65e1d4ea-00000399" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 385.xml" loadImmediate="false" itemID="65e1d4ea-0000039b" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 386.xml" loadImmediate="false" itemID="65e1d4ea-0000039c" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 387.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-0000039d" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 388.xml" loadImmediate="false" itemID="65e1d4ea-0000039e" lastModified="1756556702"/>
+          <Include href="美洲狮异形/Symbol 389.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-0000039f" lastModified="1755248285"/>
+          <Include href="美洲狮异形/Symbol 390.xml" loadImmediate="false" itemID="65e1d4ea-000003a0" lastModified="1756553563"/>
+          <Include href="美洲狮异形/Symbol 391.xml" loadImmediate="false" itemID="65e1d4ea-000003a1" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 392.xml" loadImmediate="false" itemID="65e1d4ea-000003a2" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 393.xml" loadImmediate="false" itemID="65e1d4ea-000003a3" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 394.xml" loadImmediate="false" itemID="65e1d4ea-000003a4" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 395.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003a5" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 396.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003a6" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 397.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003a7" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 398.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003a8" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 399.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003a9" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 400.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003aa" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 401.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003ab" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 402.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003ac" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 403.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003ad" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 404.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003ae" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 405.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003af" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 406.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003b0" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 407.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003b1" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 408.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003b2" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 409.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003b3" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 410.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003b4" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 411.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003b5" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 412.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003b6" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 413.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003b7" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 414.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003b8" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 416.xml" loadImmediate="false" itemID="65e1d4ea-000003b9" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 418.xml" loadImmediate="false" itemID="65e1d4ea-000003ba" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 420.xml" loadImmediate="false" itemID="65e1d4ea-000003bb" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 422.xml" loadImmediate="false" itemID="65e1d4ea-000003bc" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 424.xml" loadImmediate="false" itemID="65e1d4ea-000003bd" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 426.xml" loadImmediate="false" itemID="65e1d4ea-000003be" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 428.xml" loadImmediate="false" itemID="65e1d4ea-000003bf" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 429.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003c0" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 430.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003c1" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 431.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003c2" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 432.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003c3" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 433.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003c4" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 434.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003c5" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 435.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003c6" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 436.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003c7" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 437.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003c8" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 438.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003c9" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 439.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003ca" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 440.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003cb" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 441.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003cc" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 442.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003cd" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 443.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003ce" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 444.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003cf" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 445.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003d0" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 446.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003d1" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 447.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003d2" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 448.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003d3" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 449.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003d4" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 450.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003d5" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 451.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003d6" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 452.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003d7" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 453.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003d8" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 454.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003d9" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 455.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003da" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 456.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003db" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 457.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003dc" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 458.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003dd" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 459.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003de" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 460.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003df" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 461.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003e0" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 462.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003e1" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 463.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000003e2" lastModified="1698678736"/>
+          <Include href="美洲狮异形/Symbol 464.xml" loadImmediate="false" itemID="65e1d4ea-000003e3" lastModified="1698678736"/>
+          <Include href="美洲狮异形/敌人-美洲狮异形.xml" itemID="68b2d975-000006b0" lastModified="1756557229"/>
+          <Include href="美洲狮异形/近战子弹定位用.xml" loadImmediate="false" itemID="68b2e2fb-00001196" lastModified="1716387345"/>
+          <Include href="美洲狮异形/思考标签.xml" loadImmediate="false" itemID="68b2e2fb-00001156" lastModified="1742981508"/>
+          <Include href="美洲狮异形/元件 4.xml" loadImmediate="false" itemID="65e4afee-00000241" lastModified="1755246639"/>
+          <Include href="美洲狮异形/元件 5.xml" loadImmediate="false" itemID="65e4b009-0000024b" lastModified="1755246534"/>
+          <Include href="美洲狮异形/元件 6.xml" loadImmediate="false" itemID="65e4b05f-00000262" lastModified="1755246514"/>
+          <Include href="美洲狮异形/元件 7.xml" loadImmediate="false" itemID="65e4b071-00000267" lastModified="1755246585"/>
+          <Include href="美洲狮异形/元件 8.xml" loadImmediate="false" itemID="65e4b090-0000026b" lastModified="1755246647"/>
+          <Include href="美洲狮异形/元件 9.xml" loadImmediate="false" itemID="65e4b09c-0000026f" lastModified="1755246530"/>
+          <Include href="美洲狮异形/元件 11.xml" loadImmediate="false" itemID="65e4b0d3-0000027c" lastModified="1755247009"/>
+          <Include href="美洲狮异形/元件 12.xml" loadImmediate="false" itemID="65e4b0e0-00000280" lastModified="1755246530"/>
+          <Include href="美洲狮异形/元件 13.xml" loadImmediate="false" itemID="65e4b106-00000291" lastModified="1755247952"/>
+          <Include href="美洲狮异形/元件 16.xml" loadImmediate="false" itemID="65e55dfc-000001f5" lastModified="1755246618"/>
+          <Include href="美洲狮异形/元件 27.xml" itemIcon="1" loadImmediate="false" itemID="65e3f570-00000328" lastModified="1755246383"/>
+          <Include href="美洲狮异形/元件 33.xml" itemIcon="1" loadImmediate="false" itemID="65e3f570-0000032e" lastModified="1755246538"/>
+          <Include href="徘徊者异形/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-00001281" lastModified="1701884437"/>
+          <Include href="徘徊者异形/Symbol 14.xml" loadImmediate="false" itemID="68b2e308-00001280" lastModified="1701884437"/>
+          <Include href="徘徊者异形/单独动作/Symbol 383.xml" loadImmediate="false" itemID="68b2e308-0000128e" lastModified="1756120242"/>
+          <Include href="徘徊者异形/单独动作/Symbol 385.xml" loadImmediate="false" itemID="68b2e308-0000123b" lastModified="1756120244"/>
+          <Include href="徘徊者异形/单独动作/Symbol 386.xml" loadImmediate="false" itemID="68b2e308-0000123d" lastModified="1755861104"/>
+          <Include href="徘徊者异形/单独动作/Symbol 388.xml" loadImmediate="false" itemID="68b2e308-0000123f" lastModified="1756556836"/>
+          <Include href="徘徊者异形/单独动作/Symbol 390.xml" loadImmediate="false" itemID="68b2e308-0000127e" lastModified="1756553601"/>
+          <Include href="徘徊者异形/单独动作/Symbol 391.xml" loadImmediate="false" itemID="68b2e308-00001290" lastModified="1755861104"/>
+          <Include href="徘徊者异形/单独动作/Symbol 392.xml" loadImmediate="false" itemID="68b2e308-00001292" lastModified="1755861104"/>
+          <Include href="徘徊者异形/单独动作/Symbol 393.xml" loadImmediate="false" itemID="68b2e308-00001293" lastModified="1755861104"/>
+          <Include href="徘徊者异形/单独动作/Symbol 394.xml" loadImmediate="false" itemID="68b2e308-00001296" lastModified="1755861104"/>
+          <Include href="徘徊者异形/敌人-徘徊者异形.xml" itemID="68ac4294-0000023f" lastModified="1756556430"/>
+          <Include href="徘徊者异形/好像是血/Symbol 74.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-00001289" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 75.xml" loadImmediate="false" itemID="68b2e308-00001288" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 76.xml" loadImmediate="false" itemID="68b2e308-00001287" lastModified="1712337393"/>
+          <Include href="徘徊者异形/好像是血/Symbol 395.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-000012f2" lastModified="1756120421"/>
+          <Include href="徘徊者异形/好像是血/Symbol 396.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-000012f3" lastModified="1756120431"/>
+          <Include href="徘徊者异形/好像是血/Symbol 397.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-000012f4" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 398.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-000012f5" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 399.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-000012f6" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 400.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-000012f7" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 401.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-000012f8" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 402.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-000012f9" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 403.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-000012f1" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 404.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-000012fa" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 405.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-000012fb" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 406.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-000012fc" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 407.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-000012fd" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 408.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-000012fe" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 409.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-000012ff" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 410.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-00001300" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 411.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-00001301" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 412.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-00001302" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 413.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-00001303" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 414.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-00001304" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 429.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-0000129c" lastModified="1756120441"/>
+          <Include href="徘徊者异形/好像是血/Symbol 430.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-0000129d" lastModified="1756120444"/>
+          <Include href="徘徊者异形/好像是血/Symbol 431.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-0000129e" lastModified="1756120449"/>
+          <Include href="徘徊者异形/好像是血/Symbol 432.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-00001299" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 433.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-0000129f" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 434.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012a0" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 435.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012a1" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 436.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-0000129a" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 437.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012a2" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 438.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-0000129b" lastModified="1756120451"/>
+          <Include href="徘徊者异形/好像是血/Symbol 439.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012a3" lastModified="1756120453"/>
+          <Include href="徘徊者异形/好像是血/Symbol 440.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012a4" lastModified="1756120460"/>
+          <Include href="徘徊者异形/好像是血/Symbol 442.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012ad" lastModified="1756120515"/>
+          <Include href="徘徊者异形/好像是血/Symbol 443.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012ae" lastModified="1756120461"/>
+          <Include href="徘徊者异形/好像是血/Symbol 444.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012b7" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 445.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012af" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 446.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012b0" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 447.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012b8" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 448.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012b1" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 449.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012b2" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 450.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012b9" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 451.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012b3" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 452.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012b4" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 453.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012ba" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 454.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012bb" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 455.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012bc" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 456.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-00001305" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 457.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012bd" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 458.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-00001306" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 459.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012be" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 460.xml" itemIcon="1" loadImmediate="false" itemID="68b2e309-00001307" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 461.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012bf" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 462.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012c0" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 463.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012c1" lastModified="1698678736"/>
+          <Include href="徘徊者异形/好像是血/Symbol 464.xml" loadImmediate="false" itemID="68b2e308-00001297" lastModified="1755861104"/>
+          <Include href="徘徊者异形/近战子弹定位用.xml" loadImmediate="false" itemID="68b2e308-0000127f" lastModified="1716387345"/>
+          <Include href="徘徊者异形/徘徊者身体素材/徘徊者脖子.xml" itemIcon="1" loadImmediate="false" itemID="68ac440b-00000257" lastModified="1756120574"/>
+          <Include href="徘徊者异形/徘徊者身体素材/徘徊者大臂.xml" itemIcon="1" loadImmediate="false" itemID="68ac4411-00000259" lastModified="1756120081"/>
+          <Include href="徘徊者异形/徘徊者身体素材/徘徊者大腿.xml" itemIcon="1" loadImmediate="false" itemID="68ac440e-00000258" lastModified="1756120078"/>
+          <Include href="徘徊者异形/徘徊者身体素材/徘徊者踝.xml" itemIcon="1" loadImmediate="false" itemID="68ac4419-0000025b" lastModified="1756120693"/>
+          <Include href="徘徊者异形/徘徊者身体素材/徘徊者脚掌.xml" itemIcon="1" loadImmediate="false" itemID="68ac4415-0000025a" lastModified="1756120669"/>
+          <Include href="徘徊者异形/徘徊者身体素材/徘徊者躯体上.xml" itemIcon="1" loadImmediate="false" itemID="68ac441c-0000025c" lastModified="1756120092"/>
+          <Include href="徘徊者异形/徘徊者身体素材/徘徊者躯体下.xml" itemIcon="1" loadImmediate="false" itemID="68ac4423-0000025e" lastModified="1756120099"/>
+          <Include href="徘徊者异形/徘徊者身体素材/徘徊者头甲（头颅去牙）.xml" itemIcon="1" loadImmediate="false" itemID="68ac4458-00000265" lastModified="1756120205"/>
+          <Include href="徘徊者异形/徘徊者身体素材/徘徊者头颅.xml" itemIcon="1" loadImmediate="false" itemID="68ac4426-00000260" lastModified="1756120131"/>
+          <Include href="徘徊者异形/徘徊者身体素材/徘徊者尾巴节.xml" itemIcon="1" loadImmediate="false" itemID="68ac4429-00000261" lastModified="1756120105"/>
+          <Include href="徘徊者异形/徘徊者身体素材/徘徊者尾锋.xml" itemIcon="1" loadImmediate="false" itemID="68ac442d-00000262" lastModified="1756120635"/>
+          <Include href="徘徊者异形/徘徊者身体素材/徘徊者小臂.xml" itemIcon="1" loadImmediate="false" itemID="68ac4434-00000263" lastModified="1756120116"/>
+          <Include href="徘徊者异形/徘徊者身体素材/徘徊者小腿.xml" itemIcon="1" loadImmediate="false" itemID="68ac4437-00000264" lastModified="1756120119"/>
+          <Include href="徘徊者异形/徘徊者身体素材/徘徊者爪子.xml" itemIcon="1" loadImmediate="false" itemID="68ac445c-00000267" lastModified="1756120156"/>
+          <Include href="徘徊者异形/徘徊者身体素材/徘徊者嘴.xml" itemIcon="1" loadImmediate="false" itemID="68ac4462-00000268" lastModified="1756120162"/>
+          <Include href="徘徊者异形/思考标签.xml" loadImmediate="false" itemID="68b2e308-00001237" lastModified="1742981508"/>
+          <Include href="徘徊者异形/一些复用信息元件/Symbol 124.xml" loadImmediate="false" itemID="68b2e309-00001308" lastModified="1698678736"/>
+          <Include href="徘徊者异形/一些复用信息元件/Symbol 147.xml" loadImmediate="false" itemID="68b2e308-00001238" lastModified="1698678736"/>
+          <Include href="徘徊者异形/一些复用信息元件/Symbol 151.xml" loadImmediate="false" itemID="68b2e308-00001236" lastModified="1698678736"/>
+          <Include href="徘徊者异形/一些复用信息元件/Symbol 153.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-00001230" lastModified="1698678736"/>
+          <Include href="徘徊者异形/一些复用信息元件/Symbol 155.xml" loadImmediate="false" itemID="68b2e308-00001231" lastModified="1698678736"/>
+          <Include href="徘徊者异形/一些复用信息元件/Symbol 156.xml" loadImmediate="false" itemID="68b2e308-0000122f" lastModified="1698678736"/>
+          <Include href="徘徊者异形/一些复用信息元件/Symbol 158.xml" loadImmediate="false" itemID="68b2e308-0000122d" lastModified="1698678736"/>
+          <Include href="徘徊者异形/一些复用信息元件/Symbol 164.xml" loadImmediate="false" itemID="68b2e308-0000122c" lastModified="1756120266"/>
+          <Include href="徘徊者异形/一些复用信息元件/Symbol 194.xml" loadImmediate="false" itemID="68b2e309-000012e8" lastModified="1756120241"/>
+          <Include href="徘徊者异形/疑似原版身体素材以及尸块/Symbol 387.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-00001276" lastModified="1756120308"/>
+          <Include href="徘徊者异形/疑似原版身体素材以及尸块/Symbol 389.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-0000128a" lastModified="1756120393"/>
+          <Include href="徘徊者异形/疑似原版身体素材以及尸块/Symbol 416.xml" loadImmediate="false" itemID="68b2e309-000012f0" lastModified="1756120420"/>
+          <Include href="徘徊者异形/疑似原版身体素材以及尸块/Symbol 418.xml" loadImmediate="false" itemID="68b2e309-000012e7" lastModified="1756120394"/>
+          <Include href="徘徊者异形/疑似原版身体素材以及尸块/Symbol 420.xml" loadImmediate="false" itemID="68b2e308-000012df" lastModified="1698678736"/>
+          <Include href="徘徊者异形/疑似原版身体素材以及尸块/Symbol 422.xml" loadImmediate="false" itemID="68b2e308-000012d7" lastModified="1698678736"/>
+          <Include href="徘徊者异形/疑似原版身体素材以及尸块/Symbol 424.xml" loadImmediate="false" itemID="68b2e308-000012cf" lastModified="1698678736"/>
+          <Include href="徘徊者异形/疑似原版身体素材以及尸块/Symbol 426.xml" loadImmediate="false" itemID="68b2e308-000012c8" lastModified="1698678736"/>
+          <Include href="徘徊者异形/疑似原版身体素材以及尸块/Symbol 428.xml" loadImmediate="false" itemID="68b2e308-000012ac" lastModified="1698678736"/>
+          <Include href="徘徊者异形/疑似原版身体素材以及尸块/Symbol 441.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-000012b6" lastModified="1756120452"/>
           <Include href="绳索.xml" itemIcon="1" loadImmediate="false" itemID="67ea7145-00000696" lastModified="1743417670"/>
           <Include href="思考标签（与旧思考块）/拾取思考块（弃用）.xml" loadImmediate="false" itemID="67e51b53-00000f3c" lastModified="1743067987"/>
           <Include href="思考标签（与旧思考块）/思考标签.xml" loadImmediate="false" itemID="67e50bd8-00000c0a" lastModified="1743064061"/>
@@ -841,6 +1089,112 @@
           <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 181.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c27" lastModified="1717613400"/>
           <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 183.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c23" lastModified="1717613400"/>
           <Include href="特警僵尸/做的动画/重复项目文件夹/Symbol 184.xml" itemIcon="1" loadImmediate="false" itemID="671ced3d-00000c07" lastModified="1717613400"/>
+          <Include href="吐酸者异形/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="68b2e2f1-000010cb" lastModified="1701884437"/>
+          <Include href="吐酸者异形/Symbol 14.xml" loadImmediate="false" itemID="68b2e2f1-000010ca" lastModified="1701884437"/>
+          <Include href="吐酸者异形/Symbol 74.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-0000027c" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 75.xml" loadImmediate="false" itemID="65e1d4ea-0000027d" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 76.xml" loadImmediate="false" itemID="65e1d4ea-0000027e" lastModified="1712337393"/>
+          <Include href="吐酸者异形/Symbol 124.xml" loadImmediate="false" itemID="65e1d4ea-000002a8" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 138.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002b6" lastModified="1755249668"/>
+          <Include href="吐酸者异形/Symbol 139.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002b7" lastModified="1755249359"/>
+          <Include href="吐酸者异形/Symbol 147.xml" loadImmediate="false" itemID="65e1d4ea-000002be" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 151.xml" loadImmediate="false" itemID="65e1d4ea-000002c0" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 153.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002c2" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 155.xml" loadImmediate="false" itemID="65e1d4ea-000002c3" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 156.xml" loadImmediate="false" itemID="65e1d4ea-000002c4" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 158.xml" loadImmediate="false" itemID="65e1d4ea-000002c5" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 164.xml" loadImmediate="false" itemID="65e1d4ea-000002c6" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 165.xml" loadImmediate="false" itemID="65e1d4ea-000002c7" lastModified="1756116123"/>
+          <Include href="吐酸者异形/Symbol 166.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002c8" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 167.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002c9" lastModified="1755249489"/>
+          <Include href="吐酸者异形/Symbol 168.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002ca" lastModified="1755249603"/>
+          <Include href="吐酸者异形/Symbol 169.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002cb" lastModified="1755249591"/>
+          <Include href="吐酸者异形/Symbol 170.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002cc" lastModified="1755249573"/>
+          <Include href="吐酸者异形/Symbol 171.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002cd" lastModified="1755249513"/>
+          <Include href="吐酸者异形/Symbol 172.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002ce" lastModified="1755249502"/>
+          <Include href="吐酸者异形/Symbol 173.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002cf" lastModified="1756116190"/>
+          <Include href="吐酸者异形/Symbol 174.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002d0" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 175.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002d1" lastModified="1755249531"/>
+          <Include href="吐酸者异形/Symbol 176.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002d2" lastModified="1755249379"/>
+          <Include href="吐酸者异形/Symbol 177.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002d3" lastModified="1755249451"/>
+          <Include href="吐酸者异形/Symbol 178.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002d4" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 179.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002d5" lastModified="1755249366"/>
+          <Include href="吐酸者异形/Symbol 180.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002d6" lastModified="1756116160"/>
+          <Include href="吐酸者异形/Symbol 181.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002d7" lastModified="1755249397"/>
+          <Include href="吐酸者异形/Symbol 182.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002d8" lastModified="1755249410"/>
+          <Include href="吐酸者异形/Symbol 183.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002d9" lastModified="1755249554"/>
+          <Include href="吐酸者异形/Symbol 184.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002da" lastModified="1755249543"/>
+          <Include href="吐酸者异形/Symbol 185.xml" loadImmediate="false" itemID="65e1d4ea-000002db" lastModified="1756116123"/>
+          <Include href="吐酸者异形/Symbol 188.xml" loadImmediate="false" itemID="65e1d4ea-000002dc" lastModified="1756556851"/>
+          <Include href="吐酸者异形/Symbol 190.xml" loadImmediate="false" itemID="65e1d4ea-000002dd" lastModified="1756553918"/>
+          <Include href="吐酸者异形/Symbol 191.xml" loadImmediate="false" itemID="65e1d4ea-000002de" lastModified="1756116123"/>
+          <Include href="吐酸者异形/Symbol 192.xml" loadImmediate="false" itemID="65e1d4ea-000002df" lastModified="1756116123"/>
+          <Include href="吐酸者异形/Symbol 194.xml" loadImmediate="false" itemID="65e1d4ea-000002e0" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 195.xml" loadImmediate="false" itemID="65e1d4ea-000002e1" lastModified="1756116123"/>
+          <Include href="吐酸者异形/Symbol 196.xml" loadImmediate="false" itemID="65e1d4ea-000002e2" lastModified="1756116123"/>
+          <Include href="吐酸者异形/Symbol 197.xml" loadImmediate="false" itemID="65e1d4ea-000002e3" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 199.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002e4" lastModified="1755250047"/>
+          <Include href="吐酸者异形/Symbol 200.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002e5" lastModified="1756116432"/>
+          <Include href="吐酸者异形/Symbol 201.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002e6" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 202.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002e7" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 203.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002e8" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 204.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002e9" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 205.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002ea" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 206.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002eb" lastModified="1756116597"/>
+          <Include href="吐酸者异形/Symbol 207.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002ec" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 210.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002ef" lastModified="1756116569"/>
+          <Include href="吐酸者异形/Symbol 211.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002f0" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 212.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002f1" lastModified="1756116667"/>
+          <Include href="吐酸者异形/Symbol 213.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002f2" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 214.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002f3" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 215.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002f4" lastModified="1756116730"/>
+          <Include href="吐酸者异形/Symbol 216.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002f5" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 217.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002f6" lastModified="1756116736"/>
+          <Include href="吐酸者异形/Symbol 218.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002f7" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 219.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002f8" lastModified="1756116751"/>
+          <Include href="吐酸者异形/Symbol 220.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002f9" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 221.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002fa" lastModified="1756116757"/>
+          <Include href="吐酸者异形/Symbol 222.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002fb" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 223.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002fc" lastModified="1756116767"/>
+          <Include href="吐酸者异形/Symbol 224.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002fd" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 225.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002fe" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 227.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-000002ff" lastModified="1756116123"/>
+          <Include href="吐酸者异形/Symbol 228.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000300" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 229.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000301" lastModified="1756116123"/>
+          <Include href="吐酸者异形/Symbol 230.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000302" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 231.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000303" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 232.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000304" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 233.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000305" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 234.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000306" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 235.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000307" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 236.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000308" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 237.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000309" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 238.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-0000030a" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 239.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-0000030b" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 240.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-0000030c" lastModified="1698678736"/>
+          <Include href="吐酸者异形/Symbol 241.xml" loadImmediate="false" itemID="65e1d4ea-0000030d" lastModified="1756116765"/>
+          <Include href="吐酸者异形/脖子.xml" itemIcon="1" loadImmediate="false" itemID="68ac3fff-000000a2" lastModified="1756119039"/>
+          <Include href="吐酸者异形/敌人-吐酸者异形.xml" itemID="68ac408a-000000af" lastModified="1756557267"/>
+          <Include href="吐酸者异形/肚子.xml" itemIcon="1" loadImmediate="false" itemID="68ac3ff8-000000a1" lastModified="1756119032"/>
+          <Include href="吐酸者异形/近战子弹定位用.xml" loadImmediate="false" itemID="68b2e2f1-000010c9" lastModified="1716387345"/>
+          <Include href="吐酸者异形/思考标签.xml" loadImmediate="false" itemID="67e3c95a-00000980" lastModified="1742981508"/>
+          <Include href="吐酸者异形/尾巴.xml" itemIcon="1" loadImmediate="false" itemID="68ac4010-000000a4" lastModified="1756119056"/>
+          <Include href="吐酸者异形/尾巴组成部分.xml" itemIcon="1" loadImmediate="false" itemID="68ac400a-000000a3" lastModified="1756119050"/>
+          <Include href="吐酸者异形/异形躯干.xml" itemIcon="1" loadImmediate="false" itemID="68ac3fa3-0000009a" lastModified="1756118947"/>
+          <Include href="吐酸者异形/异形头.xml" itemIcon="1" loadImmediate="false" itemID="68ac3f94-00000097" lastModified="1756118932"/>
+          <Include href="吐酸者异形/右大腿.xml" itemIcon="1" loadImmediate="false" itemID="68ac403c-000000a8" lastModified="1756119100"/>
+          <Include href="吐酸者异形/右脚.xml" itemIcon="1" loadImmediate="false" itemID="68ac4060-000000aa" lastModified="1756119136"/>
+          <Include href="吐酸者异形/右上臂.xml" itemIcon="1" loadImmediate="false" itemID="68ac3fbb-0000009b" lastModified="1756118971"/>
+          <Include href="吐酸者异形/右手.xml" itemIcon="1" loadImmediate="false" itemID="68ac3fe6-0000009f" lastModified="1756119014"/>
+          <Include href="吐酸者异形/右下臂.xml" itemIcon="1" loadImmediate="false" itemID="68ac3fd6-0000009d" lastModified="1756118998"/>
+          <Include href="吐酸者异形/右小腿.xml" itemIcon="1" loadImmediate="false" itemID="68ac4044-000000a9" lastModified="1756119108"/>
+          <Include href="吐酸者异形/元件 1.xml" loadImmediate="false" itemID="65e44ccc-00000170" lastModified="1709461217"/>
+          <Include href="吐酸者异形/左大腿.xml" itemIcon="1" loadImmediate="false" itemID="68ac4022-000000a5" lastModified="1756119074"/>
+          <Include href="吐酸者异形/左脚.xml" itemIcon="1" loadImmediate="false" itemID="68ac4034-000000a7" lastModified="1756119092"/>
+          <Include href="吐酸者异形/左上臂.xml" itemIcon="1" loadImmediate="false" itemID="68ac3fc6-0000009c" lastModified="1756118982"/>
+          <Include href="吐酸者异形/左手.xml" itemIcon="1" loadImmediate="false" itemID="68ac3fed-000000a0" lastModified="1756119021"/>
+          <Include href="吐酸者异形/左下臂.xml" itemIcon="1" loadImmediate="false" itemID="68ac3fde-0000009e" lastModified="1756119006"/>
+          <Include href="吐酸者异形/左小腿.xml" itemIcon="1" loadImmediate="false" itemID="68ac402d-000000a6" lastModified="1756119085"/>
           <Include href="未命名文件夹 1/原来的参考.xml" loadImmediate="false" itemID="663ef7ba-0000081e" lastModified="1751704095"/>
           <Include href="重复项目文件夹/Symbol 2.xml" loadImmediate="false" itemID="68566cdf-00000fe8" lastModified="1701508661"/>
           <Include href="重复项目文件夹/Symbol 39.xml" itemIcon="1" loadImmediate="false" itemID="68566cdf-00000ef2" lastModified="1699803847"/>
@@ -1169,6 +1523,17 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1667062" publishTime="1756557247"/>
+          <PublishItem publishSize="1667062" publishTime="1756556948"/>
+          <PublishItem publishSize="1660365" publishTime="1756556194"/>
+          <PublishItem publishSize="1660365" publishTime="1756556185"/>
+          <PublishItem publishSize="1660342" publishTime="1756556079"/>
+          <PublishItem publishSize="1660343" publishTime="1756555537"/>
+          <PublishItem publishSize="1660331" publishTime="1756555461"/>
+          <PublishItem publishSize="1660337" publishTime="1756555142"/>
+          <PublishItem publishSize="1660561" publishTime="1756554699"/>
+          <PublishItem publishSize="1660544" publishTime="1756554542"/>
+          <PublishItem publishSize="1660543" publishTime="1756554011"/>
           <PublishItem publishSize="805365" publishTime="1745318915"/>
           <PublishItem publishSize="810957" publishTime="1743506832"/>
           <PublishItem publishSize="802550" publishTime="1743068429"/>
@@ -1178,16 +1543,5 @@
           <PublishItem publishSize="814769" publishTime="1740245510"/>
           <PublishItem publishSize="814768" publishTime="1740245495"/>
           <PublishItem publishSize="814715" publishTime="1740244808"/>
-          <PublishItem publishSize="814711" publishTime="1740244361"/>
-          <PublishItem publishSize="814705" publishTime="1740244225"/>
-          <PublishItem publishSize="814599" publishTime="1740243940"/>
-          <PublishItem publishSize="814599" publishTime="1740243546"/>
-          <PublishItem publishSize="693323" publishTime="1740237422"/>
-          <PublishItem publishSize="693339" publishTime="1740237279"/>
-          <PublishItem publishSize="693335" publishTime="1740236873"/>
-          <PublishItem publishSize="693321" publishTime="1740236779"/>
-          <PublishItem publishSize="693366" publishTime="1740236525"/>
-          <PublishItem publishSize="693415" publishTime="1740236292"/>
-          <PublishItem publishSize="464289" publishTime="1730009054"/>
      </publishHistory>
 </DOMDocument>

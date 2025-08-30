@@ -1,0 +1,665 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吐酸者异形/Symbol 192" itemID="65e1d4ea-000002df" lastModified="1756116123">
+  <timeline>
+    <DOMTimeline name="Symbol 192" currentFrame="73">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#D9C59A">
+          <frames>
+            <DOMFrame index="0" name="空手" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" name="长枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" name="手枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" name="手枪2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="52" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" name="双枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="69" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" name="手雷" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="86" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" name="兵器" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#B62EC6">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.已加经验值 == true)
+{
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="50" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="84" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="101" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#ED699D">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/左小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.595855712890625" b="0.329559326171875" c="0.329559326171875" d="0.595855712890625" tx="7.1" ty="-53.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#4BEDCC">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/左脚" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.599609375" b="0.447006225585938" c="0.447006225585938" d="0.599609375" tx="15.4" ty="-31.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#9FCB72">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/右小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.228439331054688" b="0.0909271240234375" c="0.0909271240234375" d="0.228439331054688" tx="-1.45" ty="-47.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#38B893">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/右脚" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.211868286132813" b="0.123397827148438" c="0.123397827148438" d="0.211868286132813" tx="3.8" ty="-22.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#B9F108">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/异形头" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.196121215820313" b="0.148574829101563" c="0.148574829101563" d="0.196121215820313" tx="-35.25" ty="-159.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#A5C2DC">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/Symbol 139" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.196121215820313" b="0.148574829101563" c="0.148574829101563" d="0.196121215820313" tx="-23.5" ty="-137.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#B49F6D">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/Symbol 138" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.221237182617188" b="0.10748291015625" c="0.10748291015625" d="0.221237182617188" tx="-19.6" ty="-138.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#679EE0">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/右手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2294921875" b="-0.0772247314453125" c="-0.0772247314453125" d="0.2294921875" tx="-21.8" ty="-71.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#80C2CD">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/右上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.243667602539063" b="0.0086212158203125" c="0.0086212158203125" d="0.243637084960938" tx="-29.45" ty="-113.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#F7FC81">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/右下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.241806030273438" b="0.0052490234375" c="0.0052032470703125" d="0.241806030273438" tx="-28.85" ty="-93.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#5AD554">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/脖子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.246246337890625" b="0.0095977783203125" c="0.0095977783203125" d="0.246246337890625" tx="-17.25" ty="-127.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#A39FF0">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/异形躯干" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.243148803710938" b="0.041290283203125" c="0.041290283203125" d="0.243148803710938" tx="-16.5" ty="-129.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#ABE162">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/右大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.219131469726563" b="0.114059448242188" c="0.114059448242188" d="0.219131469726563" tx="-16" ty="-77.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#EE5D7B">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/肚子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.207260131835938" b="0.13299560546875" c="0.13299560546875" d="0.207260131835938" tx="-20.25" ty="-99.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#8541E3">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/左大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.55426025390625" b="0.468246459960938" c="0.468246459960938" d="0.55426025390625" tx="-11.6" ty="-78.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#E9A6CF">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/左下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.216995239257813" b="0.0861053466796875" c="0.0861053466796875" d="0.216995239257813" tx="-28.95" ty="-94.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#A334D1">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/左上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.241363525390625" b="-0.0057830810546875" c="-0.0057830810546875" d="0.241363525390625" tx="-26.5" ty="-116.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 20" color="#A170F6">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/左手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.243057250976563" b="-0.026519775390625" c="-0.026519775390625" d="0.243057250976563" tx="-15.55" ty="-77.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 21" color="#F1FD99">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/尾巴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.11370849609375" b="0.216751098632813" c="0.216751098632813" d="0.11370849609375" tx="-69.35" ty="10.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 22" color="#8B30CA">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/尾巴组成部分" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.06890869140625" b="-0.0137786865234375" c="-0.01934814453125" d="0.096649169921875" tx="-63.95" ty="7.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 23" color="#A68BBC">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/尾巴组成部分" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0711517333984375" b="-0.041290283203125" c="-0.0474853515625" d="0.08172607421875" tx="-61" ty="6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 24" color="#CB8AD7">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/尾巴组成部分" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.08831787109375" b="-0.056640625" c="-0.056640625" d="0.08831787109375" tx="-57" ty="3.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 25" color="#8B4BC7">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/尾巴组成部分" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.100997924804688" b="-0.0739898681640625" c="-0.0739898681640625" d="0.100997924804688" tx="-52.3" ty="0.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 26" color="#8D89CF">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/尾巴组成部分" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.129867553710938" b="-0.091766357421875" c="-0.091766357421875" d="0.129867553710938" tx="-46.9" ty="-2.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 27" color="#BB9460">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/尾巴组成部分" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.182296752929688" b="-0.0926971435546875" c="-0.0926971435546875" d="0.182296752929688" tx="-40.55" ty="-8.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 28" color="#52EEC1">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/尾巴组成部分" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.227005004882813" b="-0.05828857421875" c="-0.05828857421875" d="0.227005004882813" tx="-35.45" ty="-17.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 29" color="#7986A7">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/尾巴组成部分" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.257125854492188" b="-0.0113525390625" c="-0.0113525390625" d="0.257125854492188" tx="-33.25" ty="-26.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 30" color="#7588E6">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/尾巴组成部分" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.2559814453125" b="0.0350494384765625" c="0.0350494384765625" d="0.2559814453125" tx="-32.5" ty="-36.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 31" color="#16AFE6">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/尾巴组成部分" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.254776000976563" b="0.131484985351563" c="0.131484985351563" d="0.254776000976563" tx="-36.15" ty="-48.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 32" color="#25C2EF">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/尾巴组成部分" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.274856567382813" b="0.0843353271484375" c="0.0843353271484375" d="0.274856567382813" tx="-36.15" ty="-58.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 33" color="#8A30D0">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/尾巴组成部分" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.278289794921875" b="-0.0906829833984375" c="-0.0906829833984375" d="0.278289794921875" tx="-28.6" ty="-62.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 34" color="#D16A80">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/尾巴组成部分" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.237442016601563" b="-0.171218872070313" c="-0.171218872070313" d="0.237442016601563" tx="-21.75" ty="-65.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 35" color="#47ACE2" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吐酸者异形/尾巴组成部分" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.269821166992188" b="-0.201446533203125" c="-0.201446533203125" d="0.269821166992188" tx="-13.65" ty="-70.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
