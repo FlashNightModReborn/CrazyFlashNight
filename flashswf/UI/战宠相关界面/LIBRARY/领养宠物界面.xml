@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="领养宠物界面">
       <layers>
-        <DOMLayer name="Script Layer" color="#66EBD0" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#66EBD0">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -377,11 +377,11 @@ this._visible = false;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="战宠购买" color="#F4C520" autoNamed="false">
+        <DOMLayer name="战宠购买" color="#F4C520" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏0" centerPoint3DX="70" centerPoint3DY="145">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物购买栏" name="宠物购买栏0" selected="true" centerPoint3DX="70" centerPoint3DY="145">
                   <matrix>
                     <Matrix tx="20" ty="70"/>
                   </matrix>

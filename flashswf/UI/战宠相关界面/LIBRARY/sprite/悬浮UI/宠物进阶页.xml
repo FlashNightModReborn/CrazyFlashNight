@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/宠物进阶页" itemID="6728ff35-00000954" linkageExportForAS="true" linkageIdentifier="宠物进阶页" lastModified="1741713504" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/宠物进阶页" itemID="6728ff35-00000954" linkageExportForAS="true" linkageIdentifier="宠物进阶页" lastModified="1756583963" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="宠物进阶页">
       <layers>
-        <DOMLayer name="图层 3" color="#FF800A">
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -25,19 +25,19 @@
 			continue;
 		}
 		当前方案 = this.进阶方案[this.宠物进阶数组[i]];
-		显示文字 = 当前方案.名称 ? 当前方案.名称: this.宠物进阶数组[i];
+		显示文字 = 当前方案.名称 ? 当前方案.名称 : this.宠物进阶数组[i];
 		this.attachMovie("进阶方案按钮","进阶方案按钮" + i,this.getNextHighestDepth(),{当前项数:i, 显示文字:显示文字});
 		temp_buttons[i] = this["进阶方案按钮" + i];
 		temp_buttons[i]._x = temp_xmove;
 		temp_buttons[i]._y = temp_ymove;
-/*		if (i % 2 == 0)
+		/*if (i % 2 == 0)
 		{
-			temp_xmove += temp_width;
+		temp_xmove += temp_width;
 		}
 		else
 		{
-			temp_ymove += temp_height;
-			temp_xmove = -209.8;
+		temp_ymove += temp_height;
+		temp_xmove = -209.8;
 		}*/
 		temp_ymove += temp_height;
 	}
@@ -61,13 +61,17 @@ function 刷新详情页(项数)
 	this.详情页描述 = this.当前方案.详情页描述;
 	this.详情页.当前项数 = 项数;
 	//this.详情页.标题 = this.宠物进阶数组[项数];
-	this.详情页.标题 = this.当前方案.名称 ? this.当前方案.名称: this.宠物进阶数组[项数];
-	if(this.当前方案.背景){
+	this.详情页.标题 = this.当前方案.名称 ? this.当前方案.名称 : this.宠物进阶数组[项数];
+	if (this.当前方案.背景)
+	{
 		this.详情页.背景 = this.当前方案.背景;
 	}
-	if(this.当前方案.详情页描述){
+	if (this.当前方案.详情页描述)
+	{
 		this.详情页.注释 = this.详情页描述();
-	}else{
+	}
+	else
+	{
 		this.详情页.注释 = this.描述();
 	}
 	this.详情页.gotoAndStop(3);
@@ -85,6 +89,58 @@ function 刷新项数(项数)
 }
 this.当前宠物信息 = _root.宠物信息[宠物信息数组号];
 this.宠物数据 = _root.宠物库[this.当前宠物信息[0]];
+this.刷新当前宠物 = function()
+{
+	//_root.删除场景宠物();
+	//_root.加载宠物(_root.gameworld[_root.控制目标]._x,_root.gameworld[_root.控制目标]._y);
+	if (this.当前宠物信息[4] == 0)
+	{
+		return;
+	}
+	for (i = 0; i < _root.宠物mc库.length; i++)
+	{
+		if (_root.宠物mc库[i].宠物属性.宠物信息数组号 == this.宠物信息数组号)
+		{
+			var 宠物对象 = _root.宠物mc库[i];
+			var 宠物对象X = 宠物对象._x;
+			var 宠物对象Y = 宠物对象._y;
+			//_root.战宠UI函数.设置宠物出战(i,false);
+			if (i >= _root.出战宠物id库.length)
+			{
+				return false;
+			}
+			宠物对象.removeMovieClip();
+
+			_root.帧计时器.添加单次任务(function (宠物信息数组号,当前宠物信息,宠物对象X,宠物对象Y)
+			{
+			var id = 宠物信息数组号;
+			var 宠物数据 = _root.宠物库[当前宠物信息[0]];
+			var 宠物兵种 = 宠物数据.Identifier;
+			var 宠物等级 = 当前宠物信息[1];
+			var 宠物名字 = 宠物数据.Name;
+			var 宠物是否为敌人 = false;
+			var 宠物身高 = 宠物数据.Height;
+			var 宠物实例名 = "宠物" + id + 宠物兵种;
+			//if (当前宠物信息.length >= 6)
+			if (当前宠物信息.length >= 6 && 当前宠物信息[5])
+			{
+			宠物属性 = 当前宠物信息[5];
+			}
+			else
+			{
+			当前宠物信息[5] = {};
+			宠物属性 = 当前宠物信息[5];
+			}
+			宠物属性.宠物库数组号 = 当前宠物信息[0];
+			宠物属性.宠物信息数组号 = id;
+			var 宠物对象 = _root.加载游戏世界人物(宠物兵种, 宠物实例名, _root.gameworld.getNextHighestDepth(), {等级:宠物等级, 名字:宠物名字, 宠物属性:宠物属性, 是否为敌人:宠物是否为敌人, 身高:宠物身高, _x:宠物对象X, _y:宠物对象Y});
+			_root.宠物mc库[i] = 宠物对象;
+			},60,宠物信息数组号,当前宠物信息,宠物对象X,宠物对象Y);
+
+			break;
+		}
+	}
+};
 if (this.宠物数据.Promotion)
 {
 	if (!this.当前宠物信息[5])
@@ -132,11 +188,11 @@ stop();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/进阶方案详情页" name="详情页" selected="true" centerPoint3DX="281.1" centerPoint3DY="272.95">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/进阶方案详情页" name="详情页" centerPoint3DX="281.1" centerPoint3DY="272.95">
                   <matrix>
                     <Matrix tx="18.7" ty="-4.3"/>
                   </matrix>

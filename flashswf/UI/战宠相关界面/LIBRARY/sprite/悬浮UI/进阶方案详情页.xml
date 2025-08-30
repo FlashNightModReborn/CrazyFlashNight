@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/进阶方案详情页" itemID="6729f488-00000269" lastModified="1747803527" lastUniqueIdentifier="12">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/进阶方案详情页" itemID="6729f488-00000269" lastModified="1756583747" lastUniqueIdentifier="12">
   <timeline>
     <DOMTimeline name="进阶方案详情页">
       <layers>
@@ -95,7 +95,7 @@ stop();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -125,6 +125,7 @@ on (release) {
 		if (_parent._parent.条件())
 		{
 			_parent._parent.执行();
+			_parent._parent.刷新当前宠物();
 			_parent._parent.刷新详情页(_parent.当前项数);
 		}
 		else if (_parent._parent.失败提示)
@@ -182,6 +183,7 @@ on (release) {
 		if (_parent._parent.条件())
 		{
 			_parent._parent.执行();
+			_parent._parent.刷新当前宠物();
 			_parent._parent.刷新详情页(_parent.当前项数);
 		}
 		else if (_parent._parent.失败提示)
@@ -189,7 +191,7 @@ on (release) {
 			_root.发布消息(_parent._parent.失败提示);
 		}
 	}
-	_parent.gotoAndStop(3);
+	_parent.gotoAndStop(1);
 }
 on (rollOver) {
 	if (_parent._parent.进阶方案)
@@ -213,7 +215,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F" locked="true">
+        <DOMLayer name="图层 1" color="#4FFF4F" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

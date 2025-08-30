@@ -18,7 +18,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#4DDC62" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#4DDC62">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -428,11 +428,11 @@ on (release) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#7BAFAF">
+        <DOMLayer name="Layer 10" color="#7BAFAF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 843" name="宠物头像" centerPoint3DX="47.4" centerPoint3DY="50.55">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 843" name="宠物头像" selected="true" centerPoint3DX="47.4" centerPoint3DY="50.55">
                   <matrix>
                     <Matrix a="0.5" d="0.5" tx="6.05" ty="9.4"/>
                   </matrix>

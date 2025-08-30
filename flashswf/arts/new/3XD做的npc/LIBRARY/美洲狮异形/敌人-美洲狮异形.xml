@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="美洲狮异形/敌人-美洲狮异形" itemID="68b2d975-000006b0" linkageExportForAS="true" linkageIdentifier="敌人-美洲狮异形" lastModified="1756557229" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="美洲狮异形/敌人-美洲狮异形" itemID="68b2d975-000006b0" linkageExportForAS="true" linkageIdentifier="敌人-美洲狮异形" lastModified="1756578190" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="敌人-美洲狮异形">
       <layers>
-        <DOMLayer name="Labels Layer" color="#6AF18F">
+        <DOMLayer name="Labels Layer" color="#6AF18F" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -81,7 +81,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#BF21DB">
+        <DOMLayer name="Script Layer" color="#BF21DB" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -134,7 +134,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#73FEE3">
+        <DOMLayer name="Layer 3" color="#73FEE3" locked="true">
           <frames>
             <DOMFrame index="0" duration="120" keyMode="9728">
               <elements>
@@ -153,7 +153,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#E819B0" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#E819B0" locked="true">
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
@@ -184,7 +184,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#49AEDD" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 6" color="#49AEDD" locked="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements/>
@@ -194,7 +194,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#FFBB5F" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 7" color="#FFBB5F" locked="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements/>
@@ -204,7 +204,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#A737BB" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 8" color="#A737BB" locked="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -367,7 +367,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#EFE195" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 9" color="#EFE195" locked="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -386,7 +386,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#F6F3D1" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 10" color="#F6F3D1" locked="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -414,11 +414,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#FE26F5">
+        <DOMLayer name="Layer 12" color="#FE26F5" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 383" name="man" centerPoint3DX="105.6" centerPoint3DY="8.15">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 383" name="man" selected="true" centerPoint3DX="105.6" centerPoint3DY="8.15">
                   <matrix>
                     <Matrix tx="-19.05" ty="-57.85"/>
                   </matrix>

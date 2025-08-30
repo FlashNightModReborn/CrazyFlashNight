@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吐酸者异形/敌人-吐酸者异形" itemID="68ac408a-000000af" linkageExportForAS="true" linkageIdentifier="敌人-吐酸者异形" lastModified="1756574758" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吐酸者异形/敌人-吐酸者异形" itemID="68ac408a-000000af" linkageExportForAS="true" linkageIdentifier="敌人-吐酸者异形" lastModified="1756578394" lastUniqueIdentifier="5">
   <timeline>
     <DOMTimeline name="敌人-吐酸者异形">
       <layers>
-        <DOMLayer name="Labels Layer" color="#92E16E" outline="true" useOutlineView="true">
+        <DOMLayer name="Labels Layer" color="#92E16E">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -84,7 +84,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#C8B468" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Script Layer" color="#C8B468">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -142,7 +142,7 @@ this.宠物属性 = {追猎:true};
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#DAB88F" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#DAB88F" locked="true">
           <frames>
             <DOMFrame index="0" duration="120" keyMode="9728">
               <elements>
@@ -161,7 +161,7 @@ this.宠物属性 = {追猎:true};
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#58BDDB" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#58BDDB" locked="true">
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
@@ -192,7 +192,7 @@ this.宠物属性 = {追猎:true};
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#9ED987" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 6" color="#9ED987">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements/>
@@ -202,7 +202,7 @@ this.宠物属性 = {追猎:true};
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#FAC9A1" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 7" color="#FAC9A1">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -365,7 +365,7 @@ this.宠物属性 = {追猎:true};
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#99B7D8" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 8" color="#99B7D8" locked="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -384,7 +384,7 @@ this.宠物属性 = {追猎:true};
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#B755BE" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 9" color="#B755BE" locked="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -412,7 +412,7 @@ this.宠物属性 = {追猎:true};
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#66DFFD" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 10" color="#66DFFD">
           <frames>
             <DOMFrame index="0" duration="95" keyMode="9728">
               <elements/>
@@ -440,11 +440,11 @@ this.宠物属性 = {追猎:true};
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#78C9CA">
+        <DOMLayer name="Layer 11" color="#78C9CA" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 145" name="man" centerPoint3DX="95.85" centerPoint3DY="20.45">
+                <DOMSymbolInstance libraryItemName="Symbol 145" name="man" selected="true" centerPoint3DX="95.85" centerPoint3DY="20.45">
                   <matrix>
                     <Matrix a="1.09814453125" d="1.09814453125" tx="-14.75" ty="-63.9"/>
                   </matrix>

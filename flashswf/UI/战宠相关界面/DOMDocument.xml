@@ -98,6 +98,9 @@
           <DOMBitmapItem name="战宠头像/位图 339" itemID="65a16a26-00002192" sourceExternalFilepath="./LIBRARY/战宠头像/位图 339.png" sourceLastImported="1705077286" originalCompressionType="lossless" quality="50" href="战宠头像/位图 339.png" bitmapDataHRef="M 53 1716710729.dat" frameRight="4320" frameBottom="4320"/>
           <DOMBitmapItem name="战宠头像/位图 341" itemID="65a1700c-00002b49" sourceExternalFilepath="./LIBRARY/战宠头像/位图 341.png" sourceLastImported="1705078796" originalCompressionType="lossless" quality="50" href="战宠头像/位图 341.png" bitmapDataHRef="M 60 1716710729.dat" frameRight="10220" frameBottom="10220"/>
           <DOMBitmapItem name="战宠头像/位图 342" itemID="65a17306-00002b79" sourceExternalFilepath="./LIBRARY/战宠头像/位图 342.png" sourceLastImported="1705079558" originalCompressionType="lossless" quality="50" href="战宠头像/位图 342.png" bitmapDataHRef="M 61 1716710729.dat" frameRight="10220" frameBottom="10220"/>
+          <DOMBitmapItem name="位图 85" itemID="68b341b6-00001244" sourceLastImported="1756578230" originalCompressionType="lossless" quality="50" href="位图 85" bitmapDataHRef="M 85 1756578230.dat" frameRight="7400" frameBottom="7400"/>
+          <DOMBitmapItem name="位图 86" itemID="68b3422f-00001251" sourceLastImported="1756578350" originalCompressionType="lossless" quality="50" href="位图 86" bitmapDataHRef="M 86 1756578350.dat" frameRight="10000" frameBottom="10000"/>
+          <DOMBitmapItem name="位图 87" itemID="68b34281-00001257" sourceLastImported="1756578433" originalCompressionType="lossless" quality="50" href="位图 87" bitmapDataHRef="M 87 1756578433.dat" frameRight="9420" frameBottom="9420"/>
      </media>
      <symbols>
           <Include href="button/Symbol 538.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000007c3" lastModified="1704196122"/>
@@ -125,18 +128,18 @@
           <Include href="sprite/Symbol 298.xml" loadImmediate="false" itemID="6597607e-00000795" lastModified="1704196122"/>
           <Include href="sprite/Symbol 726.xml" loadImmediate="false" itemID="6597607e-000007e9" lastModified="1725451350"/>
           <Include href="sprite/分类.xml" loadImmediate="false" itemID="66d86064-00000d0d" lastModified="1725459773"/>
-          <Include href="sprite/进阶方案按钮.xml" itemID="6728dc8c-000002e2" lastModified="1741713394"/>
+          <Include href="sprite/进阶方案按钮.xml" itemID="6728dc8c-000002e2" lastModified="1756583768"/>
           <Include href="sprite/通用按钮.xml" loadImmediate="false" itemID="659bbbf8-000014dc" lastModified="1714648270"/>
           <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
           <Include href="sprite/悬浮UI/Symbol 818.xml" loadImmediate="false" itemID="6597607e-000007f2" lastModified="1704196122"/>
-          <Include href="sprite/悬浮UI/Symbol 843.xml" loadImmediate="false" itemID="6597607e-000007f9" lastModified="1725450583"/>
+          <Include href="sprite/悬浮UI/Symbol 843.xml" loadImmediate="false" itemID="6597607e-000007f9" lastModified="1756578462"/>
           <Include href="sprite/悬浮UI/Symbol 847.xml" loadImmediate="false" itemID="6597607e-000007fa" lastModified="1704196122"/>
           <Include href="sprite/悬浮UI/Symbol 880.xml" loadImmediate="false" itemID="6597607e-00000806" lastModified="1704196122"/>
           <Include href="sprite/悬浮UI/宠物购买框 旧版.xml" loadImmediate="false" itemID="66d847b6-0000024f" lastModified="1725450166"/>
           <Include href="sprite/悬浮UI/宠物购买栏.xml" loadImmediate="false" itemID="66d84ebf-00000a68" lastModified="1747803150"/>
-          <Include href="sprite/悬浮UI/宠物进阶页.xml" itemID="6728ff35-00000954" lastModified="1741713504"/>
+          <Include href="sprite/悬浮UI/宠物进阶页.xml" itemID="6728ff35-00000954" lastModified="1756583963"/>
           <Include href="sprite/悬浮UI/宠物信息显示框.xml" itemID="6652eecd-00002a70" lastModified="1755534658"/>
-          <Include href="sprite/悬浮UI/进阶方案详情页.xml" loadImmediate="false" itemID="6729f488-00000269" lastModified="1747803527"/>
+          <Include href="sprite/悬浮UI/进阶方案详情页.xml" loadImmediate="false" itemID="6729f488-00000269" lastModified="1756583747"/>
           <Include href="sprite/悬浮UI/通用按钮2.xml" loadImmediate="false" itemID="659bbc36-000014f8" lastModified="1704705078"/>
           <Include href="sprite/战宠翻页进度提示.xml" loadImmediate="false" itemID="6606ba2d-00000c4d" lastModified="1711716951"/>
           <Include href="宠物信息界面.xml" itemID="6652ee55-000029ee" lastModified="1747766096"/>
@@ -168,7 +171,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="领养宠物界面" name="领养宠物界面" selected="true" centerPoint3DX="-185.45" centerPoint3DY="191.95">
+                                        <DOMSymbolInstance libraryItemName="领养宠物界面" name="领养宠物界面" centerPoint3DX="-185.45" centerPoint3DY="191.95">
                                              <matrix>
                                                   <Matrix tx="-413.9" ty="26"/>
                                              </matrix>
@@ -190,7 +193,7 @@
                                                   <Point x="370.4" y="230.3"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物进阶页" centerPoint3DX="-96.65" centerPoint3DY="639.25">
+                                        <DOMSymbolInstance libraryItemName="sprite/悬浮UI/宠物进阶页" selected="true" centerPoint3DX="-96.65" centerPoint3DY="639.25">
                                              <matrix>
                                                   <Matrix tx="-176.15" ty="417.2"/>
                                              </matrix>
@@ -518,25 +521,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
-          <PublishItem publishSize="1695843" publishTime="1755534663"/>
-          <PublishItem publishSize="1695863" publishTime="1747825493"/>
-          <PublishItem publishSize="1695861" publishTime="1747824909"/>
-          <PublishItem publishSize="1695809" publishTime="1747824791"/>
-          <PublishItem publishSize="1695793" publishTime="1747824651"/>
-          <PublishItem publishSize="1695492" publishTime="1747824640"/>
-          <PublishItem publishSize="1695746" publishTime="1747824464"/>
-          <PublishItem publishSize="1695755" publishTime="1747824396"/>
-          <PublishItem publishSize="1695643" publishTime="1747803562"/>
-          <PublishItem publishSize="1695488" publishTime="1747803475"/>
-          <PublishItem publishSize="1695489" publishTime="1747766476"/>
-          <PublishItem publishSize="1695489" publishTime="1747766364"/>
-          <PublishItem publishSize="1695489" publishTime="1747766155"/>
-          <PublishItem publishSize="1695486" publishTime="1747766135"/>
-          <PublishItem publishSize="1695524" publishTime="1747765820"/>
-          <PublishItem publishSize="1696150" publishTime="1747757534"/>
-          <PublishItem publishSize="1696141" publishTime="1743759099"/>
-          <PublishItem publishSize="1733649" publishTime="1731239042"/>
-          <PublishItem publishSize="1733654" publishTime="1731238883"/>
-          <PublishItem publishSize="1733580" publishTime="1731237421"/>
+          <PublishItem publishSize="1787325" publishTime="1756583924"/>
+          <PublishItem publishSize="1787216" publishTime="1756583400"/>
+          <PublishItem publishSize="1787216" publishTime="1756583352"/>
+          <PublishItem publishSize="1787241" publishTime="1756583220"/>
+          <PublishItem publishSize="1787241" publishTime="1756583185"/>
+          <PublishItem publishSize="1787241" publishTime="1756583144"/>
+          <PublishItem publishSize="1787234" publishTime="1756583045"/>
+          <PublishItem publishSize="1786906" publishTime="1756582616"/>
+          <PublishItem publishSize="1786914" publishTime="1756582520"/>
+          <PublishItem publishSize="1786914" publishTime="1756582440"/>
+          <PublishItem publishSize="1786914" publishTime="1756582406"/>
+          <PublishItem publishSize="1786871" publishTime="1756582325"/>
+          <PublishItem publishSize="1787318" publishTime="1756582148"/>
+          <PublishItem publishSize="1787158" publishTime="1756581840"/>
+          <PublishItem publishSize="1787162" publishTime="1756581764"/>
+          <PublishItem publishSize="1787082" publishTime="1756581584"/>
+          <PublishItem publishSize="1787082" publishTime="1756581334"/>
+          <PublishItem publishSize="1786988" publishTime="1756581144"/>
+          <PublishItem publishSize="1787029" publishTime="1756580961"/>
+          <PublishItem publishSize="1787029" publishTime="1756580904"/>
      </publishHistory>
 </DOMDocument>
