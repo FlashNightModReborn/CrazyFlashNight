@@ -1,0 +1,70 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC-Registrar/Accessories/Stocks/Mossberg Tactical Stock/Mossberg Tactical Stock selector" itemID="5d7bea24-00000ac3" symbolType="graphic" lastModified="1620265465">
+  <timeline>
+    <DOMTimeline name="Mossberg Tactical Stock selector">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#2D2D2D"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.6">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!140 9|140 33!140 33|95 33!95 33[73 31 59 49!59 49[34 67 16 99!16 99[-7 88 4 70!4 70|51 13!51 13[65 -3 86 1!86 1|119 9!119 9|140 9"/>
+                  </edges>
+                </DOMShape>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#838383"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#AEAEAE"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.4">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!136 22[140 26 140 31!140 31[140 36 136 40!136 40[132 44 127 44!127 44[122 44 118 40!118 40[114 36 114 31!114 31[114 26 118 22!118 22[122 18 127 18!127 18[132 18 136 22"/>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!141 17[147 23 147 31!147 31[147 39 141 45!141 45[135 51 127 51!127 51[119 51 113 45!113 45[107 39 107 31!107 31[107 23 113 17!113 17[119 11 127 11!127 11[135 11 141 17"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMSymbolInstance libraryItemName="Pins/Pin1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="2.9" ty="0.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.55" y="0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

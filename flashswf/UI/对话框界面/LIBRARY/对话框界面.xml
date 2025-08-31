@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框界面" itemID="6652e908-000026b6" linkageExportForAS="true" linkageIdentifier="对话框界面" lastModified="1752295529" lastUniqueIdentifier="27">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框界面" itemID="6652e908-000026b6" linkageExportForAS="true" linkageIdentifier="对话框界面" lastModified="1756644772" lastUniqueIdentifier="27">
   <timeline>
-    <DOMTimeline name="对话框界面" currentFrame="1">
+    <DOMTimeline name="对话框界面">
       <layers>
         <DOMLayer name="labels" color="#FF800A" autoNamed="false">
           <frames>
@@ -306,11 +306,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="外部立绘层" color="#FF800A" parentLayerIndex="11" locked="true" autoNamed="false">
+        <DOMLayer name="外部立绘层" color="#FF800A" parentLayerIndex="11" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="外部立绘层" name="外部立绘层">
+                <DOMSymbolInstance libraryItemName="外部立绘层" name="外部立绘层" selected="true">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -319,7 +319,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头像" color="#6589A2" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="头像" color="#6589A2" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>

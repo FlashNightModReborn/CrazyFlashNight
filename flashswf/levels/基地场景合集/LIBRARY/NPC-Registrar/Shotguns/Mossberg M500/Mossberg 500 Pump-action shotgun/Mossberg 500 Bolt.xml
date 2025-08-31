@@ -1,0 +1,99 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun/Mossberg 500 Bolt" itemID="5d5a9743-00000612" symbolType="graphic" lastModified="1620265459">
+  <timeline>
+    <DOMTimeline name="Mossberg 500 Bolt">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#AEAEAE"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#838383"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.002044677734375" c="-0.0059814453125" d="0" tx="5.5" ty="1.45"/>
+                        </matrix>
+                        <GradientEntry color="#838383" ratio="0"/>
+                        <GradientEntry color="#AEAEAE" ratio="0.513725490196078"/>
+                        <GradientEntry color="#838383" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.8">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!12 43|12 -4!12 -4|208 -4!208 -4|208 25"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!208 25|208 36"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!208 36|208 63!208 63|174 63"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!174 63|12 63!12 63|0 51!0 51|12 51!12 51|12 43"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!174 63|141 53!141 53|141 59!141 59|12 43"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!208 25|150 25!150 25|150 36!150 36|208 36"/>
+                    <Edge cubics="!150 36(;150,36 150,25 150,25q150 36 150 25);"/>
+                    <Edge cubics="!150 25(;150,25 208,25 208,25q150 25 208 25);"/>
+                    <Edge cubics="!208 36(;208,36 208,25 208,25q208 36 208 25);"/>
+                    <Edge cubics="!150 36(;150,36 208,36 208,36q150 36 208 36);"/>
+                    <Edge cubics="!208 -4(;208,-4 12,-4 12,-4q208 -4 12 -4);"/>
+                    <Edge cubics="!12 51(;12,51 0,51 0,51q12 51 0 51);"/>
+                    <Edge cubics="!0 51(;0,51 12,63 12,63q0 51 12 63);"/>
+                    <Edge cubics="!12 51(;12,51 12,43 12,43q12 51 12 43);"/>
+                    <Edge cubics="!12 43(;12,43 12,32 12,32q12 43 12 32);"/>
+                    <Edge cubics="!12 32(;12,32 141,32 141,32q12 32 141 32);"/>
+                    <Edge cubics="!141 63(;141,63 12,63 12,63q141 63 12 63);"/>
+                    <Edge cubics="!141 59(;141,59 12,43 12,43q141 59 12 43);"/>
+                    <Edge cubics="!141 26(;141,26 141,32 141,32q141 26 141 32);"/>
+                    <Edge cubics="!141 32(;141,32 141,53 141,53q141 32 141 53);"/>
+                    <Edge cubics="!173 57(;173,57 141,53 141,53q173 57 141 53);"/>
+                    <Edge cubics="!12 26(;12,26 141,26 141,26q12 26 141 26);"/>
+                    <Edge cubics="!12 26(;12,26 12,-4 12,-4q12 26 12 -4);"/>
+                    <Edge cubics="!208 -4(;208,-4 208,25 208,25q208 -4 208 25);"/>
+                    <Edge cubics="!208 36(;208,36 208,67 208,67q208 36 208 67);"/>
+                    <Edge cubics="!173 57(;173,57 141,63 141,63q173 57 141 63);"/>
+                    <Edge cubics="!141 53(;141,53 141,59 141,59q141 53 141 59);"/>
+                    <Edge cubics="!208 67(;208,67 173,57 173,57q208 67 173 57);"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="Pins/Pin4">
+                  <matrix>
+                    <Matrix tx="7.9" ty="1.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Pins/Pin4">
+                  <matrix>
+                    <Matrix tx="9.35" ty="1.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Pins/Pin2">
+                  <matrix>
+                    <Matrix tx="4.95" ty="0.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.35" y="0.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

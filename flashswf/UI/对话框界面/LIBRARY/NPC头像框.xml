@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC头像框" itemID="6871e857-00000618" linkageExportForAS="true" linkageIdentifier="NPC头像框" lastModified="1752296614" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC头像框" itemID="6871e857-00000618" linkageExportForAS="true" linkageIdentifier="NPC头像框" lastModified="1756644789" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="NPC头像框">
       <layers>
@@ -13,7 +13,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" locked="true" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -26,13 +26,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 1088" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1088" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="2.55915832519531" d="2.55915832519531" tx="68.15" ty="119.9"/>
+                    <Matrix a="2.55914306640625" d="2.55914306640625" tx="68.15" ty="119.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="50.55" y="109.45"/>

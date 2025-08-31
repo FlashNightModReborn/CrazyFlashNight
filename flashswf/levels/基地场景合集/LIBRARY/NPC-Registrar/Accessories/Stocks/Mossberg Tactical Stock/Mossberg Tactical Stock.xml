@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC-Registrar/Accessories/Stocks/Mossberg Tactical Stock/Mossberg Tactical Stock" itemID="5d7bea12-00000ac1" symbolType="graphic" lastModified="1568401938">
+  <timeline>
+    <DOMTimeline name="Mossberg Tactical Stock">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC-Registrar/Accessories/Stocks/Mossberg Tactical Stock/Mossberg Tactical Stock mainbody" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point x="12.3" y="8.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC-Registrar/Accessories/Stocks/Mossberg Tactical Stock/Mossberg Tactical Stock selector" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="11.35" ty="7.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.6" y="2.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

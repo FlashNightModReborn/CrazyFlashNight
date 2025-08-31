@@ -559,17 +559,17 @@
     },
     {
       "id": 20042,
-      "title": "通关远古铁血的试验",
+      "title": "铁血乱舞",
       "description": "60分钟内只可挑战一次。挑战一次后，再次挑战需要等待60分钟。",
 
       "get_requirements": [-1],
       "get_conversation": "$TRIAL_OF_SAMURAI_GET",
-      "get_npc": "远古武士铁血使者",
+      "get_npc": "",
       "recommended_level": "50",
 
-      "finish_requirements": ["通关远古铁血的试验#简单"],
+      "finish_requirements": ["铁血乱舞#简单"],
       "finish_conversation": "$TRIAL_OF_SAMURAI_FINISH",
-      "finish_npc": "远古武士铁血使者",
+      "finish_npc": "Bard",
       "deposit": 10000,
       "Kdeposit": 0,
 

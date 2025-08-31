@@ -1,0 +1,75 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun/Mossberg 500 Rear iron sight" itemID="5d686022-000007bd" symbolType="graphic" lastModified="1567121442">
+  <timeline>
+    <DOMTimeline name="Mossberg 500 Rear iron sight">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#2D2D2D"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#1A1A1A"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.000946044921875" c="-0.00213623046875" d="0" tx="1.75" ty="0.75"/>
+                        </matrix>
+                        <GradientEntry color="#1A1A1A" ratio="0"/>
+                        <GradientEntry color="#2D2D2D" ratio="0.329411764705882"/>
+                        <GradientEntry color="#1A1A1A" ratio="0.67843137254902"/>
+                        <GradientEntry color="#0C0C0C" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.4">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal" weight="0.6">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!166 44S6|203 44!203 44|203 57!203 57|163 57"/>
+                    <Edge fillStyle1="2" strokeStyle="2" edges="!163 57S6|11 57!11 57|5 31"/>
+                    <Edge fillStyle1="3" strokeStyle="2" edges="!5 31S6|1 17!1 17[-4 1 11 0!11 0|23 0!23 0[37 -2 42 12!42 12[46 25 70 30"/>
+                    <Edge fillStyle1="2" strokeStyle="2" edges="!70 30S6|84 30!84 30|166 44"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="2" edges="!166 44S7|163 57"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!70 30S3|5 31"/>
+                    <Edge cubics="!11 57(;11,57 163,57 163,57q11 57 163 57);"/>
+                    <Edge cubics="!11 0(;11,0 23,0 23,0q11 0 23 0);"/>
+                    <Edge cubics="!1 17(;-2,6 1,1 11,0q1 17Q-4 1q11 0);"/>
+                    <Edge cubics="!84 30(;84,30 166,44 166,44q84 30 166 44);"/>
+                    <Edge cubics="!70 30(;70,30 84,30 84,30q70 30 84 30);"/>
+                    <Edge cubics="!166 44(;166,44 163,57 163,57q166 44 163 57);"/>
+                    <Edge cubics="!23 0(;32,-1 39,3 42,12q23 0Q37 -2q42 12);"/>
+                    <Edge cubics="!42 12(;45,21 54,27 70,30q42 12Q46 25q70 30);"/>
+                    <Edge cubics="!166 44(;166,44 203,44 203,44q166 44 203 44);"/>
+                    <Edge cubics="!163 57(;163,57 203,57 203,57q163 57 203 57);"/>
+                    <Edge cubics="!203 57(;203,57 203,44 203,44q203 57 203 44);"/>
+                    <Edge cubics="!70 30(;70,30 5,31 5,31q70 30 5 31);"/>
+                    <Edge cubics="!11 57(;11,57 5,31 5,31q11 57 5 31);"/>
+                    <Edge cubics="!5 31(;5,31 1,17 1,17q5 31 1 17);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -11,6 +11,16 @@
           <DOMFolderItem name="Itinerant/人物素材" itemID="6661dab9-00000f31"/>
           <DOMFolderItem name="Itinerant/武器素材" itemID="669a5d20-00000a23"/>
           <DOMFolderItem name="lochan" itemID="66e1bc59-00000cf1"/>
+          <DOMFolderItem name="NPC-Registrar" itemID="68b445d9-00002e34"/>
+          <DOMFolderItem name="NPC-Registrar/Accessories" itemID="6688d96c-00002327"/>
+          <DOMFolderItem name="NPC-Registrar/Accessories/Stocks" itemID="5fb81d21-000012df"/>
+          <DOMFolderItem name="NPC-Registrar/Accessories/Stocks/Mossberg Tactical Stock" itemID="5fb81d26-000013c3"/>
+          <DOMFolderItem name="NPC-Registrar/Accessories/Stocks/Stock buffer tubes" itemID="5fb81d21-000012e0"/>
+          <DOMFolderItem name="NPC-Registrar/Shotguns" itemID="68b435cf-000026c6"/>
+          <DOMFolderItem name="NPC-Registrar/Shotguns/Mossberg M500" itemID="68b435cf-000026c7"/>
+          <DOMFolderItem name="NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun" itemID="68b435cf-000026c8"/>
+          <DOMFolderItem name="NPC-Registrar/组件" itemID="68b435cf-000026db"/>
+          <DOMFolderItem name="Pins" itemID="5fb81d21-000012d3"/>
           <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
           <DOMFolderItem name="sound" itemID="6652e52e-00000bd5"/>
           <DOMFolderItem name="sprite" itemID="65976153-00000ea6"/>
@@ -22,7 +32,7 @@
           <DOMFolderItem name="ts-npc" itemID="66ad200c-00000fee"/>
           <DOMFolderItem name="待整理防具相关汇总" itemID="67331ffe-00000756"/>
           <DOMFolderItem name="动画" itemID="65f7e940-00000bc1"/>
-          <DOMFolderItem name="对话框UI" itemID="66346c29-000015d9"/>
+          <DOMFolderItem name="对话框UI" itemID="66346c29-000015d9" isExpanded="true"/>
           <DOMFolderItem name="对话框UI/Lee" itemID="66bdc806-00000970"/>
           <DOMFolderItem name="对话框UI/黑铁会外交部长-部件" itemID="666080e1-000004d3"/>
           <DOMFolderItem name="对话框UI/杰克霜精" itemID="65f801a0-00000b66"/>
@@ -184,10 +194,42 @@
           <Include href="lochan/补间 14.xml" itemIcon="1" loadImmediate="false" itemID="66e1b63c-0000065e" lastModified="1726068284"/>
           <Include href="lochan/补间 16.xml" itemIcon="1" loadImmediate="false" itemID="66e1b63c-00000662" lastModified="1726068284"/>
           <Include href="lochan/盘子.xml" loadImmediate="false" itemID="66e1b386-00000068" lastModified="1726067641"/>
+          <Include href="NPC-Registrar/Accessories/Stocks/Mossberg Tactical Stock/Mossberg Tactical Stock.xml" itemIcon="1" loadImmediate="false" itemID="5d7bea12-00000ac1" lastModified="1568401938"/>
+          <Include href="NPC-Registrar/Accessories/Stocks/Mossberg Tactical Stock/Mossberg Tactical Stock mainbody.xml" itemIcon="1" loadImmediate="false" itemID="5d7bea1d-00000ac2" lastModified="1568401949"/>
+          <Include href="NPC-Registrar/Accessories/Stocks/Mossberg Tactical Stock/Mossberg Tactical Stock selector.xml" itemIcon="1" loadImmediate="false" itemID="5d7bea24-00000ac3" lastModified="1620265465"/>
+          <Include href="NPC-Registrar/Accessories/Stocks/Stock buffer tubes/Stock buffer tube01.xml" itemIcon="1" loadImmediate="false" itemID="5ec6aff2-00000ad8" lastModified="1620262624"/>
+          <Include href="NPC-Registrar/NPC-Registar待机动画.xml" loadImmediate="false" itemID="68b43b06-0000274f" lastModified="1756644431"/>
+          <Include href="NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun/Mossberg 500 Barrel.xml" itemIcon="1" loadImmediate="false" itemID="5d5a9748-00000613" lastModified="1573403014"/>
+          <Include href="NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun/Mossberg 500 Body.xml" itemIcon="1" loadImmediate="false" itemID="5d5db6c9-0000086c" lastModified="1579296880"/>
+          <Include href="NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun/Mossberg 500 Bolt.xml" itemIcon="1" loadImmediate="false" itemID="5d5a9743-00000612" lastModified="1620265459"/>
+          <Include href="NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun/Mossberg 500 Front iron sight.xml" itemIcon="1" loadImmediate="false" itemID="5d686008-000007b8" lastModified="1567121416"/>
+          <Include href="NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun/Mossberg 500 Grip.xml" itemIcon="1" loadImmediate="false" itemID="5d686016-000007bb" lastModified="1569079238"/>
+          <Include href="NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun/Mossberg 500 Handguard.xml" itemIcon="1" loadImmediate="false" itemID="5d5db751-00000881" lastModified="1576363155"/>
+          <Include href="NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun/Mossberg 500 Magazine.xml" itemIcon="1" loadImmediate="false" itemID="5d5a96d7-0000060c" lastModified="1566419218"/>
+          <Include href="NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun/Mossberg 500 Pump-action shotgun.xml" itemIcon="1" loadImmediate="false" itemID="5d68601c-000007bc" lastModified="1576363199"/>
+          <Include href="NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun/Mossberg 500 Rear iron sight.xml" itemIcon="1" loadImmediate="false" itemID="5d686022-000007bd" lastModified="1567121442"/>
+          <Include href="NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun/Mossberg 500 Receiver.xml" itemIcon="1" loadImmediate="false" itemID="5d5a96dc-0000060d" lastModified="1620265465"/>
+          <Include href="NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun/Mossberg 500T Assault shotgun.xml" itemIcon="1" loadImmediate="false" itemID="5d686026-000007be" lastModified="1591838595"/>
+          <Include href="NPC-Registrar/头.xml" loadImmediate="false" itemID="68b43d98-00002889" lastModified="1756642712"/>
+          <Include href="NPC-Registrar/组件/大臂.xml" itemIcon="1" loadImmediate="false" itemID="68b43297-00001af9" lastModified="1756639895"/>
+          <Include href="NPC-Registrar/组件/大腿1.xml" itemIcon="1" loadImmediate="false" itemID="68b43461-00001afb" lastModified="1756640353"/>
+          <Include href="NPC-Registrar/组件/大腿2.xml" itemIcon="1" loadImmediate="false" itemID="68b43464-00001afc" lastModified="1756640356"/>
+          <Include href="NPC-Registrar/组件/屁股.xml" itemIcon="1" loadImmediate="false" itemID="68b4329b-00001afa" lastModified="1756639899"/>
+          <Include href="NPC-Registrar/组件/手-内.xml" itemIcon="1" loadImmediate="false" itemID="68b42b51-00001adf" lastModified="1756638033"/>
+          <Include href="NPC-Registrar/组件/手-外.xml" itemIcon="1" loadImmediate="false" itemID="68b42b4d-00001ade" lastModified="1756638029"/>
+          <Include href="NPC-Registrar/组件/书本-荒漠枪神.xml" loadImmediate="false" itemID="68b429eb-00001ab6" lastModified="1756645213"/>
+          <Include href="NPC-Registrar/组件/头发高光.xml" itemIcon="1" loadImmediate="false" itemID="68b41197-00001990" lastModified="1756631447"/>
+          <Include href="NPC-Registrar/组件/弯刀.xml" loadImmediate="false" itemID="68b440a6-0000299c" lastModified="1756643494"/>
+          <Include href="NPC-Registrar/组件/腰带.xml" itemIcon="1" loadImmediate="false" itemID="68b41184-0000198e" lastModified="1756631428"/>
+          <Include href="NPC-Registrar/组件/衣服.xml" itemIcon="1" loadImmediate="false" itemID="68b43294-00001af8" lastModified="1756639892"/>
+          <Include href="NPC-Registrar/组件/子弹.xml" loadImmediate="false" itemID="68b4192f-000019a9" lastModified="1756633619"/>
           <Include href="NPCAK74M.xml" loadImmediate="false" itemID="6842337c-00001118" lastModified="1749169020"/>
           <Include href="NPC士兵头.xml" loadImmediate="false" itemID="68423429-00001123" lastModified="1749169193"/>
           <Include href="NPC头像空容器.xml" loadImmediate="false" itemID="6871ec97-000008c6" lastModified="1752296601"/>
-          <Include href="NPC头像框.xml" itemID="6871e857-00000618" lastModified="1752296614"/>
+          <Include href="NPC头像框.xml" itemID="6871e857-00000618" lastModified="1756644789"/>
+          <Include href="Pins/Pin1.xml" itemIcon="1" loadImmediate="false" itemID="609349e3-00001548" lastModified="1620265443"/>
+          <Include href="Pins/Pin2.xml" itemIcon="1" loadImmediate="false" itemID="609349e3-00001547" lastModified="1620265443"/>
+          <Include href="Pins/Pin4.xml" itemIcon="1" loadImmediate="false" itemID="5fa492eb-00001c04" lastModified="1604621035"/>
           <Include href="PROPHETA.xml" loadImmediate="false" itemID="6805674b-00000a0d" lastModified="1745184587"/>
           <Include href="PROPHETB.xml" loadImmediate="false" itemID="68056800-00000a44" lastModified="1745184830"/>
           <Include href="shape/bat脸.xml" itemIcon="1" loadImmediate="false" itemID="67331ff8-0000074a" lastModified="1731403768"/>
@@ -532,6 +574,9 @@
           <Include href="ts-npc/Symbol 433.xml" itemIcon="1" loadImmediate="false" itemID="66ad1235-000004cf" lastModified="1669348407"/>
           <Include href="ts-npc/Symbol 435.xml" itemIcon="1" loadImmediate="false" itemID="66ad1235-000004d0" lastModified="1669348407"/>
           <Include href="ts-npc/Symbol 436.xml" itemIcon="1" loadImmediate="false" itemID="66ad1235-000004d1" lastModified="1669348407"/>
+          <Include href="补间 3.xml" itemIcon="1" loadImmediate="false" itemID="68b43fb0-00002914" lastModified="1756643248"/>
+          <Include href="补间 4.xml" itemIcon="1" loadImmediate="false" itemID="68b43fb0-00002916" lastModified="1756643248"/>
+          <Include href="补间 5.xml" itemIcon="1" loadImmediate="false" itemID="68b43fc3-00002918" lastModified="1756643267"/>
           <Include href="厨师.xml" loadImmediate="false" itemID="67cd7bf9-000009ff" lastModified="1741519865"/>
           <Include href="厨师帽.xml" loadImmediate="false" itemID="6746b877-00000ab0" lastModified="1732688355"/>
           <Include href="厨师帽文字.xml" loadImmediate="false" itemID="6746b818-00000aac" lastModified="1732687896"/>
@@ -813,8 +858,8 @@
           <Include href="对话框UI/袁望surveyor/左上臂.xml" loadImmediate="false" itemID="658e9304-000001cc" lastModified="1703844269"/>
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
-          <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1752295529"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1756142751"/>
+          <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1756644772"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1756646562"/>
           <Include href="发型/Symbol 799.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000814" lastModified="1710653981"/>
           <Include href="歌留多/歌留多胯.xml" loadImmediate="false" itemID="67096725-00000045" lastModified="1728669954"/>
           <Include href="歌留多/歌留多身体.xml" loadImmediate="false" itemID="67095275-0000000f" lastModified="1728665563"/>
@@ -888,6 +933,8 @@
           <Include href="无AS链接/Symbol 1209.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000088f" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 1211.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000891" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 1219.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000896" lastModified="1720533000"/>
+          <Include href="小臂-右.xml" loadImmediate="false" itemID="68b43f33-00002906" lastModified="1756643123"/>
+          <Include href="小臂-左.xml" loadImmediate="false" itemID="68b43f43-0000290d" lastModified="1756645773"/>
           <Include href="一看就是迪吧手的东西.xml" loadImmediate="false" itemID="67683b09-000001bd" lastModified="1734884105"/>
           <Include href="圆柱.xml" loadImmediate="false" itemID="6780d65b-00000160" lastModified="1736496731"/>
           <Include href="杂项/细铁.xml" loadImmediate="false" itemID="666080e1-000004dc" lastModified="1717237580"/>
@@ -1258,6 +1305,10 @@
                          <GradientEntry color="#333333" ratio="1"/>
                          <GradientEntry color="#333333" alpha="0.8" ratio="1"/>
                     </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#663300" ratio="0"/>
+                         <GradientEntry color="#3F1F00" ratio="1"/>
+                    </LinearGradientSwatchItem>
                </swatches>
           </swatchList>
      </extendedSwatchLists>
@@ -1266,6 +1317,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="685102" publishTime="1756645812"/>
+          <PublishItem publishSize="691809" publishTime="1756644916"/>
           <PublishItem publishSize="682922" publishTime="1756055688"/>
           <PublishItem publishSize="682910" publishTime="1755954805"/>
           <PublishItem publishSize="682908" publishTime="1755954756"/>
@@ -1284,7 +1337,5 @@
           <PublishItem publishSize="3353064" publishTime="1749173425"/>
           <PublishItem publishSize="3317333" publishTime="1749084698"/>
           <PublishItem publishSize="3342327" publishTime="1749054694"/>
-          <PublishItem publishSize="3254180" publishTime="1747902707"/>
-          <PublishItem publishSize="2897668" publishTime="1747202318"/>
      </publishHistory>
 </DOMDocument>

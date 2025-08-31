@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Pins/Pin4" itemID="5fa492eb-00001c04" symbolType="graphic" lastModified="1604621035">
+  <timeline>
+    <DOMTimeline name="Pin4">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#AEAEAE"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.2">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!6 3S6[6 4 5 5!5 5[4 6 3 6!3 6[2 6 1 5!1 5[0 4 0 3!0 3[0 2 1 1!1 1[2 0 3 0!3 0[4 0 5 1!5 1[6 2 6 3"/>
+                    <Edge cubics="!5 1(;6,2 6,2 6,3q5 1Q6 2q6 3);"/>
+                    <Edge cubics="!3 0(;4,0 4,0 5,1q3 0Q4 0q5 1);"/>
+                    <Edge cubics="!1 1(;2,0 2,0 3,0q1 1Q2 0q3 0);"/>
+                    <Edge cubics="!0 3(;0,2 0,2 1,1q0 3Q0 2q1 1);"/>
+                    <Edge cubics="!1 5(;0,4 0,4 0,3q1 5Q0 4q0 3);"/>
+                    <Edge cubics="!3 6(;2,6 2,6 1,5q3 6Q2 6q1 5);"/>
+                    <Edge cubics="!5 5(;4,6 4,6 3,6q5 5Q4 6q3 6);"/>
+                    <Edge cubics="!6 3(;6,4 6,4 5,5q6 3Q6 4q5 5);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

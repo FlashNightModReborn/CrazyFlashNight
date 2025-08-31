@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/停机坪" itemID="668aa0dc-000051de" linkageExportForAS="true" linkageIdentifier="基地场景-基地房顶" lastModified="1754406285" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/停机坪" itemID="668aa0dc-000051de" linkageExportForAS="true" linkageIdentifier="基地场景-基地房顶" lastModified="1756647803" lastUniqueIdentifier="8">
   <timeline>
     <DOMTimeline name="停机坪">
       <layers>
@@ -168,10 +168,10 @@ onClipEvent (load) {
 		this._visible = 0;
 	}
 	是否为敌人 = false;
-	this._name = 名字 = "远古武士铁血使者";
-	身高 = 280;
+	this._name = 名字 = "Bard";
+	身高 = 175;
 	性别 = "男";
-	方向 = "左";
+	方向 = "右";
    if(_root.NPCTaskCheck(名字).result == "接受任务")
    {
       _root.发布消息(名字 + "似乎需要你的帮助");
@@ -180,10 +180,10 @@ onClipEvent (load) {
         this.文字信息.任务接取提示._visible = 0;
     }
 	默认对话 = [[], [], []];
-	默认对话[0][0] = ["远古武士铁血使者", "线人", "远古武士铁血使者", "(翻译机)：小F的翻译机挺好用，敌人的敌人就是朋友！", "普通"];
-	默认对话[1][0] = ["远古武士铁血使者", "线人", "远古武士铁血使者", "(翻译机)：一起干掉文明收割者！", "普通"];
-	默认对话[2][0] = ["远古武士铁血使者", "线人", "远古武士铁血使者", "(翻译机)：我们可以提供我们星球的技术！", "普通"];
-   NPC任务_任务_关卡路径 = "通关远古铁血的试验";
+	默认对话[0][0] = ["Bard", "神秘学者", "Bard", "(翻译机)：小F的翻译机挺好用，敌人的敌人就是朋友！", "普通"];
+	默认对话[1][0] = ["Bard", "神秘学者", "Bard", "(翻译机)：一起干掉文明收割者！", "普通"];
+	默认对话[2][0] = ["Bard", "神秘学者", "Bard", "(翻译机)：我们可以提供我们星球的技术！", "普通"];
+   NPC任务_任务_关卡路径 = "铁血乱舞";
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
