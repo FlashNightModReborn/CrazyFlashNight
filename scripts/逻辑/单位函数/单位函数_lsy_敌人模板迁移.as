@@ -475,6 +475,17 @@ _root.敌人函数.应用影子色彩 = function(target:MovieClip) {
 }
 _root.敌人函数.魔法伤害种类 = MagicDamageTypes.getMagicDamageTypesArray();
 
+_root.敌人函数.提升属性抗性  = function(最小值) {
+    // 遍历每个魔法伤害种类（只处理属性抗性）
+    for (var i = 0; i < _root.敌人函数.魔法伤害种类.length; i++) {
+        var type = _root.敌人函数.魔法伤害种类[i];
+        
+        // 如果当前抗性值小于最小值，则提升到最小值
+        if (this.魔法抗性[type] && this.魔法抗性[type] < 最小值) {
+            this.魔法抗性[type] = 最小值;
+        }
+    }
+}
 _root.初始化敌人模板 = function() {
     //以下14个是原版敌人的必要函数
     this.根据等级初始数值 = this.根据等级初始数值 ? this.根据等级初始数值 : _root.敌人函数.根据等级初始数值;
