@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 107" itemID="6577f221-00000991" lastModified="1755248329" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 107" itemID="6577f221-00000991" lastModified="1756635324" lastUniqueIdentifier="6">
   <timeline>
-    <DOMTimeline name="Symbol 107" currentFrame="419" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;44&lt;/guideline&gt;&lt;guideline direction="h"&gt;180&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="Symbol 107" currentFrame="255" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;44&lt;/guideline&gt;&lt;guideline direction="h"&gt;180&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="Labels Layer" color="#4DC3B8" outline="true" useOutlineView="true">
+        <DOMLayer name="Labels Layer" color="#4DC3B8" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -188,7 +188,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击点" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="攻击点" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="111" keyMode="9728">
               <elements/>
@@ -261,7 +261,7 @@ function 纵劈攻击()
             </DOMFrame>
             <DOMFrame index="255" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" centerPoint3DX="75.15" centerPoint3DY="69.55">
+                <DOMSymbolInstance libraryItemName="个人编辑单位/浮士德的一堆相关或是不相关/近战子弹 副本" selected="true" centerPoint3DX="75.15" centerPoint3DY="69.55">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="62.65" ty="57.05"/>
                   </matrix>
@@ -279,9 +279,6 @@ function 纵劈攻击()
     子弹属性.子弹散射度 = 15;
     子弹属性.发射效果 = "";
     子弹属性.子弹种类 = "铁血飞弹";
-   if (_parent._parent.宠物属性.追踪飞弹){
-	   子弹种类 = "追踪铁血飞弹";
-   }
     子弹属性.子弹威力 = _parent._parent.空手攻击力 * 5;
     子弹属性.子弹速度 = 30;
     子弹属性.击中地图效果 = "";
@@ -294,17 +291,24 @@ function 纵劈攻击()
     子弹属性.垂直击退速度 = NaN;
     子弹属性.伤害类型 = "破击";
     子弹属性.魔法伤害属性 = "原体";
+   if (_parent._parent.宠物属性.追踪飞弹){
+	   子弹属性.子弹种类 = "追踪铁血飞弹";
+	   if(_root.成功率(50)){
+    		子弹属性.伤害类型 = "魔法";
+    		子弹属性.魔法伤害属性 = undefined;
+	   }
+   }
 
     // 坐标转换
-    var myPoint = {x:this._x, y:this._y};
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
-
-    // 设置发射坐标和发射者信息
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
+    //var myPoint = {x:this._x, y:this._y};
+//    _parent.localToGlobal(myPoint);
+//    _root.gameworld.globalToLocal(myPoint);
+//
+//    // 设置发射坐标和发射者信息
+//    子弹属性.shootX = myPoint.x;
+//    子弹属性.shootY = myPoint.y;
+//    子弹属性.shootZ = _parent._parent.Z轴坐标;
+//    子弹属性.发射者 = _parent._parent._name;
 
     // 调用新的子弹发射函数
     _root.子弹区域shoot传递(子弹属性);
@@ -1801,7 +1805,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#61EEC4" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 10" color="#61EEC4" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="130" keyMode="9728">
               <elements/>
@@ -2111,7 +2115,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#A8A49E" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 11" color="#A8A49E" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="110" keyMode="9728">
               <elements/>
@@ -2298,7 +2302,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#BB11C7" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 12" color="#BB11C7" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="111" keyMode="9728">
               <elements/>
@@ -2500,7 +2504,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 13" color="#59B6EF" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 13" color="#59B6EF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -2684,7 +2688,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 14" color="#BBCB74" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 14" color="#BBCB74" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -2868,7 +2872,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 15" color="#8254FF" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 15" color="#8254FF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3052,7 +3056,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 16" color="#C9B2CF" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 16" color="#C9B2CF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3092,7 +3096,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 17" color="#FA84FB" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 17" color="#FA84FB" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3132,7 +3136,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 18" color="#56ADEA" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 18" color="#56ADEA" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3172,7 +3176,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 19" color="#F32CCC" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 19" color="#F32CCC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3212,7 +3216,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 20" color="#A5F7A1" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 20" color="#A5F7A1" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3252,7 +3256,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 21" color="#B984AF" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 21" color="#B984AF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3292,7 +3296,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 22" color="#2292DB" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 22" color="#2292DB" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3332,7 +3336,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 23" color="#4FE260" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 23" color="#4FE260" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3372,7 +3376,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 24" color="#02E8BC" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 24" color="#02E8BC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3412,7 +3416,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 25" color="#416FD0" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 25" color="#416FD0" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3452,7 +3456,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 26" color="#D1FDC5" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 26" color="#D1FDC5" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3492,7 +3496,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 27" color="#E5318D" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 27" color="#E5318D" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3532,7 +3536,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 28" color="#B35296" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 28" color="#B35296" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3572,7 +3576,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 29" color="#1EDFE9" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 29" color="#1EDFE9" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3612,7 +3616,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 30" color="#76A1A1" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 30" color="#76A1A1" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3652,7 +3656,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 31" color="#2EC0F0" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 31" color="#2EC0F0" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3692,7 +3696,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 32" color="#979AA2" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 32" color="#979AA2" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3732,7 +3736,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 33" color="#E9F73A" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 33" color="#E9F73A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3772,7 +3776,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 34" color="#9671B1" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 34" color="#9671B1" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3812,7 +3816,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 35" color="#D38F77" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 35" color="#D38F77" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3852,7 +3856,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 36" color="#7B69F3" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 36" color="#7B69F3" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3916,7 +3920,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 37" color="#DCB710" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 37" color="#DCB710" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -3980,7 +3984,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 38" color="#EDB7F4" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 38" color="#EDB7F4" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -4020,7 +4024,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 39" color="#96F147" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 39" color="#96F147" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -4096,7 +4100,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 40" color="#87F04C" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 40" color="#87F04C" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -4184,7 +4188,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 41" color="#6BE887" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 41" color="#6BE887" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -4248,7 +4252,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 42" color="#E7F684" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 42" color="#E7F684" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -4303,7 +4307,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 43" color="#7BB8CD" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 43" color="#7BB8CD" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -4382,7 +4386,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 44" color="#FB4F9A" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 44" color="#FB4F9A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements/>
@@ -4461,7 +4465,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 45" color="#97D768" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 45" color="#97D768" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="107" keyMode="9728">
               <elements/>
@@ -4516,7 +4520,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 46" color="#4D73C0" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 46" color="#4D73C0" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="107" keyMode="9728">
               <elements/>
@@ -4583,7 +4587,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 47" color="#DEAF9A" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 47" color="#DEAF9A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -4638,7 +4642,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 48" color="#B7F3A0" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 48" color="#B7F3A0" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -4708,7 +4712,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 49" color="#21EFFB" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 49" color="#21EFFB" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="111" keyMode="9728">
               <elements/>
@@ -4847,7 +4851,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 50" color="#617CC4" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 50" color="#617CC4" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -5034,7 +5038,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 51" color="#74F82D" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 51" color="#74F82D" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -5209,7 +5213,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 52" color="#5BFAC0" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 52" color="#5BFAC0" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -5372,7 +5376,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 53" color="#FD72D9" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 53" color="#FD72D9" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -5499,7 +5503,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 54" color="#67F960" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 54" color="#67F960" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -5626,7 +5630,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 55" color="#EEC8C9" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 55" color="#EEC8C9" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -5765,7 +5769,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 56" color="#E98173" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 56" color="#E98173" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -5904,7 +5908,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 57" color="#FD714F" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 57" color="#FD714F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -6007,7 +6011,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 58" color="#D377BA" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 58" color="#D377BA" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="132" keyMode="9728">
               <elements/>
@@ -6086,7 +6090,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 59" color="#7EEA92" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 59" color="#7EEA92" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="132" keyMode="9728">
               <elements/>
@@ -6165,7 +6169,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 60" color="#DD7FC4" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 60" color="#DD7FC4" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -6304,7 +6308,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 61" color="#F869C1" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 61" color="#F869C1" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -6455,7 +6459,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 62" color="#A1D1BE" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 62" color="#A1D1BE" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -6606,7 +6610,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 63" color="#9B5194" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 63" color="#9B5194" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -6745,7 +6749,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 64" color="#6371F4" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 64" color="#6371F4" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -6896,7 +6900,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 65" color="#B562FD" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 65" color="#B562FD" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -7047,7 +7051,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 66" color="#E89962" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 66" color="#E89962" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -7198,7 +7202,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 67" color="#94B899" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 67" color="#94B899" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -7325,7 +7329,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 68" color="#E890C5" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 68" color="#E890C5" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -7452,7 +7456,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 69" color="#D9C59A" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 69" color="#D9C59A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -7603,7 +7607,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 70" color="#B62EC6" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 70" color="#B62EC6" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -7754,7 +7758,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 71" color="#ED699D" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 71" color="#ED699D" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -7857,7 +7861,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 72" color="#9FCB72" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 72" color="#9FCB72" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -8008,7 +8012,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 73" color="#38B893" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 73" color="#38B893" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="132" keyMode="9728">
               <elements/>
@@ -8087,7 +8091,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 74" color="#B9F108" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 74" color="#B9F108" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="132" keyMode="9728">
               <elements/>
@@ -8154,7 +8158,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 75" color="#A5C2DC" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 75" color="#A5C2DC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="132" keyMode="9728">
               <elements/>
@@ -8233,7 +8237,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 76" color="#B49F6D" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 76" color="#B49F6D" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="132" keyMode="9728">
               <elements/>
@@ -8321,7 +8325,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 77" color="#679EE0" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 77" color="#679EE0" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="132" keyMode="9728">
               <elements/>
@@ -8388,7 +8392,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 78" color="#80C2CD" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 78" color="#80C2CD" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="132" keyMode="9728">
               <elements/>
@@ -8455,7 +8459,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 79" color="#5AD554" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 79" color="#5AD554" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="132" keyMode="9728">
               <elements/>
@@ -8522,7 +8526,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 80" color="#ABE162" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 80" color="#ABE162" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="132" keyMode="9728">
               <elements/>
@@ -8589,7 +8593,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 81" color="#EE5D7B" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 81" color="#EE5D7B" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="136" keyMode="9728">
               <elements/>
@@ -8644,7 +8648,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 82" color="#8541E3" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 82" color="#8541E3" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="136" keyMode="9728">
               <elements/>
@@ -8699,7 +8703,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 83" color="#E9A6CF" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 83" color="#E9A6CF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="136" keyMode="9728">
               <elements/>
@@ -8742,7 +8746,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 84" color="#A334D1" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 84" color="#A334D1" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="112" keyMode="9728">
               <elements/>
@@ -8845,7 +8849,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 85" color="#A170F6" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 85" color="#A170F6" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="136" keyMode="9728">
               <elements/>
@@ -8900,7 +8904,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 86" color="#F1FD99" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 86" color="#F1FD99" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="112" keyMode="9728">
               <elements/>
@@ -9039,7 +9043,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 87" color="#8B30CA" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 87" color="#8B30CA" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="112" keyMode="9728">
               <elements/>
@@ -9178,7 +9182,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 88" color="#A68BBC" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 88" color="#A68BBC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="132" keyMode="9728">
               <elements/>
@@ -9257,7 +9261,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 89" color="#8B4BC7" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 89" color="#8B4BC7" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -9336,7 +9340,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 90" color="#8D89CF" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 90" color="#8D89CF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -9415,7 +9419,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 91" color="#BB9460" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 91" color="#BB9460" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="112" keyMode="9728">
               <elements/>
@@ -9602,7 +9606,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 92" color="#52EEC1" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 92" color="#52EEC1" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -9645,7 +9649,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 93" color="#7986A7" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 93" color="#7986A7" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -9697,7 +9701,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 94" color="#7588E6" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 94" color="#7588E6" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -9740,7 +9744,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 95" color="#16AFE6" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 95" color="#16AFE6" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -9804,7 +9808,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 96" color="#25C2EF" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 96" color="#25C2EF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -9847,7 +9851,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 97" color="#8A30D0" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 97" color="#8A30D0" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -9911,7 +9915,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 98" color="#D16A80" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 98" color="#D16A80" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -9987,7 +9991,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 99" color="#47ACE2" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 99" color="#47ACE2" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -10030,7 +10034,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 100" color="#FD4F98" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 100" color="#FD4F98" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -10106,7 +10110,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 101" color="#EF80A6" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 101" color="#EF80A6" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -10149,7 +10153,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 102" color="#A0826C" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 102" color="#A0826C" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -10192,7 +10196,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 103" color="#D8AA90" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 103" color="#D8AA90" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -10235,7 +10239,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 104" color="#A0CC97" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 104" color="#A0CC97" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -10299,7 +10303,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 105" color="#4FB28F" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 105" color="#4FB28F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -10363,7 +10367,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="裙摆" color="#C4FF42" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="裙摆" color="#C4FF42" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -10427,7 +10431,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左大腿盔甲" color="#FAFC98" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="左大腿盔甲" color="#FAFC98" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -10491,7 +10495,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="大腿盔甲" color="#EC89F1" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="大腿盔甲" color="#EC89F1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -10552,7 +10556,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="小腿盔甲" color="#9AEEA4" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="小腿盔甲" color="#9AEEA4" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -10616,7 +10620,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="小腿肌肉" color="#A19AED" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="小腿肌肉" color="#A19AED" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -10680,7 +10684,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="脚" color="#96D336" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="脚" color="#96D336" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -10744,7 +10748,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="大腿肌肉" color="#52EAC0" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="大腿肌肉" color="#52EAC0" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -10805,7 +10809,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="大腿盔甲" color="#4F80FF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="大腿盔甲" color="#4F80FF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -10824,7 +10828,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="大腿肌肉" color="#FF4F4F" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="大腿肌肉" color="#FF4F4F" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -10837,7 +10841,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左小腿" color="#4FFF4F" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="左小腿" color="#4FFF4F" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -10850,7 +10854,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左小腿肌肉" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="左小腿肌肉" color="#9933CC" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -10863,7 +10867,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="脚" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="脚" color="#FF800A" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -10876,7 +10880,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="肌肉" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="肌肉" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -10889,7 +10893,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 113" color="#B76C9F" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 113" color="#B76C9F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -10959,7 +10963,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 114" color="#EBD099" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 114" color="#EBD099" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -11026,7 +11030,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 115" color="#61BC92" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 115" color="#61BC92" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -11093,7 +11097,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 116" color="#9E92E9" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 116" color="#9E92E9" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="150" keyMode="9728">
               <elements/>
@@ -11160,7 +11164,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 117" color="#8F6DE4" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 117" color="#8F6DE4" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -11374,7 +11378,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 118" color="#D6C97C" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 118" color="#D6C97C" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements/>
@@ -11591,7 +11595,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 119" color="#A7C8C1" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 119" color="#A7C8C1" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="111" keyMode="9728">
               <elements/>
@@ -11820,7 +11824,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 120" color="#7583FF" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 120" color="#7583FF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -11965,7 +11969,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 121" color="#C893A0" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 121" color="#C893A0" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -12071,7 +12075,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 122" color="#F10EA1" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 122" color="#F10EA1" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -12189,7 +12193,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 138" color="#9933CC" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 138" color="#9933CC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -12202,7 +12206,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 123" color="#E9F982" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 123" color="#E9F982" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -12326,7 +12330,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 124" color="#85CB3A" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 124" color="#85CB3A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -12450,7 +12454,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 125" color="#F88EB5" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 125" color="#F88EB5" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -12547,7 +12551,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 126" color="#C0D5D5" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 126" color="#C0D5D5" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="158" keyMode="9728">
               <elements/>
@@ -12632,7 +12636,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="裙摆" color="#84ACD9" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="裙摆" color="#84ACD9" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="158" keyMode="9728">
               <elements/>
@@ -12729,7 +12733,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="大腿盔甲" color="#50EBC4" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="大腿盔甲" color="#50EBC4" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="158" keyMode="9728">
               <elements/>
@@ -12820,7 +12824,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="大腿肌肉" color="#6BCDB3" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="大腿肌肉" color="#6BCDB3" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="158" keyMode="9728">
               <elements/>
@@ -12896,7 +12900,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左小腿" color="#B3F06C" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="左小腿" color="#B3F06C" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -12996,7 +13000,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左小腿肌肉" color="#B120D9" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="左小腿肌肉" color="#B120D9" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -13072,7 +13076,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="脚" color="#83F086" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="脚" color="#83F086" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -13136,7 +13140,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="肌肉" color="#A2FA27" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="肌肉" color="#A2FA27" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -13194,7 +13198,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 134" color="#9A1BCC" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 134" color="#9A1BCC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -13249,7 +13253,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 135" color="#25B8E4" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 135" color="#25B8E4" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -13304,7 +13308,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 136" color="#65BEA8" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 136" color="#65BEA8" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -13359,7 +13363,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 137" color="#39EA91" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 137" color="#39EA91" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -13414,7 +13418,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 138" color="#E33CAB" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 138" color="#E33CAB" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -13550,7 +13554,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 139" color="#9844F7" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 139" color="#9844F7" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -13734,7 +13738,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 140" color="#F6BD67" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 140" color="#F6BD67" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -13855,7 +13859,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 141" color="#C3449E" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 141" color="#C3449E" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -14006,7 +14010,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 142" color="#E4931B" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 142" color="#E4931B" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -14145,7 +14149,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 143" color="#D943A2" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 143" color="#D943A2" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -14284,7 +14288,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 144" color="#C561FE" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 144" color="#C561FE" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -14366,7 +14370,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 145" color="#B5FBD5" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 145" color="#B5FBD5" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -14457,7 +14461,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 146" color="#FFC059" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 146" color="#FFC059" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -14536,7 +14540,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="裙摆" color="#C2B96C" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="裙摆" color="#C2B96C" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -14795,7 +14799,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左盔甲" color="#E12AA9" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="左盔甲" color="#E12AA9" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -14841,7 +14845,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 149" color="#D03381" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 149" color="#D03381" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -15088,7 +15092,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 150" color="#68B5CD" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 150" color="#68B5CD" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="154" keyMode="9728">
               <elements/>
@@ -15119,7 +15123,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 151" color="#ABBE2A" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 151" color="#ABBE2A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -15414,7 +15418,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 152" color="#DB3BE9" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 152" color="#DB3BE9" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -15683,7 +15687,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 153" color="#6EB5EC" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 153" color="#6EB5EC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -16107,7 +16111,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 154" color="#B948B5" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 154" color="#B948B5" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -16522,7 +16526,7 @@ function 纵劈攻击()
             </DOMFrame>
             <DOMFrame index="254" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 90" centerPoint3DX="48.8" centerPoint3DY="36.35">
+                <DOMSymbolInstance libraryItemName="Symbol 90" selected="true" centerPoint3DX="48.8" centerPoint3DY="36.35">
                   <matrix>
                     <Matrix a="1.73619079589844" d="1.73619079589844" tx="38.35" ty="27.55"/>
                   </matrix>
@@ -16657,7 +16661,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 155" color="#DD9688" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 155" color="#DD9688" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -16970,7 +16974,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 156" color="#9D7684" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 156" color="#9D7684" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -17520,7 +17524,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 157" color="#E0A430" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 157" color="#E0A430" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -18049,7 +18053,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 158" color="#D54C8C" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 158" color="#D54C8C" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="228" keyMode="9728">
               <elements/>
@@ -18416,7 +18420,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 159" color="#2E97BC" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 159" color="#2E97BC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -18912,7 +18916,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 160" color="#14EEAE" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 160" color="#14EEAE" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -19672,7 +19676,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 161" color="#D5A7EE" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 161" color="#D5A7EE" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -19907,7 +19911,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 162" color="#D94DCE" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 162" color="#D94DCE" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -20634,7 +20638,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 163" color="#3883E7" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 163" color="#3883E7" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -21139,7 +21143,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="裙摆" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="裙摆" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -21278,7 +21282,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 165" color="#4FFFFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 165" color="#4FFFFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -21342,7 +21346,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 164" color="#FC938C" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 164" color="#FC938C" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -21763,7 +21767,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 165" color="#ABF0D6" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 165" color="#ABF0D6" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -22505,7 +22509,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 166" color="#FD7F60" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 166" color="#FD7F60" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements>
@@ -22632,7 +22636,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 167" color="#F7F937" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 167" color="#F7F937" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="168" keyMode="9728">
               <elements/>
@@ -22837,7 +22841,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 168" color="#FC27D6" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 168" color="#FC27D6" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -23165,7 +23169,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 169" color="#C21DA7" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 169" color="#C21DA7" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -23529,7 +23533,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 170" color="#E53FAE" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 170" color="#E53FAE" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -23956,7 +23960,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 171" color="#A37FA5" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 171" color="#A37FA5" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -24362,7 +24366,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 172" color="#7EB778" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 172" color="#7EB778" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -24654,7 +24658,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 173" color="#AAB49D" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 173" color="#AAB49D" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -25024,7 +25028,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 174" color="#ADA948" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 174" color="#ADA948" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -25361,7 +25365,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 175" color="#48EBA1" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 175" color="#48EBA1" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="168" keyMode="9728">
               <elements/>
@@ -25488,7 +25492,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 176" color="#C69F88" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 176" color="#C69F88" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -25753,7 +25757,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 177" color="#EF72AD" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 177" color="#EF72AD" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="168" keyMode="9728">
               <elements/>
@@ -25826,7 +25830,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 178" color="#F90ECB" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 178" color="#F90ECB" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -26055,7 +26059,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 179" color="#AFC06B" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 179" color="#AFC06B" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -26305,7 +26309,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 180" color="#868A8E" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 180" color="#868A8E" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -26534,7 +26538,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 181" color="#A3FD22" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 181" color="#A3FD22" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -26727,7 +26731,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 182" color="#799786" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 182" color="#799786" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="168" keyMode="9728">
               <elements/>
@@ -26782,7 +26786,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 183" color="#B223AB" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 183" color="#B223AB" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -27101,7 +27105,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 184" color="#E0806E" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 184" color="#E0806E" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -27456,7 +27460,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 185" color="#9E9FF6" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 185" color="#9E9FF6" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -27748,7 +27752,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 186" color="#67F285" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 186" color="#67F285" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -28040,7 +28044,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 187" color="#F550B6" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 187" color="#F550B6" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -28323,7 +28327,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 188" color="#F457C5" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 188" color="#F457C5" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -28459,7 +28463,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 189" color="#7DB7E9" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 189" color="#7DB7E9" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -28667,7 +28671,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 190" color="#C34C72" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 190" color="#C34C72" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -28815,7 +28819,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 191" color="#FA415B" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 191" color="#FA415B" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -28903,7 +28907,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 192" color="#FE0599" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 192" color="#FE0599" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="168" keyMode="9728">
               <elements/>
@@ -29018,7 +29022,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 193" color="#3AD770" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 193" color="#3AD770" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -29238,7 +29242,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 194" color="#E9EBF4" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 194" color="#E9EBF4" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -29449,7 +29453,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 195" color="#F49EC7" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 195" color="#F49EC7" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="168" keyMode="9728">
               <elements/>
@@ -29678,7 +29682,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 196" color="#D4C212" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 196" color="#D4C212" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -29910,7 +29914,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 197" color="#99FCB6" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 197" color="#99FCB6" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -30142,7 +30146,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 198" color="#38F5C4" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 198" color="#38F5C4" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="184" keyMode="9728">
               <elements/>
@@ -30305,7 +30309,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 199" color="#AF6BB2" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 199" color="#AF6BB2" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -30528,7 +30532,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 139" color="#FF800A" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 139" color="#FF800A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -30661,7 +30665,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="裙摆" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="裙摆" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -30701,7 +30705,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左大腿盔甲" color="#4FFFFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="左大腿盔甲" color="#4FFFFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -30834,7 +30838,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="大腿盔甲" color="#808080" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="大腿盔甲" color="#808080" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -30922,7 +30926,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="小腿盔甲" color="#4F80FF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="小腿盔甲" color="#4F80FF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -31010,7 +31014,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="小腿肌肉" color="#FF4F4F" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="小腿肌肉" color="#FF4F4F" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -31098,7 +31102,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="脚" color="#4FFF4F" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="脚" color="#4FFF4F" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -31186,7 +31190,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="大腿肌肉" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="大腿肌肉" color="#9933CC" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -31274,7 +31278,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="大腿盔甲" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="大腿盔甲" color="#FF800A" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -31320,7 +31324,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="大腿肌肉" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="大腿肌肉" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -31378,7 +31382,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左小腿" color="#4FFFFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="左小腿" color="#4FFFFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -31436,7 +31440,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左小腿肌肉" color="#808080" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="左小腿肌肉" color="#808080" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -31494,7 +31498,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="脚" color="#4F80FF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="脚" color="#4F80FF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -31552,7 +31556,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="肌肉" color="#FF4F4F" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="肌肉" color="#FF4F4F" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -31610,7 +31614,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 153" color="#4FFF4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 153" color="#4FFF4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -31725,7 +31729,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 154" color="#9933CC" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 154" color="#9933CC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -31849,7 +31853,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 155" color="#FF800A" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 155" color="#FF800A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -31973,7 +31977,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 156" color="#FF4FFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 156" color="#FF4FFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -32097,7 +32101,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 157" color="#4FFFFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 157" color="#4FFFFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -32212,7 +32216,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 158" color="#808080" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 158" color="#808080" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -32282,7 +32286,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 159" color="#4F80FF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 159" color="#4F80FF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -32352,7 +32356,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 160" color="#FF4F4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 160" color="#FF4F4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -32422,7 +32426,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 161" color="#4FFF4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 161" color="#4FFF4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -32486,7 +32490,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 162" color="#9933CC" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 162" color="#9933CC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -32550,7 +32554,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 163" color="#FF800A" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 163" color="#FF800A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -32584,7 +32588,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 200" color="#7CF61B" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 200" color="#7CF61B" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -32807,7 +32811,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 201" color="#7481B4" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 201" color="#7481B4" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="168" keyMode="9728">
               <elements/>
@@ -32937,7 +32941,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 202" color="#4DFCD3" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 202" color="#4DFCD3" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -33190,7 +33194,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 203" color="#DAA9F2" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 203" color="#DAA9F2" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="51" keyMode="9728">
               <elements/>
@@ -33287,7 +33291,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 204" color="#D53683" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 204" color="#D53683" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -33573,7 +33577,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 205" color="#C715EA" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 205" color="#C715EA" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -33868,7 +33872,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 206" color="#4EE685" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 206" color="#4EE685" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="226" keyMode="9728">
               <elements/>
@@ -33956,7 +33960,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 207" color="#24EC7E" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 207" color="#24EC7E" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -34206,7 +34210,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 208" color="#D759A1" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 208" color="#D759A1" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -34504,7 +34508,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 209" color="#AF8053" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 209" color="#AF8053" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="226" keyMode="9728">
               <elements/>
@@ -34619,7 +34623,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 210" color="#8AD24A" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 210" color="#8AD24A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -34908,7 +34912,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 211" color="#68EA33" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 211" color="#68EA33" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -35194,7 +35198,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 212" color="#67A890" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 212" color="#67A890" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="226" keyMode="9728">
               <elements/>
@@ -35249,7 +35253,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 213" color="#C5F8FF" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 213" color="#C5F8FF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -35502,7 +35506,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 214" color="#5C90C1" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 214" color="#5C90C1" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -35938,7 +35942,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 215" color="#9ABBB7" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 215" color="#9ABBB7" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="112" keyMode="9728">
               <elements/>
@@ -36222,7 +36226,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 216" color="#B7D3C0" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 216" color="#B7D3C0" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="60" keyMode="9728">
               <elements>
@@ -36321,7 +36325,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 0" color="#CA92F8" outline="true" useOutlineView="true">
+        <DOMLayer name="Sound Layer 0" color="#CA92F8" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -36361,7 +36365,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 1" color="#E2ED98" outline="true" useOutlineView="true">
+        <DOMLayer name="Sound Layer 1" color="#E2ED98" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -36392,7 +36396,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 2" color="#F4F375" outline="true" useOutlineView="true">
+        <DOMLayer name="Sound Layer 2" color="#F4F375" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -36423,7 +36427,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 3" color="#9EBDF5" outline="true" useOutlineView="true">
+        <DOMLayer name="Sound Layer 3" color="#9EBDF5" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -36454,7 +36458,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 4" color="#4FA5F7" outline="true" useOutlineView="true">
+        <DOMLayer name="Sound Layer 4" color="#4FA5F7" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -36485,7 +36489,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 5" color="#E9BEEE" outline="true" useOutlineView="true">
+        <DOMLayer name="Sound Layer 5" color="#E9BEEE" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -36516,7 +36520,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 6" color="#C5EFA8" outline="true" useOutlineView="true">
+        <DOMLayer name="Sound Layer 6" color="#C5EFA8" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -36547,7 +36551,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 7" color="#88EE12" outline="true" useOutlineView="true">
+        <DOMLayer name="Sound Layer 7" color="#88EE12" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -36587,7 +36591,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 8" color="#FA8AB4" outline="true" useOutlineView="true">
+        <DOMLayer name="Sound Layer 8" color="#FA8AB4" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -36627,7 +36631,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 9" color="#5B39F7" outline="true" useOutlineView="true">
+        <DOMLayer name="Sound Layer 9" color="#5B39F7" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -36667,7 +36671,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 10" color="#F5FC94" outline="true" useOutlineView="true">
+        <DOMLayer name="Sound Layer 10" color="#F5FC94" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -36707,7 +36711,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 11" color="#6CF69E" outline="true" useOutlineView="true">
+        <DOMLayer name="Sound Layer 11" color="#6CF69E" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -36747,7 +36751,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 12" color="#AFC2F1" outline="true" useOutlineView="true">
+        <DOMLayer name="Sound Layer 12" color="#AFC2F1" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -36787,7 +36791,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 13" color="#68E9A4" outline="true" useOutlineView="true">
+        <DOMLayer name="Sound Layer 13" color="#68E9A4" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -36839,7 +36843,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 14" color="#BEAFC8" outline="true" useOutlineView="true">
+        <DOMLayer name="Sound Layer 14" color="#BEAFC8" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -36879,7 +36883,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -36907,7 +36911,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 3" color="#FF800A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -36947,7 +36951,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 4" color="#FF4FFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 4" color="#FF4FFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -36987,7 +36991,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 5" color="#4FFFFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 5" color="#4FFFFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -37051,7 +37055,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 6" color="#808080" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 6" color="#808080" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -37091,7 +37095,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 7" color="#4F80FF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 7" color="#4F80FF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -37155,7 +37159,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 8" color="#FF4F4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 8" color="#FF4F4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -37228,7 +37232,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 9" color="#4FFF4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 9" color="#4FFF4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -37313,7 +37317,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 10" color="#9933CC" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 10" color="#9933CC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -37386,7 +37390,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 11" color="#FF800A" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 11" color="#FF800A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -37426,7 +37430,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 12" color="#FF4FFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 12" color="#FF4FFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -37466,7 +37470,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 13" color="#4FFFFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 13" color="#4FFFFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -37506,7 +37510,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 14" color="#808080" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 14" color="#808080" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -37534,7 +37538,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 15" color="#4F80FF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 15" color="#4F80FF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -37574,7 +37578,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 16" color="#FF4F4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 16" color="#FF4F4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -37614,7 +37618,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 17" color="#4FFF4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 17" color="#4FFF4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -37654,7 +37658,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 18" color="#9933CC" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 18" color="#9933CC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -37694,7 +37698,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 19" color="#FF800A" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 19" color="#FF800A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -37734,7 +37738,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 20" color="#FF4FFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 20" color="#FF4FFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -37774,7 +37778,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 21" color="#4FFFFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 21" color="#4FFFFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -37814,7 +37818,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 22" color="#808080" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 22" color="#808080" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -37854,7 +37858,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 23" color="#4F80FF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 23" color="#4F80FF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -37894,7 +37898,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 24" color="#FF4F4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 24" color="#FF4F4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -37934,7 +37938,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 25" color="#4FFF4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 25" color="#4FFF4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -37974,7 +37978,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 26" color="#9933CC" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 26" color="#9933CC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38014,7 +38018,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 27" color="#FF800A" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 27" color="#FF800A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38054,7 +38058,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 28" color="#FF4FFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 28" color="#FF4FFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38106,7 +38110,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 29" color="#4FFFFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 29" color="#4FFFFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38158,7 +38162,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 30" color="#808080" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 30" color="#808080" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38210,7 +38214,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 31" color="#4F80FF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 31" color="#4F80FF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38262,7 +38266,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 32" color="#FF4F4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 32" color="#FF4F4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38314,7 +38318,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 33" color="#4FFF4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 33" color="#4FFF4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38342,7 +38346,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 34" color="#9933CC" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 34" color="#9933CC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38370,7 +38374,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 35" color="#FF800A" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 35" color="#FF800A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38443,7 +38447,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 36" color="#FF4FFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 36" color="#FF4FFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38504,7 +38508,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 37" color="#4FFFFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 37" color="#4FFFFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38556,7 +38560,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 38" color="#808080" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 38" color="#808080" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38608,7 +38612,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 39" color="#4F80FF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 39" color="#4F80FF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38660,7 +38664,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 40" color="#FF4F4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 40" color="#FF4F4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38721,7 +38725,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 41" color="#4FFF4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 41" color="#4FFF4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38782,7 +38786,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 42" color="#9933CC" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 42" color="#9933CC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38843,7 +38847,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 43" color="#FF800A" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 43" color="#FF800A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38871,7 +38875,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 44" color="#FF4FFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 44" color="#FF4FFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38899,7 +38903,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 45" color="#4FFFFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 45" color="#4FFFFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38927,7 +38931,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 46" color="#808080" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 46" color="#808080" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38955,7 +38959,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 47" color="#4F80FF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 47" color="#4F80FF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -38983,7 +38987,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 48" color="#FF4F4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 48" color="#FF4F4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39011,7 +39015,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 49" color="#4FFF4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 49" color="#4FFF4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39039,7 +39043,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 50" color="#9933CC" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 50" color="#9933CC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39067,7 +39071,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 51" color="#FF800A" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 51" color="#FF800A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39095,7 +39099,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 52" color="#FF4FFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 52" color="#FF4FFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39123,7 +39127,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 53" color="#4FFFFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 53" color="#4FFFFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39151,7 +39155,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 54" color="#808080" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 54" color="#808080" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39179,7 +39183,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 55" color="#4F80FF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 55" color="#4F80FF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39207,7 +39211,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 56" color="#FF4F4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 56" color="#FF4F4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39259,7 +39263,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 57" color="#4FFF4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 57" color="#4FFF4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39311,7 +39315,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 58" color="#9933CC" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 58" color="#9933CC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39375,7 +39379,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 59" color="#FF800A" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 59" color="#FF800A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39424,7 +39428,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 60" color="#FF4FFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 60" color="#FF4FFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39473,7 +39477,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 61" color="#4FFFFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 61" color="#4FFFFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39501,7 +39505,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 62" color="#808080" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 62" color="#808080" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39550,7 +39554,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 63" color="#4F80FF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 63" color="#4F80FF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39599,7 +39603,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 64" color="#FF4F4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 64" color="#FF4F4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39624,7 +39628,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 65" color="#4FFF4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 65" color="#4FFF4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39673,7 +39677,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 66" color="#9933CC" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 66" color="#9933CC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39734,7 +39738,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 67" color="#FF800A" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 67" color="#FF800A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39795,7 +39799,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 68" color="#FF4FFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 68" color="#FF4FFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39856,7 +39860,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 69" color="#4FFFFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 69" color="#4FFFFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39917,7 +39921,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 70" color="#808080" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 70" color="#808080" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -39978,7 +39982,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 71" color="#4F80FF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 71" color="#4F80FF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -40039,7 +40043,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 72" color="#FF4F4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 72" color="#FF4F4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -40100,7 +40104,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="屁股" color="#4FFF4F" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="屁股" color="#4FFF4F" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -40269,7 +40273,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小腿盔甲" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="右小腿盔甲" color="#9933CC" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -40438,7 +40442,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小腿" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="右小腿" color="#FF800A" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -40607,7 +40611,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右脚" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="右脚" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -40704,7 +40708,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右大腿" color="#4FFFFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="右大腿" color="#4FFFFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -40873,7 +40877,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="小腿盔甲" color="#808080" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="小腿盔甲" color="#808080" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -40934,7 +40938,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="小腿肌肉" color="#4F80FF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="小腿肌肉" color="#4F80FF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -40995,7 +40999,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="脚" color="#FF4F4F" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="脚" color="#FF4F4F" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -41092,7 +41096,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="大腿盔甲" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="大腿盔甲" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -41144,7 +41148,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="大腿肌肉" color="#4FFFFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="大腿肌肉" color="#4FFFFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -41193,7 +41197,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 81" color="#4FFF4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 81" color="#4FFF4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -41257,7 +41261,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 82" color="#9933CC" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 82" color="#9933CC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -41498,7 +41502,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 83" color="#FF800A" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 83" color="#FF800A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -41541,7 +41545,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 84" color="#FF4FFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 84" color="#FF4FFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -41617,7 +41621,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 85" color="#4FFFFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 85" color="#4FFFFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -41903,7 +41907,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 86" color="#808080" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 86" color="#808080" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -41937,7 +41941,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 87" color="#4F80FF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 87" color="#4F80FF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -42016,7 +42020,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 88" color="#FF4F4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 88" color="#FF4F4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -42302,7 +42306,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 89" color="#4FFF4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 89" color="#4FFF4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -42336,7 +42340,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 90" color="#9933CC" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 90" color="#9933CC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -42415,7 +42419,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 91" color="#FF800A" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 91" color="#FF800A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -42701,7 +42705,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 92" color="#FF4FFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 92" color="#FF4FFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -42729,7 +42733,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 93" color="#4FFFFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 93" color="#4FFFFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -42802,7 +42806,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 94" color="#808080" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 94" color="#808080" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -42887,7 +42891,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 95" color="#4F80FF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 95" color="#4F80FF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="307" keyMode="9728">
               <elements/>
@@ -43013,7 +43017,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 97" color="#4FFF4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 97" color="#4FFF4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -43047,7 +43051,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 98" color="#9933CC" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 98" color="#9933CC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -43081,7 +43085,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 99" color="#FF800A" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 99" color="#FF800A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -43115,7 +43119,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 100" color="#FF4FFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 100" color="#FF4FFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -43149,7 +43153,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 101" color="#4FFFFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 101" color="#4FFFFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -43171,7 +43175,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 102" color="#808080" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 102" color="#808080" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="33" keyMode="9728">
               <elements/>
@@ -43190,7 +43194,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 103" color="#4F80FF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 103" color="#4F80FF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="107" keyMode="9728">
               <elements/>
@@ -43209,7 +43213,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 104" color="#FF4F4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 104" color="#FF4F4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="122" keyMode="9728">
               <elements/>
@@ -43228,7 +43232,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 105" color="#4FFF4F" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 105" color="#4FFF4F" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="132" keyMode="9728">
               <elements/>
@@ -43247,7 +43251,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 106" color="#9933CC" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 106" color="#9933CC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="135" keyMode="9728">
               <elements/>
@@ -43266,7 +43270,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 107" color="#FF800A" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 107" color="#FF800A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="159" keyMode="9728">
               <elements/>
@@ -43285,7 +43289,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 108" color="#FF4FFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 108" color="#FF4FFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="171" keyMode="9728">
               <elements/>
@@ -43304,7 +43308,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 109" color="#4FFFFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 109" color="#4FFFFF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="228" keyMode="9728">
               <elements/>
@@ -43326,7 +43330,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 110" color="#808080" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 110" color="#808080" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="238" keyMode="9728">
               <elements/>
@@ -43339,7 +43343,7 @@ function 纵劈攻击()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 111" color="#4F80FF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 111" color="#4F80FF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="253" keyMode="9728">
               <elements/>

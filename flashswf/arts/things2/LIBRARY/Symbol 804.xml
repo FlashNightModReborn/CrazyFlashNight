@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 804" itemID="65e1d4ea-000004ed" lastModified="1755245672">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 804" itemID="65e1d4ea-000004ed" lastModified="1756634697">
   <timeline>
     <DOMTimeline name="Symbol 804" currentFrame="329">
       <layers>
@@ -19978,9 +19978,6 @@ _parent.动画完毕();
     子弹属性.子弹散射度 = 0;
     子弹属性.发射效果 = "";
     子弹属性.子弹种类 = "铁血飞弹";
-   if (_parent._parent.宠物属性.追踪飞弹){
-	   子弹种类 = "追踪铁血飞弹";
-   }
     子弹属性.子弹威力 = _parent._parent.空手攻击力 * 5;
     子弹属性.子弹速度 = 30;
     子弹属性.击中地图效果 = "";
@@ -19993,6 +19990,13 @@ _parent.动画完毕();
     子弹属性.垂直击退速度 = NaN;
     子弹属性.伤害类型 = "破击";
     子弹属性.魔法伤害属性 = "原体";
+   if (_parent._parent.宠物属性.追踪飞弹){
+	   子弹属性.子弹种类 = "追踪铁血飞弹";
+	   if(_root.成功率(50)){
+    		子弹属性.伤害类型 = "魔法";
+    		子弹属性.魔法伤害属性 = undefined;
+	   }
+   }
 
     // 坐标转换
     var myPoint = {x:this._x, y:this._y};
