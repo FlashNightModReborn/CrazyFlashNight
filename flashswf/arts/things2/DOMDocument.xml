@@ -1,7 +1,7 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" frameRate="12" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <fonts>
-          <DOMFontItem name="Font 2" itemID="65e1d4e3-000001d1" font="SimSun" size="0" id="2" embeddedCharacters="-子异弹形片碎血迹铁飙飞"/>
           <DOMFontItem name="Font 159" itemID="65e1d4e3-000001d3" font="MicrosoftYaHei" size="0" id="159" embeddedCharacters=".LV"/>
+          <DOMFontItem name="Font 2" itemID="65e1d4e3-000001d1" font="SimSun" size="0" id="2" embeddedCharacters="-子异弹形片碎血迹铁飙飞"/>
      </fonts>
      <media>
           <DOMBitmapItem name="bitmap11.png" itemID="65e1d4e3-000001e8" sourceExternalFilepath="./LIBRARY/bitmap11.png" sourceLastImported="1709298915" externalFileCRC32="1767640263" externalFileSize="32015" originalCompressionType="lossless" quality="50" href="bitmap11.png" bitmapDataHRef="M 5 1698678736.dat" frameRight="4800" frameBottom="3000"/>
@@ -836,7 +836,7 @@
           <Include href="敌人-黄色铁血战士.xml" itemID="67e3c934-00000976" lastModified="1755245185"/>
           <Include href="敌人-蓝色铁血战士.xml" itemID="67e3c932-00000975" lastModified="1746447681"/>
           <Include href="敌人-蓝色异形兵1.xml" itemID="67e3c930-00000974" lastModified="1747140844"/>
-          <Include href="敌人-球形异形兵1.xml" itemID="67e3c92e-00000973" lastModified="1747140792"/>
+          <Include href="敌人-球形异形兵1.xml" itemID="67e3c92e-00000973" lastModified="1756641093"/>
           <Include href="敌人-肉色异形兵1.xml" itemID="67e3c92a-00000972" lastModified="1747138360"/>
           <Include href="敌人-蛇形异形幼虫.xml" itemID="67e3c928-00000971" lastModified="1747138312"/>
           <Include href="敌人-铁血小飞机.xml" itemID="67e3c926-00000970" lastModified="1747135048"/>
@@ -886,6 +886,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1475895" publishTime="1756640995"/>
+          <PublishItem publishSize="1475895" publishTime="1756640926"/>
+          <PublishItem publishSize="1475888" publishTime="1756640516"/>
           <PublishItem publishSize="1475387" publishTime="1755244672"/>
           <PublishItem publishSize="1475414" publishTime="1755243823"/>
           <PublishItem publishSize="1475306" publishTime="1755243610"/>
@@ -903,8 +906,5 @@
           <PublishItem publishSize="1491693" publishTime="1730303920"/>
           <PublishItem publishSize="1491667" publishTime="1730303599"/>
           <PublishItem publishSize="1491662" publishTime="1730303324"/>
-          <PublishItem publishSize="1491616" publishTime="1730303021"/>
-          <PublishItem publishSize="1491613" publishTime="1730302921"/>
-          <PublishItem publishSize="1491581" publishTime="1730302625"/>
      </publishHistory>
 </DOMDocument>

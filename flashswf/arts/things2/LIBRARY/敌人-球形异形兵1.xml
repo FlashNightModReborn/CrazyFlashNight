@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-球形异形兵1" itemID="67e3c92e-00000973" linkageExportForAS="true" linkageIdentifier="敌人-球形异形兵1" lastModified="1747140792">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-球形异形兵1" itemID="67e3c92e-00000973" linkageExportForAS="true" linkageIdentifier="敌人-球形异形兵1" lastModified="1756641093">
   <timeline>
-    <DOMTimeline name="敌人-球形异形兵1" currentFrame="91">
+    <DOMTimeline name="敌人-球形异形兵1" currentFrame="109">
       <layers>
         <DOMLayer name="Labels Layer" color="#A79FAC">
           <frames>
@@ -290,7 +290,7 @@
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 487" name="man" selected="true" centerPoint3DX="100.35" centerPoint3DY="15.05">
+                <DOMSymbolInstance libraryItemName="Symbol 487" name="man" centerPoint3DX="100.35" centerPoint3DY="15.05">
                   <matrix>
                     <Matrix tx="-19.05" ty="-57.85"/>
                   </matrix>
@@ -298,10 +298,14 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   gotoAndPlay(random(15));
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	if (_parent.宠物属性.色彩单位)
+	{
+		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
+	}
+	gotoAndPlay(random(15));
+
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
@@ -318,6 +322,15 @@
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+
+	if (_parent.宠物属性.色彩单位)
+	{
+		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
+	}
+}]]></script>
+                  </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
                   </filters>
@@ -333,6 +346,15 @@
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+
+	if (_parent.宠物属性.色彩单位)
+	{
+		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
+	}
+}]]></script>
+                  </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
                   </filters>
@@ -358,6 +380,10 @@
       是否原本刚体 = true;
    }
    _parent.刚体 = true;
+	if (_parent.宠物属性.色彩单位)
+	{
+		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
+	}
 }
 onClipEvent(unload){
    if(是否原本刚体 != true)
@@ -382,6 +408,15 @@ onClipEvent(unload){
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+
+	if (_parent.宠物属性.色彩单位)
+	{
+		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
+	}
+}]]></script>
+                  </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
                   </filters>
@@ -402,13 +437,16 @@ onClipEvent(unload){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
+	if (_parent.宠物属性.色彩单位)
+	{
+		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
+	}
    gotoAndPlay(random(15));
    躲闪 = true;
 }
 onClipEvent(unload){
    躲闪 = false;
-}
-]]></script>
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
@@ -427,6 +465,10 @@ onClipEvent(unload){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
+	if (_parent.宠物属性.色彩单位)
+	{
+		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
+	}
    gotoAndPlay("a" + random(2));
 }
 ]]></script>
@@ -448,6 +490,10 @@ onClipEvent(unload){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
+	if (_parent.宠物属性.色彩单位)
+	{
+		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
+	}
 	_parent.击飞浮空();
 }
 ]]></script>
@@ -469,6 +515,10 @@ onClipEvent(unload){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
+	if (_parent.宠物属性.色彩单位)
+	{
+		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
+	}
 	_parent.击飞倒地();
 }]]></script>
                   </Actionscript>
@@ -489,6 +539,10 @@ onClipEvent(unload){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
+	if (_parent.宠物属性.色彩单位)
+	{
+		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
+	}
    gotoAndStop("a" + random(2));
 }
 ]]></script>
@@ -510,6 +564,10 @@ onClipEvent(unload){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
+	if (_parent.宠物属性.色彩单位)
+	{
+		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
+	}
    gotoAndPlay("a" + random(2));
 }
 ]]></script>

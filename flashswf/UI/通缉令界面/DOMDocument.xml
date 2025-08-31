@@ -5,15 +5,16 @@
           <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
           <DOMFolderItem name="sound" itemID="6787c9fe-000002e9"/>
           <DOMFolderItem name="sprite" itemID="6787c9fe-00000325"/>
-          <DOMFolderItem name="UI重构" itemID="67876084-0000176f"/>
-          <DOMFolderItem name="UI重构/通缉令UI" itemID="663afec8-00000c0c"/>
-          <DOMFolderItem name="UI重构/通缉令UI/通缉单" itemID="6787c9fe-000002e1"/>
+          <DOMFolderItem name="UI重构" itemID="67876084-0000176f" isExpanded="true"/>
+          <DOMFolderItem name="UI重构/通缉令UI" itemID="663afec8-00000c0c" isExpanded="true"/>
+          <DOMFolderItem name="UI重构/通缉令UI/通缉单" itemID="6787c9fe-000002e1" isExpanded="true"/>
           <DOMFolderItem name="UI重构/通缉令UI/通缉单/LEE" itemID="6787c9fe-000002e2"/>
           <DOMFolderItem name="UI重构/通缉令UI/通缉单/浮士德兄弟" itemID="6787c9fe-0000030b"/>
           <DOMFolderItem name="UI重构/通缉令UI/通缉单/魔女" itemID="6787c9fe-000002e4"/>
           <DOMFolderItem name="UI重构/通缉令UI/通缉单/牛仔" itemID="6787c9fe-0000031a"/>
-          <DOMFolderItem name="UI重构/通缉令UI/通缉单/尾上世莉架" itemID="6787c9fe-000002e6"/>
+          <DOMFolderItem name="UI重构/通缉令UI/通缉单/尾上世莉架" itemID="6787c9fe-000002e6" isExpanded="true"/>
           <DOMFolderItem name="UI重构/通缉令UI/通缉单/武士铁血" itemID="6787c9fe-000002f8"/>
+          <DOMFolderItem name="UI重构/通缉令UI/通缉单/异形副本" itemID="68b429d9-000002b0" isExpanded="true"/>
           <DOMFolderItem name="UI重构/通缉令UI/通缉单/硬化僵尸" itemID="6787c9fe-000002f2"/>
      </folders>
      <media>
@@ -23,6 +24,7 @@
           <DOMBitmapItem name="UI重构/通缉令UI/通缉单/魔女/bitmap8.jpg" itemID="6637df9b-00003ce0" sourceExternalFilepath="./LIBRARY/UI重构/通缉令UI/通缉单/魔女/bitmap8.jpg" sourceLastImported="1714937755" quality="50" href="UI重构/通缉令UI/通缉单/魔女/bitmap8.jpg" bitmapDataHRef="M 2 1736952319.dat" frameRight="5520" frameBottom="4980" isJPEG="true"/>
           <DOMSoundItem name="sound/sound18.wav" itemID="6597607a-00000205" sourceExternalFilepath="./LIBRARY/sound/sound18.wav" sourceLastImported="1704419450" href="sound/sound18.wav" soundDataHRef="M 5 1736952319.dat" format="22kHz 16bit Mono" sampleCount="1893" exportFormat="10"/>
           <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="./LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" href="sound/sound19.wav" soundDataHRef="M 6 1736952319.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
+          <DOMBitmapItem name="位图 12" itemID="68b42ae4-000003f2" sourceLastImported="1756637924" originalCompressionType="lossless" quality="50" href="位图 12" bitmapDataHRef="M 12 1756637924.dat" frameRight="10140" frameBottom="6500"/>
           <DOMBitmapItem name="UI重构/通缉令UI/通缉单/尾上世莉架/位图 4" itemID="663a47b4-00000ed6" sourceExternalFilepath="./LIBRARY/UI重构/通缉令UI/通缉单/尾上世莉架/位图 4" sourceLastImported="1715095476" originalCompressionType="lossless" quality="50" href="UI重构/通缉令UI/通缉单/尾上世莉架/位图 4" bitmapDataHRef="M 4 1736952319.dat" frameRight="8000" frameBottom="8000"/>
      </media>
      <symbols>
@@ -120,7 +122,7 @@
           <Include href="UI重构/通缉令UI/通缉单/牛仔/通缉单-牛仔.xml" loadImmediate="false" itemID="66391106-00002e61" lastModified="1715015973"/>
           <Include href="UI重构/通缉令UI/通缉单/牛仔/通缉单模板.xml" loadImmediate="false" itemID="663910f1-00002e54" lastModified="1715013966"/>
           <Include href="UI重构/通缉令UI/通缉单/尾上世莉架/通缉单-士力架.xml" loadImmediate="false" itemID="663a48b5-00000ee2" lastModified="1715095950"/>
-          <Include href="UI重构/通缉令UI/通缉单/尾上世莉架/通缉单模板.xml" loadImmediate="false" itemID="663a4918-00000eee" lastModified="1715095668"/>
+          <Include href="UI重构/通缉令UI/通缉单/尾上世莉架/通缉单模板.xml" loadImmediate="false" itemID="663a4918-00000eee" lastModified="1756638129"/>
           <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 3.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000094a" lastModified="1701332846"/>
           <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000094b" lastModified="1701332846"/>
           <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 5.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000094c" lastModified="1701332846"/>
@@ -139,6 +141,8 @@
           <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 29.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000964" lastModified="1715008239"/>
           <Include href="UI重构/通缉令UI/通缉单/武士铁血/通缉单-武士铁血.xml" loadImmediate="false" itemID="663912cc-00007e60" lastModified="1715016448"/>
           <Include href="UI重构/通缉令UI/通缉单/武士铁血/通缉单模板.xml" loadImmediate="false" itemID="663912b9-00007e53" lastModified="1715008317"/>
+          <Include href="UI重构/通缉令UI/通缉单/异形副本/通缉单-异形副本.xml" loadImmediate="false" itemID="68b429e3-000002bf" lastModified="1756637719"/>
+          <Include href="UI重构/通缉令UI/通缉单/异形副本/通缉单模板 副本.xml" loadImmediate="false" itemID="68b429f7-000002cd" lastModified="1756638246"/>
           <Include href="UI重构/通缉令UI/通缉单/硬化僵尸/Symbol 17.xml" itemIcon="1" loadImmediate="false" itemID="6637e053-00003d15" lastModified="1699960315"/>
           <Include href="UI重构/通缉令UI/通缉单/硬化僵尸/Symbol 18.xml" itemIcon="1" loadImmediate="false" itemID="6637e053-00003d16" lastModified="1699960315"/>
           <Include href="UI重构/通缉令UI/通缉单/硬化僵尸/Symbol 19.xml" itemIcon="1" loadImmediate="false" itemID="6637e053-00003d17" lastModified="1699960315"/>
@@ -154,7 +158,7 @@
           <Include href="酒吧场景（去除遮罩部分）.xml" itemIcon="1" loadImmediate="false" itemID="67c33998-000002d2" lastModified="1740847512"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="场景 1">
+          <DOMTimeline name="场景 1" currentFrame="1">
                <layers>
                     <DOMLayer name="Labels Layer" color="#B780F7">
                          <frames>
@@ -370,7 +374,7 @@ on(rollOut){
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="通缉令" color="#9B76A2" parentLayerIndex="2" outline="true" useOutlineView="true" autoNamed="false">
+                    <DOMLayer name="通缉令" color="#9B76A2" parentLayerIndex="2" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
@@ -670,12 +674,12 @@ on (release) {
 }]]></script>
                                              </Actionscript>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/通缉单/尾上世莉架/通缉单-士力架" centerPoint3DX="527.65" centerPoint3DY="176">
+                                        <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/通缉单/尾上世莉架/通缉单-士力架" centerPoint3DX="392.15" centerPoint3DY="170.75">
                                              <matrix>
-                                                  <Matrix a="0.699996948242188" d="0.699996948242188" tx="461.5" ty="54.55"/>
+                                                  <Matrix a="0.408432006835938" b="-0.0607757568359375" c="0.0607757568359375" d="0.408416748046875" tx="342.95" ty="105.6"/>
                                              </matrix>
                                              <transformationPoint>
-                                                  <Point x="94.5" y="173.5"/>
+                                                  <Point x="94.5" y="173.6"/>
                                              </transformationPoint>
                                              <Actionscript>
                                                   <script><![CDATA[onClipEvent (load) {
@@ -684,7 +688,7 @@ on (release) {
 }
 on (rollOver) {
 	_root.注释(200,显示文字);
-	this._xscale = this._yscale = 75; // 将影片剪辑的水平和垂直缩放设置为50%
+	this._xscale = this._yscale = 50; // 将影片剪辑的水平和垂直缩放设置为50%
 	this._x -= 10; // 将元件的水平位置向左偏移10个像素
 	this._y -= 10; // 将元件的水平位置向上偏移10个像素
 	当前层级 = this.getDepth();// 保存当前元件的层级值
@@ -692,7 +696,43 @@ on (rollOver) {
 }
 on (rollOut) {
 	_root.注释结束();
-	this._xscale = this._yscale = 70;// 将影片剪辑的水平和垂直缩放设置为44.3%
+	this._xscale = this._yscale = 44.3;// 将影片剪辑的水平和垂直缩放设置为44.3%
+	this._x += 10; // 将元件的水平位置向右偏移10个像素
+	this._y += 10; // 将元件的水平位置向下偏移10个像素
+	this.swapDepths(当前层级); // 将影片剪辑的深度恢复到原始层级值
+}
+on (release) {
+	_parent.组装副本任务(this);
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/通缉单/异形副本/通缉单-异形副本" selected="true" centerPoint3DX="497.3" centerPoint3DY="139.8">
+                                             <matrix>
+                                                  <Matrix a="0.456329345703125" b="0.027679443359375" c="-0.027679443359375" d="0.456253051757813" tx="459.05" ty="58.1"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="94.45" y="173.65"/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent (load) {
+	if (_root.主线任务进度 < 120)
+	{
+		this._visible = false;
+	}
+	显示文字 = _root.获得翻译("异形集群");
+	NPC任务_任务_关卡路径 = "通缉任务之异形";
+}
+on (rollOver) {
+	_root.注释(200,显示文字);
+	this._xscale = this._yscale = 50; // 将影片剪辑的水平和垂直缩放设置为50%
+	this._x -= 10; // 将元件的水平位置向左偏移10个像素
+	this._y -= 10; // 将元件的水平位置向上偏移10个像素
+	当前层级 = this.getDepth();// 保存当前元件的层级值
+	this.swapDepths(_root.getNextHighestDepth()); // 将当前影片剪辑置于最顶层
+}
+on (rollOut) {
+	_root.注释结束();
+	this._xscale = this._yscale = 44.3;// 将影片剪辑的水平和垂直缩放设置为44.3%
 	this._x += 10; // 将元件的水平位置向右偏移10个像素
 	this._y += 10; // 将元件的水平位置向下偏移10个像素
 	this.swapDepths(当前层级); // 将影片剪辑的深度恢复到原始层级值
@@ -1247,7 +1287,7 @@ on(rollOut){
                          </frames>
                     </DOMLayer>
                     <DOMLayer name="背景" color="#FF4FFF" autoNamed="false" layerType="folder"/>
-                    <DOMLayer name="点一杯酒" color="#DACC79" parentLayerIndex="11" current="true" isSelected="true" autoNamed="false">
+                    <DOMLayer name="点一杯酒" color="#DACC79" parentLayerIndex="11" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="3" keyMode="9728">
                                    <elements>
@@ -1497,12 +1537,12 @@ on (release) {
 [13040 2064 13030 2044!13030 2044[13016 2018 13008 1993!13008 1993[13000 1961 13000 1947!13000 1947|12980 1897!12980 1897|12984 1885!12984 1885|12970 1881!12970 1881[12980 1873 12976 1847!12976 1847[12976 1824 12984 1820!12984 1820[12980
  1818 12978 1806!12978 1806[12978 1794 12970 1784!12970 1784[12962 1790 12962 1806!12962 1806[12964 1824 12960 1828"/>
                                                   <Edge fillStyle0="1" edges="
-!13117 2358[13119 2364 13121 2368!13121 2368|13119 2356!13119 2356[13121 2358 13125 2372!13125 2372|13117 2372!13117 2372|13117 2358!13083 3485[13081 3487 13077 3485!13077 3485[13077 #D9B.1 13075 3483!13075 3483[#3317.1 #D9B.08 13083
- 3485!13091 3485[13091 3495 13095 3505!13095 3505[13099 3517 13089 3517!13089 3517|13087 3485!13087 3485|13091 3485"/>
+!13117 2358[13119 2364 13121 2368!13121 2368|13119 2356!13119 2356[13121 2358 13125 2372!13125 2372|13117 2372!13117 2372|13117 2358!13091 3485[13091 3495 13095 3505!13095 3505[13099 3517 13089 3517!13089 3517|13087 3485!13087 3485|13091
+ 3485!13077 3485[13077 #D9B.1 13075 3483!13075 3483[#3317.1 #D9B.08 13083 3485!13083 3485[13081 3487 13077 3485"/>
                                                   <Edge fillStyle1="1" edges="
 !13988 6445[13958 6419 13984 6576!13984 6576[13986 6514 13988 6445!13793 8579|13789 8540!13789 8540|13787 8542!13787 8542|13793 8579!8601 1394[8592 1396 8594 1376!8594 1376[8594 1357 8580 1361!8580 1361[8594 1349 8598 1368!8598 1368[8600
- 1378 8601 1394!9506 1120|9512 1186!9512 1186|9504 1186!9504 1186|9506 1120!6848 1392|6827 1408!6827 1408|6829 1376!6829 1376|6848 1392!11247 7798|11275 7745!11275 7745[11318 7762 11354 7768!11354 7768|11388 7772!11388 7772|11418 7772
-!11418 7772[11458 7770 11527 7764!11527 7764[11613 7768 11627 7725!11627 7725|11517 7737!11517 7737|11519 7707!11519 7707[11470 7707 11328 7717!11328 7717[11203 7727 11155 7725!11155 7725|11157 7766!11157 7766|11247 7798!11629 7715|11627
+ 1378 8601 1394!9512 1186|9504 1186!9504 1186|9506 1120!9506 1120|9512 1186!6829 1376|6848 1392!6848 1392|6827 1408!6827 1408|6829 1376!11275 7745[11318 7762 11354 7768!11354 7768|11388 7772!11388 7772|11418 7772!11418 7772[11458 7770
+ 11527 7764!11527 7764[11613 7768 11627 7725!11627 7725|11517 7737!11517 7737|11519 7707!11519 7707[11470 7707 11328 7717!11328 7717[11203 7727 11155 7725!11155 7725|11157 7766!11157 7766|11247 7798!11247 7798|11275 7745!11629 7715|11627
  7725!11627 7725|11636 7723!11636 7723[11636 7717 11629 7715"/>
                                                   <Edge fillStyle0="1" edges="
 !12096 7862|12094 7862!12094 7862[12106 7860 12125 7858!12125 7858[12159 7856 12189 7854!12189 7854|12203 7872!12203 7872|12213 7884!12213 7884|12215 7888!12215 7888|12171 7888!12171 7888|12159 7884!12159 7884[12163 7884 12169 7884!12169
@@ -1515,9 +1555,9 @@ on (release) {
  7405!1703 7405|1721 7472!1721 7472|1729 7474!5332 7953[5290 7955 5231 7959!5231 7959[5052 7969 5000 7979!5000 7979[4992 7977 4986 7977!4986 7977[4994 7969 5024 7959!5024 7959[5048 7953 5078 7947!5078 7947[5245 7961 5262 7939!5262 7939
 [5262 7931 5266 7929!5266 7929[5274 7929 5314 7939!5314 7939|5380 7937!5380 7937[5362 7945 5332 7953!1790 8162[1796 8160 1802 8160!1802 8160[1810 8162 1808 8164!1808 8164[1802 8164 1794 8164!1794 8164[1792 8162 1790 8162"/>
                                                   <Edge fillStyle1="1" edges="
-!1556 9021[1548 9017 1548 9011!1548 9011|1544 9011!1544 9011[1542 9021 1556 9021!1556 9021[1562 9023 1570 9021!1570 9021|1566 9019!1566 9019|1556 9021"/>
+!1556 9021[1562 9023 1570 9021!1570 9021|1566 9019!1566 9019|1556 9021!1548 9011|1544 9011!1544 9011[1542 9021 1556 9021!1556 9021[1548 9017 1548 9011"/>
                                                   <Edge fillStyle0="1" edges="
-!7325 7949[7381 7953 7453 7945!7453 7945[7492 7941 7518 7941!7518 7941|7327 7961!7327 7961|7325 7949"/>
+!7453 7945[7492 7941 7518 7941!7518 7941|7327 7961!7327 7961|7325 7949!7325 7949[7381 7953 7453 7945"/>
                                              </edges>
                                         </DOMShape>
                                    </elements>
@@ -1584,11 +1624,11 @@ on (release) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="Layer 24" color="#9674AB">
+                    <DOMLayer name="Layer 24" color="#9674AB" locked="true">
                          <frames>
                               <DOMFrame index="0" duration="3" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="button/Symbol 727" symbolType="button">
+                                        <DOMSymbolInstance libraryItemName="button/Symbol 727" selected="true" symbolType="button">
                                              <matrix>
                                                   <Matrix tx="142.55" ty="65.45"/>
                                              </matrix>
@@ -1603,7 +1643,7 @@ on (release) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="Layer 25" color="#AFE24F">
+                    <DOMLayer name="Layer 25" color="#AFE24F" locked="true">
                          <frames>
                               <DOMFrame index="0" duration="3" keyMode="9728">
                                    <elements>
@@ -1638,6 +1678,8 @@ on (release) {
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="506367" publishTime="1756638387"/>
+          <PublishItem publishSize="506325" publishTime="1756638259"/>
           <PublishItem publishSize="433942" publishTime="1752775689"/>
           <PublishItem publishSize="438232" publishTime="1738917878"/>
           <PublishItem publishSize="470682" publishTime="1736954783"/>
