@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 130" itemID="6577b699-000009ae" lastModified="1750535869" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="Symbol 130" currentFrame="43">
+    <DOMTimeline name="Symbol 130" currentFrame="31">
       <layers>
         <DOMLayer name="Script Layer" color="#AAB49D" locked="true">
           <frames>
@@ -31,7 +31,7 @@
       }
    }
 }
-if(_parent.空手动作类型 && (_parent.空手动作类型 == "巨拳" || _parent.空手动作类型 == "拳击" || _parent.空手动作类型 == "强化")){
+if(_parent.空手动作类型 && (_parent.空手动作类型 == "巨拳" || _parent.空手动作类型 == "单臂巨拳" || _parent.空手动作类型 == "拳击" || _parent.空手动作类型 == "强化")){
 	gotoAndPlay("冲拳");
 }]]></script>
               </Actionscript>
@@ -544,7 +544,7 @@ if (!抓取 && 蓄力 && 蓄力>=20 && Math.abs(_parent.Z轴坐标 - _root.gamew
             </DOMFrame>
             <DOMFrame index="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -836,7 +836,7 @@ _parent.play();
             </DOMFrame>
             <DOMFrame index="43" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="-26.4" centerPoint3DY="44.7">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-26.4" centerPoint3DY="44.7">
                   <matrix>
                     <Matrix a="5.50389099121094" d="1.91461181640625" tx="-24.5" ty="43.85"/>
                   </matrix>

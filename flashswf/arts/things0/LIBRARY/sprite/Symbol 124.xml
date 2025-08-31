@@ -1789,7 +1789,7 @@ else
 	子弹属性.shootZ = 子弹属性.shootZ;
 	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 	*/
-	if(_parent._parent.空手动作类型 && _parent._parent.空手动作类型 == "巨拳"){
+	if(_parent._parent.空手动作类型 && (_parent._parent.空手动作类型 == "巨拳" || _parent._parent.空手动作类型 == "单臂巨拳" )){
 		子弹属性.暴击 = function(当前子弹)
 				{
 					return 1.5;
@@ -1845,7 +1845,7 @@ else
 	子弹属性.区域定位area = this.area;
 	子弹属性.垂直击退速度 = 3;
 	子弹属性.不硬直 = true;
-	if(_parent._parent.空手动作类型 && _parent._parent.空手动作类型 == "巨拳"){
+	if(_parent._parent.空手动作类型 && (_parent._parent.空手动作类型 == "巨拳" || _parent._parent.空手动作类型 == "单臂巨拳" )){
 		子弹属性.暴击 = function(当前子弹)
 				{
 					return 1.5;
@@ -1925,7 +1925,7 @@ else
 	子弹属性.区域定位area = this.area;
 	子弹属性.垂直击退速度 = 3;
 	子弹属性.不硬直 = true;
-	if(_parent._parent.空手动作类型 && _parent._parent.空手动作类型 == "巨拳"){
+	if(_parent._parent.空手动作类型 && (_parent._parent.空手动作类型 == "巨拳" || _parent._parent.空手动作类型 == "单臂巨拳" )){
 		子弹属性.暴击 = function(当前子弹)
 				{
 					return 1.5;
