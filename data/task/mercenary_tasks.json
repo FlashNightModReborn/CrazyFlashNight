@@ -1168,6 +1168,36 @@
       ],
 
       "chain": "委托"
+    },
+    {
+      "id": 20068,
+      "title": "通缉任务之异形",
+      "description": "调查并清理神秘的异形集群。",
+      "imageurl": "flashswf/images/wanted_fushidexiongdi_index.swf",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MERC_FAUST_GET",
+      "get_npc": "酒保",
+
+      "finish_requirements": ["通缉任务之异形#冒险"],
+      "finish_conversation": "$MERC_FAUST_FINISH",
+      "finish_npc": "酒保",
+      "recommended_level": "40-45",
+      "restricted_level": 40,
+      "deposit": 10000,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "经验值#100000",
+        "复活币#10",
+        "异形骨盔#1",
+        "异形骨甲#1",
+        "异形骨手套#1",
+        "异形骨腿甲#1",
+        "异形骨鞋#1"
+      ],
+
+      "chain": "委托"
     }
   ]
 }
