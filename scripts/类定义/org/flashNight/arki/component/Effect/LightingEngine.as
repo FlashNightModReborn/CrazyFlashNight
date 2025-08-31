@@ -18,6 +18,7 @@
  *   var params = LightingEngine.generateLightParameters(3.2, "夜视");
  */
 import org.flashNight.arki.component.Effect.ColorEngine;
+import org.flashNight.naki.Interpolation.Interpolatior;
 import flash.geom.ColorTransform;
 import flash.filters.ColorMatrixFilter;
 
@@ -42,21 +43,6 @@ class org.flashNight.arki.component.Effect.LightingEngine {
         return emptyTransform;
     }
     
-    /**
-     * 线性插值函数
-     * 
-     * @param value 当前值
-     * @param start 起始值  
-     * @param end 结束值
-     * @param startOutput 起始输出值
-     * @param endOutput 结束输出值
-     * @return 插值结果
-     */
-    private static function linearInterpolation(value:Number, start:Number, end:Number, startOutput:Number, endOutput:Number):Number {
-        if (start == end) return startOutput;
-        var ratio:Number = (value - start) / (end - start);
-        return startOutput + ratio * (endOutput - startOutput);
-    }
     
     /**
      * 生成光照调整参数
@@ -66,7 +52,7 @@ class org.flashNight.arki.component.Effect.LightingEngine {
      * @param visualCondition 视觉情况 ("光照", "夜视" 等)
      * @return 包含色彩调整参数的对象，如果光照等级为7则返回null
      */
-    public static function generateLightParameters(lightLevel:Number, visualCondition:String):Object {
+    private static function generateLightParameters(lightLevel:Number, visualCondition:String):Object {
         if (lightLevel === 7) {
             return null; // 光照等级为7时卸载特殊调整
         }
@@ -98,14 +84,14 @@ class org.flashNight.arki.component.Effect.LightingEngine {
             
             // 获取映射表中当前和下一等级的数据
             params = {
-                红色乘数: LightingEngine.linearInterpolation(lightLevel, baseLevel, nextLevel, baseData.红色乘数, nextData.红色乘数),
-                绿色乘数: LightingEngine.linearInterpolation(lightLevel, baseLevel, nextLevel, baseData.绿色乘数, nextData.绿色乘数),
-                蓝色乘数: LightingEngine.linearInterpolation(lightLevel, baseLevel, nextLevel, baseData.蓝色乘数, nextData.蓝色乘数),
-                透明乘数: LightingEngine.linearInterpolation(lightLevel, baseLevel, nextLevel, baseData.透明乘数, nextData.透明乘数),
-                亮度: LightingEngine.linearInterpolation(lightLevel, baseLevel, nextLevel, baseData.亮度, nextData.亮度),
-                对比度: LightingEngine.linearInterpolation(lightLevel, baseLevel, nextLevel, baseData.对比度, nextData.对比度),
-                饱和度: LightingEngine.linearInterpolation(lightLevel, baseLevel, nextLevel, baseData.饱和度, nextData.饱和度),
-                色相: LightingEngine.linearInterpolation(lightLevel, baseLevel, nextLevel, baseData.色相, nextData.色相)
+                红色乘数: Interpolatior.linear(lightLevel, baseLevel, nextLevel, baseData.红色乘数, nextData.红色乘数),
+                绿色乘数: Interpolatior.linear(lightLevel, baseLevel, nextLevel, baseData.绿色乘数, nextData.绿色乘数),
+                蓝色乘数: Interpolatior.linear(lightLevel, baseLevel, nextLevel, baseData.蓝色乘数, nextData.蓝色乘数),
+                透明乘数: Interpolatior.linear(lightLevel, baseLevel, nextLevel, baseData.透明乘数, nextData.透明乘数),
+                亮度: Interpolatior.linear(lightLevel, baseLevel, nextLevel, baseData.亮度, nextData.亮度),
+                对比度: Interpolatior.linear(lightLevel, baseLevel, nextLevel, baseData.对比度, nextData.对比度),
+                饱和度: Interpolatior.linear(lightLevel, baseLevel, nextLevel, baseData.饱和度, nextData.饱和度),
+                色相: Interpolatior.linear(lightLevel, baseLevel, nextLevel, baseData.色相, nextData.色相)
             };
         }
         
@@ -156,17 +142,5 @@ class org.flashNight.arki.component.Effect.LightingEngine {
                 var transform:ColorTransform = ColorEngine.basicAdjustColor(target, params);
             }
         }
-    }
-    
-    /**
-     * 兼容性方法：设置滤镜
-     * 提供与原有代码的兼容性
-     * 
-     * @param target 目标影片剪辑
-     * @param filterInstance 滤镜实例
-     * @param filterType 滤镜类型
-     */
-    public static function setFilter(target:MovieClip, filterInstance:Object, filterType:Function):Void {
-        ColorEngine.setFilter(target, filterInstance, filterType);
     }
 }
