@@ -29,15 +29,15 @@
                   </strokes>
                   <edges>
                     <Edge fillStyle1="2" strokeStyle="1" edges="!975 466|1065 466"/>
-                    <Edge fillStyle1="3" strokeStyle="1" edges="!1065 466|1122 466!1122 466|1122 526!1122 526|1086 526"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!1086 526|1007 526"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!1007 526|725 526"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!725 526|627 526"/>
-                    <Edge fillStyle1="3" strokeStyle="1" edges="!627 526|570 526!570 526|570 466!570 466|635 466"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!635 466|730 466"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!730 466|975 466"/>
-                    <Edge fillStyle0="2" fillStyle1="1" edges="!975 466[1008 489 1008 519!1008 519|1007 526"/>
                     <Edge fillStyle0="3" fillStyle1="2" edges="!1065 466|1068 468!1068 468[1090 487 1090 508!1090 508|1086 526"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!1086 526|1007 526"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!1007 526|1008 519!1008 519[1008 489 975 466"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!975 466|730 466"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!730 466|635 466"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!635 466|570 466!570 466|570 526!570 526|627 526"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!627 526|725 526"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!725 526|1007 526"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!1065 466|1122 466!1122 466|1122 526!1122 526|1086 526"/>
                     <Edge fillStyle0="1" fillStyle1="2" edges="!730 466|729 468!729 468[720 489 720 515!720 515|725 526"/>
                     <Edge fillStyle0="2" fillStyle1="3" edges="!635 466[624 494 624 508!624 508|627 526"/>
                   </edges>

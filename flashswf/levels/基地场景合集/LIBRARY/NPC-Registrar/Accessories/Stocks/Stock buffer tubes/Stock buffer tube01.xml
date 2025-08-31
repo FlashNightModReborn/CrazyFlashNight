@@ -75,6 +75,9 @@
                     <DOMShape>
                       <fills>
                         <FillStyle index="1">
+                          <SolidColor color="#2D2D2D"/>
+                        </FillStyle>
+                        <FillStyle index="2">
                           <LinearGradient>
                             <matrix>
                               <Matrix a="0" b="0.001983642578125" c="-0.015869140625" d="0" tx="15.05" ty="1.6"/>
@@ -85,27 +88,24 @@
                             <GradientEntry color="#161618" ratio="1"/>
                           </LinearGradient>
                         </FillStyle>
-                        <FillStyle index="2">
-                          <SolidColor color="#2D2D2D"/>
-                        </FillStyle>
                       </fills>
                       <strokes>
                         <StrokeStyle index="1">
-                          <SolidStroke scaleMode="normal" caps="none" weight="0.8">
-                            <fill>
-                              <SolidColor/>
-                            </fill>
-                          </SolidStroke>
-                        </StrokeStyle>
-                        <StrokeStyle index="2">
                           <SolidStroke scaleMode="normal" weight="0.3">
                             <fill>
                               <SolidColor/>
                             </fill>
                           </SolidStroke>
                         </StrokeStyle>
-                        <StrokeStyle index="3">
+                        <StrokeStyle index="2">
                           <SolidStroke scaleMode="normal" weight="0.6">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                        <StrokeStyle index="3">
+                          <SolidStroke scaleMode="normal" caps="none" weight="0.8">
                             <fill>
                               <SolidColor/>
                             </fill>
@@ -113,12 +113,12 @@
                         </StrokeStyle>
                       </strokes>
                       <edges>
-                        <Edge fillStyle0="1" strokeStyle="3" edges="!0 0|0 65"/>
-                        <Edge fillStyle0="1" fillStyle1="2" edges="!0 65|12 65"/>
-                        <Edge fillStyle0="1" strokeStyle="2" edges="!12 65|12 0"/>
-                        <Edge fillStyle0="1" strokeStyle="1" edges="!12 0|0 0"/>
-                        <Edge fillStyle0="2" strokeStyle="3" edges="!0 65|0 96!0 96|12 96"/>
-                        <Edge fillStyle0="2" strokeStyle="2" edges="!12 96|12 65"/>
+                        <Edge fillStyle0="2" strokeStyle="2" edges="!0 0|0 65"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="!0 65|12 65"/>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="!12 65|12 0"/>
+                        <Edge fillStyle0="2" strokeStyle="3" edges="!12 0|0 0"/>
+                        <Edge fillStyle0="1" strokeStyle="2" edges="!0 65|0 96!0 96|12 96"/>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!12 96|12 65"/>
                         <Edge cubics="!12 0(;12,0 0,0 0,0q12 0 0 0);"/>
                         <Edge cubics="!12 96(;12,96 0,96 0,96q12 96 0 96);"/>
                         <Edge cubics="!0 65(;0,65 0,96 0,96q0 65 0 96);"/>

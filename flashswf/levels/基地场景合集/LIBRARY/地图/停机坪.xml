@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/停机坪" itemID="668aa0dc-000051de" linkageExportForAS="true" linkageIdentifier="基地场景-基地房顶" lastModified="1756648723" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/停机坪" itemID="668aa0dc-000051de" linkageExportForAS="true" linkageIdentifier="基地场景-基地房顶" lastModified="1756650519" lastUniqueIdentifier="8">
   <timeline>
     <DOMTimeline name="停机坪">
       <layers>
@@ -172,19 +172,8 @@ onClipEvent (load) {
 	身高 = 175;
 	性别 = "男";
 	方向 = "右";
-   if(_root.NPCTaskCheck(名字).result == "接受任务")
-   {
-      _root.发布消息(名字 + "似乎需要你的帮助");
-        this.文字信息.任务接取提示._visible = 1;
-   }else {
-        this.文字信息.任务接取提示._visible = 0;
-    }
-	默认对话 = [[], [], []];
-	默认对话[0][0] = ["Bard", "神秘学者", "Bard", "你说你记得曾经做过一个梦？站在这里的是一个280cm的穿着武士盔甲的铁血战士？还拿着翻译机自称远古使者？", "普通"];
-	默认对话[0][1] = ["Bard", "神秘学者", "Bard", "令人疑惑的梦境，从神秘学的角度来看这也足够匪夷所思，兴许是梦到了另一个平行世界的情景吧。", "普通"];
-	默认对话[1][0] = ["Bard", "神秘学者", "Bard", "文明收割者……？不明白，应该是都市传说吧。", "普通"];
-	默认对话[2][0] = ["Bard", "神秘学者", "Bard", "听说摇滚公园的人非常没素质，会用“做题蛆”来形容我们这种学者。真是大跌眼镜。", "普通"];
    NPC任务_任务_关卡路径 = "铁血乱舞";
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
