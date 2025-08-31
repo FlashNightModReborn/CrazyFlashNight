@@ -1,6 +1,7 @@
 ﻿import org.flashNight.gesh.object.*;
 import org.flashNight.arki.unit.UnitComponent.Initializer.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.arki.component.Effect.*;
 
 
 _root.最大等级 = 60;
@@ -57,7 +58,7 @@ _root.健身房主角是否升级 = function()
 		if(!控制对象.mp || 控制对象.mp < 控制对象.mp满血值) 控制对象.mp = 控制对象.mp满血值;
 		_root.玩家信息界面.刷新hp显示();
 		_root.玩家信息界面.刷新mp显示();
-		_root.效果("升级动画",控制对象._x,控制对象._y,100);
+		EffectSystem.Effect("升级动画",控制对象._x,控制对象._y,100);
 		_root.自动存盘();
 	}
 }
@@ -84,7 +85,7 @@ _root.主角是否升级 = function(当前等级, 当前经验值)
 		控制对象.mp = 控制对象.mp满血值;
 		_root.玩家信息界面.刷新hp显示();
 		_root.玩家信息界面.刷新mp显示();
-		_root.效果("升级动画",控制对象._x,控制对象._y,100);
+		EffectSystem.Effect("升级动画",控制对象._x,控制对象._y,100);
 		// _root.聊天窗.传言("勤奋的" + _root.玩家称号 + _root.角色名 + "升到了" + _root.等级 + "级！");
 		_root.自动存盘();
 	}
@@ -178,7 +179,7 @@ _root.宠物升级加载 = function(i){
 		宠物对象.宠物属性初始化(宠物对象.等级);
 		宠物对象.hp = 宠物对象.hp满血值;
 
-		_root.效果("升级动画2",宠物对象._x,宠物对象._y,100);
+		EffectSystem.Effect("升级动画2",宠物对象._x,宠物对象._y,100);
 	}
 }
 

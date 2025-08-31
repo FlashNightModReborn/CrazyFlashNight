@@ -1,4 +1,5 @@
 ﻿import org.flashNight.neur.Event.EventDispatcher;
+import org.flashNight.arki.component.Effect.*;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.RespawnEventComponent {
     /**
@@ -55,6 +56,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.RespawnE
             target._visible = false;
         }
 
-        _root.效果("药剂动画", target._x, target._y, 100);
+        EffectSystem.Effect("药剂动画", target._x, target._y, 100);
     }
 }

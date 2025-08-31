@@ -1,5 +1,6 @@
 ﻿import org.flashNight.neur.Event.*;
 import org.flashNight.gesh.object.*;
+import org.flashNight.arki.component.Effect.*;
 
 
 _root.装备生命周期函数.主唱光剑初始化 = function(ref:Object, param:Object) 
@@ -229,7 +230,7 @@ onClipEvent (load) {
 		是否为敌人 = 自机.是否为敌人;
 		僵尸型敌人newname = 自机[增幅次数][增幅名] + 兵种;
 		_root.加载游戏世界人物(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:自机._x, _y:自机._y, 等级:this.等级, 名字:this.名字 + "[" + 扭蛋点 + "]", 是否为敌人:this.是否为敌人, 身高:this.身高});
-		_root.效果("升级动画2",自机._x,自机._y,100);
+		EffectSystem.Effect("升级动画2",自机._x,自机._y,100);
 		_root.发布消息("召唤主唱的伙伴[" + 名字 + "]！");
 	};
 	this.释放红色音符 = function()
@@ -293,7 +294,7 @@ onClipEvent (load) {
 						{
 							_root.gameworld[each].hp = _root.gameworld[each].hp满血值;
 						}
-						_root.效果("猩红增幅",_root.gameworld[each]._x,_root.gameworld[each]._y,100,true);
+						EffectSystem.Effect("猩红增幅",_root.gameworld[each]._x,_root.gameworld[each]._y,100,true);
 						是否加血成功 = true;
 					}
 				}

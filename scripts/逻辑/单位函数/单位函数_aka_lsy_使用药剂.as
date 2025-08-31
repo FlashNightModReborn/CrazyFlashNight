@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.arki.component.Effect.*;
 
 _root.使用药剂 = function(物品名) {
     var 控制对象 = TargetCacheManager.findHero();
@@ -27,7 +28,7 @@ _root.使用药剂 = function(物品名) {
             控制对象.mp = 控制对象.mp满血值;
         }
         _root.玩家信息界面.刷新mp显示();
-        _root.效果("药剂动画", 控制对象._x, 控制对象._y, 100);
+        EffectSystem.Effect("药剂动画", 控制对象._x, 控制对象._y, 100);
     } else if (drugData.friend == 1) {
         _root.佣兵集体加血(drugData.affecthp + Math.min(Math.floor(drugData.affecthp * 炼金等级 * 0.05), 500));
     } else if (drugData.friend == "淬毒") {
@@ -35,7 +36,7 @@ _root.使用药剂 = function(物品名) {
         if (淬毒量) {
             控制对象.淬毒 = 淬毒量 + Math.min(Math.floor(淬毒量 * 炼金等级 * 0.07), 2000);
         }
-        _root.效果("淬毒动画", 控制对象._x, 控制对象._y, 100);
+        EffectSystem.Effect("淬毒动画", 控制对象._x, 控制对象._y, 100);
     } else if (drugData.friend == "净化") {
         var 净化量 = Number(drugData.clean) + Math.min(Math.floor(5 * 炼金等级), 50);
         if (净化量) {
@@ -45,6 +46,6 @@ _root.使用药剂 = function(物品名) {
             控制对象.麻痹值 = -10 * 净化量;
         }
         var debuff清除概率 = 净化量 * 2;
-        _root.效果("净化动画", 控制对象._x, 控制对象._y, 100);
+        EffectSystem.Effect("净化动画", 控制对象._x, 控制对象._y, 100);
     }
 }

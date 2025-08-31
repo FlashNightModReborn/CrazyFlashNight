@@ -1,4 +1,6 @@
-﻿/**
+﻿import org.flashNight.arki.component.Effect.*;
+
+/**
  * 消除子弹系统 - 高性能子弹碰撞检测与消除
  * 
  * 功能说明：
@@ -99,7 +101,7 @@ _root.消除子弹 = function(obj)
 			if(子弹区域area.hitTest(区域定位area)){
 				子弹实例.击中地图 = true;  // 标记子弹已被消除
 				// 播放子弹消失特效（如果已定义）
-				_root.效果(子弹实例.击中地图效果,子弹实例._x,子弹实例._y);
+				EffectSystem.Effect(子弹实例.击中地图效果,子弹实例._x,子弹实例._y);
 				子弹实例.gotoAndPlay("消失");  // 触发子弹消失动画
 			}
 		}

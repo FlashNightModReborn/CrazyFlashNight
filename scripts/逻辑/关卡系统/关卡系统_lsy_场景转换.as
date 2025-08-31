@@ -5,6 +5,7 @@ _root.操控目标表 = [_root.控制目标];
 import org.flashNight.neur.Event.*;
 import org.flashNight.arki.scene.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.arki.component.Effect.*;
 
 _root.转场景记录数据 = function(){
 	_root.转场景记录数据第一次记录 = true;
@@ -262,7 +263,7 @@ _root.加载游戏世界人物 = function(id:String, name:String, depth:Number, 
 //场景转换相关
 _root.关卡结束 = function(){
 	_root.关卡结束界面.关卡结束();
-	_root.画面效果("过关提示动画",Stage.width / 2,Stage.height / 2,100);
+	EffectSystem.ScreenEffect("过关提示动画",Stage.width / 2,Stage.height / 2,100);
 	_root.FinishStage(_root.当前关卡名,_root.当前关卡难度);
 }
 

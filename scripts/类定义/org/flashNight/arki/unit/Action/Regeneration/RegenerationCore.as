@@ -1,6 +1,7 @@
 ﻿// File: org/flashNight/arki/unit/Action/Regeneration/RegenerationCore.as
 import org.flashNight.arki.unit.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.arki.component.Effect.*;
 
 /**
  * @class RegenerationCore
@@ -340,7 +341,7 @@ class org.flashNight.arki.unit.Action.Regeneration.RegenerationCore {
             }
         }
         
-        _root.效果(effectName, target._x, target._y, config.effectScale || 100, config.effectStick || true);
+        EffectSystem.Effect(effectName, target._x, target._y, config.effectScale || 100, config.effectStick || true);
     }
     
     // 便捷方法：佣兵集体加血

@@ -1,4 +1,5 @@
 ﻿import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
+import org.flashNight.arki.component.Effect.*;
 
 // 辅助函数：安全移除升空任务
 function _清理升空任务(obj):Void {
@@ -239,7 +240,7 @@ _root.fly = function(Obj,flySpeed,type,left,right,up,down){
 				Obj.浮空 = false;
 				Obj.飞行浮空 = false;
 				Obj.flyType = -1;
-				_root.效果("灰尘1",Obj._x,Obj._y,Obj._xscale);
+				EffectSystem.Effect("灰尘1",Obj._x,Obj._y,Obj._xscale);
 				Obj._rotation = 0;
 				_root.fly_isFly1 = false;
 				_root.fly_isFly2 = false;
@@ -654,7 +655,7 @@ _root.jetpackCheck = function()
                自机.浮空 = false;
                自机.飞行浮空 = false;
                自机.flyType = -1;
-               _root.效果("灰尘1",自机._x,自机._y,自机._xscale);
+               EffectSystem.Effect("灰尘1",自机._x,自机._y,自机._xscale);
                自机._rotation = 0;
                _root.fly_isFly1 = false;
                _root.fly_isFly2 = false;

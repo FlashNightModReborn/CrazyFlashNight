@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.scene.*;
 import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
+import org.flashNight.arki.component.Effect.*;
 
 import org.flashNight.neur.Event.EventBus;
 
@@ -282,7 +283,7 @@ class org.flashNight.arki.scene.StageManager {
         }else{
             gameworld.允许通行 = true;
             var hero:MovieClip = TargetCacheManager.findHero();
-            _root.效果("小过关提示动画", hero._x, hero._y, 100);
+            EffectSystem.Effect("小过关提示动画", hero._x, hero._y, 100);
         }
     }
 
