@@ -8,6 +8,12 @@ _root.装备引用配置.巨拳排除引用 = {
     左下臂_引用: true
 };
 
+// 定义各引用名对应的固定深度，未在此处定义的引用名将使用默认深度0
+_root.装备引用配置.引用深度配置 = {
+    发型_引用: 1,
+    面具_引用: 2
+}
+
 // 需要同步的装备现在由各单位自行定义
 // 单位可以设置 unit.syncRequiredEquips = { 长枪_引用: true, 刀_引用: true, ... }
 
@@ -27,13 +33,10 @@ _root.装备引用配置.配置装扮 = function(movieClip:MovieClip,
             return null;
         }
     }
-    // var depth:Number = movieClip.getNextHighestDepth();
-    //_root.服务器.发布服务器消息("配置装扮: " + referenceName + " 使用 " + skinConfig + " at depth " + depth);
 
-    var depth:Number = 10; // 固定深度，以降低性能开销
-    var skin:MovieClip = movieClip.attachMovie(skinConfig, instanceName, depth);
-
-    unit[referenceName] = skin || null;
+    unit[referenceName] = movieClip.attachMovie(skinConfig, 
+                                                instanceName, 
+                                                _root.装备引用配置.引用深度配置[referenceName]) || null;
     
     // 检查是否是需要同步的装备（直接访问单位属性）
     var syncRequiredEquips:Object = unit.syncRequiredEquips;
