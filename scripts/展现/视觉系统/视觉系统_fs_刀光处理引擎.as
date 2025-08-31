@@ -3,28 +3,9 @@ import org.flashNight.arki.spatial.transform.*;
 import org.flashNight.sara.util.*;
 import org.flashNight.neur.Event.*;
 
-//----------------------------------------------------
-// 刀光系统：只做“刀口采集与提交”，并调用 TrailRenderer 进行拖影管理
-//----------------------------------------------------
-_root.刀光系统 = {};
-
-
-//-----------------------------------------------------------------------
-// 针对独立刀对象的绘制
-//-----------------------------------------------------------------------
-_root.刀光系统.刀引用绘制刀光 = function(target:MovieClip, mc:MovieClip, style:String)
-{
-    BladeMotionTrailsRenderer.processBladeTrail(target, mc, style)
-};
-
-
-
-//-----------------------------------------------------------------------
-// 清理内存，转调 TrailRenderer
-//-----------------------------------------------------------------------
-_root.刀光系统.清理内存 = function(forceCleanAll:Boolean, maxInactiveFrames:Number) {
-    return TrailRenderer.getInstance().cleanMemory(forceCleanAll, maxInactiveFrames);
-};
+// 刀光系统相关初始化
+// 所有刀光处理现在直接调用 BladeMotionTrailsRenderer.processBladeTrail
+// 内存清理由 TrailRenderer 实例自动管理
 
 var trailRenderer:TrailRenderer = TrailRenderer.getInstance();
 EventBus.getInstance().subscribe("SceneChanged", trailRenderer.cleanMemory, trailRenderer); 
