@@ -12,6 +12,8 @@ import org.flashNight.arki.component.Effect.*;
 import org.flashNight.arki.item.*;
 import org.flashNight.sara.util.*;
 import org.flashNight.neur.ScheduleTimer.*;
+import org.flashNight.gesh.object.*;
+
 // _root.玩家与佣兵区分装扮刷新 = false;
 _root.超重惩罚 = 0.25;
 
@@ -1133,24 +1135,30 @@ _root.主角函数.获取佣兵装备属性 = function(id) {
 };
 
 _root.主角函数.初始化掉落物 = function() {
-    if (this.掉落物 != null || this.不掉装备)
+    // _root.发布消息("初始化掉落物:" + this._name, ObjectUtil.toString(this.长枪), ObjectUtil.toString(this.手枪), ObjectUtil.toString(this.手枪2), ObjectUtil.toString(this.刀));
+        
+    if (this.掉落物 != null || this.不掉装备) {
+        // _root.发布消息(ObjectUtil.toString(this.掉落物));
         return;
+    }
     if (this.是否为敌人 == false) {
         this.掉落物 = null;
+        // _root.发布消息("非敌人不掉落物品:" + this._name,this.是否为敌人);
         return;
     }
     this.掉落物 = [];
-    if (this.长枪.name) {
-        this.掉落物.push({名字: this.长枪.name, 概率: 100});
+
+    if (this.长枪) {
+        this.掉落物.push({名字: this.长枪, 概率: 100});
     }
-    if (this.手枪.name) {
+    if (this.手枪) {
         this.掉落物.push({名字: this.手枪, 概率: 100});
     }
-    if (this.手枪2.name) {
-        this.掉落物.push({名字: this.手枪2.name, 概率: 100});
+    if (this.手枪2) {
+        this.掉落物.push({名字: this.手枪2, 概率: 100});
     }
-    if (this.刀.name) {
-        this.掉落物.push({名字: this.刀.name, 概率: 100});
+    if (this.刀) {
+        this.掉落物.push({名字: this.刀, 概率: 100});
     }
 };
 
