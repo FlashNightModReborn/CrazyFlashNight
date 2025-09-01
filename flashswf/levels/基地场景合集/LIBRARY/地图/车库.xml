@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1754406308" lastUniqueIdentifier="28">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1756746074" lastUniqueIdentifier="28">
   <timeline>
     <DOMTimeline name="车库">
       <layers>
@@ -115,11 +115,11 @@ onClipEvent(load){
           </frames>
         </DOMLayer>
         <DOMLayer name="BPK" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="KING" color="#BA6078" parentLayerIndex="5" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="KING" color="#BA6078" parentLayerIndex="5" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/King-NPC" selected="true" centerPoint3DX="951.3" centerPoint3DY="440">
+                <DOMSymbolInstance libraryItemName="NPC/King-NPC" centerPoint3DX="951.3" centerPoint3DY="440">
                   <matrix>
                     <Matrix tx="863" ty="315.95"/>
                   </matrix>
@@ -243,11 +243,11 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="玩家的车" color="#FF800A" autoNamed="false">
+        <DOMLayer name="玩家的车" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/自行车" centerPoint3DX="1091.35" centerPoint3DY="689.9">
+                <DOMSymbolInstance libraryItemName="sprite/自行车" selected="true" centerPoint3DX="1091.35" centerPoint3DY="689.9">
                   <matrix>
                     <Matrix a="0.508346557617188" d="0.508346557617188" tx="1013.1" ty="643.2"/>
                   </matrix>
@@ -287,6 +287,7 @@ on(rollOut){
 
 onClipEvent (load) {
 	_root.基建系统.初始化基建元件(this,"自行车");
+	play();
 	this.swapDepths(this._y + 100);
 }]]></script>
                   </Actionscript>
@@ -340,6 +341,7 @@ on (rollOut) {
 }
 onClipEvent (load) {
 	_root.基建系统.初始化基建元件(this,"摩托车");
+	play();
 	this.swapDepths(this._y + 100);
 }]]></script>
                   </Actionscript>
@@ -393,6 +395,7 @@ on (rollOut) {
 }
 onClipEvent (load) {
 	_root.基建系统.初始化基建元件(this,"越野车");
+	play();
 	this.swapDepths(this._y + 100);
 }]]></script>
                   </Actionscript>
