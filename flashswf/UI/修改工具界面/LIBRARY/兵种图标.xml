@@ -1,0 +1,73 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵种图标" itemID="6749bf38-00000952" lastModified="1738747276">
+  <timeline>
+    <DOMTimeline name="兵种图标">
+      <layers>
+        <DOMLayer name="Script Layer" color="#26EDD3" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.onRelease = function()
+{
+	for (var each in _root.修改工具界面.缩略图)
+	{
+		_root.修改工具界面.缩略图[eval("each")].stop();
+	}
+	for (var each in _root.修改工具界面.缩略图.图)
+	{
+		_root.修改工具界面.缩略图.图[eval("each")].stop();
+	}
+};]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#A6D33D">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="163" height="15.55" isSelectable="false" variableName="多语言名字">
+                  <matrix>
+                    <Matrix tx="4" ty="2.1"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#DB4D7E" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0128173828125" c="-0.132522583007813" d="0" tx="98.45" ty="10.5"/>
+                        </matrix>
+                        <GradientEntry color="#31312C" ratio="0"/>
+                        <GradientEntry color="#1A1A19" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!3420 0|0 0!0 0|0 420!0 420|3420 420!3420 420|3420 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

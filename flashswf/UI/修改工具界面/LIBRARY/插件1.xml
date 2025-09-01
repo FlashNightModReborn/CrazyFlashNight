@@ -1,0 +1,35 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="插件1" itemID="674c62a4-00001623" lastModified="1733059888" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="插件1">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="第07帧/Hud/&amp;#060Group&amp;#062_3_8" blendMode="layer" centerPoint3DX="42.8" centerPoint3DY="135">
+                  <matrix>
+                    <Matrix a="0.34912109375" d="0.34912109375" tx="16.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="74.45" y="386.95"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="插件1框" selected="true" centerPoint3DX="42.65" centerPoint3DY="135.75">
+                  <matrix>
+                    <Matrix tx="1.75" ty="0.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

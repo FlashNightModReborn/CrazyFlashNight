@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="第13帧/Layer 1/&amp;#060Group&amp;#062_36" itemID="640441e0-000093e9" lastModified="1733058666">
+  <timeline>
+    <DOMTimeline name="&amp;#060Group&amp;#062_36">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape selected="true" isDrawingObject="true">
+                      <matrix>
+                        <Matrix tx="4.4" ty="1.9"/>
+                      </matrix>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#FFFFFF"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="1" edges="!6574 1452|10 1452!10 1452|10 10!10 10|6574 10!6574 10|6574 1452"/>
+                        <Edge cubics="!6574 1452(;6574,1452 10,1452 10,1452q6574 1452 10 1452);"/>
+                        <Edge cubics="!10 1452(;10,1452 10,10 10,10q10 1452 10 10);"/>
+                        <Edge cubics="!10 10(;10,10 6574,10 6574,10q10 10 6574 10);"/>
+                        <Edge cubics="!6574 10(;6574,10 6574,1452 6574,1452q6574 10 6574 1452);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

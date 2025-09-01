@@ -1,0 +1,46 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/通用按钮" itemID="659bbbf8-000014dc" lastModified="1750561230">
+  <timeline>
+    <DOMTimeline name="通用按钮">
+      <layers>
+        <DOMLayer name="Layer 1" color="#82C98F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#925ED3">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMSymbolInstance libraryItemName="第13帧/Layer 1/&amp;#060Group&amp;#062_36" blendMode="layer" centerPoint3DX="49.95" centerPoint3DY="14.55">
+                      <matrix>
+                        <Matrix a="0.28338623046875" d="0.376876831054688" tx="3.15" ty="0.95"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="165.15" y="36.1"/>
+                      </transformationPoint>
+                      <color>
+                        <Color alphaMultiplier="0.3984375"/>
+                      </color>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="按钮框" centerPoint3DX="49.95" centerPoint3DY="15.35">
+                      <matrix>
+                        <Matrix a="0.418197631835938" d="0.55621337890625" tx="-4.1"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="129.25" y="27.6"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,34 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="第07帧/Hud/&amp;#060Group&amp;#062_4_13" itemID="64044aa5-00006fd2" lastModified="1733059964">
+  <timeline>
+    <DOMTimeline name="&amp;#060Group&amp;#062_4_13">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix tx="3.9" ty="1.55"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!0 0|0 13345!0 13345|2308 15467!2308 15467|4648 13315!4648 13315|4648 0!4648 0|0 0"/>
+                    <Edge cubics="!0 0(;0,0 0,13345 0,13345q0 0 0 13345);"/>
+                    <Edge cubics="!0 13345(;0,13345 2308,15467 2308,15467q0 13345 2308 15467);"/>
+                    <Edge cubics="!2308 15467(;2308,15467 4648,13315 4648,13315q2308 15467 4648 13315);"/>
+                    <Edge cubics="!4648 13315(;4648,13315 4648,0 4648,0q4648 13315 4648 0);"/>
+                    <Edge cubics="!4648 0(;2324,0 2324,0 0,0q4648 0 0 0);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

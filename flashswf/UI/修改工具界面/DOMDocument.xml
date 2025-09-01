@@ -1,0 +1,152 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#009966" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+     <folders>
+          <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
+          <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
+          <DOMFolderItem name="sound" itemID="6749be07-000008cd"/>
+          <DOMFolderItem name="sprite" itemID="6749be07-000008c9" isExpanded="true"/>
+          <DOMFolderItem name="sprite/物品栏" itemID="659d3927-00003122"/>
+          <DOMFolderItem name="sprite/悬浮UI" itemID="659bbbc2-000014cc"/>
+          <DOMFolderItem name="第07帧" itemID="674c6198-0000160b"/>
+          <DOMFolderItem name="第07帧/Hud" itemID="674c6198-0000160c"/>
+          <DOMFolderItem name="第11帧" itemID="674c5dd0-000015e5"/>
+          <DOMFolderItem name="第11帧/央铋 1" itemID="674c5dd0-000015e6"/>
+          <DOMFolderItem name="第13帧" itemID="674c5faa-000015f4"/>
+          <DOMFolderItem name="第13帧/Layer 1" itemID="674c5faa-000015f5"/>
+     </folders>
+     <media>
+          <DOMSoundItem name="sound/sound18.wav" itemID="6597607a-00000205" sourceExternalFilepath="../修改工具界面/LIBRARY/sound/sound18.wav" sourceLastImported="1704419450" href="sound/sound18.wav" soundDataHRef="M 1 1732886023.dat" format="22kHz 16bit Mono" sampleCount="1893" exportFormat="10"/>
+          <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="../修改工具界面/LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" href="sound/sound19.wav" soundDataHRef="M 2 1732886023.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
+     </media>
+     <symbols>
+          <Include href="button/Symbol 928.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000810" lastModified="1733060832"/>
+          <Include href="button/Symbol 1718.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000009dc" lastModified="1704196122"/>
+          <Include href="button/Symbol 1743.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000009e6" lastModified="1704196122"/>
+          <Include href="button/Symbol 1750.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000009ea" lastModified="1733060567"/>
+          <Include href="button/Symbol 1751.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000009eb" lastModified="1733060750"/>
+          <Include href="button/Symbol 1755.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000009ef" lastModified="1733060604"/>
+          <Include href="button/Symbol 1756.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000009f0" lastModified="1733060590"/>
+          <Include href="button/Symbol 2220.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000ace" lastModified="1750560658"/>
+          <Include href="button/Symbol 2221.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000acf" lastModified="1750560639"/>
+          <Include href="button/Symbol 2222.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000ad0" lastModified="1750560671"/>
+          <Include href="button/Symbol 2223.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000ad1" lastModified="1750560625"/>
+          <Include href="button/Symbol 2235.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000ad3" lastModified="1704196122"/>
+          <Include href="button/Symbol 2236.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000ad4" lastModified="1704196122"/>
+          <Include href="button/Symbol 2243.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000ad6" lastModified="1704196122"/>
+          <Include href="button/Symbol 2244.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000ad7" lastModified="1704196122"/>
+          <Include href="button/Symbol 2247.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000ad8" lastModified="1704196122"/>
+          <Include href="button/Symbol 2248.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000ad9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 48.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000717" lastModified="1704196122"/>
+          <Include href="shape/Symbol 50.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000719" lastModified="1704196122"/>
+          <Include href="shape/Symbol 297.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000794" lastModified="1704196122"/>
+          <Include href="shape/Symbol 473.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a4" lastModified="1704196122"/>
+          <Include href="shape/Symbol 482.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 534.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007bf" lastModified="1704196122"/>
+          <Include href="shape/Symbol 535.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007c0" lastModified="1733060776"/>
+          <Include href="shape/Symbol 537.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007c2" lastModified="1733060875"/>
+          <Include href="shape/Symbol 908.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000809" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1050.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000842" lastModified="1733060422"/>
+          <Include href="shape/Symbol 1051.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000843" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1052.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000844" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1738.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009e5" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1744.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009e7" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1752.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ec" lastModified="1733060489"/>
+          <Include href="shape/Symbol 1753.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ed" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1754.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ee" lastModified="1704196122"/>
+          <Include href="shape/Symbol 35558.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d73" lastModified="1704196122"/>
+          <Include href="shape/通用背景.xml" itemIcon="1" loadImmediate="false" itemID="659d3fae-00003178" lastModified="1710752365"/>
+          <Include href="sprite/Symbol 298.xml" loadImmediate="false" itemID="6597607e-00000795" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 480.xml" loadImmediate="false" itemID="6597607e-000007a7" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 726.xml" loadImmediate="false" itemID="6597607e-000007e9" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 1720.xml" loadImmediate="false" itemID="6597607e-000009dd" lastModified="1714361645"/>
+          <Include href="sprite/Symbol 2224.xml" loadImmediate="false" itemID="6597607e-00000ad2" lastModified="1733060896"/>
+          <Include href="sprite/Symbol 35560.xml" loadImmediate="false" itemID="6597607e-00000d76" lastModified="1704196122"/>
+          <Include href="sprite/通用按钮.xml" loadImmediate="false" itemID="659bbbf8-000014dc" lastModified="1750561230"/>
+          <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
+          <Include href="sprite/图标壳.xml" loadImmediate="false" itemID="659d384c-0000310a" lastModified="1704802380"/>
+          <Include href="sprite/物品栏/物品满级框.xml" loadImmediate="false" itemID="659d3902-0000310e" lastModified="1704802562"/>
+          <Include href="sprite/物品栏/物品已装备图标.xml" loadImmediate="false" itemID="659d38ed-0000310d" lastModified="1704802541"/>
+          <Include href="sprite/悬浮UI/Symbol 880.xml" loadImmediate="false" itemID="6597607e-00000806" lastModified="1704196122"/>
+          <Include href="按钮框.xml" loadImmediate="false" itemID="674c6004-000015fb" lastModified="1733058621"/>
+          <Include href="背景.xml" loadImmediate="false" itemID="674c63a1-0000169b" lastModified="1750561444"/>
+          <Include href="兵种图标.xml" loadImmediate="false" itemID="6749bf38-00000952" lastModified="1738747276"/>
+          <Include href="插件1.xml" loadImmediate="false" itemID="674c62a4-00001623" lastModified="1733059888"/>
+          <Include href="插件1框.xml" loadImmediate="false" itemID="674c6294-0000161c" lastModified="1740631826"/>
+          <Include href="第07帧/Hud/&amp;#038&amp;#035060Group&amp;#038&amp;#035062_1_21.xml" loadImmediate="false" itemID="64044aa5-00006fda" lastModified="1678002853"/>
+          <Include href="第07帧/Hud/&amp;#038&amp;#035060Group&amp;#038&amp;#035062_2_13.xml" loadImmediate="false" itemID="64044aa5-00006fe0" lastModified="1678002853"/>
+          <Include href="第07帧/Hud/&amp;#038&amp;#035060Group&amp;#038&amp;#035062_2_14.xml" loadImmediate="false" itemID="64044aa5-00006fe4" lastModified="1678002853"/>
+          <Include href="第07帧/Hud/&amp;#038&amp;#035060Group&amp;#038&amp;#035062_3_8.xml" loadImmediate="false" itemID="64044aa5-00006fd4" lastModified="1733059760"/>
+          <Include href="第07帧/Hud/&amp;#038&amp;#035060Group&amp;#038&amp;#035062_3_9.xml" loadImmediate="false" itemID="64044aa5-00006fde" lastModified="1678002853"/>
+          <Include href="第07帧/Hud/&amp;#038&amp;#035060Group&amp;#038&amp;#035062_4_13.xml" loadImmediate="false" itemID="64044aa5-00006fd2" lastModified="1733059964"/>
+          <Include href="第07帧/Hud/&amp;#038&amp;#035060Group&amp;#038&amp;#035062_5_8.xml" loadImmediate="false" itemID="64044aa5-00006fdc" lastModified="1678002853"/>
+          <Include href="第07帧/Hud/&amp;#038&amp;#035060Group&amp;#038&amp;#035062_12_2.xml" loadImmediate="false" itemID="64044aa5-00006fe2" lastModified="1678002853"/>
+          <Include href="第07帧/Hud/&amp;#038&amp;#035060Group&amp;#038&amp;#035062_15_0.xml" loadImmediate="false" itemID="64044aa5-00006fd6" lastModified="1678002853"/>
+          <Include href="第07帧/Hud/&amp;#038&amp;#035060Group&amp;#038&amp;#035062_30.xml" loadImmediate="false" itemID="64044aa5-00006fd8" lastModified="1678002853"/>
+          <Include href="第07帧/Hud/&amp;#038&amp;#035060Group&amp;#038&amp;#035062_31.xml" loadImmediate="false" itemID="64044aa5-00006fe6" lastModified="1678002853"/>
+          <Include href="第11帧/央铋 1/&amp;#038&amp;#035060Rectangle&amp;#038&amp;#035062_1_1.xml" loadImmediate="false" itemID="640449a5-00004e94" lastModified="1733059560"/>
+          <Include href="第11帧/央铋 1/&amp;#038&amp;#035060Rectangle&amp;#038&amp;#035062_8.xml" loadImmediate="false" itemID="640449a5-00004e96" lastModified="1733059568"/>
+          <Include href="第13帧/Layer 1/&amp;#038&amp;#035060Group&amp;#038&amp;#035062_36.xml" loadImmediate="false" itemID="640441e0-000093e9" lastModified="1733058666"/>
+          <Include href="输入法保证器.xml" loadImmediate="false" itemID="68b54de6-00002e2e" lastModified="1756712422"/>
+          <Include href="透明按钮.xml" loadImmediate="false" itemID="674c67c5-000017a2" lastModified="1733060549"/>
+          <Include href="物品图标位置示意.xml" loadImmediate="false" itemID="6749be73-0000090d" lastModified="1736270560"/>
+          <Include href="修改工具界面.xml" itemID="6749be43-0000090a" lastModified="1756712806"/>
+          <Include href="修改器外边框.xml" loadImmediate="false" itemID="674c5e93-000015ed" lastModified="1750561086"/>
+          <Include href="元件 1.xml" loadImmediate="false" itemID="674c6c06-00001814" lastModified="1733061638"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="场景 1">
+               <layers>
+                    <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="修改工具界面" name="修改工具界面" selected="true" centerPoint3DX="228.45" centerPoint3DY="185.95">
+                                             <matrix>
+                                                  <Matrix ty="20"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent(load){
+   this._visible = 0;
+}
+]]></script>
+                                             </Actionscript>
+                                             <color>
+                                                  <Color alphaMultiplier="0.80078125"/>
+                                             </color>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <persistentData>
+          <PD n="TestMovieChecked" v="FlashPro"/>
+     </persistentData>
+     <PrinterSettings/>
+     <publishHistory>
+          <PublishItem publishSize="29073" publishTime="1756712751"/>
+          <PublishItem publishSize="28947" publishTime="1756712017"/>
+          <PublishItem publishSize="28065" publishTime="1756711809"/>
+          <PublishItem publishSize="28267" publishTime="1756711653"/>
+          <PublishItem publishSize="28264" publishTime="1756710931"/>
+          <PublishItem publishSize="67033" publishTime="1756710855"/>
+          <PublishItem publishSize="27164" publishTime="1755089287"/>
+          <PublishItem publishSize="27166" publishTime="1755089269"/>
+          <PublishItem publishSize="24292043" publishTime="1750579461"/>
+          <PublishItem publishSize="24292043" publishTime="1750579074"/>
+          <PublishItem publishSize="24292015" publishTime="1750571200"/>
+          <PublishItem publishSize="27169" publishTime="1750563812"/>
+          <PublishItem publishSize="26165" publishTime="1750563622"/>
+          <PublishItem publishSize="22896" publishTime="1750563079"/>
+          <PublishItem publishSize="18301" publishTime="1750561909"/>
+          <PublishItem publishSize="18262" publishTime="1750561744"/>
+          <PublishItem publishSize="18358" publishTime="1750561451"/>
+          <PublishItem publishSize="17607" publishTime="1750561423"/>
+          <PublishItem publishSize="13887" publishTime="1750560387"/>
+          <PublishItem publishSize="13809" publishTime="1738747580"/>
+     </publishHistory>
+</DOMDocument>
