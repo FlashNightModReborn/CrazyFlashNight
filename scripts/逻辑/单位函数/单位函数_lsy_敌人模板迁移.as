@@ -321,7 +321,7 @@ _root.敌人函数.击倒呐喊 = function() {
 _root.敌人函数.死亡检测 = function(para) {
     if (this.hp <= 0 && !this.已加经验值) {
         this.man.stop();
-        if (this.是否为敌人 === true || this.是否为敌人 === "null") {
+        if (UnitUtil.isEnemy(this)) {
             if (this.是否为敌人 === true && para.noCount !== true) {
                 _root.敌人死亡计数++;
                 _root.gameworld[this.产生源].僵尸型敌人场上实际人数--;

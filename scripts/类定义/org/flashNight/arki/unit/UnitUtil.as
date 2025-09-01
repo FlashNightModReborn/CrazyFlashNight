@@ -99,4 +99,33 @@ class org.flashNight.arki.unit.UnitUtil {
         
         return 0;
     }
+    
+    /**
+     * 健壮地判断单位是否为敌人
+     * 处理多种情况：true, "true", null, "null", undefined, "undefined" 等
+     * @param unit 目标单位对象
+     * @return Boolean true表示是敌人或中立单位，false表示是友方单位
+     */
+    public static function isEnemy(unit:MovieClip):Boolean {
+        // 如果单位无效，视为敌人（保守处理）
+        if (!unit) {
+            return true;
+        }
+        
+        var enemyFlag = unit.是否为敌人;
+        
+        // 明确为 false 或 "false" 时，表示友方
+        if (enemyFlag === false || enemyFlag === "false") {
+            return false;
+        }
+        
+        // 明确为 true 或 "true" 时，表示敌人
+        if (enemyFlag === true || enemyFlag === "true") {
+            return true;
+        }
+        
+        // null, "null", undefined, "undefined" 或其他值都视为中立/敌人
+        // 这样处理是因为中立单位死亡后也应该计算经验值
+        return true;
+    }
 }

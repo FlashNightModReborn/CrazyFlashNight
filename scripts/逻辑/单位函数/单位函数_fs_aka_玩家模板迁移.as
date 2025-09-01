@@ -13,6 +13,7 @@ import org.flashNight.arki.item.*;
 import org.flashNight.sara.util.*;
 import org.flashNight.neur.ScheduleTimer.*;
 import org.flashNight.gesh.object.*;
+import org.flashNight.arki.unit.*;
 
 // _root.玩家与佣兵区分装扮刷新 = false;
 _root.超重惩罚 = 0.25;
@@ -1408,7 +1409,7 @@ _root.主角函数.死亡检测 = function() {
         }
         if (已加经验值 != true) {
             // _root.发布消息("角色 " + this._name + " 死亡计算经验 " , 是否为敌人, 是否为敌人 == null);
-            if (是否为敌人 === true || 是否为敌人 == null) {
+            if (UnitUtil.isEnemy(this)) {
                 // _root.发布消息("角色 " + this._name + " 死亡是敌人");
                 if (是否为敌人 === true) {
                     _root.敌人死亡计数++;
