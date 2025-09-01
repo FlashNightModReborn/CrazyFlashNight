@@ -2,7 +2,7 @@
 <!--已用ID：[11, 40, 50, 122, 127, 131, 277, 309, 310, 320, 321, 322, 323, 324, 325, 326, 328, 329, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 353, 354, 355, 356, 357, 358, 359, 365, 366, 367, 368, 369, 370, 371, 384, 385, 386, 387, 388, 389, 390, 391, 473, 474, 475, 476, 477, 478, 479, 518, 521, 561, 570, 577, 594, 596, 610, 611, 613]
 预留ID区间：16201-17000-->
 <root>
-<item>
+  <item>
     <id>2011</id>
     <name>神铁碎片</name>
     <displayname>神铁碎片</displayname>
@@ -12,8 +12,8 @@
     <weight>0</weight>
     <price>1</price>
     <description>“那是大禹治水之时，定江海浅深的一个定子。是一块神铁，能中何用？”</description>
-</item>
-<item>
+  </item>
+  <item>
     <id>2010</id>
     <name>大圣遗物：意见欲</name>
     <displayname>大圣遗物：意见欲</displayname>
@@ -23,8 +23,8 @@
     <weight>0</weight>
     <price>1</price>
     <description>大圣精魄所化之根器</description>
-</item>
-<item>
+  </item>
+  <item>
     <id>2009</id>
     <name>大圣遗物：身本忧</name>
     <displayname>大圣遗物：身本忧</displayname>
@@ -34,8 +34,8 @@
     <weight>0</weight>
     <price>1</price>
     <description>大圣精魄所化之根器</description>
-</item>
-<item>
+  </item>
+  <item>
     <id>2008</id>
     <name>大圣遗物：舌尝思</name>
     <displayname>大圣遗物：舌尝思</displayname>
@@ -45,8 +45,8 @@
     <weight>0</weight>
     <price>1</price>
     <description>大圣精魄所化之根器</description>
-</item>
-<item>
+  </item>
+  <item>
     <id>2007</id>
     <name>大圣遗物：鼻嗅爱</name>
     <displayname>大圣遗物：鼻嗅爱</displayname>
@@ -56,8 +56,8 @@
     <weight>0</weight>
     <price>1</price>
     <description>大圣精魄所化之根器</description>
-</item>
-<item>
+  </item>
+  <item>
     <id>2006</id>
     <name>大圣遗物：耳听怒</name>
     <displayname>大圣遗物：耳听怒</displayname>
@@ -67,8 +67,8 @@
     <weight>0</weight>
     <price>1</price>
     <description>大圣精魄所化之根器</description>
-</item>
-<item>
+  </item>
+  <item>
     <id>2005</id>
     <name>大圣遗物：眼看喜</name>
     <displayname>大圣遗物：眼看喜</displayname>
@@ -1341,5 +1341,19 @@ WP企业统一供应统合东区的模块化温控系统，依靠微通道与相
     <weight>0</weight>
     <price>50000</price>
     <description>用于制作狱火武器。</description>
+  </item>
+  <item>
+    <id>12003</id>
+    <name>铁枪核心</name>
+    <displayname>铁枪核心</displayname>
+    <icon>铁枪核心</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <weight>0</weight>
+    <price>10000</price>
+    <description>只有铁枪会的老朋友才能得到赠予的信物。
+    但话又说回来，铁枪会一向嗜强化石如命。
+    找得到路子总能换来的。
+    </description>
   </item>
 </root>
