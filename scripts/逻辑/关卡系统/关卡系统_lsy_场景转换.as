@@ -6,6 +6,7 @@ import org.flashNight.neur.Event.*;
 import org.flashNight.arki.scene.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.component.Effect.*;
+import org.flashNight.gesh.object.*;
 
 _root.转场景记录数据 = function(){
 	_root.转场景记录数据第一次记录 = true;
@@ -220,21 +221,23 @@ _root.加载敌方人物 = function(地点X, 地点Y){
 			产生源: "地图"
 		});
 		//配置角斗场敌人的掉落物
+		// _root.服务器.发布服务器消息("配置角斗场敌人掉落物 " + ObjectUtil.toString(敌人信息));
+
 		敌人.掉落物 = [];
 		//斩马刀必定掉落，佩戴对应项链的敌人有概率掉落对应的武器和防具
-		if(敌人.刀.name === "斩马刀") {
+		if(敌人.刀 === "斩马刀") {
 			敌人.掉落物.push({名字:"斩马刀", 概率:100});
 		}else if (敌人.颈部装备 === "角斗高手项链" || 敌人.颈部装备 === "角斗王者项链"){
 			var jjcDropItem = ["次品蓝晶", "巨兽", "冰魄斩", "合金", "烈焰", "异形", "巴雷特", "方舟武士"];
 			for(var j=0; j<jjcDropItem.length; j++){
-				if(敌人.长枪.name.indexOf(jjcDropItem[j]) > -1) {
-					敌人.掉落物.push({名字:敌人.长枪.name, 概率:25});
+				if(敌人.长枪.indexOf(jjcDropItem[j]) > -1) {
+					敌人.掉落物.push({名字:敌人.长枪, 概率:25});
 					break;
 				}
 			}
 			for(var j=0; j<jjcDropItem.length; j++){
-				if(敌人.刀.name.indexOf(jjcDropItem[j]) > -1) {
-					敌人.掉落物.push({名字:敌人.刀.name, 概率:25});
+				if(敌人.刀.indexOf(jjcDropItem[j]) > -1) {
+					敌人.掉落物.push({名字:敌人.刀, 概率:25});
 					break;
 				}
 			}
@@ -242,7 +245,7 @@ _root.加载敌方人物 = function(地点X, 地点Y){
 			var 对应防具 = 防具列表[random(7)];
 			if(对应防具 != null){
 				for(var j=0; j<jjcDropItem.length; j++){
-					if(敌人[对应防具].name.indexOf(jjcDropItem[j]) > -1) 敌人.掉落物.push({名字:敌人[对应防具].name, 概率:100});
+					if(敌人[对应防具].indexOf(jjcDropItem[j]) > -1) 敌人.掉落物.push({名字:敌人[对应防具], 概率:100});
 				}
 			}
 		}
