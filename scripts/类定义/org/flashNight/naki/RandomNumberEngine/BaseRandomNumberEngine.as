@@ -84,6 +84,20 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
     }
 
     /**
+     * 随机符号生成
+     * 50%概率返回 1，50%概率返回 -1
+     * 用于随机方向、随机正负偏移等场景
+     * @return Number 返回 1 或 -1
+     */
+    public function randomSign():Number {
+        // nextFloat() < 0.5 ? -1 : 1
+        // 使用位运算优化：(nextFloat() * 2) >> 0 结果为 0 或 1
+        // 0 * 2 - 1 = -1
+        // 1 * 2 - 1 = 1
+        return (((nextFloat() * 2) >> 0) << 1) - 1;
+    }
+
+    /**
      * 1/3 概率检查
      * 同理，直接 floor(nextFloat()*3)==0
      */
