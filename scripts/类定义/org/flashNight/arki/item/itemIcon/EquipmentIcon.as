@@ -11,7 +11,7 @@ class org.flashNight.arki.item.itemIcon.EquipmentIcon extends CollectionIcon{
     }
 
     public function RollOver():Void{
-        _root.物品图标注释(this.name,this.value);
+        _root.物品图标注释(this.name, this.value, this.item);
         if (!this.locked) icon.互动提示.gotoAndPlay("卸下");
     }
 

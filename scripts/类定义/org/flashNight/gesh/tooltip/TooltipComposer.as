@@ -24,6 +24,7 @@
 //   A：通常是某构建函数直接把原始对象拼入字符串导致；请确保仅返回字符串片段。
 // ──────────────────────────────────────────────────────────────────────────────
 
+import org.flashNight.arki.item.BaseItem;
 import org.flashNight.gesh.tooltip.*;
 import org.flashNight.gesh.string.StringUtils;
 
@@ -89,15 +90,11 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
    * @param upgradeLevel:Number 强化等级（默认从 value.level 获取，最小值 1）
    * @return String 拼装后的 HTML 字符串
    */
-  public static function generateIntroPanelContent(item:Object, value:Object, upgradeLevel:Number):String {
-    if (upgradeLevel == undefined || isNaN(upgradeLevel) || upgradeLevel < 1) {
-      upgradeLevel = (value && value.level > 0) ? value.level : 1;
-    }
-    
+  public static function generateIntroPanelContent(baseItem:BaseItem, item:Object):String {
     var buffer:Array = [];
     
-    append(buffer, TooltipTextBuilder.buildIntroHeader(item, value, upgradeLevel));
-    append(buffer, TooltipTextBuilder.buildEquipmentStats(item, value.tier, upgradeLevel));
+    append(buffer, TooltipTextBuilder.buildIntroHeader(baseItem, item));
+    append(buffer, TooltipTextBuilder.buildStats(baseItem, item));
     
     return buffer.join("");
   }
@@ -120,7 +117,8 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
     }
 
     var descriptionText:String = generateItemDescriptionText(item);
-    var introText:String = generateIntroPanelContent(item, value, upgradeLevel);
+    var introText:String 
+    // var introText:String = generateIntroPanelContent(item, value, upgradeLevel);
     
     return descriptionText + introText; 
   }

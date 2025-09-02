@@ -57,9 +57,21 @@ class org.flashNight.arki.item.BaseItem{
         var __value = Number(strArr[1]);
         if(__value <= 0) __value = 1; // 若value不为正数或不为数字则修改为1
         var newItem:BaseItem = create(__name, __value);
-        if(ItemUtil.isEquipment(__name) && strArr[2]) {
-            // 为新创建的物品加入多阶参数
-            newItem.value.tier = strArr[2];
+        if(ItemUtil.isEquipment(__name)){
+            if(strArr[2]) {
+                // 为新创建的物品加入多阶参数
+                newItem.value.tier = strArr[2];
+            }
+            if(strArr[3]){
+                var modArr = strArr[3].split(",");
+                var modObj = {};
+                for(var i = 0; i < modArr.length; i++){
+                    if(EquipmentUtil.modDict[modArr[i]]){
+                        modObj[modArr[i]] = 1;
+                    }
+                }
+                newItem.value.mods = modObj;
+            }
         }
         return newItem;
     }

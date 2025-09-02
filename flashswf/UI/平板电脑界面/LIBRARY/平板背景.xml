@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="平板背景" itemID="66f84083-0000036b" lastModified="1755332011" lastUniqueIdentifier="279">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="平板背景" itemID="66f84083-0000036b" lastModified="1756804189" lastUniqueIdentifier="279">
   <timeline>
-    <DOMTimeline name="平板背景" currentFrame="187">
+    <DOMTimeline name="平板背景" currentFrame="98">
       <layers>
         <DOMLayer name="标识" color="#808080" autoNamed="false">
           <frames>
@@ -375,14 +375,14 @@ _parent.关闭界面();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="材料大全界面内容" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="材料大全界面内容" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="85" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="材料内容整体" name="材料内容整体" selected="true" blendMode="add" centerPoint3DX="162.25" centerPoint3DY="91.65">
+                <DOMSymbolInstance libraryItemName="材料内容整体" name="材料内容整体" blendMode="add" centerPoint3DX="162.25" centerPoint3DY="91.65">
                   <matrix>
                     <Matrix a="0.878631591796875" d="0.878631591796875" tx="38.8" ty="48.9"/>
                   </matrix>
@@ -397,7 +397,7 @@ _parent.关闭界面();]]></script>
             </DOMFrame>
             <DOMFrame index="98" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="材料内容整体" blendMode="add" centerPoint3DX="162.25" centerPoint3DY="91.65">
+                <DOMSymbolInstance libraryItemName="材料内容整体" selected="true" blendMode="add" centerPoint3DX="162.25" centerPoint3DY="91.65">
                   <matrix>
                     <Matrix a="0.878631591796875" d="0.878631591796875" tx="38.8" ty="48.9"/>
                   </matrix>
@@ -579,7 +579,7 @@ on (rollOut) {
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="透明按钮" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="透明按钮" symbolType="button">
                   <matrix>
                     <Matrix a="1.56591796875" tx="22.2" ty="152.25"/>
                   </matrix>
@@ -4205,7 +4205,7 @@ on (rollOut) {
           </frames>
         </DOMLayer>
         <DOMLayer name="边框与背景" color="#FF4FFF" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="平板整体UI背景" color="#FF4FFF" parentLayerIndex="29" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="平板整体UI背景" color="#FF4FFF" parentLayerIndex="29" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="127" keyMode="9728">
               <elements>

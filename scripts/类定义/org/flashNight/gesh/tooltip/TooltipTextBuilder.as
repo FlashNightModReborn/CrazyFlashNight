@@ -1,4 +1,4 @@
-﻿import org.flashNight.arki.item.ItemUtil;
+﻿import org.flashNight.arki.item.*;
 import org.flashNight.gesh.tooltip.TooltipFormatter;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.TooltipDataSelector;
@@ -105,7 +105,10 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   }
 
   // === 生成简介标题头（1:1 复刻 _root.注释文本.生成简介标题头） ===
-  public static function buildIntroHeader(item:Object, value:Object, upgradeLevel:Number):Array {
+  public static function buildIntroHeader(baseItem:BaseItem, item:Object):Array {
+    var value = baseItem.value ? baseItem.value : 1;
+    var upgradeLevel = value.level ? value.level : 1;
+    
     var result = [];
     result.push("<B>", (value.tier ? ("[" + value.tier + "]") : ""), item.displayname, "</B><BR>");
     result.push(item.type, "    ", item.use, "<BR>");
@@ -113,9 +116,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     if ((item.use == "手枪" || item.use == "长枪") && item.data && item.weapontype) {
       result.push("武器类型：", item.weapontype, "<BR>");
     }
-    if (item.type == "武器" || item.type == "防具") { result.push("等级限制：", item.level, "<BR>"); }
     result.push("$", item.price, "<BR>");
-    if (item.weight != null && item.weight !== 0) result.push("重量：", item.weight, TooltipConstants.SUF_KG + "<BR>");
     if (upgradeLevel > 1 && (item.type == "武器" || item.type == "防具")) {
       result.push("<FONT COLOR='" + TooltipConstants.COL_HL + "'>强化等级：", upgradeLevel, "</FONT><BR>");
     } else {
@@ -139,18 +140,53 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     return result;
   }
 
-  // === 生成装备属性块（1:1 复刻 _root.注释文本.生成装备属性块） ===
-  public static function buildEquipmentStats(item:Object, tier:String, level:Number):Array {
-    if (level == undefined || isNaN(level) || level < 1) level = 1;
+
+
+  public static function buildStats(baseItem:BaseItem, item:Object):Array {
+    if(!item.data) return [];
+    if (item.use === "药剂"){
+      return buildDrugStats(item);
+    }else{
+      return buildEquipmentStats(baseItem, item);
+    }
+  }
+
+  public static function buildDrugStats(item:Object):Array {
+    var data = item.data;
     var result = [];
-    var data = TooltipDataSelector.getEquipmentData(item, tier);
+
+    if (!isNaN(data.affecthp) && data.affecthp != 0) result.push("<FONT COLOR='" + TooltipConstants.COL_HP + "'>HP+", data.affecthp, "</FONT><BR>");
+    if (!isNaN(data.affectmp) && data.affectmp != 0) result.push("<FONT COLOR='" + TooltipConstants.COL_MP + "'>MP+", data.affectmp, "</FONT><BR>");
+    if (data.friend == 1) result.push("<FONT COLOR='" + TooltipConstants.COL_HL + "'>全体友方有效</FONT><BR>");
+    else if (data.friend == "淬毒") {
+      var poisonValue:Number = Number(data.poison);
+      if (isNaN(poisonValue)) poisonValue = 0;
+      result.push("<FONT COLOR='#66dd00'>剧毒性：", poisonValue, "</FONT><BR>");
+    }
+    else if (data.friend == "净化") result.push("净化度：", (isNaN(data.clean) ? 0 : data.clean), "<BR>");
+    
+    return result;
+  }
+
+  // === 生成装备属性块（1:1 复刻 _root.注释文本.生成装备属性块） ===
+  public static function buildEquipmentStats(baseItem:BaseItem, item:Object):Array {
+    var value = baseItem.value ? baseItem.value : 1;
+    var upgradeLevel = value.level ? value.level : 1;
+
+    var result = [];
+
+    var data = TooltipDataSelector.getEquipmentData(item, value.tier);
+    var equipData = upgradeLevel > 1 || value.mods ? baseItem.getData().data : null;
+
+    TooltipFormatter.upgradeLine(result, data, equipData, "level", null, null);
+    TooltipFormatter.upgradeLine(result, data, equipData, "weight", null, TooltipConstants.SUF_KG);
 
     switch (item.use) {
       case "刀":
-        TooltipFormatter.upgradeLine(result, "锋利度", data.power, level, undefined, undefined);
+        TooltipFormatter.upgradeLine(result, data, equipData, "power", "锋利度", null);
         break;
       case "手雷":
-        result.push("等级限制：", item.level, "<BR>威力：", data.power, "<BR>");
+        result.push("威力：", data.power, "<BR>");
         break;
       case "长枪":
       case "手枪":
@@ -168,7 +204,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         
         var magazineCapacity = isNotMultiShot ? splitValue : 1;
         if (capacity > 0) result.push("弹夹容量：", (capacity * magazineCapacity), "<BR>");
-        TooltipFormatter.upgradeLine(result, "子弹威力", data.power, level, undefined, undefined);
+        TooltipFormatter.upgradeLine(result, data, equipData, "power", "子弹威力", null);
         if (splitValue > 1) result.push(isNotMultiShot ? "点射弹数：" : "弹丸数量：", splitValue, "<BR>");
         
         // interval和impact的防护：确保是有效数值且非零
@@ -185,27 +221,28 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     }
 
     // 使用辅助方法生成属性行
-    TooltipFormatter.upgradeLine(result, "内力加成", data.force, level, undefined, undefined);
-    TooltipFormatter.upgradeLine(result, "伤害加成", data.damage, level, undefined, undefined);
-    TooltipFormatter.upgradeLine(result, "空手加成", data.punch, level, undefined, undefined);
-    TooltipFormatter.upgradeLine(result, "冷兵器加成", data.knifepower, level, undefined, undefined);
-    TooltipFormatter.upgradeLine(result, "枪械加成", data.gunpower, level, undefined, undefined);
+    TooltipFormatter.upgradeLine(result, data, equipData, "force", null, null);
+    TooltipFormatter.upgradeLine(result, data, equipData, "damage", null, null);
+    TooltipFormatter.upgradeLine(result, data, equipData, "punch", null, null);
+    TooltipFormatter.upgradeLine(result, data, equipData, "knifepower", null, null);
+    TooltipFormatter.upgradeLine(result, data, equipData, "gunpower", null, null);
 
-    if (data.criticalhit !== undefined) {
+    if (data.criticalhit) {
       if (!isNaN(Number(data.criticalhit))) result.push("<FONT COLOR='" + TooltipConstants.COL_CRIT + "'>暴击：</FONT><FONT COLOR='" + TooltipConstants.COL_CRIT + "'>", data.criticalhit, TooltipConstants.SUF_PERCENT + "概率造成1.5倍伤害</FONT><BR>");
       else if (data.criticalhit == "满血暴击") result.push("<FONT COLOR='" + TooltipConstants.COL_CRIT + "'>暴击：对满血敌人造成1.5倍伤害</FONT><BR>");
     }
     
-    TooltipFormatter.numLine(result, "斩杀线", data.slay, TooltipConstants.SUF_BLOOD);
-    TooltipFormatter.numLine(result, "命中加成", data.accuracy, TooltipConstants.SUF_PERCENT);
-    TooltipFormatter.numLine(result, "挡拆加成", data.evasion, TooltipConstants.SUF_PERCENT);
-    TooltipFormatter.numLine(result, "韧性加成", data.toughness, TooltipConstants.SUF_PERCENT);
-    TooltipFormatter.numLine(result, "高危回避", data.lazymiss, "");
+    TooltipFormatter.upgradeLine(result, data, equipData, "accuracy", null, TooltipConstants.SUF_PERCENT);
+    TooltipFormatter.upgradeLine(result, data, equipData, "evasion", null, TooltipConstants.SUF_PERCENT);
+    TooltipFormatter.upgradeLine(result, data, equipData, "toughness", null, TooltipConstants.SUF_PERCENT);
+    TooltipFormatter.upgradeLine(result, data, equipData, "lazymiss", null, null);
+
+    TooltipFormatter.upgradeLine(result, data, equipData, "slay", null, TooltipConstants.SUF_BLOOD);
     
     // 非药剂才在通用区显示"剧毒性"；药剂的剧毒由药剂分支统一输出
-    if (data.poison && item.use != "药剂") TooltipFormatter.colorLine(result, TooltipConstants.COL_POISON, "剧毒性：" + data.poison);
-    if (data.vampirism) TooltipFormatter.colorLine(result, TooltipConstants.COL_VAMP, "吸血：" + data.vampirism + TooltipConstants.SUF_PERCENT);
-    if (data.rout) TooltipFormatter.colorLine(result, TooltipConstants.COL_ROUT, "击溃：" + data.rout + TooltipConstants.SUF_PERCENT);
+    TooltipFormatter.upgradeLine(result, data, equipData, "poison", null, null);
+    TooltipFormatter.upgradeLine(result, data, equipData, "vampirism", null, TooltipConstants.SUF_PERCENT);
+    TooltipFormatter.upgradeLine(result, data, equipData, "rout", null, TooltipConstants.SUF_PERCENT);
 
     if (data.damagetype) {
       if (data.damagetype == "魔法" && data.magictype) {
@@ -228,21 +265,10 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       }
     }
 
-    TooltipFormatter.upgradeLine(result, "防御", data.defence, level, undefined, undefined);
-    TooltipFormatter.upgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_HP + "'>HP</FONT>", data.hp, level, undefined, undefined);
-    TooltipFormatter.upgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_MP + "'>MP</FONT>", data.mp, level, undefined, undefined);
+    TooltipFormatter.upgradeLine(result, data, equipData, "defence", null, null);
+    TooltipFormatter.upgradeLine(result, data, equipData, "hp", null, null);
+    TooltipFormatter.upgradeLine(result, data, equipData, "mp", null, null);
 
-    if (item.use == "药剂") {
-      if (!isNaN(data.affecthp) && data.affecthp != 0) result.push("<FONT COLOR='" + TooltipConstants.COL_HP + "'>HP+", data.affecthp, "</FONT><BR>");
-      if (!isNaN(data.affectmp) && data.affectmp != 0) result.push("<FONT COLOR='" + TooltipConstants.COL_MP + "'>MP+", data.affectmp, "</FONT><BR>");
-      if (data.friend == 1) result.push("<FONT COLOR='" + TooltipConstants.COL_HL + "'>全体友方有效</FONT><BR>");
-      else if (data.friend == "淬毒") {
-        var poisonValue:Number = Number(data.poison);
-        if (isNaN(poisonValue)) poisonValue = 0;
-        result.push("<FONT COLOR='#66dd00'>剧毒性：", poisonValue, "</FONT><BR>");
-      }
-      else if (data.friend == "净化") result.push("净化度：", (isNaN(data.clean)?0:data.clean), "<BR>");
-    }
     if (item.actiontype !== undefined) result.push("动作：", item.actiontype, "<BR>");
 
     return result;
@@ -252,19 +278,24 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   public static function buildEnhancementStats(itemData:Object, level:Number):Array {
     var result = [];
     var data = itemData.data;
+    var stat = EquipmentUtil.levelStatList[level] - 1;
+    if(isNaN(stat)) return;
+    
     if(itemData.use === "刀"){
-      TooltipFormatter.upgradeLine(result, "锋利度", data.power, level, undefined, " -> ");
+      TooltipFormatter.enhanceLine(result, "multiply", data, "power", stat, "锋利度");
     }else if(itemData.use === "长枪" || itemData.use === "手枪"){
-      TooltipFormatter.upgradeLine(result, "子弹威力", data.power, level, undefined, " -> ");
+      TooltipFormatter.enhanceLine(result, "multiply", data, "power", stat, "子弹威力");
     }
-    TooltipFormatter.upgradeLine(result, "内力加成", data.force, level, undefined, " -> ");
-    TooltipFormatter.upgradeLine(result, "伤害加成", data.damage, level, undefined, " -> ");
-    TooltipFormatter.upgradeLine(result, "空手加成", data.punch, level, undefined, " -> ");
-    TooltipFormatter.upgradeLine(result, "冷兵器加成", data.knifepower, level, undefined, " -> ");
-    TooltipFormatter.upgradeLine(result, "枪械加成", data.gunpower, level, undefined, " -> ");
-    TooltipFormatter.upgradeLine(result, "防御", data.defence, level, undefined, " -> ");
-    TooltipFormatter.upgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_HP + "'>HP</FONT>", data.hp, level, undefined, " -> ");
-    TooltipFormatter.upgradeLine(result, "<FONT COLOR='" + TooltipConstants.COL_MP + "'>MP</FONT>", data.mp, level, undefined, " -> ");
+    TooltipFormatter.enhanceLine(result, "multiply", data, "force", stat, null);
+    TooltipFormatter.enhanceLine(result, "multiply", data, "damage", stat, null);
+    TooltipFormatter.enhanceLine(result, "multiply", data, "punch", stat, null);
+    TooltipFormatter.enhanceLine(result, "multiply", data, "knifepower", stat, null);
+    TooltipFormatter.enhanceLine(result, "multiply", data, "gunpower", stat, null);
+    TooltipFormatter.enhanceLine(result, "multiply", data, "defence", stat, null);
+
+    TooltipFormatter.enhanceLine(result, "multiply", data, "hp", stat, null);
+    TooltipFormatter.enhanceLine(result, "multiply", data, "mp", stat, null);
+
     return result;
   }
 

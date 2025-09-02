@@ -50,4 +50,37 @@
   // 智能显示策略常量
   public static var SMART_TOTAL_MULTIPLIER:Number = 2;    // 总长度阈值倍数
   public static var SMART_DESC_DIVISOR:Number = 2;        // 描述长度阈值除数
+
+  public static var PROPERTY_DICT:Object = {
+    // 必要参数 等级与重量
+    level: "等级限制",
+    weight: "重量",
+    // 防御，hp，mp
+    defence: "防御",
+    hp: "<FONT COLOR='" + COL_HP + "'>HP</FONT>",
+    mp: "<FONT COLOR='" + COL_MP + "'>MP</FONT>",
+    // 武器威力，实际描述随武器类型而改变
+    power: "威力",
+    // 5种伤害加成
+    damage: "伤害加成",
+    punch: "空手加成",
+    knifepower: "冷兵器加成",
+    gunpower: "枪械加成",
+    force: "内力加成",
+    // 枪械数据
+    clipname: "使用弹夹",
+    capacity: "弹夹容量",
+    impact: "冲击力",
+    // 额外加成
+    accuracy: "命中加成",
+    evasion: "挡拆加成",
+    toughness: "韧性加成",
+    lazymiss: "高危回避",
+    poison: "<FONT COLOR='" + COL_POISON + "'>剧毒性</FONT>",
+    vampirism: "<FONT COLOR='" + COL_VAMP + "'>吸血</FONT>",
+    rout: "<FONT COLOR='" + COL_ROUT + "'>击溃</FONT>",
+    slay: "斩杀线",
+    //
+    magictype: "伤害属性"
+  };
 }

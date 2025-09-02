@@ -157,7 +157,7 @@
         <tag>枪机</tag>
         <stats>
             <percentage>
-                <power>60</power>
+                <power>50</power>
                 <velocity>20</velocity>
             </percentage>
         </stats>
@@ -204,10 +204,14 @@
         <name>高级木料</name>
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
+            <override>
+                <magicdefence>
+                    <热>-8</热>
+                </magicdefence>
+            </override>
             <flat>
                 <defence>70</defence>
-                <weight>3</weight>
-                <evasion>3</evasion>
+                <weight>2</weight>
             </flat>
         </stats>
     </mod>
@@ -235,9 +239,11 @@
     </mod>
     <mod>
         <name>电脑芯片</name>
-        <use>头部装备,待定</use>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备,刀,手枪,长枪</use>
         <stats>
-            <!--  -->
+            <flat>
+                <level>-3</level>
+            </flat>
         </stats>
     </mod>
     <mod>
@@ -340,14 +346,14 @@
     <mod>
         <name>霰弹枪口收束器</name>
         <use>长枪,手枪</use>
+        <filter>
+            <weapontype>霰弹枪</weapontype>
+        </filter>
         <tag>枪口</tag>
         <stats>
             <percentage>
-                <diffusion>-50</diffusion>
+                <diffusion>-40</diffusion>
             </percentage>
-            <flat>
-                <diffusion>2</diffusion>
-            </flat>
         </stats>
     </mod>
     <mod>
@@ -385,46 +391,6 @@
                 <knifepower>30</knifepower>
                 <gunpower>30</gunpower>
             </percentage>
-        </stats>
-    </mod>
-    <!-- 可能的进阶平替插件。由于加算数值不会享受乘算收益，这里可能需要填得比原本更高以适配原数值 -->
-    <mod>
-        <name>二阶平替插件 名称待定</name>
-        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
-        <stats>
-            <flat>
-                <level>10</level>
-                <defence>80</defence>
-                <hp>50</hp>
-                <mp>50</mp>
-                <damage>15</damage>
-            </flat>
-        </stats>
-    </mod>
-    <mod>
-        <name>三阶平替插件 名称待定</name>
-        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
-        <stats>
-            <flat>
-                <level>20</level>
-                <defence>180</defence>
-                <hp>80</hp>
-                <mp>80</mp>
-                <damage>35</damage>
-            </flat>
-        </stats>
-    </mod>
-    <mod>
-        <name>四阶平替插件 名称待定</name>
-        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
-        <stats>
-            <flat>
-                <level>30</level>
-                <defence>255</defence>
-                <hp>100</hp>
-                <mp>100</mp>
-                <damage>60</damage>
-            </flat>
         </stats>
     </mod>
 </root>

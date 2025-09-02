@@ -8,12 +8,12 @@
     <icon>M93R</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1.5</weight>
     <price>54200</price>
     <description>基于M9手枪制造的冲锋手枪。</description>
-    <level>21</level>
     <weightlevel>0</weightlevel>
     <data>
+      <level>21</level>
+      <weight>1.5</weight>
       <dressup>枪-手枪-M93R</dressup>
       <capacity>7</capacity>
       <split>3</split>
@@ -38,12 +38,12 @@
     <icon>M92F</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1.5</weight>
     <price>31200</price>
     <description>A国装备的M9手枪的改进型。</description>
-    <level>12</level>
     <weightlevel>0</weightlevel>
     <data>
+      <level>12</level>
+      <weight>1.5</weight>
       <dressup>枪-手枪-M92F</dressup>
       <capacity>15</capacity>
       <split>1</split>
@@ -67,12 +67,12 @@
     <icon>S&amp;W M500</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2.5</weight>
     <price>85800</price>
     <description>S&amp;W公司制造的大口径转轮手枪，发射独有的.500S&amp;W马格南手枪弹。</description>
-    <level>33</level>
     <weightlevel>0</weightlevel>
     <data>
+      <level>33</level>
+      <weight>2.5</weight>
       <dressup>枪-手枪-S&amp;W M500</dressup>
       <capacity>5</capacity>
       <split>1</split>
@@ -97,11 +97,11 @@
     <icon>Webley</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>15600</price>
     <description>EGL国Webley&amp;Scott公司制造的转轮手枪。</description>
-    <level>6</level>
     <data>
+      <level>6</level>
+      <weight>1</weight>
       <dressup>枪-手枪-Webley</dressup>
       <capacity>6</capacity>
       <split>1</split>
@@ -126,11 +126,11 @@
     <icon>WaltherP99C</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2</weight>
     <price>39000</price>
     <description>一把改造后的P99手枪。</description>
-    <level>15</level>
     <data>
+      <level>15</level>
+      <weight>2</weight>
       <dressup>枪-手枪-WaltherP99C</dressup>
       <capacity>30</capacity>
       <split>1</split>
@@ -154,11 +154,11 @@
     <icon>WaltherP99</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>31200</price>
     <description>DEU国Walther公司制造的自动手枪。</description>
-    <level>12</level>
     <data>
+      <level>12</level>
+      <weight>1</weight>
       <dressup>枪-手枪-WaltherP99</dressup>
       <capacity>10</capacity>
       <split>1</split>
@@ -182,11 +182,11 @@
     <icon>Type92G</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>59800</price>
     <description>C国国产警用手枪。</description>
-    <level>23</level>
     <data>
+      <level>23</level>
+      <weight>1</weight>
       <dressup>枪-手枪-Type92G</dressup>
       <capacity>15</capacity>
       <split>1</split>
@@ -210,11 +210,11 @@
     <icon>HDBHshotgun</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2</weight>
     <price>20800</price>
     <description>锯短的20号双管猎枪。</description>
-    <level>8</level>
     <data>
+      <level>8</level>
+      <weight>2</weight>
       <dressup>枪-手枪-HDBHshotgun</dressup>
       <capacity>2</capacity>
       <split>15</split>
@@ -239,11 +239,11 @@
     <icon>APSstechkin</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2</weight>
     <price>46800</price>
     <description>SOV联设计制造的冲锋手枪。</description>
-    <level>18</level>
     <data>
+      <level>18</level>
+      <weight>2</weight>
       <dressup>枪-手枪-APSstechkin</dressup>
       <capacity>20</capacity>
       <split>1</split>
@@ -267,11 +267,11 @@
     <icon>鲁格LCR</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>0.6</weight>
     <price>10400</price>
     <description>A国ruger公司出品的小口径防身转轮手枪。</description>
-    <level>4</level>
     <data>
+      <level>4</level>
+      <weight>0.6</weight>
       <dressup>枪-手枪-鲁格LCR</dressup>
       <capacity>6</capacity>
       <split>1</split>
@@ -295,11 +295,11 @@
     <icon>M3SMG</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>4</weight>
     <price>26000</price>
     <description>A国在WWII后期投入使用的冲锋枪，用于取代价格昂贵的M1A1冲锋枪。</description>
-    <level>10</level>
     <data>
+      <level>10</level>
+      <weight>4</weight>
       <dressup>枪-手枪-M3SMG</dressup>
       <capacity>30</capacity>
       <split>1</split>
@@ -323,11 +323,11 @@
     <icon>HKUSP9</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>20800</price>
     <description>USP手枪的9毫米型号。</description>
-    <level>8</level>
     <data>
+      <level>8</level>
+      <weight>1</weight>
       <dressup>枪-手枪-HKUSP9</dressup>
       <capacity>15</capacity>
       <split>1</split>
@@ -351,11 +351,11 @@
     <icon>LugerP08</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>2600</price>
     <description>WWI以及WWII时期DEU国配备的军用自动手枪。</description>
-    <level>1</level>
     <data>
+      <level>1</level>
+      <weight>1</weight>
       <dressup>枪-手枪-LugerP08</dressup>
       <capacity>8</capacity>
       <split>1</split>
@@ -379,11 +379,11 @@
     <icon>PMR3</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>0.5</weight>
     <price>46800</price>
     <description>keltec出品的大容量手枪，发射.22马格南手枪弹。</description>
-    <level>18</level>
     <data>
+      <level>18</level>
+      <weight>0.5</weight>
       <dressup>枪-手枪-PMR3</dressup>
       <capacity>30</capacity>
       <split>1</split>
@@ -407,11 +407,11 @@
     <icon>PMM</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>5200</price>
     <description>SOV联制马卡洛夫手枪的改进型。</description>
-    <level>2</level>
     <data>
+      <level>2</level>
+      <weight>1</weight>
       <dressup>枪-手枪-PMM</dressup>
       <capacity>12</capacity>
       <split>1</split>
@@ -435,11 +435,11 @@
     <icon>MAC10</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>3.8</weight>
     <price>15600</price>
     <description>大概在1964年左右，戈登·英格拉姆（Gordon B. Ingram）开始研制一种结构紧凑的小型冲锋枪，设计初衷是为飞行员、坦克乘员及汽车驾驶员提供一种便于携带的单兵自卫武器，也方便于秘密行动时隐蔽携带但火力迅猛的小型突击武器。他在1965年时设计了几个原型，在1966年至少有一种原型枪被A国陆军购买用于测试和评估。</description>
-    <level>6</level>
     <data>
+      <level>6</level>
+      <weight>3.8</weight>
       <dressup>枪-手枪-MAC10</dressup>
       <capacity>32</capacity>
       <split>1</split>
@@ -463,12 +463,12 @@
     <icon>MAC10sil</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>4.5</weight>
     <price>50000</price>
     <description>大概在1964年左右，戈登·英格拉姆（Gordon B. Ingram）开始研制一种结构紧凑的小型冲锋枪，设计初衷是为飞行员、坦克乘员及汽车驾驶员提供一种便于携带的单兵自卫武器，也方便于秘密行动时隐蔽携带但火力迅猛的小型突击武器。他在1965年时设计了几个原型，在1966年至少有一种原型枪被A国陆军购买用于测试和评估。
 	MAC10专用的消音器在后半部分包裹有橡胶，用于充当护木握持。安装了消音器的MAC10的射击精度与易掌控度(相比原来)大幅提升，同时也没有失去便携的优点，因此这才是MAC10的完全状态。</description>
-    <level>12</level>
     <data>
+      <level>12</level>
+      <weight>4.5</weight>
       <dressup>枪-手枪-MAC10sil</dressup>
       <capacity>32</capacity>
       <split>1</split>
@@ -492,11 +492,11 @@
     <icon>TMPmerc</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>8</weight>
     <price>120000</price>
     <description>一把经过高度改造的TMP，安装了集成式的前置战术套件与双发式镭射指示器。枪本身的来源不明，但机匣左侧铭刻着大写的四个字母：HUNK。</description>
-    <level>30</level>
     <data>
+      <level>30</level>
+      <weight>8</weight>
       <dressup>枪-手枪-TMPmerc</dressup>
       <capacity>250</capacity>
       <split>1</split>
@@ -521,11 +521,11 @@
     <icon>Podbyrin</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>12</weight>
     <price>26000</price>
     <description>一把诞生于上世纪CW末期A国电影的虚构枪械，设定上是由SV国研发的大口径手枪，发射独有的9.2mm大口径手枪弹。在不知何时被不知何人以不明的目的作为实际的武器制造出来，在审判日中流落至此。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>12</weight>
       <dressup>枪-手枪-Podbyrin</dressup>
       <capacity>12</capacity>
       <split>1</split>
@@ -551,11 +551,11 @@
     <icon>极品UZI战术版</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>50000</price>
     <description>KING的专用改造版冲锋枪，参数怪异，使用难度高。</description>
-    <level>60</level>
     <data>
+      <level>60</level>
+      <weight>1</weight>
       <dressup>枪-手枪-极品UZI战术版</dressup>
       <capacity>35</capacity>
       <split>1</split>
@@ -579,11 +579,11 @@
     <icon>双管猎枪</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2</weight>
     <price>30000</price>
     <description>末日前作为不少猎人狩猎用的枪械和平民的防身武器，末日后成为堕落城盗贼们的常用武器，堕落城对这个武器有一个很有“冷”的笑话，以前是打猎物，现在是打猎 人。</description>
-    <level>10</level>
     <data>
+      <level>10</level>
+      <weight>2</weight>
       <dressup>枪-手枪-双管猎枪</dressup>
       <capacity>2</capacity>
       <split>9</split>
@@ -608,11 +608,11 @@
     <icon>毛瑟手枪</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2</weight>
     <price>4000</price>
     <description>毛瑟军用手枪，二战知名武器，尤其是在C国成为历史经典武器，哪怕现在是末日，你也能看到有幸存者拿着用，或者是在堕落城的古董武器店里看到这把武器的身影。</description>
-    <level>2</level>
     <data>
+      <level>2</level>
+      <weight>2</weight>
       <dressup>枪-手枪-毛瑟手枪</dressup>
       <capacity>8</capacity>
       <split>1</split>
@@ -636,13 +636,13 @@
     <icon>MP5战术版</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2</weight>
     <price>118000</price>
     <description>
     MP5战术版根据Mp5 pdw改装获得，加装了瞄准镜，激光指示器，长弹夹与握把。该枪拥有极高的射速，获多国的军队、保安部队、警队选择作为制式枪械使用。
     </description>
-    <level>18</level>
     <data>
+      <level>18</level>
+      <weight>2</weight>
       <dressup>枪-手枪-MP5战术版</dressup>
       <capacity>60</capacity>
       <split>1</split>
@@ -667,11 +667,11 @@
     <icon>改造式诺亚科技冲锋枪</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2</weight>
     <price>16000</price>
     <description>被破解的&lt;font color="#ff00ff"&gt;诺亚&lt;/font&gt;武器，加上蓝晶的科技加成，使其性能甚至远超过&lt;font color="#ff00ff"&gt;诺亚&lt;/font&gt;原版武器！</description>
-    <level>60</level>
     <data>
+      <level>60</level>
+      <weight>2</weight>
       <dressup>枪-手枪-改造式诺亚科技冲锋枪</dressup>
       <capacity>20</capacity>
       <split>3</split>
@@ -696,12 +696,12 @@
     <icon>牛仔的左轮</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>32500</price>
     <description>
 柯尔特M1873，西部精神的象征，牛仔的最爱，史上最传奇的手枪。	那位少女看到，那个和自己互不相识的牛仔竟然会为了自己而舍身与敌人战斗，如同电影中的英雄救美情节，那两把左轮高速移动，好似魔术般射出一连串的可以追踪敌人的子弹，弹无虚发;枪响后，寂静刻，伏尸中，二人过.....</description>
-    <level>30</level>
     <data>
+      <level>30</level>
+      <weight>1</weight>
       <dressup>枪-手枪-牛仔的左轮</dressup>
       <capacity>6</capacity>
       <split>1</split>
@@ -727,11 +727,11 @@
     <icon>TMP</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>4</weight>
     <price>21000</price>
     <description>这是一支很紧凑、很轻巧的冲锋枪，全长只有280毫米，比手枪略大，空枪重1.3公斤，火力较强，是一支可单手发射、兼有冲锋枪和手枪双重功能的武器。</description>
-    <level>7</level>
     <data>
+      <level>7</level>
+      <weight>4</weight>
       <dressup>枪-手枪-TMP</dressup>
       <capacity>35</capacity>
       <split>1</split>
@@ -755,11 +755,11 @@
     <icon>中国54式手枪</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>22500</price>
     <description>C国曾经大规模装备的手枪之一。但是因为性能不如新式手枪而淘汰。但是未日后C国库存的大量的54被发现后成为了未世里最常见的手枪之一。听说此枪杀伤极大，曾经一枪打死3人。</description>
-    <level>10</level>
     <data>
+      <level>10</level>
+      <weight>1</weight>
       <dressup>枪-手枪-中国54式手枪</dressup>
       <capacity>8</capacity>
       <split>1</split>
@@ -783,11 +783,11 @@
     <icon>MK23手枪</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>2500</price>
     <description>MK23手枪。</description>
-    <level>3</level>
     <data>
+      <level>3</level>
+      <weight>1</weight>
       <dressup>枪-手枪-MK23手枪</dressup>
       <capacity>15</capacity>
       <split>1</split>
@@ -835,11 +835,11 @@
     <icon>蝎式冲锋枪弹鼓版</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>3</weight>
     <price>39000</price>
     <description>蝎式冲锋枪弹鼓版</description>
-    <level>15</level>
     <data>
+      <level>15</level>
+      <weight>3</weight>
       <dressup>枪-手枪-蝎式冲锋枪弹鼓版</dressup>
       <capacity>50</capacity>
       <split>1</split>
@@ -863,11 +863,11 @@
     <icon>Glock18战术版</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2</weight>
     <price>10000</price>
     <description>格洛克18是由格洛克公司设计及生产的全自动手枪。格洛克18的标准弹匣为17发，亦有31或33发的大容量弹匣，但大容量弹匣少有普及。</description>
-    <level>50</level>
     <data>
+      <level>50</level>
+      <weight>2</weight>
       <dressup>枪-手枪-Glock18战术版</dressup>
       <capacity>25</capacity>
       <split>4</split>
@@ -892,11 +892,11 @@
     <icon>MP7极品战术版</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>8</weight>
     <price>100000</price>
     <description>土豪金改造版本！你值得拥有！</description>
-    <level>50</level>
     <data>
+      <level>50</level>
+      <weight>8</weight>
       <dressup>枪-手枪-MP7极品战术版</dressup>
       <capacity>60</capacity>
       <split>1</split>
@@ -920,12 +920,12 @@
     <icon>短剑印花集</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>6</weight>
     <price>200000</price>
     <description>短剑的短枪管特种作战型，当中「SBR」的意思是「短枪管步枪」。针对CRB的款型作出了轻量化的改造，使其可以单手持握。
     既然决定了双持枪械，那枪托的作用的确可有可无。</description>
-    <level>55</level>
     <data>
+      <level>55</level>
+      <weight>6</weight>
       <dressup>枪-手枪-短剑印花集</dressup>
       <capacity>50</capacity>
       <split>1</split>
@@ -950,12 +950,12 @@
     <icon>M79式榴弹发射器</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>3</weight>
     <price>52000</price>
     <description>M79式榴弹发射器是一种单发射击、枪管滑动开膛、后膛装填的肩射武器，结构简单坚固，使用方便， 射击精度 较好。
       但是使用者务必注意以下几点，1.只有一发，注意换弹时机2.远距离作战时，可试着预判抛射</description>
-    <level>12</level>
     <data>
+      <level>12</level>
+      <weight>3</weight>
       <dressup>枪-长枪-M79式榴弹发射器</dressup>
       <capacity>1</capacity>
       <split>1</split>
@@ -979,11 +979,11 @@
     <icon>TTI 2011 Combat Master</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>49000</price>
     <description>TTI 2011 Combat Master，为塔兰战术与sti首款合作的产品，其诞生也是塔兰战术在1911系竞赛枪械中涉足的重要标杆。</description>
-    <level>15</level>
     <data>
+      <level>15</level>
+      <weight>1</weight>
       <dressup>枪-手枪-TTI 2011 Combat Master</dressup>
       <capacity>22</capacity>
       <split>1</split>
@@ -1028,11 +1028,11 @@
     <icon>TTI Glock 34</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>49300</price>
     <description>glock 34是奥地利格洛克公司于1998年生产的手枪，为glock 17L 的竞赛版。 tti G34 在此基础上再作改良，使其更适于竞赛并更具现代化枪械的魅力。 改装了tti定制的轻量化套筒，采用哑光涂层，倾斜的防滑刻纹从枪管延伸到枪尾，在增大了操作性的同时装饰了枪身。</description>
-    <level>15</level>
     <data>
+      <level>15</level>
+      <weight>1</weight>
       <dressup>枪-手枪-TTI Glock 34</dressup>
       <capacity>25</capacity>
       <split>1</split>
@@ -1057,11 +1057,11 @@
     <icon>TTI Glock 19</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>49400</price>
     <description>TTI Glock 19在原版的基础上再作改良，使其更适于竞赛并更具现代化枪械的魅力。全枪高度定制，更加轻量化更加稳定，此版为银白色与Glock34搭配使用堪称一绝。</description>
-    <level>15</level>
     <data>
+      <level>15</level>
+      <weight>1</weight>
       <dressup>枪-手枪-TTI Glock 19</dressup>
       <capacity>25</capacity>
       <split>1</split>
@@ -1086,11 +1086,11 @@
     <icon>退路</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2</weight>
     <price>pirceless</price>
     <description>退路</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>2</weight>
       <dressup>枪-手枪-退路</dressup>
       <capacity>99999</capacity>
       <split>1</split>
@@ -1115,11 +1115,11 @@
     <icon>Killer 7</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2</weight>
     <price>pirceless</price>
     <description>使用K点当作子弹的手枪。</description>
-    <level>40</level>
     <data>
+      <level>40</level>
+      <weight>2</weight>
       <dressup>枪-手枪-Killer 7</dressup>
       <capacity>99999</capacity>
       <split>1</split>
@@ -1145,11 +1145,11 @@
     <icon>QBZ-192</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>5</weight>
     <price>75000</price>
     <description>QBZ192是QBZ191的短管突击步枪版本，具体用途还是为狭小室内作战准备，所以射程也理所应当的减少了，就算这样也依旧保留许多优点在里面，当然也会肯定比他的前辈QBZ95B-1会更好。</description>
-    <level>29</level>
     <data>
+      <level>29</level>
+      <weight>5</weight>
       <dressup>枪-长枪-QBZ-192</dressup>
       <capacity>50</capacity>
       <split>1</split>
@@ -1173,13 +1173,13 @@
     <icon>转换者</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2</weight>
     <price>120000</price>
     <description>转换者冲锋枪。
      说起来和看起来都莫名有点抽象的武器，但实际上这把武器的设计是十分巧妙的，两个枪管交替射击，而后坐力却只有水平后座，受许多铁驭的喜爱。
      A批滚出去，这是泰坦陨落的转换者！——From the 3102</description>
-    <level>45</level>
     <data>
+      <level>45</level>
+      <weight>2</weight>
       <dressup>枪-手枪-转换者</dressup>
       <capacity>25</capacity>
       <split>1</split>
@@ -1203,12 +1203,12 @@
     <icon>vactorPP-7400U</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>3</weight>
     <price>50000</price>
     <description>VactorPP-7400U....
     他结合了PP-2000和AK74M以及AK74U的外形设计，些许的看上去很是让人有点摸不到头脑，不过用起来还是见仁见智了。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>3</weight>
       <dressup>枪-短枪-vactorPP-7400U</dressup>
       <capacity>40</capacity>
       <split>1</split>
@@ -1232,12 +1232,12 @@
     <icon>vactorPP-7400U</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>3.6</weight>
     <price>83000</price>
     <description>VactorPP-7400U的加长枪托版本。
     他结合了PP-2000和AK74M以及AK74U的外形设计，些许的看上去很是让人有点摸不到头脑，不过用起来还是见仁见智了。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>3.6</weight>
       <dressup>枪-短枪-vactorPP-7400U长枪托</dressup>
       <capacity>40</capacity>
       <split>1</split>
@@ -1261,12 +1261,12 @@
     <icon>战术-QBZ-192</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>5</weight>
     <price>125000</price>
     <description>QBZ192。
     是QBZ191的短管突击步枪版本，具体用途还是为狭小室内作战准备，所以射程也理所应当的减少了，就算这样也依旧保留许多优点在里面，当然也会肯定比他的前辈QBZ95B-1会更好。</description>
-    <level>52</level>
     <data>
+      <level>52</level>
+      <weight>5</weight>
       <dressup>枪-长枪-战术-QBZ-192</dressup>
       <capacity>90</capacity>
       <split>1</split>
@@ -1290,15 +1290,15 @@
     <icon>SAPS12</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>8</weight>
     <price>936000</price>
     <description>SPAS-12多功能霰弹枪。
     这是一把在冷战时期被设计并诞生用于特殊用途，军队，警察的近战武器，那么相对于其他的半自动霰弹枪他的特殊之处在哪？
     它具有切换泵动式和半自动的功能，做出这种功能是为了应对一部分比较特殊的情况诞生的，在半自动下迅速发射全威力鹿弹，在泵动情况下发射低压弹。
     即使早早在之前的时候早早停产并被确认为毁灭性武器后被禁止向民间销售，尽管他自身十分很笨重，但是他自身的魅力和光芒却始终是耀眼的。
     好消息是：他不知怎么的在现在的末世又被不知道是从哪里来的一群人给重新生产和销售了，代价是昂贵。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>8</weight>
       <dressup>枪-手枪-SPAS12</dressup>
       <capacity>8</capacity>
       <split>11</split>
@@ -1323,15 +1323,15 @@
     <icon>-SPAS12-B2</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>8</weight>
     <price>296000</price>
     <description>SPAS-12多功能霰弹枪。
     这是一把在冷战时期被设计并诞生用于特殊用途，军队，警察的近战武器，那么相对于其他的半自动霰弹枪他的特殊之处在哪？
     它具有切换泵动式和半自动的功能，做出这种功能是为了应对一部分比较特殊的情况诞生的，在半自动下迅速发射全威力鹿弹，在泵动情况下发射低压弹。
     即使早早在之前的时候早早停产并被确认为毁灭性武器后被禁止向民间销售，尽管他自身十分很笨重，但是他自身的魅力和光芒却始终是耀眼的。
     它不仅仅只是被复产了，在同时，他也被进行了十分特殊的改造，双发开火，一发半自动接着快速再连一发，第一发自动把蛋壳退出去，第二发就像是泵动一样需要手动退了，同样的更加昂贵了。</description>
-    <level>30</level>
     <data>
+      <level>30</level>
+      <weight>8</weight>
       <dressup>枪-手枪-SPAS12-B2</dressup>
       <capacity>4</capacity>
       <split>20</split>
@@ -1356,11 +1356,11 @@
     <icon>湛蓝玫瑰</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>6</weight>
     <price>1000</price>
     <description>来自远方岛屿的左轮手枪。本应是摒弃甚至歧视热兵器的军团出现了近乎完全暴力化身的左轮手枪，子弹一式两发一发破甲一发夺命，让敌人的防御荡然无存。</description>
-    <level>60</level>
     <data>
+      <level>60</level>
+      <weight>6</weight>
       <dressup>枪-手枪-湛蓝玫瑰</dressup>
       <capacity>6</capacity>
       <split>1</split>
@@ -1384,12 +1384,12 @@
     <icon>白象牙</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>0</weight>
     <price>1000</price>
     <description>传奇恶魔猎人所持有的定制双枪之一，代表了他充满节奏与美感的战斗方式。经过改造能承受极高的射速和火力持续，像冲锋枪一样实现快速射击。
     正常流程无法获得，无需反馈此武器的问题，也请勿推荐他人使用此武器进行流程。</description>
-    <level>60</level>
     <data>
+      <level>60</level>
+      <weight>0</weight>
       <dressup>枪-手枪-白象牙</dressup>
       <capacity>9999</capacity>
       <split>1</split>
@@ -1413,12 +1413,12 @@
     <icon>黑檀木</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>0</weight>
     <price>1000</price>
     <description>传奇恶魔猎人所持有的定制双枪之一，代表了他充满节奏与美感的战斗方式。经过改造能承受极高的射速和火力持续，像冲锋枪一样实现快速射击。
     正常流程无法获得，无需反馈此武器的问题，也请勿推荐他人使用此武器进行流程。</description>
-    <level>60</level>
     <data>
+      <level>60</level>
+      <weight>0</weight>
       <dressup>枪-手枪-黑檀木</dressup>
       <capacity>5000</capacity>
       <split>1</split>
@@ -1442,11 +1442,11 @@
     <icon>OPDW17</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>5</weight>
     <price>136000</price>
     <description>OPDW17冲锋枪，由E联制造的PDW武器。外形上与P90相似，但使用口径更小弹体更长的E联制4.3x35mm冲锋枪弹药。</description>
-    <level>25</level>
     <data>
+      <level>25</level>
+      <weight>5</weight>
       <dressup>枪-手枪-OPDW17</dressup>
       <capacity>75</capacity>
       <split>1</split>
@@ -1470,11 +1470,11 @@
     <icon>短HK53</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>6</weight>
     <price>145600</price>
     <description>在审判日发生时的战斗中，警察和C管部队普遍使用的9mm冲锋枪在面对丧尸群时虽然拥有良好的精度与击退能力，但终究还是缺乏决定性的杀伤能力，最终导致了地铁站镇压行动的失败。因此，在加入4XG之后，他们利用废城各个武器商店遗留下的资源将9mm冲锋枪改造为了发射5.56mm步枪弹的突击步枪。为了迎合操作习惯而保留了原有的外观，由于存货足够，这同时也成为了4XG内部制式的武器之一。*名称的来源是杂志上刊登的G国H厂的一款官方枪型。这一支的伸缩托坏了。</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>6</weight>
       <dressup>枪-手枪-短HK53</dressup>
       <capacity>30</capacity>
       <split>1</split>
@@ -1498,11 +1498,11 @@
     <icon>T181S</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>16</weight>
     <price>200000</price>
     <description>一种在审判日之后才为人所知的神秘武器，以其超规格的威力闻名。发射独有的18.1x76mm弹药，威力无比但缺乏穿透性。经审判日后的一些枪匠推测，这种武器和弹药都由统合方面设计制造，但具体来源成谜。不过，其中大多数的来源都可以追溯到军阀的控制区。这一支的枪管短得吓人，用它的不是真正的高手就是纯粹的疯子。</description>
-    <level>50</level>
     <data>
+      <level>50</level>
+      <weight>16</weight>
       <dressup>枪-手枪-T181S</dressup>
       <capacity>30</capacity>
       <split>1</split>
@@ -1529,12 +1529,12 @@
     <icon>FR506</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>5</weight>
     <price>78000</price>
     <description>E联生产的大口径转轮手枪，统合政府某些部门的标准装备，同时具有高精度和大威力的优点。
 	“在面对人类目标时，这种武器的威力明显过大。但当面对那些危险生物时，威力永远不够。”</description>
-    <level>30</level>
     <data>
+      <level>30</level>
+      <weight>5</weight>
       <dressup>枪-手枪-FR506</dressup>
       <capacity>6</capacity>
       <split>1</split>
@@ -1559,14 +1559,14 @@
     <icon>无枪托ZUX197</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>5</weight>
     <price>97000</price>
     <description>大口径霰弹枪，弹丸少但破坏力极强。
 	在科技高度发达的这一时代，影视业的演员受益于医学与生物工学的发展而无需担忧生命安全。加上科技发展使得使用实物拍摄的成本大幅度下降，在拍摄影视剧过程中使用能够发射甚至具备实际战斗能力的影视道具在这个时代不再少见。一家名叫咸鱼重工的武器作坊专门为这些剧组设计制造相应的“道具”，而这些道具最终也随着审判日的动乱流落各地，并最终作为某人手中的杀人武器被使用。
 	霰弹枪永远是影视剧组最喜爱的武器之一：大威力、造型凶猛、令人印象深刻以及最重要的——使用成本便宜。
 	“斯卡雷特队全灭！”</description>
-    <level>25</level>
     <data>
+      <level>25</level>
+      <weight>5</weight>
       <dressup>枪-手枪-无枪托ZUX197</dressup>
       <capacity>5</capacity>
       <split>3</split>
@@ -1591,14 +1591,14 @@
     <icon>ASSKICKER</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>6</weight>
     <price>39900</price>
     <description>截断霰弹枪，载弹量大，适合持续战斗。
 	在科技高度发达的这一时代，影视业的演员受益于医学与生物工学的发展而无需担忧生命安全。加上科技发展使得使用实物拍摄的成本大幅度下降，在拍摄影视剧过程中使用能够发射甚至具备实际战斗能力的影视道具在这个时代不再少见。一家名叫咸鱼重工的武器作坊专门为这些剧组设计制造相应的“道具”，而这些道具最终也随着审判日的动乱流落各地，并最终作为某人手中的杀人武器被使用。
 	这把霰弹枪源自于咸鱼重工方面的枪匠与甲方发生的一次争执，而结果就是这把特别改造过的“打击者”霰弹枪。
 	自动退壳，可更换弹巢，而且足够短方便携带。在出演的电影中是反派的爱用配枪。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>6</weight>
       <dressup>枪-手枪-ASSKICKER</dressup>
       <capacity>12</capacity>
       <split>6</split>
@@ -1623,11 +1623,11 @@
     <icon>Beretta90TWO</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>39000</price>
     <description>伯莱塔公司M9系列手枪的改进型，于2006年推出。相较于原有92/96系列手枪有诸多改进，除了击锤部分以外基本为外形上的变更。</description>
-    <level>15</level>
     <data>
+      <level>15</level>
+      <weight>1</weight>
       <dressup>枪-手枪-Beretta90TWO</dressup>
       <capacity>15</capacity>
       <split>1</split>
@@ -1675,11 +1675,11 @@
     <icon>SIGP210</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>52000</price>
     <description>一度被部分枪械媒体神话的手枪，于上世纪40年代末由S国的SIG公司设计制造。零件均为手工制作，因此一支枪只有一套配套的零件而不能混用。虽然没有枪械媒体里吹的那么强大，但是作为一支上世纪战后时期的军用手枪能够打出近似于竞赛手枪的成绩也证明了其优秀的素质。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>1</weight>
       <dressup>枪-手枪-SIGP210</dressup>
       <capacity>8</capacity>
       <split>1</split>
@@ -1703,11 +1703,11 @@
     <icon>BergmannM1910</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>13000</price>
     <description>上世纪由G国设计师设计的军用手枪，一战后至二战期间D国军队均有装备。虽然外形很像，但它在内部结构到历史意义上确实与毛瑟公司的C96系列没有任何联系。</description>
-    <level>5</level>
     <data>
+      <level>5</level>
+      <weight>1</weight>
       <dressup>枪-手枪-BergmannM1910</dressup>
       <capacity>5</capacity>
       <split>1</split>
@@ -1731,11 +1731,11 @@
     <icon>N99</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>3</weight>
     <price>26000</price>
     <description>A国在三战期间投入使用的新式手枪，与常规手枪设计完全不同，粗糙、不舒适且厚重，但能够在极度严苛的储存环境下保存下来，并在拆封后迅速投入使用。发射10mmauto手枪弹，威力有保证，但因为设计上的问题而精度欠佳。</description>
-    <level>10</level>
     <data>
+      <level>10</level>
+      <weight>3</weight>
       <dressup>枪-手枪-N99</dressup>
       <capacity>12</capacity>
       <split>1</split>
@@ -1761,11 +1761,11 @@
     <icon>FKBRNO</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1.5</weight>
     <price>65000</price>
     <description>由Z国FK BRNO公司设计的大威力手枪，多用于狩猎用途。</description>
-    <level>25</level>
     <data>
+      <level>25</level>
+      <weight>1.5</weight>
       <dressup>枪-手枪-FKBRNO</dressup>
       <capacity>15</capacity>
       <split>1</split>
@@ -1791,11 +1791,11 @@
     <icon>SIGP220Elite</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>78000</price>
     <description>上世纪70年代由S国SIG公司开发的手枪，作为当时已装备S国部队的P210手枪的廉价替代。这一支是P220的现代化版本，发射10mmauto手枪弹，威力十足。</description>
-    <level>30</level>
     <data>
+      <level>30</level>
+      <weight>1</weight>
       <dressup>枪-手枪-SIGP220Elite</dressup>
       <capacity>8</capacity>
       <split>1</split>
@@ -1821,11 +1821,11 @@
     <icon>Glock40</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>5</weight>
     <price>291200</price>
     <description>如果你第一时间注意到的是它Glock的外形而不是那夸张的大小，那么多半要以肉身体验一次10mmauto手枪弹的威力。这支Glock手枪于三战后由Glock公司设计并发行，为三战后的战争格局与射击竞赛设计，因此具有比赛级的长身枪管。与它那些发射9mm帕弹或是其他小口径手枪弹的表亲相比，发射10mmauto手枪弹的Glock40就相当于Glock界的哥斯拉。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>5</weight>
       <dressup>枪-手枪-Glock40</dressup>
       <capacity>15</capacity>
       <split>1</split>
@@ -1849,11 +1849,11 @@
     <icon>AMTAutomagIII</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>65000</price>
     <description>AMT公司设计制造的大口径手枪，发射.30卡宾弹。</description>
-    <level>25</level>
     <data>
+      <level>25</level>
+      <weight>1</weight>
       <dressup>枪-手枪-AMTAutomagIII</dressup>
       <capacity>8</capacity>
       <split>1</split>
@@ -1879,12 +1879,12 @@
     <icon>鲁格MK3</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>1600</price>
     <description>一支.22手枪，没法太指望，但总归比没有好。
 	值得一提的是，此枪生产商为A国Ruger公司，从结构到来源上都与WW2时期NZD国的鲁格p08没有任何关联。</description>
-    <level>1</level>
     <data>
+      <level>1</level>
+      <weight>1</weight>
       <dressup>枪-手枪-鲁格MK3</dressup>
       <capacity>10</capacity>
       <split>1</split>
@@ -1909,11 +1909,11 @@
     <icon>土制转管手枪</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2</weight>
     <price>3200</price>
     <description>一支土制手枪，手感十分糟糕。</description>
-    <level>1</level>
     <data>
+      <level>1</level>
+      <weight>2</weight>
       <dressup>枪-手枪-土制转管手枪</dressup>
       <capacity>4</capacity>
       <split>1</split>
@@ -1938,12 +1938,12 @@
     <icon>SMP5A3</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>4</weight>
     <price>65000</price>
     <description>G国HK社制造的冲锋枪，本质上是其同社产品G3步枪的SMG化产物，采用滚柱闭锁枪机结构，控制性良好且精度优异，在上世纪的多次反恐行动后名声大噪。
 	在审判日的战斗中，经验丰富的暴徒镇压专家们作为最后一道防线竖立于死者的行军队列前。直到被完全淹没，也没有任何一人后退。</description>
-    <level>25</level>
     <data>
+      <level>25</level>
+      <weight>4</weight>
       <dressup>枪-手枪-MP5A3</dressup>
       <capacity>30</capacity>
       <split>1</split>
@@ -1968,12 +1968,12 @@
     <icon>超级矮子</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2</weight>
     <price>13000</price>
     <description>SUPER-SHORTY（超级矮个子、超级矮子）霰弹枪是由谢尔布公司的经理迈克·谢尔布设计的。这种短而粗的霰弹枪并不是完全由谢尔布公司生产，而是用莫斯伯格500和雷明顿870改装而成。其实改装截短改装霰弹枪的枪匠不少，但谢尔布公司是把这种截短枪当成一个正式产品来经营。
 	枪身某处铭刻着“零四”二字。</description>
-    <level>5</level>
     <data>
+      <level>5</level>
+      <weight>2</weight>
       <dressup>枪-手枪-超级矮个子</dressup>
       <capacity>3</capacity>
       <split>8</split>
@@ -1998,11 +1998,11 @@
     <icon>恒宇银星</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2</weight>
     <price>53000</price>
     <description>感谢来自迪吧的大佬公开素材！</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>2</weight>
       <dressup>枪-手枪-恒宇银星</dressup>
       <capacity>8</capacity>
       <split>1</split>
@@ -2026,11 +2026,11 @@
     <icon>恒宇红星</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2</weight>
     <price>53000</price>
     <description>感谢来自迪吧的大佬公开素材！</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>2</weight>
       <dressup>枪-手枪-恒宇红星</dressup>
       <capacity>8</capacity>
       <split>1</split>
@@ -2054,12 +2054,12 @@
     <icon>御天敌V-1</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1.5</weight>
     <price>60000</price>
     <description>御天敌V-1弹道集中，由于内部搭载了优秀的系统与巧妙的机械构造，每一次发射均能击出两发子弹。因此，把它作为更加轻便的霰弹枪使用也未尝不可。
 这把枪的一处隐秘角落莫名地刻着“z羡慕嫉妒恨z”这一串意义不明的字符。</description>
-    <level>25</level>
     <data>
+      <level>25</level>
+      <weight>1.5</weight>
       <dressup>枪-手枪-御天敌V-1</dressup>
       <capacity>24</capacity>
       <split>2</split>
@@ -2085,12 +2085,12 @@
     <icon>爆炎蒸汽</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>3.2</weight>
     <price>109000</price>
     <description>蒸汽朋克的外观风格之下藏匿着时代的尖端科技。虽是工艺品，但作为一把能够发射燃烧子弹的独特杀器，其每一发子弹均有着让人血流成火的威能。
 这把枪的一处隐秘角落莫名地刻着“z羡慕嫉妒恨z”这一串意义不明的字符。</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>3.2</weight>
       <dressup>枪-手枪-爆炎蒸汽</dressup>
       <capacity>30</capacity>
       <split>1</split>
@@ -2117,11 +2117,11 @@
     <icon>m9</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>2500</price>
     <description>伯莱塔M9手枪，由ITA国的伯莱塔公司于1980年代研发，自1990年正式在A军服役。</description>
-    <level>3</level>
     <data>
+      <level>3</level>
+      <weight>1</weight>
       <dressup>枪-手枪-m9</dressup>
       <capacity>15</capacity>
       <split>1</split>
@@ -2145,12 +2145,12 @@
     <icon>COLT PYTHON</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>32000</price>
     <description>柯尔特巨蟒左轮手枪，由A国的柯特制造公司所研制。
     曾有某位知名枪械历史学家如此形容它：「世界上最佳的左轮手枪」。</description>
-    <level>15</level>
     <data>
+      <level>15</level>
+      <weight>1</weight>
       <dressup>枪-手枪-COLT PYTHON</dressup>
       <capacity>6</capacity>
       <split>1</split>
@@ -2176,12 +2176,12 @@
     <icon>Desert Eagle</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2.5</weight>
     <price>52000</price>
     <description>沙漠之鹰。
     虽然火力和制止力强大、精度高及射程较其他手枪更远；不过也因价格比一般手枪昂贵，并且射击时所产生的巨大噪音与枪焰会对射手造成较大的心理压力及令其暴露位置，还对射击姿势要求较高等因素导致大部份军队及执法机关都认为沙漠之鹰不是实用的武器而拒绝采用。总之，这把枪只为经验丰富的射击达人又或是枪械大师量身订制。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>2.5</weight>
       <dressup>枪-手枪-Desert Eagle</dressup>
       <capacity>8</capacity>
       <split>1</split>
@@ -2207,11 +2207,11 @@
     <icon>Glock 18</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2</weight>
     <price>10000</price>
     <description>格洛克18是由格洛克公司设计及生产的全自动手枪。格洛克18的标准弹匣为17发，亦有31或33发的大容量弹匣，但大容量弹匣少有普及。</description>
-    <level>6</level>
     <data>
+      <level>6</level>
+      <weight>2</weight>
       <dressup>枪-手枪-Glock 18</dressup>
       <capacity>33</capacity>
       <split>1</split>
@@ -2257,11 +2257,11 @@
     <icon>M1911</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>6000</price>
     <description>由约翰·勃朗宁设计，雷明顿兰德公司生产的半自动手枪。于1911年服役至今。</description>
-    <level>3</level>
     <data>
+      <level>3</level>
+      <weight>1</weight>
       <dressup>枪-手枪-M1911</dressup>
       <capacity>8</capacity>
       <split>1</split>
@@ -2285,11 +2285,11 @@
     <icon>Mossberg500</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>3</weight>
     <price>56000</price>
     <description>莫斯伯格500泵动式霰弹枪，由A国O.F.莫斯伯格父子公司研制。</description>
-    <level>13</level>
     <data>
+      <level>13</level>
+      <weight>3</weight>
       <dressup>枪-手枪-Mossberg500</dressup>
       <capacity>8</capacity>
       <split>10</split>
@@ -2315,11 +2315,11 @@
     <icon>Mp5 pdw</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>3.3</weight>
     <price>20000</price>
     <description>MP5-PDW冲锋枪，MP5的个人防卫武器版本; 加装折叠枪托、可装上消音器的三叉型枪口及三连发，于1991年首次推出。</description>
-    <level>8</level>
     <data>
+      <level>8</level>
+      <weight>3.3</weight>
       <dressup>枪-手枪-Mp5 pdw</dressup>
       <capacity>40</capacity>
       <split>1</split>
@@ -2343,12 +2343,12 @@
     <icon>P90</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>3.9</weight>
     <price>36000</price>
     <description>P90冲锋枪，于1990年由BE国的军火商埃斯塔勒国营工厂所推出，是世界上第一种使用了全新弹药的个人防卫武器类枪械。
     P90是全名FN Project 1990的简写，意即FN 1990年计划。</description>
-    <level>13</level>
     <data>
+      <level>13</level>
+      <weight>3.9</weight>
       <dressup>枪-手枪-P90</dressup>
       <capacity>50</capacity>
       <split>1</split>
@@ -2382,12 +2382,12 @@
     <icon>PPK</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>2000</price>
     <description>华瑟PPK是由DEU国卡尔·华瑟运动枪有限公司制造的反冲作用操作半自动手枪。在20世纪时常作为高级军官、特工、刑事侦探人员的配枪。而部份第三世界国家至今仍采用PPK型作为警察用的佩枪。
     这把手枪加装的消音器，或许也是在提醒使用者：末世中如果缺乏自保能力，任何的噪音都会遭来难以承受的灾祸。</description>
-    <level>1</level>
     <data>
+      <level>1</level>
+      <weight>1</weight>
       <dressup>枪-手枪-PPK</dressup>
       <capacity>9</capacity>
       <split>1</split>
@@ -2411,12 +2411,12 @@
     <icon>UZI</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2.7</weight>
     <price>17000</price>
     <description>乌兹冲锋枪，由乌兹·盖尔上尉于1948年设计，由IL国军事工业在1951年批量生产。广受好评后自1954年服役至今，便是如今的21世纪，也仍能在战争中见到它的身影。
     乌兹是一款结构简单易于生产的冲锋枪，该武器以其设计者乌兹·盖尔的名称来命名，虽然当时他表明并不希望以其名字作武器名称，但这请求被IL国政府驳回。</description>
-    <level>7</level>
     <data>
+      <level>7</level>
+      <weight>2.7</weight>
       <dressup>枪-手枪-UZI</dressup>
       <capacity>33</capacity>
       <split>1</split>
@@ -2440,12 +2440,12 @@
     <icon>MP7</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>3</weight>
     <price>28000</price>
     <description>MP7冲锋枪，由DEU国的黑克勒-科赫设计，由DEU国的黑克勒-科赫生产。
     90年代末期研发，于2001年服役至今。</description>
-    <level>11</level>
     <data>
+      <level>11</level>
+      <weight>3</weight>
       <dressup>枪-手枪-MP7</dressup>
       <capacity>50</capacity>
       <split>1</split>
@@ -2469,12 +2469,12 @@
     <icon>韦森686</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>12000</price>
     <description>史密斯韦森M686左轮手枪，由A国枪械公司史密斯韦森于1980年研发，1981年批量生产。
     史密斯韦森是A国最大的手枪制造商，由A国人贺拉斯·史密斯与丹尼尔·韦森于1852年建立。总部位于马萨诸塞州春田。他们以制造左轮手枪闻名于世，曾在第二次世界大战中生产了110万支手枪以供应盟军需求。</description>
-    <level>10</level>
     <data>
+      <level>10</level>
+      <weight>1</weight>
       <dressup>枪-手枪-韦森686</dressup>
       <capacity>6</capacity>
       <split>1</split>
@@ -2522,12 +2522,12 @@
     <icon>P90战术版</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>4</weight>
     <price>28000</price>
     <description>P90冲锋枪战术版，由P90加装多种泽宁特战术套件改造而成。更为沉重的质量背后是性能上的天壤之别。
     P90是全名FN Project 1990的简写，意即FN 1990年计划。</description>
-    <level>21</level>
     <data>
+      <level>21</level>
+      <weight>4</weight>
       <dressup>枪-手枪-P90战术版</dressup>
       <capacity>100</capacity>
       <split>1</split>
@@ -2565,12 +2565,12 @@
     <icon>KRISS</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2</weight>
     <price>13000</price>
     <description>短剑冲锋枪是由A国KRISS枪械公司所研制及生产的KRISS Vector冲锋枪枪族的原型产品。
     一把由SWIT国人设计，FR人提供技术的A国枪？</description>
-    <level>5</level>
     <data>
+      <level>5</level>
+      <weight>2</weight>
       <dressup>枪-手枪-KRISS</dressup>
       <capacity>33</capacity>
       <split>1</split>
@@ -2594,12 +2594,12 @@
     <icon>KRISS轻量化突击版</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1.5</weight>
     <price>42000</price>
     <description>短剑的短枪管特种作战型，当中「SBR」的意思是「短枪管步枪」。针对CRB的款型作出了轻量化的改造，使其可以单手持握。
     既然决定了双持枪械，那枪托的作用的确可有可无。</description>
-    <level>23</level>
     <data>
+      <level>23</level>
+      <weight>1.5</weight>
       <dressup>枪-手枪-KRISS轻量化突击版</dressup>
       <capacity>50</capacity>
       <split>1</split>
@@ -2624,13 +2624,13 @@
     <icon>加强版mp7</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>3</weight>
     <price>100000</price>
     <description>强化版，威力明显提升。
     MP7冲锋枪，由DEU国的黑克勒-科赫设计，由DEU国的黑克勒-科赫生产。
     90年代末期研发，于2001年服役至今。</description>
-    <level>25</level>
     <data>
+      <level>25</level>
+      <weight>3</weight>
       <dressup>枪-手枪-加强版MP7</dressup>
       <capacity>75</capacity>
       <split>1</split>
@@ -2655,11 +2655,11 @@
     <icon>战术版莫斯伯格590</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>8</weight>
     <price>250000</price>
     <description>单手持霰弹枪，将霰弹进行到底。</description>
-    <level>40</level>
     <data>
+      <level>40</level>
+      <weight>8</weight>
       <dressup>枪-手枪-战术版莫斯伯格590</dressup>
       <capacity>9</capacity>
       <split>10</split>
@@ -2685,12 +2685,12 @@
     <icon>战术版MGL</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>4</weight>
     <price>400000</price>
     <description>ShopGirl在早些年间将XM25和传统榴弹发射器进行结合而设计的自制榴弹炮
     经过技术的修复，现在已完全恢复了发射火箭的强大功能，连续发射的火箭的强大火力足以让敌人灰飞烟灭。</description>
-    <level>50</level>
     <data>
+      <level>50</level>
+      <weight>4</weight>
       <dressup>枪-手枪-战术版MGL</dressup>
       <capacity>5</capacity>
       <split>1</split>
@@ -2716,12 +2716,12 @@
     <icon>COLT PYTHON</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2.5</weight>
     <price>150000</price>
     <description>经过改装的柯尔特巨蟒左轮手枪，由A国的柯特制造公司所研制。
 曾有某位知名枪械历史学家如此形容它：「世界上最佳的左轮手枪」。</description>
-    <level>33</level>
     <data>
+      <level>33</level>
+      <weight>2.5</weight>
       <dressup>枪-手枪-COLT PYTHON</dressup>
       <capacity>6</capacity>
       <split>1</split>
@@ -2747,12 +2747,12 @@
     <icon>Desert Eagle</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>3</weight>
     <price>180000</price>
     <description>经过改装的沙漠之鹰。
 虽然火力和制止力强大、精度高及射程较其他手枪更远；不过也因价格比一般手枪昂贵，并且射击时所产生的巨大噪音与枪焰会对射手造成较大的心理压力及令其暴露位置，还对射击姿势要求较高等因素导致大部份军队及执法机关都认为沙漠之鹰不是实用的武器而拒绝采用。总之，这把枪只为经验丰富的射击达人又或是枪械大师量身订制。</description>
-    <level>45</level>
     <data>
+      <level>45</level>
+      <weight>3</weight>
       <dressup>枪-手枪-Desert Eagle</dressup>
       <capacity>8</capacity>
       <split>1</split>
@@ -2778,12 +2778,12 @@
     <icon>韦森686</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>1</weight>
     <price>100000</price>
     <description>经过改装的史密斯韦森M686左轮手枪，由美国枪械公司史密斯韦森于1980年研发，1981年批量生产。
 史密斯韦森是A国最大的手枪制造商，由A国人贺拉斯·史密斯与丹尼尔·韦森于1852年建立。总部位于马萨诸塞州春田。他们以制造左轮手枪闻名于世，曾在第二次世界大战中生产了110万支手枪以供应盟军需求。</description>
-    <level>22</level>
     <data>
+      <level>22</level>
+      <weight>1</weight>
       <dressup>枪-手枪-韦森686</dressup>
       <capacity>6</capacity>
       <split>1</split>
@@ -2809,11 +2809,11 @@
     <icon>LS06</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2</weight>
     <price>100000</price>
     <description>滚筒式冲锋枪。</description>
-    <level>30</level>
     <data>
+      <level>30</level>
+      <weight>2</weight>
       <dressup>枪-手枪-LS06</dressup>
       <capacity>50</capacity>
       <split>1</split>
@@ -2837,11 +2837,11 @@
     <icon>穿刺LS06</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>3</weight>
     <price>100000</price>
     <description>子弹可穿透敌人的利器。</description>
-    <level>32</level>
     <data>
+      <level>32</level>
+      <weight>3</weight>
       <dressup>枪-手枪-穿刺LS06</dressup>
       <capacity>50</capacity>
       <split>1</split>
@@ -2865,11 +2865,11 @@
     <icon>轻量化量子能量枪</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>2</weight>
     <price>10000</price>
     <description>轻量化后可以单手持的量子能量枪</description>
-    <level>60</level>
     <data>
+      <level>60</level>
+      <weight>2</weight>
       <dressup>枪-手枪-轻量化量子能量枪</dressup>
       <capacity>60</capacity>
       <split>1</split>
@@ -2895,11 +2895,11 @@
     <icon>UZI战术版</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>3.7</weight>
     <price>10000</price>
     <description>可升级极品UZI战术版</description>
-    <level>23</level>
     <data>
+      <level>23</level>
+      <weight>3.7</weight>
       <dressup>枪-手枪-UZI战术版</dressup>
       <capacity>80</capacity>
       <split>1</split>
@@ -2924,11 +2924,11 @@
     <icon>极品UZI战术版</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>8</weight>
     <price>50000</price>
     <description>合成诛神短枪必备武器之一</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>8</weight>
       <dressup>枪-手枪-极品UZI战术版</dressup>
       <capacity>100</capacity>
       <split>1</split>
@@ -2953,11 +2953,11 @@
     <icon>钛合金P90</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>9</weight>
     <price>100000</price>
     <description>逆天短枪</description>
-    <level>45</level>
     <data>
+      <level>45</level>
+      <weight>9</weight>
       <dressup>枪-手枪-钛合金P90</dressup>
       <capacity>50</capacity>
       <split>1</split>
@@ -2991,11 +2991,11 @@
     <icon>圣诞糖果枪</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>0.5</weight>
     <price>10000</price>
     <description>枪管里射出来的是糖果哦。</description>
-    <level>0</level>
     <data>
+      <level>0</level>
+      <weight>0.5</weight>
       <dressup>枪-手枪-圣诞糖果枪</dressup>
       <capacity>50</capacity>
       <split>1</split>
@@ -3020,11 +3020,11 @@
     <icon>诛神短枪</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>10</weight>
     <price>500000</price>
     <description>遇佛杀佛，遇神诛神</description>
-    <level>50</level>
     <data>
+      <level>50</level>
+      <weight>10</weight>
       <dressup>枪-手枪-诛神短枪</dressup>
       <capacity>60</capacity>
       <split>1</split>
@@ -3049,11 +3049,11 @@
     <icon>远古诛神短枪</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>6</weight>
     <price>500000</price>
     <description>来自远古的力量，星际最强神装</description>
-    <level>60</level>
     <data>
+      <level>60</level>
+      <weight>6</weight>
       <dressup>枪-手枪-远古诛神短枪</dressup>
       <capacity>90</capacity>
       <split>1</split>
@@ -3077,15 +3077,15 @@
     <icon>dominator</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>3</weight>
     <price>700000</price>
     <description>dominator（支配者）是末日前J国的民用人工智能系统西比拉带来的科技革命的产物之一，为警用武器，拥有三个形态。
 西比拉系统在动荡时期被J国研发并使用，可以完整分析人类的心理、性格、思想、行为模式以及潜在犯罪指数，并以此为依据通过高压统治实现了短暂稳定与繁荣发展，带来了能量武器、侦测系统、虚拟现实与3D投影等技术的飞速提升。dominator曾经可测量目标潜在犯罪指数并自动切换不同模式，是西比拉系统的眼与手之一。因天网的前车之鉴，西比拉并未深度参与军工系统，后于末日时与J国政府一同垮台。
 目前dominator已无法连接系统，并失去心理测量功能。使用权限已被破解，可自由切换不同模式。
 双手持握时可以变形（仅装备该武器于第一号手枪位），需要快速点按操作。长按时可直接由麻醉模式切换到分解模式。
 &lt;font color="#FFCC00"&gt;【麻醉模式】&lt;/font&gt;发射单体麻醉子弹，使可击倒的敌人倒地并暂时停止行动。西比拉系统为犯罪指数高于100且低于300的目标所设计的模式。&lt;BR&gt;&lt;font color="#FFCC00"&gt;【击杀模式】&lt;/font&gt;发射入体触发式微波子弹，击入敌方体内时将发射微波加热体液，造成极高内爆伤害，并产生电磁伤害。对无法击穿体表的高防御力单位只有低额物理伤害。西比拉系统为犯罪指数高于300的目标所设计的模式。&lt;BR&gt;&lt;font color="#FFCC00"&gt;【分解模式】&lt;/font&gt;消耗更多能量并发射高能等离子球，造成大范围真实伤害。西比拉系统为高威胁非生物敌人所设计的模式。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>3</weight>
       <dressup>枪-手枪-dominator</dressup>
       <capacity>50</capacity>
       <split>1</split>
@@ -3111,11 +3111,11 @@
     <icon>MP40</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>4</weight>
     <price>41600</price>
     <description>Maschinenpistole40，常被称为“施迈瑟冲锋枪”，是一种为方便大量生产而设计，与传统枪械制造观念不同的冲锋枪，亦是第二次世界大战期间德国军队使用最广泛、性能最优良的冲锋枪。</description>
-    <level>16</level>
     <data>
+      <level>16</level>
+      <weight>4</weight>
       <dressup>枪-手枪-MP40</dressup>
       <capacity>64</capacity>
       <split>1</split>
@@ -3161,13 +3161,13 @@
     <icon>STI2011</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>3</weight>
     <price>53000</price>
     <description>2011系列是由美国定制制造商STI International（现为STACCATO）开发的自动手枪模块化框架和完整型号的总称。
 该概念是M1911的21世纪翻新模型，有各种变体，例如竞争、执法和自卫。 而“2011”这个名字的意思则是“M1911在100年后的样子”。
 从质量和特点来看，应是黑洞军工依设计图所产。</description>
-    <level>25</level>
     <data>
+      <level>25</level>
+      <weight>3</weight>
       <dressup>枪-手枪-STI2011</dressup>
       <capacity>8</capacity>
       <split>1</split>
@@ -3192,13 +3192,11 @@
     <icon>XM556-H-Stinger</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>10</weight>
     <price>232960</price>
     <description>铁枪会基于XM556技术开发的革命性单手加特林武器系统。
     这款被命名为"Stinger"的衍生型号配备了重新设计的紧凑供弹装置与优化动力系统，精准适配快速机动作战需求。 
     尽管为实现极致便携性而在射速和容量上有所取舍，但Stinger仍能在关键时刻瞬间倾泻致命火力风暴。
     该武器预留了一定的拓展升级空间，每级强化度可以提供3%的暴击率加成</description>
-    <level>35</level>
     <lifecycle>
       <attr_0>
         <init>
@@ -3213,6 +3211,8 @@
       </attr_0>
     </lifecycle>
     <data>
+      <level>35</level>
+      <weight>10</weight>
       <dressup>枪-手枪-XM556-H-Stinger</dressup>
       <capacity>25</capacity>
       <split>5</split>
@@ -3240,11 +3240,11 @@
     <icon>XM556-OC-Overlord</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>10</weight>
     <price>232960</price>
     <description>占位用</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>10</weight>
       <dressup>枪-手枪-XM556-OC-Overlord</dressup>
       <capacity>2500</capacity>
       <split>5</split>
@@ -3281,15 +3281,15 @@
     <icon>ashcore</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>3</weight>
     <price>145600</price>
     <description>铁枪会基于工业等离子切割设备逆向开发的便携式等离子武器。
     武器代号来源于等离子核心将目标物质瞬间气化为灰烬的作用机制。
     系统配备强化合金外壳和散热系统，侧面装有能量状态指示器用于监控等离子室充能水平。
     具备优异的装甲穿透能力，但发射频率受热管理系统限制。
     </description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>3</weight>
       <dressup>枪-手枪-ashcore</dressup>
       <capacity>23</capacity>
       <split>1</split>
@@ -3315,15 +3315,15 @@
     <icon>Kel-Tec-P50</icon>
     <type>武器</type>
     <use>手枪</use>
-    <weight>9</weight>
     <price>100000</price>
     <description>铁枪会基于P90改装经验，通过逆向工程将Kel-Tec P50从半自动升级为全自动模式。
     重新优化的弹药系统大幅提升了穿甲性能，代价是牺牲了部分精准度。
     审判日前，某知名战术模拟游戏曾收录此枪并引发玩家社区激烈讨论——从穿甲能力到射速调节，每个参数都经过反复的实战模拟与验证。
     这些虚拟数据为铁枪会工程师提供了重要参考，加速了真实改装方案的定型。
     </description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>9</weight>
       <dressup>枪-手枪-Kel-Tec-P50</dressup>
       <capacity>50</capacity>
       <split>1</split>

@@ -1,34 +1,6 @@
-﻿class org.flashNight.gesh.tooltip.TooltipFormatter {
+﻿import org.flashNight.gesh.tooltip.TooltipConstants;
 
-  public static var dict:Object = {
-    defence: "防御",
-    hp: "hp",
-    mp: "mp",
-    //
-    damage: "伤害加成",
-    punch: "空手加成",
-    knifepower: "冷兵器加成",
-    gunpower: "枪械加成",
-    force: "内力加成",
-    //
-    weight: "重量",
-    //
-    clipname: "使用弹夹",
-    capacity: "弹夹容量",
-    impact: "冲击力",
-    //
-    accuracy: "命中加成",
-    evasion: "挡拆加成",
-    toughness: "韧性加成",
-    lazymiss: "高危回避",
-    //
-    poison: "剧毒性",
-    vampirism: "吸血",
-    rout: "击溃",
-    slay: "斩杀线",
-    //
-    magictype: "伤害属性"
-  };
+class org.flashNight.gesh.tooltip.TooltipFormatter {
 
   public static function bold(s:String):String {
     return "<B>" + s + "</B>";
@@ -56,19 +28,58 @@
   }
   
   public static function upgradeLine(
-    buf:Array, label:String, base:Number, lvl:Number,
-    hlColor:String, sep:String
+    buf:Array, data:Object, equipData:Object, property:String, label:String, suffix:String
   ):Void {
-    if (base === undefined || isNaN(base) || base === 0) return;
-    if (hlColor == undefined) hlColor = org.flashNight.gesh.tooltip.TooltipConstants.COL_HL;
-    if (sep == undefined) sep = "：";
-    buf.push(label, sep, base);
-    var enhanced:Number = _root.强化计算(base, lvl);
-    buf.push("<FONT COLOR='" + hlColor + "'>(+", (enhanced - base), ")</FONT><BR>");
+    var base = data[property];
+    var final = equipData[property];
+    if(!base && !final) return;
+
+    if(!label) label = TooltipConstants.PROPERTY_DICT[property];
+    if(!label) label = property;
+    if(!suffix) suffix = "";
+
+    // 若没有实际装备数值或实际数值与原始数值相等，则打印原始数值
+    if(!equipData || final == base){
+      buf.push(label, "：", base, suffix, "<BR>");
+      return;
+    }
+    
+    // 以橙色字体打印实际数值
+    buf.push(label, "：<FONT COLOR='" + TooltipConstants.COL_HL + "'>", final, suffix, "</FONT>");
+    if(base == null) base = 0;
+    // 若属性为数字，则额外打印增幅值
+    if(isNaN(final) || isNaN(base)){
+      buf.push(" (覆盖" + base + ")<BR>");
+    }else{
+      var enhance = final - base;
+      var sign = enhance < 0 ? "-" : "+";
+      buf.push(" (", base, sign, enhance, ")<BR>");
+    }
   }
   
   public static function colorLine(buf:Array, hex:String, text:String):Void {
     if (text == undefined || text == "") return;
     buf.push("<FONT COLOR='" + hex + "'>", text, "</FONT><BR>");
+  }
+
+  public static function enhanceLine(buf:Array, type:String, data:Object, property:String, val, label:String):Void {
+    var base = data[property];
+    if (!val) return;
+
+    if(!label) label = TooltipConstants.PROPERTY_DICT[property];
+    if(!label) label = property;
+
+    if(type === "add"){
+      var n:Number = Number(val);
+      if(isNaN(n) || n === 0) return;
+      buf.push(label, " + ", n, "<BR>");
+    }else if(type === "multiply"){
+      if(!base) return;
+      var n:Number = (Number(val) * 100) >> 0;
+      if(isNaN(n) || n === 0) return;
+      buf.push(label, " + ", n, "%<BR>");
+    }else if(type === "override"){
+      buf.push(label, " -> ", val, "<BR>");
+    }
   }
 }

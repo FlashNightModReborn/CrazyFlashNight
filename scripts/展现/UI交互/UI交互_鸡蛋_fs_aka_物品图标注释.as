@@ -7,15 +7,16 @@ import org.flashNight.gesh.string.*;
  * @param name:String 物品名称
  * @param value:Object 物品数值对象，包含level、tier等属性
  */
-_root.物品图标注释 = function(name, value) {
+_root.物品图标注释 = function(name, value, baseItem) {
     var 强化等级:Number = (value.level > 0) ? value.level : 1;
-    var 物品数据:Object = ItemUtil.getItemData(name);
+    var itemData:Object = ItemUtil.getItemData(name);
+    if(typeof baseItem !== "object") baseItem = null;
 
     // 1) 基础段描述（不含简介头与装备属性）
-    var 描述文本:String = TooltipComposer.generateItemDescriptionText(物品数据);
+    var 描述文本:String = TooltipComposer.generateItemDescriptionText(itemData);
 
     // 2) 简介面板文本（简介头 + 装备段）
-    var 简介文本:String = TooltipComposer.generateIntroPanelContent(物品数据, value, 强化等级);
+    var 简介文本:String = TooltipComposer.generateIntroPanelContent(baseItem, itemData);
 
     // _root.服务器.发布服务器消息("描述文本:" + StringUtils.htmlToPlainTextFast(描述文本));
     // _root.服务器.发布服务器消息("简介文本:" + StringUtils.htmlToPlainTextFast(简介文本));

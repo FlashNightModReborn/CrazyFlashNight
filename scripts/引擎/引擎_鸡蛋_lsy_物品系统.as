@@ -103,14 +103,14 @@ _root.根据物品名查找全部属性 = function(物品名) {
     itemArr[1] = itemData.icon == undefined ? "" : itemData.icon;
     itemArr[2] = itemData.type == undefined ? "" : itemData.type;
     itemArr[3] = itemData.use == undefined ? "" : itemData.use;
-    itemArr[4] = itemData.weight == undefined ? 0 : itemData.weight;
+    itemArr[4] = equipData.weight == undefined ? 0 : equipData.weight;
     itemArr[5] = itemData.price == undefined ? 0 : itemData.price;
     itemArr[6] = itemData.description == undefined ? "" : itemData.description;
     
     // 扩展属性
     itemArr[7] = itemData.data.friend == undefined ? 0 : itemData.data.friend;
     itemArr[8] = equipData.defence == undefined ? 0 : equipData.defence;
-    itemArr[9] = itemData.level == undefined ? 0 : itemData.level;
+    itemArr[9] = equipData.level == undefined ? 0 : equipData.level;
     
     // 血量和魔法值，根据物品用途分开处理
     if (itemData.use == "药剂") {

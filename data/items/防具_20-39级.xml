@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!--已用ID：[52, 57, 69, 70, 71, 72, 73, 74, 79, 84, 90, 96, 102, 105, 106, 107, 110, 113, 120, 125, 129, 133, 134, 137, 138, 144, 147, 163, 165, 166, 168, 170, 171, 174, 178, 179, 183, 185, 187, 191, 193, 195, 197, 199, 208, 212, 217, 222, 227, 232, 238, 243, 248, 361, 397, 433, 440, 447, 455, 462, 467, 482, 486, 489, 494, 537, 544, 549, 552, 557, 573, 585, 590, 599, 604, 615, 643, 667, 671, 694, 836, 840, 902, 906, 1527, 1532, 1537, 1547, 2611, 2617, 2622, 5513, 6027, 6040, 6046, 6049, 6054, 6055, 6080, 6086, 6089, 8014, 8020, 9006, 10001, 10006, 10010, 10013, 10014, 10018, 10021, 10024, 10027, 10031, 10034, 10037, 10040, 10043, 10047, 10049, 10052, 10071, 10074, 10076, 10079, 10083, 10084, 10085, 10086, 10087, 10088, 10089, 10094, 10095, 10096, 10097, 10104, 10106, 10108, 10110, 10113, 10501, 10506, 10510, 10513, 10514, 10518, 10521, 10524, 10527, 10531, 10534, 10537, 10540, 10543, 10547, 10549, 10552, 10571, 10574, 10576, 10579, 10583, 10584, 10585, 10586, 10587, 10588, 10589, 10594, 10595, 10596, 10597, 10604, 10606, 10608, 10610, 10613, 11001, 11006, 11010, 11013, 11014, 11018, 11021, 11024, 11027, 11031, 11034, 11037, 11040, 11043, 11047, 11049, 11052, 11071, 11074, 11076, 11079, 11083, 11084, 11085, 11086, 11087, 11088, 11089, 11094, 11095, 11096, 11097, 11104, 11106, 11108, 11110, 11113, 30600]
 ID已倒序排序，在最上方新增新物品即可，使用最新id，同时可修改注释
 预留ID区间：15304-15600-->
@@ -10,11 +10,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>诺亚镇暴服脚</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>10</weight>
     <price>115100</price>
     <description>不知何时开始，这些安保人员开始变得像是设施的一部分而非独立存在的个人。只要有人试图入侵或者逃脱，他们便会像战斗兵器一样出动，将其消灭。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>10</weight>
       <dressup>男变装-诺亚镇暴服脚</dressup>
       <hp>200</hp>
       <mp>140</mp>
@@ -34,11 +34,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>诺亚镇暴服下装</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>15</weight>
     <price>115100</price>
     <description>那之后，安保人员也不再需要考虑部署速度，因为他们的目标根本逃不掉。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>15</weight>
       <dressup>变装-诺亚镇暴服下装</dressup>
       <hp>200</hp>
       <mp>110</mp>
@@ -58,11 +58,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>诺亚镇暴服上装</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>20</weight>
     <price>115100</price>
     <description>在审判日之后，诺亚方舟计划组几乎不再需要考虑外来威胁，因此大部分安保人员都开始穿上新式的防护装甲来更好地镇压内部叛乱。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>20</weight>
       <dressup>变装-诺亚镇暴服上装</dressup>
       <hp>145</hp>
       <mp>145</mp>
@@ -82,11 +82,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>诺亚安保服脚</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>5</weight>
     <price>91000</price>
     <description>下肢部分的着装内置了与植入物伺服器同步的传动单元，防止使用者因生体部分损坏严重而失去移动能力。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>5</weight>
       <dressup>男变装-诺亚安保服脚</dressup>
       <hp>100</hp>
       <mp>120</mp>
@@ -106,11 +106,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>诺亚安保服手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>5</weight>
     <price>91000</price>
     <description>手部的手环除了可以作为徒手战斗时的打击武器使用以外，也是与武器设备连接的接口。除此以外还能检测使用者的各项生体数据是否“符合记录数据”。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>5</weight>
       <dressup>男变装-诺亚安保服手套</dressup>
       <hp>100</hp>
       <mp>130</mp>
@@ -130,11 +130,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>诺亚安保服下装</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>7</weight>
     <price>91000</price>
     <description>当然，保证安保人员的机动性也十分重要。这将决定人员是否能在状况发生时第一时间前往指定作战位置进行部署。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>7</weight>
       <dressup>变装-诺亚安保服下装</dressup>
       <hp>150</hp>
       <mp>100</mp>
@@ -154,11 +154,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>诺亚安保服上装</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>5</weight>
     <price>91000</price>
     <description>出于任务需要，这种安保制服并不重视非直接致命部位（即便是躯干部分的内脏）的防护，而是着重于抵抗能量武器的烧蚀与战斗药剂的供应上。毕竟对于诺亚方舟计划组所有的医学技术与设备而言，只要头部保持完好就能在极短时间内完成对人员肉体的修复。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>5</weight>
       <dressup>变装-诺亚安保服上装</dressup>
       <hp>100</hp>
       <mp>200</mp>
@@ -178,13 +178,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>诺亚安保服头盔</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>15</weight>
     <price>91000</price>
     <description>战前配发到诺亚方舟计划组的安保人员用防护头盔。能够有效防护生物武器攻击，并尽可能将可能的致命攻击非致命化，从而为使用者提供反击的机会。
 	&lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，效果为浅红，开启亮度等级为0~4。</description>
-    <level>35</level>
     <helmet>true</helmet>
     <data>
+      <level>35</level>
+      <weight>15</weight>
       <dressup>男变装-诺亚安保服头盔</dressup>
       <hp>200</hp>
       <mp>55</mp>
@@ -195,7 +195,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
         <毒>25</毒>
       </magicdefence>
     </data>
-    <lifecycle>
+      <lifecycle>
       <attr_0>
         <init>
           <initRoutines>红外夜视仪初始化</initRoutines>
@@ -224,7 +224,6 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <type>防具</type>
     <use>手部装备</use>
     <actiontype>单臂巨拳</actiontype>
-    <weight>12</weight>
     <price>50000</price>
     <description>由a兵团改造人的巨拳为素体制作的巨型拳套。由于良好的生物性能，无需过多改造即可投入使用，成本低廉，且防护能力可观的同时可以进行攻击，只是需要使用者能够驾驭这种攻击方式。</description>
     <skill>
@@ -233,8 +232,9 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <cd>10000</cd>
       <mp>50</mp>
     </skill>
-    <level>38</level>
     <data>
+      <level>38</level>
+      <weight>12</weight>
       <dressup>男变装-改造人巨拳</dressup>
       <hp>220</hp>
       <mp>0</mp>
@@ -252,7 +252,6 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <type>防具</type>
     <use>手部装备</use>
     <actiontype>强化</actiontype>
-    <weight>7</weight>
     <price>232000</price>
     <description>黑光病毒感染体的刀锋形态，可以装备在手上，有吸取生命的能力。</description>
     <skill>
@@ -261,8 +260,9 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <cd>5000</cd>
       <mp>100</mp>
     </skill>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>7</weight>
       <dressup>男变装-黑光刀锋</dressup>
       <hp>160</hp>
       <mp>60</mp>
@@ -280,7 +280,6 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <type>防具</type>
     <use>手部装备</use>
     <actiontype>巨拳</actiontype>
-    <weight>10</weight>
     <price>166000</price>
     <description>黑光病毒感染体的重锤形态，可以装备在手上，有吸取生命的能力。</description>
     <skill>
@@ -289,8 +288,9 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <cd>5000</cd>
       <mp>50</mp>
     </skill>
-    <level>25</level>
     <data>
+      <level>25</level>
+      <weight>10</weight>
       <dressup>男变装-黑光重锤</dressup>
       <hp>130</hp>
       <mp>30</mp>
@@ -311,13 +311,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>夜行侦查鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>6</weight>
     <price>50000</price>
     <description>审判日之前统合政府研制的一套特种作战服装，基于3XF制式战斗服发展而来。继承了3XF制式战斗服全覆式的特点，同时还加装了新式的轻质合金装甲，增强了整体的防护性能。这款护甲为侦察兵设计，拥有良好的隐匿性和充足的功能性，通讯机能十分出众。
 脚部部分装有处于试验阶段的缓冲装置，包裹了脚部的接地部分。这个缓冲装置能够减少脚与地面接触时带来的反冲力，减轻使用者的脚部负担的同时还可以有效消除行走乃至奔跑的时接触地面发出的噪音。
 在审判日发生之前，这款护甲被派发到政府的一些重要单位装备使用。由于装备数不多且制造厂未被发现，因此少有显露于世人面前。</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>6</weight>
       <dressup>男变装-夜行侦查鞋</dressup>
       <hp>120</hp>
       <mp>100</mp>
@@ -337,13 +337,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>夜行侦查手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>6</weight>
     <price>50000</price>
     <description>审判日之前统合政府研制的一套特种作战服装，基于3XF制式战斗服发展而来。继承了3XF制式战斗服全覆式的特点，同时还加装了新式的轻质合金装甲，增强了整体的防护性能。这款护甲为侦察兵设计，拥有良好的隐匿性和充足的功能性，通讯机能十分出众。
 手部的保护性得到强化，能够对一些环境危害进行防护。
 在审判日发生之前，这款护甲被派发到政府的一些重要单位装备使用。由于装备数不多且制造厂未被发现，因此少有显露于世人面前。</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>6</weight>
       <dressup>男变装-夜行侦查手套</dressup>
       <hp>120</hp>
       <mp>100</mp>
@@ -363,13 +363,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>夜行侦查下装</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>10</weight>
     <price>50000</price>
     <description>审判日之前统合政府研制的一套特种作战服装，基于3XF制式战斗服发展而来。继承了3XF制式战斗服全覆式的特点，同时还加装了新式的轻质合金装甲，增强了整体的防护性能。这款护甲为侦察兵设计，拥有良好的隐匿性和充足的功能性，通讯机能十分出众。
 腿部部分的结构在新技术的支持下进行了重新设计，能够在保有良好运动性的基础上得到十分优秀的隐匿性和较好的防护性。
 在审判日发生之前，这款护甲被派发到政府的一些重要单位装备使用。由于装备数不多且制造厂未被发现，因此少有显露于世人面前。</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>10</weight>
       <dressup>变装-夜行侦查下装</dressup>
       <hp>120</hp>
       <mp>95</mp>
@@ -389,13 +389,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>夜行侦查上装</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>10</weight>
     <price>50000</price>
     <description>审判日之前统合政府研制的一套特种作战服装，基于3XF制式战斗服发展而来。继承了3XF制式战斗服全覆式的特点，同时还加装了新式的轻质合金装甲，增强了整体的防护性能。这款护甲为侦察兵设计，拥有良好的隐匿性和充足的功能性，通讯机能十分出众。
 胸部和手臂部分新增了金属制的防弹装甲，用于在近距离战斗时提供更多的防护。
 在审判日发生之前，这款护甲被派发到政府的一些重要单位装备使用。由于装备数不多且制造厂未被发现，因此少有显露于世人面前。</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>10</weight>
       <dressup>变装-夜行侦查上装</dressup>
       <hp>120</hp>
       <mp>95</mp>
@@ -415,14 +415,14 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>夜行侦查盔</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>8</weight>
     <price>50000</price>
     <description>审判日之前统合政府研制的一套特种作战服装，基于3XF制式战斗服发展而来。继承了3XF制式战斗服全覆式的特点，同时还加装了新式的轻质合金装甲，增强了整体的防护性能。这款护甲为侦察兵设计，拥有良好的隐匿性和充足的功能性，通讯机能十分出众。
 头部的护甲增厚，还强化了对讲机的通讯能力。原本的夜视仪机能得到保留，增加了强闪光防护功能，安装了简易的空气过滤装置，在有必要时可以安装滤罐作为防毒面罩使用。
 在审判日发生之前，这款护甲被派发到政府的一些重要单位装备使用。由于装备数不多且制造厂未被发现，因此少有显露于世人面前。</description>
-    <level>28</level>
     <helmet>true</helmet>
     <data>
+      <level>28</level>
+      <weight>8</weight>
       <dressup>男变装-夜行侦查盔</dressup>
       <hp>120</hp>
       <mp>95</mp>
@@ -442,11 +442,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>武装jk套装鞋子</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>0.8</weight>
     <price>145600</price>
     <description>一双平平无奇的学生鞋。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>0.8</weight>
       <dressup>男变装-武装jk套装鞋子</dressup>
       <hp>100</hp>
       <mp>100</mp>
@@ -461,11 +461,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>武装jk套装裙子</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>1</weight>
     <price>145600</price>
     <description>校园里常见的裙子。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>1</weight>
       <dressup>变装-武装jk套装</dressup>
       <hp>100</hp>
       <mp>100</mp>
@@ -480,11 +480,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>武装jk套装校服</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>1</weight>
     <price>145600</price>
     <description>本应读书的年纪，却被迫在这末世下带上各种武器艰难求生，何尝不是一种悲哀？</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>1</weight>
       <dressup>变装-武装jk套装</dressup>
       <hp>100</hp>
       <mp>100</mp>
@@ -499,11 +499,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>隐匿帽蒙面</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>1</weight>
     <price>100000</price>
     <description>隐匿于夜晚，行动于无常</description>
-    <level>30</level>
     <data>
+      <level>30</level>
+      <weight>1</weight>
       <dressup>男变装-隐匿帽蒙面</dressup>
       <hp>75</hp>
       <mp>60</mp>
@@ -518,11 +518,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>隐匿帽</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>1</weight>
     <price>100000</price>
     <description>隐匿于夜晚，行动于无常</description>
-    <level>30</level>
     <data>
+      <level>30</level>
+      <weight>1</weight>
       <dressup>男变装-隐匿帽</dressup>
       <hp>75</hp>
       <mp>60</mp>
@@ -537,11 +537,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>闪跑2Andy手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>-5</weight>
     <price>90000</price>
     <description>梦幻联动，闪客快跑2疯狂跑酷的套装。</description>
-    <level>22</level>
     <data>
+      <level>22</level>
+      <weight>-5</weight>
       <dressup>男变装-闪跑2Andy手套</dressup>
       <hp>60</hp>
       <mp>50</mp>
@@ -556,11 +556,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>闪跑2Andy鞋子</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>-5</weight>
     <price>90000</price>
     <description>梦幻联动，闪客快跑2疯狂跑酷的套装。</description>
-    <level>22</level>
     <data>
+      <level>22</level>
+      <weight>-5</weight>
       <dressup>男变装-闪跑2Andy鞋子</dressup>
       <hp>60</hp>
       <mp>50</mp>
@@ -575,12 +575,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>闪跑2Andy头部</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>-5</weight>
     <price>90000</price>
     <description>梦幻联动，闪客快跑2疯狂跑酷的套装。</description>
-    <level>22</level>
     <helmet>true</helmet>
     <data>
+      <level>22</level>
+      <weight>-5</weight>
       <dressup>男变装-闪跑2Andy头部</dressup>
       <hp>60</hp>
       <mp>50</mp>
@@ -595,11 +595,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>闪跑2Andy裤子</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>-5</weight>
     <price>90000</price>
     <description>梦幻联动，闪客快跑2疯狂跑酷的套装。</description>
-    <level>22</level>
     <data>
+      <level>22</level>
+      <weight>-5</weight>
       <dressup>变装-闪跑2Andy</dressup>
       <hp>60</hp>
       <mp>50</mp>
@@ -614,11 +614,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>闪跑2Andy上衣</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>-5</weight>
     <price>90000</price>
     <description>梦幻联动，闪客快跑2疯狂跑酷的套装。</description>
-    <level>22</level>
     <data>
+      <level>22</level>
+      <weight>-5</weight>
       <dressup>变装-闪跑2Andy</dressup>
       <hp>60</hp>
       <mp>50</mp>
@@ -633,11 +633,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>风衣战术服</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>2</weight>
     <price>80000</price>
     <description>经过加固的风衣。</description>
-    <level>22</level>
     <data>
+      <level>22</level>
+      <weight>2</weight>
       <dressup>变装-风衣战术服</dressup>
       <hp>60</hp>
       <mp>50</mp>
@@ -652,12 +652,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>重甲手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>2</weight>
     <price>50000</price>
     <description>护甲的机械化改造有两个主要方向：其一是轻量化，通过动力系统弥补重量造成的机动性损失；其二是忽略机动性，彻底走高防护道路。
 就重甲手套而言，其防护力自然是践行了第二种改造方案。尽管全套装备相当沉重，但至少手部的防护能让你面对攻击时足够安心。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>2</weight>
       <dressup>男变装-重甲手套</dressup>
       <hp>160</hp>
       <mp>35</mp>
@@ -675,12 +675,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>重甲鞋子</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>3</weight>
     <price>50000</price>
     <description>护甲的机械化改造有两个主要方向：其一是轻量化，通过动力系统弥补重量造成的机动性损失；其二是忽略机动性，彻底走高防护道路。
 鞋子并不需要什么特殊设计，只要能和其他部分的装备兼容即可——这是民间装备设计界流传的一句话，用来形容重甲鞋子再合适不过。它只要能够配合全套装备，就已经能够展现自身作为装备的优秀素质了。不过，就具体设计而言，它依然会保持相对其他部位装备的轻量，防止降低使用者的机动性。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>3</weight>
       <dressup>男变装-重甲鞋子</dressup>
       <hp>160</hp>
       <mp>35</mp>
@@ -698,13 +698,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>重甲头部</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>5</weight>
     <price>50000</price>
     <description>护甲的机械化改造有两个主要方向：其一是轻量化，通过动力系统弥补重量造成的机动性损失；其二是忽略机动性，彻底走高防护道路。
 这套装备的头部部分确实暴露了自己的技术来源——毫无疑问，这是来自末世前巨型企业的技术。巨型企业要求雇佣兵们作战迅速的同时兼顾防御，于是不得不在头部装备这里安装护目镜和其他便携功能设备。无论这套装备的具体设计者是谁，这人都毫无疑问参考了巨型企业的设计。</description>
-    <level>35</level>
     <helmet>true</helmet>
     <data>
+      <level>35</level>
+      <weight>5</weight>
       <dressup>男变装-重甲头部</dressup>
       <hp>160</hp>
       <mp>35</mp>
@@ -722,12 +722,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>重甲裤子</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>10</weight>
     <price>50000</price>
     <description>护甲的机械化改造有两个主要方向：其一是轻量化，通过动力系统弥补重量造成的机动性损失；其二是忽略机动性，彻底走高防护道路。
 对于重型装备来说，裤子的设计往往是最复杂的。重甲裤子交出的答卷相对不错，在兼顾了机动性的同时有着还不错的防御力，或许是得益于新材料的问世——这似乎暗示了它的技术来源，毕竟这种新材料似乎只在巨型企业内部进行过试验和量产。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>10</weight>
       <dressup>变装-重甲</dressup>
       <hp>160</hp>
       <mp>35</mp>
@@ -745,13 +745,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>重甲上衣</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>10</weight>
     <price>50000</price>
     <description>护甲的机械化改造有两个主要方向：其一是轻量化，通过动力系统弥补重量造成的机动性损失；其二是忽略机动性，彻底走高防护道路。
 对于人体来说，最主要的防护区域其实是上身。被爆头的可能性其实不高，被命中四肢姑且还可以挣扎，但被命中器官集中的上身可就不好受了。也正是考虑到这一点，重甲上衣的设计相当重视防护性，或许能够为使用者多带来几个“复活币”。</description>
     <skill>&lt;font color="#66ccff"&gt;【喷气背包】&lt;/font&gt;装载有用于升空的喷气背包，停止喷气时自动充气，按飞行键使用。</skill>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>10</weight>
       <dressup>变装-重甲</dressup>
       <hp>160</hp>
       <mp>35</mp>
@@ -769,12 +769,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>灰色格子短裙</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>0.6</weight>
     <price>80000</price>
     <description>在堕落城的学校里流传着这样一个传说：在夜幕降临的堕落城的学校周围，会有拥有着特异功能的女学生在游荡···空穴来风当然也会吸引人们，也会吸引名气。于是，你能看到越来越多正值青春年华的少女，在百废待兴的末世里穿上这样的服装。这样的反差感的确让人在恍惚间似乎回到了末世前的尘都。
 “我知道你想说什么，但黑丝的确比白丝更耐脏，显然是劳动者该穿的服装。”</description>
-    <level>23</level>
     <data>
+      <level>23</level>
+      <weight>0.6</weight>
       <dressup>变装-黑丝版战术JK</dressup>
       <hp>60</hp>
       <mp>50</mp>
@@ -789,12 +789,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>黑色板鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>1</weight>
     <price>80000</price>
     <description>在堕落城的学校里流传着这样一个传说：在夜幕降临的堕落城的学校周围，会有拥有着特异功能的女学生在游荡···空穴来风当然也会吸引人们，也会吸引名气。于是，你能看到越来越多正值青春年华的少女，在百废待兴的末世里穿上这样的服装。这样的反差感的确让人在恍惚间似乎回到了末世前的尘都。
 你可能觉得少女穿作战鞋很离谱，但，别开玩笑了，你经历的一切哪怕有一丝一毫的靠谱吗？</description>
-    <level>23</level>
     <data>
+      <level>23</level>
+      <weight>1</weight>
       <dressup>女变装-战术JK鞋子</dressup>
       <hp>60</hp>
       <mp>50</mp>
@@ -809,12 +809,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>灰色格子短裙</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>1</weight>
     <price>80000</price>
     <description>在堕落城的学校里流传着这样一个传说：在夜幕降临的堕落城的学校周围，会有拥有着特异功能的女学生在游荡···空穴来风当然也会吸引人们，也会吸引名气。于是，你能看到越来越多正值青春年华的少女，在百废待兴的末世里穿上这样的服装。这样的反差感的确让人在恍惚间似乎回到了末世前的尘都。
 随风飘起的裙子与残破的世界——这是虚幻的对比景象。时刻谨记，末世没有什么休闲与温情。</description>
-    <level>23</level>
     <data>
+      <level>23</level>
+      <weight>1</weight>
       <dressup>变装-战术JK</dressup>
       <hp>60</hp>
       <mp>50</mp>
@@ -829,13 +829,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>战术JK头部</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>0.2</weight>
     <price>80000</price>
     <description>在堕落城的学校里流传着这样一个传说：在夜幕降临的堕落城的学校周围，会有拥有着特异功能的女学生在游荡···空穴来风当然也会吸引人们，也会吸引名气。于是，你能看到越来越多正值青春年华的少女，在百废待兴的末世里穿上这样的服装。这样的反差感的确让人在恍惚间似乎回到了末世前的尘都。
 缺乏现代工业提供的廉价产品，例如平价化妆品、食物以及供一日两次洗澡的清洁水，这种情况下，真的会有人有如此容貌吗？这不过是假象而已。</description>
-    <level>23</level>
     <helmet>true</helmet>
     <data>
+      <level>23</level>
+      <weight>0.2</weight>
       <dressup>女变装-战术JK头部</dressup>
       <hp>60</hp>
       <mp>50</mp>
@@ -850,12 +850,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>战术JK上衣</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>2</weight>
     <price>80000</price>
     <description>在堕落城的学校里流传着这样一个传说：在夜幕降临的堕落城的学校周围，会有拥有着特异功能的女学生在游荡···空穴来风当然也会吸引人们，也会吸引名气。于是，你能看到越来越多正值青春年华的少女，在百废待兴的末世里穿上这样的服装。这样的反差感的确让人在恍惚间似乎回到了末世前的尘都。
 总有人问：校服搭配作战是什么样子？末世前的人可能会用各种靡靡之音泛滥时代的游戏产物给你答案。但到了现在，人们也不得不苦笑了：或许只有超能力才能实现这种情况，因为人们都在垂死挣扎，再无这种闲情逸致想象不存在的事物了。所以，当你见识到这样的穿着时，不但要明白它的防护力重组，还要确信其主人或许并不来自这个世界——是想象的产物！</description>
-    <level>23</level>
     <data>
+      <level>23</level>
+      <weight>2</weight>
       <dressup>变装-战术JK</dressup>
       <hp>60</hp>
       <mp>50</mp>
@@ -870,11 +870,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>独眼龙防毒面具</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>2</weight>
     <price>90000</price>
     <description>这种奇怪的搭配，没人知道是怎么回事，使用这种面具的人的实力如何？，也没什么，就是给了盗贼们和军阀们留下了噩梦的回忆。</description>
-    <level>26</level>
     <data>
+      <level>26</level>
+      <weight>2</weight>
       <dressup>男变装-独眼龙防毒面具</dressup>
       <hp>60</hp>
       <mp>50</mp>
@@ -892,11 +892,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>半遮脸猪鼻式防毒面具</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>2</weight>
     <price>50000</price>
     <description>这是另一种版本的a兵团面具，很显然不是所有的a兵团成员都喜欢全遮脸的防毒面具。</description>
-    <level>21</level>
     <data>
+      <level>21</level>
+      <weight>2</weight>
       <dressup>男变装-半遮脸猪鼻式防毒面具</dressup>
       <hp>50</hp>
       <mp>50</mp>
@@ -914,13 +914,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>LEE战靴</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>0.2</weight>
     <price>50000</price>
     <description>“王牌运动”——生命不息，运动不止！
 轻便透气的跑鞋，是各大跑酷爱好者的首选。其独特的用料使得它用以格斗也有出色的发挥。在路上偶然碰到遗落的跑鞋是“王牌运动”品牌畅销的表现，不必惊慌。</description>
-    <level>22</level>
     <helmet>false</helmet>
     <data>
+      <level>22</level>
+      <weight>0.2</weight>
       <dressup>男变装-LEE战靴</dressup>
       <hp>25</hp>
       <mp>30</mp>
@@ -936,7 +936,6 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <type>防具</type>
     <use>手部装备</use>
     <actiontype>截拳</actiontype>
-    <weight>0.2</weight>
     <price>50000</price>
     <description>“王牌运动”——我们用双手，成就你的武圣梦！
 一双轻便的露趾手套，牺牲了防护，特化了攀附能力与近身格斗，能使佩戴者最大化施展自身格斗技艺。据说这套设计保留到了安迪烙现在的常用的战斗服中，而安迪烙本人或许并不在意这点。
@@ -947,9 +946,10 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <cd>4000</cd>
       <mp>100</mp>
     </skill>
-    <level>22</level>
     <helmet>false</helmet>
     <data>
+      <level>22</level>
+      <weight>0.2</weight>
       <dressup>男变装-LEE战服手套</dressup>
       <hp>0</hp>
       <mp>0</mp>
@@ -964,14 +964,14 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>LEE战服下装</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>0.2</weight>
     <price>50000</price>
     <description>“王牌运动”——随时随地，让你成为全场目光的焦点！
 “自诩李小龙的武疯子大闹新品发布会的事情已经告一段落，对此我们深感惋惜。而对于一部分武圣文化爱好者的误解，我们希望各位能理解，AS.337系列服装并不只是一套战斗服，它更是对于武圣理念的一种延续，只有切身体验武圣的战斗，才能将他的武道传承下去。为此我们举办了【武圣文化交流会】活动，携带武圣的签名、海报或是合照入场，即可享受半价优惠！活动期间购买AS.337战服，还会附赠武圣配色超薄——”
 似乎是半张对折后放在口袋的宣传单。</description>
-    <level>22</level>
     <helmet>false</helmet>
     <data>
+      <level>22</level>
+      <weight>0.2</weight>
       <dressup>变装-LEE战服下装</dressup>
       <hp>25</hp>
       <mp>30</mp>
@@ -986,13 +986,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>LEE战服上装</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>0.2</weight>
     <price>50000</price>
     <description>想成为跑酷高手还是武术大师？——请认准“王牌运动”！这是安迪烙穿过的战服！
 材质轻薄，透气舒适，据说内置能协调穿戴者动作的智能纤维，备受跑酷爱好者或是死亡竞赛年轻选手喜爱。你问这款战服到底有没有通过赛用安全质量检测？谁在乎呢，跟着安迪烙选准没错。</description>
-    <level>22</level>
     <helmet>false</helmet>
     <data>
+      <level>22</level>
+      <weight>0.2</weight>
       <dressup>变装-LEE战服上装</dressup>
       <hp>25</hp>
       <mp>30</mp>
@@ -1007,13 +1007,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>AS-闪动护目镜</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>0.2</weight>
     <price>50000</price>
     <description>“王牌运动”——关键时刻，闪动回来！
 质地相当坚固的护目镜，内置动感识别模块，可以释放刺激神经的弱电流协助佩戴者快速反应危险。这个功能曾被指控会对大脑产生不可逆的损伤，而你现在并不需要担心这个问题——它压根没电源。</description>
-    <level>22</level>
     <helmet>false</helmet>
     <data>
+      <level>22</level>
+      <weight>0.2</weight>
       <dressup>男变装-AS-闪动护目镜</dressup>
       <hp>25</hp>
       <mp>30</mp>
@@ -1028,11 +1028,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>A级防化服鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>2</weight>
     <price>230000</price>
     <description>全封闭式气密型防化服，针对最高等级的呼吸和皮肤危害而设计，能抵御几乎所有危害化学品（包括气态、液态或固态），以及任何危险物质。可大幅减免多种属性伤害的侵害。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>2</weight>
       <dressup>男变装-A级防化服鞋</dressup>
       <hp>250</hp>
       <mp>120</mp>
@@ -1056,11 +1056,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>A级防化服手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>2</weight>
     <price>230000</price>
     <description>全封闭式气密型防化服，针对最高等级的呼吸和皮肤危害而设计，能抵御几乎所有危害化学品（包括气态、液态或固态），以及任何危险物质。可大幅减免多种属性伤害的侵害。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>2</weight>
       <dressup>男变装-A级防化服手套</dressup>
       <hp>250</hp>
       <mp>120</mp>
@@ -1084,11 +1084,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>A级防化服下装</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>5</weight>
     <price>230000</price>
     <description>全封闭式气密型防化服，针对最高等级的呼吸和皮肤危害而设计，能抵御几乎所有危害化学品（包括气态、液态或固态），以及任何危险物质。可大幅减免多种属性伤害的侵害。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>5</weight>
       <dressup>变装-A级防化服下装</dressup>
       <hp>250</hp>
       <mp>130</mp>
@@ -1112,11 +1112,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>A级防化服上装</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>5</weight>
     <price>230000</price>
     <description>全封闭式气密型防化服，针对最高等级的呼吸和皮肤危害而设计，能抵御几乎所有危害化学品（包括气态、液态或固态），以及任何危险物质。可大幅减免多种属性伤害的侵害。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>5</weight>
       <dressup>变装-A级防化服上装</dressup>
       <hp>250</hp>
       <mp>130</mp>
@@ -1140,13 +1140,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>A级防化服头套</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>3.5</weight>
     <price>230000</price>
     <description>全封闭式气密型防化服，针对最高等级的呼吸和皮肤危害而设计，能抵御几乎所有危害化学品（包括气态、液态或固态），以及任何危险物质。可大幅减免多种属性伤害的侵害。</description>
-    <level>35</level>
     <helmet>true</helmet>
     <helmet>false</helmet>
     <data>
+      <level>35</level>
+      <weight>3.5</weight>
       <dressup>男变装-A级防化服头套</dressup>
       <hp>250</hp>
       <mp>120</mp>
@@ -1170,11 +1170,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>B级防化服鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>2</weight>
     <price>100000</price>
     <description>全封闭式非气密型防化服，可抵御高等级的呼吸危害与一定的皮肤危害，能够防止液态物质的渗透，有效减免多种属性伤害的侵害。</description>
-    <level>25</level>
     <data>
+      <level>25</level>
+      <weight>2</weight>
       <dressup>男变装-B级防化服鞋</dressup>
       <hp>130</hp>
       <mp>50</mp>
@@ -1198,11 +1198,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>B级防化服手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>2</weight>
     <price>100000</price>
     <description>全封闭式非气密型防化服，可抵御高等级的呼吸危害与一定的皮肤危害，能够防止液态物质的渗透，有效减免多种属性伤害的侵害。</description>
-    <level>25</level>
     <data>
+      <level>25</level>
+      <weight>2</weight>
       <dressup>男变装-B级防化服手套</dressup>
       <hp>130</hp>
       <mp>50</mp>
@@ -1226,11 +1226,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>B级防化服下装</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>3</weight>
     <price>100000</price>
     <description>全封闭式非气密型防化服，可抵御高等级的呼吸危害与一定的皮肤危害，能够防止液态物质的渗透，有效减免多种属性伤害的侵害。</description>
-    <level>25</level>
     <data>
+      <level>25</level>
+      <weight>3</weight>
       <dressup>变装-B级防化服下装</dressup>
       <hp>130</hp>
       <mp>50</mp>
@@ -1254,11 +1254,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>B级防化服上装</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>3</weight>
     <price>100000</price>
     <description>全封闭式非气密型防化服，可抵御高等级的呼吸危害与一定的皮肤危害，能够防止液态物质的渗透，有效减免多种属性伤害的侵害。</description>
-    <level>25</level>
     <data>
+      <level>25</level>
+      <weight>3</weight>
       <dressup>变装-B级防化服上装</dressup>
       <hp>130</hp>
       <mp>50</mp>
@@ -1282,13 +1282,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>B级防化服头套</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>2.5</weight>
     <price>100000</price>
     <description>全封闭式非气密型防化服，可抵御高等级的呼吸危害与一定的皮肤危害，能够防止液态物质的渗透，有效减免多种属性伤害的侵害。</description>
-    <level>25</level>
     <helmet>true</helmet>
     <helmet>false</helmet>
     <data>
+      <level>25</level>
+      <weight>2.5</weight>
       <dressup>男变装-B级防化服头套</dressup>
       <hp>130</hp>
       <mp>50</mp>
@@ -1312,12 +1312,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>霜精大头套</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>5</weight>
     <price>105000</price>
     <description>HEEHO！</description>
-    <level>25</level>
     <helmet>true</helmet>
     <data>
+      <level>25</level>
+      <weight>5</weight>
       <dressup>男变装-霜精大头套</dressup>
       <hp>100</hp>
       <mp>100</mp>
@@ -1338,12 +1338,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>罪袋头套</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>0.5</weight>
     <price>108000</price>
     <description>传说此物在八云紫的隙间之中大量出现，头上套着罪袋的人，通常会伴随着劲霸的音乐以全裸的形态在各个不知所谓的作品之中作为劳模出场。</description>
-    <level>26</level>
     <helmet>true</helmet>
     <data>
+      <level>26</level>
+      <weight>0.5</weight>
       <dressup>男变装-罪袋头套</dressup>
       <punch>80</punch>
       <defence>170</defence>
@@ -1357,7 +1357,6 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <type>防具</type>
     <use>手部装备</use>
     <actiontype>拳击</actiontype>
-    <weight>0.1</weight>
     <price>25000</price>
     <description>与Blue切磋获胜后，他将绑于自己拳头上的绷带赠予了胜者作为奖励，虽然乍一看平平无奇，但却有着意料之外的质感。</description>
     <skill>
@@ -1366,8 +1365,9 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <cd>3500</cd>
       <mp>0</mp>
     </skill>
-    <level>30</level>
     <data>
+      <level>30</level>
+      <weight>0.1</weight>
       <dressup>男变装-拳击特制绷带</dressup>
       <hp>0</hp>
       <mp>75</mp>
@@ -1384,11 +1384,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>黑龙战靴</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>4</weight>
     <price>100000</price>
     <description>这件装备是黑龙在战斗中被击碎的金属，混合了其他材料与工艺后重新制成的盔甲，虽然沉重，但却具备着相当强悍的防御性能。</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>4</weight>
       <dressup>男变装-黑龙战靴</dressup>
       <hp>160</hp>
       <damage>45</damage>
@@ -1406,11 +1406,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>黑龙手甲</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>4</weight>
     <price>100000</price>
     <description>这件装备是黑龙在战斗中被击碎的金属，混合了其他材料与工艺后重新制成的盔甲，虽然沉重，但却具备着相当强悍的防御性能。</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>4</weight>
       <dressup>男变装-黑龙手甲</dressup>
       <hp>160</hp>
       <damage>45</damage>
@@ -1428,11 +1428,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>黑龙腿甲</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>15</weight>
     <price>100000</price>
     <description>这件装备是黑龙在战斗中被击碎的金属，混合了其他材料与工艺后重新制成的盔甲，虽然沉重，但却具备着相当强悍的防御性能。</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>15</weight>
       <dressup>变装-黑龙腿甲</dressup>
       <hp>180</hp>
       <damage>45</damage>
@@ -1450,11 +1450,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>黑龙盔甲</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>15</weight>
     <price>100000</price>
     <description>这件装备是黑龙在战斗中被击碎的金属，混合了其他材料与工艺后重新制成的盔甲，虽然沉重，但却具备着相当强悍的防御性能。</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>15</weight>
       <dressup>变装-黑龙盔甲</dressup>
       <hp>180</hp>
       <damage>45</damage>
@@ -1472,12 +1472,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>黑龙头盔</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>4</weight>
     <price>100000</price>
     <description>这件装备是黑龙在战斗中被击碎的金属，混合了其他材料与工艺后重新制成的盔甲，虽然沉重，但却具备着相当强悍的防御性能。</description>
-    <level>28</level>
     <helmet>true</helmet>
     <data>
+      <level>28</level>
+      <weight>4</weight>
       <dressup>男变装-黑龙头盔</dressup>
       <hp>160</hp>
       <damage>45</damage>
@@ -1495,11 +1495,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>牛仔皮鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>0.8</weight>
     <price>40000</price>
     <description>这件装备是由牛仔在战斗中被撕裂的布料，混合了其他材料与工艺后重新制成的服装，虽然轻盈，但却具备意料之外的防御性能。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>0.8</weight>
       <dressup>男变装-牛仔皮鞋</dressup>
       <hp>100</hp>
       <mp>50</mp>
@@ -1519,11 +1519,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>牛仔手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>0.4</weight>
     <price>40000</price>
     <description>这件装备是由牛仔在战斗中被撕裂的布料，混合了其他材料与工艺后重新制成的服装，虽然轻盈，但却具备意料之外的防御性能。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>0.4</weight>
       <dressup>男变装-牛仔手套</dressup>
       <hp>100</hp>
       <mp>50</mp>
@@ -1543,11 +1543,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>牛仔裤子</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>3</weight>
     <price>40000</price>
     <description>这件装备是由牛仔在战斗中被撕裂的布料，混合了其他材料与工艺后重新制成的服装，虽然轻盈，但却具备意料之外的防御性能。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>3</weight>
       <dressup>变装-牛仔下装</dressup>
       <hp>100</hp>
       <mp>50</mp>
@@ -1567,11 +1567,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>牛仔上衣</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>3</weight>
     <price>40000</price>
     <description>这件装备是由牛仔在战斗中被撕裂的布料，混合了其他材料与工艺后重新制成的服装，虽然轻盈，但却具备意料之外的防御性能。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>3</weight>
       <dressup>变装-牛仔上装</dressup>
       <hp>100</hp>
       <mp>50</mp>
@@ -1591,12 +1591,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>牛仔风帽</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>0.5</weight>
     <price>40000</price>
     <description>这件装备是由牛仔在战斗中被撕裂的布料，混合了其他材料与工艺后重新制成的服装，虽然轻盈，但却具备意料之外的防御性能。</description>
-    <level>35</level>
     <helmet>false</helmet>
     <data>
+      <level>35</level>
+      <weight>0.5</weight>
       <dressup>男变装-牛仔帽</dressup>
       <hp>100</hp>
       <mp>50</mp>
@@ -1616,12 +1616,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>黑无常鞋子</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>1</weight>
     <price>40000</price>
     <description>洁白笑面与漆黑哭面的所经之处，往往尸骨成堆，直面浮士德兄弟的存在，通常的结局都是在那伴随刀光与硝烟的诡谲战舞之中死无全尸。他们兄弟二人也因此得到“黑白无常”的别名。
     这件装备是由浮士德兄弟在战斗中被撕裂的布料，混合了其他材料与工艺后重新制成的服装，虽然轻盈，但却具备意料之外的防御性能。</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>1</weight>
       <dressup>男变装-黑无常鞋子</dressup>
       <hp>70</hp>
       <mp>35</mp>
@@ -1640,12 +1640,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>黑无常手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>1</weight>
     <price>40000</price>
     <description>洁白笑面与漆黑哭面的所经之处，往往尸骨成堆，直面浮士德兄弟的存在，通常的结局都是在那伴随刀光与硝烟的诡谲战舞之中死无全尸。他们兄弟二人也因此得到“黑白无常”的别名。
     这件装备是由浮士德兄弟在战斗中被撕裂的布料，混合了其他材料与工艺后重新制成的服装，虽然轻盈，但却具备意料之外的防御性能。</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>1</weight>
       <dressup>男变装-黑无常礼服手套</dressup>
       <hp>70</hp>
       <mp>35</mp>
@@ -1664,12 +1664,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>黑无常礼裤</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>2</weight>
     <price>40000</price>
     <description>洁白笑面与漆黑哭面的所经之处，往往尸骨成堆，直面浮士德兄弟的存在，通常的结局都是在那伴随刀光与硝烟的诡谲战舞之中死无全尸。他们兄弟二人也因此得到“黑白无常”的别名。
     这件装备是由浮士德兄弟在战斗中被撕裂的布料，混合了其他材料与工艺后重新制成的服装，虽然轻盈，但却具备意料之外的防御性能。</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>2</weight>
       <dressup>变装-黑无常礼服下装</dressup>
       <hp>70</hp>
       <mp>35</mp>
@@ -1688,12 +1688,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>黑无常礼服</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>3</weight>
     <price>40000</price>
     <description>洁白笑面与漆黑哭面的所经之处，往往尸骨成堆，直面浮士德兄弟的存在，通常的结局都是在那伴随刀光与硝烟的诡谲战舞之中死无全尸。他们兄弟二人也因此得到“黑白无常”的别名。
     这件装备是由浮士德兄弟在战斗中被撕裂的布料，混合了其他材料与工艺后重新制成的服装，虽然轻盈，但却具备意料之外的防御性能。</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>3</weight>
       <dressup>变装-黑无常礼服上装</dressup>
       <hp>70</hp>
       <mp>35</mp>
@@ -1712,15 +1712,15 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>黑无常面具</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>2</weight>
     <price>32000</price>
     <description>是你背弃了&lt;font color="#000000"&gt;他&lt;/font&gt;们。
     铅元素浸入骨层，十数年流淌在血液里。是一种惩罚，是一种磨砺。&lt;font color="#000000"&gt;他&lt;/font&gt;艰难度过了，哪怕代价是丧失相当程度的心智。
     不要痴心妄想，末世哪有可爱的孩子心性。
     等着被打成筛子吧。</description>
-    <level>28</level>
     <helmet>false</helmet>
     <data>
+      <level>28</level>
+      <weight>2</weight>
       <dressup>男变装-黑无常面具</dressup>
       <hp>70</hp>
       <mp>35</mp>
@@ -1739,12 +1739,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>白无常鞋子</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>1</weight>
     <price>37000</price>
     <description>洁白笑面与漆黑哭面的所经之处，往往尸骨成堆，直面浮士德兄弟的存在，通常的结局都是在那伴随刀光与硝烟的诡谲战舞之中死无全尸。他们兄弟二人也因此得到“黑白无常”的别名。
     这件装备是由浮士德兄弟在战斗中被撕裂的布料，混合了其他材料与工艺后重新制成的服装，虽然轻盈，但却具备意料之外的防御性能。</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>1</weight>
       <dressup>男变装-白无常鞋子</dressup>
       <hp>35</hp>
       <mp>70</mp>
@@ -1765,12 +1765,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>白无常手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>1</weight>
     <price>37000</price>
     <description>洁白笑面与漆黑哭面的所经之处，往往尸骨成堆，直面浮士德兄弟的存在，通常的结局都是在那伴随刀光与硝烟的诡谲战舞之中死无全尸。他们兄弟二人也因此得到“黑白无常”的别名。
     这件装备是由浮士德兄弟在战斗中被撕裂的布料，混合了其他材料与工艺后重新制成的服装，虽然轻盈，但却具备意料之外的防御性能。</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>1</weight>
       <dressup>男变装-白无常礼服手套</dressup>
       <hp>35</hp>
       <mp>70</mp>
@@ -1791,12 +1791,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>白无常礼裤</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>2</weight>
     <price>37000</price>
     <description>洁白笑面与漆黑哭面的所经之处，往往尸骨成堆，直面浮士德兄弟的存在，通常的结局都是在那伴随刀光与硝烟的诡谲战舞之中死无全尸。他们兄弟二人也因此得到“黑白无常”的别名。
     这件装备是由浮士德兄弟在战斗中被撕裂的布料，混合了其他材料与工艺后重新制成的服装，虽然轻盈，但却具备意料之外的防御性能。</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>2</weight>
       <dressup>变装-白无常礼服下装</dressup>
       <hp>35</hp>
       <mp>70</mp>
@@ -1817,12 +1817,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>白无常礼服</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>3</weight>
     <price>37000</price>
     <description>洁白笑面与漆黑哭面的所经之处，往往尸骨成堆，直面浮士德兄弟的存在，通常的结局都是在那伴随刀光与硝烟的诡谲战舞之中死无全尸。他们兄弟二人也因此得到“黑白无常”的别名。
     这件装备是由浮士德兄弟在战斗中被撕裂的布料，混合了其他材料与工艺后重新制成的服装，虽然轻盈，但却具备意料之外的防御性能。</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>3</weight>
       <dressup>变装-白无常礼服上装</dressup>
       <hp>35</hp>
       <mp>70</mp>
@@ -1844,15 +1844,15 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>白无常面具</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>2</weight>
     <price>37000</price>
     <description>是你背弃了&lt;font color="#000000"&gt;他&lt;/font&gt;们。
     可能想到相持的生活多么困难？数百年的社会进步试图取缔童工，广泛来看获得了成功，但在世界一隅的两人这里毁于一旦。
     对不起我们，流淌在汽油中的重金属；对不起我们，轻率妄为的肉身塑造人。
     等着被砍成肉泥吧。</description>
-    <level>28</level>
     <helmet>false</helmet>
     <data>
+      <level>28</level>
+      <weight>2</weight>
       <dressup>男变装-白无常面具</dressup>
       <hp>35</hp>
       <mp>70</mp>
@@ -1873,11 +1873,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>强劲霜精鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>4</weight>
     <price>1000</price>
     <description>强劲。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>4</weight>
       <dressup>男变装-强劲霜精鞋</dressup>
       <hp>120</hp>
       <mp>-20</mp>
@@ -1896,11 +1896,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <type>防具</type>
     <use>手部装备</use>
     <actiontype>截拳</actiontype>
-    <weight>4</weight>
     <price>1000</price>
     <description>强劲。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>4</weight>
       <dressup>男变装-强劲霜精手套</dressup>
       <hp>120</hp>
       <mp>-20</mp>
@@ -1918,11 +1918,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>强劲霜精下装</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>8</weight>
     <price>1000</price>
     <description>强劲。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>8</weight>
       <dressup>变装-强劲霜精下装</dressup>
       <hp>120</hp>
       <mp>-20</mp>
@@ -1940,11 +1940,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>强劲霜精上装</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>8</weight>
     <price>1000</price>
     <description>强劲霜精身体。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>8</weight>
       <dressup>变装-强劲霜精上装</dressup>
       <hp>120</hp>
       <mp>-20</mp>
@@ -1962,11 +1962,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>霜精鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>4</weight>
     <price>1000</price>
     <description>白煮熊脚。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>4</weight>
       <dressup>男变装-霜精鞋</dressup>
       <hp>120</hp>
       <mp>-20</mp>
@@ -1984,11 +1984,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>霜精手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>4</weight>
     <price>1000</price>
     <description>白煮熊掌。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>4</weight>
       <dressup>男变装-霜精手套</dressup>
       <hp>120</hp>
       <mp>-20</mp>
@@ -2006,11 +2006,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>霜精下装</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>8</weight>
     <price>1000</price>
     <description>白煮熊腿。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>8</weight>
       <dressup>变装-霜精下装</dressup>
       <hp>120</hp>
       <mp>-20</mp>
@@ -2028,11 +2028,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>霜精上装</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>8</weight>
     <price>1000</price>
     <description>霜精身体。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>8</weight>
       <dressup>变装-霜精上装</dressup>
       <hp>120</hp>
       <mp>-20</mp>
@@ -2050,12 +2050,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>黑铁行刑者鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>0.5</weight>
     <price>30000</price>
     <description>只有重剑落下的呼啸声···
 在末世中，没有一双好的鞋子可是寸步难行，&lt;font color="#000000"&gt;黑铁会行刑者&lt;/font&gt;在鞋的耐用性与舒适性之间做取舍，最终有了这么一种和&lt;font color="#000000"&gt;黑铁死士&lt;/font&gt;常用款不同的鞋：没有了配重，取而代之的是更轻便，更柔软的材料。那些大块头似乎已经不需要什么身手敏捷了，他们只要足够的力量。当然，这种鞋的报废几率也是十分高。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>0.5</weight>
       <dressup>男变装-黑铁大叔鞋</dressup>
       <hp>20</hp>
       <mp>60</mp>
@@ -2072,12 +2072,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>黑铁行刑者手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>0.5</weight>
     <price>30000</price>
     <description>只有重剑落下的呼啸声···
 由更坚硬的金属打造，让佩戴者能能用双臂防住啃咬和刀伤。但这玩意实在太重，若是没有魁梧的身材和足够的力量，穿上它后使用者会虚弱无力......但这玩意也成为了&lt;font color="#000000"&gt;黑铁会中那些高大魁梧的禁卫军&lt;/font&gt;最喜欢的装备，没有之一。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>0.5</weight>
       <dressup>男变装-黑铁大叔手套</dressup>
       <hp>20</hp>
       <mp>60</mp>
@@ -2094,12 +2094,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>黑铁行刑者制式裤</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>2</weight>
     <price>30000</price>
     <description>只有重剑落下的呼啸声···
 弹力、韧性以及舒适度都极好的裤子，在&lt;font color="#000000"&gt;黑铁帮众&lt;/font&gt;中极为受欢迎。在审判日前的黑铁会内部改革时期，这种裤子就作为改革成功的那一方的统一制服所使用。改革结束后，掌握生产科技的黑铁会更是大批量的生产这种服装，而到了今天，这种服装依旧不会过时，以保守为主流的黑铁会在服装潮流上并不落后。而这种为&lt;font color="#000000"&gt;黑铁禁卫军&lt;/font&gt;单独打造的裤子则再一次增加了弹力，使得裤子能在战斗中穿起来更舒服。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>2</weight>
       <dressup>变装-黑铁大叔</dressup>
       <hp>20</hp>
       <mp>60</mp>
@@ -2116,12 +2116,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>黑铁行刑者绑带</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>1</weight>
     <price>30000</price>
     <description>只有重剑落下的呼啸声···
 两根看上去像束缚带的东西，在一些&lt;font color="#000000"&gt;高大魁梧的黑铁教众&lt;/font&gt;高大魁梧的黑铁教众当中流行。虽然它同样没什么防御能力，但据说这样排列的绑带能在战斗中让肌肉快速充血，增加肌肉力量，从而大大提升战斗时的攻击力，但这玩意一般人是不敢随便使用的......</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>1</weight>
       <dressup>变装-黑铁大叔</dressup>
       <hp>20</hp>
       <mp>60</mp>
@@ -2138,11 +2138,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>小F头部</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>9</weight>
     <price>0</price>
     <description>物品简介：暂无</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>9</weight>
       <dressup>男变装-小F头部</dressup>
       <hp>120</hp>
       <mp>-20</mp>
@@ -2157,12 +2157,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>复镕望远热感仪</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>1</weight>
     <price>50000</price>
     <description>在末日的废土中，每一寸土地都可能隐藏着威胁，而能够快速探知敌人位置的能力，往往能决定生死存亡。
 复镕望远热感仪成为了黑铁会刺客们所钟爱的制式面罩，它的望远功能使得&lt;font color="#000000"&gt;刺客们&lt;/font&gt;能够在较远的距离侦测敌人，而不暴露自己的位置。进而在复杂环境中精准探测敌人的体温，帮助&lt;font color="#000000"&gt;刺客们&lt;/font&gt;无声无息地斩杀目标。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>1</weight>
       <dressup>男变装-复镕望远热感仪</dressup>
       <hp>20</hp>
       <mp>60</mp>
@@ -2179,13 +2179,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>幻影装甲鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>-5</weight>
     <price>100000</price>
     <description>神鬼莫测的原因之一是祂们双足浮空，行动无声；人类难以浮空，但仍可无声。
     吸音战靴早在战前就被各国部队列装；靴底的泥与血，是他们从未摆脱的伴侣。
     比黑暗更可怕的，是与死寂同行的黑暗。</description>
-    <level>31</level>
     <data>
+      <level>31</level>
+      <weight>-5</weight>
       <dressup>男变装-幻影装甲鞋</dressup>
       <hp>75</hp>
       <mp>35</mp>
@@ -2200,12 +2200,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>幻影腿甲</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>-5</weight>
     <price>100000</price>
     <description>工匠们重拾金属和编织工艺，打造了这套幻影作战服的腿甲，侧裙的两翼采用回火钢锻造而成，可抵御流弹对双腿的威胁。
     幻影作战服的存在完美诠释了什么是轻量化与防御力兼具。对敏捷的极致追求使这套作战服得以诞生。</description>
-    <level>31</level>
     <data>
+      <level>31</level>
+      <weight>-5</weight>
       <dressup>变装-幻影腿甲</dressup>
       <hp>75</hp>
       <mp>35</mp>
@@ -2223,12 +2223,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>幻影手甲</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>-5</weight>
     <price>100000</price>
     <description>工匠们重拾金属丝工艺，打造了这双灵巧的手套，可以说是皮肤的延伸；手腕处可与夜行衣袖口严密贴合。即便是再挑剔的穿戴者，使用后也是啧啧赞叹。
     炊烟与余晖一同消散，恐惧随黑暗逐渐蔓延。</description>
-    <level>31</level>
     <data>
+      <level>31</level>
+      <weight>-5</weight>
       <dressup>男变装-幻影手甲</dressup>
       <hp>75</hp>
       <mp>35</mp>
@@ -2243,13 +2243,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>幻影胸甲</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>-5</weight>
     <price>100000</price>
     <description>与战前英雄漫画一致的是，这套战衣能跟随使用者很长一段时间，直到它成为穿戴者的荣耀或悔恨。
     幻影作战服的存在完美诠释了什么是轻量化与防御力兼具。对敏捷的极致追求使这套作战服得以诞生。</description>
     <skill>&lt;font color="#66ccff"&gt;【喷气背包】&lt;/font&gt;装载有用于升空的喷气背包，停止喷气时自动充气，按飞行键使用。</skill>
-    <level>31</level>
     <data>
+      <level>31</level>
+      <weight>-5</weight>
       <dressup>变装-幻影胸甲</dressup>
       <hp>75</hp>
       <mp>35</mp>
@@ -2267,21 +2267,21 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>幻影头部装甲</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>-5</weight>
     <price>100000</price>
     <description>面具整体采用回火钢锻造而成，可抵御流弹对面部的威胁；眼部则加装了红色防雾玻璃，兜帽与束发保证了佩戴者的生物信息不被泄露。
     黑暗提供庇护，也是众生归宿。
 &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，有最高级的夜视效果，开启亮度等级为0~4。</description>
-    <level>31</level>
     <helmet>true</helmet>
     <data>
+      <level>31</level>
+      <weight>-5</weight>
       <dressup>男变装-幻影头部装甲</dressup>
       <hp>75</hp>
       <mp>35</mp>
       <damage>30</damage>
       <defence>180</defence>
     </data>
-    <lifecycle>
+      <lifecycle>
       <attr_0>
         <init>
           <initRoutines>红外夜视仪初始化</initRoutines>
@@ -2309,12 +2309,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>A兵团精致战术皮鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>2</weight>
     <price>85000</price>
     <description>A兵团清理完废城郊区后，在一前军工厂中量产的作战靴。
     仍沿用战前21靴的模板，但已经进行多次改良，如：去除侧开拉链，增厚易磨损处，更换颜色等。相比制式款，在鞋头内侧增加钢制防撞头和棉质缓冲层；同时整体亲肤材料占比更多，深受&lt;font color="#ff0000"&gt;A兵团精锐&lt;/font&gt;的青睐。</description>
-    <level>21</level>
     <data>
+      <level>21</level>
+      <weight>2</weight>
       <dressup>男变装-A兵团精致战术皮鞋</dressup>
       <hp>65</hp>
       <mp>30</mp>
@@ -2330,12 +2330,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>A兵团精致战术手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>2</weight>
     <price>85000</price>
     <description>A兵团清理完废城郊区后，在一前军工厂中量产的战术手套。
     外侧由纤维缝制，耐磨抗击打，可以很好地保护拳峰。内侧是真皮缝制，不影响手指做出战术动作。相比制式款更加透气，长时间穿戴不捂手。同时整体亲肤材料占比更多，深受&lt;font color="#ff0000"&gt;A兵团精锐&lt;/font&gt;的青睐。</description>
-    <level>21</level>
     <data>
+      <level>21</level>
+      <weight>2</weight>
       <dressup>男变装-A兵团精致战术手套</dressup>
       <hp>65</hp>
       <mp>30</mp>
@@ -2351,12 +2351,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>A兵团精致战术裤</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>6</weight>
     <price>85000</price>
     <description>A兵团清理完废城郊区后，在一前军工厂中量产的作战裤。
     大腿与腰部有配合携行具使用的腿包和腰包，大幅度提升物品携带量，同时不会因摆动影响移速。易磨损部位均有加厚处理，裤子末端有脚蹬，方便穿脱作战靴。相比制式款，增加了护膝以更好的保护膝盖关节；同时整体亲肤材料占比更多，深受&lt;font color="#ff0000"&gt;A兵团精锐&lt;/font&gt;的青睐。</description>
-    <level>21</level>
     <data>
+      <level>21</level>
+      <weight>6</weight>
       <dressup>变装-A兵团精致战术裤</dressup>
       <hp>80</hp>
       <mp>25</mp>
@@ -2372,12 +2372,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>A兵团精致战术背心</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>6</weight>
     <price>85000</price>
     <description>A兵团清理完废城郊区后，在一前军工厂中量产的携行具。
     末日后大多战前迷彩已失去隐蔽性，针对城市废墟，A兵团选择灰蓝色作为废土迷彩染印至作战服。这款以6b46伞兵携行具为原型的改良款在副包后安装了防弹插板，红巾仍作为传统的敌我辨别标识绑于手臂，原因仅是便宜有效。相比制式款增设肩铠与臂铠，同时整体亲肤材料占比更多，深受&lt;font color="#ff0000"&gt;A兵团精锐&lt;/font&gt;的青睐。</description>
-    <level>21</level>
     <data>
+      <level>21</level>
+      <weight>6</weight>
       <dressup>变装-A兵团精致战术背心</dressup>
       <hp>80</hp>
       <mp>25</mp>
@@ -2393,12 +2393,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>精致战术猪鼻式防毒面具</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>2</weight>
     <price>10000</price>
     <description>A兵团清理完废城郊区后，在一前军工厂中量产的制式防毒面具。
     面部主体沿用了fmj05，但将滤毒罐改良为一体式，减少重量，且相对于制式款，滤毒种类更广泛。并安装了保明片，降低在非常环境下对视线的影响。同时整体亲肤材料占比更多，穿戴更舒适，深受&lt;font color="#ff0000"&gt;A兵团精锐&lt;/font&gt;的青睐。</description>
-    <level>21</level>
     <data>
+      <level>21</level>
+      <weight>2</weight>
       <dressup>男变装-精致战术猪鼻式防毒面具</dressup>
       <hp>60</hp>
       <mp>35</mp>
@@ -2417,11 +2417,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>合金鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>2</weight>
     <price>10000</price>
     <description>最新合金打造，可以适应所有战斗</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>2</weight>
       <dressup>男变装-合金鞋</dressup>
       <hp>120</hp>
       <mp>100</mp>
@@ -2439,11 +2439,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>合金腿甲</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>6</weight>
     <price>10000</price>
     <description>最新合金打造，可以适应所有战斗</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>6</weight>
       <dressup>变装-合金腿甲</dressup>
       <hp>120</hp>
       <mp>100</mp>
@@ -2461,11 +2461,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>合金手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>2</weight>
     <price>10000</price>
     <description>最新合金打造，可以适应所有战斗</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>2</weight>
       <dressup>男变装-合金手套</dressup>
       <hp>120</hp>
       <mp>100</mp>
@@ -2483,11 +2483,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>合金甲</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>6</weight>
     <price>10000</price>
     <description>最新合金打造，可以适应所有战斗</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>6</weight>
       <dressup>变装-合金甲</dressup>
       <hp>120</hp>
       <mp>100</mp>
@@ -2505,11 +2505,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>合金盔</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>3</weight>
     <price>10000</price>
     <description>最新合金打造，可以适应所有战斗</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>3</weight>
       <dressup>男变装-合金盔</dressup>
       <hp>120</hp>
       <mp>100</mp>
@@ -2527,11 +2527,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>蓝晶鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>2</weight>
     <price>1000</price>
     <description>融合更多蓝晶矿石后坚不可摧。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>2</weight>
       <dressup>男变装-蓝晶鞋</dressup>
       <hp>180</hp>
       <mp>150</mp>
@@ -2549,11 +2549,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>蓝晶下装</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>2</weight>
     <price>1000</price>
     <description>融合更多蓝晶矿石后坚不可摧。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>2</weight>
       <dressup>变装-蓝晶下装</dressup>
       <hp>180</hp>
       <mp>150</mp>
@@ -2571,11 +2571,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>蓝晶手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>1</weight>
     <price>1000</price>
     <description>融合更多蓝晶矿石后坚不可摧。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>1</weight>
       <dressup>男变装-蓝晶手套</dressup>
       <hp>180</hp>
       <mp>150</mp>
@@ -2593,11 +2593,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>蓝晶战斗服</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>2</weight>
     <price>1000</price>
     <description>融合更多蓝晶矿石后坚不可摧。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>2</weight>
       <dressup>变装-蓝晶战斗服</dressup>
       <hp>180</hp>
       <mp>150</mp>
@@ -2615,11 +2615,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>蓝晶面具</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>1</weight>
     <price>1000</price>
     <description>融合更多蓝晶矿石后坚不可摧。</description>
-    <level>35</level>
     <data>
+      <level>35</level>
+      <weight>1</weight>
       <dressup>男变装-蓝晶面具</dressup>
       <hp>180</hp>
       <mp>150</mp>
@@ -2637,11 +2637,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>次品蓝晶鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>2</weight>
     <price>10000</price>
     <description>少量蓝晶矿石打造而成，可抵挡一般伤害。</description>
-    <level>30</level>
     <data>
+      <level>30</level>
+      <weight>2</weight>
       <dressup>男变装-次品蓝晶鞋</dressup>
       <hp>90</hp>
       <mp>75</mp>
@@ -2659,11 +2659,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>次品蓝晶下装</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>3</weight>
     <price>10000</price>
     <description>少量蓝晶矿石打造而成，可抵挡一般伤害。</description>
-    <level>30</level>
     <data>
+      <level>30</level>
+      <weight>3</weight>
       <dressup>变装-次品蓝晶下装</dressup>
       <hp>90</hp>
       <mp>75</mp>
@@ -2681,11 +2681,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>次品蓝晶手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>2</weight>
     <price>10000</price>
     <description>少量蓝晶矿石打造而成，可抵挡一般伤害。</description>
-    <level>30</level>
     <data>
+      <level>30</level>
+      <weight>2</weight>
       <dressup>男变装-次品蓝晶手套</dressup>
       <hp>90</hp>
       <mp>75</mp>
@@ -2703,11 +2703,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>次品蓝晶战斗服</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>4</weight>
     <price>10000</price>
     <description>少量蓝晶矿石打造而成，可抵挡一般伤害。</description>
-    <level>30</level>
     <data>
+      <level>30</level>
+      <weight>4</weight>
       <dressup>变装-次品蓝晶战斗服</dressup>
       <hp>90</hp>
       <mp>75</mp>
@@ -2725,11 +2725,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>次品蓝晶面具</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>2</weight>
     <price>10000</price>
     <description>少量蓝晶矿石打造而成，可抵挡一般伤害。</description>
-    <level>30</level>
     <data>
+      <level>30</level>
+      <weight>2</weight>
       <dressup>男变装-次品蓝晶面具</dressup>
       <hp>90</hp>
       <mp>75</mp>
@@ -2747,11 +2747,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>钢铁小熊鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>6</weight>
     <price>120000</price>
     <description>钢铁熊脚。在格斗时也可以客串武器使用。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>6</weight>
       <dressup>男变装-钢铁小熊鞋</dressup>
       <hp>250</hp>
       <mp>0</mp>
@@ -2767,11 +2767,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>钢铁小熊下装</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>10</weight>
     <price>120000</price>
     <description>钢铁熊腿。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>10</weight>
       <dressup>变装-钢铁小熊装下装</dressup>
       <hp>300</hp>
       <mp>0</mp>
@@ -2788,7 +2788,6 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <type>防具</type>
     <use>手部装备</use>
     <actiontype>兽形拳</actiontype>
-    <weight>5</weight>
     <price>120000</price>
     <description>钢铁熊掌。硬度和利爪的锋利度都可大大加强空手攻击的伤害。</description>
     <skill>
@@ -2797,8 +2796,9 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <cd>5000</cd>
       <mp>0</mp>
     </skill>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>5</weight>
       <dressup>男变装-钢铁小熊手套</dressup>
       <hp>200</hp>
       <mp>0</mp>
@@ -2814,11 +2814,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>钢铁小熊上装</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>10</weight>
     <price>120000</price>
     <description>钢铁熊身。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>10</weight>
       <dressup>变装-钢铁小熊装上装</dressup>
       <hp>250</hp>
       <mp>0</mp>
@@ -2834,12 +2834,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>钢铁小熊头</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>5</weight>
     <price>120000</price>
     <description>钢铁熊头。在格斗时也可以客串武器使用。</description>
-    <level>20</level>
     <helmet>true</helmet>
     <data>
+      <level>20</level>
+      <weight>5</weight>
       <dressup>男变装-钢铁小熊装头</dressup>
       <hp>300</hp>
       <mp>0</mp>
@@ -2855,12 +2855,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>92式装甲鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>4</weight>
     <price>80000</price>
     <description>XG92战靴脚部安装的定位器功能针对敌后渗透和城市反恐，若投入实战定能大放异彩。可惜时代抛弃了文明，文明只好抛弃它。
     “一套生不逢时的装甲，不过谁不是呢？”</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>4</weight>
       <dressup>男变装-92式装甲鞋</dressup>
       <hp>100</hp>
       <mp>100</mp>
@@ -2878,11 +2878,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>92式手甲</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>6</weight>
     <price>80000</price>
     <description>同样精致的工艺出现在两具不同型号的装甲上，有些零部件可能采用了同一个模具。手部装甲一致采用合金搭配皮革的材料方案。</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>6</weight>
       <dressup>男变装-92式手甲</dressup>
       <hp>100</hp>
       <mp>100</mp>
@@ -2900,11 +2900,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>92式腿甲</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>8</weight>
     <price>80000</price>
     <description>动力装甲臀部上方有一块凸起，与背部的有线电台连接。设计师出于未知的考虑，把储能部位定在了臀部上方。核电双用，降低了战甲的动力要求，也为电台大功率输出提供稳定能源。</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>8</weight>
       <dressup>变装-92式腿甲</dressup>
       <hp>100</hp>
       <mp>100</mp>
@@ -2923,11 +2923,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>92式胸甲</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>8</weight>
     <price>80000</price>
     <description>除了背上的有线电台，没什么引人注目的地方；不过这可能正是它的特性。小臂处的矩形盾牌能很好地兼顾镇暴和室内作战。同时轻量的装甲减轻了供能负担。</description>
-    <level>28</level>
     <data>
+      <level>28</level>
+      <weight>8</weight>
       <dressup>变装-92式胸甲</dressup>
       <hp>100</hp>
       <mp>100</mp>
@@ -2946,12 +2946,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>92式头部装甲</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>4</weight>
     <price>80000</price>
     <description>作为联合政府动力装甲项目中的唯二存在，XG92明显倾向于治安或者特种作战。轻薄的装甲提升了机动性，同时防御性也不容小觑，抵御9mm手枪弹直射和7.62mm步枪弹流弹轻而易举。</description>
-    <level>28</level>
     <helmet>true</helmet>
     <data>
+      <level>28</level>
+      <weight>4</weight>
       <dressup>男变装-92式头部装甲</dressup>
       <hp>100</hp>
       <mp>100</mp>
@@ -2969,12 +2969,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>61式装甲鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>10</weight>
     <price>100000</price>
     <description>坚实的脚部动力装甲，恐怕是人类文明真正意义上，最后的科技结晶。
     被政客寄予战争意图的兵器可能再也无法激活了。远古文明时期，人类制造兵器保护自己；终末文明时期，人类的兵器终于再次用来保护自己。</description>
-    <level>33</level>
     <data>
+      <level>33</level>
+      <weight>10</weight>
       <dressup>男变装-61式装甲鞋</dressup>
       <hp>130</hp>
       <mp>50</mp>
@@ -2992,12 +2992,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>61式手甲</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>8</weight>
     <price>100000</price>
     <description>手指处并不像寻常护具一样设置接口，内侧触感类似皮质，外侧由高强度合金组成。
     这套装甲本应一直摆放在军事基地，直到某天出现不可控因素把它埋葬。然而不知为何，现今它重见天日。但这也并不意外；即使缺少动力源，它本身也具有很高的研究价值。</description>
-    <level>33</level>
     <data>
+      <level>33</level>
+      <weight>8</weight>
       <dressup>男变装-61式手甲</dressup>
       <hp>130</hp>
       <mp>50</mp>
@@ -3015,12 +3015,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>61式腿甲</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>25</weight>
     <price>100000</price>
     <description>动力装甲的腿部非常粗壮，而且关节连接处几乎看不到，难以想象战前科技究竟怎么做到这点。
         据操作面板显示，这尊沉眠巨兽30%的能源供给都用于辅助移动。在移动辅助系统的参与下，驾驶者不用承担装甲自重，还可轻易完成包括跳跃在内的各种人体动作，基本满足作战需求。</description>
-    <level>33</level>
     <data>
+      <level>33</level>
+      <weight>25</weight>
       <dressup>变装-61式腿甲</dressup>
       <hp>160</hp>
       <mp>130</mp>
@@ -3039,13 +3039,13 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>61式胸甲</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>25</weight>
     <price>100000</price>
     <description>背部的生命维持系统与微型核反应堆，胸前的反应装甲与伸缩式多管机炮......然而这些已经陷入永眠。
     科学家们头疼的不是项目进展不顺，而是经费不足。政客在利益面前抛弃了动力装甲项目，即使最大难题——动力来源已被基本攻克。核能时代仅存在了数小时，本以为只是选择了科技树的另一支，没人想到这是末路。</description>
     <skill>&lt;font color="#66ccff"&gt;【喷气背包】&lt;/font&gt;装载有用于升空的喷气背包，停止喷气时自动充气，按飞行键使用。</skill>
-    <level>33</level>
     <data>
+      <level>33</level>
+      <weight>25</weight>
       <dressup>变装-61式胸甲</dressup>
       <hp>160</hp>
       <mp>130</mp>
@@ -3064,12 +3064,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>61式头部装甲</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>10</weight>
     <price>100000</price>
     <description>战前联邦制造的实验型动力装甲。后末日历史学者认为，如果该动力装甲被量产列装，那么军队足以剿灭于己方十倍人数的包括变异体在内的尸潮。然而因为资金问题，该项目被无限期搁置，仅有的数台样机被封存在军事基地。</description>
-    <level>33</level>
     <helmet>true</helmet>
     <data>
+      <level>33</level>
+      <weight>10</weight>
       <dressup>男变装-61式头部装甲</dressup>
       <hp>130</hp>
       <mp>50</mp>
@@ -3087,11 +3087,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>麦香味小熊鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>4</weight>
     <price>1000</price>
     <description>腌制熊脚。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>4</weight>
       <dressup>男变装-麦香味小熊鞋</dressup>
       <hp>100</hp>
       <mp>-20</mp>
@@ -3109,11 +3109,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>麦香味小熊手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>4</weight>
     <price>1000</price>
     <description>腌制熊掌。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>4</weight>
       <dressup>男变装-麦香味小熊手套</dressup>
       <hp>100</hp>
       <mp>-20</mp>
@@ -3131,11 +3131,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>麦香味小熊下装</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>8</weight>
     <price>1000</price>
     <description>腌制熊腿。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>8</weight>
       <dressup>变装-麦香味小熊下装</dressup>
       <hp>100</hp>
       <mp>-20</mp>
@@ -3153,11 +3153,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>麦香味小熊上装</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>8</weight>
     <price>1000</price>
     <description>腌制熊身。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>8</weight>
       <dressup>变装-麦香味小熊上装</dressup>
       <hp>100</hp>
       <mp>-20</mp>
@@ -3175,12 +3175,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>麦香味小熊头</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>5</weight>
     <price>1000</price>
     <description>腌制熊头。</description>
-    <level>20</level>
     <helmet>true</helmet>
     <data>
+      <level>20</level>
+      <weight>5</weight>
       <dressup>男变装-麦香味小熊头</dressup>
       <hp>100</hp>
       <mp>-20</mp>
@@ -3198,11 +3198,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>抹茶味小熊鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>4</weight>
     <price>1000</price>
     <description>腐败熊脚。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>4</weight>
       <dressup>男变装-抹茶味小熊鞋</dressup>
       <hp>100</hp>
       <mp>-20</mp>
@@ -3220,11 +3220,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>抹茶味小熊手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>4</weight>
     <price>1000</price>
     <description>腐败熊掌。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>4</weight>
       <dressup>男变装-抹茶味小熊手套</dressup>
       <hp>100</hp>
       <mp>-20</mp>
@@ -3242,11 +3242,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>抹茶味小熊下装</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>8</weight>
     <price>1000</price>
     <description>腐败熊腿。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>8</weight>
       <dressup>变装-抹茶味小熊下装</dressup>
       <hp>100</hp>
       <mp>-20</mp>
@@ -3264,11 +3264,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>抹茶味小熊上装</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>8</weight>
     <price>1000</price>
     <description>腐败熊身。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>8</weight>
       <dressup>变装-抹茶味小熊上装</dressup>
       <hp>100</hp>
       <mp>-20</mp>
@@ -3286,12 +3286,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>抹茶味小熊头</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>5</weight>
     <price>1000</price>
     <description>腐败熊头。</description>
-    <level>20</level>
     <helmet>true</helmet>
     <data>
+      <level>20</level>
+      <weight>5</weight>
       <dressup>男变装-抹茶味小熊头</dressup>
       <hp>100</hp>
       <mp>-20</mp>
@@ -3309,11 +3309,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>草莓味小熊手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>4</weight>
     <price>1000</price>
     <description>红烧熊掌。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>4</weight>
       <dressup>男变装-草莓味小熊手套</dressup>
       <hp>100</hp>
       <mp>-20</mp>
@@ -3331,11 +3331,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>草莓味小熊鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>4</weight>
     <price>1000</price>
     <description>红烧熊脚。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>4</weight>
       <dressup>男变装-草莓味小熊鞋</dressup>
       <hp>100</hp>
       <mp>-20</mp>
@@ -3353,11 +3353,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>草莓味小熊下装</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>8</weight>
     <price>1000</price>
     <description>红烧熊腿。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>8</weight>
       <dressup>变装-草莓味小熊下装</dressup>
       <hp>100</hp>
       <mp>-20</mp>
@@ -3375,11 +3375,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>草莓味小熊上装</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>8</weight>
     <price>1000</price>
     <description>红烧熊身。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>8</weight>
       <dressup>变装-草莓味小熊上装</dressup>
       <hp>100</hp>
       <mp>-20</mp>
@@ -3397,12 +3397,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>草莓味小熊头</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>5</weight>
     <price>1000</price>
     <description>红烧熊头。</description>
-    <level>20</level>
     <helmet>true</helmet>
     <data>
+      <level>20</level>
+      <weight>5</weight>
       <dressup>男变装-草莓味小熊头</dressup>
       <hp>100</hp>
       <mp>-20</mp>
@@ -3420,11 +3420,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>原味小熊鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>4</weight>
     <price>1000</price>
     <description>白煮熊脚。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>4</weight>
       <dressup>男变装-原味小熊鞋</dressup>
       <hp>120</hp>
       <mp>-20</mp>
@@ -3442,11 +3442,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>原味小熊手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>4</weight>
     <price>1000</price>
     <description>白煮熊掌。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>4</weight>
       <dressup>男变装-原味小熊手套</dressup>
       <hp>120</hp>
       <mp>-20</mp>
@@ -3464,11 +3464,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>原味小熊下装</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>8</weight>
     <price>1000</price>
     <description>白煮熊腿。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>8</weight>
       <dressup>变装-原味小熊下装</dressup>
       <hp>120</hp>
       <mp>-20</mp>
@@ -3486,11 +3486,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>原味小熊上装</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>8</weight>
     <price>1000</price>
     <description>白煮熊身。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>8</weight>
       <dressup>变装-原味小熊上装</dressup>
       <hp>120</hp>
       <mp>-20</mp>
@@ -3508,12 +3508,12 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>原味小熊头</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <weight>5</weight>
     <price>1000</price>
     <description>白煮熊头。</description>
-    <level>20</level>
     <helmet>true</helmet>
     <data>
+      <level>20</level>
+      <weight>5</weight>
       <dressup>男变装-原味小熊头</dressup>
       <hp>120</hp>
       <mp>-20</mp>
@@ -3531,11 +3531,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>BOSS1鞋子</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>1</weight>
     <price>30000</price>
     <description>&lt;font color="#ff0000"&gt;主唱&lt;/font&gt;cosplay专用鞋子。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>1</weight>
       <dressup>男变装-BOSS1鞋子</dressup>
       <hp>100</hp>
       <mp>0</mp>
@@ -3550,11 +3550,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>keyboard手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <weight>0.2</weight>
     <price>30000</price>
     <description>&lt;font color="#00ffff"&gt;键盘&lt;/font&gt;cosplay专用手套。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>0.2</weight>
       <dressup>男变装-keyboard手套</dressup>
       <hp>0</hp>
       <mp>100</mp>
@@ -3569,11 +3569,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>keyboard裙子</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>1</weight>
     <price>30000</price>
     <description>&lt;font color="#00ffff"&gt;键盘&lt;/font&gt;cosplay专用裙子。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>1</weight>
       <dressup>变装-keyboard裙子</dressup>
       <hp>0</hp>
       <mp>100</mp>
@@ -3588,11 +3588,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>keyboard衣服</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>1</weight>
     <price>30000</price>
     <description>&lt;font color="#00ffff"&gt;键盘&lt;/font&gt;cosplay专用服装。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>1</weight>
       <dressup>变装-keyboard衣服</dressup>
       <hp>0</hp>
       <mp>100</mp>
@@ -3607,11 +3607,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>guitar裙子</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>1</weight>
     <price>30000</price>
     <description>&lt;font color="#ffff00"&gt;吉他&lt;/font&gt;cosplay专用裙子。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>1</weight>
       <dressup>变装-guitar裙子</dressup>
       <hp>0</hp>
       <mp>0</mp>
@@ -3626,11 +3626,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>guitar衣服</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>1</weight>
     <price>30000</price>
     <description>&lt;font color="#ffff00"&gt;吉他&lt;/font&gt;cosplay专用服装。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>1</weight>
       <dressup>变装-guitar衣服</dressup>
       <hp>0</hp>
       <mp>0</mp>
@@ -3645,11 +3645,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>singer裤子</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <weight>1</weight>
     <price>30000</price>
     <description>&lt;font color="#ff0000"&gt;主唱&lt;/font&gt;cosplay专用裤子。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>1</weight>
       <dressup>变装-singer裤子</dressup>
       <hp>100</hp>
       <mp>0</mp>
@@ -3664,11 +3664,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>singer衣服</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>1</weight>
     <price>30000</price>
     <description>&lt;font color="#ff0000"&gt;主唱&lt;/font&gt;cosplay专用服装。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>1</weight>
       <dressup>变装-singer衣服</dressup>
       <hp>100</hp>
       <mp>0</mp>
@@ -3683,11 +3683,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>BOSS2鞋子</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>1</weight>
     <price>30000</price>
     <description>&lt;font color="#00ffff"&gt;键盘&lt;/font&gt;cosplay专用鞋子。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>1</weight>
       <dressup>男变装-BOSS2鞋子</dressup>
       <hp>0</hp>
       <mp>0</mp>
@@ -3702,11 +3702,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>BOSS3鞋子</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <weight>1</weight>
     <price>30000</price>
     <description>&lt;font color="#ffff00"&gt;吉他&lt;/font&gt;cosplay专用鞋子。</description>
-    <level>20</level>
     <data>
+      <level>20</level>
+      <weight>1</weight>
       <dressup>男变装-BOSS3鞋子</dressup>
       <hp>0</hp>
       <mp>100</mp>
@@ -3721,11 +3721,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>盗贼纹身装</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>1</weight>
     <price>211500</price>
     <description>附着于皮肤上的奇异纹路，据说由&lt;font color="#ff00ff"&gt;诺亚方舟&lt;/font&gt;的技术所创造。在制作上似乎利用了纳米材料和生物技术。此物只在皮肤与空气大面积接触时被激活，因而只能在防弹衣之间二者择其一。虽然代价巨大，但倘若激活，这些纹路也能赋予使用者与代价相匹配的肌肉活性和耐受力，以及远超猛兽的爆发力。</description>
-    <level>25</level>
     <data>
+      <level>25</level>
+      <weight>1</weight>
       <dressup>变装-盗贼纹身装</dressup>
       <hp>129</hp>
       <mp>129</mp>
@@ -3736,6 +3736,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <defence>5</defence>
     </data>
     <data_2>
+      <level>35</level>
       <hp>209</hp>
       <mp>209</mp>
       <force>75</force>
@@ -3744,6 +3745,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <damage>70</damage>
     </data_2>
     <data_3>
+      <level>45</level>
       <hp>259</hp>
       <mp>259</mp>
       <force>85</force>
@@ -3752,6 +3754,7 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <damage>80</damage>
     </data_3>
     <data_4>
+      <level>50</level>
       <hp>359</hp>
       <mp>359</mp>
       <force>100</force>
@@ -3767,11 +3770,11 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
     <icon>黑色重甲</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>30</weight>
     <price>162000</price>
     <description>由铁板和钢块在烧炼后反复敲槌锻打而组成的厚重铠甲。盔甲的正面看起来能够抵挡任何攻击，无惧丧尸和战斗中袭来的流弹。但它也有着沉重的代价，穿戴者必须付出巨大的力气才能在战场上行动。而既然是以压迫灵与肉的方式来提供身躯的短暂庇护，那还是尽快寻找更合适的选择为妙。</description>
-    <level>25</level>
     <data>
+      <level>25</level>
+      <weight>30</weight>
       <dressup>变装-黑色重甲</dressup>
       <hp>250</hp>
       <mp>0</mp>
@@ -3779,14 +3782,17 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
       <defence>500</defence>
     </data>
     <data_2>
+      <level>35</level>
       <hp>350</hp>
       <defence>750</defence>
     </data_2>
     <data_3>
+      <level>45</level>
       <hp>600</hp>
       <defence>1000</defence>
     </data_3>
     <data_4>
+      <level>50</level>
       <hp>800</hp>
       <defence>1250</defence>
     </data_4>

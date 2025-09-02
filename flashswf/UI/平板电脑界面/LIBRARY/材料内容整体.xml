@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料内容整体" itemID="673b5bd8-00001a8a" lastModified="1752379716" lastUniqueIdentifier="28">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料内容整体" itemID="673b5bd8-00001a8a" lastModified="1756804331" lastUniqueIdentifier="28">
   <timeline>
     <DOMTimeline name="材料内容整体">
       <layers>
@@ -38,6 +38,12 @@
                         <DOMTextAttrs aliasText="false" lineSpacing="0" size="9" bitmapSize="180" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
                       </textAttrs>
                     </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" lineSpacing="0" size="9" bitmapSize="180" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
                 <DOMDynamicText name="名字" fontRenderingMode="device" width="84.75" height="17.25">
@@ -51,6 +57,12 @@
                         <DOMTextAttrs aliasText="false" bitmapSize="240" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
                       </textAttrs>
                     </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" bitmapSize="240" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
                 <DOMDynamicText name="简介" fontRenderingMode="device" width="302.45" height="129.8" lineType="multiline">
@@ -59,7 +71,19 @@
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>详细信息</characters>
+                      <characters>详细</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" lineSpacing="1" bitmapSize="240" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>信息</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" lineSpacing="1" bitmapSize="240" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" lineSpacing="1" bitmapSize="240" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -120,7 +144,7 @@
 	}
 	this.buttonEvent = function(index){
 		_parent.名字.text = this.itemNameList[index];
-		_parent.简介.text = this.材料大全[index].Description;
+		_parent.简介.text = _root.处理html剧情文本(itemInfoList[index].description);
 		_parent.详细信息.text = this.材料大全[index].Information;
 		_parent.图标壳.图标.removeMovieClip();
 		var icon = "图标-" + itemInfoList[index].icon;

@@ -34,28 +34,116 @@ class org.flashNight.arki.item.EquipmentUtil{
         墨冰: "data_ice",
         狱火: "data_fire"
     };
+    public static var tierDataList:Array = ["data_2", "data_3", "data_4", "data_ice", "data_fire"];
+    public static var defaultTierDataDict = {
+        二阶: {
+            level: 20,
+            defence: 80,
+            hp: 50,
+            mp: 50,
+            damage: 15
+        },
+        三阶: {
+            level: 30,
+            defence: 180,
+            hp: 80,
+            mp: 80,
+            damage: 35
+        },
+        四阶: {
+            level: 40,
+            defence: 255,
+            hp: 100,
+            mp: 100,
+            damage: 60
+        }
+    }
+
+    public static var propertyOperators:Object = {
+        add: addProperty,
+        multiply: multiplyProperty,
+        override: overrideProperty
+    }
+
+    public static var modDict:Object;
+    public static var modUseLists:Object;
+
+
+    public static function loadModData(modData:Array):Void{
+        var dict = {};
+        var useLists = {
+            头部装备: [],
+            上装装备: [],
+            手部装备: [],
+            下装装备: [],
+            脚部装备: [],
+            颈部装备: [], // 目前还没有给颈部装备使用的插件
+            长枪: [],
+            手枪: [],
+            刀: []
+        };
+
+        for(var i=0; i<modData.length; i++){
+            var mod = modData[i];
+            var name = mod.name;
+            //
+            var useArr = mod.use.split(",");
+            for(var useIndex=0; useIndex < useArr.length; useIndex++){
+                var useKey = useArr[useIndex];
+                if(useLists[useKey]){
+                    useLists[useKey].push(name);
+                }
+            }
+            //
+            var percentage = mod.stats.percentage;
+            for(var key in percentage){
+                percentage[key] *= 0.01;
+            }
+            dict[name] = mod;
+        }
+
+        modDict = dict;
+        modUseLists = useLists;
+    }
+
+
 
     public static function calculateData(item:BaseItem, itemData:Object):Void{
         var data:Object = itemData.data;
-        // 获取对应的多阶数据
-        if(item.value.tier){
-            var tierKey = tierDict[item.value.tier];
-            var tierData = itemData[tierKey];
-            if(tierKey && tierData){
-                for(var key in tierData){
-                   data[key] = tierData[key];
+        var value = item.value;
+        var level = value.level;
+
+        var operators:Object = propertyOperators; // 三种算子
+
+        // 获取对应的多阶数据，若不存在则使用默认数据覆盖
+        if(value.tier){
+            var tierKey = tierDict[value.tier];
+            if(tierKey){
+                var tierData = itemData[tierKey];
+                if(tierData){
+                    operators.override(data, tierData);
+                    itemData[tierKey] = null;
+                }else{
+                    tierData = defaultTierDataDict[value.tier];
+                    if(tierData){
+                        operators.override(data, tierData);
+                    }
                 }
-                itemData[tierKey] = null;
             }
         }
-        // 计算强化数值
-        var level = item.value.level;
+
+        if(level < 2 && !value.mods) return; // 若没有强化和插件则提前返回
+
+        var adder = {};
+        var multiplier;
+        var overrider = {};
+        var skill;
+
+        // 计算强化加成
         if(level > 1){
             if(level > 13) level = 13;
             var levelMultiplier = levelStatList[level];
-
-            // var adder = {};
-            var multiplier = {
+            multiplier = {
                 power: levelMultiplier,
                 defence: levelMultiplier,
                 damage: levelMultiplier,
@@ -66,8 +154,36 @@ class org.flashNight.arki.item.EquipmentUtil{
                 hp: levelMultiplier,
                 mp: levelMultiplier
             };
-            multiplyProperty(data, multiplier);
-            // addProperty(data, adder, 0);
+        }else{
+            multiplier = {};
+        }
+
+        // 计算插件加成
+        for(var modName in value.mods){
+            var modInfo = modDict[modName];
+            if(modInfo){
+                var override = modInfo.stats.override;
+                var percentage = modInfo.stats.percentage;
+                var flat = modInfo.stats.flat;
+                // 应用对应的加成
+                if(flat) operators.add(adder, flat, 0);
+                if(percentage) operators.add(multiplier, percentage, 1);
+                if(override) operators.override(overrider, override);
+                // 查找战技
+                if(!skill && modInfo.skill){
+                    skill = modInfo.skill;
+                }
+            }
+        }
+
+        // 以百分比加成-固定加成-覆盖的顺序应用所有加成
+        operators.multiply(data, multiplier);
+        operators.add(data, adder, 0);
+        operators.override(data, ObjectUtil.clone(overrider));
+
+        // 替换战技
+        if(skill){
+            itemData.skill = ObjectUtil.clone(skill);
         }
     }
 
@@ -108,6 +224,19 @@ class org.flashNight.arki.item.EquipmentUtil{
             if (val && !isNaN(multiVal)) {
                 prop[key] = (val * multiVal) >> 0;
             }
+        }
+    }
+
+    /**
+    * 输入2个存放装备属性的Object对象，将后者的每个属性覆盖前者。
+    *
+    * @param prop 要被修改的属性对象。
+    * @param overProp 用于覆盖的属性对象。
+    */
+    public static function overrideProperty(prop:Object, overProp:Object):Void {
+        if(!overProp) return;
+        for (var key:String in overProp) {
+            prop[key] = overProp[key];
         }
     }
 }

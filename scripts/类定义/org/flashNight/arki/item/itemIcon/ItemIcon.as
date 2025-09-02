@@ -94,7 +94,7 @@ class org.flashNight.arki.item.itemIcon.ItemIcon{
 
     //图标按钮事件
     public function RollOver():Void{
-        _root.物品图标注释(name,value);
+        _root.物品图标注释(this.name, this.value, this.item);
     }
 
     public function RollOut():Void{

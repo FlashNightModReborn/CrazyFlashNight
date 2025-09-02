@@ -78,12 +78,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
 
         var equipment:BaseItem = loadFunc(target, equipKey, defaultLevel);
         if(equipment){
-            target[equipKey] = equipment;
+            target[equipKey] = equipment; // 将装备对象储存到对应的装备类型键上
             var itemData:Object = equipment.getData(); // 获取计算完毕的装备数据
-            target[equipmentKeys[equipKey]] = itemData;
-            // 将所有武器的data数据另设一个储存键
+            target[equipmentKeys[equipKey]] = itemData; // 将装备数据储存到对应的装备数据键上
             if(weaponKeys[equipKey]){
-                target[weaponKeys[equipKey]] = itemData.data;
+                target[weaponKeys[equipKey]] = itemData.data; // 将武器的data数据储存到对应的装备属性键上
             }
         }else{
             target[equipKey] = null;
@@ -382,7 +381,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
 
         target.重量 = 0; //weight
         for(var key in equipmentKeys){
-            var weight = target[equipmentKeys[key]].weight;
+            var weight = target[equipmentKeys[key]].data.weight;
             if(!isNaN(weight)) target.重量 += weight;
         }
         var 速度基数:Number = _root.根据等级计算值(target.速度_min, target.速度_max, target.等级) / 10;

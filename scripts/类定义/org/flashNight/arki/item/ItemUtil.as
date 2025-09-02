@@ -2,6 +2,7 @@
 import org.flashNight.neur.Server.ServerManager;
 import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.arki.item.BaseItem;
+import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.itemCollection.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
@@ -18,9 +19,11 @@ class org.flashNight.arki.item.ItemUtil{
     public static var itemDataArray:Array;
     public static var itemNamesByID:Object;
     public static var maxID:Number;
+
     public static var equipmentDict:Object; // 装备字典，快速判断物品是否为武器或防具
     public static var materialDict:Object; // 材料字典，快速判断物品是否为材料
     public static var informationMaxValueDict:Object; // 情报持有上限字典，可以顺便判断物品是否为情报
+    public static var multiTierDict:Object; // 进阶字典，检查物品是否存进多阶属性
 
 
     /*
@@ -34,6 +37,11 @@ class org.flashNight.arki.item.ItemUtil{
         var _equipmentDict = new Object();
         var _materialDict = new Object();
         var _informationMaxValueDict = new Object();
+        var _multiTierDict = {};
+        var multiTierList = EquipmentUtil.tierDataList;
+        for(var tierIndex = 0; tierIndex < multiTierList.length; tierIndex++){
+            _multiTierDict[multiTierList[tierIndex]] = {};
+        }
 
         for(var i in combinedData){
             var itemData = combinedData[i];
@@ -42,7 +50,14 @@ class org.flashNight.arki.item.ItemUtil{
             _itemNamesByID[itemData.id] = itemName;
             _itemDataArray.push(itemData);
             if(itemData.id > _maxID) _maxID = itemData.id;
-            if(itemData.type === "武器" || itemData.type === "防具") _equipmentDict[itemName] = true;
+            if(itemData.type === "武器" || itemData.type === "防具") {
+                _equipmentDict[itemName] = true;
+                for(var tierIndex = 0; tierIndex < multiTierList.length; tierIndex++){
+                    if(itemData[multiTierList[tierIndex]]){
+                        _multiTierDict[multiTierList[tierIndex]][itemName] = true;
+                    }
+                }
+            }
             else if(itemData.use === "材料") _materialDict[itemName] = true;
             else if(itemData.use === "情报") _informationMaxValueDict[itemName] = itemData.maxvalue;
         }
@@ -57,6 +72,7 @@ class org.flashNight.arki.item.ItemUtil{
         equipmentDict = _equipmentDict;
         materialDict = _materialDict;
         informationMaxValueDict = _informationMaxValueDict;
+        multiTierDict = _multiTierDict;
         _root.物品属性列表 = _itemDataDict;
         _root.物品属性数组 = _itemDataArray;
         _root.id物品名对应表 = _itemNamesByID;
@@ -106,6 +122,12 @@ class org.flashNight.arki.item.ItemUtil{
     public static function isInformation(name:String):Boolean{
         return informationMaxValueDict[name] > 0;
     }
+    /*
+     * 辅助函数，判断物品是否存在进阶数据
+     */
+    public static function hasTier(name:String, tier:String):Boolean{
+        return multiTierDict[tier][name] === true;
+    }
 
 
 
@@ -129,11 +151,10 @@ class org.flashNight.arki.item.ItemUtil{
     }
 
     // 将物品移入装备栏
-    public static function moveItemToEquipment(icon,equipmentIcon,index):Boolean{
+    public static function moveItemToEquipment(icon, equipmentIcon, index):Boolean{
         if(index != equipmentIcon.index) return false;
-        var itemData = icon.itemData;
-        if (itemData.level > _root.等级)
-        {
+        var itemData = icon.item.getData();
+        if (itemData.data.level > _root.等级){
             _root.发布消息("等级低于装备限制，无法装备！");
             return false;
         }
@@ -144,11 +165,11 @@ class org.flashNight.arki.item.ItemUtil{
         var use = itemData.use;
         if(itemData.type == "防具"){
             音效 = "ammopickup1.wav";
-            if (use == "颈部装备"){
-                var 控制对象 = TargetCacheManager.findHero();
-                控制对象.称号 = itemData.data.title;
-                _root.玩家称号 = 控制对象.称号;
-            }
+            // if (use == "颈部装备"){
+            //     var 控制对象 = TargetCacheManager.findHero();
+            //     控制对象.称号 = itemData.data.title;
+            //     _root.玩家称号 = 控制对象.称号;
+            // }
         }
         _root.soundEffectManager.playSound(音效);
         _root.发布消息("成功装备[" + use + "][" + itemData.displayname + "]");

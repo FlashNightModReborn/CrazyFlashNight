@@ -4,6 +4,7 @@
 
 import org.flashNight.neur.Event.*;
 import org.flashNight.aven.Coordinator.*;
+import org.flashNight.arki.item.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.naki.RandomNumberEngine.*;
 
@@ -82,27 +83,25 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
      */
     public function 拾取并装备(itemName:String, value:Number):Boolean {
         var itemData:Object = _root.getItemData(itemName);
+        var type = itemData.type;
+        var use = itemData.use;
         
-        if (itemData.type == "武器" || itemData.type == "防具" || itemData.use == "手雷") {
-            var 装备:Object = _root.物品栏.装备栏.getNameString(itemData.use);
+        if (type == "武器" || type == "防具" || use == "手雷") {
+            var 装备:Object = _root.物品栏.装备栏.getNameString(use);
             
-            if (itemData.level && itemData.level > _root.等级) {
+            if (itemData.data.level > _root.等级) {
                 return false;
             }
             
-            if (!装备 && itemData.use) {
+            if (!装备 && use) {
                 // 装备栏为空，直接装备
-                if (itemData.use == "手雷") {
-                    _root.物品栏.装备栏.add(itemData.use, {name: itemName, value: value});
-                } else {
-                    _root.物品栏.装备栏.add(itemData.use, {name: itemName, value: {level: value}});
-                }
+                _root.物品栏.装备栏.add(use, BaseItem.create(itemName, value));
                 _root.刷新人物装扮(_root.控制目标);
                 
-                if (itemData.type == "武器" || itemData.use == "手雷") {
-                    TargetCacheManager.findHero().攻击模式切换(itemData.use);
+                if (type == "武器" || use == "手雷") {
+                    TargetCacheManager.findHero().攻击模式切换(use);
                 }
-            } else if (装备 && itemData.use) {
+            } else if (装备 && use) {
                 // 装备栏有装备，需要替换
                 var 背包:Object = _root.物品栏.背包;
                 var targetIndex:Number = 背包.getFirstVacancy();
@@ -112,20 +111,16 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
                 }
                 
                 // 卸下装备
-                var result:Boolean = _root.物品栏.装备栏.move(背包, itemData.use, targetIndex);
+                var result:Boolean = _root.物品栏.装备栏.move(背包, use, targetIndex);
                 if (!result) {
                     return false;
                 }
                 
-                if (itemData.use == "手雷") {
-                    _root.物品栏.装备栏.add(itemData.use, {name: itemName, value: value});
-                } else {
-                    _root.物品栏.装备栏.add(itemData.use, {name: itemName, value: {level: value}});
-                }
+                _root.物品栏.装备栏.add(use, BaseItem.create(itemName, value));
                 _root.刷新人物装扮(_root.控制目标);
                 
-                if (itemData.type == "武器" || itemData.use == "手雷") {
-                    TargetCacheManager.findHero().攻击模式切换(itemData.use);
+                if (type == "武器" || use == "手雷") {
+                    TargetCacheManager.findHero().攻击模式切换(use);
                 }
             } else {
                 return false;

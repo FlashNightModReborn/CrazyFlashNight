@@ -6,8 +6,11 @@ class org.flashNight.gesh.tooltip.TooltipDataSelector {
         var tierKey = EquipmentUtil.tierDict[tier];
         if (tierKey == null) return item.data;
         var tierData = item[tierKey];
-        for(var key in tierData){
-            item.data[key] = tierData[key];
+        if(!tierData) tierData = EquipmentUtil.defaultTierDataDict[tier];
+        if(tierData){
+            for(var key in tierData){
+                item.data[key] = tierData[key];
+            }
         }
         return item.data;
     }

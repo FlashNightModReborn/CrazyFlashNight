@@ -13,7 +13,7 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
     }
 
     public function RollOver():Void{
-        _root.物品图标注释(name,value);
+        _root.物品图标注释(this.name, this.value, this.item);
         if (!this.locked) _root.鼠标.gotoAndStop("手型准备抓取");
     }
 

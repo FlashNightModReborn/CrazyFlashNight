@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面" itemID="677cd804-00000291" lastModified="1752754324" lastUniqueIdentifier="10">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面" itemID="677cd804-00000291" lastModified="1756794311" lastUniqueIdentifier="10">
   <timeline>
     <DOMTimeline name="购买执行界面">
       <layers>
@@ -44,7 +44,7 @@ function 购买确认(物品名)
 	var itemData = _root.getItemData(物品名);
 	this.displayname = itemData.displayname;
 	this.单价 = itemData.price;
-	this.购买等级 = itemData.level;
+	this.购买等级 = itemData.data.level;
 	this.itemType = itemData.type;
 	if (itemType == "武器" || itemType == "防具")
 	{

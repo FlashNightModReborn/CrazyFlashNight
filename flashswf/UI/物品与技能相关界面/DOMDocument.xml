@@ -108,7 +108,7 @@
           <Include href="个人信息界面.xml" loadImmediate="false" itemID="66dd624f-000008f4" lastModified="1735536679"/>
           <Include href="个人信息界面素材/滑块.xml" loadImmediate="false" itemID="66dd6a74-0000091b" lastModified="1725786931"/>
           <Include href="个人信息界面素材/元件 1.xml" itemIcon="1" loadImmediate="false" itemID="66dd691c-0000090f" lastModified="1726169905"/>
-          <Include href="购买执行界面.xml" loadImmediate="false" itemID="677cd804-00000291" lastModified="1752754324"/>
+          <Include href="购买执行界面.xml" loadImmediate="false" itemID="677cd804-00000291" lastModified="1756794311"/>
           <Include href="购买执行界面素材/返回按钮.xml" itemIcon="0" loadImmediate="false" itemID="677d30cc-0000101c" lastModified="1736262061"/>
           <Include href="购买执行界面素材/购买按钮.xml" itemIcon="0" loadImmediate="false" itemID="677d3180-0000102d" lastModified="1736261986"/>
           <Include href="购买执行界面素材/购买按钮背景.xml" loadImmediate="false" itemID="677d31a7-0000103b" lastModified="1736258047"/>
@@ -265,7 +265,7 @@
 ]]></script>
                                              </Actionscript>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="新版物品栏界面" name="物品栏界面" selected="true" centerPoint3DX="133.05" centerPoint3DY="160.95">
+                                        <DOMSymbolInstance libraryItemName="新版物品栏界面" name="物品栏界面" centerPoint3DX="133.05" centerPoint3DY="160.95">
                                              <matrix>
                                                   <Matrix a="0.999984741210938" d="0.999984741210938" tx="15.05" ty="-5"/>
                                              </matrix>
@@ -273,7 +273,7 @@
                                                   <Point/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="新版商店界面" name="购买物品界面" centerPoint3DX="447" centerPoint3DY="165.95">
+                                        <DOMSymbolInstance libraryItemName="新版商店界面" name="购买物品界面" selected="true" centerPoint3DX="447" centerPoint3DY="165.95">
                                              <matrix>
                                                   <Matrix tx="329"/>
                                              </matrix>
@@ -560,7 +560,7 @@
                     <SolidSwatchItem color="#FFCCFF" hue="200" saturation="239" brightness="216"/>
                     <SolidSwatchItem color="#FFFFFF" brightness="240"/>
                     <SolidSwatchItem color="#FF0000" alpha="0.498039215686275" saturation="239" brightness="120"/>
-                    <SolidSwatchItem alpha="0.72156862745098"/>
+                    <SolidSwatchItem alpha="0.717647058823529"/>
                     <SolidSwatchItem alpha="0.498039215686275"/>
                     <SolidSwatchItem alpha="0.694117647058824"/>
                     <SolidSwatchItem color="#242421" hue="40" saturation="11" brightness="33"/>
