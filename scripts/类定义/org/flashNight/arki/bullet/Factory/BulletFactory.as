@@ -1,4 +1,6 @@
-﻿/**
+﻿import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
+
+/**
  * BulletFactory.as
  * 位于 org.flashNight.arki.bullet.BulletComponent.Factory 包下
  *
@@ -161,7 +163,7 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
             // • isMelee = true: 近战子弹无散射，角度为0
             // • isChain = true: 联弹子弹无随机偏移，使用精确射击角度  
             // • 其他情况: 应用随机散射偏移，模拟武器精度
-            scatteringAngle:Number = isMelee ? 0 : (shootingAngle + (isChain ? 0 : _root.随机偏移(Obj.子弹散射度))),
+            scatteringAngle:Number = isMelee ? 0 : (shootingAngle + (isChain ? 0 : LinearCongruentialEngine.getInstance().randomOffset(Obj.子弹散射度))),
 
             angleRadians = scatteringAngle * (Math.PI / 180),
             bulletInstance;

@@ -199,6 +199,41 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
     }
 
     /**
+     * 随机二选一（50%概率）
+     * 最常用的二选一场景，如方向选择（左/右）、开关状态（开/关）等
+     * @param option1 第一个选项
+     * @param option2 第二个选项
+     * @return 返回选中的选项（50%概率返回option1，50%概率返回option2）
+     */
+    public function randomChoice(option1, option2) {
+        // 使用位运算优化的50%概率判断
+        return ((nextFloat() * 2) >> 0) == 0 ? option1 : option2;
+    }
+
+    /**
+     * 随机二选一（自定义概率）
+     * 带概率参数的二选一，用于需要非对称概率的场景
+     * @param option1 第一个选项
+     * @param option2 第二个选项
+     * @param probability1 选择第一个选项的概率（0-1）
+     * @return 返回选中的选项
+     */
+    public function randomChoiceWeighted(option1, option2, probability1:Number) {
+        return nextFloat() < probability1 ? option1 : option2;
+    }
+
+    /**
+     * 从多个选项中随机选择一个（等概率）
+     * @param options 选项数组
+     * @return 返回随机选中的选项
+     */
+    public function randomPick(options:Array) {
+        if (!options || options.length == 0) return null;
+        if (options.length == 1) return options[0];
+        return options[randomInteger(0, options.length - 1)];
+    }
+
+    /**
      * 渐进概率检查
      * 随着尝试次数增加，成功概率逐步提高
      * @param baseChance 基础概率分母（如传入100表示1%基础概率）

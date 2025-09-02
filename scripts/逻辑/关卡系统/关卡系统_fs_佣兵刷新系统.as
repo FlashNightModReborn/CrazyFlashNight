@@ -1,8 +1,11 @@
-﻿
-import org.flashNight.naki.Sort.InsertionSort;
+﻿import org.flashNight.naki.Sort.InsertionSort;
 import org.flashNight.arki.unit.UnitComponent.Initializer.*;
 import org.flashNight.arki.unit.UnitComponent.Deinitializer.*;
 import org.flashNight.gesh.object.*;
+import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
+
+// 获取随机数引擎实例
+var randomEngine:LinearCongruentialEngine = LinearCongruentialEngine.getInstance();
 
 
 _root.删佣兵 = function(佣兵ID)
@@ -107,7 +110,7 @@ _root.获取随机佣兵编号 = function(已上场佣兵编号)
 		return -1;// 如果没有可选佣兵，返回 -1
 	}
 
-	var 随机数 = _root.basic_random() * 缓存.总权重;
+	var 随机数 = randomEngine.nextFloat() * 缓存.总权重;
 	var 累计 = 0;
 	for (var j = 0; j < 可选择佣兵编号.length; j++)
 	{
@@ -125,7 +128,7 @@ _root.获取随机佣兵编号 = function(已上场佣兵编号)
 _root.生成游戏世界佣兵 = function(添加佣兵函数, 机率, 是否门口)
 {
 	var 游戏世界 = _root.gameworld;
-	var 场上佣兵总人数 = _root.成功率(100 / 机率) ? _root.随机整数(1, 3) : 0.5;
+	var 场上佣兵总人数 = randomEngine.randomCheck(机率) ? randomEngine.randomInteger(1, 3) : 0.5;
 	var 面积系数 = (_root.Xmax - _root.Xmin) * (_root.Ymax - _root.Ymin) / _root.面积系数;
 	if(!isNaN(游戏世界.面积系数)) 面积系数 *= 游戏世界.面积系数;
 	场上佣兵总人数 = Math.floor(Math.max(场上佣兵总人数 * 面积系数, 1));
@@ -156,14 +159,14 @@ _root.生成游戏世界佣兵 = function(添加佣兵函数, 机率, 是否门�
 			{
 				添加佣兵函数(随机编号);
 			}
-		}, _root.随机整数(1,场上佣兵总人数 * 2) * 1000, 是否门口, 随机编号, 添加佣兵函数, 场上佣兵总人数, _root.gameworld.frameFlag)                                                                                                                     
+		}, randomEngine.randomInteger(1,场上佣兵总人数 * 2) * 1000, 是否门口, 随机编号, 添加佣兵函数, 场上佣兵总人数, _root.gameworld.frameFlag)                                                                                                                     
 
 		已上场佣兵编号[随机编号] = -1;// 标记编号已使用
 	}
 };
 
 _root.门口刷可雇用玩家 = function(){
-	if (_root.成功率(30)){
+	if (randomEngine.successRate(30)){
 		_root.生成游戏世界佣兵(_root.添加场上佣兵,机率,false);
 	}else{
 		_root.生成游戏世界佣兵(_root.添加场上佣兵,机率,true);
@@ -181,8 +184,8 @@ _root.场景随机有效位置 = function(){
 	var tempy;
 	var pt;
 	for(var i=0; i<99; i++){
-		tempx = _root.随机整数(_root.Xmin, _root.Xmax);
-		tempy = _root.随机整数(_root.Ymin, _root.Ymax);
+		tempx = randomEngine.randomInteger(_root.Xmin, _root.Xmax);
+		tempy = randomEngine.randomInteger(_root.Ymin, _root.Ymax);
 		if (!_root.collisionLayer.hitTest(tempx, tempy, true)){
 			break;
 		}else{
@@ -193,7 +196,7 @@ _root.场景随机有效位置 = function(){
 };
 _root.佣兵杂交序号 = function(n, 杂交几率, 杂交许可)
 {
-	if (_root.成功率(杂交几率) and 杂交许可)
+	if (randomEngine.successRate(杂交几率) and 杂交许可)
 	{
 		return _root.获取随机索引(_root.可雇佣兵);
 	}
@@ -201,8 +204,8 @@ _root.佣兵杂交序号 = function(n, 杂交几率, 杂交许可)
 };
 _root.拼接生成杂交佣兵名 = function(原佣兵名称, 杂交佣兵名称)
 {
-	var 切割点原名称 = _root.随机整数(0, 原佣兵名称.length - 1);
-	var 切割点杂交名称 = _root.随机整数(0, 杂交佣兵名称.length - 1);
+	var 切割点原名称 = randomEngine.randomInteger(0, 原佣兵名称.length - 1);
+	var 切割点杂交名称 = randomEngine.randomInteger(0, 杂交佣兵名称.length - 1);
 	var 原名称前半部 = 原佣兵名称.substring(0, 切割点原名称);
 	var 杂交名称后半部 = 杂交佣兵名称.substring(切割点杂交名称);
 	return 原名称前半部 + 杂交名称后半部;
@@ -223,8 +226,8 @@ _root.音节生成杂交佣兵名 = function(原佣兵名称, 杂交佣兵名称
 	var 杂交名称音节 = _root.分解音节(杂交佣兵名称);
 	var 新名称音节 = [];
 
-	var 从原名称中取的音节数 = _root.随机整数(1, 原名称音节.length);
-	var 从杂交名称中取的音节数 = _root.随机整数(1, 杂交名称音节.length);
+	var 从原名称中取的音节数 = randomEngine.randomInteger(1, 原名称音节.length);
+	var 从杂交名称中取的音节数 = randomEngine.randomInteger(1, 杂交名称音节.length);
 
 	for (var i = 0; i < 从原名称中取的音节数; i++)
 	{
@@ -241,7 +244,7 @@ _root.音节生成杂交佣兵名 = function(原佣兵名称, 杂交佣兵名称
 
 _root.常规生成杂交佣兵名 = function(原佣兵名称, 杂交佣兵名称)
 {
-	return _root.成功率(50) ? 原佣兵名称 : 杂交佣兵名称;
+	return randomEngine.randomChoice(原佣兵名称, 杂交佣兵名称);
 };
 _root.战队信息数组 = [];
 
@@ -280,7 +283,7 @@ _root.基于权重随机选择函数 = function(函数集)
 		总权重 += 函数集[i].权重;
 	}
 
-	var 随机数 = _root.basic_random() * 总权重;
+	var 随机数 = randomEngine.nextFloat() * 总权重;
 	var 累计权重 = 0;
 	for (var j = 0; j < 函数集.length; j++)
 	{
@@ -335,7 +338,7 @@ _root.装备杂交许可 = function(杂交装备, 装备杂交几率)
 		return false;
 	}
 	// 检查是否满足随机杂交几率                                                                                                                                     
-	return _root.成功率(装备杂交几率);
+	return randomEngine.successRate(装备杂交几率);
 };
 _root.杂交可雇佣兵 = function(n, 杂交几率, 杂交许可)
 {
@@ -401,14 +404,14 @@ _root.创建佣兵实体 = function(n, 杂交几率)
 	{
 		杂交几率 = Math.min(杂交几率, Math.max(0, _root.主线任务进度 - 13));//在竞技场之后解锁，当达到38时杂交率达到25
 	}
-	if (_root.成功率(杂交几率))
+	if (randomEngine.successRate(杂交几率))
 	{
 		_root.杂交可雇佣兵(n,杂交几率,true);
 		佣兵库 = _root.随机可雇佣兵;
 		n = _root.随机可雇佣兵.length - 1;
 	}
 
-	佣兵库[n][2] = 佣兵库[n][2].toString() + 佣兵库[n][1] + 佣兵库[n][0].toString() + _root.随机整数(0, 9999).toString();
+	佣兵库[n][2] = 佣兵库[n][2].toString() + 佣兵库[n][1] + 佣兵库[n][0].toString() + randomEngine.randomInteger(0, 9999).toString();
 
 	if (佣兵库[n] == undefined || 佣兵库[n][1] + "" == "undefined")
 	{
@@ -464,7 +467,7 @@ _root.创建佣兵实体对象 = function(佣兵数据, X, Y)
 	// 设置佣兵对象的默认对话
 	佣兵对象.默认对话 = [[]];
 	// 设置佣兵对象的默认对话
-	var 对话数量 = _root.随机整数(1, 5);
+	var 对话数量 = randomEngine.randomInteger(1, 5);
 	for (var i = 0; i < 对话数量; ++i)
 	{
 		var 随机对话编号 = _root.获取随机索引(_root.佣兵随机对话);
@@ -476,7 +479,7 @@ _root.创建佣兵实体对象 = function(佣兵数据, X, Y)
 	var ny:Number = 佣兵对象.人物文字信息._y;
 
 	// 随机设置佣兵的方向
-	var 方向 = _root.随机整数(0, 1) == 0 ? "左" : "右";
+	var 方向 = randomEngine.randomChoice("左", "右");
 	佣兵对象.方向 = 方向;
 
 
@@ -497,7 +500,7 @@ _root.添加场上佣兵 = function(n)
 
 _root.刷新基地佣兵数据 = function(机率)
 {
-	if (_root.成功率(100 / 机率))
+	if (randomEngine.randomCheck(机率))
 	{
 		_root.请求新佣兵("#0@1-50%5",trace,"**已更新佣兵");
 	}
