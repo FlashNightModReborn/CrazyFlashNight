@@ -9,7 +9,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
 
     // --- 屏外剔除：可按需调节缓冲 ---
     // 设为 0 表示严格以屏幕边缘为界；>0 则加入缓冲，减少边缘闪烁
-    private static var CULL_PAD:Number = 50;
+    private static var CULL_PAD:Number = 100;
 
     // —— 防抖用：隐藏门槛（连续多少帧在屏外才隐藏）——
     private static var HIDE_AFTER:Number = 3;

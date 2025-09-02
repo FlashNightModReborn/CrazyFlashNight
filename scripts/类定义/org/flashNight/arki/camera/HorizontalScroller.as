@@ -132,7 +132,7 @@ class org.flashNight.arki.camera.HorizontalScroller {
      */
     public static function onFullScreenChanged():Void {
         instance.initializeForNewScene();
-        _root.服务器.发布服务器消息("Flash 全屏状态变更: " + ObjectUtil.toString(Stage));
+        // _root.服务器.发布服务器消息("Flash 全屏状态变更: " + ObjectUtil.toString(Stage));
     }
     
     //================================================================================
