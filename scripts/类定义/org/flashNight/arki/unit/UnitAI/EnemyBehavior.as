@@ -25,6 +25,9 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         // 为每个敌人分配个性化的安全距离
         var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
         data.evade_distance = engine.randomIntegerStrict(EnemyBehavior.EVADE_DISTANCE_MIN, EnemyBehavior.EVADE_DISTANCE_MAX);
+        
+        // 初始化 player 引用，避免第一次使用时为 null
+        data.player = TargetCacheManager.findHero();
 
         // 状态列表 
         // 已存在的包括基类的睡眠状态（默认状态）
@@ -73,18 +76,12 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
     public function think():Void{
         data.updateSelf(); // 更新自身坐标
         
-        // 刷新主角引用
-        var hero = TargetCacheManager.findHero();
-        if (hero != data.player) {
-            data.player = hero;
-        }
-        
         //search target
         var self = data.self;
         var chaseTarget = self.攻击目标;
         if (!chaseTarget || chaseTarget == "无"){
             // 在1到威胁阈值中选取一个随机值，通过该威胁值索敌
-            var threshold = self.threatThreshold > 1 ? LinearCongruentialEngine.instance.randomIntegerStrict(1, threshold) : self.threatThreshold;
+            var threshold = self.threatThreshold > 1 ? LinearCongruentialEngine.instance.randomIntegerStrict(1, self.threatThreshold) : self.threatThreshold;
             var target = TargetCacheManager.findNearestThreateningEnemy(self, 1, threshold); 
             if(target){
                 data.target = target;
@@ -102,12 +99,20 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         var newstate:String;
         if (data.target) {
             newstate = "Chasing";
-        } else if (!hero || hero.hp <= 0) {
-            // 未找到攻击目标且主角死亡时，选择远离
-            newstate = "Evading";
         } else {
-            // 未找到攻击目标但主角存在时，跟随主角
-            newstate = "Following";
+            // 没有攻击目标时才需要查找主角
+            var hero = TargetCacheManager.findHero();
+            if (hero != data.player) {
+                data.player = hero;
+            }
+            
+            if (!hero || hero.hp <= 0) {
+                // 未找到攻击目标且主角死亡时，选择远离
+                newstate = "Evading";
+            } else {
+                // 未找到攻击目标但主角存在时，跟随主角
+                newstate = "Following";
+            }
         }
         this.superMachine.ChangeState(newstate);
     }
@@ -115,7 +120,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
     // 追击开始
     public function chase_enter():Void{
         var self:MovieClip = data.self;
-        var 友军数量 = _root.帧计时器.获取友军缓存(self,5).length;
+        var 友军数量 = TargetCacheManager.getAllyCount(self, 5);
         if(友军数量 <= 1){
             // 若己方没有任何队友，则永远不会停止追击
             data.idle_threshold = 999999;
@@ -360,7 +365,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         }
         
         // 根据友军数量计算随机时间
-        var 友军数量 = _root.帧计时器.获取友军缓存(self,5).length;
+        var 友军数量 = TargetCacheManager.getAllyCount(self, 5);
         var temp = 友军数量 <= 5 ? 0 : (友军数量 <= 10 ? 1 : 2);
         data.think_threshold = EnemyBehavior.IDLE_BASIC_TIME + LinearCongruentialEngine.instance.random(temp * EnemyBehavior.IDLE_BASIC_TIME);
     }
@@ -375,7 +380,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
 
         // 根据友军数量计算随机时间
-        var 友军数量 = _root.帧计时器.获取友军缓存(self,5).length;
+        var 友军数量 = TargetCacheManager.getAllyCount(self, 5);
         var temp = 友军数量 <= 5 ? 0 : (友军数量 <= 10 ? 1 : 2);
         data.think_threshold = EnemyBehavior.WANDER_BASIC_TIME + engine.random(temp * EnemyBehavior.WANDER_BASIC_TIME);
 

@@ -2,6 +2,7 @@
 import org.flashNight.sara.util.*;
 import org.flashNight.neur.ScheduleTimer.*;
 import org.flashNight.arki.component.Effect.*;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 _root.主动战技函数 = {空手: {}, 兵器: {}, 长枪: {}};
 
@@ -823,7 +824,7 @@ _root.主动战技函数.兵器.狮子之力 = {初始化: function(自机) {
             return _root.控制目标 === 自机._name;
         },
         释放: function(自机) {
-            var 我方角色数量 = _root.帧计时器.获取友军缓存(自机, 150).length;
+            var 我方角色数量 = TargetCacheManager.getAllyCount(自机, 150);
             if (我方角色数量 >= 10)
                 我方角色数量 = 10;
             if (自机.狮王增幅次数 < 1)
