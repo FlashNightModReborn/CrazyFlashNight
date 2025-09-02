@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版装备强化界面" itemID="68a01bda-000002a7" lastModified="1755592469" lastUniqueIdentifier="20">
   <timeline>
-    <DOMTimeline name="新版装备强化界面" currentFrame="9">
+    <DOMTimeline name="新版装备强化界面" currentFrame="8">
       <layers>
         <DOMLayer name="label" color="#4FFFFF" autoNamed="false">
           <frames>
@@ -320,7 +320,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
@@ -336,7 +336,7 @@
             </DOMFrame>
             <DOMFrame index="6" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 729" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 729" symbolType="button">
                   <matrix>
                     <Matrix tx="185.85" ty="16"/>
                   </matrix>
@@ -353,7 +353,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>

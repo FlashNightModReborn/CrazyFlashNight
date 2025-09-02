@@ -96,7 +96,7 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
         _root.鼠标.物品图标容器.物品图标.removeMovieClip();
         icon._alpha = 100;
 
-        if(name == null || itemData.type === "收集品") return;
+        if(!this.name || itemData.type === "收集品") return;
 
         var xmouse = _root._xmouse;
         var ymouse = _root._ymouse;

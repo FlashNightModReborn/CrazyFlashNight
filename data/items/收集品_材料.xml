@@ -1223,33 +1223,36 @@ WP企业统一供应统合东区的模块化温控系统，依靠微通道与相
   </item>
   <item>
     <id>12001</id>
-    <name>二阶进阶组件</name>
-    <displayname>二阶进阶组件</displayname>
+    <name>二阶复合防御组件</name>
+    <displayname>二阶复合防御组件</displayname>
     <icon>资料</icon>
     <type>收集品</type>
     <use>材料</use>
     <price>10000</price>
-    <description>用于提升限制等级低于10的防具或特殊防具的性能。</description>
+    <description>用于提升限制等级低于20的防具或特殊防具的性能。
+在装备表面和内衬缝入韧性极佳的皮革和布料，减少穿戴者受到的伤害。</description>
   </item>
   <item>
     <id>12002</id>
-    <name>三阶进阶组件</name>
-    <displayname>三阶进阶组件</displayname>
+    <name>三阶复合防御组件</name>
+    <displayname>三阶复合防御组件</displayname>
     <icon>资料</icon>
     <type>收集品</type>
     <use>材料</use>
     <price>50000</price>
-    <description>用于提升限制等级低于10的防具或特殊防具的性能。</description>
+    <description>用于提升限制等级低于15的防具或特殊防具的性能。
+在装备表面构造由金属插板、高分子量聚乙烯纤维、高模量碳纤维等材料复合而成的防护层。多层材料能有效减免切割，钝击，贯穿等各种伤害。</description>
   </item>
   <item>
     <id>12002</id>
-    <name>四阶进阶组件</name>
-    <displayname>四阶进阶组件</displayname>
+    <name>四阶复合防御组件</name>
+    <displayname>四阶复合防御组件</displayname>
     <icon>资料</icon>
     <type>收集品</type>
     <use>材料</use>
     <price>150000</price>
-    <description>用于提升限制等级低于10的防具或特殊防具的性能。</description>
+    <description>用于提升限制等级低于10的防具或特殊防具的性能。
+使用纳米技术对装备内外进行编程，穿戴者通过定势电信号直接感知、操控装备，使装备完全成为躯体的延申，从而全方位提升其性能。</description>
   </item>
   <item>
     <id>12004</id>
@@ -1291,14 +1294,14 @@ WP企业统一供应统合东区的模块化温控系统，依靠微通道与相
     <icon>资料</icon>
     <type>收集品</type>
     <use>材料</use>
-    <price>50000</price>
-    <description>用于改装的高级材料。</description>
+    <price>6000</price>
+    <description>用于改装的中级材料。</description>
   </item>
   <item>
     <id>12102</id>
     <name>M203榴弹发射器</name>
     <displayname>M203榴弹发射器</displayname>
-    <icon>资料</icon>
+    <icon>M203榴弹发射器</icon>
     <type>收集品</type>
     <use>材料</use>
     <price>50000</price>
@@ -1308,7 +1311,7 @@ WP企业统一供应统合东区的模块化温控系统，依靠微通道与相
     <id>12103</id>
     <name>纳米执行单元</name>
     <displayname>纳米执行单元</displayname>
-    <icon>资料</icon>
+    <icon>纳米执行单元</icon>
     <type>收集品</type>
     <use>材料</use>
     <price>50000</price>

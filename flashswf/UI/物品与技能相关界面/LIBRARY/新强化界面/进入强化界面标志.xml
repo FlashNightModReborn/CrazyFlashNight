@@ -1,13 +1,13 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新强化界面/进入强化界面标志" itemID="68a42ceb-00000bec" lastModified="1755590879" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新强化界面/进入强化界面标志" itemID="68a42ceb-00000bec" lastModified="1756827997" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="进入强化界面标志">
       <layers>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
-this互动提示.gotoAndStop("空");]]></script>
+this.互动提示.gotoAndStop("空");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -109,7 +109,7 @@ this互动提示.gotoAndStop("空");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>

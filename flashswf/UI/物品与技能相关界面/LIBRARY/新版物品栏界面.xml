@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1755592412" lastUniqueIdentifier="58">
   <timeline>
-    <DOMTimeline name="新版物品栏界面" currentFrame="14">
+    <DOMTimeline name="新版物品栏界面" currentFrame="8">
       <layers>
         <DOMLayer name="Labels Layer" color="#23D4A1">
           <frames>
@@ -485,7 +485,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="5" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新版装备强化界面" name="装备强化界面" centerPoint3DX="-87" centerPoint3DY="165">
+                <DOMSymbolInstance libraryItemName="新版装备强化界面" name="装备强化界面" selected="true" centerPoint3DX="-87" centerPoint3DY="165">
                   <matrix>
                     <Matrix tx="-215" ty="5"/>
                   </matrix>

@@ -2,15 +2,15 @@
      <folders>
           <DOMFolderItem name="3.位图相关" itemID="6690e84b-000017e9"/>
           <DOMFolderItem name="材料相关" itemID="6690f5aa-00003203" isExpanded="true"/>
-          <DOMFolderItem name="材料相关/材料元件" itemID="66e97f71-00001436"/>
-          <DOMFolderItem name="技能相关" itemID="67bdcc9b-00000d7f" isExpanded="true"/>
+          <DOMFolderItem name="材料相关/材料元件" itemID="66e97f71-00001436" isExpanded="true"/>
+          <DOMFolderItem name="技能相关" itemID="67bdcc9b-00000d7f"/>
           <DOMFolderItem name="技能相关/图标素材" itemID="669b8912-000011e2" isExpanded="true"/>
           <DOMFolderItem name="技能相关/图标素材/强震地(代码空缺)" itemID="67beafff-0000066f"/>
           <DOMFolderItem name="弃用图标" itemID="67bdcdc0-00000df9"/>
           <DOMFolderItem name="情报物品相关" itemID="683f1b5b-000004b3"/>
           <DOMFolderItem name="生活用品" itemID="47cf854d-00001bf0"/>
           <DOMFolderItem name="生活用品/020" itemID="47721310-00001a3b"/>
-          <DOMFolderItem name="食材相关" itemID="67bff826-000003dc" isExpanded="true"/>
+          <DOMFolderItem name="食材相关" itemID="67bff826-000003dc"/>
           <DOMFolderItem name="未命名文件夹 1" itemID="67b9acf1-00000e73"/>
           <DOMFolderItem name="无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="项链相关" itemID="67bdcc7a-00000d2f"/>
@@ -174,6 +174,8 @@
           <Include href="材料相关/材料元件/石灰.xml" loadImmediate="false" itemID="66ebcded-000000e3" lastModified="1726729709"/>
           <Include href="材料相关/材料元件/石灰符号图标.xml" loadImmediate="false" itemID="66ebce9a-000000f2" lastModified="1726729882"/>
           <Include href="材料相关/材料元件/石灰图标.xml" loadImmediate="false" itemID="66ebcea5-000000f6" lastModified="1726729897"/>
+          <Include href="材料相关/材料元件/图形-M203榴弹发射器.xml" itemIcon="1" loadImmediate="false" itemID="68b73a16-000008b2" lastModified="1756838947"/>
+          <Include href="材料相关/材料元件/图形-纳米执行单元.xml" itemIcon="1" loadImmediate="false" itemID="68b731fc-00000870" lastModified="1756836802"/>
           <Include href="材料相关/材料元件/王水.xml" loadImmediate="false" itemID="66eab159-00000140" lastModified="1726656857"/>
           <Include href="材料相关/材料元件/王水玻璃.xml" loadImmediate="false" itemID="66eab085-00000134" lastModified="1726656645"/>
           <Include href="材料相关/材料元件/王水符号图标.xml" loadImmediate="false" itemID="66eab1f2-00000150" lastModified="1726657010"/>
@@ -190,6 +192,7 @@
           <Include href="材料相关/材料元件/粘土图标.xml" loadImmediate="false" itemID="66ebbfb6-00000d53" lastModified="1726726070"/>
           <Include href="材料相关/图标-Andy套装碎片.xml" itemID="66adbcd2-0000184e" lastModified="1722662100"/>
           <Include href="材料相关/图标-KM型消声器.xml" itemID="66adbcde-00001853" lastModified="1722662118"/>
+          <Include href="材料相关/图标-M203榴弹发射器.xml" itemID="68b739f6-000008af" lastModified="1756838572"/>
           <Include href="材料相关/图标-爆炸僵尸样本.xml" itemID="66adbcba-00001849" lastModified="1722662086"/>
           <Include href="材料相关/图标-冰魄矿石.xml" itemID="66adbcf7-0000185b" lastModified="1722662142"/>
           <Include href="材料相关/图标-冰雪之心线索文件.xml" itemID="66adbc70-0000183e" lastModified="1722662000"/>
@@ -210,7 +213,6 @@
           <Include href="材料相关/图标-动力液压杆.xml" itemID="66adbdd2-00001879" lastModified="1722662361"/>
           <Include href="材料相关/图标-毒素样本.xml" itemID="66adbc1b-00001833" lastModified="1722661915"/>
           <Include href="材料相关/图标-方舟秘钥.xml" itemID="66adbc17-00001832" lastModified="1722661911"/>
-          <Include href="材料相关/图标-方舟碎片.xml" itemID="66adbe1b-0000187e" lastModified="1722662433"/>
           <Include href="材料相关/图标-方舟卫士样本.xml" itemID="66adbc04-00001831" lastModified="1722661892"/>
           <Include href="材料相关/图标-防沙皮革.xml" itemID="66adbe3a-00001883" lastModified="1722662563"/>
           <Include href="材料相关/图标-非栓式机构.xml" itemID="66adbe9b-0000188e" lastModified="1722662560"/>
@@ -248,6 +250,7 @@
           <Include href="材料相关/图标-秘钥B.xml" itemID="66adbadb-00001815" lastModified="1722661595"/>
           <Include href="材料相关/图标-秘钥C.xml" itemID="66adbad7-00001814" lastModified="1722661591"/>
           <Include href="材料相关/图标-明矾.xml" itemID="66ea5c99-00000d15" lastModified="1726635169"/>
+          <Include href="材料相关/图标-纳米执行单元.xml" itemID="68b72a5c-00000856" lastModified="1756836443"/>
           <Include href="材料相关/图标-诺亚机枪.xml" itemID="66adbad0-00001812" lastModified="1723123426"/>
           <Include href="材料相关/图标-诺亚僵尸证明.xml" itemID="66adba84-00001807" lastModified="1722661546"/>
           <Include href="材料相关/图标-诺亚枪械碎片.xml" itemID="66adba7f-00001806" lastModified="1722661503"/>
@@ -547,7 +550,8 @@
           <Include href="食材相关/猪肉.xml" itemIcon="1" loadImmediate="false" itemID="67bdc63d-000000de" lastModified="1740490301"/>
           <Include href="食材相关/竹笋.xml" loadImmediate="false" itemID="6814918b-0000039e" lastModified="1746178443"/>
           <Include href="食材相关/柱侯酱.xml" loadImmediate="false" itemID="6814612e-000005fb" lastModified="1746166062"/>
-          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1756043993"/>
+          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1756838897"/>
+          <Include href="图标-方舟碎片.xml" itemID="66adbe1b-0000187e" lastModified="1722662433"/>
           <Include href="图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="666e7c83-00000d39" lastModified="1718516867"/>
           <Include href="未命名文件夹 1/Symbol 34.xml" itemIcon="1" loadImmediate="false" itemID="664c57d7-0000029e" lastModified="1740222009"/>
           <Include href="无AS链接/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005b7" lastModified="1720533000"/>
@@ -1036,6 +1040,18 @@
                     <SolidSwatchItem color="#614E13" hue="30" saturation="161" brightness="55"/>
                     <SolidSwatchItem color="#0F1110" hue="100" saturation="16" brightness="15"/>
                     <SolidSwatchItem color="#7D0000" saturation="239" brightness="59"/>
+                    <SolidSwatchItem color="#DDEEEE" hue="120" saturation="80" brightness="216"/>
+                    <SolidSwatchItem color="#033668" hue="140" saturation="226" brightness="51"/>
+                    <SolidSwatchItem color="#FFEEDD" hue="20" saturation="239" brightness="224"/>
+                    <SolidSwatchItem color="#99AACC" hue="147" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#99BBFF" hue="147" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#336688" hue="136" saturation="109" brightness="88"/>
+                    <SolidSwatchItem color="#77BBEE" hue="137" saturation="187" brightness="168"/>
+                    <SolidSwatchItem color="#DDFFFF" hue="120" saturation="239" brightness="224"/>
+                    <SolidSwatchItem color="#001133" hue="147" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#99AABB" hue="140" saturation="48" brightness="160"/>
+                    <SolidSwatchItem color="#506070" hue="140" saturation="40" brightness="90"/>
+                    <SolidSwatchItem color="#333344" hue="160" saturation="34" brightness="56"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1120,6 +1136,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3285415" publishTime="1756838658"/>
           <PublishItem publishSize="3270284" publishTime="1756044748"/>
           <PublishItem publishSize="3270289" publishTime="1756044738"/>
           <PublishItem publishSize="3270271" publishTime="1756044000"/>
@@ -1139,6 +1156,5 @@
           <PublishItem publishSize="3272354" publishTime="1755739363"/>
           <PublishItem publishSize="3272354" publishTime="1755739211"/>
           <PublishItem publishSize="3272357" publishTime="1755739102"/>
-          <PublishItem publishSize="3270627" publishTime="1755679825"/>
      </publishHistory>
 </DOMDocument>
