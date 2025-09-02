@@ -300,7 +300,14 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   }
 
   // === 生成插件数据属性块 ===
-  public static function buildModStats(item:Object, tier:String, level:Number):Array {
+  public static function buildModInfo(item:Object, tier:String, level:Number):Array {
+    return null; // TODO
+  }
+
+
+
+  // === 生成单个插件加成 ===
+  public static function buildModStat(modData:Object):Array {
     return null; // TODO
   }
 
