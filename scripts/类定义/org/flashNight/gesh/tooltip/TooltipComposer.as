@@ -25,6 +25,7 @@
 // ──────────────────────────────────────────────────────────────────────────────
 
 import org.flashNight.gesh.tooltip.*;
+import org.flashNight.gesh.string.StringUtils;
 
 /**
  * # TooltipComposer
@@ -199,10 +200,10 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
     var totalMultiplier:Number = (options && options.totalMultiplier) ? options.totalMultiplier : TooltipConstants.SMART_TOTAL_MULTIPLIER;
     var descDivisor:Number = (options && options.descDivisor) ? options.descDivisor : TooltipConstants.SMART_DESC_DIVISOR;
     
-    // 智能长度判断
+    // 智能长度判断（使用 htmlLengthScore 更准确评估）
     var threshold:Number = TooltipConstants.SPLIT_THRESHOLD;
-    var descLength:Number = descriptionText.length;
-    var totalLength:Number = descLength + introText.length;
+    var descLength:Number = StringUtils.htmlLengthScore(descriptionText, null);
+    var totalLength:Number = descLength + StringUtils.htmlLengthScore(introText, null);
 
     // 保底清理
     TooltipLayout.hideTooltip();

@@ -1,9 +1,10 @@
 ﻿import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.TooltipBridge;
+import org.flashNight.gesh.string.StringUtils;
 
 class org.flashNight.gesh.tooltip.TooltipLayout {
 
-    // === 估算文本宽度（1:1 复刻 _root.注释布局.估算宽度） ===
+    // === 估算文本宽度（使用 htmlLengthScore 智能计算） ===
     public static function estimateWidth(html:String, minW:Number, maxW:Number):Number {
         if (minW === undefined) {
             minW = TooltipConstants.MIN_W;
@@ -12,9 +13,11 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
             maxW = TooltipConstants.MAX_W;
         }
 
-        var charCount:Number = html.length;
-        var widthEst:Number = charCount * TooltipConstants.CHAR_AVG_WIDTH;
-        // _root.发布消息(minW,maxW,charCount,widthEst,Math.max(minW, Math.min(widthEst, maxW)));
+        // 使用 htmlLengthScore 获取加权长度分数
+        var lengthScore:Number = StringUtils.htmlLengthScore(html, null);
+        // 乘以 CHAR_AVG_WIDTH 作为像素缩放系数
+        var widthEst:Number = lengthScore * TooltipConstants.CHAR_AVG_WIDTH;
+        // _root.发布消息(minW,maxW,lengthScore,widthEst,Math.max(minW, Math.min(widthEst, maxW)));
         return Math.max(minW, Math.min(widthEst, maxW));
     }
  

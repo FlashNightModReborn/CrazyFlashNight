@@ -1,7 +1,7 @@
 ﻿import org.flashNight.arki.item.*;
 import org.flashNight.gesh.array.*;
 import org.flashNight.gesh.tooltip.*;
-
+import org.flashNight.gesh.string.*;
 /**
  * 物品图标注释主入口函数
  * @param name:String 物品名称
@@ -16,6 +16,9 @@ _root.物品图标注释 = function(name, value) {
 
     // 2) 简介面板文本（简介头 + 装备段）
     var 简介文本:String = TooltipComposer.generateIntroPanelContent(物品数据, value, 强化等级);
+
+    // _root.服务器.发布服务器消息("描述文本:" + StringUtils.htmlToPlainTextFast(描述文本));
+    // _root.服务器.发布服务器消息("简介文本:" + StringUtils.htmlToPlainTextFast(简介文本));
 
     // 3) 使用智能显示算法自动优化长短内容
     TooltipComposer.renderItemTooltipSmart(name, value, 描述文本, 简介文本, null);
