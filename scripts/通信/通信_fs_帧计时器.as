@@ -17,7 +17,7 @@ import org.flashNight.arki.spatial.transform.*;
 import org.flashNight.arki.render.*;
 import org.flashNight.arki.scene.*;
 import org.flashNight.arki.spatial.move.*;
-
+import org.flashNight.gesh.object.*;
 // 初始化全局帧计时器对象
 _root.帧计时器 = {};
 
@@ -626,6 +626,16 @@ _root.在线时间计数 = 0;
 _root.帧计时器.添加任务(检测在线奖励, 300000, 24); // 每5分钟检测一次，共24次
 _root.帧计时器.添加循环任务(BulletFactory.resetCount, 1000 * 60 * 5); // 每5分钟重置一次子弹深度计数
 
+var stageWatcher:Object = {};
+
+stageWatcher.onFullScreen = function(nowFull:Boolean):Void {
+    EventBus.getInstance().publish("FlashFullScreenChanged", nowFull);
+};
+stageWatcher.onResize = function():Void {
+    // 记录舞台大小变化
+    _root.发布消息("Flash 大小状态变更: ", Stage.width, Stage.height);
+};
+Stage.addListener(stageWatcher);
 
 EventBus.getInstance().subscribe("SceneChanged", function() {
 	// _root.服务器.发布服务器消息("准备清理地图信息")

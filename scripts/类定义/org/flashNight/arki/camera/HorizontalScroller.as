@@ -3,7 +3,7 @@ import org.flashNight.arki.camera.ZoomController;
 import org.flashNight.arki.camera.ScrollBounds;
 import org.flashNight.arki.camera.ScrollLogic;
 import org.flashNight.arki.camera.ParallaxBackground;
-
+import org.flashNight.gesh.object.*;
 /**
  * HorizontalScroller.as - 重构后的横版滚屏控制器（单例模式 + 函数组装优化）
  *
@@ -125,6 +125,14 @@ class org.flashNight.arki.camera.HorizontalScroller {
      */
     public static function onSceneChanged():Void {
         instance.initializeForNewScene();
+    }
+
+    /**
+     * 全屏切换回调 - 重新初始化舞台尺寸
+     */
+    public static function onFullScreenChanged():Void {
+        instance.initializeForNewScene();
+        _root.服务器.发布服务器消息("Flash 全屏状态变更: " + ObjectUtil.toString(Stage));
     }
     
     //================================================================================
