@@ -1,4 +1,4 @@
-﻿import org.flashNight.gesh.object.ObjectUtil;
+﻿import org.flashNight.gesh.object.*;
 import org.flashNight.arki.item.itemCollection.*;
 
 _root.存档系统 = new Object();

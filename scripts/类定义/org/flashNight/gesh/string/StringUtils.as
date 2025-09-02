@@ -769,7 +769,227 @@ class org.flashNight.gesh.string.StringUtils {
 
 
     /**
-     * 估算一段 HTML 文本的“长度系数”（不产出纯文本，单次扫描，无正则）
+     * 格式化数字为指定小数位数的字符串
+     * 模拟 JavaScript 的 Number.toFixed() 方法
+     * @param value 要格式化的数字
+     * @param digits 小数位数（0-20），默认为 0
+     * @return 格式化后的字符串
+     */
+    public static function toFixed(value:Number, digits:Number):String {
+        // 参数验证
+        if (isNaN(value)) return "NaN";
+        if (!isFinite(value)) return value > 0 ? "Infinity" : "-Infinity";
+        
+        // 限制小数位数在 0-20 之间
+        if (digits == undefined) digits = 0;
+        digits = Math.max(0, Math.min(20, Math.floor(digits)));
+        
+        // 处理负数
+        var isNegative:Boolean = value < 0;
+        value = Math.abs(value);
+        
+        // 计算乘数
+        var multiplier:Number = Math.pow(10, digits);
+        
+        // 四舍五入
+        var rounded:Number = Math.round(value * multiplier) / multiplier;
+        
+        // 转换为字符串
+        var str:String = rounded.toString();
+        
+        // 查找小数点位置
+        var dotIndex:Number = str.indexOf(".");
+        
+        if (digits == 0) {
+            // 如果不需要小数位，移除小数点及其后的部分
+            if (dotIndex != -1) {
+                str = str.substring(0, dotIndex);
+            }
+        } else {
+            if (dotIndex == -1) {
+                // 如果没有小数点，添加小数点
+                str += ".";
+                dotIndex = str.length - 1;
+            }
+            
+            // 计算当前小数位数
+            var currentDigits:Number = str.length - dotIndex - 1;
+            
+            // 补零或截断
+            if (currentDigits < digits) {
+                // 补零
+                for (var i:Number = currentDigits; i < digits; i++) {
+                    str += "0";
+                }
+            } else if (currentDigits > digits) {
+                // 截断（理论上不应该发生，因为已经四舍五入了）
+                str = str.substring(0, dotIndex + digits + 1);
+            }
+        }
+        
+        // 添加负号
+        if (isNegative) {
+            str = "-" + str;
+        }
+        
+        return str;
+    }
+
+    /**
+     * 格式化数字为指定有效数字位数的字符串
+     * 模拟 JavaScript 的 Number.toPrecision() 方法
+     * @param value 要格式化的数字
+     * @param precision 有效数字位数（1-21）
+     * @return 格式化后的字符串
+     */
+    public static function toPrecision(value:Number, precision:Number):String {
+        // 参数验证
+        if (isNaN(value)) return "NaN";
+        if (!isFinite(value)) return value > 0 ? "Infinity" : "-Infinity";
+        
+        // 如果未指定精度，返回原始字符串
+        if (precision == undefined) return value.toString();
+        
+        // 限制精度在 1-21 之间
+        precision = Math.max(1, Math.min(21, Math.floor(precision)));
+        
+        // 处理负数
+        var isNegative:Boolean = value < 0;
+        value = Math.abs(value);
+        
+        // 特殊情况：值为 0
+        if (value == 0) {
+            var result:String = "0";
+            if (precision > 1) {
+                result += ".";
+                for (var i:Number = 1; i < precision; i++) {
+                    result += "0";
+                }
+            }
+            return isNegative ? "-" + result : result;
+        }
+        
+        // 计算指数形式
+        var exponent:Number = Math.floor(Math.log(value) / Math.LN10);
+        var mantissa:Number = value / Math.pow(10, exponent);
+        
+        // 四舍五入到指定精度
+        var factor:Number = Math.pow(10, precision - 1);
+        mantissa = Math.round(mantissa * factor) / factor;
+        
+        // 如果四舍五入后超过 10，调整指数
+        if (mantissa >= 10) {
+            mantissa /= 10;
+            exponent++;
+        }
+        
+        // 决定使用定点表示还是指数表示
+        var useExponential:Boolean = exponent < -6 || exponent >= precision;
+        
+        var str:String;
+        if (useExponential) {
+            // 指数表示
+            str = mantissa.toString();
+            // 调整小数位数到精度
+            var dotIdx:Number = str.indexOf(".");
+            if (dotIdx == -1) {
+                if (precision > 1) {
+                    str += ".";
+                    for (i = 1; i < precision; i++) {
+                        str += "0";
+                    }
+                }
+            } else {
+                var currentDigits:Number = str.length - 1; // 总字符数减去小数点
+                if (currentDigits < precision) {
+                    for (i = currentDigits; i < precision; i++) {
+                        str += "0";
+                    }
+                } else if (currentDigits > precision) {
+                    str = str.substring(0, precision + 1);
+                }
+            }
+            str += "e" + (exponent >= 0 ? "+" : "") + exponent;
+        } else {
+            // 定点表示
+            var actualValue:Number = mantissa * Math.pow(10, exponent);
+            str = actualValue.toString();
+            
+            // 调整到指定精度
+            var digits:String = str.split(".").join("");
+            if (digits.length < precision) {
+                // 需要补零
+                var dotPosition:Number = str.indexOf(".");
+                if (dotPosition == -1) {
+                    str += ".";
+                    for (i = digits.length; i < precision; i++) {
+                        str += "0";
+                    }
+                } else {
+                    for (i = digits.length; i < precision; i++) {
+                        str += "0";
+                    }
+                }
+            }
+        }
+        
+        return isNegative ? "-" + str : str;
+    }
+
+    /**
+     * 格式化数字，添加千位分隔符
+     * @param value 要格式化的数字
+     * @param separator 分隔符，默认为逗号
+     * @param decimalSeparator 小数点分隔符，默认为点
+     * @return 格式化后的字符串
+     */
+    public static function formatNumber(value:Number, separator:String, decimalSeparator:String):String {
+        if (separator == undefined) separator = ",";
+        if (decimalSeparator == undefined) decimalSeparator = ".";
+        
+        // 参数验证
+        if (isNaN(value)) return "NaN";
+        if (!isFinite(value)) return value > 0 ? "Infinity" : "-Infinity";
+        
+        // 转换为字符串
+        var str:String = value.toString();
+        
+        // 分离整数部分和小数部分
+        var parts:Array = str.split(".");
+        var integerPart:String = parts[0];
+        var decimalPart:String = parts.length > 1 ? parts[1] : "";
+        
+        // 处理负号
+        var isNegative:Boolean = integerPart.charAt(0) == "-";
+        if (isNegative) {
+            integerPart = integerPart.substring(1);
+        }
+        
+        // 添加千位分隔符
+        var result:String = "";
+        var len:Number = integerPart.length;
+        for (var i:Number = 0; i < len; i++) {
+            if (i > 0 && (len - i) % 3 == 0) {
+                result += separator;
+            }
+            result += integerPart.charAt(i);
+        }
+        
+        // 添加小数部分
+        if (decimalPart.length > 0) {
+            result += decimalSeparator + decimalPart;
+        }
+        
+        // 添加负号
+        if (isNegative) {
+            result = "-" + result;
+        }
+        
+        return result;
+    }
+
+    /**
+     * 估算一段 HTML 文本的"长度系数"（不产出纯文本，单次扫描，无正则）
      * @param input   HTML 字符串
      * @param weights (可选) 权重表：
      *   { ascii:1, latin1:1, cjkWide:2, emoji:2, whitespace:0.5, newline:0.5 }
