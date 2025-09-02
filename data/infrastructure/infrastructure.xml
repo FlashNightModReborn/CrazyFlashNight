@@ -13,7 +13,7 @@
     <Infrastructure>
         <Name>自行车</Name>
         <Level id="0">
-            <Description>自行车在短距离仍然是很优秀的代步工具，尤其是在废城的城市道路中。现已在车库开放售卖。</Description>
+            <Description>自行车在短距离仍然是很优秀的代步工具，尤其是在废城的城市道路中。现已在车库开放售卖，也可线上购买。</Description>
             <Price>8000</Price>
         </Level>
         <Level id="1">
@@ -24,7 +24,7 @@
     <Infrastructure>
         <Name>摩托车</Name>
         <Level id="0">
-            <Description>油的供应不稳定使得摩托车的使用成本也高了不少，但它依然是方便又快速的载具选择。出于最新的安全管理条例，现在购买摩托车需要提供驾照。</Description>
+            <Description>油的供应不稳定使得摩托车的使用成本也高了不少，但它依然是方便又快速的载具选择。出于最新的安全管理条例，现在购买摩托车需要提供驾照，可前往车库线下确认。</Description>
             <Price>35000</Price>
             <Skill>
                 <Name>驾驶</Name>
@@ -39,8 +39,8 @@
     <Infrastructure>
         <Name>越野车</Name>
         <Level id="0">
-            <Description>末世之后，载具的成本更加高昂，但请相信这辆越野车的性能对得起它的价格。
-当你需要快速前往其他地区，或者有大量携带物资的需求时，那么购买它是一个好的选择——如果你有钱，且考了驾照的话。</Description>
+            <Description>末世之后，载具的成本更加高昂，但请相信这辆越野车的性能对得起它的价格。款式可在车库查看。
+当你需要快速前往其他地区，或者有大量携带物资的需求时，购买它是一个好的选择——如果你有钱，且考了驾照的话。</Description>
             <Price>500000</Price>
             <Skill>
                 <Name>驾驶</Name>
