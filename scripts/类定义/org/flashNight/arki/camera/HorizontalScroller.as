@@ -128,11 +128,14 @@ class org.flashNight.arki.camera.HorizontalScroller {
     }
 
     /**
-     * 全屏切换回调 - 重新初始化舞台尺寸
+     * 全屏切换回调 - 刷新相机位置（幂等操作）
+     * 仅刷新舞台尺寸并重新应用相机位置，不做增量补偿
      */
     public static function onFullScreenChanged():Void {
-        instance.initializeForNewScene();
-        // _root.服务器.发布服务器消息("Flash 全屏状态变更: " + ObjectUtil.toString(Stage));
+        if (instance) {
+            instance.refreshCameraOnFullScreen();
+        }
+        // _root.服务器.发布服务器消息("Flash 全屏状态变更，执行刷新");
     }
     
     //================================================================================
@@ -522,6 +525,61 @@ class org.flashNight.arki.camera.HorizontalScroller {
         } else {
             this.updateFunction = this.updateWithoutParallax;
         }
+    }
+    
+    /**
+     * 全屏切换时刷新相机位置（绝对赋值，幂等操作）
+     * 不做增量补偿，只更新必要的尺寸参数并重新应用当前位置
+     */
+    private function refreshCameraOnFullScreen():Void {
+        // 1. 更新舞台尺寸缓存
+        this.stageWidth = Stage.width;
+        this.stageHeight = Stage.height - 64; // 底部UI占64px
+        
+        // 2. 如果场景未初始化，直接返回
+        if (!this.gameWorld || !this.scrollObj) {
+            return;
+        }
+        
+        // 3. 获取当前缩放值（不改变）
+        var currentScale:Number = this.gameWorld._xscale / 100;
+        
+        // 4. 重新计算滚动边界
+        var bounds:Object = ScrollBounds.calculateBounds(
+            this.bgWidth, this.bgHeight, currentScale, 
+            this.stageWidth, this.stageHeight
+        );
+        
+        // 5. 获取当前目标的世界坐标
+        var targetWorldX:Number = this.scrollObj._x;
+        var targetWorldY:Number = this.scrollObj._y;
+        
+        // 6. 计算理想的相机位置（绝对值）
+        var idealX:Number = this.stageWidth * 0.5 - (targetWorldX * currentScale);
+        var idealY:Number = (this.stageHeight - 100) - (targetWorldY * currentScale);
+        
+        // 7. 应用边界约束
+        var clamped:Object = ScrollBounds.clampPosition(
+            idealX, idealY, bounds,
+            this.stageWidth, this.stageHeight
+        );
+        
+        // 8. 绝对赋值（不使用 +=）
+        this.gameWorld._x = clamped.clampedX;
+        this.gameWorld._y = clamped.clampedY;
+        
+        // 9. 更新背景层位置（绝对赋值）
+        var scaledHorizonHeight:Number = this.horizonHeight * currentScale;
+        this.bgLayer._y = clamped.clampedY + scaledHorizonHeight;
+        
+        // 10. 如果启用了视差，刷新视差背景
+        if (this.enableParallax) {
+            ParallaxBackground.refreshOnZoom(this.bgLayer, this.gameWorld._x);
+        }
+        
+        // 调试日志
+        // _root.发布消息("全屏刷新完成 - 舞台:" + this.stageWidth + "x" + this.stageHeight + 
+        //               " 世界位置:" + this.gameWorld._x + "," + this.gameWorld._y);
     }
     
     //================================================================================
