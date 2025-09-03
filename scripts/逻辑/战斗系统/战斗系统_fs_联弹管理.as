@@ -1,9 +1,5 @@
 ﻿import org.flashNight.sara.util.*;
 import org.flashNight.arki.spatial.move.*;
-import org.flashNight.naki.RandomNumberEngine.*;
-
-// 获取随机数引擎实例
-var randomEngine:LinearCongruentialEngine = LinearCongruentialEngine.getInstance();
 _root.单元体计数 = 0;
 
 _root.创建单元体 = function(子弹:MovieClip, 子弹种类:String) {
@@ -154,7 +150,7 @@ _root.联弹系统.横向联弹初始化 = function(clip:MovieClip):Void {
     for (var i:Number = 0; (i < clip._parent.霰弹值) && (clip._parent.flag == undefined); i++) {
         var 单元体:MovieClip = _root.创建单元体(clip._parent, 子弹种类);
         // 设置单元体的初始偏转（用于散射效果）
-        单元体._rotation = randomEngine.randomOffset(clip._parent.子弹散射度);
+        单元体._rotation = _root.随机偏移(clip._parent.子弹散射度);
         clip.单元体列表.push(单元体);
     }
     
@@ -249,7 +245,7 @@ _root.联弹系统.横向拖尾联弹初始化 = function (clip:MovieClip):Void
         var b:MovieClip = _root.创建单元体(clip._parent, 子弹种类);
 
         // 初始随机散射角（先“扩散”）
-        b._rotation = randomEngine.randomOffset(clip._parent.子弹散射度);
+        b._rotation = _root.随机偏移(clip._parent.子弹散射度);
 
         // —— 生命周期/收束状态 —— 
         b.initRot   = b._rotation;
@@ -430,7 +426,7 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
     
     // 创建第一个单元体
     var firstUnit:MovieClip = _root.创建单元体(clip._parent, clip.子弹种类);
-    firstUnit._rotation = randomEngine.randomOffset(clip._parent.子弹散射度);
+    firstUnit._rotation = _root.随机偏移(clip._parent.子弹散射度);
     clip.单元体列表.push(firstUnit);
     
     clip.onEnterFrame = function():Void {
@@ -510,8 +506,8 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
             var localDeltaY:Number = -globalDeltaX * sinVal + globalDeltaY * cosVal;
             
             var newUnit:MovieClip = _root.创建单元体(parentMC, this.子弹种类);
-            newUnit._rotation = randomEngine.randomOffset(parentMC.子弹散射度);
-            newUnit._x += directionalCoefficient * localDeltaX + randomEngine.randomOffset(parentMC.子弹散射度 + countTotal + this.count);
+            newUnit._rotation = _root.随机偏移(parentMC.子弹散射度);
+            newUnit._x += directionalCoefficient * localDeltaX + _root.随机偏移(parentMC.子弹散射度 + countTotal + this.count);
             newUnit._y += localDeltaY;
             
             this.单元体列表.push(newUnit);
@@ -576,7 +572,7 @@ _root.联弹系统.滑翔联弹初始化 = function(clip:MovieClip):Void {
     for (var i:Number = 0; (i < clip._parent.霰弹值) && (clip._parent.flag == undefined); ++i) {
         var 单元体:MovieClip = _root.创建单元体(clip._parent, 子弹种类);
         // 为单元体设置一个随机偏移的旋转角度，实现散射效果
-        单元体._rotation = randomEngine.randomOffset(clip._parent.子弹散射度);
+        单元体._rotation = _root.随机偏移(clip._parent.子弹散射度);
         clip.单元体列表.push(单元体);
     }
     
@@ -639,7 +635,7 @@ _root.联弹系统.爆炸联弹初始化 = function(clip:MovieClip):Void {
     for (var i:Number = 0; i < clip._parent.霰弹值; i++) {
         var 单元体:MovieClip = _root.创建单元体(clip._parent, 子弹种类);
         // 为单元体设置一个随机偏移角度，实现散射效果
-        单元体._rotation = randomEngine.randomOffset(clip._parent.子弹散射度);
+        单元体._rotation = _root.随机偏移(clip._parent.子弹散射度);
         clip.单元体列表.push(单元体);
     }
     

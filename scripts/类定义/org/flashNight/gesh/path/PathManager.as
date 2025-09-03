@@ -1,4 +1,19 @@
 ﻿class org.flashNight.gesh.path.PathManager {
+    // ========== 日志级别常量 ==========
+    public static var LOG_LEVEL_NONE:Number = 0;   // 不输出任何日志
+    public static var LOG_LEVEL_ERROR:Number = 1;  // 只输出错误
+    public static var LOG_LEVEL_WARN:Number = 2;   // 输出警告和错误
+    public static var LOG_LEVEL_INFO:Number = 3;   // 输出信息、警告和错误
+    public static var LOG_LEVEL_DEBUG:Number = 4;  // 输出所有日志（包括调试信息）
+    
+    // ========== 日志配置 ==========
+    private static var logLevel:Number = LOG_LEVEL_DEBUG; // 默认日志级别
+    private static var enableTimestamp:Boolean = false;  // 是否在日志中包含时间戳
+    private static var logPrefix:String = "[PathManager]"; // 日志前缀
+    private static var useServerLog:Boolean = true; // 是否使用服务器日志（_root.服务器.发布服务器消息）
+    private static var useTrace:Boolean = true; // 是否同时使用 trace 输出（用于开发调试）
+    
+    // ========== 原有变量 ==========
     private static var basePath:String = null; // 资源根路径
     private static var isValidEnvironment:Boolean = false; // 是否在 resource 环境中运行
     private static var isBrowserEnvironment:Boolean = false; // 是否在浏览器环境中运行
@@ -8,6 +23,161 @@
     // 可配置的基础路径列表，默认包含 resources/ 和 CrazyFlashNight/
     private static var allowedBasePaths:Array = ["resources/", "CrazyFlashNight/"];
 
+    // ========== 日志方法 ==========
+    
+    /**
+     * 设置日志级别
+     * @param level Number 日志级别（使用 LOG_LEVEL_* 常量）
+     */
+    public static function setLogLevel(level:Number):Void {
+        if (level >= LOG_LEVEL_NONE && level <= LOG_LEVEL_DEBUG) {
+            logLevel = level;
+            logInfo("日志级别已设置为: " + getLogLevelName(level));
+        } else {
+            logWarn("无效的日志级别: " + level);
+        }
+    }
+    
+    /**
+     * 获取当前日志级别
+     * @return Number 当前日志级别
+     */
+    public static function getLogLevel():Number {
+        return logLevel;
+    }
+    
+    /**
+     * 设置是否在日志中包含时间戳
+     * @param enable Boolean 是否启用时间戳
+     */
+    public static function setTimestampEnabled(enable:Boolean):Void {
+        enableTimestamp = enable;
+    }
+    
+    /**
+     * 设置日志前缀
+     * @param prefix String 日志前缀
+     */
+    public static function setLogPrefix(prefix:String):Void {
+        logPrefix = prefix;
+    }
+    
+    /**
+     * 设置是否使用服务器日志
+     * @param enable Boolean 是否使用 _root.服务器.发布服务器消息
+     */
+    public static function setUseServerLog(enable:Boolean):Void {
+        useServerLog = enable;
+    }
+    
+    /**
+     * 设置是否使用 trace 输出
+     * @param enable Boolean 是否使用 trace
+     */
+    public static function setUseTrace(enable:Boolean):Void {
+        useTrace = enable;
+    }
+    
+    /**
+     * 获取日志级别名称
+     * @param level Number 日志级别
+     * @return String 日志级别名称
+     */
+    private static function getLogLevelName(level:Number):String {
+        switch(level) {
+            case LOG_LEVEL_NONE: return "NONE";
+            case LOG_LEVEL_ERROR: return "ERROR";
+            case LOG_LEVEL_WARN: return "WARN";
+            case LOG_LEVEL_INFO: return "INFO";
+            case LOG_LEVEL_DEBUG: return "DEBUG";
+            default: return "UNKNOWN";
+        }
+    }
+    
+    /**
+     * 格式化日志消息
+     * @param level String 日志级别标签
+     * @param message String 日志消息
+     * @return String 格式化后的日志消息
+     */
+    private static function formatLogMessage(level:String, message:String):String {
+        var formattedMessage:String = "";
+        
+        if (enableTimestamp) {
+            var date:Date = new Date();
+            var hours:String = String(date.getHours());
+            var minutes:String = date.getMinutes() < 10 ? "0" + date.getMinutes() : String(date.getMinutes());
+            var seconds:String = date.getSeconds() < 10 ? "0" + date.getSeconds() : String(date.getSeconds());
+            var milliseconds:String = String(date.getMilliseconds());
+            
+            formattedMessage += "[" + hours + ":" + minutes + ":" + seconds + "." + milliseconds + "] ";
+        }
+        
+        formattedMessage += logPrefix + " ";
+        formattedMessage += "[" + level + "] ";
+        formattedMessage += message;
+        
+        return formattedMessage;
+    }
+    
+    /**
+     * 统一的日志输出方法
+     * @param message String 格式化后的日志消息
+     */
+    private static function outputLog(message:String):Void {
+        // 优先使用服务器日志
+        if (useServerLog && _root["服务器"] != undefined && _root["服务器"]["发布服务器消息"] != undefined) {
+            _root["服务器"]["发布服务器消息"](message);
+        }
+        
+        // 同时使用 trace（如果启用）
+        if (useTrace) {
+            trace(message);
+        }
+    }
+    
+    /**
+     * 输出错误日志
+     * @param message String 错误消息
+     */
+    private static function logError(message:String):Void {
+        if (logLevel >= LOG_LEVEL_ERROR) {
+            outputLog(formatLogMessage("ERROR", message));
+        }
+    }
+    
+    /**
+     * 输出警告日志
+     * @param message String 警告消息
+     */
+    private static function logWarn(message:String):Void {
+        if (logLevel >= LOG_LEVEL_WARN) {
+            outputLog(formatLogMessage("WARN", message));
+        }
+    }
+    
+    /**
+     * 输出信息日志
+     * @param message String 信息消息
+     */
+    private static function logInfo(message:String):Void {
+        if (logLevel >= LOG_LEVEL_INFO) {
+            outputLog(formatLogMessage("INFO", message));
+        }
+    }
+    
+    /**
+     * 输出调试日志
+     * @param message String 调试消息
+     */
+    private static function logDebug(message:String):Void {
+        if (logLevel >= LOG_LEVEL_DEBUG) {
+            outputLog(formatLogMessage("DEBUG", message));
+        }
+    }
+    
+    // ========== 原有方法 ==========
+    
     /**
      * 添加一个允许的基础路径。
      * @param path String 新的基础路径。
@@ -48,10 +218,10 @@
         // 判断是否传入了测试 URL
         if (testUrl != null) {
             url = decodeURL(testUrl); // 使用传入的 URL 并解码
-            trace("测试模式：使用外部传入的 URL: " + url);
+            logDebug("测试模式：使用外部传入的 URL: " + url);
         } else {
             url = decodeURL(_url); // 使用默认逻辑获取当前文件的 URL 并解码
-            trace("正常模式：当前 URL: " + url);
+            logDebug("正常模式：当前 URL: " + url);
         }
 
         // 统一路径分隔符为斜杠
@@ -63,14 +233,14 @@
         // 判断是否在浏览器环境中运行
         if (isRunningInBrowser(url)) {
             isBrowserEnvironment = true;
-            trace("检测到浏览器环境，设置为浏览器模式。");
+            logInfo("检测到浏览器环境，设置为浏览器模式。");
         }
 
         // 检测是否在 Steam 环境中
         if (!isBrowserEnvironment) {
             isSteamEnvironment = isRunningInSteam(url);
             if (isSteamEnvironment) {
-                trace("检测到 Steam 环境，设置为 Steam 模式。");
+                logInfo("检测到 Steam 环境，设置为 Steam 模式。");
             }
         }
 
@@ -80,7 +250,7 @@
             var baseDirIndex:Number = url.indexOf(baseDir);
             if (baseDirIndex != -1) {
                 basePath = url.substring(0, baseDirIndex + baseDir.length);
-                trace("匹配基础路径 '" + baseDir + "'，基础路径设置为: " + basePath);
+                logInfo("匹配基础路径 '" + baseDir + "'，基础路径设置为: " + basePath);
                 isValidEnvironment = true;
                 break;
             }
@@ -90,21 +260,21 @@
         if (basePath == null) {
             if (isBrowserEnvironment) {
                 basePath = url; // 默认设置为当前 URL
-                trace("未匹配到允许的基础路径，默认设置基础路径为: " + basePath);
+                logWarn("未匹配到允许的基础路径，默认设置基础路径为: " + basePath);
                 isValidEnvironment = true;
             } else {
                 isValidEnvironment = false;
-                trace("未检测到允许的基础目录，路径管理器未启用。");
+                logWarn("未检测到允许的基础目录，路径管理器未启用。");
             }
         } else {
             // 确保 basePath 以斜杠结尾
             basePath = ensureTrailingSlash(basePath);
             if (isBrowserEnvironment) {
-                trace("基础路径设置为服务器路径: " + basePath);
+                logInfo("基础路径设置为服务器路径: " + basePath);
             } else if (isSteamEnvironment) {
-                trace("基础路径设置为 Steam 环境路径: " + basePath);
+                logInfo("基础路径设置为 Steam 环境路径: " + basePath);
             } else {
-                trace("基础路径设置为本地路径: " + basePath);
+                logInfo("基础路径设置为本地路径: " + basePath);
             }
         }
 
@@ -254,7 +424,7 @@
      */
     public static function resolvePath(relativePath:String):String {
         if (!isEnvironmentValid()) {
-            trace("当前不在有效的资源环境中，无法解析路径: " + relativePath);
+            logError("当前不在有效的资源环境中，无法解析路径: " + relativePath);
             return null;
         }
 
@@ -270,7 +440,9 @@
             }
         }
 
-        return basePath + relativePath;
+        var fullPath:String = basePath + relativePath;
+        logDebug("路径解析: '" + relativePath + "' -> '" + fullPath + "'");
+        return fullPath;
     }
 
     /**
@@ -302,7 +474,7 @@
      */
     public static function getScriptsClassDefinitionPath():String {
         if (!isEnvironmentValid()) {
-            trace("当前不在有效的资源环境中，无法获取 scripts/类定义/ 路径。");
+            logError("当前不在有效的资源环境中，无法获取 scripts/类定义/ 路径。");
             return null;
         }
         return resolvePath("scripts/类定义/");
