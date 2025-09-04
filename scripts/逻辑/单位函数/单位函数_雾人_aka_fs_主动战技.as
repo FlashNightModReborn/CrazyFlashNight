@@ -147,7 +147,7 @@ _root.主动战技函数.长枪.混凝土切割机超载打击 = {初始化: fun
     var skill:Object = 自机.长枪数据.skill;
     var duration:Number = skill.duration || 5;
 
-    var upgradeLevel:Number = 自机.长枪.level;
+    var upgradeLevel:Number = 自机.长枪.value.level;
     duration += upgradeLevel;
     var overRideCountMax:Number = duration * 30;
     自机.混凝土切割机超载打击持续时间 = overRideCountMax;
@@ -174,7 +174,7 @@ _root.主动战技函数.长枪.MACSIII超载打击 = {初始化: function(自�
     var skill:Object = 自机.长枪数据.skill;
     var duration:Number = skill.duration || 5;
 
-    var upgradeLevel:Number = 自机.长枪.level;
+    var upgradeLevel:Number = 自机.长枪.value.level;
     duration += upgradeLevel;
     var overRideCountMax:Number = duration * 30;
     自机.MACSIII超载打击持续时间 = overRideCountMax;
@@ -260,10 +260,10 @@ _root.主动战技函数.长枪.投影召唤 = {
         }};
 
 _root.主动战技函数.长枪.铁枪之锋 = {初始化: function(自机) {
-    自机.铁枪之锋许可 = false;
-    var upgradeLevel:Number = 自机.长枪.level;
-    自机.铁枪之锋倍率 = 1 + upgradeLevel * 0.1;
-},
+            自机.铁枪之锋许可 = false;
+            var upgradeLevel:Number = 自机.长枪.value.level;
+            自机.铁枪之锋倍率 = 1 + upgradeLevel * 0.1;
+        },
 
         释放许可判定: function(自机) {
             if (自机.倒地)
@@ -392,7 +392,7 @@ _root.主动战技函数.长枪.突击者之眼 = {初始化: function(自机) {
     自机.突击者之眼数 = skill.split && skill.split > 0 ? Number(skill.split) : 3;
     自机.突击者之眼音效 = skill.sound ? skill.sound : "re_GL_under.wav";
 
-    var upgradeLevel:Number = 自机.长枪.level;
+    var upgradeLevel:Number = 自机.长枪.value.level;
 
     var k:Number = 22 / 1029; // ≈ 0.02138
     var level:Number = upgradeLevel; // 1–13
@@ -448,7 +448,7 @@ _root.主动战技函数.长枪.突击者之怒 = {初始化: function(自机) {
     自机.突击者之怒倍率 = skill.power && skill.power > 0 ? Number(skill.power) : 9;
     自机.突击者之怒音效 = skill.sound ? skill.sound : "re_GL_under.wav";
 
-    var upgradeLevel:Number = 自机.长枪.level;
+    var upgradeLevel:Number = 自机.长枪.value.level;
     自机.突击者之怒倍率 += upgradeLevel;
 
     自机.dispatcher.subscribe("长枪射击", function() {

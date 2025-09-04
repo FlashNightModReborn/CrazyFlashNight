@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!--已用ID：[251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 276, 278, 279, 280, 281, 282, 283, 284, 285, 288, 289, 292, 294, 295, 296, 298, 299, 300, 301, 304, 306, 308, 394, 395, 444, 451, 452, 459, 460, 520, 524, 566, 567, 619, 627, 633, 647, 648, 686, 687, 691, 701, 711, 715, 752, 753, 754, 755, 899, 1523, 1524, 1701, 2596, 2608, 3201, 5001, 5701, 5702, 6001, 6003, 6004, 6005, 6006, 6007, 6017, 6023, 6030, 6031, 6033, 6063, 6071, 6073, 6074, 6075, 6076, 6077, 8002, 8003, 8005, 8007, 8009, 8024, 8025, 8028, 8033, 8042, 9002, 12002, 12004, 12006, 12008, 12010, 12014, 12024, 12026, 12032, 12034, 12036, 12102, 12104, 12106, 12108, 12110, 12114, 12124, 12126, 12132, 12134, 12136, 13000, 13001, 13004, 13005, 13006, 13010, 13011, 13016, 22001, 22002, 22004, 22005, 22006, 22007, 22008]
-预留ID区间：17703-17900--><root>
+预留ID区间：17703-17900-->
+<root>
   <item weapontype="压制机枪">
     <id>17702</id>
     <name>XM556-Preview</name>
@@ -945,7 +946,7 @@ AWM原来以狩猎为主，后来普及军事层面，采用旋转后拉式枪�
             </config>
             <animationDuration>15</animationDuration>
             <animationTarget>动画</animationTarget>
-            
+
             <actionFunc>自机状态检测</actionFunc>
             <actionFuncParam>
               <matchConditions>
@@ -5586,51 +5587,36 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
       <attr_0>
         <init>
           <initRoutines>G1111初始化</initRoutines>
-          <param>
-            
+          <initParam>
             <rifleStart>1</rifleStart>
             <rifleEnd>15</rifleEnd>
             <transStart>16</transStart>
             <transEnd>30</transEnd>
             <rocketStart>31</rocketStart>
             <rocketEnd>45</rocketEnd>
-            
-            
             <transformInterval>30</transformInterval>
-            
-            
             <laserRotationSpeed>0.15</laserRotationSpeed>
             <laserMaxAngle>45</laserMaxAngle>
             <laserMinAngle>-45</laserMinAngle>
             <targetSearchInterval>5</targetSearchInterval>
             <enemySearchDistance>5</enemySearchDistance>
-            
-            
             <rifleBulletType>铁枪磁轨弹</rifleBulletType>
             <rifleDamageType>魔法</rifleDamageType>
             <rifleMagicType>能</rifleMagicType>
             <riflePellets>1</riflePellets>
-            
-            
             <rocketBulletType>横向拖尾追踪联弹-普通无壳子弹</rocketBulletType>
             <rocketDamageType>破击</rocketDamageType>
             <rocketMagicType>首领</rocketMagicType>
             <rocketPellets>6</rocketPellets>
-            
-            
             <chargedRifleBulletType>近战联弹</chargedRifleBulletType>
             <chargedRifleDamageType>真伤</chargedRifleDamageType>
             <chargedRiflePellets>4</chargedRiflePellets>
-            
-            
             <chargedRocketPellets>16</chargedRocketPellets>
-            
-            
             <focusFrames>10</focusFrames>
             <focusSnap>true</focusSnap>
             <focusEaseSpeed>5</focusEaseSpeed>
             <focusMinZoom>3.0</focusMinZoom>
-          </param>
+          </initParam>
         </init>
         <cycle>
           <cycleRoutines>G1111周期</cycleRoutines>

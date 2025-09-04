@@ -86,7 +86,9 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
 
                 chargedProp.子弹种类 = param.chargedRifleBulletType || "近战联弹";
                 chargedProp.伤害类型 = param.chargedRifleDamageType || "真伤";
-                chargedProp.霰弹值 =  Math.ceil((param.chargedRiflePellets || 4) * target.铁枪之锋倍率);;
+                chargedProp.霰弹值 =  Math.ceil((param.chargedRiflePellets || 4) * target.铁枪之锋倍率);
+
+                // _root.发布消息(param.chargedRiflePellets, target.铁枪之锋倍率, chargedProp.霰弹值);
 
                 var autoTarget:MovieClip = ref.autoTarget;
                 chargedProp.区域定位area  = autoTarget.area;
