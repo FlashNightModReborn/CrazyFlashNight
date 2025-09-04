@@ -48,8 +48,14 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
 
     // ===== 可见性剔除（仅控制渲染，不影响逻辑） =====
     private static function applyVisibilityCulling(target:MovieClip):Void {
+        /*
         // 用 man 做精确边界
         var b:Object = target.man.getBounds(_root);
+        */
+
+        // 目前发现使用man做边界会频繁因异步加载导致边界错判，当前性能预算足够，放宽为用整个MC边界
+        var b:Object = target.getBounds(_root);
+
         var sw:Number = Stage.width;
         var sh:Number = Stage.height;
         var pad:Number = CULL_PAD;
