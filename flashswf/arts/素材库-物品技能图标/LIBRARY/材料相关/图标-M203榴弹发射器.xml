@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/图标-M203榴弹发射器" itemID="68b739f6-000008af" linkageExportForAS="true" linkageIdentifier="图标-M203榴弹发射器" lastModified="1756838572">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/图标-M203榴弹发射器" itemID="68b739f6-000008af" linkageExportForAS="true" linkageIdentifier="图标-M203榴弹发射器" lastModified="1756955224">
   <timeline>
     <DOMTimeline name="图标-M203榴弹发射器">
       <layers>
@@ -25,7 +25,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#AD4FC4" current="true" isSelected="true">
+        <DOMLayer name="Layer 2" color="#AD4FC4">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -53,14 +53,17 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#B3F2EF" locked="true">
+        <DOMLayer name="Layer 3" color="#B3F2EF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4308" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4308" selected="true" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.11" tintColor="#00FFFF"/>
+                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
