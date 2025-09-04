@@ -82,7 +82,9 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         if (!chaseTarget || chaseTarget == "无"){
             // 在1到威胁阈值中选取一个随机值，通过该威胁值索敌
             var threshold = self.threatThreshold > 1 ? LinearCongruentialEngine.instance.randomIntegerStrict(1, self.threatThreshold) : self.threatThreshold;
-            var target = TargetCacheManager.findNearestThreateningEnemy(self, 1, threshold); 
+            // 使用新的智能搜索方法，自动过滤地图元件并降级搜索
+            var target = TargetCacheManager.findValidEnemyForAI(self, 1, threshold); 
+            // _root.发布消息(self._name, "at ", threshold, " 寻敌结果：", (target ? target._name : "无"));
             if(target){
                 data.target = target;
                 self.dispatcher.publish("aggroSet", self, target);

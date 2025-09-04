@@ -1206,6 +1206,37 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     }
 
     // ========================================================================
+    // 智能敌人搜索方法（AI专用）
+    // ========================================================================
+    
+    /**
+     * 智能查找有效的敌人目标（友军AI专用）
+     * 1. 优先使用原有逻辑查找威胁敌人
+     * 2. 找不到时降级查找任何有效敌人（排除地图元件）
+     * @param {Object} t - 目标单位
+     * @param {Number} interval - 更新间隔(帧数)
+     * @param {Number} preferredThreat - 首选威胁阈值
+     * @return {Object} 有效的敌人目标，不存在返回null
+     */
+    public static function findValidEnemyForAI(t:Object, interval:Number, preferredThreat:Number):Object {
+        // 第一步：使用原有逻辑查找威胁敌人（不做额外过滤）
+        var target:Object = findNearestThreateningEnemy(t, interval, preferredThreat);
+        
+        // 第二步：找不到时使用兜底策略，过滤地图元件
+        if (!target) {
+            // 过滤地图元件的过滤器
+            var validTargetFilter:Function = function(u:Object, target:Object, distance:Number):Boolean {
+                // 排除带element属性的地图元件
+                return !u.element;
+            };
+            // _root.发布消息(t._name, "findValidEnemyForAI: Fallback to valid enemy search");
+            target = findNearestEnemyWithFilter(t, interval, validTargetFilter, undefined, undefined);
+        }
+        
+        return target;
+    }
+    
+    // ========================================================================
     // 【重构兼容】更新缓存方法（保持向后兼容）
     // ========================================================================
     

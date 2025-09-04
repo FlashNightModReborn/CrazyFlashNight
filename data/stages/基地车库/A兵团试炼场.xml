@@ -170,6 +170,10 @@
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>right</SpawnIndex>
+                        <Parameters>
+                            <threat>3000</threat>
+                            <threatThreshold>2000</threatThreshold>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种366</Type>
@@ -179,6 +183,10 @@
                         <SpawnIndex>left</SpawnIndex>
                         <InstanceName>gazer</InstanceName>
                         <IsHostile>null</IsHostile>
+                        <Parameters>
+                            <threat>3000</threat>
+                            <threatThreshold>2000</threatThreshold>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
