@@ -194,6 +194,11 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
 
         // 使用定位逻辑处理注释框定位
         positionTooltip(tips, background, _root._xmouse, _root._ymouse);
+        
+        // 对主框体也应用边界回弹保护
+        if (frameType != "简介") {
+            TooltipBridge.clampContainerByBg(background, 8);
+        }
     }
 
     /**

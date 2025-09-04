@@ -179,6 +179,36 @@ class org.flashNight.gesh.tooltip.TooltipBridge {
         setVisibility("icon", true);
     }
 
+    /**
+     * 将容器根据背景元素回弹到屏幕可视区内
+     * @param bg:MovieClip 作为边界参考的背景元素
+     * @param padding:Number 距离屏幕边缘的内边距（默认8像素）
+     */
+    public static function clampContainerByBg(bg:MovieClip, padding:Number):Void {
+        var container:MovieClip = getTooltipContainer(); // _root.注释框
+        var m:Number = isNaN(padding) ? 8 : padding;
+
+        // 以"某个背景"作为实际可视边界（单栏=简介背景；双栏=主背景）
+        var left:Number   = container._x + bg._x;
+        var right:Number  = left + bg._width;
+        var top:Number    = container._y + bg._y;
+        var bottom:Number = top + bg._height;
+
+        var stageW:Number = Stage.width;
+        var stageH:Number = Stage.height;
+
+        var dx:Number = 0;
+        var dy:Number = 0;
+
+        if (right  > stageW - m) dx -= (right  - (stageW - m));
+        if (left   < m)          dx += (m - left);
+        if (bottom > stageH - m) dy -= (bottom - (stageH - m));
+        if (top    < m)          dy += (m - top);
+
+        if (dx != 0) container._x += dx;
+        if (dy != 0) container._y += dy;
+    }
+
     // ══════════════════════════════════════════════════════════════
     // 私有辅助方法
     // ══════════════════════════════════════════════════════════════

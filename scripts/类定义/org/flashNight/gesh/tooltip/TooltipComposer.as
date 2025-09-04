@@ -176,6 +176,9 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
 
       // 调用通用图标核心函数
       TooltipLayout.renderIconTooltip(true, data.icon, introduction, stringWidth, data.type);
+      
+      // 立刻把整体容器根据"简介背景"的实际边界回弹到屏幕可视区
+      TooltipBridge.clampContainerByBg(background, 8);
     } else {
       TooltipLayout.renderIconTooltip(false);
     }
