@@ -14,8 +14,8 @@
           <DOMFolderItem name="未命名文件夹 1" itemID="67b9acf1-00000e73"/>
           <DOMFolderItem name="无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="项链相关" itemID="67bdcc7a-00000d2f"/>
-          <DOMFolderItem name="消耗道具相关" itemID="67bdcbfd-00000ccc"/>
-          <DOMFolderItem name="消耗道具相关/0.回复增益类相关" itemID="67bdcc15-00000ce3"/>
+          <DOMFolderItem name="消耗道具相关" itemID="67bdcbfd-00000ccc" isExpanded="true"/>
+          <DOMFolderItem name="消耗道具相关/0.回复增益类相关" itemID="67bdcc15-00000ce3" isExpanded="true"/>
           <DOMFolderItem name="消耗道具相关/1.弹药相关" itemID="67bdcc36-00000cff"/>
           <DOMFolderItem name="消耗道具相关/各种图素材等" itemID="65e07117-00000783"/>
           <DOMFolderItem name="消耗道具相关/新道具" itemID="67bdd16a-000004e4"/>
@@ -550,7 +550,7 @@
           <Include href="食材相关/猪肉.xml" itemIcon="1" loadImmediate="false" itemID="67bdc63d-000000de" lastModified="1740490301"/>
           <Include href="食材相关/竹笋.xml" loadImmediate="false" itemID="6814918b-0000039e" lastModified="1746178443"/>
           <Include href="食材相关/柱侯酱.xml" loadImmediate="false" itemID="6814612e-000005fb" lastModified="1746166062"/>
-          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1756955062"/>
+          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1756977418"/>
           <Include href="图标-方舟碎片.xml" itemID="66adbe1b-0000187e" lastModified="1722662433"/>
           <Include href="图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="666e7c83-00000d39" lastModified="1718516867"/>
           <Include href="未命名文件夹 1/Symbol 34.xml" itemIcon="1" loadImmediate="false" itemID="664c57d7-0000029e" lastModified="1740222009"/>
@@ -655,6 +655,7 @@
           <Include href="消耗道具相关/0.回复增益类相关/图标-普通hp药剂.xml" itemID="66a5e924-00001780" lastModified="1722149156"/>
           <Include href="消耗道具相关/0.回复增益类相关/图标-普通mp粉尘.xml" itemID="66a5e926-00001781" lastModified="1722149158"/>
           <Include href="消耗道具相关/0.回复增益类相关/图标-普通mp药剂.xml" itemID="66a5e929-00001782" lastModified="1722149161"/>
+          <Include href="消耗道具相关/0.回复增益类相关/图标-情报鸡尾酒.xml" itemID="68b95903-0000258c" lastModified="1756977586"/>
           <Include href="消耗道具相关/0.回复增益类相关/图标-月饼.xml" itemID="66a5e92c-00001783" lastModified="1722149164"/>
           <Include href="消耗道具相关/0.回复增益类相关/图标-战队药箱.xml" itemID="66913c2c-00004045" lastModified="1720794159"/>
           <Include href="消耗道具相关/1.弹药相关/Symbol 4191.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000104a" lastModified="1720533000"/>
@@ -1137,6 +1138,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3524321" publishTime="1756977475"/>
           <PublishItem publishSize="3514571" publishTime="1756955112"/>
           <PublishItem publishSize="3514572" publishTime="1756954894"/>
           <PublishItem publishSize="3462471" publishTime="1756950848"/>
@@ -1156,6 +1158,5 @@
           <PublishItem publishSize="3299213" publishTime="1756866599"/>
           <PublishItem publishSize="3299213" publishTime="1756866565"/>
           <PublishItem publishSize="3296406" publishTime="1756866217"/>
-          <PublishItem publishSize="3296405" publishTime="1756866200"/>
      </publishHistory>
 </DOMDocument>
