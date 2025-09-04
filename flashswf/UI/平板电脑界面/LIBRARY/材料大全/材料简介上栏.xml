@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料大全/材料简介上栏" itemID="673b5b54-00001a7e" lastModified="1743104632">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料大全/材料简介上栏" itemID="673b5b54-00001a7e" lastModified="1756956622">
   <timeline>
-    <DOMTimeline name="材料简介上栏">
+    <DOMTimeline name="材料简介上栏" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;187&lt;/guideline&gt;&lt;guideline direction="h"&gt;16&lt;/guideline&gt;&lt;guideline direction="v"&gt;3&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
@@ -13,13 +13,19 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!3743 332|2080 332!2080 332|1888 0!1888 0|267 0!267 0|0 462!0 462|3818 462!3818 462|3743 332"/>
+                    <Edge fillStyle0="1" edges="!3743 332|2379 332!2379 332|2187 0!2187 0|267 0!267 0|0 462!0 462|3818 462!3818 462|3743 332"/>
                     <Edge cubics="!2080 332(;2080,332 1888,0 1888,0q2080 332 1888 0);"/>
-                    <Edge cubics="!1888 0(;1888,0 267,0 267,0q1888 0 267 0);"/>
                     <Edge cubics="!267 0(;267,0 0,462 0,462q267 0 0 462);"/>
                     <Edge cubics="!0 462(;0,462 3818,462 3818,462q0 462 3818 462);"/>
                     <Edge cubics="!3818 462(;3818,462 3743,332 3743,332q3818 462 3743 332);"/>
-                    <Edge cubics="!3743 332(;3743,332 2080,332 2080,332q3743 332 2080 332);"/>
+                    <Edge cubics="!3743 332(;3743,332 2379,332 2379,332q3743 332 2379 332);"/>
+                    <Edge cubics="!2379 332(;2379,332 2080,332 2080,332q2379 332 2080 332);"/>
+                    <Edge cubics="!2379 332(;2379,332 2187,0 2187,0q2379 332 2187 0);"/>
+                    <Edge cubics="!2187 0(;2187,0 1888,0 1888,0q2187 0 1888 0);"/>
+                    <Edge cubics="!1888 0(;1888,0 1068,0 1068,0q1888 0 1068 0);"/>
+                    <Edge cubics="!1068 332(;1068,332 1068,0 1068,0q1068 332 1068 0);"/>
+                    <Edge cubics="!2080 332(;2080,332 1068,332 1068,332q2080 332 1068 332);"/>
+                    <Edge cubics="!1068 0(;1068,0 267,0 267,0q1068 0 267 0);"/>
                   </edges>
                 </DOMShape>
               </elements>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="平板背景" itemID="66f84083-0000036b" lastModified="1756804189" lastUniqueIdentifier="279">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="平板背景" itemID="66f84083-0000036b" lastModified="1756804189" lastUniqueIdentifier="282">
   <timeline>
-    <DOMTimeline name="平板背景" currentFrame="98">
+    <DOMTimeline name="平板背景" currentFrame="102">
       <layers>
         <DOMLayer name="标识" color="#808080" autoNamed="false">
           <frames>
@@ -395,7 +395,7 @@ _parent.关闭界面();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="98" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="98" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="材料内容整体" selected="true" blendMode="add" centerPoint3DX="162.25" centerPoint3DY="91.65">
                   <matrix>
@@ -404,6 +404,21 @@ _parent.关闭界面();]]></script>
                   <transformationPoint>
                     <Point x="140.5" y="48.65"/>
                   </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="102" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="材料内容整体" selected="true" blendMode="add" centerPoint3DX="162.25" centerPoint3DY="91.65">
+                  <matrix>
+                    <Matrix a="0.878631591796875" d="0.878631591796875" tx="38.8" ty="48.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="140.5" y="48.65"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.69140625"/>
+                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

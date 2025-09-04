@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料内容整体" itemID="673b5bd8-00001a8a" lastModified="1756804331" lastUniqueIdentifier="28">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料内容整体" itemID="673b5bd8-00001a8a" lastModified="1756956641" lastUniqueIdentifier="33">
   <timeline>
     <DOMTimeline name="材料内容整体">
       <layers>
@@ -23,7 +23,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文字" color="#9933CC" autoNamed="false">
+        <DOMLayer name="文字" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -46,7 +46,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText name="名字" fontRenderingMode="device" width="84.75" height="17.25">
+                <DOMDynamicText name="名字" fontRenderingMode="device" width="94.15" height="17.25">
                   <matrix>
                     <Matrix tx="232.15" ty="5.15"/>
                   </matrix>
@@ -94,7 +94,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -125,7 +125,7 @@
                     <Color alphaMultiplier="0.8984375"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="通用UI-滑动按钮栏/滑动按钮栏" selected="true" centerPoint3DX="32" centerPoint3DY="137.5">
+                <DOMSymbolInstance libraryItemName="通用UI-滑动按钮栏/滑动按钮栏" centerPoint3DX="32" centerPoint3DY="137.5">
                   <matrix>
                     <Matrix tx="-28" ty="40"/>
                   </matrix>

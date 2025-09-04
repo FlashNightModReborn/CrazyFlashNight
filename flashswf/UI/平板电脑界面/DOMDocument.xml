@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="450" height="300" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="46.1401038835498" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="450" height="300" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" viewAngle3D="46.1401038835498" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="WPlogo" itemID="66c43bc6-00000f9c"/>
           <DOMFolderItem name="材料大全" itemID="673b5b30-00001a7b" isExpanded="true"/>
@@ -56,7 +56,7 @@
           <Include href="按钮背景.xml" loadImmediate="false" itemID="67690708-000002e5" lastModified="1734936328"/>
           <Include href="材料大全/材料简介.xml" loadImmediate="false" itemID="673b5b68-00001a83" lastModified="1743104567"/>
           <Include href="材料大全/材料简介底色.xml" loadImmediate="false" itemID="673b5b63-00001a81" lastModified="1743104637"/>
-          <Include href="材料大全/材料简介上栏.xml" loadImmediate="false" itemID="673b5b54-00001a7e" lastModified="1743104632"/>
+          <Include href="材料大全/材料简介上栏.xml" loadImmediate="false" itemID="673b5b54-00001a7e" lastModified="1756956622"/>
           <Include href="材料大全/材料图.xml" loadImmediate="false" itemID="673b57fb-00001a23" lastModified="1731943037"/>
           <Include href="材料大全/材料图底色.xml" loadImmediate="false" itemID="673b58e2-00001a3d" lastModified="1731942892"/>
           <Include href="材料大全/材料图框.xml" loadImmediate="false" itemID="673b5873-00001a35" lastModified="1731942528"/>
@@ -64,7 +64,7 @@
           <Include href="材料大全/图标壳/图标壳.xml" loadImmediate="false" itemID="67691f78-000011ad" lastModified="1734942584"/>
           <Include href="材料大全/图标壳/图标壳-基本款.xml" loadImmediate="false" itemID="67691f7c-000011ae" lastModified="1734943382"/>
           <Include href="材料大全详细介绍.xml" loadImmediate="false" itemID="673b5c48-00001a9a" lastModified="1743104643"/>
-          <Include href="材料内容整体.xml" loadImmediate="false" itemID="673b5bd8-00001a8a" lastModified="1756804331"/>
+          <Include href="材料内容整体.xml" loadImmediate="false" itemID="673b5bd8-00001a8a" lastModified="1756956641"/>
           <Include href="测试按钮.xml" itemIcon="0" loadImmediate="false" itemID="6700c619-00000b85" lastModified="1728104139"/>
           <Include href="叉.xml" loadImmediate="false" itemID="66fc3dd1-00005698" lastModified="1728151365"/>
           <Include href="叉整体.xml" loadImmediate="false" itemID="66fc3ef6-000056b5" lastModified="1728151368"/>
@@ -217,11 +217,11 @@
      <timelines>
           <DOMTimeline name="场景 1">
                <layers>
-                    <DOMLayer name="图层 2" color="#9933CC" visible="false">
+                    <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true" visible="false">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="测试按钮" name="测试按钮" symbolType="button">
+                                        <DOMSymbolInstance libraryItemName="测试按钮" name="测试按钮" selected="true" symbolType="button">
                                              <matrix>
                                                   <Matrix tx="189.7" ty="149.25"/>
                                              </matrix>
@@ -239,7 +239,7 @@
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+                    <DOMLayer name="图层 1" color="#4FFF4F" visible="false">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
