@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新强化界面/进入强化界面标志" itemID="68a42ceb-00000bec" lastModified="1756827997" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新强化界面/进入强化界面标志" itemID="68a42ceb-00000bec" lastModified="1756986743" lastUniqueIdentifier="4">
   <timeline>
     <DOMTimeline name="进入强化界面标志">
       <layers>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -19,13 +19,13 @@ this.互动提示.gotoAndStop("空");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 4" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="互动提示/互动提示" name="互动提示">
                   <matrix>
-                    <Matrix tx="14" ty="14"/>
+                    <Matrix a="1.25" d="1.25" tx="14" ty="14"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -82,25 +82,25 @@ this.互动提示.gotoAndStop("空");]]></script>
                     <DOMTextRun>
                       <characters>装备</characters>
                       <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="11" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
                       <characters>&#xD;</characters>
                       <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="11" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
                       <characters>强化</characters>
                       <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="11" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
                       <characters></characters>
                       <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="11" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
@@ -113,9 +113,25 @@ this.互动提示.gotoAndStop("空");]]></script>
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新强化界面/进入强化界面小图标" name="area" centerPoint3DX="14" centerPoint3DY="14">
+                <DOMSymbolInstance libraryItemName="新强化界面/进入强化界面小图标" symbolType="graphic" loop="play once">
                   <transformationPoint>
                     <Point x="14" y="14"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="area" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/透明控件" name="area" centerPoint3DX="14" centerPoint3DY="14">
+                  <matrix>
+                    <Matrix a="1.19999694824219" d="1.19999694824219" tx="-1" ty="-1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

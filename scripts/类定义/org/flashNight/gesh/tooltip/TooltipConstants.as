@@ -51,6 +51,7 @@
   public static var SMART_TOTAL_MULTIPLIER:Number = 2;    // 总长度阈值倍数
   public static var SMART_DESC_DIVISOR:Number = 2;        // 描述长度阈值除数
 
+  // 各个属性对应的名称
   public static var PROPERTY_DICT:Object = {
     // 必要参数 等级与重量
     level: "等级限制",
@@ -70,6 +71,7 @@
     // 枪械数据
     clipname: "使用弹夹",
     capacity: "弹夹容量",
+    bulletsize: "纵向攻击范围",
     impact: "冲击力",
     // 额外加成
     accuracy: "命中加成",
@@ -82,5 +84,43 @@
     slay: "斩杀线",
     //
     magictype: "伤害属性"
+  };
+
+  // 各个属性的显示优先级
+  public static var PROPERTY_PRIORITIES:Object = {
+    // 先显示等级，重量，威力
+    level: 0,
+    weight: 1,
+    power: 2,
+
+    // 显示枪械数据
+    clipname: 11,
+    capacity: 12,
+    impact: 13,
+
+    // 5种伤害加成
+    force: 21,
+    damage: 22,
+    punch: 23,
+    knifepower: 24,
+    gunpower: 25,
+
+    // 额外加成
+    accuracy: 31,
+    evasion: 32,
+    toughness: 33,
+    lazymiss: 34,
+    
+    poison: 41,
+    vampirism: 42,
+    rout: 43,
+    slay: 44,
+    //
+    magictype: 51,
+
+    // 最后显示防御，hp，mp
+    defence: 101,
+    hp: 102,
+    mp: 103
   };
 }

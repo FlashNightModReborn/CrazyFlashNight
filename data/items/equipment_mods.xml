@@ -44,7 +44,7 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <flat>
-                <defence>50</defence>
+                <defence>40</defence>
                 <weight>2</weight>
             </flat>
         </stats>
@@ -68,14 +68,13 @@
     <!-- 中级材料 -->
     <mod>
         <name>战术背带</name>
-        <use>长枪</use>
-        <tag>下挂</tag>
+        <use>上装装备,长枪</use>
         <stats>
             <percentage>
                 <accuracy>20</accuracy>
             </percentage>
             <flat>
-                <defence>30</defence>
+                <defence>20</defence>
             </flat>
         </stats>
     </mod>
@@ -105,13 +104,15 @@
         <tag>刀身</tag>
         <stats>
             <percentage>
-                <power>30</power>
+                <power>20</power>
             </percentage>
-            <flat>
-                <evasion>10</evasion>
-                <defence>30</defence>
-            </flat>
         </stats>
+        <skill>
+            <skillname>弧光斩</skillname>
+            <description>经过护手改装的武器可以使用弧光斩。</description>
+            <cd>9000</cd>
+            <mp>40</mp>
+        </skill>
     </mod>
     <mod>
         <name>石英磨刀石</name>
@@ -120,9 +121,6 @@
             <percentage>
                 <power>30</power>
             </percentage>
-            <flat>
-                <power>30</power>
-            </flat>
         </stats>
     </mod>
     <mod>
@@ -130,7 +128,7 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <flat>
-                <defence>100</defence>
+                <defence>80</defence>
                 <weight>4</weight>
             </flat>
         </stats>
@@ -195,9 +193,6 @@
             <percentage>
                 <power>30</power>
             </percentage>
-            <flat>
-                <power>30</power>
-            </flat>
         </stats>
     </mod>
     <mod>
@@ -210,7 +205,7 @@
                 </magicdefence>
             </override>
             <flat>
-                <defence>70</defence>
+                <defence>60</defence>
                 <weight>2</weight>
             </flat>
         </stats>
@@ -222,7 +217,7 @@
         <stats>
             <flat>
                 <punch>20</punch>
-                <weightbearing>2</weightbearing><!-- 尚未实装的负重属性，后面直接改成扣重量也行 -->
+                <weight>-1</weight>
             </flat>
         </stats>
     </mod>
@@ -251,7 +246,7 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <flat>
-                <evasion>20</evasion>
+                <evasion>15</evasion>
             </flat>
         </stats>
     </mod>
@@ -367,7 +362,7 @@
         </stats>
         <skill>
             <skillname>发射榴弹</skillname>
-            <description>持枪瞄准时可以发射榴弹，可射击一发，换弹后可再次发射，需消耗榴弹弹药。</description>
+            <description>持枪瞄准时使用下挂的M203榴弹发射器射击一发榴弹，换弹后可再次发射，需消耗榴弹弹药。</description>
             <cd>1000</cd>
             <mp>0</mp>
             <power>2500</power>

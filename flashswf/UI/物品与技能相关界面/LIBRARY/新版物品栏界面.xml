@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1755592412" lastUniqueIdentifier="58">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1756915614" lastUniqueIdentifier="61">
   <timeline>
-    <DOMTimeline name="新版物品栏界面" currentFrame="8">
+    <DOMTimeline name="新版物品栏界面" currentFrame="9">
       <layers>
         <DOMLayer name="Labels Layer" color="#23D4A1">
           <frames>
@@ -478,7 +478,7 @@ onClipEvent (unload) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="强化界面" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -1250,16 +1250,6 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="金币" color="#DBBC42" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="23" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="23" duration="29" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
         <DOMLayer name="人影&amp;信息文字" color="#A1DFA7" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
@@ -1274,10 +1264,7 @@ on(rollOut){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="23" duration="22" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="45" duration="7" keyMode="9728">
+            <DOMFrame index="23" duration="29" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>

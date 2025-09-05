@@ -3,7 +3,7 @@
 class org.flashNight.gesh.tooltip.TooltipDataSelector {
     public static function getEquipmentData(item:Object, tier:String):Object {
         if (tier == null) return item.data;
-        var tierKey = EquipmentUtil.tierDict[tier];
+        var tierKey = EquipmentUtil.tierDataDict[tier];
         if (tierKey == null) return item.data;
         var tierData = item[tierKey];
         if(!tierData) tierData = EquipmentUtil.defaultTierDataDict[tier];
@@ -14,4 +14,4 @@ class org.flashNight.gesh.tooltip.TooltipDataSelector {
         }
         return item.data;
     }
-} 
+}

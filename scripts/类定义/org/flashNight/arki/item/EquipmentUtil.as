@@ -27,12 +27,19 @@ class org.flashNight.arki.item.EquipmentUtil{
         3.04  // Lv13
     ];
 
-    public static var tierDict:Object = {
+    public static var tierDataDict:Object = {
         二阶: "data_2",
         三阶: "data_3",
         四阶: "data_4",
         墨冰: "data_ice",
         狱火: "data_fire"
+    };
+    public static var tierMaterialDict:Object = {
+        data_2: "二阶复合防御组件",
+        data_3: "三阶复合防御组件",
+        data_4: "四阶复合防御组件",
+        data_ice: "墨冰战术涂料",
+        data_fire: "狱火战术涂料"
     };
     public static var tierDataList:Array = ["data_2", "data_3", "data_4", "data_ice", "data_fire"];
     public static var defaultTierDataDict = {
@@ -108,6 +115,23 @@ class org.flashNight.arki.item.EquipmentUtil{
 
 
 
+    public static function getAvailableTierMaterials(itemName:String):Array{
+        var rawItemData = ItemUtil.getRawItemData(itemName);
+        var list = [];
+        for(var i=0; i<tierDataList.length; i++){
+            var tierKey = tierDataList[i];
+            if(rawItemData[tierKey]) list.push(tierMaterialDict[tierKey]);
+        }
+        if(list.length === 0){
+            if(rawItemData.type === "防具" && rawItemData.use !== "颈部装备" && rawItemData.data.level < 10){
+                return [tierMaterialDict["data_2"], tierMaterialDict["data_3"], tierMaterialDict["data_4"]];
+            }
+        }
+        return list;
+    }
+
+
+
     public static function calculateData(item:BaseItem, itemData:Object):Void{
         var data:Object = itemData.data;
         var value = item.value;
@@ -117,7 +141,7 @@ class org.flashNight.arki.item.EquipmentUtil{
 
         // 获取对应的多阶数据，若不存在则使用默认数据覆盖
         if(value.tier){
-            var tierKey = tierDict[value.tier];
+            var tierKey = tierDataDict[value.tier];
             if(tierKey){
                 var tierData = itemData[tierKey];
                 if(tierData){

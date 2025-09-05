@@ -171,7 +171,7 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
         if(itemData.type == "武器" || itemData.type == "防具"){
             var 装备强化界面 = _root.物品栏界面.装备强化界面;
             if(装备强化界面 != null && 装备强化界面.进入强化界面标志.area.hitTest(xmouse, ymouse)){
-                装备强化界面.刷新强化物品(this.item, this);
+                装备强化界面.刷新强化物品(this.item, this.index, this, this.collection);
                 return;
             }
         }

@@ -236,13 +236,12 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     TooltipFormatter.upgradeLine(result, data, equipData, "evasion", null, TooltipConstants.SUF_PERCENT);
     TooltipFormatter.upgradeLine(result, data, equipData, "toughness", null, TooltipConstants.SUF_PERCENT);
     TooltipFormatter.upgradeLine(result, data, equipData, "lazymiss", null, null);
-
-    TooltipFormatter.upgradeLine(result, data, equipData, "slay", null, TooltipConstants.SUF_BLOOD);
     
     // 非药剂才在通用区显示"剧毒性"；药剂的剧毒由药剂分支统一输出
     TooltipFormatter.upgradeLine(result, data, equipData, "poison", null, null);
     TooltipFormatter.upgradeLine(result, data, equipData, "vampirism", null, TooltipConstants.SUF_PERCENT);
     TooltipFormatter.upgradeLine(result, data, equipData, "rout", null, TooltipConstants.SUF_PERCENT);
+    TooltipFormatter.upgradeLine(result, data, equipData, "slay", null, TooltipConstants.SUF_BLOOD);
 
     if (data.damagetype) {
       if (data.damagetype == "魔法" && data.magictype) {
