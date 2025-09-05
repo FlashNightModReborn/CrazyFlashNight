@@ -1040,14 +1040,14 @@
     <icon>情报鸡尾酒</icon>
     <type>消耗品</type>
     <use>药剂</use>
-    <price>10000</price>
+    <price>2000</price>
     <description>占位用待平衡</description>
     <data>
       <friend>鸡尾酒</friend>
-      <affecthp>100</affecthp>
-      <affectmp>100</affectmp>
-      <poison>100</poison>
-      <clean>10</clean>
+      <affecthp>150</affecthp>
+      <affectmp>150</affectmp>
+      <poison>95</poison>
+      <clean>5</clean>
     </data>
   </item>
 </root>
