@@ -157,13 +157,13 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
 
     if (!isNaN(data.affecthp) && data.affecthp != 0) result.push("<FONT COLOR='" + TooltipConstants.COL_HP + "'>HP+", data.affecthp, "</FONT><BR>");
     if (!isNaN(data.affectmp) && data.affectmp != 0) result.push("<FONT COLOR='" + TooltipConstants.COL_MP + "'>MP+", data.affectmp, "</FONT><BR>");
-    if (data.friend == 1) result.push("<FONT COLOR='" + TooltipConstants.COL_HL + "'>全体友方有效</FONT><BR>");
-    else if (data.friend == "淬毒") {
+    if (data.friend == "群体") result.push("<FONT COLOR='" + TooltipConstants.COL_HL + "'>全体友方有效</FONT><BR>");
+    if (!!(data.poison)) {
       var poisonValue:Number = Number(data.poison);
       if (isNaN(poisonValue)) poisonValue = 0;
       result.push("<FONT COLOR='#66dd00'>剧毒性：", poisonValue, "</FONT><BR>");
     }
-    else if (data.friend == "净化") result.push("净化度：", (isNaN(data.clean) ? 0 : data.clean), "<BR>");
+    if (!!(data.clean)) result.push("净化度：", (isNaN(data.clean) ? 0 : data.clean), "<BR>");
     
     return result;
   }
