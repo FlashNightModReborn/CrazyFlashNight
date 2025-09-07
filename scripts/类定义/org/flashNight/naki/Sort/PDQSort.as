@@ -289,34 +289,16 @@
                 (rightLen > 0 && rightLen < (totalLen >> 3))) {
                 maxDepth--;  // 增加堆排序触发概率
             }
-            // 改进的处理顺序：只压大段，继续处理小段（tail-call优化）
-            // 这确保栈深度永远不超过 log2(n)
+            // 根据子区间大小决定处理顺序（小区间优先策略）
             if (leftLen < rightLen) {
-                // 左边较小，右边较大
-                if (greatIndex + 1 < right) { 
-                    stack[sp++] = greatIndex + 1; 
-                    stack[sp++] = right; 
-                }
-                // 继续处理左边（小段），不入栈
-                if (left < lessIndex - 2) {
-                    right = lessIndex - 2;
-                } else {
-                    // 左段无效，继续处理栈中的下一个区间
-                    continue;
-                }
+                // 左子区间入栈（优先处理较小分区）
+                if (left < lessIndex - 2) { stack[sp++] = left; stack[sp++] = lessIndex - 2; }
+                // 右子区间入栈
+                if (greatIndex + 1 < right) { stack[sp++] = greatIndex + 1; stack[sp++] = right; }
             } else {
-                // 右边较小，左边较大
-                if (left < lessIndex - 2) { 
-                    stack[sp++] = left; 
-                    stack[sp++] = lessIndex - 2; 
-                }
-                // 继续处理右边（小段），不入栈
-                if (greatIndex + 1 < right) {
-                    left = greatIndex + 1;
-                } else {
-                    // 右段无效，继续处理栈中的下一个区间
-                    continue;
-                }
+                // 右子区间先入栈（较大分区后处理）
+                if (greatIndex + 1 < right) { stack[sp++] = greatIndex + 1; stack[sp++] = right; }
+                if (left < lessIndex - 2) { stack[sp++] = left; stack[sp++] = lessIndex - 2; }
             }
         }
 

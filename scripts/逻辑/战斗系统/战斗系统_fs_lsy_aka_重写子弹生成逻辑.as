@@ -135,6 +135,7 @@ _root.子弹区域shoot传递 = function(Obj){
 // 子弹生命周期函数
 _root.子弹生命周期 = function()
 {
+    // _root.服务器.发布服务器消息((this._name || "bullet") + " 生命周期更新");
     // 1. 在函数顶部，注入所有需要的宏，创建局部常量
     #include "../macros/FLAG_CHAIN.as"
     #include "../macros/FLAG_TRANSPARENCY.as" 

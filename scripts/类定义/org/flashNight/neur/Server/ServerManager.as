@@ -128,10 +128,11 @@ class org.flashNight.neur.Server.ServerManager {
     }
 
     private function initFrameClip():Void {
-        frameClip = _root.createEmptyMovieClip("ServerManagerFrameClip", _root.getNextHighestDepth());
-        frameClip.onEnterFrame = function() {
-            ServerManager.instance.onEnterFrameHandler();
-        };
+        // 使用 AS2 的最大安全深度值
+        var MAX_DEPTH:Number = 1048575;
+        
+        frameClip = _root.createEmptyMovieClip("ServerManagerFrameClip", MAX_DEPTH);
+        frameClip.onEnterFrame = Delegate.create(this, onEnterFrameHandler);
     }
 
     public function getAvailablePort():Void {
@@ -240,10 +241,11 @@ class org.flashNight.neur.Server.ServerManager {
 
         // Publish frameUpdate event
         eventBus.publish("frameUpdate", currentFrame);
-
+        // _root.服务器.发布服务器消息("frameUpdate")
         // 重置 hasSentThisFrame 标志
         hasSentThisFrame = false;
     }
+    
 
     public function onFrameUpdate(currentFrame:Number):Void {
         // 处理重连逻辑
