@@ -1,17 +1,31 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="性能-帧率显示器/性能帧率显示器" itemID="662da682-00000b97" lastModified="1730624790" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="性能-帧率显示器/性能帧率显示器" itemID="662da682-00000b97" lastModified="1757255547" lastUniqueIdentifier="8">
   <timeline>
     <DOMTimeline name="性能帧率显示器">
       <layers>
-        <DOMLayer name="图层 3" color="#FF800A">
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <elements/>
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/透明控件" selected="true" centerPoint3DX="32.15" centerPoint3DY="35.15">
+                  <matrix>
+                    <Matrix tx="19.65" ty="22.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load) {
+	 _root.帧计时器.eventBus.publish("frameEnd");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="帧率" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="帧率" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
                 <DOMDynamicText name="帧率数字" fontRenderingMode="device" width="29.3" height="15.85" isSelectable="false">
                   <matrix>
@@ -32,7 +46,7 @@
         </DOMLayer>
         <DOMLayer name="画布" color="#FF4FFF" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="性能-帧率显示器/帧率显示器画布" name="画布" centerPoint3DX="75.05" centerPoint3DY="8.45">
                   <matrix>
@@ -46,9 +60,33 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景板" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/透明控件" centerPoint3DX="32.15" centerPoint3DY="35.15">
+                  <matrix>
+                    <Matrix tx="19.65" ty="22.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load) {
+	 _root.帧计时器.eventBus.publish("frameEnd");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="背景板" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>

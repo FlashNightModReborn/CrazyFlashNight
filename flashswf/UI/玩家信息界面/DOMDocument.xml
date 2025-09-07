@@ -13,9 +13,9 @@
           <DOMFolderItem name="性能-帧率显示器" itemID="662dc04e-00000d12"/>
      </folders>
      <fonts>
-          <DOMFontItem name="嵌入字体/LCD Std" itemID="664e350a-000085f3" font="LcdStd" size="0" id="4" sourceLastImported="1716649178" embedRanges="1|2|3|4"/>
-          <DOMFontItem name="嵌入字体/Aero" itemID="664e3cd0-00000bd4" font="Aero" size="0" id="2" sourceLastImported="1716649147" embedRanges="1|2|3|4"/>
           <DOMFontItem name="嵌入字体/Bebas Neue" itemID="664e31ab-000085a7" font="BebasNeue-Regular" size="0" id="1" sourceLastImported="1716649140" embedRanges="1|2|3|4"/>
+          <DOMFontItem name="嵌入字体/Aero" itemID="664e3cd0-00000bd4" font="Aero" size="0" id="2" sourceLastImported="1716649147" embedRanges="1|2|3|4"/>
+          <DOMFontItem name="嵌入字体/LCD Std" itemID="664e350a-000085f3" font="LcdStd" size="0" id="4" sourceLastImported="1716649178" embedRanges="1|2|3|4"/>
      </fonts>
      <media>
           <DOMBitmapItem name="image/bitmap1804.png" itemID="6597607b-00000400" sourceExternalFilepath="../玩家信息界面/LIBRARY/image/bitmap1804.png" sourceLastImported="1704419451" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap1804.png" bitmapDataHRef="M 2 1716646761.dat" frameRight="140" frameBottom="180"/>
@@ -132,7 +132,7 @@
           <Include href="通用透明组件.xml" loadImmediate="false" itemID="659d4755-000039c9" lastModified="1754496671"/>
           <Include href="玩家信息界面.xml" itemID="6651f9a1-00001952" lastModified="1754496470"/>
           <Include href="玩家信息界面示意图.xml" loadImmediate="false" itemID="6651fadf-00001a7f" lastModified="1716648671"/>
-          <Include href="性能-帧率显示器/性能帧率显示器.xml" loadImmediate="false" itemID="662da682-00000b97" lastModified="1730624790"/>
+          <Include href="性能-帧率显示器/性能帧率显示器.xml" loadImmediate="false" itemID="662da682-00000b97" lastModified="1757255547"/>
           <Include href="性能-帧率显示器/帧率显示器画布.xml" loadImmediate="false" itemID="662dac72-00000bfa" lastModified="1714271598"/>
      </symbols>
      <timelines>
@@ -142,7 +142,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="玩家信息界面" centerPoint3DX="511.8" centerPoint3DY="50.7">
+                                        <DOMSymbolInstance libraryItemName="玩家信息界面" selected="true" centerPoint3DX="511.8" centerPoint3DY="50.7">
                                              <matrix>
                                                   <Matrix ty="3"/>
                                              </matrix>
@@ -240,7 +240,7 @@
                          <GradientEntry color="#FF9900" ratio="1"/>
                          <GradientEntry color="#FF7E00" ratio="1"/>
                     </RadialGradientSwatchItem>
-                    <RadialGradientSwatchItem spreadMethod="reflect" focalPointRatio="-0.286274509803922">
+                    <RadialGradientSwatchItem spreadMethod="reflect" focalPointRatio="-0.282352941176471">
                          <GradientEntry color="#FF001C" ratio="0"/>
                          <GradientEntry color="#FF9900" ratio="1"/>
                          <GradientEntry color="#FF7E00" ratio="1"/>
@@ -263,6 +263,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="107234" publishTime="1757255599"/>
+          <PublishItem publishSize="107208" publishTime="1757255466"/>
           <PublishItem publishSize="107708" publishTime="1754496788"/>
           <PublishItem publishSize="116000" publishTime="1754496073"/>
           <PublishItem publishSize="115997" publishTime="1754495962"/>
@@ -281,7 +283,5 @@
           <PublishItem publishSize="12630225" publishTime="1746928486"/>
           <PublishItem publishSize="12630227" publishTime="1746928137"/>
           <PublishItem publishSize="12630137" publishTime="1746876304"/>
-          <PublishItem publishSize="12630142" publishTime="1746876014"/>
-          <PublishItem publishSize="12630128" publishTime="1746875746"/>
      </publishHistory>
 </DOMDocument>

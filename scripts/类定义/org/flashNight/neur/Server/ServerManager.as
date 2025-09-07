@@ -241,7 +241,7 @@ class org.flashNight.neur.Server.ServerManager {
 
         // Publish frameUpdate event
         eventBus.publish("frameUpdate", currentFrame);
-        // _root.服务器.发布服务器消息("frameUpdate")
+
         // 重置 hasSentThisFrame 标志
         hasSentThisFrame = false;
     }
