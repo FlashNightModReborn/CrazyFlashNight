@@ -75,7 +75,10 @@
       "Read(/C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\data\\dictionaries/**)",
       "Read(/D:\\steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\scripts\\逻辑\\单位函数/**)",
       "Read(/D:\\steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\scripts\\类定义\\org\\flashNight\\arki\\item/**)",
-      "Read(/D:\\steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\data\\items/**)"
+      "Read(/D:\\steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\data\\items/**)",
+      "Bash(for:*)",
+      "Bash(do echo \"Processing $file\")",
+      "Bash(echo:*)"
     ],
     "deny": [],
     "ask": []
