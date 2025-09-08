@@ -132,216 +132,193 @@ _root.子弹区域shoot传递 = function(Obj){
 
 
 
-// 子弹生命周期函数
-_root.子弹生命周期 = function()
-{
-    // _root.服务器.发布服务器消息((this._name || "bullet") + " 生命周期更新");
-    // 1. 在函数顶部，注入所有需要的宏，创建局部常量
-    #include "../macros/FLAG_CHAIN.as"
-    #include "../macros/FLAG_TRANSPARENCY.as" 
-
-    // 2. 局部化 flags 以优化性能
-    var flags:Number = this.flags;
-    
-    // 3. 执行一次位运算，并将布尔结果缓存到局部变量 isTransparent 中
-    var isTransparent:Boolean = (flags & FLAG_TRANSPARENCY) != 0;
-
-    // 如果没有 area 且不是透明，直接进行运动更新
-    // 原来: if(!this.area && !this.透明检测)
-    // 替换为直接使用缓存的布尔变量
-    if(!this.area && !isTransparent){
-        this.updateMovement(this);
+// 包装器：仍然以 _root.子弹生命周期 作为唯一对外入口
+_root.子弹生命周期 = function():Void {
+    // 第一段：预检测与（必要时的）位置更新
+    if (!_root.子弹生命周期_预检测与更新(this)) {
+        // 纯运动弹已在第一段完成刷新，直接返回
         return;
     }
+    // 第二段：碰撞检测 → 伤害结算 → 事件 → 销毁等完整流程
+    _root.子弹生命周期_执行逻辑(this);
+};
 
-    var detectionArea:MovieClip;
-    var areaAABB:ICollider = this.aabbCollider;
-    var bullet_rotation:Number = this._rotation;
-    
-    // 使用位标志优化联弹检测性能 (这段代码保持不变)
-    var isPointSet:Boolean = ((flags & FLAG_CHAIN) != 0) && (bullet_rotation != 0 && bullet_rotation != 180);
-    var bulletZOffset:Number = this.Z轴坐标;
-    var bulletZRange:Number  = this.Z轴攻击范围;
-    
-    // 原来: if (this.透明检测 && !this.子弹区域area)
-    // 再次使用缓存的布尔变量，避免重复计算
-    if (isTransparent && !this.子弹区域area) {
-        areaAABB.updateFromTransparentBullet(this);
-    } else {
-        detectionArea = this.子弹区域area || this.area;
-        areaAABB.updateFromBullet(this, detectionArea);
+_root.子弹生命周期_预检测与更新 = function(bullet:MovieClip):Boolean {
+    // 仅用到透明标志即可完成早退判定
+    #include "../macros/FLAG_TRANSPARENCY.as"
+
+    // 局部化 flags，避免后续频繁取属性
+    var flags:Number = bullet.flags;
+
+    // 提前做一次位运算（可选缓存到实例，供第二段直接复用，减少一次位运算）
+    var isTransparent:Boolean = (flags & FLAG_TRANSPARENCY) != 0;
+
+    // 纯运动弹：无区域且不透明 → 只做位移更新，跳过后续所有重逻辑
+    if (!bullet.area && !isTransparent) {
+        bullet.updateMovement(bullet);
+        return false; // 不进入执行段
     }
-    
-    if (_root.调试模式)
-    {
-        // 绘制当前碰撞箱，并显示以子弹 Z轴坐标为基准的 z 轴攻击范围上下边界
+
+    // 需要进入执行段（碰撞与结算）
+    return true;
+};
+
+_root.子弹生命周期_执行逻辑 = function(bullet:MovieClip):Void {
+    #include "../macros/FLAG_CHAIN.as"
+    #include "../macros/FLAG_TRANSPARENCY.as"
+    #include "../macros/FLAG_MELEE.as"
+    #include "../macros/FLAG_PIERCE.as"
+    #include "../macros/FLAG_EXPLOSIVE.as"
+
+    // 复用第一段的可选缓存；若无则即时计算
+    var flags:Number = bullet.flags;
+    var isTransparent:Boolean = (flags & FLAG_TRANSPARENCY) != 0;
+
+    var areaAABB:ICollider = bullet.aabbCollider;
+    var detectionArea:MovieClip = null;
+
+    var rot:Number = bullet._rotation;
+    var isPointSet:Boolean = ((flags & FLAG_CHAIN) != 0) && (rot != 0 && rot != 180);
+    var bulletZOffset:Number = bullet.Z轴坐标;
+    var bulletZRange:Number  = bullet.Z轴攻击范围;
+
+    // 更新碰撞体（保持与原实现一致）
+    if (isTransparent && !bullet.子弹区域area) {
+        areaAABB.updateFromTransparentBullet(bullet);
+    } else {
+        detectionArea = bullet.子弹区域area || bullet.area;
+        areaAABB.updateFromBullet(bullet, detectionArea);
+    }
+
+    if (_root.调试模式) {
+        // 画当前AABB + Z轴上下边界线
         AABBRenderer.renderAABB(areaAABB, 0, "line", bulletZRange);
     }
-    
+
+    // 取目标集（友伤/敌方）
     var gameWorld = _root.gameworld;
-    var shooter = gameWorld[this.发射者名];
-    var rangeResult:Object;
-    if(this.友军伤害) {
-        rangeResult = TargetCacheManager.getCachedAllFromIndex(shooter, 1, areaAABB);
-    }
-    else
-    {
-        rangeResult = TargetCacheManager.getCachedEnemyFromIndex(shooter, 1, areaAABB);
-    }
+    var shooter = gameWorld[bullet.发射者名];
+    var rangeResult:Object = bullet.友军伤害
+        ? TargetCacheManager.getCachedAllFromIndex(shooter, 1, areaAABB)
+        : TargetCacheManager.getCachedEnemyFromIndex(shooter, 1, areaAABB);
 
     var unitMap:Array = rangeResult.data;
     var startIndex:Number = rangeResult.startIndex;
-    this.shouldGeneratePostHitEffect = true;
+
+    bullet.shouldGeneratePostHitEffect = true;
 
     var len:Number = unitMap.length;
+    var i:Number;
     var hitTarget:MovieClip;
     var zOffset:Number;
-    var overlapRatio:Number;
-    var overlapCenter:Vector;
     var unitArea:AABBCollider;
     var collisionResult:CollisionResult;
+    var overlapRatio:Number;
+    var overlapCenter:Vector;
 
-    for (var i:Number = startIndex; i < len ; ++i)
-    {
-        hitTarget = this.hitTarget = unitMap[i];
-        // 计算子弹与目标在 z 轴上的相对偏移值
+    for (i = startIndex; i < len; ++i) {
+        hitTarget = bullet.hitTarget = unitMap[i];
+
+        // Z 轴粗判
         zOffset = bulletZOffset - hitTarget.Z轴坐标;
+        if (Math.abs(zOffset) >= bulletZRange) continue;
 
-        if (Math.abs(zOffset) >= bulletZRange)
-        {
-            continue;
-        }
-        if (hitTarget.hp > 0 && hitTarget.防止无限飞 != true)
-        {
-            overlapRatio = 1;
-
+        if (hitTarget.hp > 0 && hitTarget.防止无限飞 != true) {
             unitArea = hitTarget.aabbCollider;
-            collisionResult = areaAABB.checkCollision(unitArea, zOffset);
 
-            if(!collisionResult.isColliding)
-            {
-                if(collisionResult.isOrdered) continue;
+            // AABB 检测（可能早退）
+            collisionResult = areaAABB.checkCollision(unitArea, zOffset);
+            if (!collisionResult.isColliding) {
+                if (collisionResult.isOrdered) continue;
                 break;
             }
-            if(isPointSet) {
-                this.polygonCollider.updateFromBullet(this, detectionArea);
-                collisionResult = this.polygonCollider.checkCollision(unitArea, zOffset);
+
+            // 仅在需要时才更新多边形碰撞体
+            if (isPointSet) {
+                bullet.polygonCollider.updateFromBullet(bullet, detectionArea);
+                collisionResult = bullet.polygonCollider.checkCollision(unitArea, zOffset);
             }
 
-            // _root.发布消息(collisionResult)
-
-            if (_root.调试模式)
-            {
+            if (_root.调试模式) {
                 AABBRenderer.renderAABB(areaAABB, zOffset, "thick");
                 AABBRenderer.renderAABB(unitArea, zOffset, "filled");
             }
 
-            overlapRatio = collisionResult.overlapRatio;
+            overlapRatio  = collisionResult.overlapRatio;
             overlapCenter = collisionResult.overlapCenter;
 
             // 命中处理
-            this.hitCount++;
-            this.附加层伤害计算 = 0;
-            this.命中对象 = hitTarget;
+            bullet.hitCount++;
+            bullet.附加层伤害计算 = 0;
+            bullet.命中对象 = hitTarget;
 
-            var dodgeState = this.伤害类型 == "真伤" ? "未躲闪": 
-            DodgeHandler.calculateDodgeState(hitTarget,
-                DodgeHandler.calcDodgeResult(shooter, hitTarget, this.命中率), this);
-            
-            if(this.击中时触发函数) this.击中时触发函数();
+            var dodgeState = (bullet.伤害类型 == "真伤") ? "未躲闪" :
+                DodgeHandler.calculateDodgeState(
+                    hitTarget,
+                    DodgeHandler.calcDodgeResult(shooter, hitTarget, bullet.命中率),
+                    bullet
+                );
+
+            if (bullet.击中时触发函数) bullet.击中时触发函数();
 
             var damageResult:DamageResult = DamageCalculator.calculateDamage(
-                this, 
-                shooter, 
-                hitTarget, 
-                overlapRatio, 
-                dodgeState
+                bullet, shooter, hitTarget, overlapRatio, dodgeState
             );
 
             var dispatcher:EventDispatcher = hitTarget.dispatcher;
-            dispatcher.publish("hit", hitTarget, shooter, this, collisionResult, damageResult);
+            dispatcher.publish("hit", hitTarget, shooter, bullet, collisionResult, damageResult);
 
-            // 使用位标志优化近战，穿刺检测性能
-            #include "../macros/FLAG_MELEE.as"
-            #include "../macros/FLAG_PIERCE.as"
-
-            if(hitTarget.hp <= 0)
-            {
-                // 在此处按需展开爆炸检测宏
-                #include "../macros/FLAG_EXPLOSIVE.as"
-                
-                // 创建近战和爆炸的组合掩码（编译时计算：1 | 32 = 33）
-                var MELEE_EXPLOSIVE_MASK:Number = FLAG_MELEE | FLAG_EXPLOSIVE;
-                
-                // 一次位运算替代两次否定和逻辑与：!(flags & FLAG_MELEE) && !(flags & FLAG_EXPLOSIVE)
-                dispatcher.publish((flags & MELEE_EXPLOSIVE_MASK) === 0 ?
-                    "kill" : "death", hitTarget);
-                shooter.dispatcher.publish("enemyKilled", hitTarget, this);
-
-                // 如果在 enemyKilled 内发布 kill/death 事件
-                // 可能导致原本订阅目标死亡事件的组件失去触发机会
+            // kill/death 分发（按原注释保持行为）
+            var MELEE_EXPLOSIVE_MASK:Number = FLAG_MELEE | FLAG_EXPLOSIVE;
+            if (hitTarget.hp <= 0) {
+                dispatcher.publish((flags & MELEE_EXPLOSIVE_MASK) === 0 ? "kill" : "death", hitTarget);
+                shooter.dispatcher.publish("enemyKilled", hitTarget, bullet);
             }
 
             damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
 
-            if ((flags & FLAG_MELEE) && !this.不硬直)
-            {
+            // 近战硬直 / 非穿刺消失
+            if ((flags & FLAG_MELEE) && !bullet.不硬直) {
                 shooter.硬直(shooter.man, _root.钝感硬直时间);
-            }
-            else if ((flags & FLAG_PIERCE) == 0) 
-            {
-                this.gotoAndPlay("消失");
+            } else if ((flags & FLAG_PIERCE) == 0) {
+                bullet.gotoAndPlay("消失");
             }
         }
 
-        if(this.pierceLimit && this.pierceLimit < this.hitCount) {
-            this.shouldDestroy = function() {
-                return true;
-            };
+        // 穿刺上限
+        if (bullet.pierceLimit && bullet.pierceLimit < bullet.hitCount) {
+            bullet.shouldDestroy = function():Boolean { return true; };
             break;
         }
     }
 
-    // 绝大部分情况 hitCount 均为 0，提前返回
-    if(this.hitCount > 0) {
-        if(this.shouldGeneratePostHitEffect) {
-            EffectSystem.Effect(this.击中后子弹的效果, this._x, this._y, shooter._xscale);
-        }
+    // 命中后效果
+    if (bullet.hitCount > 0 && bullet.shouldGeneratePostHitEffect) {
+        EffectSystem.Effect(bullet.击中后子弹的效果, bullet._x, bullet._y, shooter._xscale);
     }
 
-    // 更新子弹运动逻辑
-    this.updateMovement(this);
+    // 与原实现一致：执行段末尾做一次位移更新
+    bullet.updateMovement(bullet);
 
-    // 销毁检测及后续处理
-    if (this.shouldDestroy(this)) {
+    // 销毁判定与后续
+    if (bullet.shouldDestroy(bullet)) {
         areaAABB.getFactory().releaseCollider(areaAABB);
-
-        if(isPointSet)
-        {
-            this.polygonCollider.getFactory().releaseCollider(this.polygonCollider);
+        if (isPointSet) {
+            bullet.polygonCollider.getFactory().releaseCollider(bullet.polygonCollider);
         }
 
-        if (this.击中地图) {
-            this.霰弹值 = 1;
-            EffectSystem.Effect(this.击中地图效果, this._x, this._y);
-            /*
-            if(this.hitMark) {
-                // _root.发布消息("子弹击中标记", this.hitMark, this._x, this._y);
-                EffectSystem.Effect(this.hitMark, this._x, this._y, shooter._xscale / 2);
-            }
-            */
-
-            if (this.击中时触发函数) {
-                this.击中时触发函数();
-            }
-            this.gotoAndPlay("消失");
+        if (bullet.击中地图) {
+            bullet.霰弹值 = 1;
+            EffectSystem.Effect(bullet.击中地图效果, bullet._x, bullet._y);
+            if (bullet.击中时触发函数) bullet.击中时触发函数();
+            bullet.gotoAndPlay("消失");
         } else {
-            this.removeMovieClip();
+            bullet.removeMovieClip();
         }
         return;
     }
-
 };
+
 
 
 _root.子弹区域shoot表演 = _root.子弹区域shoot;
