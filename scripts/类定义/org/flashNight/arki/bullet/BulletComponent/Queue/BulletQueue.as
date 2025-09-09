@@ -31,6 +31,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
     private var _rightKeysBuffer:Array;  // 新增：缓存右边界
     private var _indicesBuffer:Array;
     private var _sortedBuffer:Array;
+    private var _sortedLeftBuffer:Array;  // 新增：排序后的左边界缓冲
+    private var _sortedRightBuffer:Array; // 新增：排序后的右边界缓冲
     
     /**
      * 构造函数
@@ -42,6 +44,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
         this._rightKeysBuffer = [];  // 初始化右边界缓冲
         this._indicesBuffer = [];
         this._sortedBuffer = [];
+        this._sortedLeftBuffer = [];   // 初始化排序左边界缓冲
+        this._sortedRightBuffer = [];  // 初始化排序右边界缓冲
     }
     
     /**
@@ -94,6 +98,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
         var prevValue:Number = Number.NEGATIVE_INFINITY;
         var isSorted:Boolean = true;
         
+        var hasInvalid:Boolean = false;  // 记录是否有异常对象
+        
         // 预取所有边界值，同时检测是否已有序
         while (i < length) {
             bullet = this.bullets[i];
@@ -104,13 +110,16 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
                 // NaN检查：left异常压到末尾，right异常设为负无穷避免误杀早退
                 if (isNaN(leftValue)) {
                     leftValue = Number.POSITIVE_INFINITY;
+                    hasInvalid = true;
                 }
                 if (isNaN(rightValue)) {
                     rightValue = Number.NEGATIVE_INFINITY;
+                    hasInvalid = true;
                 }
             } else {
                 leftValue = Number.POSITIVE_INFINITY;
                 rightValue = Number.NEGATIVE_INFINITY;
+                hasInvalid = true;
             }
             
             leftKeys[i] = leftValue;
@@ -126,39 +135,45 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
         }
         
         // ========== 已有序快速退出 ==========
-        if (isSorted) {
+        // 如果有异常对象，强制排序以确保它们被推到队尾
+        if (isSorted && !hasInvalid) {
             return;  // 跳过排序，节省大量开销
         }
         
         // ========== 小数组路径：插入排序（< 64个元素） ==========
         if (length < INSERTION_SORT_THRESHOLD) {
-            // 带索引的插入排序，使用局部缓存减少成员访问
+            // 带索引的插入排序，同步移动所有数组
             
-            var arr:Array = this.bullets;  // 局部缓存
-            var keys:Array = leftKeys;     // 已经是局部变量
+            var arr:Array = this.bullets;    // 局部缓存
+            var lkeys:Array = leftKeys;      // 左边界keys
+            var rkeys:Array = rightKeys;     // 右边界keys（必须同步）
             var j:Number;
             var key:MovieClip;
             var keyLeft:Number;
+            var keyRight:Number;
             
             i = 1;
             do {
-                // 取出待插入元素及其key
+                // 取出待插入元素及其所有key
                 key = arr[i];
-                keyLeft = keys[i];
+                keyLeft = lkeys[i];
+                keyRight = rkeys[i];  // 同时取出右边界
                 j = i - 1;
                 
                 // 向前查找插入位置
                 // 关键：用 > 而非 >= 保证稳定性
-                while (j >= 0 && keys[j] > keyLeft) {
-                    // 同时移动子弹和key
+                while (j >= 0 && lkeys[j] > keyLeft) {
+                    // 同时移动子弹和所有keys
                     arr[j + 1] = arr[j];
-                    keys[j + 1] = keys[j];
+                    lkeys[j + 1] = lkeys[j];
+                    rkeys[j + 1] = rkeys[j];  // 同步移动rightKeys
                     j--;
                 }
                 
                 // 插入到正确位置
                 arr[j + 1] = key;
-                keys[j + 1] = keyLeft;
+                lkeys[j + 1] = keyLeft;
+                rkeys[j + 1] = keyRight;  // 同步插入rightKey
                 
             } while (++i < length);
             
@@ -175,19 +190,28 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
             _cmpKeys = leftKeys;
             TimSort.sort(indices, cmpIndex);
             
-            // 复用排序缓冲区
+            // 复用所有排序缓冲区
             var sortedBullets:Array = this._sortedBuffer;
+            var sortedLeft:Array = this._sortedLeftBuffer;
+            var sortedRight:Array = this._sortedRightBuffer;
             this.ensureCapacity(sortedBullets, length);
+            this.ensureCapacity(sortedLeft, length);
+            this.ensureCapacity(sortedRight, length);
             
-            // 根据排序后的索引重排
+            // 根据排序后的索引重排所有数组
             for (i = 0; i < length; i++) {
-                sortedBullets[i] = this.bullets[indices[i]];
+                var k:Number = indices[i];
+                sortedBullets[i] = this.bullets[k];
+                sortedLeft[i] = leftKeys[k];
+                sortedRight[i] = rightKeys[k];
             }
             
-            // 重要：就地覆盖而非替换引用，避免外部引用失效
+            // 重要：就地覆盖所有数组，保持一致性
             var arr:Array = this.bullets;
             for (i = 0; i < length; i++) {
                 arr[i] = sortedBullets[i];
+                leftKeys[i] = sortedLeft[i];
+                rightKeys[i] = sortedRight[i];
             }
             // 确保长度一致
             arr.length = length;
@@ -249,17 +273,27 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
         var length:Number = this.bullets.length;
         var arr:Array = this.bullets;
         
-        // 小数组直接遍历（已经原地排序）
-        if (length < INSERTION_SORT_THRESHOLD) {
-            for (var i:Number = 0; i < length; i++) {
-                visitor(arr[i], i);
-            }
-        } else {
-            // 大数组通过索引间接访问
-            var indices:Array = this._indicesBuffer;
-            for (var j:Number = 0; j < length; j++) {
-                visitor(arr[indices[j]], indices[j]);
-            }
+        // 由于采用就地重排模式，大小数组都直接顺序遍历
+        for (var i:Number = 0; i < length; i++) {
+            visitor(arr[i], i);
+        }
+    }
+    
+    /**
+     * 按排序顺序遍历子弹，同时提供边界值
+     * 提供统一的访问器，避免调用方误用索引
+     * @param visitor 访问函数，接收(bullet, leftKey, rightKey, index)参数
+     */
+    public function forEachSortedWithKeys(visitor:Function):Void {
+        this.sortByLeftBoundary();
+        
+        var arr:Array = this.bullets;
+        var L:Array = this._leftKeysBuffer;
+        var R:Array = this._rightKeysBuffer;
+        var n:Number = arr.length;
+        
+        for (var i:Number = 0; i < n; i++) {
+            visitor(arr[i], L[i], R[i], i);
         }
     }
     
@@ -271,13 +305,14 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
         this.sortByLeftBoundary();
         
         var length:Number = this.bullets.length;
+        // 由于采用了就地重排模式，不再需要indices
         return {
             bullets: this.bullets,
-            indices: (length >= INSERTION_SORT_THRESHOLD) ? this._indicesBuffer : null,
+            indices: null,  // 就地重排后不需要索引
             leftKeys: this._leftKeysBuffer,
             rightKeys: this._rightKeysBuffer,
             length: length,
-            isIndexed: (length >= INSERTION_SORT_THRESHOLD)
+            isIndexed: false  // 明确标记为非索引模式
         };
     }
 }
