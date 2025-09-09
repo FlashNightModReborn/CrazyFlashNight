@@ -62,7 +62,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
      * 添加子弹到队列
      * 放宽检查，因为预检测会处理异常情况
      */
-    public function add(bullet:MovieClip):Void {
+    public function add(bullet:Object):Void {
         if (bullet) {
             this.bullets.push(bullet);
         }
@@ -97,7 +97,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
         var bullet:MovieClip;
         var leftValue:Number;
         var rightValue:Number;
-        var prevValue:Number = Number.NEGATIVE_INFINITY;
+        var prevValue:Number = -Infinity;
         var isSorted:Boolean = true;
         
         var hasInvalid:Boolean = false;  // 记录是否有异常对象
@@ -111,16 +111,16 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
                 
                 // NaN检查：left异常压到末尾，right异常设为负无穷避免误杀早退
                 if (isNaN(leftValue)) {
-                    leftValue = Number.POSITIVE_INFINITY;
+                    leftValue = Infinity;
                     hasInvalid = true;
                 }
                 if (isNaN(rightValue)) {
-                    rightValue = Number.NEGATIVE_INFINITY;
+                    rightValue = -Infinity
                     hasInvalid = true;
                 }
             } else {
-                leftValue = Number.POSITIVE_INFINITY;
-                rightValue = Number.NEGATIVE_INFINITY;
+                leftValue = Infinity;
+                rightValue = -Infinity
                 hasInvalid = true;
             }
             

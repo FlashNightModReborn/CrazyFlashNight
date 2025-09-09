@@ -435,7 +435,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
         if (q.getCount() != 0) return false;
         
         var visitCount:Number = 0;
-        q.forEachSorted(function(b:MovieClip, i:Number):Void {
+        q.forEachSorted(function(b:Object, i:Number):Void {
             visitCount++;
         });
         
@@ -446,7 +446,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
         var q:BulletQueue = new BulletQueue();
         var bullet:Object = this.makeBullet(100, 110, 1);
         
-        q.add(MovieClip(bullet));
+        q.add(bullet);
         if (q.getCount() != 1) return false;
         
         var sorted:Array = q.getSortedBullets();
@@ -460,7 +460,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
         // 测试63个元素（插入排序最大值）
         var q63:BulletQueue = new BulletQueue();
         for (var i:Number = 0; i < 63; i++) {
-            q63.add(MovieClip(this.makeBullet(63 - i, 64 - i, i)));
+            q63.add(this.makeBullet(63 - i, 64 - i, i));
         }
         var sorted63:Array = q63.getSortedBullets();
         if (!this.isSorted(sorted63)) return false;
@@ -468,7 +468,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
         // 测试64个元素（阈值边界）
         var q64:BulletQueue = new BulletQueue();
         for (var j:Number = 0; j < 64; j++) {
-            q64.add(MovieClip(this.makeBullet(64 - j, 65 - j, j)));
+            q64.add(this.makeBullet(64 - j, 65 - j, j));
         }
         var sorted64:Array = q64.getSortedBullets();
         if (!this.isSorted(sorted64)) return false;
@@ -476,7 +476,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
         // 测试65个元素（TimSort最小值）
         var q65:BulletQueue = new BulletQueue();
         for (var k:Number = 0; k < 65; k++) {
-            q65.add(MovieClip(this.makeBullet(65 - k, 66 - k, k)));
+            q65.add(this.makeBullet(65 - k, 66 - k, k));
         }
         var sorted65:Array = q65.getSortedBullets();
         if (!this.isSorted(sorted65)) return false;
@@ -489,7 +489,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
         
         // 添加元素
         for (var i:Number = 0; i < 10; i++) {
-            q.add(MovieClip(this.makeBullet(i, i + 1, i)));
+            q.add(this.makeBullet(i, i + 1, i));
         }
         
         var ref1:Array = q.getBulletsReference();
@@ -509,14 +509,14 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
         
         // 第一轮：少量元素
         for (var i:Number = 0; i < 10; i++) {
-            q.add(MovieClip(this.makeBullet(i, i + 1, i)));
+            q.add(this.makeBullet(i, i + 1, i));
         }
         q.sortByLeftBoundary();
         q.clear();
         
         // 第二轮：大量元素
         for (var j:Number = 0; j < 200; j++) {
-            q.add(MovieClip(this.makeBullet(200 - j, 201 - j, j)));
+            q.add(this.makeBullet(200 - j, 201 - j, j));
         }
         
         var sorted:Array = q.getSortedBullets();
@@ -530,14 +530,14 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
         var q:BulletQueue = new BulletQueue();
         
         for (var i:Number = 0; i < 10; i++) {
-            q.add(MovieClip(this.makeBullet(10 - i, 11 - i, i)));
+            q.add(this.makeBullet(10 - i, 11 - i, i));
         }
         
         // 测试forEachSorted
         var count1:Number = 0;
         var lastLeft1:Number = -Infinity;
         var sorted1:Boolean = true;
-        q.forEachSorted(function(bullet:MovieClip, index:Number):Void {
+        q.forEachSorted(function(bullet:Object, index:Number):Void {
             count1++;
             if (bullet.aabbCollider.left < lastLeft1) {
                 sorted1 = false;
@@ -550,7 +550,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
         // 测试forEachSortedWithKeys
         var count2:Number = 0;
         var keysMatch:Boolean = true;
-        q.forEachSortedWithKeys(function(bullet:MovieClip, left:Number, right:Number, index:Number):Void {
+        q.forEachSortedWithKeys(function(bullet:Object, left:Number, right:Number, index:Number):Void {
             count2++;
             if (left != bullet.aabbCollider.left) {
                 keysMatch = false;
@@ -576,7 +576,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
         
         // 添加随机顺序的子弹
         for (var i:Number = 0; i < 20; i++) {
-            q.add(MovieClip(this.makeBullet(Math.random() * 100, Math.random() * 100 + 100, i)));
+            q.add(this.makeBullet(Math.random() * 100, Math.random() * 100 + 100, i));
         }
         
         q.sortByLeftBoundary();
