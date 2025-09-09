@@ -74,7 +74,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
      */
     public function sortByLeftBoundary():Void {
         var length:Number = this.bullets.length;
-        if (length <= 1) {
+        
+        // 即使只有0或1个元素，也要填充keys缓冲区
+        if (length == 0) {
             return;
         }
         
@@ -132,6 +134,12 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
             }
             prevValue = leftValue;
             i++;
+        }
+        
+        // ========== 单元素特殊处理 ==========
+        // 单元素不需要排序，但keys已经填充
+        if (length == 1) {
+            return;
         }
         
         // ========== 已有序快速退出 ==========
@@ -233,6 +241,14 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
      */
     public function clear():Void {
         this.bullets.length = 0;  // 原地清空，不替换数组引用
+        
+        // 同时清空所有缓冲区的长度，避免残留数据影响后续操作
+        this._leftKeysBuffer.length = 0;
+        this._rightKeysBuffer.length = 0;
+        this._indicesBuffer.length = 0;
+        this._sortedBuffer.length = 0;
+        this._sortedLeftBuffer.length = 0;
+        this._sortedRightBuffer.length = 0;
     }
     
     /**

@@ -78,7 +78,8 @@
       "Read(/D:\\steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\data\\items/**)",
       "Bash(for:*)",
       "Bash(do echo \"Processing $file\")",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []
