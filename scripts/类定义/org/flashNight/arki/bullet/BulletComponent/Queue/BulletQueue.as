@@ -49,16 +49,6 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
     }
     
     /**
-     * 确保缓冲区容量
-     * @private
-     */
-    private function ensureCapacity(buffer:Array, capacity:Number):Void {
-        if (buffer.length < capacity) {
-            buffer.length = capacity;
-        }
-    }
-    
-    /**
      * 添加子弹到队列
      * 放宽检查，因为预检测会处理异常情况
      */
@@ -87,11 +77,11 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
         // 3. 检测是否已有序，跳过不必要的排序
         // 4. 缓存right值供碰撞检测复用
         
-        // 复用缓冲区，必要时扩容
+        // 复用缓冲区，必要时扩容（内联以减少函数调用开销）
         var leftKeys:Array = this._leftKeysBuffer;
         var rightKeys:Array = this._rightKeysBuffer;
-        this.ensureCapacity(leftKeys, length);
-        this.ensureCapacity(rightKeys, length);
+        if (leftKeys.length < length) leftKeys.length = length;
+        if (rightKeys.length < length) rightKeys.length = length;
         
         var i:Number = 0;
         var bullet:MovieClip;
@@ -187,42 +177,107 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
             
         // ========== 大数组路径：索引排序 + 重排 ==========
         } else {
-            // 复用索引缓冲区
+            // 复用索引缓冲区（内联扩容检查）
             var indices:Array = this._indicesBuffer;
-            this.ensureCapacity(indices, length);
-            for (i = 0; i < length; i++) {
+            if (indices.length < length) indices.length = length;
+            
+            // 初始化索引（4路展开）
+            var end4:Number = length - (length & 3);  // 4的倍数部分
+            i = 0;
+            while (i < end4) {
                 indices[i] = i;
+                indices[i + 1] = i + 1;
+                indices[i + 2] = i + 2;
+                indices[i + 3] = i + 3;
+                i += 4;
+            }
+            // 处理剩余元素
+            while (i < length) {
+                indices[i] = i;
+                i++;
             }
             
             // 使用静态比较器（避免闭包开销）
             _cmpKeys = leftKeys;
             TimSort.sort(indices, cmpIndex);
             
-            // 复用所有排序缓冲区
+            // 复用所有排序缓冲区（内联扩容检查）
             var sortedBullets:Array = this._sortedBuffer;
             var sortedLeft:Array = this._sortedLeftBuffer;
             var sortedRight:Array = this._sortedRightBuffer;
-            this.ensureCapacity(sortedBullets, length);
-            this.ensureCapacity(sortedLeft, length);
-            this.ensureCapacity(sortedRight, length);
+            if (sortedBullets.length < length) sortedBullets.length = length;
+            if (sortedLeft.length < length) sortedLeft.length = length;
+            if (sortedRight.length < length) sortedRight.length = length;
             
-            // 根据排序后的索引重排所有数组
-            for (i = 0; i < length; i++) {
+            // 提取到局部变量，减少属性查找
+            var srcBullets:Array = this.bullets;
+            var srcLeft:Array = leftKeys;
+            var srcRight:Array = rightKeys;
+            
+            // 根据排序后的索引重排（4路展开）
+            i = 0;
+            var k0:Number, k1:Number, k2:Number, k3:Number;
+            while (i < end4) {
+                k0 = indices[i];
+                k1 = indices[i + 1];
+                k2 = indices[i + 2];
+                k3 = indices[i + 3];
+                
+                sortedBullets[i] = srcBullets[k0];
+                sortedBullets[i + 1] = srcBullets[k1];
+                sortedBullets[i + 2] = srcBullets[k2];
+                sortedBullets[i + 3] = srcBullets[k3];
+                
+                sortedLeft[i] = srcLeft[k0];
+                sortedLeft[i + 1] = srcLeft[k1];
+                sortedLeft[i + 2] = srcLeft[k2];
+                sortedLeft[i + 3] = srcLeft[k3];
+                
+                sortedRight[i] = srcRight[k0];
+                sortedRight[i + 1] = srcRight[k1];
+                sortedRight[i + 2] = srcRight[k2];
+                sortedRight[i + 3] = srcRight[k3];
+                
+                i += 4;
+            }
+            // 处理剩余元素
+            while (i < length) {
                 var k:Number = indices[i];
-                sortedBullets[i] = this.bullets[k];
-                sortedLeft[i] = leftKeys[k];
-                sortedRight[i] = rightKeys[k];
+                sortedBullets[i] = srcBullets[k];
+                sortedLeft[i] = srcLeft[k];
+                sortedRight[i] = srcRight[k];
+                i++;
             }
             
-            // 重要：就地覆盖所有数组，保持一致性
-            var arr:Array = this.bullets;
-            for (i = 0; i < length; i++) {
-                arr[i] = sortedBullets[i];
-                leftKeys[i] = sortedLeft[i];
-                rightKeys[i] = sortedRight[i];
+            // 就地覆盖（4路展开）
+            i = 0;
+            while (i < end4) {
+                srcBullets[i] = sortedBullets[i];
+                srcBullets[i + 1] = sortedBullets[i + 1];
+                srcBullets[i + 2] = sortedBullets[i + 2];
+                srcBullets[i + 3] = sortedBullets[i + 3];
+                
+                srcLeft[i] = sortedLeft[i];
+                srcLeft[i + 1] = sortedLeft[i + 1];
+                srcLeft[i + 2] = sortedLeft[i + 2];
+                srcLeft[i + 3] = sortedLeft[i + 3];
+                
+                srcRight[i] = sortedRight[i];
+                srcRight[i + 1] = sortedRight[i + 1];
+                srcRight[i + 2] = sortedRight[i + 2];
+                srcRight[i + 3] = sortedRight[i + 3];
+                
+                i += 4;
+            }
+            // 处理剩余元素
+            while (i < length) {
+                srcBullets[i] = sortedBullets[i];
+                srcLeft[i] = sortedLeft[i];
+                srcRight[i] = sortedRight[i];
+                i++;
             }
             // 确保长度一致
-            arr.length = length;
+            srcBullets.length = length;
         }
     }
     
