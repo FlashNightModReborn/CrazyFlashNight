@@ -21,9 +21,12 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
     private static var _cmpKeys:Array;
     
     private static function cmpIndex(a:Number, b:Number):Number {
-        var d:Number = _cmpKeys[a] - _cmpKeys[b];
-        return (d < 0) ? -1 : ((d > 0) ? 1 : 0);
+        var va:Number = _cmpKeys[a];
+        var vb:Number = _cmpKeys[b];
+        // 把可能的 undefined/true/false 显式变成 0/1，再相减，恒返回 -1/0/1
+        return ((va > vb) ? 1 : 0) - ((va < vb) ? 1 : 0);
     }
+
     
     // ========== 缓冲区复用 ==========
     // 减少每帧GC压力
@@ -34,18 +37,41 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
     private var _sortedLeftBuffer:Array;  // 新增：排序后的左边界缓冲
     private var _sortedRightBuffer:Array; // 新增：排序后的右边界缓冲
     
+    // ========== 双缓冲支持 ==========
+    // 两套完整的数组缓冲，用于避免TimSort后的O(n)回写
+    private var _arrA:Array;              // bullets双缓冲A
+    private var _arrB:Array;              // bullets双缓冲B
+    private var _leftA:Array;             // leftKeys双缓冲A
+    private var _leftB:Array;             // leftKeys双缓冲B
+    private var _rightA:Array;            // rightKeys双缓冲A
+    private var _rightB:Array;            // rightKeys双缓冲B
+    private var _useA:Boolean;            // 当前使用A侧缓冲
+    private var _version:Number;          // 版本戳，防止跨帧误用
+    
     /**
      * 构造函数
      */
     public function BulletQueue() {
-        this.bullets = [];
-        // 初始化缓冲区
-        this._leftKeysBuffer = [];
-        this._rightKeysBuffer = [];  // 初始化右边界缓冲
+        // 初始化双缓冲数组
+        this._arrA = [];
+        this._arrB = [];
+        this._leftA = [];
+        this._leftB = [];
+        this._rightA = [];
+        this._rightB = [];
+        this._useA = true;
+        this._version = 0;
+        
+        // 设置初始公开引用指向A侧
+        this.bullets = this._arrA;
+        this._leftKeysBuffer = this._leftA;
+        this._rightKeysBuffer = this._rightA;
+        
+        // 初始化其他缓冲区
         this._indicesBuffer = [];
         this._sortedBuffer = [];
-        this._sortedLeftBuffer = [];   // 初始化排序左边界缓冲
-        this._sortedRightBuffer = [];  // 初始化排序右边界缓冲
+        this._sortedLeftBuffer = [];
+        this._sortedRightBuffer = [];
     }
     
     /**
@@ -201,20 +227,21 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
             _cmpKeys = leftKeys;
             TimSort.sort(indices, cmpIndex);
             
-            // 复用所有排序缓冲区（内联扩容检查）
-            var sortedBullets:Array = this._sortedBuffer;
-            var sortedLeft:Array = this._sortedLeftBuffer;
-            var sortedRight:Array = this._sortedRightBuffer;
-            if (sortedBullets.length < length) sortedBullets.length = length;
-            if (sortedLeft.length < length) sortedLeft.length = length;
-            if (sortedRight.length < length) sortedRight.length = length;
-            
-            // 提取到局部变量，减少属性查找
+            // 选择源和目标缓冲区
             var srcBullets:Array = this.bullets;
-            var srcLeft:Array = leftKeys;
-            var srcRight:Array = rightKeys;
+            var srcLeft:Array = this._leftKeysBuffer;
+            var srcRight:Array = this._rightKeysBuffer;
             
-            // 根据排序后的索引重排（4路展开）
+            var dstBullets:Array = this._useA ? this._arrB : this._arrA;
+            var dstLeft:Array = this._useA ? this._leftB : this._leftA;
+            var dstRight:Array = this._useA ? this._rightB : this._rightA;
+            
+            // 确保目标缓冲区容量
+            if (dstBullets.length < length) dstBullets.length = length;
+            if (dstLeft.length < length) dstLeft.length = length;
+            if (dstRight.length < length) dstRight.length = length;
+            
+            // 直接投影到目标缓冲区（4路展开）
             i = 0;
             var k0:Number, k1:Number, k2:Number, k3:Number;
             while (i < end4) {
@@ -223,61 +250,45 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
                 k2 = indices[i + 2];
                 k3 = indices[i + 3];
                 
-                sortedBullets[i] = srcBullets[k0];
-                sortedBullets[i + 1] = srcBullets[k1];
-                sortedBullets[i + 2] = srcBullets[k2];
-                sortedBullets[i + 3] = srcBullets[k3];
+                dstBullets[i] = srcBullets[k0];
+                dstBullets[i + 1] = srcBullets[k1];
+                dstBullets[i + 2] = srcBullets[k2];
+                dstBullets[i + 3] = srcBullets[k3];
                 
-                sortedLeft[i] = srcLeft[k0];
-                sortedLeft[i + 1] = srcLeft[k1];
-                sortedLeft[i + 2] = srcLeft[k2];
-                sortedLeft[i + 3] = srcLeft[k3];
+                dstLeft[i] = srcLeft[k0];
+                dstLeft[i + 1] = srcLeft[k1];
+                dstLeft[i + 2] = srcLeft[k2];
+                dstLeft[i + 3] = srcLeft[k3];
                 
-                sortedRight[i] = srcRight[k0];
-                sortedRight[i + 1] = srcRight[k1];
-                sortedRight[i + 2] = srcRight[k2];
-                sortedRight[i + 3] = srcRight[k3];
+                dstRight[i] = srcRight[k0];
+                dstRight[i + 1] = srcRight[k1];
+                dstRight[i + 2] = srcRight[k2];
+                dstRight[i + 3] = srcRight[k3];
                 
                 i += 4;
             }
             // 处理剩余元素
             while (i < length) {
                 var k:Number = indices[i];
-                sortedBullets[i] = srcBullets[k];
-                sortedLeft[i] = srcLeft[k];
-                sortedRight[i] = srcRight[k];
+                dstBullets[i] = srcBullets[k];
+                dstLeft[i] = srcLeft[k];
+                dstRight[i] = srcRight[k];
                 i++;
             }
             
-            // 就地覆盖（4路展开）
-            i = 0;
-            while (i < end4) {
-                srcBullets[i] = sortedBullets[i];
-                srcBullets[i + 1] = sortedBullets[i + 1];
-                srcBullets[i + 2] = sortedBullets[i + 2];
-                srcBullets[i + 3] = sortedBullets[i + 3];
-                
-                srcLeft[i] = sortedLeft[i];
-                srcLeft[i + 1] = sortedLeft[i + 1];
-                srcLeft[i + 2] = sortedLeft[i + 2];
-                srcLeft[i + 3] = sortedLeft[i + 3];
-                
-                srcRight[i] = sortedRight[i];
-                srcRight[i + 1] = sortedRight[i + 1];
-                srcRight[i + 2] = sortedRight[i + 2];
-                srcRight[i + 3] = sortedRight[i + 3];
-                
-                i += 4;
-            }
-            // 处理剩余元素
-            while (i < length) {
-                srcBullets[i] = sortedBullets[i];
-                srcLeft[i] = sortedLeft[i];
-                srcRight[i] = sortedRight[i];
-                i++;
-            }
-            // 确保长度一致
-            srcBullets.length = length;
+            // 交换公开指针，避免O(n)回写
+            this.bullets = dstBullets;
+            this._leftKeysBuffer = dstLeft;
+            this._rightKeysBuffer = dstRight;
+            
+            // 切换缓冲区标志
+            this._useA = !this._useA;
+            this._version++;
+            
+            // 确保长度正确
+            this.bullets.length = length;
+            this._leftKeysBuffer.length = length;
+            this._rightKeysBuffer.length = length;
         }
     }
     
@@ -295,11 +306,22 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
      * 清空队列（原地清空，保持引用有效）
      */
     public function clear():Void {
-        this.bullets.length = 0;  // 原地清空，不替换数组引用
+        // 清空所有双缓冲区
+        this._arrA.length = 0;
+        this._arrB.length = 0;
+        this._leftA.length = 0;
+        this._leftB.length = 0;
+        this._rightA.length = 0;
+        this._rightB.length = 0;
         
-        // 同时清空所有缓冲区的长度，避免残留数据影响后续操作
-        this._leftKeysBuffer.length = 0;
-        this._rightKeysBuffer.length = 0;
+        // 重置到A侧作为公开数组
+        this.bullets = this._arrA;
+        this._leftKeysBuffer = this._leftA;
+        this._rightKeysBuffer = this._rightA;
+        this._useA = true;
+        this._version++;
+        
+        // 清空其他缓冲区
         this._indicesBuffer.length = 0;
         this._sortedBuffer.length = 0;
         this._sortedLeftBuffer.length = 0;
@@ -376,14 +398,14 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
         this.sortByLeftBoundary();
         
         var length:Number = this.bullets.length;
-        // 由于采用了就地重排模式，不再需要indices
         return {
             bullets: this.bullets,
             indices: null,  // 就地重排后不需要索引
             leftKeys: this._leftKeysBuffer,
             rightKeys: this._rightKeysBuffer,
             length: length,
-            isIndexed: false  // 明确标记为非索引模式
+            isIndexed: false,  // 明确标记为非索引模式
+            version: this._version  // 版本戳，防止跨帧误用
         };
     }
 }
