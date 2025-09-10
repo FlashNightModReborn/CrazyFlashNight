@@ -1,4 +1,5 @@
 ﻿import org.flashNight.naki.Sort.*;
+import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
 
 /**
  * TimSortTest 增强版测试类
@@ -10,11 +11,37 @@
  * - 边界优化和堆栈不变量测试
  * - 稳定性深度验证测试
  * - 实际应用场景模拟测试
+ * 
+ * 改进说明：
+ * - 使用 LinearCongruentialEngine 替代 Math.random()，确保测试结果可重现
+ * - 通过固定种子消除随机性带来的数据波动
+ * - 提高测试的可靠性和一致性
  */
 class org.flashNight.naki.Sort.TimSortTest {
+    
+    // 可控的随机数生成器，确保测试结果可重现
+    private static var rng:LinearCongruentialEngine;
+    
+    // 初始化随机数生成器，设置固定种子以确保可重现性
+    private static function initRNG():Void {
+        if (rng == null) {
+            rng = LinearCongruentialEngine.getInstance();
+            rng.init(1664525, 1013904223, 4294967296, 12345); // 设置固定种子12345
+        }
+    }
+    
+    // 重置随机数生成器种子，确保每个测试从相同状态开始
+    private static function resetRNG(seed:Number):Void {
+        if (rng != null) {
+            rng.init(1664525, 1013904223, 4294967296, seed);
+        }
+    }
 
     public static function runTests():Void {
         trace("Starting Enhanced TimSort Tests...\n");
+        
+        // 初始化可控随机数生成器
+        initRNG();
 
         // ================================
         // 基础功能测试套件
@@ -335,7 +362,7 @@ class org.flashNight.naki.Sort.TimSortTest {
             
             // 创建随机数组
             for (var j:Number = 0; j < size; j++) {
-                arr.push(Math.random() * 1000);
+                arr.push(rng.nextFloat() * 1000);
             }
             
             var expected:Array = arr.concat();
@@ -753,6 +780,9 @@ class org.flashNight.naki.Sort.TimSortTest {
      * 部分有序数据测试（常见于实际应用）
      */
     private static function testPartiallyOrderedData():Void {
+        // 为部分有序数据测试重置种子
+        resetRNG(11111);
+        
         var arr:Array = [];
         
         // 大部分有序，少量乱序
@@ -762,8 +792,8 @@ class org.flashNight.naki.Sort.TimSortTest {
         
         // 随机交换10%的元素
         for (var j:Number = 0; j < 10; j++) {
-            var pos1:Number = Math.floor(Math.random() * 100);
-            var pos2:Number = Math.floor(Math.random() * 100);
+            var pos1:Number = rng.randomInteger(0, 99);
+            var pos2:Number = rng.randomInteger(0, 99);
             var temp:Number = arr[pos1];
             arr[pos1] = arr[pos2];
             arr[pos2] = temp;
@@ -831,12 +861,15 @@ class org.flashNight.naki.Sort.TimSortTest {
      * 大量重复值测试
      */
     private static function testMostlyDuplicates():Void {
+        // 为大量重复值测试重置种子
+        resetRNG(22222);
+        
         var arr:Array = [];
         
         // 90%的元素是重复的
         for (var i:Number = 0; i < 1000; i++) {
             if (i % 10 == 0) {
-                arr.push(Math.random() * 1000);  // 10%随机值
+                arr.push(rng.nextFloat() * 1000);  // 10%随机值
             } else {
                 arr.push(42);  // 90%重复值
             }
@@ -885,7 +918,7 @@ class org.flashNight.naki.Sort.TimSortTest {
         // 随机游走：每步随机上升或下降
         for (var i:Number = 0; i < 100; i++) {
             arr.push(current);
-            current += (Math.random() > 0.5) ? 1 : -1;
+            current += rng.randomCheckHalf() ? 1 : -1;
             if (current < 0) current = 0;
             if (current > 1000) current = 1000;
         }
@@ -918,7 +951,7 @@ class org.flashNight.naki.Sort.TimSortTest {
             arr.push({
                 id: i,
                 status: statuses[i % 3],
-                timestamp: baseTime + Math.random() * 10000,
+                timestamp: baseTime + rng.nextFloat() * 10000,
                 data: "record_" + i
             });
         }
@@ -949,13 +982,13 @@ class org.flashNight.naki.Sort.TimSortTest {
             var timestamp:Number = baseTime + i * 1000;
             
             // 5%的概率是"迟到"的数据
-            if (Math.random() < 0.05) {
-                timestamp -= Math.random() * 50000; // 迟到数据
+            if (rng.nextFloat() < 0.05) {
+                timestamp -= rng.nextFloat() * 50000; // 迟到数据
             }
             
             arr.push({
                 timestamp: timestamp,
-                value: Math.random() * 100,
+                value: rng.nextFloat() * 100,
                 id: "data_" + i
             });
         }
@@ -995,7 +1028,7 @@ class org.flashNight.naki.Sort.TimSortTest {
             
             // 创建完全随机数组
             for (var j:Number = 0; j < length; j++) {
-                arr.push(Math.random() * 1000);
+                arr.push(rng.nextFloat() * 1000);
             }
             
             var expected:Array = arr.concat();
@@ -1033,6 +1066,9 @@ class org.flashNight.naki.Sort.TimSortTest {
      * 大数组压力测试
      */
     private static function testLargeArrayStressTest():Void {
+        // 为大数组测试重置种子
+        resetRNG(99999);
+        
         var size:Number = 50000;  // 大数组
         var arr:Array = [];
         
@@ -1041,7 +1077,7 @@ class org.flashNight.naki.Sort.TimSortTest {
             if (i % 1000 < 500) {
                 arr.push(i);  // 有序部分
             } else {
-                arr.push(Math.random() * size);  // 随机部分
+                arr.push(rng.nextFloat() * size);  // 随机部分
             }
         }
         
@@ -1111,6 +1147,9 @@ class org.flashNight.naki.Sort.TimSortTest {
     // ================================
     private static function runEnhancedPerformanceTests():Void {
         trace("\n开始增强版性能测试...");
+        
+        // 重置随机数种子以确保性能测试结果可重现
+        resetRNG(54321);
         var sizes:Array = [1000, 5000, 10000];
         var distributions:Array = [
             "random", 
@@ -1148,7 +1187,7 @@ class org.flashNight.naki.Sort.TimSortTest {
         var arr:Array = [];
         switch(type){
             case "random":
-                for(var i:Number=0; i<size; i++) arr.push(Math.random()*size);
+                for(var i:Number=0; i<size; i++) arr.push(rng.nextFloat()*size);
                 break;
             case "sorted":
                 for(var j:Number=0; j<size; j++) arr.push(j);
@@ -1160,8 +1199,8 @@ class org.flashNight.naki.Sort.TimSortTest {
                 // 90%有序，10%随机交换
                 for(var l:Number=0; l<size; l++) arr.push(l);
                 for(var m:Number=0; m<size/10; m++){
-                    var pos1:Number = Math.floor(Math.random() * size);
-                    var pos2:Number = Math.floor(Math.random() * size);
+                    var pos1:Number = rng.randomInteger(0, size - 1);
+                    var pos2:Number = rng.randomInteger(0, size - 1);
                     var temp:Number = arr[pos1];
                     arr[pos1] = arr[pos2];
                     arr[pos2] = temp;
@@ -1169,7 +1208,7 @@ class org.flashNight.naki.Sort.TimSortTest {
                 break;
             case "manyDuplicates":
                 // 大量重复值
-                for(var n:Number=0; n<size; n++) arr.push(Math.floor(Math.random() * 10));
+                for(var n:Number=0; n<size; n++) arr.push(rng.randomInteger(0, 9));
                 break;
             case "pianoKeys":
                 // 钢琴键模式
@@ -1195,7 +1234,7 @@ class org.flashNight.naki.Sort.TimSortTest {
                         arr.push(u+3, u+2, u+1, u);
                         u += 3;
                     }else{
-                        arr.push(Math.random()*size);
+                        arr.push(rng.nextFloat()*size);
                     }
                 }
                 break;

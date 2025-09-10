@@ -9,8 +9,37 @@
  * 3. AS2兼容性问题（移除Array.reduce等ES6方法）
  * 4. 稳定性测试的准确性
  * 5. 边界情况处理
+ * 
+ * 改进说明：
+ * - 使用 LinearCongruentialEngine 替代 Math.random()，确保测试结果可重现
+ * - 通过固定种子消除随机性带来的数据波动
+ * - 提高测试的可靠性和一致性
  */
+
+import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
 class org.flashNight.naki.Sort.SortTest {
+    
+    // 可控的随机数生成器，确保测试结果可重现
+    private var rng:LinearCongruentialEngine;
+    
+    // 初始化随机数生成器，设置固定种子以确保可重现性
+    private function initRNG(seed:Number):Void {
+        if (rng == null) {
+            rng = LinearCongruentialEngine.getInstance();
+        }
+        rng.init(1664525, 1013904223, 4294967296, seed);
+    }
+    
+    // 重置随机数生成器种子
+    private function resetRNG(seed:Number):Void {
+        initRNG(seed);
+    }
+    
+    // 公开的接口，允许用户在测试前设置种子
+    public function setSeed(seed:Number):Void {
+        resetRNG(seed);
+        trace("随机数种子已设置为: " + seed);
+    }
     
     // 测试配置
     private var testConfig:Object = {
@@ -39,6 +68,9 @@ class org.flashNight.naki.Sort.SortTest {
      * 构造函数
      */
     public function SortTest(cfg:Object) {
+        // 初始化可控随机数生成器
+        initRNG(12345); // 设置固定种子
+        
         // 合并用户配置
         if (cfg != null) {
             for (var k:String in cfg) {
@@ -64,7 +96,11 @@ class org.flashNight.naki.Sort.SortTest {
     public function runCompleteTestSuite():Void {
         trace(repeatChar("=", 80));
         trace("启动增强版排序算法测试套件");
+        trace("使用可控随机数生成器确保结果可重现");
         trace(repeatChar("=", 80));
+        
+        // 重置主随机数种子以确保测试的一致性
+        resetRNG(12345);
         
         runBasicFunctionalityTests();
         runStabilityTests();
@@ -161,6 +197,9 @@ class org.flashNight.naki.Sort.SortTest {
      * @return      构造好的测试数据数组
      */
     private function generateStabilityData(type:String, size:Number):Array {
+        // 为稳定性测试数据生成设置固定种子
+        resetRNG(type.length * 1000 + size); // 基于类型和大小的固定种子
+        
         var data:Array = [];
         var idCounters:Object = {};
 
@@ -1382,8 +1421,9 @@ class org.flashNight.naki.Sort.SortTest {
     }
     
     private function generateRandomArray(size:Number):Array {
+        resetRNG(54321); // 为随机数组生成设置固定种子
         var a:Array = [];
-        for (var i:Number=0; i<size; i++) a.push(Math.floor(Math.random()*size));
+        for (var i:Number=0; i<size; i++) a.push(rng.randomInteger(0, size - 1));
         return a;
     }
     private function generateSortedArray(size:Number):Array {
@@ -1399,28 +1439,33 @@ class org.flashNight.naki.Sort.SortTest {
     private function generatePartiallySortedArray(size:Number):Array {
         var a:Array = generateSortedArray(size);
         var c:Number = Math.floor(size*0.1);
+        resetRNG(11111); // 为部分有序数组设置固定种子
         for (var i:Number=0; i<c; i++) {
-            var x:Number=Math.floor(Math.random()*size),
-                y:Number=Math.floor(Math.random()*size);
+            var x:Number=rng.randomInteger(0, size - 1),
+                y:Number=rng.randomInteger(0, size - 1);
             var t=a[x];a[x]=a[y];a[y]=t;
         }
         return a;
     }
     private function generateDuplicateElementsArray(size:Number):Array {
-        var a:Array=[]; for (var i:Number=0; i<size; i++) a.push(Math.floor(Math.random()*10));
+        resetRNG(22222); // 为重复元素数组设置固定种子
+        var a:Array=[]; 
+        for (var i:Number=0; i<size; i++) a.push(rng.randomInteger(0, 9));
         return a;
     }
     private function generateAllSameElementsArray(size:Number):Array {
-        var v:Number=Math.floor(Math.random()*100), a:Array=[];
+        resetRNG(33333); // 为全相同元素数组设置固定种子
+        var v:Number=rng.randomInteger(0, 99), a:Array=[];
         for(var i:Number=0;i<size;i++) a.push(v);
         return a;
     }
     private function generateNearlySortedArray(size:Number):Array {
         var a:Array=generateSortedArray(size);
         var swaps:Number=Math.floor(size*0.01);
+        resetRNG(44444); // 为几乎有序数组设置固定种子
         for(var i:Number=0;i<swaps;i++){
-            var x:Number=Math.floor(Math.random()*size),
-                y:Number=Math.floor(Math.random()*size);
+            var x:Number=rng.randomInteger(0, size - 1),
+                y:Number=rng.randomInteger(0, size - 1);
             var t=a[x];a[x]=a[y];a[y]=t;
         }
         return a;
@@ -1430,7 +1475,8 @@ class org.flashNight.naki.Sort.SortTest {
             mid:Number=Math.floor(size/2);
         for(var i:Number=0;i<mid;i++) a.push(i);
         for(var j:Number=mid;j>=0;j--) a.push(j);
-        while(a.length<size) a.push(Math.floor(Math.random()*mid));
+        resetRNG(55555); // 为管道风琴数组设置固定种子
+        while(a.length<size) a.push(rng.randomInteger(0, mid - 1));
         return a.slice(0,size);
     }
     private function generateSawtoothArray(size:Number):Array {
@@ -1440,20 +1486,22 @@ class org.flashNight.naki.Sort.SortTest {
         return a;
     }
     private function generateExtremeValues(size:Number):Array {
+        resetRNG(66666); // 为极值数据设置固定种子
         var a:Array=[];
         var maxSafeValue:Number = 1000000; // 避免使用Number.MAX_VALUE
         for(var i:Number=0;i<size;i++){
-            var r:Number=Math.random();
+            var r:Number=rng.nextFloat();
             if(r<0.1)      a.push(maxSafeValue);
             else if(r<0.2) a.push(-maxSafeValue);
-            else           a.push(Math.floor(Math.random()*1000));
+            else           a.push(rng.randomInteger(0, 999));
         }
         return a;
     }
     private function generateHighDuplicates(size:Number):Array {
+        resetRNG(77777); // 为高重复数据设置固定种子
         var vals:Array=[1,2,3], a:Array=[];
         for(var i:Number=0;i<size;i++)
-            a.push(vals[Math.floor(Math.random()*vals.length)]);
+            a.push(vals[rng.randomInteger(0, vals.length - 1)]);
         return a;
     }
     private function generateThreeValues(size:Number):Array {
@@ -1463,6 +1511,7 @@ class org.flashNight.naki.Sort.SortTest {
             else if(i<2*size/3) a.push(2);
             else                a.push(3);
         }
+        resetRNG(88888); // 为三值数据打乱设置固定种子
         shuffleArray(a);
         return a;
     }
@@ -1472,14 +1521,16 @@ class org.flashNight.naki.Sort.SortTest {
         return a;
     }
     private function generateExponentialPattern(size:Number):Array {
+        resetRNG(99999); // 为指数模式设置固定种子
         var a:Array=[];
         for(var i:Number=0;i<size;i++)
-            a.push(Math.floor(Math.pow(2,Math.random()*10)));
+            a.push(Math.floor(Math.pow(2,rng.nextFloat()*10)));
         return a;
     }
     private function shuffleArray(a:Array):Void {
+        // 打乱使用当前的随机数生成器状态
         for(var i:Number=a.length-1;i>0;i--){
-            var j:Number=Math.floor(Math.random()*(i+1)),
+            var j:Number=rng.randomInteger(0, i),
                 t=a[i];a[i]=a[j];a[j]=t;
         }
     }
