@@ -129,14 +129,16 @@ class org.flashNight.naki.Sort.TimSort {
         // mergeHi特殊变量
         var ba0:Number;                  // A区域基准位置
         
-        // ǿ�ƺϲ�����
-        var forceIdx:Number;             // ǿ�ƺϲ�����
+        // 强制合并变量
+        var forceIdx:Number;             // 强制合并索引
 
-        // ͳһ��ǰ�����Ķ���/��������������
-        var left:Number;                 // ������߽�/����������
-        var hi2:Number;                  // �����ұ߽�
-        var mid:Number;                  // �����
-        var stackCapacity:Number;        // ����ջԤ��������
+        // 统一提前声明的二分/插入排序及循环展开辅助变量
+        var left:Number;                 // 二分左边界/插入排序用
+        var hi2:Number;                  // 二分右边界
+        var mid:Number;                  // 二分中点
+        var dstBase:Number;               // 目标基址（循环展开）
+        var srcBase:Number;               // 源基址（循环展开）
+        var stackCapacity:Number;        // 运行栈预分配容量
 
         /*
          * ===============================
@@ -566,10 +568,12 @@ class org.flashNight.naki.Sort.TimSort {
                                     // 批量复制B中的元素（循环展开优化）
                                     copyEnd = gallopK - (gallopK & 3);
                                     for (copyI = 0; copyI < copyEnd; copyI += 4) {
-                                        arr[d + copyI] = arr[pb + copyI];
-                                        arr[d + copyI + 1] = arr[pb + copyI + 1];
-                                        arr[d + copyI + 2] = arr[pb + copyI + 2];
-                                        arr[d + copyI + 3] = arr[pb + copyI + 3];
+                                        dstBase = d + copyI;
+                                        srcBase = pb + copyI;
+                                        arr[dstBase] = arr[srcBase];
+                                        arr[dstBase + 1] = arr[srcBase + 1];
+                                        arr[dstBase + 2] = arr[srcBase + 2];
+                                        arr[dstBase + 3] = arr[srcBase + 3];
                                     }
                                     for (; copyI < gallopK; copyI++) {
                                         arr[d + copyI] = arr[pb + copyI];
@@ -616,10 +620,12 @@ class org.flashNight.naki.Sort.TimSort {
                                     copyEnd = gallopK - (gallopK & 3);
                                     for (copyI = 0; copyI < copyEnd; copyI += 4) {
                                         copyIdx = pa + copyI;
-                                        arr[d + copyI] = tempArray[copyIdx];
-                                        arr[d + copyI + 1] = tempArray[copyIdx + 1];
-                                        arr[d + copyI + 2] = tempArray[copyIdx + 2];
-                                        arr[d + copyI + 3] = tempArray[copyIdx + 3];
+                                        dstBase = d + copyI;
+                                        srcBase = copyIdx;
+                                        arr[dstBase] = tempArray[srcBase];
+                                        arr[dstBase + 1] = tempArray[srcBase + 1];
+                                        arr[dstBase + 2] = tempArray[srcBase + 2];
+                                        arr[dstBase + 3] = tempArray[srcBase + 3];
                                     }
                                     for (; copyI < gallopK; copyI++) {
                                         arr[d + copyI] = tempArray[pa + copyI];
@@ -652,10 +658,12 @@ class org.flashNight.naki.Sort.TimSort {
                             copyEnd = copyLen - (copyLen & 3);
                             for (copyI = 0; copyI < copyEnd; copyI += 4) {
                                 copyIdx = pa + copyI;
-                                arr[d + copyI] = tempArray[copyIdx];
-                                arr[d + copyI + 1] = tempArray[copyIdx + 1];
-                                arr[d + copyI + 2] = tempArray[copyIdx + 2];
-                                arr[d + copyI + 3] = tempArray[copyIdx + 3];
+                                dstBase = d + copyI;
+                                        srcBase = copyIdx;
+                                        arr[dstBase] = tempArray[srcBase];
+                                        arr[dstBase + 1] = tempArray[srcBase + 1];
+                                        arr[dstBase + 2] = tempArray[srcBase + 2];
+                                        arr[dstBase + 3] = tempArray[srcBase + 3];
                             }
                             for (; copyI < copyLen; copyI++) {
                                 arr[d + copyI] = tempArray[pa + copyI];
@@ -737,10 +745,12 @@ class org.flashNight.naki.Sort.TimSort {
                                     // 从右到左批量复制A中的元素（循环展开优化）
                                     copyEnd = gallopK - (gallopK & 3);
                                     for (copyI = 0; copyI < copyEnd; copyI += 4) {
-                                        arr[d - copyI] = arr[pa - copyI];
-                                        arr[d - copyI - 1] = arr[pa - copyI - 1];
-                                        arr[d - copyI - 2] = arr[pa - copyI - 2];
-                                        arr[d - copyI - 3] = arr[pa - copyI - 3];
+                                        dstBase = d - copyI;
+                                        srcBase = pa - copyI;
+                                        arr[dstBase] = arr[srcBase];
+                                        arr[dstBase - 1] = arr[srcBase - 1];
+                                        arr[dstBase - 2] = arr[srcBase - 2];
+                                        arr[dstBase - 3] = arr[srcBase - 3];
                                     }
                                     for (; copyI < gallopK; copyI++) {
                                         arr[d - copyI] = arr[pa - copyI];
@@ -784,10 +794,12 @@ class org.flashNight.naki.Sort.TimSort {
                                     // 从右到左批量复制B中的元素（循环展开优化）
                                     copyEnd = gallopK - (gallopK & 3);
                                     for (copyI = 0; copyI < copyEnd; copyI += 4) {
-                                        arr[d - copyI] = tempArray[pb - copyI];
-                                        arr[d - copyI - 1] = tempArray[pb - copyI - 1];
-                                        arr[d - copyI - 2] = tempArray[pb - copyI - 2];
-                                        arr[d - copyI - 3] = tempArray[pb - copyI - 3];
+                                        dstBase = d - copyI;
+                                        srcBase = pb - copyI;
+                                        arr[dstBase] = tempArray[srcBase];
+                                        arr[dstBase - 1] = tempArray[srcBase - 1];
+                                        arr[dstBase - 2] = tempArray[srcBase - 2];
+                                        arr[dstBase - 3] = tempArray[srcBase - 3];
                                     }
                                     for (; copyI < gallopK; copyI++) {
                                         arr[d - copyI] = tempArray[pb - copyI];
@@ -817,10 +829,12 @@ class org.flashNight.naki.Sort.TimSort {
                             copyLen = pb + 1;
                             copyEnd = copyLen - (copyLen & 3);
                             for (copyI = 0; copyI < copyEnd; copyI += 4) {
-                                arr[d - copyI] = tempArray[pb - copyI];
-                                arr[d - copyI - 1] = tempArray[pb - copyI - 1];
-                                arr[d - copyI - 2] = tempArray[pb - copyI - 2];
-                                arr[d - copyI - 3] = tempArray[pb - copyI - 3];
+                                dstBase = d - copyI;
+                                        srcBase = pb - copyI;
+                                        arr[dstBase] = tempArray[srcBase];
+                                        arr[dstBase - 1] = tempArray[srcBase - 1];
+                                        arr[dstBase - 2] = tempArray[srcBase - 2];
+                                        arr[dstBase - 3] = tempArray[srcBase - 3];
                             }
                             for (; copyI < copyLen; copyI++) {
                                 arr[d - copyI] = tempArray[pb - copyI];
@@ -1052,10 +1066,12 @@ class org.flashNight.naki.Sort.TimSort {
                                 // 批量复制（循环展开优化）
                                 copyEnd = gallopK - (gallopK & 3);
                                 for (copyI = 0; copyI < copyEnd; copyI += 4) {
-                                    arr[d + copyI] = arr[pb + copyI];
-                                    arr[d + copyI + 1] = arr[pb + copyI + 1];
-                                    arr[d + copyI + 2] = arr[pb + copyI + 2];
-                                    arr[d + copyI + 3] = arr[pb + copyI + 3];
+                                    dstBase = d + copyI;
+                                        srcBase = pb + copyI;
+                                        arr[dstBase] = arr[srcBase];
+                                        arr[dstBase + 1] = arr[srcBase + 1];
+                                        arr[dstBase + 2] = arr[srcBase + 2];
+                                        arr[dstBase + 3] = arr[srcBase + 3];
                                 }
                                 for (; copyI < gallopK; copyI++) {
                                     arr[d + copyI] = arr[pb + copyI];
@@ -1099,10 +1115,12 @@ class org.flashNight.naki.Sort.TimSort {
                                 copyEnd = gallopK - (gallopK & 3);
                                 for (copyI = 0; copyI < copyEnd; copyI += 4) {
                                     copyIdx = pa + copyI;
-                                    arr[d + copyI] = tempArray[copyIdx];
-                                    arr[d + copyI + 1] = tempArray[copyIdx + 1];
-                                    arr[d + copyI + 2] = tempArray[copyIdx + 2];
-                                    arr[d + copyI + 3] = tempArray[copyIdx + 3];
+                                    dstBase = d + copyI;
+                                        srcBase = copyIdx;
+                                        arr[dstBase] = tempArray[srcBase];
+                                        arr[dstBase + 1] = tempArray[srcBase + 1];
+                                        arr[dstBase + 2] = tempArray[srcBase + 2];
+                                        arr[dstBase + 3] = tempArray[srcBase + 3];
                                 }
                                 for (; copyI < gallopK; copyI++) {
                                     arr[d + copyI] = tempArray[pa + copyI];
@@ -1132,10 +1150,12 @@ class org.flashNight.naki.Sort.TimSort {
                         copyEnd = copyLen - (copyLen & 3);
                         for (copyI = 0; copyI < copyEnd; copyI += 4) {
                             copyIdx = pa + copyI;
-                            arr[d + copyI] = tempArray[copyIdx];
-                            arr[d + copyI + 1] = tempArray[copyIdx + 1];
-                            arr[d + copyI + 2] = tempArray[copyIdx + 2];
-                            arr[d + copyI + 3] = tempArray[copyIdx + 3];
+                            dstBase = d + copyI;
+                                        srcBase = copyIdx;
+                                        arr[dstBase] = tempArray[srcBase];
+                                        arr[dstBase + 1] = tempArray[srcBase + 1];
+                                        arr[dstBase + 2] = tempArray[srcBase + 2];
+                                        arr[dstBase + 3] = tempArray[srcBase + 3];
                         }
                         for (; copyI < copyLen; copyI++) {
                             arr[d + copyI] = tempArray[pa + copyI];
@@ -1208,10 +1228,12 @@ class org.flashNight.naki.Sort.TimSort {
                                 // 从右到左批量复制（循环展开优化）
                                 copyEnd = gallopK - (gallopK & 3);
                                 for (copyI = 0; copyI < copyEnd; copyI += 4) {
-                                    arr[d - copyI] = arr[pa - copyI];
-                                    arr[d - copyI - 1] = arr[pa - copyI - 1];
-                                    arr[d - copyI - 2] = arr[pa - copyI - 2];
-                                    arr[d - copyI - 3] = arr[pa - copyI - 3];
+                                    dstBase = d - copyI;
+                                        srcBase = pa - copyI;
+                                        arr[dstBase] = arr[srcBase];
+                                        arr[dstBase - 1] = arr[srcBase - 1];
+                                        arr[dstBase - 2] = arr[srcBase - 2];
+                                        arr[dstBase - 3] = arr[srcBase - 3];
                                 }
                                 for (; copyI < gallopK; copyI++) {
                                     arr[d - copyI] = arr[pa - copyI];
@@ -1254,10 +1276,12 @@ class org.flashNight.naki.Sort.TimSort {
                                 // 从右到左批量复制（循环展开优化）
                                 copyEnd = gallopK - (gallopK & 3);
                                 for (copyI = 0; copyI < copyEnd; copyI += 4) {
-                                    arr[d - copyI] = tempArray[pb - copyI];
-                                    arr[d - copyI - 1] = tempArray[pb - copyI - 1];
-                                    arr[d - copyI - 2] = tempArray[pb - copyI - 2];
-                                    arr[d - copyI - 3] = tempArray[pb - copyI - 3];
+                                    dstBase = d - copyI;
+                                        srcBase = pb - copyI;
+                                        arr[dstBase] = tempArray[srcBase];
+                                        arr[dstBase - 1] = tempArray[srcBase - 1];
+                                        arr[dstBase - 2] = tempArray[srcBase - 2];
+                                        arr[dstBase - 3] = tempArray[srcBase - 3];
                                 }
                                 for (; copyI < gallopK; copyI++) {
                                     arr[d - copyI] = tempArray[pb - copyI];
@@ -1286,10 +1310,12 @@ class org.flashNight.naki.Sort.TimSort {
                         copyLen = pb + 1;
                         copyEnd = copyLen - (copyLen & 3);
                         for (copyI = 0; copyI < copyEnd; copyI += 4) {
-                            arr[d - copyI] = tempArray[pb - copyI];
-                            arr[d - copyI - 1] = tempArray[pb - copyI - 1];
-                            arr[d - copyI - 2] = tempArray[pb - copyI - 2];
-                            arr[d - copyI - 3] = tempArray[pb - copyI - 3];
+                            dstBase = d - copyI;
+                                        srcBase = pb - copyI;
+                                        arr[dstBase] = tempArray[srcBase];
+                                        arr[dstBase - 1] = tempArray[srcBase - 1];
+                                        arr[dstBase - 2] = tempArray[srcBase - 2];
+                                        arr[dstBase - 3] = tempArray[srcBase - 3];
                         }
                         for (; copyI < copyLen; copyI++) {
                             arr[d - copyI] = tempArray[pb - copyI];
@@ -1303,6 +1329,12 @@ class org.flashNight.naki.Sort.TimSort {
         return arr;
     }
 }
+
+
+
+
+
+
 
 
 
