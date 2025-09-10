@@ -3,8 +3,8 @@
 // ----------------------------------------------------------------------------
 // 功能：管理子弹队列并提供有序访问，优化碰撞检测缓存命中率
 // 排序策略：
-// - < 64个元素：内联插入排序（低开销，缓存友好）
-// - ≥ 64个元素：TimSort（稳定排序，适应部分有序）
+// - < 32个元素：内联插入排序（低开销，缓存友好）
+// - ≥ 32个元素：TimSort（稳定排序，适应部分有序）
 // ============================================================================
 
 import org.flashNight.naki.Sort.*;
@@ -16,7 +16,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
     private var bullets:Array;
     
     // 排序阈值常量
-    private static var INSERTION_SORT_THRESHOLD:Number = 64;
+    private static var INSERTION_SORT_THRESHOLD:Number = 32;
     
     // ========== 静态比较器支持 ==========
     // 避免每帧创建闭包
@@ -182,7 +182,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
             return;  // 跳过排序，节省大量开销
         }
         
-        // ========== 小数组路径：插入排序（< 64个元素） ==========
+        // ========== 小数组路径：插入排序（< 32个元素） ==========
         if (length < INSERTION_SORT_THRESHOLD) {
             // 带索引的插入排序，同步移动所有数组
             
