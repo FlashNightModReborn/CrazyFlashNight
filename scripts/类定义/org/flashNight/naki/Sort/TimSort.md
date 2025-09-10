@@ -21,7 +21,7 @@ PASS: 三元素数组测试（完全逆序）
 === TimSort 核心特性测试 ===
 PASS: Galloping Mode 激活测试
 PASS: Galloping Mode 效率测试
-    Galloping效率测试耗时: 1ms
+    Galloping效率测试耗时: 0ms
 PASS: Galloping Mode 自适应阈值测试
 PASS: 自然run检测测试
 PASS: 降序run反转优化测试
@@ -54,11 +54,11 @@ PASS: 最大栈深度测试
 
 === 实际应用场景测试 ===
 PASS: 部分有序数据测试
-    部分有序数据排序耗时: 1ms
+    部分有序数据排序耗时: 0ms
 PASS: 交替模式测试
 PASS: 钢琴键模式测试
 PASS: 大量重复值测试
-    大量重复值排序耗时: 16ms
+    大量重复值排序耗时: 10ms
 PASS: 管道模式测试
 PASS: 随机游走模式测试
 PASS: 数据库风格数据测试
@@ -73,7 +73,7 @@ PASS: MIN_RUN边界测试 (length=64)
 PASS: MIN_RUN边界测试 (length=65)
 PASS: Gallop阈值边界测试
 PASS: 大数组压力测试
-    大数组压力测试 (size=50000) 耗时: 1129ms
+    大数组压力测试 (size=50000) 耗时: 767ms
 PASS: 深度递归避免测试
 PASS: 内存效率测试
     内存效率测试耗时: 1ms
@@ -82,38 +82,38 @@ PASS: 内存效率测试
 
 开始增强版性能测试...
   测试数组大小: 1000
-    random: 22ms
+    random: 13ms
     sorted: 1ms
     reverse: 1ms
-    partiallyOrdered: 13ms
-    manyDuplicates: 16ms
+    partiallyOrdered: 11ms
+    manyDuplicates: 12ms
     pianoKeys: 3ms
     organPipe: 2ms
-    mergeStress: 5ms
-    gallopFriendly: 2ms
-    gallopUnfriendly: 9ms
+    mergeStress: 3ms
+    gallopFriendly: 1ms
+    gallopUnfriendly: 8ms
   测试数组大小: 5000
-    random: 112ms
-    sorted: 6ms
-    reverse: 11ms
-    partiallyOrdered: 103ms
-    manyDuplicates: 105ms
-    pianoKeys: 29ms
-    organPipe: 22ms
-    mergeStress: 25ms
-    gallopFriendly: 10ms
-    gallopUnfriendly: 79ms
+    random: 79ms
+    sorted: 4ms
+    reverse: 5ms
+    partiallyOrdered: 67ms
+    manyDuplicates: 72ms
+    pianoKeys: 16ms
+    organPipe: 11ms
+    mergeStress: 19ms
+    gallopFriendly: 6ms
+    gallopUnfriendly: 57ms
   测试数组大小: 10000
-    random: 254ms
-    sorted: 11ms
-    reverse: 14ms
-    partiallyOrdered: 209ms
-    manyDuplicates: 231ms
-    pianoKeys: 43ms
-    organPipe: 41ms
-    mergeStress: 49ms
-    gallopFriendly: 22ms
-    gallopUnfriendly: 171ms
+    random: 167ms
+    sorted: 9ms
+    reverse: 11ms
+    partiallyOrdered: 148ms
+    manyDuplicates: 160ms
+    pianoKeys: 31ms
+    organPipe: 23ms
+    mergeStress: 37ms
+    gallopFriendly: 11ms
+    gallopUnfriendly: 120ms
 增强版性能测试完成
 
 All Enhanced TimSort Tests Completed.
