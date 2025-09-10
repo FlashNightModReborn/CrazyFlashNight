@@ -129,9 +129,15 @@ class org.flashNight.naki.Sort.TimSort {
         // mergeHi特殊变量
         var ba0:Number;                  // A区域基准位置
         
-        // 强制合并变量
-        var forceIdx:Number;             // 强制合并索引
-        
+        // ǿ�ƺϲ�����
+        var forceIdx:Number;             // ǿ�ƺϲ�����
+
+        // ͳһ��ǰ�����Ķ���/��������������
+        var left:Number;                 // ������߽�/����������
+        var hi2:Number;                  // �����ұ߽�
+        var mid:Number;                  // �����
+        var stackCapacity:Number;        // ����ջԤ��������
+
         /*
          * ===============================
          * 算法主体开始
@@ -153,8 +159,9 @@ class org.flashNight.naki.Sort.TimSort {
         
         // 初始化核心数据结构
         tempArray = new Array(Math.ceil(n / 2));         // 临时数组，最大需要n/2空间
-        runBase = [];                                    // run栈：存储run起始位置
-        runLen = [];                                     // run栈：存储run长度
+        stackCapacity = 64;                                    // 栈容量预分配
+        runBase = new Array(stackCapacity);                                    // run栈：存储run起始位置
+        runLen = new Array(stackCapacity);                                     // run栈：存储run长度
         stackSize = 0;                                   // 栈大小初始化
         minGallop = MIN_GALLOP;                         // 动态galloping阈值
         
@@ -169,7 +176,7 @@ class org.flashNight.naki.Sort.TimSort {
          */
         tempN = n;
         r = 0;
-        while (tempN >= 32) {
+        while (tempN >= MIN_MERGE) {
             r |= tempN & 1;              // 记录是否有奇数位
             tempN >>= 1;                 // 右移一位
         }
@@ -242,9 +249,8 @@ class org.flashNight.naki.Sort.TimSort {
                         continue;
                     }
                     // 使用二分插入：在 [lo, i) 中定位插入点，并整体右移一位
-                    var left:Number = lo;
-                    var hi2:Number = i; // 开区间上界
-                    var mid:Number;
+                    left = lo;
+                    hi2 = i;
                     while (left < hi2) {
                         mid = (left + hi2) >> 1;
                         if (compare(arr[mid], key) <= 0) {
@@ -425,9 +431,49 @@ class org.flashNight.naki.Sort.TimSort {
                         // B的所有元素都大于A的最后元素，无需合并
                     } else {
                         // 调整B的范围
-                        lenB = gallopK2;
                         
-                        /*
+                        // 单元素合并优化（快速路径）
+                        if (lenA == 1) {
+                            tmp = arr[loA];
+                            left = 0;
+                            hi2 = lenB;
+                            while (left < hi2) {
+                                mid = (left + hi2) >> 1;
+                                if (compare(arr[loB + mid], tmp) < 0) {
+                                    left = mid + 1;
+                                } else {
+                                    hi2 = mid;
+                                }
+                            }
+                            for (i = 0; i < left; i++) {
+                                arr[loA + i] = arr[loB + i];
+                            }
+                            arr[loA + left] = tmp;
+                            for (i = left; i < lenB; i++) {
+                                arr[loA + i + 1] = arr[loB + i];
+                            }
+                            size = stackSize;
+                            continue;
+                        }
+                        if (lenB == 1) {
+                            tmp = arr[loB];
+                            left = 0;
+                            hi2 = lenA;
+                            while (left < hi2) {
+                                mid = (left + hi2) >> 1;
+                                if (compare(arr[loA + mid], tmp) <= 0) {
+                                    left = mid + 1;
+                                } else {
+                                    hi2 = mid;
+                                }
+                            }
+                            for (j = lenA - 1; j >= left; j--) {
+                                arr[loA + j + 1] = arr[loA + j];
+                            }
+                            arr[loA + left] = tmp;
+                            size = stackSize;
+                            continue;
+                        }/*
                          * 选择合并方向
                          * =============
                          * 
@@ -894,9 +940,49 @@ class org.flashNight.naki.Sort.TimSort {
                 if (gallopK2 == 0) {
                     // 无需合并，直接继续
                 } else {
-                    lenB = gallopK2;
                     
-                    // 完整的合并逻辑（与上面_mergeCollapse中完全相同）
+                        // 单元素合并优化（快速路径）
+                        if (lenA == 1) {
+                            tmp = arr[loA];
+                            left = 0;
+                            hi2 = lenB;
+                            while (left < hi2) {
+                                mid = (left + hi2) >> 1;
+                                if (compare(arr[loB + mid], tmp) < 0) {
+                                    left = mid + 1;
+                                } else {
+                                    hi2 = mid;
+                                }
+                            }
+                            for (i = 0; i < left; i++) {
+                                arr[loA + i] = arr[loB + i];
+                            }
+                            arr[loA + left] = tmp;
+                            for (i = left; i < lenB; i++) {
+                                arr[loA + i + 1] = arr[loB + i];
+                            }
+                            size = stackSize;
+                            continue;
+                        }
+                        if (lenB == 1) {
+                            tmp = arr[loB];
+                            left = 0;
+                            hi2 = lenA;
+                            while (left < hi2) {
+                                mid = (left + hi2) >> 1;
+                                if (compare(arr[loA + mid], tmp) <= 0) {
+                                    left = mid + 1;
+                                } else {
+                                    hi2 = mid;
+                                }
+                            }
+                            for (j = lenA - 1; j >= left; j--) {
+                                arr[loA + j + 1] = arr[loA + j];
+                            }
+                            arr[loA + left] = tmp;
+                            size = stackSize;
+                            continue;
+                        }// 完整的合并逻辑（与上面_mergeCollapse中完全相同）
                     if (lenA <= lenB) {
                         // 完整的mergeLo（重复实现）
                         pa = 0;
@@ -1217,3 +1303,7 @@ class org.flashNight.naki.Sort.TimSort {
         return arr;
     }
 }
+
+
+
+
