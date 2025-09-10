@@ -225,14 +225,52 @@ class org.flashNight.naki.Sort.TimSort {
                 
                 // 内联插入排序 (_insertionSort)
                 right = lo + force - 1;
+
                 for (i = lo + 1; i <= right; i++) {
                     key = arr[i];
                     j = i - 1;
+                    // 混合插入策略：已有序守卫 + 短距离线性，否则继续走二分插入
+                    if (compare(arr[i - 1], key) <= 0) {
+                        continue;
+                    }
+                    if ((i - lo) <= 8) {
+                        while (j >= lo && compare(arr[j], key) > 0) {
+                            arr[j + 1] = arr[j];
+                            j--;
+                        }
+                        arr[j + 1] = key;
+                        continue;
+                    }
+                    // 使用二分插入：在 [lo, i) 中定位插入点，并整体右移一位
+                    var left:Number = lo;
+                    var hi2:Number = i; // 开区间上界
+                    var mid:Number;
+                    while (left < hi2) {
+                        mid = (left + hi2) >> 1;
+                        if (compare(arr[mid], key) <= 0) {
+                            left = mid + 1;
+                        } else {
+                            hi2 = mid;
+                        }
+                    }
+                    // 将 [left, i) 整体右移一位
+                    j = i;
+                    while (j > left) {
+                        arr[j] = arr[j - 1];
+                        j--;
+                    }
                     // 向前查找插入位置
-                    while (j >= lo && compare(arr[j], key) > 0) {
+                    /*
+                    
+                    // 旧的线性插入已由二分插入替代，保留为空循环以减少改动面
+
+                    while (false && j >= lo && compare(arr[j], key) > 0) {
                         arr[j + 1] = arr[j--];
                     }
-                    arr[j + 1] = key;
+                    
+                    */
+                    // 将 key 放到计算出的稳定插入位置
+                    arr[left] = key;
                 }
                 runLength = force;
             }
