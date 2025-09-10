@@ -8,6 +8,8 @@
 // ============================================================================
 
 import org.flashNight.naki.Sort.*;
+import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.arki.component.Collider.*;    
 
 class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
     
@@ -20,11 +22,32 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
     // 避免每帧创建闭包
     private static var _cmpKeys:Array;
     
+    /**
+     * 索引比较函数，用于 TimSort 排序
+     * 
+     * 设计说明：
+     * - 通过索引访问 _cmpKeys 数组中的实际排序值
+     * - 简化版：(va > vb) - (va < vb) 利用布尔值隐式转换为 0/1
+     * - 返回值：-1（a<b）、0（a==b）、1（a>b）
+     * 
+     * 前置条件：
+     * - 所有键值已在 add() 中验证，保证为有效 Number
+     * - 不存在 NaN、undefined 等异常值
+     * 
+     * 性能考虑：
+     * - 静态函数避免闭包开销
+     * - 通过共享 _cmpKeys 数组避免参数传递
+     * - 简化的比较逻辑减少分支预测失败
+     * 
+     * @param a 第一个元素的索引
+     * @param b 第二个元素的索引
+     * @return 比较结果：-1/0/1
+     */
     private static function cmpIndex(a:Number, b:Number):Number {
         var va:Number = _cmpKeys[a];
         var vb:Number = _cmpKeys[b];
-        // 把可能的 undefined/true/false 显式变成 0/1，再相减，恒返回 -1/0/1
-        return ((va > vb) ? 1 : 0) - ((va < vb) ? 1 : 0);
+        // AS2 中布尔值转数字是可靠的：true→1, false→0
+        return (va > vb) - (va < vb);
     }
 
     
@@ -76,17 +99,30 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
     
     /**
      * 添加子弹到队列
-     * 放宽检查，因为预检测会处理异常情况
+     * 执行严格的合法性检查，确保只有有效子弹进入队列
+     * @param bullet 待添加的子弹对象
      */
     public function add(bullet:Object):Void {
-        if (bullet) {
-            this.bullets.push(bullet);
-        }
+        if (!bullet) return;
+        var box:AABBCollider = bullet.aabbCollider;
+        if (!box) return;
+
+        var left:Number  = box.left;
+        var right:Number = box.right;
+
+        // 一次性数值健检：挡 NaN 与 ±Infinity
+        if (((left - left) + (right - right)) != 0) return;
+
+        // 比 push 更快的追加方式
+        var arr:Array = this.bullets;
+        arr[arr.length] = bullet;
     }
+
     
     /**
      * 按左边界排序子弹（混合排序策略）
      * 使用并行数组缓存key，避免动态属性污染
+     * 注意：此方法假设所有子弹已在 add() 中通过合法性验证
      */
     public function sortByLeftBoundary():Void {
         var length:Number = this.bullets.length;
@@ -99,9 +135,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
         // ========== 预取左右边界值到缓冲区 ==========
         // 目的：
         // 1. 避免排序时重复访问属性链
-        // 2. 处理NaN/undefined，保证比较一致性
-        // 3. 检测是否已有序，跳过不必要的排序
-        // 4. 缓存right值供碰撞检测复用
+        // 2. 检测是否已有序，跳过不必要的排序
+        // 3. 缓存right值供碰撞检测复用
         
         // 复用缓冲区，必要时扩容（内联以减少函数调用开销）
         var leftKeys:Array = this._leftKeysBuffer;
@@ -116,29 +151,12 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
         var prevValue:Number = -Infinity;
         var isSorted:Boolean = true;
         
-        var hasInvalid:Boolean = false;  // 记录是否有异常对象
-        
         // 预取所有边界值，同时检测是否已有序
+        // 所有子弹已在 add() 中验证，直接读取值
         while (i < length) {
             bullet = this.bullets[i];
-            if (bullet && bullet.aabbCollider) {
-                leftValue = bullet.aabbCollider.left;
-                rightValue = bullet.aabbCollider.right;
-                
-                // NaN检查：left异常压到末尾，right异常设为负无穷避免误杀早退
-                if (isNaN(leftValue)) {
-                    leftValue = Infinity;
-                    hasInvalid = true;
-                }
-                if (isNaN(rightValue)) {
-                    rightValue = -Infinity
-                    hasInvalid = true;
-                }
-            } else {
-                leftValue = Infinity;
-                rightValue = -Infinity
-                hasInvalid = true;
-            }
+            leftValue = bullet.aabbCollider.left;
+            rightValue = bullet.aabbCollider.right;
             
             leftKeys[i] = leftValue;
             rightKeys[i] = rightValue;
@@ -159,8 +177,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
         }
         
         // ========== 已有序快速退出 ==========
-        // 如果有异常对象，强制排序以确保它们被推到队尾
-        if (isSorted && !hasInvalid) {
+        if (isSorted) {
             return;  // 跳过排序，节省大量开销
         }
         
