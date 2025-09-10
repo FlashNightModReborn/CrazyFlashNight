@@ -171,7 +171,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
         }
         
         // ========== 单元素特殊处理 ==========
-        // 单元素不需要排序，但keys已经填充
+        // 单元素天然有序，无需执行排序算法。
+        // 注意：此判断在预取循环之后，是为了确保 keys 缓冲区已被正确填充。
         if (length == 1) {
             return;
         }
