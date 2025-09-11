@@ -123,12 +123,11 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle imple
     public function bindFrameHandler(target:MovieClip):Void {
         // === 高度优化的帧处理器绑定策略 ===
         // 
-        // 使用特化函数工厂，根据子弹类型返回优化的处理器
-        // • 分支消除：在创建时检测透明标志，避免每帧重复判断
-        // • 透明子弹：直接进入队列，无需 area 检测
-        // • 非透明子弹：仅检测 area 属性
-        // • 性能提升：消除每帧的透明标志检测开销（位运算 + 分支）
-        target.onEnterFrame = BulletQueueProcessor.createOptimizedPreCheck(target);
+        // 非透明子弹专用的优化处理器
+        // • 分支消除：在创建时生成特化函数，避免每帧重复判断
+        // • 仅检测 area 属性决定是否进入执行段
+        // • 性能提升：消除运行时的类型检测开销
+        target.onEnterFrame = BulletQueueProcessor.createNormalPreCheck(target);
     }
 
     /**

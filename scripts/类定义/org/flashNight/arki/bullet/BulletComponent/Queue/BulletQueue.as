@@ -46,8 +46,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
     private static function cmpIndex(a:Number, b:Number):Number {
         var va:Number = _cmpKeys[a];
         var vb:Number = _cmpKeys[b];
-        // AS2 中布尔值转数字是可靠的：true→1, false→0
-        return (va > vb) - (va < vb);
+        // 先比键值；键值相等时按原始索引保证稳定性（即保持原始相对顺序）
+        if (va > vb) return 1;
+        if (va < vb) return -1;
+        // 键相等：用索引作为稳定性保障（TimSort 本身应稳定，此处为保险）
+        if (a > b) return 1;
+        if (a < b) return -1;
+        return 0;
     }
 
     
@@ -406,6 +411,32 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
         for (var i:Number = 0; i < n; i++) {
             visitor(arr[i], L[i], R[i], i);
         }
+    }
+    
+    /**
+     * 执行排序遍历并清空队列
+     * 封装了排序、遍历、清空三个操作的优化方法
+     * @param visitor 访问函数，接收(bullet, index)参数
+     */
+    public function processAndClear(visitor:Function):Void {
+        // 空队列早退
+        var n:Number = this.bullets.length;
+        if (n == 0) return;
+        
+        // 排序（可能切换双缓冲引用）
+        this.sortByLeftBoundary();
+
+        // 读取已排序引用与长度快照，避免遍历过程中外部修改造成的不确定性
+        var arr:Array = this.bullets;
+        var length:Number = arr.length;
+
+        // 顺序遍历
+        for (var i:Number = 0; i < length; i++) {
+            visitor(arr[i], i);
+        }
+
+        // 清空队列
+        this.clear();
     }
     
     /**

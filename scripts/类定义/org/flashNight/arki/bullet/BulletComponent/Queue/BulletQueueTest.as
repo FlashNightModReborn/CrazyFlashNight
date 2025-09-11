@@ -416,6 +416,15 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
             robustFail++;
         }
         
+        // 测试8: processAndClear方法
+        if (this.testProcessAndClear()) {
+            log("[PASS] processAndClear方法测试");
+            robustPass++;
+        } else {
+            log("[FAIL] processAndClear方法测试");
+            robustFail++;
+        }
+        
         log("鲁棒性测试: " + robustPass + " 通过, " + robustFail + " 失败");
         
         if (robustFail > 0) {
@@ -576,7 +585,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
         
         // 添加随机顺序的子弹
         for (var i:Number = 0; i < 20; i++) {
-            q.add(this.makeBullet(Math.random() * 100, Math.random() * 100 + 100, i));
+            q.add(this.makeBullet(this.srand() * 100, this.srand() * 100 + 100, i));
         }
         
         q.sortByLeftBoundary();
@@ -605,6 +614,96 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
                 return false;
             }
         }
+        return true;
+    }
+    
+    private function testProcessAndClear():Boolean {
+        var q:BulletQueue = new BulletQueue();
+        
+        // 测试1: 空队列的processAndClear
+        var visitCount1:Number = 0;
+        q.processAndClear(function(bullet:Object, index:Number):Void {
+            visitCount1++;
+        });
+        if (visitCount1 != 0) return false;
+        if (q.getCount() != 0) return false;
+        
+        // 测试2: 小数组（插入排序路径）
+        for (var i:Number = 0; i < 20; i++) {
+            q.add(this.makeBullet(20 - i, 21 - i, i));
+        }
+        
+        var visitCount2:Number = 0;
+        var lastLeft2:Number = -Infinity;
+        var sorted2:Boolean = true;
+        q.processAndClear(function(bullet:Object, index:Number):Void {
+            visitCount2++;
+            if (bullet.aabbCollider.left < lastLeft2) {
+                sorted2 = false;
+            }
+            lastLeft2 = bullet.aabbCollider.left;
+        });
+        
+        if (visitCount2 != 20) return false;
+        if (!sorted2) return false;
+        if (q.getCount() != 0) return false;  // 应该被清空
+        
+        // 测试3: 大数组（TimSort路径）
+        for (var j:Number = 0; j < 100; j++) {
+            q.add(this.makeBullet(Math.floor(this.srand() * 100), Math.floor(this.srand() * 100) + 100, j));
+        }
+        
+        var visitCount3:Number = 0;
+        var lastLeft3:Number = -Infinity;
+        var sorted3:Boolean = true;
+        var visitedIds:Array = [];
+        
+        q.processAndClear(function(bullet:Object, index:Number):Void {
+            visitCount3++;
+            if (bullet.aabbCollider.left < lastLeft3) {
+                sorted3 = false;
+            }
+            lastLeft3 = bullet.aabbCollider.left;
+            visitedIds.push(bullet.__id);
+        });
+        
+        if (visitCount3 != 100) return false;
+        if (!sorted3) return false;
+        if (q.getCount() != 0) return false;  // 应该被清空
+        
+        // 测试4: 连续调用processAndClear
+        for (var k:Number = 0; k < 10; k++) {
+            q.add(this.makeBullet(k, k + 1, k));
+        }
+        
+        var firstCallCount:Number = 0;
+        q.processAndClear(function(bullet:Object, index:Number):Void {
+            firstCallCount++;
+        });
+        
+        var secondCallCount:Number = 0;
+        q.processAndClear(function(bullet:Object, index:Number):Void {
+            secondCallCount++;
+        });
+        
+        if (firstCallCount != 10) return false;
+        if (secondCallCount != 0) return false;  // 第二次应该是空队列
+        
+        // 测试5: 验证稳定性（相同键保持顺序）
+        for (var m:Number = 0; m < 10; m++) {
+            q.add(this.makeBullet(5, 6, m));  // 所有元素左边界相同
+        }
+        
+        var stableIds:Array = [];
+        q.processAndClear(function(bullet:Object, index:Number):Void {
+            stableIds.push(bullet.__id);
+        });
+        
+        // 验证ID顺序保持0,1,2...9
+        for (var n:Number = 0; n < stableIds.length; n++) {
+            if (stableIds[n] != n) return false;
+        }
+        
         return true;
     }
 }

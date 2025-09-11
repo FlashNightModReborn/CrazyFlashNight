@@ -17,96 +17,80 @@ import org.flashNight.neur.Event.*;
 import org.flashNight.arki.component.StatHandler.*;
 
 class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
-    public static var queue:BulletQueue;
+    public static var activeQueues:Object; // 按阵营分类的活动队列
     
     /**
      * 初始化处理器
      */
     public static function initialize():Boolean {
-        queue = new BulletQueue();
+        activeQueues = {};
+
+        var fractions:Array = FactionManager.getAllFactions();
+
+        for(var i:Number = 0; i < fractions.length; i++) {
+            activeQueues[fractions[i]] = new BulletQueue();
+        }
+
+        activeQueues["all"] = new BulletQueue(); // 友伤队列
+
         return true;
     }
 
-    public static function preCheck(bullet:Object):Boolean {
-        // 仅用到透明标志即可完成早退判定
-        #include "../macros/FLAG_TRANSPARENCY.as"
-
-        // 局部化 flags，避免后续频繁取属性
-        var flags:Number = bullet.flags;
-
-        // 提前做一次位运算（可选缓存到实例，供第二段直接复用，减少一次位运算）
-        var isTransparent:Boolean = (flags & FLAG_TRANSPARENCY) != 0;
-
-        // 纯运动弹：无区域且不透明 → 只做位移更新，跳过后续所有重逻辑
-        if (!bullet.area && !isTransparent) {
-            bullet.updateMovement(bullet);
-            // _root.服务器.发布服务器消息(false + "子弹纯运动更新 " + bullet);
-            return false; // 不进入执行段
+    public static function add(bullet:Object):Void {
+        var key:String;
+        if(bullet.友军伤害) {
+            key = "all";
+        } else {
+            key = FactionManager.getFactionFromUnit(_root.gameworld[bullet.发射者名]);
         }
 
-        // 进入执行段（碰撞与结算）
+        var queue:BulletQueue = activeQueues[key];
         queue.add(bullet);
-        //_root.服务器.发布服务器消息(true + "子弹进入执行段" + bullet + ":" + queue.getCount());
-        // _root.服务器.发布服务器消息(queue.toString() + " 子弹进入执行段 " + bullet);
+    }
+
+    /**
+     * 透明子弹专用的预检查方法
+     * 透明子弹总是进入执行段，无需额外检查
+     * 
+     * @param bullet 透明子弹对象
+     * @return Boolean 恒为true
+     */
+    public static function preCheckTransparent(bullet:Object):Boolean {
+        // 透明子弹直接进入执行段
+        BulletQueueProcessor.add(bullet);
         return true;
     }
     
     /**
-     * 优化版函数工厂：根据子弹类型返回特化的处理函数
-     * 在绑定时一次性确定子弹类型，避免每帧重复检测
+     * 非透明子弹专用的优化预检查工厂
+     * 返回根据 area 属性决定是否进入执行段的特化函数
      * 
-     * 分支消除策略：
-     * - 创建时检测透明标志，返回对应的特化函数
-     * - 透明子弹：总是需要进入执行段
-     * - 非透明子弹：根据 area 属性决定是否进入执行段
-     * 
-     * @param bullet 子弹对象，用于预先检测类型
+     * @param bullet 非透明子弹对象
      * @return Function 特化的帧处理函数
      */
-    public static function createOptimizedPreCheck(bullet:Object):Function {
-        // 在闭包外部捕获静态引用
-        var queueRef:BulletQueue = queue;
-        
-        // 编译时宏展开
-        #include "../macros/FLAG_TRANSPARENCY.as"
-        
-        // 创建时一次性检测透明标志
-        var isTransparent:Boolean = (bullet.flags & FLAG_TRANSPARENCY) != 0;
-        
-        // 根据透明标志返回不同的特化函数
-        if (isTransparent) {
-            // 透明子弹：总是进入执行段
-            return function():Boolean {
-                queueRef.add(this);
-                return true;
-            };
-        } else {
-            // 非透明子弹：根据 area 决定
-            return function():Boolean {
-                var bullet:Object = this;
-                
-                // 纯运动弹：无区域的非透明子弹
-                if (!bullet.area) {
-                    bullet.updateMovement(bullet);
-                    return false;
-                }
-                
-                // 有区域的非透明子弹：进入执行段
-                queueRef.add(bullet);
-                return true;
-            };
-        }
+    public static function createNormalPreCheck(bullet:Object):Function {
+        // 非透明子弹：根据 area 决定
+        return function():Boolean {
+            var bullet:Object = this;
+            
+            // 纯运动弹：无区域的非透明子弹
+            if (!bullet.area) {
+                bullet.updateMovement(bullet);
+                return false;
+            }
+            
+            // 有区域的非透明子弹：进入执行段
+            BulletQueueProcessor.add(bullet);
+            return true;
+        };
     }
 
     public static function processQueue():Void {
-        // 空队列早退优化：根据性能分析，约41%的调用是空队列
-        if (queue.getCount() == 0) {
-            return;
+        // 使用优化的 processAndClear 方法，内联展开减少函数调用开销
+        for (var key:String in activeQueues) {
+            var q:BulletQueue = activeQueues[key];
+            q.processAndClear(executeLogic);
         }
-        
-        // _root.服务器.发布服务器消息(queue.toString() + " 发射的子弹进入执行段");
-        queue.forEachSorted(executeLogic);
-        queue.clear();
     }
 
     /**
