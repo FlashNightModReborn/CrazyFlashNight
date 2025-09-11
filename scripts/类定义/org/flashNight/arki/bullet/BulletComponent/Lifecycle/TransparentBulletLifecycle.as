@@ -4,6 +4,7 @@ import org.flashNight.neur.Event.*;
 import org.flashNight.arki.component.Collider.*;
 import org.flashNight.arki.component.Damage.*;
 import org.flashNight.arki.bullet.BulletComponent.Lifecycle.*;
+import org.flashNight.arki.bullet.BulletComponent.Queue.*;
 
 /**
  * 透明子弹生命周期管理器
@@ -56,7 +57,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TransparentBulletLife
      * @param target:MovieClip 要绑定的子弹对象
      */
     public function bindFrameHandler(target:MovieClip):Void {
-        _root.子弹生命周期.call(target);
+        BulletQueueProcessor.preCheck(target)
         // getDynamicFrameHandler(target).call(target);
     }
 }

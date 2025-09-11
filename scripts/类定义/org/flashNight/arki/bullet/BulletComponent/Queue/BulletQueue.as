@@ -426,4 +426,86 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
             version: this._version  // 版本戳，防止跨帧误用
         };
     }
+    
+    /**
+     * 转换为字符串表示
+     * 返回队列的详细状态信息，包括子弹数量、排序阈值、缓冲区状态、有序度等
+     * @return 描述队列状态的字符串
+     */
+    public function toString():String {
+        var result:String = "[BulletQueue]";
+        result += " count:" + this.bullets.length;
+        result += " sortThreshold:" + INSERTION_SORT_THRESHOLD;
+        result += " usingBuffer:" + (this._useA ? "A" : "B");
+        result += " version:" + this._version;
+        
+        // 计算有序度（逆序对比例）
+        if (this.bullets.length > 1) {
+            var inversions:Number = 0;
+            var maxInversions:Number = 0;
+            var i:Number, j:Number;
+            var leftI:Number, leftJ:Number;
+            
+            // 统计逆序对数量
+            for (i = 0; i < this.bullets.length - 1; i++) {
+                var bulletI:Object = this.bullets[i];
+                if (!bulletI || !bulletI.aabbCollider) continue;
+                leftI = bulletI.aabbCollider.left;
+                
+                for (j = i + 1; j < this.bullets.length; j++) {
+                    var bulletJ:Object = this.bullets[j];
+                    if (!bulletJ || !bulletJ.aabbCollider) continue;
+                    leftJ = bulletJ.aabbCollider.left;
+                    
+                    if (leftI > leftJ) {
+                        inversions++;
+                    }
+                    maxInversions++;
+                }
+            }
+            
+            // 计算有序度百分比（100% = 完全有序，0% = 完全逆序）
+            var orderness:Number = maxInversions > 0 ? 
+                Math.round((1 - inversions / maxInversions) * 100) : 100;
+            result += " orderness:" + orderness + "%";
+            
+            // 添加有序性描述
+            if (orderness == 100) {
+                result += "(sorted)";
+            } else if (orderness >= 80) {
+                result += "(nearly-sorted)";
+            } else if (orderness >= 50) {
+                result += "(partially-sorted)";
+            } else if (orderness >= 20) {
+                result += "(mostly-random)";
+            } else {
+                result += "(reversed-tendency)";
+            }
+        } else if (this.bullets.length == 1) {
+            result += " orderness:100%(single)";
+        } else {
+            result += " orderness:N/A(empty)";
+        }
+        
+        // 显示前5个子弹的左边界值（如果有）
+        if (this.bullets.length > 0) {
+            result += " leftBounds:[";
+            var showCount:Number = Math.min(5, this.bullets.length);
+            for (var k:Number = 0; k < showCount; k++) {
+                if (k > 0) result += ",";
+                var bullet:Object = this.bullets[k];
+                if (bullet && bullet.aabbCollider) {
+                    result += bullet.aabbCollider.left;
+                } else {
+                    result += "null";
+                }
+            }
+            if (this.bullets.length > 5) {
+                result += ",...";
+            }
+            result += "]";
+        }
+        
+        return result;
+    }
 }

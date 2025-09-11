@@ -132,17 +132,11 @@ _root.子弹区域shoot传递 = function(Obj){
 };
 
 
+BulletQueueProcessor.initialize(); // 初始化队列，并且注册全局事件
 
-// 包装器：仍然以 _root.子弹生命周期 作为唯一对外入口
-_root.子弹生命周期 = function():Void {
-    // 第一段：预检测与（必要时的）位置更新
-    if (BulletQueueProcessor.preCheck(this)) {
-        // 第二段：碰撞检测 → 伤害结算 → 事件 → 销毁等完整流程
-        BulletQueueProcessor.executeLogic(this);
-    }
-
-    // 纯运动弹已在第一段完成刷新，直接返回
-};
+EventBus.getInstance().subscribe("frameEnd", function():Void {
+    BulletQueueProcessor.processQueue();
+}, this);
 
 _root.子弹区域shoot表演 = _root.子弹区域shoot;
 

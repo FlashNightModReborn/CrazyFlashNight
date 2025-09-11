@@ -5,6 +5,7 @@ import org.flashNight.neur.Event.*;
 import org.flashNight.arki.component.Collider.*;
 import org.flashNight.arki.component.Damage.*;
 import org.flashNight.arki.bullet.BulletComponent.Lifecycle.*;
+import org.flashNight.arki.bullet.BulletComponent.Queue.*;
 
 /**
  * 子弹生命周期基类
@@ -115,22 +116,19 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle imple
      * 绑定帧事件处理器
      * 
      * 建立子弹的每帧更新机制，负责子弹的运动、碰撞检测和状态管理。
-     * 当前实现使用全局处理器以确保兼容性，未来可切换到动态处理器优化。
+     * 使用优化的函数工厂模式消除转发开销。
      *
      * @param target:MovieClip 要绑定的子弹对象
      */
     public function bindFrameHandler(target:MovieClip):Void {
-        // === 帧处理器绑定策略 ===
+        // === 高度优化的帧处理器绑定策略 ===
         // 
-        // 方案A（当前）：使用全局统一处理器
-        // • 优势：兼容性好，逻辑集中，易于调试
-        // • 适用：当前稳定版本，所有子弹类型通用处理
-        target.onEnterFrame = _root.子弹生命周期;
-        
-        // 方案B（优化）：使用基于位掩码的动态处理器选择
-        // • 优势：根据子弹类型选择专用处理器，性能提升20-30%
-        // • 适用：性能要求较高的场景，需要充分测试后启用
-        // target.onEnterFrame = getDynamicFrameHandler(target);
+        // 使用特化函数工厂，根据子弹类型返回优化的处理器
+        // • 分支消除：在创建时检测透明标志，避免每帧重复判断
+        // • 透明子弹：直接进入队列，无需 area 检测
+        // • 非透明子弹：仅检测 area 属性
+        // • 性能提升：消除每帧的透明标志检测开销（位运算 + 分支）
+        target.onEnterFrame = BulletQueueProcessor.createOptimizedPreCheck(target);
     }
 
     /**

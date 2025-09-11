@@ -17,7 +17,6 @@ import org.flashNight.neur.Event.*;
 import org.flashNight.arki.component.StatHandler.*;
 
 class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
-    private static var initialized:Boolean = initialize();
     public static var queue:BulletQueue;
     
     /**
@@ -41,13 +40,73 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         // 纯运动弹：无区域且不透明 → 只做位移更新，跳过后续所有重逻辑
         if (!bullet.area && !isTransparent) {
             bullet.updateMovement(bullet);
-            // _root.发布消息(false, "子弹纯运动更新", bullet);
+            // _root.服务器.发布服务器消息(false + "子弹纯运动更新 " + bullet);
             return false; // 不进入执行段
         }
 
-        // 需要进入执行段（碰撞与结算）
-        // _root.发布消息(true, "子弹进入执行段", bullet);
+        // 进入执行段（碰撞与结算）
+        queue.add(bullet);
+        //_root.服务器.发布服务器消息(true + "子弹进入执行段" + bullet + ":" + queue.getCount());
+        // _root.服务器.发布服务器消息(queue.toString() + " 子弹进入执行段 " + bullet);
         return true;
+    }
+    
+    /**
+     * 优化版函数工厂：根据子弹类型返回特化的处理函数
+     * 在绑定时一次性确定子弹类型，避免每帧重复检测
+     * 
+     * 分支消除策略：
+     * - 创建时检测透明标志，返回对应的特化函数
+     * - 透明子弹：总是需要进入执行段
+     * - 非透明子弹：根据 area 属性决定是否进入执行段
+     * 
+     * @param bullet 子弹对象，用于预先检测类型
+     * @return Function 特化的帧处理函数
+     */
+    public static function createOptimizedPreCheck(bullet:Object):Function {
+        // 在闭包外部捕获静态引用
+        var queueRef:BulletQueue = queue;
+        
+        // 编译时宏展开
+        #include "../macros/FLAG_TRANSPARENCY.as"
+        
+        // 创建时一次性检测透明标志
+        var isTransparent:Boolean = (bullet.flags & FLAG_TRANSPARENCY) != 0;
+        
+        // 根据透明标志返回不同的特化函数
+        if (isTransparent) {
+            // 透明子弹：总是进入执行段
+            return function():Boolean {
+                queueRef.add(this);
+                return true;
+            };
+        } else {
+            // 非透明子弹：根据 area 决定
+            return function():Boolean {
+                var bullet:Object = this;
+                
+                // 纯运动弹：无区域的非透明子弹
+                if (!bullet.area) {
+                    bullet.updateMovement(bullet);
+                    return false;
+                }
+                
+                // 有区域的非透明子弹：进入执行段
+                queueRef.add(bullet);
+                return true;
+            };
+        }
+    }
+
+    public static function processQueue():Void {
+        // 空队列早退优化：根据性能分析，约41%的调用是空队列
+        if (queue.getCount() == 0) {
+            return;
+        }
+        
+        // _root.服务器.发布服务器消息(queue.toString() + " 发射的子弹进入执行段");
+        queue.forEachSorted(executeLogic);
+        queue.clear();
     }
 
     /**
