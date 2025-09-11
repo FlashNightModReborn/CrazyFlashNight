@@ -132,6 +132,21 @@
             <Message>重要人员损失！</Message>
             <StageProgress>Fail</StageProgress>
         </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>键盘</Parameter>
+            <Message>键盘情况紧急！</Message>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>吉他</Parameter>
+            <Message>吉他情况紧急！</Message>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>主唱</Parameter>
+            <Message>主唱情况紧急！</Message>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
