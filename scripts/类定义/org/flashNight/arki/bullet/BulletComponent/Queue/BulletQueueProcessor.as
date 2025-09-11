@@ -152,6 +152,11 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var overlapCenter:Vector;
 
         var MELEE_EXPLOSIVE_MASK:Number = FLAG_MELEE | FLAG_EXPLOSIVE;
+        
+        // 预计算标志位检查结果，避免循环中重复计算
+        var isMeleeExplosive:Boolean = (flags & MELEE_EXPLOSIVE_MASK) === 0;
+        var isMelee:Boolean = (flags & FLAG_MELEE) != 0;
+        var isPierce:Boolean = (flags & FLAG_PIERCE) != 0;
 
         for (i = startIndex; i < len; ++i) {
             hitTarget = bullet.hitTarget = unitMap[i];
@@ -207,16 +212,16 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                 // kill/death 分发（按原注释保持行为）
                 if (hitTarget.hp <= 0) {
-                    dispatcher.publish((flags & MELEE_EXPLOSIVE_MASK) === 0 ? "kill" : "death", hitTarget);
+                    dispatcher.publish(isMeleeExplosive ? "kill" : "death", hitTarget);
                     shooter.dispatcher.publish("enemyKilled", hitTarget, bullet);
                 }
 
                 damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
 
                 // 近战硬直 / 非穿刺消失
-                if ((flags & FLAG_MELEE) && !bullet.不硬直) {
+                if (isMelee && !bullet.不硬直) {
                     shooter.硬直(shooter.man, _root.钝感硬直时间);
-                } else if ((flags & FLAG_PIERCE) == 0) {
+                } else if (!isPierce) {
                     bullet.gotoAndPlay("消失");
                 }
             }
