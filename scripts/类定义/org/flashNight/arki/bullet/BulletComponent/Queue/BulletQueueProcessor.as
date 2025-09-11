@@ -37,17 +37,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     }
 
     public static function add(bullet:Object):Void {
-        var key:String;
-        if(bullet.友军伤害) {
-            key = "all";
-        } else {
-            key = FactionManager.getFactionFromUnit(_root.gameworld[bullet.发射者名]);
-        }
-
-        var queue:BulletQueue = activeQueues[key];
-        queue.add(bullet);
-
-        // _root.服务器.发布服务器消息(queue.toString() + " " + bullet._name + " added to " + key + " queue");
+        activeQueues[bullet.友军伤害 ?  "all" : 
+            FactionManager.getFactionFromUnit(_root.gameworld[bullet.发射者名])
+        ].add(bullet);
     }
 
     /**
@@ -55,9 +47,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      * 透明子弹总是进入执行段，无需额外检查
      * 
      * @param bullet 透明子弹对象
-     * @return Boolean 恒为true
+     * @return Void
      */
-    public static function preCheckTransparent(bullet):Boolean {
+    public static function preCheckTransparent(bullet):Void {
         var areaAABB:AABBCollider = bullet.aabbCollider;
         var detectionArea:MovieClip = bullet.子弹区域area;
 
@@ -68,7 +60,6 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         }
         // 透明子弹直接进入执行段
         BulletQueueProcessor.add(bullet);
-        return true;
     }
     
     /**
@@ -126,7 +117,6 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         // 复用第一段的可选缓存；若无则即时计算
         var flags:Number = bullet.flags;
 
-
         var areaAABB:AABBCollider = bullet.aabbCollider;
         var detectionArea:MovieClip = bullet.子弹区域area || bullet.area;
 
@@ -160,6 +150,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var collisionResult:CollisionResult;
         var overlapRatio:Number;
         var overlapCenter:Vector;
+
+        var MELEE_EXPLOSIVE_MASK:Number = FLAG_MELEE | FLAG_EXPLOSIVE;
 
         for (i = startIndex; i < len; ++i) {
             hitTarget = bullet.hitTarget = unitMap[i];
@@ -214,7 +206,6 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 dispatcher.publish("hit", hitTarget, shooter, bullet, collisionResult, damageResult);
 
                 // kill/death 分发（按原注释保持行为）
-                var MELEE_EXPLOSIVE_MASK:Number = FLAG_MELEE | FLAG_EXPLOSIVE;
                 if (hitTarget.hp <= 0) {
                     dispatcher.publish((flags & MELEE_EXPLOSIVE_MASK) === 0 ? "kill" : "death", hitTarget);
                     shooter.dispatcher.publish("enemyKilled", hitTarget, bullet);
