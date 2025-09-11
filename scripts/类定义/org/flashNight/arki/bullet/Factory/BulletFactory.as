@@ -227,9 +227,6 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
 
                 // Then use the movement as before
                 bulletInstance.updateMovement = Delegate.create(movement, movement.updateMovement);
-
-                
-                bulletInstance.updateMovement = Delegate.create(movement, movement.updateMovement);
                 bulletInstance.shouldDestroy = Delegate.create(lifecycle, lifecycle.shouldDestroy);
             }
         }

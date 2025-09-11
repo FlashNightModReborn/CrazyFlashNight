@@ -46,12 +46,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
     private static function cmpIndex(a:Number, b:Number):Number {
         var va:Number = _cmpKeys[a];
         var vb:Number = _cmpKeys[b];
-        // 先比键值；键值相等时按原始索引保证稳定性（即保持原始相对顺序）
-        if (va > vb) return 1;
-        if (va < vb) return -1;
-        // 键相等：用索引作为稳定性保障（TimSort 本身应稳定，此处为保险）
-        if (a > b) return 1;
-        if (a < b) return -1;
+        // AS2 中布尔值转数字是可靠的：true→1, false→0
+        return (va > vb) - (va < vb);
         return 0;
     }
 
@@ -108,15 +104,19 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
      * @param bullet 待添加的子弹对象
      */
     public function add(bullet:Object):Void {
-        if (!bullet) return;
-        var box:AABBCollider = bullet.aabbCollider;
-        if (!box) return;
-
+        if (!bullet) {
+            // _root.服务器.发布服务器消息("BulletQueue.add: null bullet");
+            return;
+        }
+        var box:AABBCollider = bullet.aabbCollider; // 如果碰撞箱不存在，后续数值校验依旧可以防护住
         var left:Number  = box.left;
         var right:Number = box.right;
 
         // 一次性数值健检：挡 NaN 与 ±Infinity
-        if (((left - left) + (right - right)) != 0) return;
+        if (((left - left) + (right - right)) != 0) {
+            // _root.服务器.发布服务器消息("BulletQueue.add: bullet with invalid aabbCollider: " + "(" + left + "," + right + ") " + bullet._name);
+            return;
+        }
 
         // 比 push 更快的追加方式
         var arr:Array = this.bullets;

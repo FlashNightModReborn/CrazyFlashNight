@@ -46,6 +46,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
         var queue:BulletQueue = activeQueues[key];
         queue.add(bullet);
+
+        // _root.服务器.发布服务器消息(queue.toString() + " " + bullet._name + " added to " + key + " queue");
     }
 
     /**
@@ -55,7 +57,15 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      * @param bullet 透明子弹对象
      * @return Boolean 恒为true
      */
-    public static function preCheckTransparent(bullet:Object):Boolean {
+    public static function preCheckTransparent(bullet):Boolean {
+        var areaAABB:AABBCollider = bullet.aabbCollider;
+        var detectionArea:MovieClip = bullet.子弹区域area;
+
+        if (detectionArea) {
+            areaAABB.updateFromBullet(bullet, detectionArea);
+        } else {
+            areaAABB.updateFromTransparentBullet(bullet);
+        }
         // 透明子弹直接进入执行段
         BulletQueueProcessor.add(bullet);
         return true;
@@ -68,17 +78,27 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      * @param bullet 非透明子弹对象
      * @return Function 特化的帧处理函数
      */
-    public static function createNormalPreCheck(bullet:Object):Function {
+    public static function createNormalPreCheck(bullet:MovieClip):Function {
         // 非透明子弹：根据 area 决定
         return function():Boolean {
-            var bullet:Object = this;
-            
+            var bullet:MovieClip = this;
+            var detectionArea:MovieClip = bullet.area;
             // 纯运动弹：无区域的非透明子弹
-            if (!bullet.area) {
-                bullet.updateMovement(bullet);
+            if (!detectionArea) {
+                bullet.updateMovement(bullet); 
+                /*
+                _root.服务器.发布服务器消息(
+                    "BulletQueueProcessor: pure motion bullet skipped: " +
+                    bullet._name +
+                    " at (" + bullet._x + "," + bullet._y + ")" +
+                    bullet._currentFrame + " " + detectionArea + " " + bullet.aabbCollider
+                );
+                */
                 return false;
             }
-            
+
+            var areaAABB:AABBCollider = bullet.aabbCollider;
+            areaAABB.updateFromBullet(bullet, detectionArea);
             // 有区域的非透明子弹：进入执行段
             BulletQueueProcessor.add(bullet);
             return true;
@@ -99,30 +119,21 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      */
     public static function executeLogic(bullet:MovieClip):Void {
         #include "../macros/FLAG_CHAIN.as"
-        #include "../macros/FLAG_TRANSPARENCY.as"
         #include "../macros/FLAG_MELEE.as"
         #include "../macros/FLAG_PIERCE.as"
         #include "../macros/FLAG_EXPLOSIVE.as"
 
         // 复用第一段的可选缓存；若无则即时计算
         var flags:Number = bullet.flags;
-        var isTransparent:Boolean = (flags & FLAG_TRANSPARENCY) != 0;
+
 
         var areaAABB:AABBCollider = bullet.aabbCollider;
-        var detectionArea:MovieClip = null;
+        var detectionArea:MovieClip = bullet.子弹区域area || bullet.area;
 
         var rot:Number = bullet._rotation;
         var isPointSet:Boolean = ((flags & FLAG_CHAIN) != 0) && (rot != 0 && rot != 180);
         var bulletZOffset:Number = bullet.Z轴坐标;
         var bulletZRange:Number  = bullet.Z轴攻击范围;
-
-        // 更新碰撞体（保持与原实现一致）
-        if (isTransparent && !bullet.子弹区域area) {
-            areaAABB.updateFromTransparentBullet(bullet);
-        } else {
-            detectionArea = bullet.子弹区域area || bullet.area;
-            areaAABB.updateFromBullet(bullet, detectionArea);
-        }
 
         if (_root.调试模式) {
             // 画当前AABB + Z轴上下边界线
