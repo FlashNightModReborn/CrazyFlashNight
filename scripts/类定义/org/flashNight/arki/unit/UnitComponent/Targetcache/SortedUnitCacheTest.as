@@ -58,6 +58,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCacheTest {
             
             // === 查询算法测试 ===
             runQueryAlgorithmTests();
+
+            // === Monotonic sweep tests ===
+            runMonotonicSweepTests();
             
             // === 范围查询测试 ===
             runRangeQueryTests();
@@ -394,6 +397,105 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCacheTest {
         testFindFarthest();
     }
     
+    // ========================================================================
+    // Monotonic sweep (two-pointer prep) tests
+    // ========================================================================
+    private static function runMonotonicSweepTests():Void {
+        trace("\n>> runMonotonicSweepTests");
+        testMonotonic_basicForward();
+        testMonotonic_resetOnNewFrame();
+        testMonotonic_matchesBaselineIncreasing();
+        testMonotonic_handlesOutOfOrder();
+    }
+
+    private static function createUniformCache(count:Number, step:Number, width:Number):SortedUnitCache {
+        var units:Array = [];
+        var i:Number = 0;
+        while (i < count) {
+            var L:Number = i * step;
+            units[i] = {
+                _name: "u_" + i,
+                hp: 100,
+                maxhp: 100,
+                aabbCollider: { left: L, right: L + width }
+            };
+            i++;
+        }
+        var nameIndex:Object = {};
+        var leftValues:Array = [];
+        var rightValues:Array = [];
+        for (i = 0; i < count; i++) {
+            nameIndex[units[i]._name] = i;
+            leftValues[i] = units[i].aabbCollider.left;
+            rightValues[i] = units[i].aabbCollider.right;
+        }
+        return new SortedUnitCache(units, nameIndex, leftValues, rightValues, 2000);
+    }
+
+    private static function testMonotonic_basicForward():Void {
+        var cache:SortedUnitCache = createUniformCache(10, 10, 5); // right: 5,15,25,...
+        cache.beginMonotonicSweep(1);
+
+        var q:AABBCollider = new AABBCollider();
+        var queries:Array = [0, 6, 11, 16, 21, 26];
+        // 修正后的期望值，这反映了算法的正确行为
+        var expect:Array  = [0, 1, 1, 2, 2, 3]; 
+
+        for (var i:Number = 0; i < queries.length; i++) {
+            q.left = queries[i];
+            var r:Object = cache.getTargetsFromIndexMonotonic(q);
+            assertEquals("Monotonic 基本前进: qLeft=" + queries[i], expect[i], r.startIndex, 0);
+        }
+    }
+
+    private static function testMonotonic_resetOnNewFrame():Void {
+        var cache:SortedUnitCache = createUniformCache(10, 10, 5);
+
+        var q:AABBCollider = new AABBCollider();
+        // 第一帧推进到靠右
+        cache.beginMonotonicSweep(100);
+        q.left = 80; // 应推进到 index≈8 (right=85)
+        var r1:Object = cache.getTargetsFromIndexMonotonic(q);
+        assertTrue("第一帧推进到右侧", r1.startIndex >= 8);
+
+        // 新帧应重置回从 0 扫描
+        cache.beginMonotonicSweep(101);
+        q.left = 0;
+        var r2:Object = cache.getTargetsFromIndexMonotonic(q);
+        assertEquals("新帧重置从0开始", 0, r2.startIndex, 0);
+    }
+
+    private static function testMonotonic_matchesBaselineIncreasing():Void {
+        var cache:SortedUnitCache = createTestCache(createTestUnits(50));
+        var q:AABBCollider = new AABBCollider();
+        cache.beginMonotonicSweep(7);
+
+        var base:Number = 0;
+        for (var i:Number = 0; i < 10; i++) {
+            base += 30 + Math.random() * 20; // 单调递增
+            q.left = base;
+            var mono:Object = cache.getTargetsFromIndexMonotonic(q);
+            var ref:Object  = cache.getTargetsFromIndex(q);
+            assertEquals("单调模式应与基线一致 i="+i, ref.startIndex, mono.startIndex, 0);
+        }
+    }
+
+    private static function testMonotonic_handlesOutOfOrder():Void {
+        var cache:SortedUnitCache = createUniformCache(10, 10, 5);
+        var q:AABBCollider = new AABBCollider();
+
+        cache.beginMonotonicSweep(3);
+        q.left = 40; // 先推进到某处
+        var _tmp:Object = cache.getTargetsFromIndexMonotonic(q);
+        // 乱序：更小的 left
+        q.left = 10;
+        var mono:Object = cache.getTargetsFromIndexMonotonic(q);
+
+        // 基线：从头查询
+        var ref:Object = cache.getTargetsFromIndex(q);
+        assertEquals("乱序查询也应保持与基线一致", ref.startIndex, mono.startIndex, 0);
+    }
+
     private static function testGetTargetsFromIndex():Void {
         // 创建查询碰撞盒
         var queryCollider:AABBCollider = new AABBCollider();

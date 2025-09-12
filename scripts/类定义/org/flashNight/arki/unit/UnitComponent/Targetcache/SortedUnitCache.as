@@ -72,6 +72,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
      */
     private var _lastIndex:Number = 0;
 
+    // 单帧扫描标记：用于“单调前进”的两指针扫描
+    private var _sweepFrame:Number = -1;
+
     // ========================================================================
     // 构造函数
     // ========================================================================
@@ -291,6 +294,61 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
         result.startIndex = l;
         _lastQueryLeft = queryLeft;
         _lastIndex = l;
+        return result;
+    }
+
+    // ========================================================================
+    // 单调扫描增强 API（为双指针扫描线做准备）
+    // ========================================================================
+
+    /**
+     * 开始“单调扫描”的一帧。
+     * 若传入帧号不同于上次，重置内部扫描指针与哨兵值。
+     * 建议在每帧开始、对同一 SortedUnitCache 的连续查询前调用。
+     *
+     * @param {Number} currentFrame 当前帧号（来自全局帧计时器）
+     */
+    public function beginMonotonicSweep(currentFrame:Number):Void {
+        if (this._sweepFrame != currentFrame) {
+            this._sweepFrame = currentFrame;
+            // 重置为“未曾查询”状态，首个查询将从 0 线性推进
+            this._lastIndex = 0;
+            this._lastQueryLeft = NaN; // 作为首查哨兵
+        }
+    }
+
+    /**
+     * 基于“左→右”单调推进的起点查询。
+     * - 不使用二分与阈值判断，严格前向扫描，常数小，cache 友好。
+     * - 仅依赖 rightValues 与 _lastIndex；适合 bullets 按 X 升序处理的场景。
+     * - 查询条件：返回满足 right >= query.left 的第一个下标。
+     *
+     * @param {AABBCollider} query 查询 AABB，使用其 left 作为判定边界
+     * @return {Object} { data: this.data, startIndex: Number }
+     */
+    public function getTargetsFromIndexMonotonic(query:AABBCollider):Object {
+        var n:Number = this.data.length;
+        var result:Object = { data: this.data, startIndex: 0 };
+        if (n == 0) return result;
+
+        var queryLeft:Number = query.left;
+        // 起始索引选择：
+        // - 若为首查/跨帧/非法，退回 0；否则沿用上次位置
+        var idx:Number;
+        if (isNaN(_lastQueryLeft) || _lastIndex < 0 || _lastIndex > n || (queryLeft < _lastQueryLeft)) {
+            idx = 0;
+        } else {
+            idx = _lastIndex;
+        }
+
+        // 仅向前推进，直到找到第一个 right >= queryLeft
+        while (idx < n && this.rightValues[idx] < queryLeft) {
+            idx++;
+        }
+
+        result.startIndex = idx;
+        _lastIndex = idx;
+        _lastQueryLeft = queryLeft;
         return result;
     }
 
