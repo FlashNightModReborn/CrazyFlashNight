@@ -48,7 +48,6 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
         var vb:Number = _cmpKeys[b];
         // AS2 中布尔值转数字是可靠的：true→1, false→0
         return (va > vb) - (va < vb);
-        return 0;
     }
 
     
@@ -114,6 +113,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
 
         // 一次性数值健检：挡 NaN 与 ±Infinity
         if (((left - left) + (right - right)) != 0) {
+            // trace("skip add: invalid aabb (" + left + ", " + right + ")");  // 新增: 检查是否跳过
             // _root.服务器.发布服务器消息("BulletQueue.add: bullet with invalid aabbCollider: " + "(" + left + "," + right + ") " + bullet._name);
             return;
         }
@@ -416,6 +416,11 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
     /**
      * 执行排序遍历并清空队列
      * 封装了排序、遍历、清空三个操作的优化方法
+     * 排序→遍历→清空（当且仅当队列非空时）
+     * 约定：
+     *  - 非空：执行 sort→visit→clear；调用后队列为空，公开数组重指向 A 侧，版本戳可能递增。
+     *  - 为空：严格 no-op（不 sort、不 clear、不翻面、不递增版本）。
+     * 调用方若需要在空队列时也复位，请显式调用 clear()
      * @param visitor 访问函数，接收(bullet, index)参数
      */
     public function processAndClear(visitor:Function):Void {
@@ -425,11 +430,12 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
         
         // 排序（可能切换双缓冲引用）
         this.sortByLeftBoundary();
+        // trace("sortByLeftBoundary() 执行后, this.bullets.length = " + this.bullets.length); // 添加调试
 
         // 读取已排序引用与长度快照，避免遍历过程中外部修改造成的不确定性
         var arr:Array = this.bullets;
         var length:Number = arr.length;
-
+        
         // 顺序遍历
         for (var i:Number = 0; i < length; i++) {
             visitor(arr[i], i);

@@ -8,6 +8,7 @@
 // ============================================================================
 
 import org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue;
+import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
  
 class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
 
@@ -27,6 +28,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
     private var assertFailed:Number;
 
     private var rngSeed:Number;
+    private var rng:LinearCongruentialEngine; // 可复现随机数引擎（LCG）
 
     // -------------------- 主过程 --------------------
     private function _run(config:Object):Object {
@@ -47,6 +49,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
         log("============================================================");
         
         // 先运行鲁棒性测试
+        // 初始化可复现 RNG（LCG），并设置固定种子，确保测试可控
+        this.initRNG();
+        this.resetRNG(1234567);
+        
         this.runRobustnessTests();
 
         // 打印表头
@@ -62,7 +68,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
         ];
 
         // 固定随机种子，保证可复现
-        this.rngSeed = 1234567;
+        this.resetRNG(1234567);
 
         for (var i:Number = 0; i < dists.length; i++) {
             var dist:String = dists[i];
@@ -336,10 +342,24 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
 
     private function nowMS():Number { return getTimer(); }
 
+    // ========== 可复现 RNG（LCG）封装 ==========
+    private function initRNG():Void {
+        if (this.rng == null) {
+            this.rng = LinearCongruentialEngine.getInstance();
+            // 默认参数初始化（与其他测试保持一致的 m）
+            this.rng.init(1664525, 1013904223, 4294967296, 12345);
+        }
+    }
+    private function resetRNG(seed:Number):Void {
+        if (this.rng == null) this.initRNG();
+        this.rng.init(1664525, 1013904223, 4294967296, seed);
+        this.rngSeed = seed; // 兼容旧字段（若有外部依赖调试）
+    }
+
     // 简易可复现 RNG（LCG）
     private function srand():Number {
-        this.rngSeed = (1103515245 * this.rngSeed + 12345) % 0x7fffffff;
-        return this.rngSeed / 0x7fffffff;
+        if (this.rng == null) this.initRNG();
+        return this.rng.nextFloat();
     }
     private function rndRange(a:Number, b:Number):Number {
         return a + (b - a) * this.srand();
@@ -618,92 +638,120 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
     }
     
     private function testProcessAndClear():Boolean {
-        var q:BulletQueue = new BulletQueue();
+        log("[DEBUG] 开始 testProcessAndClear 测试");
         
-        // 测试1: 空队列的processAndClear
+        // —— 测试1：空队列（约定：no-op）
+        log("[TEST 1] 测试空队列");
+        var q1:BulletQueue = new BulletQueue();
         var visitCount1:Number = 0;
-        q.processAndClear(function(bullet:Object, index:Number):Void {
-            visitCount1++;
-        });
-        if (visitCount1 != 0) return false;
-        if (q.getCount() != 0) return false;
-        
-        // 测试2: 小数组（插入排序路径）
-        for (var i:Number = 0; i < 20; i++) {
-            q.add(this.makeBullet(20 - i, 21 - i, i));
+        q1.processAndClear(function(b:Object, idx:Number):Void { visitCount1++; });
+        log("  visitCount1=" + visitCount1 + " (期望:0)");
+        log("  q1.getCount()=" + q1.getCount() + " (期望:0)");
+        if (visitCount1 != 0) {
+            log("  [FAIL] visitCount1 != 0");
+            return false;
         }
-        
-        var visitCount2:Number = 0;
-        var lastLeft2:Number = -Infinity;
-        var sorted2:Boolean = true;
-        q.processAndClear(function(bullet:Object, index:Number):Void {
+        if (q1.getCount() != 0) {
+            log("  [FAIL] q1.getCount() != 0");
+            return false;
+        }
+        log("  [PASS] 测试1通过");
+
+        // —— 测试2：小数组路径（插入排序）
+        log("[TEST 2] 测试小数组路径(20个元素)");
+        var q2:BulletQueue = new BulletQueue();
+        for (var i:Number = 0; i < 20; i++) q2.add(this.makeBullet(20 - i, 21 - i, i));
+        var visitCount2:Number = 0, lastLeft2:Number = -Infinity, sorted2:Boolean = true;
+        var detailLog2:String = "";
+        q2.processAndClear(function(b:Object, idx:Number):Void {
             visitCount2++;
-            if (bullet.aabbCollider.left < lastLeft2) {
+            var curLeft:Number = b.aabbCollider.left;
+            if (curLeft < lastLeft2) {
                 sorted2 = false;
+                detailLog2 += " [错误:idx=" + idx + ",left=" + curLeft + "<" + lastLeft2 + "]";
             }
-            lastLeft2 = bullet.aabbCollider.left;
+            lastLeft2 = curLeft;
         });
-        
-        if (visitCount2 != 20) return false;
-        if (!sorted2) return false;
-        if (q.getCount() != 0) return false;  // 应该被清空
-        
-        // 测试3: 大数组（TimSort路径）
-        for (var j:Number = 0; j < 100; j++) {
-            q.add(this.makeBullet(Math.floor(this.srand() * 100), Math.floor(this.srand() * 100) + 100, j));
+        log("  visitCount2=" + visitCount2 + " (期望:20)");
+        log("  sorted2=" + sorted2 + " (期望:true)");
+        log("  q2.getCount()=" + q2.getCount() + " (期望:0)");
+        if (detailLog2 != "") log("  排序错误详情:" + detailLog2);
+        if (visitCount2 != 20 || !sorted2 || q2.getCount() != 0) {
+            log("  [FAIL] 测试2失败");
+            return false;
         }
-        
-        var visitCount3:Number = 0;
-        var lastLeft3:Number = -Infinity;
-        var sorted3:Boolean = true;
-        var visitedIds:Array = [];
-        
-        q.processAndClear(function(bullet:Object, index:Number):Void {
+        log("  [PASS] 测试2通过");
+
+        // —— 测试3：大数组路径（TimSort/索引重排）
+        log("[TEST 3] 测试大数组路径(100个元素)");
+        // 为随机数据段重置 RNG，确保该段可重现
+        this.resetRNG(987654321);
+        var q3:BulletQueue = new BulletQueue();
+        for (var j:Number = 0; j < 100; j++) q3.add(this.makeBullet(Math.floor(this.srand()*100), Math.floor(this.srand()*100)+100, j));
+        var visitCount3:Number = 0, lastLeft3:Number = -Infinity, sorted3:Boolean = true;
+        var detailLog3:String = "";
+        var firstFewValues:String = "";
+        q3.processAndClear(function(b:Object, idx:Number):Void {
             visitCount3++;
-            if (bullet.aabbCollider.left < lastLeft3) {
-                sorted3 = false;
+            var curLeft:Number = b.aabbCollider.left;
+            if (visitCount3 <= 5) {
+                firstFewValues += " [" + idx + "]=" + curLeft;
             }
-            lastLeft3 = bullet.aabbCollider.left;
-            visitedIds.push(bullet.__id);
+            if (curLeft < lastLeft3) {
+                sorted3 = false;
+                if (detailLog3 == "") {  // 只记录第一个错误
+                    detailLog3 = " [首个错误:idx=" + idx + ",left=" + curLeft + "<" + lastLeft3 + "]";
+                }
+            }
+            lastLeft3 = curLeft;
         });
-        
-        if (visitCount3 != 100) return false;
-        if (!sorted3) return false;
-        if (q.getCount() != 0) return false;  // 应该被清空
-        
-        // 测试4: 连续调用processAndClear
-        for (var k:Number = 0; k < 10; k++) {
-            q.add(this.makeBullet(k, k + 1, k));
+        log("  visitCount3=" + visitCount3 + " (期望:100)");
+        log("  sorted3=" + sorted3 + " (期望:true)");
+        log("  q3.getCount()=" + q3.getCount() + " (期望:0)");
+        log("  前5个值:" + firstFewValues);
+        if (detailLog3 != "") log("  排序错误详情:" + detailLog3);
+        if (visitCount3 != 100 || !sorted3 || q3.getCount() != 0) {
+            log("  [FAIL] 测试3失败");
+            return false;
         }
-        
-        var firstCallCount:Number = 0;
-        q.processAndClear(function(bullet:Object, index:Number):Void {
-            firstCallCount++;
-        });
-        
-        var secondCallCount:Number = 0;
-        q.processAndClear(function(bullet:Object, index:Number):Void {
-            secondCallCount++;
-        });
-        
-        if (firstCallCount != 10) return false;
-        if (secondCallCount != 0) return false;  // 第二次应该是空队列
-        
-        // 测试5: 验证稳定性（相同键保持顺序）
-        for (var m:Number = 0; m < 10; m++) {
-            q.add(this.makeBullet(5, 6, m));  // 所有元素左边界相同
+        log("  [PASS] 测试3通过");
+
+        // —— 测试4：连续调用（同一实例内验证 clear 行为）
+        log("[TEST 4] 测试连续调用");
+        var q4:BulletQueue = new BulletQueue();
+        for (var k:Number = 0; k < 10; k++) q4.add(this.makeBullet(k, k+1, k));
+        var firstCall:Number = 0; q4.processAndClear(function(b:Object, i:Number):Void { firstCall++; });
+        var secondCall:Number = 0; q4.processAndClear(function(b:Object, i:Number):Void { secondCall++; });
+        log("  firstCall=" + firstCall + " (期望:10)");
+        log("  secondCall=" + secondCall + " (期望:0)");
+        if (firstCall != 10 || secondCall != 0) {
+            log("  [FAIL] 测试4失败");
+            return false;
         }
-        
+        log("  [PASS] 测试4通过");
+
+        // —— 测试5：稳定性（相同键保持插入顺序）
+        log("[TEST 5] 测试稳定性");
+        var q5:BulletQueue = new BulletQueue();
+        for (var m:Number = 0; m < 10; m++) q5.add(this.makeBullet(5, 6, m));
         var stableIds:Array = [];
-        q.processAndClear(function(bullet:Object, index:Number):Void {
-            stableIds.push(bullet.__id);
-        });
-        
-        // 验证ID顺序保持0,1,2...9
+        q5.processAndClear(function(b:Object, i:Number):Void { stableIds.push(b.__id); });
+        log("  stableIds长度=" + stableIds.length + " (期望:10)");
+        var stableOk:Boolean = true;
         for (var n:Number = 0; n < stableIds.length; n++) {
-            if (stableIds[n] != n) return false;
+            if (stableIds[n] != n) {
+                log("  [错误] stableIds[" + n + "]=" + stableIds[n] + " (期望:" + n + ")");
+                stableOk = false;
+            }
         }
-        
+        if (!stableOk) {
+            log("  [FAIL] 测试5失败");
+            return false;
+        }
+        log("  [PASS] 测试5通过");
+
+        log("[DEBUG] testProcessAndClear 全部测试通过");
         return true;
     }
+
 }
