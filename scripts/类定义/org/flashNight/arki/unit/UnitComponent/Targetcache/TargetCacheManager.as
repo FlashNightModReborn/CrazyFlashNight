@@ -694,6 +694,53 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     }
 
     // ========================================================================
+    // 缓存获取方法（直接访问缓存对象）
+    // ========================================================================
+    
+    /**
+     * 获取缓存对象（直接访问SortedUnitCache实例）
+     * 允许外部直接使用缓存对象的完整功能
+     * @param {String} requestType - 请求类型: "敌人"、"友军"或"全体"
+     * @param {Object} target - 目标单位
+     * @param {Number} updateInterval - 更新间隔(帧数)
+     * @return {SortedUnitCache} 缓存对象实例
+     */
+    public static function acquireCache(requestType:String, target:Object, updateInterval:Number):SortedUnitCache {
+        var cache:SortedUnitCache = _provider.getCache(requestType, target, updateInterval);
+        return cache;
+    }
+    
+    /**
+     * 获取敌人缓存对象
+     * @param {Object} target - 目标单位
+     * @param {Number} updateInterval - 更新间隔(帧数)
+     * @return {SortedUnitCache} 敌人缓存对象实例
+     */
+    public static function acquireEnemyCache(target:Object, updateInterval:Number):SortedUnitCache {
+        return acquireCache("敌人", target, updateInterval);
+    }
+    
+    /**
+     * 获取友军缓存对象
+     * @param {Object} target - 目标单位
+     * @param {Number} updateInterval - 更新间隔(帧数)
+     * @return {SortedUnitCache} 友军缓存对象实例
+     */
+    public static function acquireAllyCache(target:Object, updateInterval:Number):SortedUnitCache {
+        return acquireCache("友军", target, updateInterval);
+    }
+    
+    /**
+     * 获取全体缓存对象
+     * @param {Object} target - 目标单位
+     * @param {Number} updateInterval - 更新间隔(帧数)
+     * @return {SortedUnitCache} 全体缓存对象实例
+     */
+    public static function acquireAllCache(target:Object, updateInterval:Number):SortedUnitCache {
+        return acquireCache("全体", target, updateInterval);
+    }
+    
+    // ========================================================================
     // 条件计数方法
     // ========================================================================
     

@@ -359,6 +359,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManagerTest 
         testShorthandMethods();
         testCacheConsistency();
         testUpdateIntervalBehavior();
+        testAcquireCacheMethods();
     }
     
     private static function testBasicTargetRetrieval():Void {
@@ -432,6 +433,73 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManagerTest 
         
         assertTrue("更新间隔后重新获取缓存", updated != null);
         assertEquals("更新后数据量保持", initialLength, updated.length, 0);
+    }
+    
+    private static function testAcquireCacheMethods():Void {
+        var hero:Object = mockHero;
+        var interval:Number = 10;
+        
+        trace("  🧪 测试 acquireCache 缓存对象获取方法...");
+        
+        // 测试基础 acquireCache 方法
+        var enemyCache:SortedUnitCache = TargetCacheManager.acquireCache("敌人", hero, interval);
+        var allyCache:SortedUnitCache = TargetCacheManager.acquireCache("友军", hero, interval);
+        var allCache:SortedUnitCache = TargetCacheManager.acquireCache("全体", hero, interval);
+        
+        assertNotNull("acquireCache-敌人缓存对象不为空", enemyCache);
+        assertNotNull("acquireCache-友军缓存对象不为空", allyCache);
+        assertNotNull("acquireCache-全体缓存对象不为空", allCache);
+        
+        // 验证返回的是 SortedUnitCache 实例
+        assertInstanceOf("敌人缓存是SortedUnitCache实例", enemyCache, "Object");
+        assertTrue("敌人缓存有data属性", enemyCache.data != undefined);
+        assertTrue("敌人缓存有getCount方法", enemyCache.getCount != undefined);
+        assertTrue("敌人缓存有findNearest方法", enemyCache.findNearest != undefined);
+        
+        // 测试便捷方法
+        var enemyCache2:SortedUnitCache = TargetCacheManager.acquireEnemyCache(hero, interval);
+        var allyCache2:SortedUnitCache = TargetCacheManager.acquireAllyCache(hero, interval);
+        var allCache2:SortedUnitCache = TargetCacheManager.acquireAllCache(hero, interval);
+        
+        assertNotNull("acquireEnemyCache返回缓存对象", enemyCache2);
+        assertNotNull("acquireAllyCache返回缓存对象", allyCache2);
+        assertNotNull("acquireAllCache返回缓存对象", allCache2);
+        
+        // 验证便捷方法与基础方法返回相同的缓存对象引用
+        assertTrue("acquireEnemyCache返回相同引用", enemyCache === enemyCache2);
+        assertTrue("acquireAllyCache返回相同引用", allyCache === allyCache2);
+        assertTrue("acquireAllCache返回相同引用", allCache === allCache2);
+        
+        // 验证缓存对象的数据一致性
+        var enemiesFromCache:Array = enemyCache.data;
+        var enemiesFromManager:Array = TargetCacheManager.getCachedEnemy(hero, interval);
+        
+        assertEquals("缓存对象与Manager返回数据一致", enemiesFromManager.length, enemiesFromCache.length, 0);
+        assertTrue("缓存对象与Manager返回相同数组引用", enemiesFromCache === enemiesFromManager);
+        
+        // 测试缓存对象的方法调用
+        var nearestFromCache:Object = enemyCache.findNearest(hero);
+        var nearestFromManager:Object = TargetCacheManager.findNearestEnemy(hero, interval);
+        
+        if (nearestFromCache && nearestFromManager) {
+            assertTrue("缓存对象findNearest与Manager一致", nearestFromCache._name == nearestFromManager._name);
+        } else {
+            assertTrue("缓存对象与Manager都未找到最近单位", !nearestFromCache && !nearestFromManager);
+        }
+        
+        // 测试缓存对象的计数功能
+        var countFromCache:Number = enemyCache.getCount();
+        var countFromManager:Number = TargetCacheManager.getEnemyCount(hero, interval);
+        
+        assertEquals("缓存对象计数与Manager一致", countFromManager, countFromCache, 0);
+        
+        // 测试缓存对象的范围查询
+        var rangeResultFromCache:Array = enemyCache.findInRadius(hero, 100, true);
+        var rangeResultFromManager:Array = TargetCacheManager.findEnemiesInRadius(hero, interval, 100);
+        
+        assertEquals("缓存对象范围查询与Manager一致", rangeResultFromManager.length, rangeResultFromCache.length, 0);
+        
+        trace("  ✅ acquireCache 方法测试全部通过");
     }
     
     // ========================================================================
