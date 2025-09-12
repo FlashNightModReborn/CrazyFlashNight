@@ -35,27 +35,15 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     // =========================
     // 环形池：上下文对象（零分配）
     // =========================
-    private static var _ctxPool:Array  = [ {}, {}, {}, {} ]; // 4个足够覆盖浅层可重入
+    private static var _ctxPool:Array  = [
+        new HitContext(),
+        new HitContext(),
+        new HitContext(),
+        new HitContext()
+    ]; // 4个足够覆盖浅层可重入
+
     private static var _ctxMask:Number = 3; // mod 4
     private static var _ctxTop:Number  = 0;
-
-    private static function borrowCtx():Object {
-        var i:Number = _ctxTop;
-        _ctxTop = (i + 1) & _ctxMask;
-        var ctx:Object = _ctxPool[i];
-
-        // 预设字段，避免形状抖动（不要在运行时增删键）
-        ctx.bullet = null;
-        ctx.shooter = null;
-        ctx.target = null;
-        ctx.collisionResult = null;
-        ctx.overlapRatio = 0;
-        ctx.isNormalBullet = false;
-        ctx.isMelee = false;
-        ctx.isPierce = false;
-
-        return ctx;
-    }
 
     /**
      * 初始化处理器
@@ -222,17 +210,28 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 overlapRatio  = collisionResult.overlapRatio;
 
                 // ---------- 命中后的业务处理（环形池 ctx 复用） ----------
-                var ctx:Object = borrowCtx();
-                ctx.bullet = bullet;
-                ctx.shooter = shooter;
-                ctx.target  = hitTarget;
-                ctx.collisionResult = collisionResult;
-                ctx.overlapRatio = overlapRatio;
-                ctx.isNormalBullet = isNormalBullet;
-                ctx.isMelee  = isMelee;
-                ctx.isPierce = isPierce;
+                // 环形池机制说明：
+                // 1. 使用4个预分配的HitContext对象，避免运行时GC
+                // 2. _ctxTop是当前可用对象的索引（0-3循环）
+                // 3. & 3 (即 & _ctxMask) 实现快速取模，确保索引在0-3范围内
+                // 4. fill()方法会完全覆盖所有字段，因此无需reset
+                // 5. 支持最多4层嵌套（如事件回调中再次触发命中处理）
+                
+                // 取出当前索引并推进到下一个（环形递增）
+                var ctxIndex:Number = _ctxTop;
+                _ctxTop = (ctxIndex + 1) & _ctxMask;  // 等价于 % 4，但位运算更快
 
-                killFlags |= handleHitCtx(ctx);
+                // 使用链式调用：fill返回this，直接传给handleHitCtx
+                killFlags |= handleHitCtx(_ctxPool[ctxIndex].fill(
+                    bullet, 
+                    shooter, 
+                    hitTarget, 
+                    collisionResult,
+                    overlapRatio, 
+                    isNormalBullet, 
+                    isMelee, 
+                    isPierce)
+                );
             }
 
             // 穿刺上限：设置终止标志并结束循环
@@ -278,7 +277,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     // 命中后处理：只做业务与事件分发，返回需要并入的 killFlags 增量
     // 注意：不做收尾/销毁/碰撞器回收，不改写 shouldDestroy
     // =========================================================================
-    private static function handleHitCtx(ctx:Object):Number {
+    private static function handleHitCtx(ctx:HitContext):Number {
         var bullet:MovieClip  = ctx.bullet;
         var shooter:MovieClip = ctx.shooter;
         var target:MovieClip  = ctx.target;
