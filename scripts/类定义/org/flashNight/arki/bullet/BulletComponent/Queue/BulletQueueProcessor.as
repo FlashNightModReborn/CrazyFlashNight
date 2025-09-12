@@ -124,6 +124,16 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var isPointSet:Boolean = ((flags & FLAG_CHAIN) != 0) && (rot != 0 && rot != 180);
         var bulletZOffset:Number = bullet.Z轴坐标;
         var bulletZRange:Number  = bullet.Z轴攻击范围;
+        // === 统一终止控制（位标志 & 单出口）===
+        // 原则：在流程中只设置“终止意图”，在末尾统一收尾，不改写 shouldDestroy 指针。
+        var KF_REASON_UNIT_HIT:Number     = 1 << 0;
+        var KF_REASON_PIERCE_LIMIT:Number = 1 << 1;
+
+        var KF_MODE_VANISH:Number         = 1 << 8;
+        var KF_MODE_REMOVE:Number         = 1 << 9;
+
+        var killFlags:Number = 0;
+
 
         if (_root.调试模式) {
             // 画当前AABB + Z轴上下边界线
@@ -154,7 +164,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var MELEE_EXPLOSIVE_MASK:Number = FLAG_MELEE | FLAG_EXPLOSIVE;
         
         // 预计算标志位检查结果，避免循环中重复计算
-        var isMeleeExplosive:Boolean = (flags & MELEE_EXPLOSIVE_MASK) === 0;
+        var isNormalBullet:Boolean = (flags & MELEE_EXPLOSIVE_MASK) === 0;  // 非近战非爆炸的普通子弹
         var isMelee:Boolean = (flags & FLAG_MELEE) != 0;
         var isPierce:Boolean = (flags & FLAG_PIERCE) != 0;
 
@@ -210,25 +220,28 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 var dispatcher:EventDispatcher = hitTarget.dispatcher;
                 dispatcher.publish("hit", hitTarget, shooter, bullet, collisionResult, damageResult);
 
-                // kill/death 分发（按原注释保持行为）
+                // kill/death 分发（普通子弹发布kill，近战/爆炸发布death）
                 if (hitTarget.hp <= 0) {
-                    dispatcher.publish(isMeleeExplosive ? "kill" : "death", hitTarget);
+                    dispatcher.publish(isNormalBullet ? "kill" : "death", hitTarget);
                     shooter.dispatcher.publish("enemyKilled", hitTarget, bullet);
                 }
 
                 damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
 
-                // 近战硬直 / 非穿刺消失
+                // 近战硬直 / 非穿刺：只设置终止意图，末尾统一收尾
                 if (isMelee && !bullet.不硬直) {
                     shooter.硬直(shooter.man, _root.钝感硬直时间);
+                    if (!isPierce) {
+                        killFlags |= KF_REASON_UNIT_HIT | KF_MODE_VANISH;
+                    }
                 } else if (!isPierce) {
-                    bullet.gotoAndPlay("消失");
+                    killFlags |= KF_REASON_UNIT_HIT | KF_MODE_VANISH;
                 }
             }
 
-            // 穿刺上限
+            // 穿刺上限：设置终止标志
             if (bullet.pierceLimit && bullet.pierceLimit < bullet.hitCount) {
-                bullet.shouldDestroy = function():Boolean { return true; };
+                killFlags |= KF_REASON_PIERCE_LIMIT | KF_MODE_REMOVE;
                 break;
             }
         }
@@ -242,7 +255,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         bullet.updateMovement(bullet);
 
         // 销毁判定与后续
-        if (bullet.shouldDestroy(bullet)) {
+        // 单出口收尾：满足任一条件即终止
+        if (killFlags != 0 || bullet.shouldDestroy(bullet)) {
             areaAABB.getFactory().releaseCollider(areaAABB);
             if (isPointSet) {
                 bullet.polygonCollider.getFactory().releaseCollider(bullet.polygonCollider);
@@ -254,7 +268,11 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 if (bullet.击中时触发函数) bullet.击中时触发函数();
                 bullet.gotoAndPlay("消失");
             } else {
-                bullet.removeMovieClip();
+                if ((killFlags & KF_MODE_VANISH) != 0) {
+                    bullet.gotoAndPlay("消失");
+                } else {
+                    bullet.removeMovieClip();
+                }
             }
             return;
         }

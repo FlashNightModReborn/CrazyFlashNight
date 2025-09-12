@@ -80,7 +80,8 @@
       "Bash(do echo \"Processing $file\")",
       "Bash(echo:*)",
       "Bash(ls:*)",
-      "Bash(awk:*)"
+      "Bash(awk:*)",
+      "Bash(git log:*)"
     ],
     "deny": [],
     "ask": []
