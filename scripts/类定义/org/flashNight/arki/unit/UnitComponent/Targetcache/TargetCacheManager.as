@@ -137,6 +137,45 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     }
 
     /**
+     * 基于“单调扫描”的起点查询（双指针预备）。
+     * - 内部自动按帧号调用 beginMonotonicSweep，然后执行前向扫描。
+     * - 适用于同一帧中子弹按X从左到右处理的场景，常数更小。
+     * @param {Object} target            目标单位（用于定位所属阵营缓存）
+     * @param {Number} updateInterval    缓存更新间隔（帧）
+     * @param {String} requestType       请求类型："����"/"�Ѿ�"/"ȫ��"
+     * @param {AABBCollider} query       查询AABB（使用 left 作为判定边界）
+     * @return {Object} { data:Array, startIndex:Number }
+     */
+    public static function getCachedTargetsFromIndexMonotonic(
+        target:Object,
+        updateInterval:Number,
+        requestType:String,
+        query:AABBCollider
+    ):Object {
+        var cache:SortedUnitCache = _provider.getCache(requestType, target, updateInterval);
+        if (!cache) return _emptyResult;
+
+        var currentFrame:Number = _root.帧计时器.当前帧数;
+        cache.beginMonotonicSweep(currentFrame);
+        return cache.getTargetsFromIndexMonotonic(query);
+    }
+
+    /** 单调扫描版：从指定索引开始的“敌人”列表查询 */
+    public static function getCachedEnemyFromIndexMonotonic(t:Object, i:Number, aabb:AABBCollider):Object {
+        return getCachedTargetsFromIndexMonotonic(t, i, "敌人", aabb);
+    }
+
+    /** 单调扫描版：从指定索引开始的“友军”列表查询 */
+    public static function getCachedAllyFromIndexMonotonic(t:Object, i:Number, aabb:AABBCollider):Object {
+        return getCachedTargetsFromIndexMonotonic(t, i, "友军", aabb);
+    }
+
+    /** 单调扫描版：从指定索引开始的“全部”列表查询 */
+    public static function getCachedAllFromIndexMonotonic(t:Object, i:Number, aabb:AABBCollider):Object {
+        return getCachedTargetsFromIndexMonotonic(t, i, "全体", aabb);
+    }
+
+    /**
      * 获取从指定索引开始的敌人单位
      * @param {Object} t - 目标单位
      * @param {Number} i - 更新间隔(帧数)

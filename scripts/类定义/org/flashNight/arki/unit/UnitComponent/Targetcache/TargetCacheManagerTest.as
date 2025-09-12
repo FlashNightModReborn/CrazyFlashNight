@@ -444,6 +444,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManagerTest 
         testIndexBasedQueries();
         testAABBColliderQueries();
         testRangeQueryConsistency();
+        testMonotonicIndexQueries();
     }
     
     private static function testIndexBasedQueries():Void {
@@ -2218,5 +2219,34 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManagerTest 
         trace("================================================================================");
         trace("🏁 TargetCacheManager 终极测试完成！");
         trace("================================================================================");
+    }
+
+    // ------------------------------------------------------------------------
+    // Monotonic sweep verification (wrapper in TargetCacheManager)
+    // ------------------------------------------------------------------------
+    private static function testMonotonicIndexQueries():Void {
+        var hero:Object = mockHero;
+        var baseX:Number = hero.x;
+
+        // Same frame: increasing left — monotonic must match baseline and be non-decreasing
+        var prevIndex:Number = -1;
+        for (var step:Number = 0; step < 5; step++) {
+            var center:Number = baseX + step * 50;
+            var aabb1:AABBCollider = createTestAABB(center, 120);
+            var mono:Object = TargetCacheManager.getCachedEnemyFromIndexMonotonic(hero, 10, aabb1);
+            var base:Object = TargetCacheManager.getCachedEnemyFromIndex(hero, 10, aabb1);
+            assertEquals("Monotonic equals baseline step="+step, base.startIndex, mono.startIndex, 0);
+            if (prevIndex >= 0) {
+                assertTrue("Monotonic non-decreasing step="+step, mono.startIndex >= prevIndex);
+            }
+            prevIndex = mono.startIndex;
+        }
+
+        // Next frame: allow smaller left and still match baseline
+        mockFrameTimer.advanceFrame(1);
+        var aabb2:AABBCollider = createTestAABB(baseX - 200, 120);
+        var mono2:Object = TargetCacheManager.getCachedEnemyFromIndexMonotonic(hero, 10, aabb2);
+        var base2:Object = TargetCacheManager.getCachedEnemyFromIndex(hero, 10, aabb2);
+        assertEquals("Monotonic equals baseline after new frame", base2.startIndex, mono2.startIndex, 0);
     }
 }

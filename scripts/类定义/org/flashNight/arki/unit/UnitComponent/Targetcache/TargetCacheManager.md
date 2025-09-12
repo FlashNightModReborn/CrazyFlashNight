@@ -44,6 +44,16 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManagerTest.runAll
 ✅ 大碰撞盒包含更多单位 VICTORY
 ✅ 范围查询一致性-数据长度 VICTORY (expected=51, actual=51)
 ✅ 范围查询一致性-开始索引 VICTORY (expected=24, actual=24)
+✅ Monotonic equals baseline step=0 VICTORY (expected=24, actual=24)
+✅ Monotonic equals baseline step=1 VICTORY (expected=25, actual=25)
+✅ Monotonic non-decreasing step=1 VICTORY
+✅ Monotonic equals baseline step=2 VICTORY (expected=26, actual=26)
+✅ Monotonic non-decreasing step=2 VICTORY
+✅ Monotonic equals baseline step=3 VICTORY (expected=27, actual=27)
+✅ Monotonic non-decreasing step=3 VICTORY
+✅ Monotonic equals baseline step=4 VICTORY (expected=27, actual=27)
+✅ Monotonic non-decreasing step=4 VICTORY
+✅ Monotonic equals baseline after new frame VICTORY (expected=21, actual=21)
 
 ⚔️ 第三波：距离查询战斗测试...
 ✅ 找到最近敌人 VICTORY (object exists)
@@ -177,13 +187,13 @@ enemy_0 vs enemy_0
 ✅ 短参数名兼容性-数字 VICTORY
 
 ⚔️ 第九波：性能基准战斗测试...
-📊 基础查询性能: 1000次调用耗时 39ms
+📊 基础查询性能: 1000次调用耗时 42ms
 ✅ 基础查询性能达标 VICTORY
-📊 复杂查询性能: 1500次调用耗时 81ms
+📊 复杂查询性能: 1500次调用耗时 106ms
 ✅ 复杂查询性能合理 VICTORY
-📊 外观层开销: Manager=341ms, Provider=318ms, 开销=7%
+📊 外观层开销: Manager=371ms, Provider=341ms, 开销=9%
 ✅ 外观层开销合理 VICTORY
-📊 大规模数据性能: 200次调用耗时 17ms
+📊 大规模数据性能: 200次调用耗时 18ms
 ✅ 大规模数据性能合理 VICTORY
 
 ⚔️ 第十波：过滤器查询战斗测试...
@@ -203,9 +213,9 @@ enemy_0 vs enemy_0
 ✅ 永远匹配过滤器与直接查询一致 VICTORY
 ✅ null过滤器处理 VICTORY (object is null)
 ✅ 零searchLimit返回null VICTORY (object is null)
-📊 过滤查询性能: 100次调用耗时 8ms
+📊 过滤查询性能: 100次调用耗时 9ms
 ✅ 过滤查询性能合理 VICTORY
-📊 复杂过滤查询性能: 50次调用耗时 4ms
+📊 复杂过滤查询性能: 50次调用耗时 3ms
 ✅ 复杂过滤查询性能合理 VICTORY
 ✅ 过滤查询与手动过滤一致性 VICTORY
 ✅ Manager与Cache过滤查询一致性 VICTORY
@@ -223,7 +233,7 @@ enemy_0 vs enemy_0
 ✅ 受伤友军回退查询有合理结果 VICTORY
 ✅ 特定类型回退查询有合理结果 VICTORY
 ✅ 强化单位回退查询有合理结果 VICTORY
-📊 回退查询性能 - 成功过滤: 0.08ms, 触发回退: 0.24ms
+📊 回退查询性能 - 成功过滤: 0.07ms, 触发回退: 0.28ms
 ✅ 成功过滤性能合理 VICTORY
 ✅ 回退查询性能合理 VICTORY
 ✅ 边界情况测试完成 VICTORY
@@ -238,7 +248,7 @@ enemy_0 vs enemy_0
 ✅ 完整工作流集成测试成功
 ✅ 跨组件集成-新单位被正确处理 VICTORY
 ✅ 跨组件集成-单位移除正确处理 VICTORY
-📊 真实场景模拟: 10轮战斗耗时 4ms
+📊 真实场景模拟: 10轮战斗耗时 9ms
 ✅ 真实场景性能合理 VICTORY
 ✅ 高压下系统统计正常 VICTORY (object exists)
 ✅ 高压下缓存命中率合理 VICTORY
@@ -249,10 +259,10 @@ enemy_0 vs enemy_0
 ✅ 大规模数据-友军计数合理 VICTORY
 ✅ 大规模数据-处理时间合理 VICTORY
 📊 大规模数据压力: 301个单位，处理耗时 8ms
-📊 并发访问压力: 20次突发请求耗时 11ms
+📊 并发访问压力: 20次突发请求耗时 9ms
 ✅ 并发访问性能合理 VICTORY
 ✅ 高并发下系统健康 VICTORY
-📊 内存压力测试: 20次循环耗时 23ms
+📊 内存压力测试: 20次循环耗时 20ms
 ✅ 内存压力测试完成 VICTORY
 ✅ 内存压力后系统恢复正常 VICTORY
 
@@ -277,24 +287,24 @@ enemy_0 vs enemy_0
 ================================================================================
 🏆 TargetCacheManager 外观层战斗报告
 ================================================================================
-⚔️ 总模拟数: 221
-🏆 通过次数: 221 ✅
+⚔️ 总模拟数: 231
+🏆 通过次数: 231 ✅
 💥 失败次数: 0 ❌
 🎯 胜通过: 100%
-⏱️ 测试用时: 954ms
-📋 API覆盖数: 221 个方法
+⏱️ 测试用时: 1057ms
+📋 API覆盖数: 231 个方法
 
 ⚡ 测试报告:
-  basicQueries: 0.039ms/次 (1000次测试)
-  complexQueries: 0.054ms/次 (1500次测试)
-  facadeOverhead: 开销 7% (10000次测试)
-  largeScale: 0.085ms/次 (200次测试)
-  filteredQuery: 0.08ms/次 (100次测试)
-  complexFilteredQuery: 0.08ms/次 (50次测试)
-  realWorldSimulation: 0.4ms/次 (10次测试)
+  basicQueries: 0.042ms/次 (1000次测试)
+  complexQueries: 0.071ms/次 (1500次测试)
+  facadeOverhead: 开销 9% (10000次测试)
+  largeScale: 0.09ms/次 (200次测试)
+  filteredQuery: 0.09ms/次 (100次测试)
+  complexFilteredQuery: 0.06ms/次 (50次测试)
+  realWorldSimulation: 0.9ms/次 (10次测试)
   massiveDataStress: 301个单位，8ms
-  concurrentAccess: 0.55ms/次 (20次突发)
-  memoryStress: 1.15ms/次 (20次循环)
+  concurrentAccess: 0.45ms/次 (20次突发)
+  memoryStress: 1ms/次 (20次循环)
 
 🎯 TargetCacheManager外观层当前状态:
 === TargetCacheProvider ARC增强版状态报告 ===
@@ -309,7 +319,7 @@ enemy_0 vs enemy_0
 
 
 🎉🎊 完全通过！TargetCacheManager 外观层完美验收！ 🎊🎉
-🏆 所有 221 项测试全部通过！
+🏆 所有 231 项测试全部通过！
 ⚡ 性能表现优异，API设计完美！
 🛡️ 外观模式实现卓越，用户体验极佳！
 ================================================================================
