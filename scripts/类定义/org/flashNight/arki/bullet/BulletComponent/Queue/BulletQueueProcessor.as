@@ -91,18 +91,17 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     public static function createNormalPreCheck(bullet:MovieClip):Function {
         // 非透明子弹：根据 area 决定
         return function():Boolean {
-            var bullet:MovieClip = this;
-            var detectionArea:MovieClip = bullet.area;
+            var detectionArea:MovieClip = this.area;
             // 纯运动弹：无区域的非透明子弹
             if (!detectionArea) {
-                bullet.updateMovement(bullet);
+                this.updateMovement(this);
                 return false;
             }
 
-            var areaAABB:AABBCollider = bullet.aabbCollider;
-            areaAABB.updateFromBullet(bullet, detectionArea);
+            var areaAABB:AABBCollider = this.aabbCollider;
+            areaAABB.updateFromBullet(this, detectionArea);
             // 有区域的非透明子弹：进入执行段
-            BulletQueueProcessor.add(bullet);
+            BulletQueueProcessor.add(this);
             return true;
         };
     }
@@ -122,97 +121,164 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var PIERCE_LIMIT_REMOVE:Number = KF_PIERCE_LIMIT_REMOVE;
         var MODE_VANISH:Number = KF_MODE_VANISH;
         
-        for (var key:String in activeQueues) {
-            var q:BulletQueue = activeQueues[key];
-            
-            // 空队列早退
-            var n:Number = q.getCount();
+        // ================================================================
+        // 统一变量声明区域（性能热点优化：避免循环内重复var声明开销）
+        // ================================================================
+
+        // ---- 队列上下文管理变量 ----
+        var key:String;                     // 当前处理的阵营键名（如"player", "enemy", "all"等）
+        var q:BulletQueue;                  // 当前阵营的子弹队列实例
+        var n:Number;                       // 队列中子弹数量（用于空队列早退判断）
+
+        // ---- 已排序子弹数据 ----
+        var sortedArr:Array;                // 按左边界排序后的子弹数组引用
+        var sortedLength:Number;            // 排序数组长度快照（避免重复length查询）
+
+        // ---- 目标缓存系统 ----
+        var cache:SortedUnitCache;          // 排序后的单位缓存对象
+        var fakeUnit:Object;                // 阵营代理单位（用于查询缓存键）
+
+        // ---- 双指针扫描线算法缓冲区 ----
+        var unitMap:Array;                  // 目标单位映射数组
+        var unitRightKeys:Array;            // 目标单位右边界键值数组（用于扫描优化）
+        var unitLeftKeys:Array;             // 目标单位左边界键值数组（用于碰撞窗口计算）
+        var unitCount:Number;               // 目标单位总数
+        var bulletLeftKeys:Array;           // 子弹左边界键值数组
+        var bulletRightKeys:Array;          // 子弹右边界键值数组
+        var sweepIndex:Number;              // 扫描线当前索引位置
+
+        // ---- 单发子弹循环状态 ----
+        var idx:Number;                     // 子弹数组遍历索引
+        var bullet:MovieClip;               // 当前处理的子弹实例
+        var flags:Number;                   // 子弹类型标志位（联弹、近战、穿透等）
+        var areaAABB:AABBCollider;          // 子弹的AABB碰撞检测器
+        var isPointSet:Boolean;             // 是否需要精确多边形碰撞检测（旋转联弹）
+        var rot:Number;                     // 子弹旋转角度（仅联弹需要）
+        var bulletZOffset:Number;           // 子弹Z轴坐标
+        var bulletZRange:Number;            // 子弹Z轴攻击范围
+        var killFlags:Number;               // 子弹终止标志位（命中、穿透上限等）
+        var shooter:MovieClip;              // 子弹发射者实例
+        var queryLeft:Number;               // 子弹左边界查询坐标
+        var startIndex:Number;              // 目标扫描起始索引
+        var len:Number;                     // 目标数组长度（循环边界）
+        var ii:Number;                      // 内层目标遍历索引
+        var hitTarget:MovieClip;            // 当前命中的目标单位
+        var zOffset:Number;                 // Z轴偏移量（子弹与目标的高度差）
+        var unitArea:AABBCollider;          // 目标单位的AABB碰撞检测器
+        var bulletRight:Number;             // 子弹右边界（用于早期截断优化）
+
+        // ---- 碰撞检测临时变量 ----
+        var collisionResult:CollisionResult; // 碰撞检测结果对象
+        var overlapRatio:Number;            // 重叠比例（用于伤害计算）
+        var polygonCollider:ICollider;      // 多边形碰撞检测器（精确检测用）
+
+        // ---- 子弹类型预计算标志 ----
+        var isNormalBullet:Boolean;         // 是否为普通子弹（非近战、非爆炸）
+        var isMelee:Boolean;                // 是否为近战子弹
+        var isPierce:Boolean;               // 是否具有穿透属性
+        var isUpdatePolygon:Boolean;        // 多边形碰撞器是否已更新（避免重复更新）
+        
+        // ================================================================
+        // 主处理循环：按阵营遍历所有活动队列
+        // ================================================================
+        for (key in activeQueues) {
+            q = activeQueues[key];
+
+            // ---- 空队列优化：早期退出避免无效计算 ----
+            n = q.getCount();
             if (n == 0) continue;
-            
-            // 排序（仅调用一次，保留函数调用）
+
+            // ---- 子弹排序：按左边界排序以优化扫描线算法 ----
             q.sortByLeftBoundary();
-            
-            // 读取已排序引用与长度快照（使用公共方法）
-            var sortedArr:Array = q.getBulletsReference();
-            var sortedLength:Number = sortedArr.length;
 
-            var cache:SortedUnitCache;
-            var fakeUnit:Object = fakeUnits[key];
+            // ---- 获取排序后数据：避免重复方法调用的性能开销 ----
+            sortedArr = q.getBulletsReference();        // 排序后子弹数组的直接引用
+            sortedLength = sortedArr.length;            // 长度快照，避免.length属性重复查询
 
+            // ---- 阵营单位获取：用于目标缓存查询 ----
+            fakeUnit = fakeUnits[key];
+
+            // ---- 目标缓存获取：根据阵营类型选择合适的缓存策略 ----
             if(key === "all") {
+                // 友伤模式：获取所有单位（包括友军）
                 cache = TargetCacheManager.acquireAllCache(fakeUnit, 1);
             } else {
+                // 敌对模式：仅获取敌方单位
                 cache = TargetCacheManager.acquireEnemyCache(fakeUnit, 1);
             }
 
-            var unitMap:Array = cache.data;
-            // 新增：目标左右边界与子弹左右边界数组，用于外部双指针窗口计算
-            var unitRightKeys:Array = cache.rightValues;
-            var unitLeftKeys:Array = cache.leftValues;
-            var unitCount:Number = unitMap.length;
-            var bulletLeftKeys:Array = q.getLeftKeysRef();
-            var bulletRightKeys:Array = q.getRightKeysRef();
-            var sweepIndex:Number = 0;
-            
-            // === 内联 executeLogic 遍历开始 ===
-            // 顺序遍历执行每个子弹的逻辑（完全内联，无函数调用）
-            for (var idx:Number = 0; idx < sortedLength; idx++) {
-                var bullet:MovieClip = sortedArr[idx];
-                
-                // ------- 局部快取（AS2 性能友好）-------
-                var flags:Number = bullet.flags;
-                
-                var areaAABB:AABBCollider = bullet.aabbCollider;
-                
-                var rot:Number = bullet._rotation;
-                var isPointSet:Boolean = ((flags & FLAG_CHAIN) != 0) && (rot != 0 && rot != 180);
-                
-                var bulletZOffset:Number = bullet.Z轴坐标;
-                var bulletZRange:Number = bullet.Z轴攻击范围;
-                
-                // 统一终止控制（位标志 & 单出口）
-                var killFlags:Number = 0;
-                
+            // ---- 双指针扫描线数据准备：核心优化算法的数据基础 ----
+            unitMap = cache.data;                       // 目标单位实例数组
+            unitRightKeys = cache.rightValues;          // 目标右边界数组（用于扫描线推进）
+            unitLeftKeys = cache.leftValues;            // 目标左边界数组（用于碰撞窗口判断）
+            unitCount = unitMap.length;                 // 目标总数
+            bulletLeftKeys = q.getLeftKeysRef();        // 子弹左边界数组（查询起点）
+            bulletRightKeys = q.getRightKeysRef();      // 子弹右边界数组（截断终点）
+            sweepIndex = 0;                             // 扫描线索引重置
+
+            // ================================================================
+            // 子弹逐发处理循环：内联executeLogic以消除函数调用开销
+            // 核心优化：完全内联，无函数调用，最小化栈帧切换成本
+            // ================================================================
+            for (idx = 0; idx < sortedLength; idx++) {
+                bullet = sortedArr[idx];
+
+                // ---- 子弹属性缓存：减少对象属性查找的哈希开销 ----
+                flags = bullet.flags;                   // 子弹类型标志位（一次查询，多处使用）
+                areaAABB = bullet.aabbCollider;         // AABB碰撞检测器缓存
+
+                // ---- 精确碰撞检测需求判断：延迟获取旋转角度避免不必要的getter调用 ----
+                isPointSet = (flags & FLAG_CHAIN) != 0; // 先判断是否为联弹
+                if (isPointSet) {
+                    rot = bullet._rotation;              // 仅联弹需要获取旋转角度（避免getter开销）
+                    isPointSet = rot != 0 && rot != 180; // 只有旋转的联弹才需要多边形检测
+                }
+
+                // ---- Z轴检测参数缓存：高频使用的坐标数据 ----
+                bulletZOffset = bullet.Z轴坐标;          // 子弹Z轴坐标
+                bulletZRange = bullet.Z轴攻击范围;       // Z轴攻击范围
+
+                // ---- 子弹终止控制初始化：统一的生命周期管理 ----
+                killFlags = 0;                         // 重置终止标志位（单出口设计）
+
+                // ---- 调试渲染：开发阶段的可视化辅助 ----
                 if (debugMode) {
-                    // 画当前AABB + Z轴上下边界线
                     AABBRenderer.renderAABB(areaAABB, 0, "line", bulletZRange);
                 }
-                
-                // 取目标集（友伤/敌方）
-                var shooter:MovieClip = gameWorld[bullet.发射者名];
-                // 直接调用预选的函数，消除了循环内的 if/else (三元运算符) 判断
-                var queryLeft:Number = bulletLeftKeys[idx];
+
+                // ---- 发射者获取：用于友伤判断和效果触发 ----
+                shooter = gameWorld[bullet.发射者名];
+
+                // ---- 扫描线算法：双指针优化的碰撞检测窗口计算 ----
+                queryLeft = bulletLeftKeys[idx];        // 当前子弹左边界
+                // 推进扫描线：跳过所有右边界小于子弹左边界的目标
                 while (sweepIndex < unitCount && unitRightKeys[sweepIndex] < queryLeft) {
                     sweepIndex++;
                 }
-                var startIndex:Number = sweepIndex;
-                
-                bullet.shouldGeneratePostHitEffect = true;
-                
-                // 循环局部
-                var len:Number = unitCount;
-                var ii:Number;
-                var hitTarget:MovieClip;
-                var zOffset:Number;
-                var unitArea:AABBCollider;
-                var collisionResult:CollisionResult;
-                var overlapRatio:Number;
-                
-                // 预计算标志位检查结果，避免循环中重复计算
-                var isNormalBullet:Boolean = (flags & MELEE_EXPLOSIVE_MASK) == 0;
-                var isMelee:Boolean = (flags & FLAG_MELEE) != 0;
-                var isPierce:Boolean = (flags & FLAG_PIERCE) != 0;
+                startIndex = sweepIndex;                // 记录有效检测的起始索引
 
-                var isUpdatePolygon:Boolean = false;
+                // ---- 击中后效果标志：确保命中时能正确触发效果 ----
+                bullet.shouldGeneratePostHitEffect = true;
+
+                // ---- 目标遍历边界：防止数组越界 ----
+                len = unitCount;
+
+                // ---- 子弹类型预计算：避免内层循环重复位运算 ----
+                isNormalBullet = (flags & MELEE_EXPLOSIVE_MASK) == 0;  // 普通子弹判断
+                isMelee = (flags & FLAG_MELEE) != 0;                   // 近战子弹判断
+                isPierce = (flags & FLAG_PIERCE) != 0;                 // 穿透子弹判断
+
+                // ---- 多边形更新控制：避免同一子弹重复更新碰撞器 ----
+                isUpdatePolygon = false;
                 
                 // ----------- 命中循环（带右边界截断） -----------
-                var bulletRight:Number = bulletRightKeys[idx];
+                bulletRight = bulletRightKeys[idx];
                 for (ii = startIndex; ii < len && unitLeftKeys[ii] <= bulletRight; ++ii) {
                     hitTarget = bullet.hitTarget = unitMap[ii];
                     
-                    // Z 轴粗判
+                    // Z 轴粗判（避免Math.abs函数调用开销）
                     zOffset = bulletZOffset - hitTarget.Z轴坐标;
-                    if (Math.abs(zOffset) >= bulletZRange) continue;
+                    if (zOffset >= bulletZRange || zOffset <= -bulletZRange) continue;
                     
                     if (hitTarget.hp > 0 && hitTarget.防止无限飞 != true) {
                         unitArea = hitTarget.aabbCollider;
@@ -225,7 +291,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         
                         // 仅在需要时才更新多边形碰撞体
                         if (isPointSet) {
-                            var polygonCollider:ICollider = bullet.polygonCollider;
+                            polygonCollider = bullet.polygonCollider;
                             if(!polygonCollider) {
                                 // 对于导弹联弹，可能会因为空中旋转而没有预创建碰撞体
                                 // 这里进行懒创建
@@ -285,7 +351,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 if (killFlags != 0 || bullet.shouldDestroy(bullet)) {
                     // 回收碰撞体
                     areaAABB.getFactory().releaseCollider(areaAABB);
-                    if (isPointSet) {
+                    if (bullet.polygonCollider) {
                         bullet.polygonCollider.getFactory().releaseCollider(bullet.polygonCollider);
                     }
                     
