@@ -18,7 +18,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.HitContext {
 
     // 预计算标志（由调用方传入，避免循环内重复判断）
     public var isNormalBullet:Boolean;  // 非近战非爆炸
-    public var isMelee:Boolean;
+    public var shouldStun:Boolean;      // 应该触发硬直（近战且不免疫硬直）
     public var isPierce:Boolean;
 
     public function HitContext() {
@@ -33,7 +33,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.HitContext {
         collisionResult = null;
         overlapRatio = 0;
         isNormalBullet = false;
-        isMelee = false;
+        shouldStun = false;
         isPierce = false;
     }
 
@@ -48,7 +48,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.HitContext {
         cr:CollisionResult,
         ov:Number,
         normal:Boolean,
-        melee:Boolean,
+        stun:Boolean,        // 应该硬直（近战且不免疫）
         pierce:Boolean
     ):HitContext {
         bullet = b;
@@ -57,7 +57,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.HitContext {
         collisionResult = cr;
         overlapRatio = ov;
         isNormalBullet = normal;
-        isMelee = melee;
+        shouldStun = stun;
         isPierce = pierce;
         return this;
     }

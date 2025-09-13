@@ -341,7 +341,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             collisionResult,
                             overlapRatio,
                             isNormalBullet,
-                            isMelee,
+                            isMelee && !bullet.不硬直,  // 近战且需要硬直
                             isPierce)
                         );
                     }
@@ -433,10 +433,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         // --- 表现触发 ---
         damageResult.triggerDisplay(target._x, target._y);
 
-        // --- 终止意图：近战硬直 或 非穿刺 命中即“消失” ---
+        // --- 终止意图：近战硬直 或 非穿刺 命中即"消失" ---
         var deltaFlags:Number = 0;
         if (!ctx.isPierce) {
-            if (ctx.isMelee && !bullet.不硬直) {
+            if (ctx.shouldStun) {  // 应该硬直（已预计算近战且不免疫条件）
                 shooter.硬直(shooter.man, _root.钝感硬直时间);
             }
             deltaFlags |= (KF_REASON_UNIT_HIT | KF_MODE_VANISH);
