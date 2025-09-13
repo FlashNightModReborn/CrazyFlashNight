@@ -125,6 +125,12 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             // 读取已排序引用与长度快照（使用公共方法）
             var sortedArr:Array = q.getBulletsReference();
             var sortedLength:Number = sortedArr.length;
+
+            // 根据队列类型，预先选择好获取目标集的函数。
+            // 这样就将判断移出高频的内层 for 循环。
+            var getTargetsFunc:Function = (key === "all") 
+                ? TargetCacheManager.getCachedAllFromIndex 
+                : TargetCacheManager.getCachedEnemyFromIndex;
             
             // === 内联 executeLogic 遍历开始 ===
             // 顺序遍历执行每个子弹的逻辑（完全内联，无函数调用）
@@ -152,9 +158,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 
                 // 取目标集（友伤/敌方）
                 var shooter:MovieClip = gameWorld[bullet.发射者名];
-                var rangeResult:Object = bullet.友军伤害
-                    ? TargetCacheManager.getCachedAllFromIndex(shooter, 1, areaAABB)
-                    : TargetCacheManager.getCachedEnemyFromIndex(shooter, 1, areaAABB);
+                // 直接调用预选的函数，消除了循环内的 if/else (三元运算符) 判断
+                var rangeResult:Object = getTargetsFunc(shooter, 1, areaAABB);
                 
                 var unitMap:Array = rangeResult.data;
                 var startIndex:Number = rangeResult.startIndex;
