@@ -142,7 +142,6 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var unitMap:Array;                  // 目标单位映射数组
         var unitRightKeys:Array;            // 目标单位右边界键值数组（用于扫描优化）
         var unitLeftKeys:Array;             // 目标单位左边界键值数组（用于碰撞窗口计算）
-        var unitCount:Number;               // 目标单位总数
         var bulletLeftKeys:Array;           // 子弹左边界键值数组
         var bulletRightKeys:Array;          // 子弹右边界键值数组
         var sweepIndex:Number;              // 扫描线当前索引位置
@@ -189,6 +188,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             if (n == 0) continue;
 
             // ---- 子弹排序：按左边界排序以优化扫描线算法 ----
+            // _root.服务器.发布服务器消息(q.toString()); // 调试输出当前队列状态
+
             q.sortByLeftBoundary();
 
             // ---- 获取排序后数据：避免重复方法调用的性能开销 ----
@@ -199,7 +200,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             fakeUnit = fakeUnits[key];
 
             // ---- 目标缓存获取：根据阵营类型选择合适的缓存策略 ----
-            if(key === "all") {
+            if(key == "all") {
                 // 友伤模式：获取所有单位（包括友军）
                 cache = TargetCacheManager.acquireAllCache(fakeUnit, 1);
             } else {
@@ -211,7 +212,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             unitMap = cache.data;                       // 目标单位实例数组
             unitRightKeys = cache.rightValues;          // 目标右边界数组（用于扫描线推进）
             unitLeftKeys = cache.leftValues;            // 目标左边界数组（用于碰撞窗口判断）
-            unitCount = unitMap.length;                 // 目标总数
+            len = unitMap.length;                       // 目标遍历边界（整个队列处理期间不变）
             bulletLeftKeys = q.getLeftKeysRef();        // 子弹左边界数组（查询起点）
             bulletRightKeys = q.getRightKeysRef();      // 子弹右边界数组（截断终点）
             sweepIndex = 0;                             // 扫描线索引重置
@@ -252,16 +253,27 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 // ---- 扫描线算法：双指针优化的碰撞检测窗口计算 ----
                 queryLeft = bulletLeftKeys[idx];        // 当前子弹左边界
                 // 推进扫描线：跳过所有右边界小于子弹左边界的目标
-                while (sweepIndex < unitCount && unitRightKeys[sweepIndex] < queryLeft) {
-                    sweepIndex++;
+                // 循环展开优化：每次跳4个，减少循环判断开销
+                while (sweepIndex + 3 < len && unitRightKeys[sweepIndex + 3] < queryLeft) {
+                    sweepIndex += 4;
+                    // _root.服务器.发布服务器消息("快速推进4步至索引 " + sweepIndex); // 调试输出
+                }
+                // 处理剩余的0-3个元素
+                while (sweepIndex < len && unitRightKeys[sweepIndex] < queryLeft) {
+                    ++sweepIndex;
                 }
                 startIndex = sweepIndex;                // 记录有效检测的起始索引
+                bulletRight = bulletRightKeys[idx];     // 提前获取子弹右边界
+
+                // ---- 空窗口快判：O(1)时间复杂度，避免无效循环开销 ----
+                // 如果没有任何目标在子弹的横向范围内，直接跳过
+                if (startIndex >= len || bulletRight < unitLeftKeys[startIndex]) {
+                    bullet.updateMovement(bullet);
+                    continue;  // 直接进入下一发子弹的处理
+                }
 
                 // ---- 击中后效果标志：确保命中时能正确触发效果 ----
                 bullet.shouldGeneratePostHitEffect = true;
-
-                // ---- 目标遍历边界：防止数组越界 ----
-                len = unitCount;
 
                 // ---- 子弹类型预计算：避免内层循环重复位运算 ----
                 isNormalBullet = (flags & MELEE_EXPLOSIVE_MASK) == 0;  // 普通子弹判断
@@ -270,25 +282,24 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                 // ---- 多边形更新控制：避免同一子弹重复更新碰撞器 ----
                 isUpdatePolygon = false;
-                
+
                 // ----------- 命中循环（带右边界截断） -----------
-                bulletRight = bulletRightKeys[idx];
                 for (ii = startIndex; ii < len && unitLeftKeys[ii] <= bulletRight; ++ii) {
-                    hitTarget = bullet.hitTarget = unitMap[ii];
-                    
+                    hitTarget = unitMap[ii];  // 只读取目标，延迟写入
+
                     // Z 轴粗判（避免Math.abs函数调用开销）
                     zOffset = bulletZOffset - hitTarget.Z轴坐标;
                     if (zOffset >= bulletZRange || zOffset <= -bulletZRange) continue;
-                    
+
                     if (hitTarget.hp > 0 && hitTarget.防止无限飞 != true) {
                         unitArea = hitTarget.aabbCollider;
-                        
+
                         // AABB 检测（无序早退交由右边界截断处理）
                         collisionResult = areaAABB.checkCollision(unitArea, zOffset);
                         if (!collisionResult.isColliding) {
                             continue;
                         }
-                        
+
                         // 仅在需要时才更新多边形碰撞体
                         if (isPointSet) {
                             polygonCollider = bullet.polygonCollider;
@@ -300,34 +311,37 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                             if(!isUpdatePolygon) {
                                 // 仅更新一次
-                                bullet.polygonCollider.updateFromBullet(bullet, bullet.子弹区域area || bullet.area);
+                                polygonCollider.updateFromBullet(bullet, bullet.子弹区域area || bullet.area);
                                 isUpdatePolygon = true;
                             }
 
-                            collisionResult = bullet.polygonCollider.checkCollision(unitArea, zOffset);
-                            
+                            collisionResult = polygonCollider.checkCollision(unitArea, zOffset);
+
                             // 如果更精确的多边形检测都没有碰撞，则跳过这个目标
                             if (!collisionResult.isColliding) {
                                 continue;
                             }
                         }
-                        
+
+                        // 确认命中后才写入hitTarget，避免无效的哈希表操作
+                        bullet.hitTarget = hitTarget;
+
                         if (debugMode) {
                             AABBRenderer.renderAABB(areaAABB, zOffset, "thick");
                             AABBRenderer.renderAABB(unitArea, zOffset, "filled");
                         }
-                        
+
                         overlapRatio = collisionResult.overlapRatio;
-                        
+
                         // ---------- 命中后的业务处理（静态 ctx 复用） ----------
                         killFlags |= handleHitCtx(_hitContext.fill(
-                            bullet, 
-                            shooter, 
-                            hitTarget, 
+                            bullet,
+                            shooter,
+                            hitTarget,
                             collisionResult,
-                            overlapRatio, 
-                            isNormalBullet, 
-                            isMelee, 
+                            overlapRatio,
+                            isNormalBullet,
+                            isMelee,
                             isPierce)
                         );
                     }
