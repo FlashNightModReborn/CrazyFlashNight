@@ -202,6 +202,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 var isNormalBullet:Boolean = (flags & MELEE_EXPLOSIVE_MASK) == 0;
                 var isMelee:Boolean = (flags & FLAG_MELEE) != 0;
                 var isPierce:Boolean = (flags & FLAG_PIERCE) != 0;
+
+                var isUpdatePolygon:Boolean = false;
                 
                 // ----------- 命中循环（带右边界截断） -----------
                 var bulletRight:Number = bulletRightKeys[idx];
@@ -223,7 +225,19 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         
                         // 仅在需要时才更新多边形碰撞体
                         if (isPointSet) {
-                            bullet.polygonCollider.updateFromBullet(bullet, bullet.子弹区域area || bullet.area);
+                            var polygonCollider:ICollider = bullet.polygonCollider;
+                            if(!polygonCollider) {
+                                // 对于导弹联弹，可能会因为空中旋转而没有预创建碰撞体
+                                // 这里进行懒创建
+                                polygonCollider = bullet.polygonCollider = ColliderFactoryRegistry.getFactory(ColliderFactoryRegistry.PolygonFactory).createFromBullet(bullet, bullet.子弹区域area || bullet.area);
+                            }
+
+                            if(!isUpdatePolygon) {
+                                // 仅更新一次
+                                bullet.polygonCollider.updateFromBullet(bullet, bullet.子弹区域area || bullet.area);
+                                isUpdatePolygon = true;
+                            }
+
                             collisionResult = bullet.polygonCollider.checkCollision(unitArea, zOffset);
                             
                             // 如果更精确的多边形检测都没有碰撞，则跳过这个目标
