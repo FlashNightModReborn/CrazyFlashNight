@@ -570,4 +570,42 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManager {
     public static function refreshCaches():Void {
         rebuildCaches();
     }
+
+    /**
+     * 【新增】根据阵营ID获取对应的"是否为敌人"值
+     * 用于将阵营字符串转换为游戏系统使用的布尔值
+     * @param {String} factionId - 阵营标识符
+     * @return {*} true(敌人)/false(玩家)/null(中立敌对)
+     */
+    public static function getFactionLegacyValue(factionId:String) {
+        if (!factionId || !_validFactionsMap[factionId]) {
+            return null; // 未知阵营视为中立
+        }
+
+        // 直接根据阵营ID返回对应值，避免元数据查找
+        if (factionId == FACTION_ENEMY) {
+            return true;
+        } else if (factionId == FACTION_PLAYER) {
+            return false;
+        } else {
+            return null; // HOSTILE_NEUTRAL 或其他
+        }
+    }
+
+    /**
+     * 【新增】创建带阵营属性的假单位对象
+     * 用于子弹队列等系统需要假单位进行缓存查询的场景
+     * @param {String} factionId - 阵营标识符
+     * @param {String} name - 可选的名称前缀
+     * @return {Object} 包含"是否为敌人"属性的假单位对象
+     */
+    public static function createFactionUnit(factionId:String, name:String):Object {
+        if (!name) name = "faction_unit";
+
+        return {
+            _name: name + "_" + factionId,
+            是否为敌人: getFactionLegacyValue(factionId),
+            faction: factionId
+        };
+    }
 }

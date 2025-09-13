@@ -32,6 +32,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     private static var KF_MODE_VANISH:Number         = 1 << 8;
     private static var KF_MODE_REMOVE:Number         = 1 << 9;
 
+    // 预计算的组合常量
+    private static var KF_PIERCE_LIMIT_REMOVE:Number = (1 << 1) | (1 << 9);
+
     // =========================
     // 静态上下文对象（零分配，同步处理无需环形池）
     // =========================
@@ -111,6 +114,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var gameWorld:MovieClip = _root.gameworld;
         var debugMode:Boolean = _root.调试模式;
         var MELEE_EXPLOSIVE_MASK:Number = FLAG_MELEE | FLAG_EXPLOSIVE;
+        var PIERCE_LIMIT_REMOVE:Number = KF_PIERCE_LIMIT_REMOVE;
+        var MODE_VANISH:Number = KF_MODE_VANISH;
         
         for (var key:String in activeQueues) {
             var q:BulletQueue = activeQueues[key];
@@ -231,7 +236,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     
                     // 穿刺上限：设置终止标志并结束循环
                     if (bullet.pierceLimit && bullet.pierceLimit < bullet.hitCount) {
-                        killFlags |= KF_REASON_PIERCE_LIMIT | KF_MODE_REMOVE;
+                        killFlags |= PIERCE_LIMIT_REMOVE;
                         break;
                     }
                 }
@@ -258,7 +263,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         if (bullet.击中时触发函数) bullet.击中时触发函数();
                         bullet.gotoAndPlay("消失");
                     } else {
-                        if ((killFlags & KF_MODE_VANISH) != 0) {
+                        if ((killFlags & MODE_VANISH) != 0) {
                             bullet.gotoAndPlay("消失");
                         } else {
                             bullet.removeMovieClip();

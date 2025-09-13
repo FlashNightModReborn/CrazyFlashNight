@@ -356,13 +356,15 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManagerTest {
     // ========================================================================
     // 适配器功能测试
     // ========================================================================
-    
+
     private static function runAdapterFunctionalityTests():Void {
         trace("\n🔄 执行适配器功能测试...");
-        
+
         testUnitFactionMapping();
         testLegacyValueMapping();
         testUnitRelationshipQueries();
+        testNewFactionLegacyValueMethod();
+        testCreateFactionUnitMethod();
     }
     
     private static function testUnitFactionMapping():Void {
@@ -387,6 +389,65 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManagerTest {
         assertEquals("玩家阵营legacy值", String(false), FactionManager.getLegacyValueFromFaction(FactionManager.FACTION_PLAYER));
         assertEquals("敌人阵营legacy值", String(true), FactionManager.getLegacyValueFromFaction(FactionManager.FACTION_ENEMY));
         assertEquals("中立敌对legacy值", String(null), FactionManager.getLegacyValueFromFaction(FactionManager.FACTION_HOSTILE_NEUTRAL));
+    }
+
+    private static function testNewFactionLegacyValueMethod():Void {
+        // 测试新增的 getFactionLegacyValue 方法
+        trace("  测试 getFactionLegacyValue 方法...");
+
+        // 测试有效阵营
+        var playerValue = FactionManager.getFactionLegacyValue(FactionManager.FACTION_PLAYER);
+        assertEquals("getFactionLegacyValue-玩家", String(false), String(playerValue));
+
+        var enemyValue = FactionManager.getFactionLegacyValue(FactionManager.FACTION_ENEMY);
+        assertEquals("getFactionLegacyValue-敌人", String(true), String(enemyValue));
+
+        var neutralValue = FactionManager.getFactionLegacyValue(FactionManager.FACTION_HOSTILE_NEUTRAL);
+        assertEquals("getFactionLegacyValue-中立敌对", String(null), String(neutralValue));
+
+        // 测试无效阵营
+        var invalidValue = FactionManager.getFactionLegacyValue("INVALID_FACTION");
+        assertEquals("getFactionLegacyValue-无效阵营", String(null), String(invalidValue));
+
+        var nullValue = FactionManager.getFactionLegacyValue(null);
+        assertEquals("getFactionLegacyValue-null输入", String(null), String(nullValue));
+
+        var emptyValue = FactionManager.getFactionLegacyValue("");
+        assertEquals("getFactionLegacyValue-空字符串", String(null), String(emptyValue));
+    }
+
+    private static function testCreateFactionUnitMethod():Void {
+        // 测试新增的 createFactionUnit 方法
+        trace("  测试 createFactionUnit 方法...");
+
+        // 测试玩家阵营假单位
+        var playerUnit:Object = FactionManager.createFactionUnit(FactionManager.FACTION_PLAYER, "test");
+        assertNotNull("createFactionUnit-玩家单位创建", playerUnit);
+        assertEquals("createFactionUnit-玩家单位名称", "test_PLAYER", playerUnit._name);
+        assertEquals("createFactionUnit-玩家单位是否为敌人", String(false), String(playerUnit.是否为敌人));
+        assertEquals("createFactionUnit-玩家单位阵营", FactionManager.FACTION_PLAYER, playerUnit.faction);
+
+        // 测试敌人阵营假单位
+        var enemyUnit:Object = FactionManager.createFactionUnit(FactionManager.FACTION_ENEMY, "queue");
+        assertNotNull("createFactionUnit-敌人单位创建", enemyUnit);
+        assertEquals("createFactionUnit-敌人单位名称", "queue_ENEMY", enemyUnit._name);
+        assertEquals("createFactionUnit-敌人单位是否为敌人", String(true), String(enemyUnit.是否为敌人));
+        assertEquals("createFactionUnit-敌人单位阵营", FactionManager.FACTION_ENEMY, enemyUnit.faction);
+
+        // 测试中立敌对假单位
+        var neutralUnit:Object = FactionManager.createFactionUnit(FactionManager.FACTION_HOSTILE_NEUTRAL, null);
+        assertNotNull("createFactionUnit-中立单位创建", neutralUnit);
+        assertEquals("createFactionUnit-中立单位名称前缀", "faction_unit_", neutralUnit._name.substr(0, 13));
+        assertEquals("createFactionUnit-中立单位是否为敌人", String(null), String(neutralUnit.是否为敌人));
+        assertEquals("createFactionUnit-中立单位阵营", FactionManager.FACTION_HOSTILE_NEUTRAL, neutralUnit.faction);
+
+        // 测试创建的假单位能否正确被其他方法识别
+        var mappedFaction:String = FactionManager.getFactionFromUnit(playerUnit);
+        assertEquals("createFactionUnit-反向映射验证", FactionManager.FACTION_PLAYER, mappedFaction);
+
+        // 测试假单位间的关系查询
+        assertTrue("createFactionUnit-单位关系查询", FactionManager.areUnitsEnemies(playerUnit, enemyUnit));
+        assertFalse("createFactionUnit-单位盟友查询", FactionManager.areUnitsAllies(playerUnit, enemyUnit));
     }
     
     private static function testUnitRelationshipQueries():Void {
@@ -720,6 +781,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManagerTest {
         trace("失败: " + failedTests + " ❌");
         trace("成功率: " + Math.round((passedTests / testCount) * 100) + "%");
         trace("总耗时: " + totalTime + "ms");
+        trace("\n📌 新增方法测试覆盖:");
+        trace("  ✅ getFactionLegacyValue - 阵营到布尔值映射");
+        trace("  ✅ createFactionUnit - 假单位创建工具");
         
         if (performanceResults.length > 0) {
             trace("\n⚡ 性能基准报告:");

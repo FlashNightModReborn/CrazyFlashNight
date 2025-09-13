@@ -89,6 +89,29 @@ FactionManager: 无效的关系状态 - INVALID_RELATION
 ✅ 玩家vs玩家-盟友 PASS
 ✅ 敌人vs敌人-盟友 PASS
 ✅ 玩家vs敌人-非盟友 PASS
+  测试 getFactionLegacyValue 方法...
+✅ getFactionLegacyValue-玩家 PASS (expected="false", actual="false")
+✅ getFactionLegacyValue-敌人 PASS (expected="true", actual="true")
+✅ getFactionLegacyValue-中立敌对 PASS (expected="null", actual="null")
+✅ getFactionLegacyValue-无效阵营 PASS (expected="null", actual="null")
+✅ getFactionLegacyValue-null输入 PASS (expected="null", actual="null")
+✅ getFactionLegacyValue-空字符串 PASS (expected="null", actual="null")
+  测试 createFactionUnit 方法...
+✅ createFactionUnit-玩家单位创建 PASS (object is not null)
+✅ createFactionUnit-玩家单位名称 PASS (expected="test_PLAYER", actual="test_PLAYER")
+✅ createFactionUnit-玩家单位是否为敌人 PASS (expected="false", actual="false")
+✅ createFactionUnit-玩家单位阵营 PASS (expected="PLAYER", actual="PLAYER")
+✅ createFactionUnit-敌人单位创建 PASS (object is not null)
+✅ createFactionUnit-敌人单位名称 PASS (expected="queue_ENEMY", actual="queue_ENEMY")
+✅ createFactionUnit-敌人单位是否为敌人 PASS (expected="true", actual="true")
+✅ createFactionUnit-敌人单位阵营 PASS (expected="ENEMY", actual="ENEMY")
+✅ createFactionUnit-中立单位创建 PASS (object is not null)
+✅ createFactionUnit-中立单位名称前缀 PASS (expected="faction_unit_", actual="faction_unit_")
+✅ createFactionUnit-中立单位是否为敌人 PASS (expected="null", actual="null")
+✅ createFactionUnit-中立单位阵营 PASS (expected="HOSTILE_NEUTRAL", actual="HOSTILE_NEUTRAL")
+✅ createFactionUnit-反向映射验证 PASS (expected="PLAYER", actual="PLAYER")
+✅ createFactionUnit-单位关系查询 PASS
+✅ createFactionUnit-单位盟友查询 PASS
 
 🎯 执行缓存集成测试...
 ✅ 玩家查询敌人-包含敌人单位 PASS
@@ -116,11 +139,11 @@ FactionManager: 无效的关系状态 - INVALID_RELATION
 ✅ 状态包含阵营数量 PASS
 
 ⚡ 执行性能基准测试...
-📊 关系查询性能: 10000次查询耗时 39ms (平均 3.9μs/次)
+📊 关系查询性能: 10000次查询耗时 30ms (平均 3μs/次)
 ✅ 关系查询性能达标 PASS
-📊 适配器方法性能: 10000次调用耗时 30ms (平均 3μs/次)
+📊 适配器方法性能: 10000次调用耗时 17ms (平均 1.7μs/次)
 ✅ 适配器方法性能达标 PASS
-📊 性能对比: 新方法=49ms, 传统方法=3ms, 开销=1633%
+📊 性能对比: 新方法=35ms, 传统方法=2ms, 开销=1750%
 ✅ 相对性能开销可接受 PASS
 
 🔍 执行边界条件测试...
@@ -148,16 +171,20 @@ FactionManager: 无效的关系状态 - INVALID_RELATION
 ================================================================================
 📊 测试结果汇总
 ================================================================================
-总测试数: 114
-通过: 114 ✅
+总测试数: 135
+通过: 135 ✅
 失败: 0 ❌
 成功率: 100%
-总耗时: 123ms
+总耗时: 85ms
+
+📌 新增方法测试覆盖:
+  ✅ getFactionLegacyValue - 阵营到布尔值映射
+  ✅ createFactionUnit - 假单位创建工具
 
 ⚡ 性能基准报告:
-  relationshipQueries: 3.9μs/次 (10000次测试)
-  adapterMethods: 3μs/次 (10000次测试)
-  vsLegacyComparison: 开销 1633% (10000次对比)
+  relationshipQueries: 3μs/次 (10000次测试)
+  adapterMethods: 1.7μs/次 (10000次测试)
+  vsLegacyComparison: 开销 1750% (10000次对比)
 
 🎯 FactionManager当前状态:
 === FactionManager 关系报告 ===
