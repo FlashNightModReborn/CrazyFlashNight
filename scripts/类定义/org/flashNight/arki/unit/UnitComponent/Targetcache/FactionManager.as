@@ -601,11 +601,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManager {
      */
     public static function createFactionUnit(factionId:String, name:String):Object {
         if (!name) name = "faction_unit";
+        
 
         return {
             _name: name + "_" + factionId,
             是否为敌人: getFactionLegacyValue(factionId),
-            faction: factionId
+            faction: factionId,
+            toString: function() { return this._name + " " + this.是否为敌人 + " " + this.faction; }
         };
     }
 }

@@ -22,6 +22,7 @@ import org.flashNight.arki.component.StatHandler.*;
 
 class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     public static var activeQueues:Object; // 按阵营分类的活动队列
+    public static var fakeUnits:Object; // 按阵营分类用于查询缓存的假单位
 
     // =========================
     // 统一终止控制位（类级静态）
@@ -45,12 +46,16 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      */
     public static function initialize():Boolean {
         activeQueues = {};
+        fakeUnits = {}; // 初始化 fakeUnits 对象
 
         var fractions:Array = FactionManager.getAllFactions();
         for (var i:Number = 0; i < fractions.length; i++) {
-            activeQueues[fractions[i]] = new BulletQueue();
+            var key:String = fractions[i];
+            activeQueues[key] = new BulletQueue();
+            fakeUnits[key] = FactionManager.createFactionUnit(key, "queue");
         }
         activeQueues["all"] = new BulletQueue(); // 友伤队列
+        fakeUnits["all"] = FactionManager.createFactionUnit("all", "queue");
 
         return true;
     }
@@ -133,9 +138,20 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
             // 根据队列类型，预先选择好获取目标集的函数。
             // 这样就将判断移出高频的内层 for 循环。
-            var getTargetsFunc:Function = (key === "all") 
-                ? TargetCacheManager.getCachedAllFromIndex 
-                : TargetCacheManager.getCachedEnemyFromIndex;
+            var getTargetsFunc:Function;
+            var cache:SortedUnitCache;
+
+            var fakeUnit:Object = fakeUnits[key];
+
+            if(key === "all") {
+                getTargetsFunc = TargetCacheManager.getCachedAllFromIndex;
+                cache = TargetCacheManager.acquireAllCache(fakeUnit, 1);
+            } else {
+                getTargetsFunc = TargetCacheManager.getCachedEnemyFromIndex;
+                cache = TargetCacheManager.acquireEnemyCache(fakeUnit, 1);
+            }
+
+            var unitMap:Array = cache.data;
             
             // === 内联 executeLogic 遍历开始 ===
             // 顺序遍历执行每个子弹的逻辑（完全内联，无函数调用）
@@ -164,9 +180,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 // 取目标集（友伤/敌方）
                 var shooter:MovieClip = gameWorld[bullet.发射者名];
                 // 直接调用预选的函数，消除了循环内的 if/else (三元运算符) 判断
-                var rangeResult:Object = getTargetsFunc(shooter, 1, areaAABB);
-                
-                var unitMap:Array = rangeResult.data;
+                var rangeResult:Object = getTargetsFunc(fakeUnit, 1, areaAABB);
                 var startIndex:Number = rangeResult.startIndex;
                 
                 bullet.shouldGeneratePostHitEffect = true;
