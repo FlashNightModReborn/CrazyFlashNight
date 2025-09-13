@@ -136,22 +136,23 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             var sortedArr:Array = q.getBulletsReference();
             var sortedLength:Number = sortedArr.length;
 
-            // 根据队列类型，预先选择好获取目标集的函数。
-            // 这样就将判断移出高频的内层 for 循环。
-            var getTargetsFunc:Function;
             var cache:SortedUnitCache;
-
             var fakeUnit:Object = fakeUnits[key];
 
             if(key === "all") {
-                getTargetsFunc = TargetCacheManager.getCachedAllFromIndex;
                 cache = TargetCacheManager.acquireAllCache(fakeUnit, 1);
             } else {
-                getTargetsFunc = TargetCacheManager.getCachedEnemyFromIndex;
                 cache = TargetCacheManager.acquireEnemyCache(fakeUnit, 1);
             }
 
             var unitMap:Array = cache.data;
+            // 新增：目标左右边界与子弹左右边界数组，用于外部双指针窗口计算
+            var unitRightKeys:Array = cache.rightValues;
+            var unitLeftKeys:Array = cache.leftValues;
+            var unitCount:Number = unitMap.length;
+            var bulletLeftKeys:Array = q.getLeftKeysRef();
+            var bulletRightKeys:Array = q.getRightKeysRef();
+            var sweepIndex:Number = 0;
             
             // === 内联 executeLogic 遍历开始 ===
             // 顺序遍历执行每个子弹的逻辑（完全内联，无函数调用）
@@ -180,13 +181,16 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 // 取目标集（友伤/敌方）
                 var shooter:MovieClip = gameWorld[bullet.发射者名];
                 // 直接调用预选的函数，消除了循环内的 if/else (三元运算符) 判断
-                var rangeResult:Object = getTargetsFunc(fakeUnit, 1, areaAABB);
-                var startIndex:Number = rangeResult.startIndex;
+                var queryLeft:Number = bulletLeftKeys[idx];
+                while (sweepIndex < unitCount && unitRightKeys[sweepIndex] < queryLeft) {
+                    sweepIndex++;
+                }
+                var startIndex:Number = sweepIndex;
                 
                 bullet.shouldGeneratePostHitEffect = true;
                 
                 // 循环局部
-                var len:Number = unitMap.length;
+                var len:Number = unitCount;
                 var ii:Number;
                 var hitTarget:MovieClip;
                 var zOffset:Number;
@@ -199,8 +203,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 var isMelee:Boolean = (flags & FLAG_MELEE) != 0;
                 var isPierce:Boolean = (flags & FLAG_PIERCE) != 0;
                 
-                // ----------- 命中循环 -----------
-                for (ii = startIndex; ii < len; ++ii) {
+                // ----------- 命中循环（带右边界截断） -----------
+                var bulletRight:Number = bulletRightKeys[idx];
+                for (ii = startIndex; ii < len && unitLeftKeys[ii] <= bulletRight; ++ii) {
                     hitTarget = bullet.hitTarget = unitMap[ii];
                     
                     // Z 轴粗判
@@ -210,11 +215,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     if (hitTarget.hp > 0 && hitTarget.防止无限飞 != true) {
                         unitArea = hitTarget.aabbCollider;
                         
-                        // AABB 检测（可能早退）
+                        // AABB 检测（无序早退交由右边界截断处理）
                         collisionResult = areaAABB.checkCollision(unitArea, zOffset);
                         if (!collisionResult.isColliding) {
-                            if (collisionResult.isOrdered) continue;
-                            break;
+                            continue;
                         }
                         
                         // 仅在需要时才更新多边形碰撞体
