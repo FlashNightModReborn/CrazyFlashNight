@@ -187,22 +187,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
         };
     }
 
-    /**
-     * 提取透明子弹的边界坐标 (默认尺寸为 25x25)。
-     *
-     * @param bullet 透明子弹对象
-     * @return 包含边界坐标的 Object：left, right, top, bottom
-     */
-    private static function getTransparentBulletCoordinates(bullet:Object):Object {
-        var bullet_x:Number = bullet._x;
-        var bullet_y:Number = bullet._y;
-        return {
-            left: bullet_x - 12.5, 
-            right: bullet_x + 12.5, 
-            top: bullet_y - 12.5, 
-            bottom: bullet_y + 12.5
-        };
-    }
+    // 已移除 getTransparentBulletCoordinates() - 已内联到 updateFromTransparentBullet() 中以优化性能
 
     /**
      * 提取单位区域的边界坐标。
@@ -224,16 +209,27 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
     // ========================= 动态更新方法区域 ========================= //
 
     /**
-     * 基于透明子弹对象更新碰撞器的边界。
+     * 基于透明子弹对象更新碰撞器的边界（内联优化版）
+     *
+     * 直接从透明子弹坐标计算边界，避免函数调用和临时对象创建的开销。
+     * 透明子弹使用固定的 25x25 尺寸（半径 12.5）。
      *
      * @param bullet 透明子弹对象
+     *
+     * 性能优化：
+     * - 消除了 getTransparentBulletCoordinates() 函数调用开销
+     * - 避免创建临时坐标对象，减少GC压力
+     * - 直接计算并赋值，减少属性访问次数
      */
     public function updateFromTransparentBullet(bullet:Object):Void {
-        var coords:Object = getTransparentBulletCoordinates(bullet);
-        this.left = coords.left;
-        this.right = coords.right;
-        this.top = coords.top;
-        this.bottom = coords.bottom;
+        // 内联展开：直接计算透明子弹边界（25x25，半径12.5）
+        var bullet_x:Number = bullet._x;
+        var bullet_y:Number = bullet._y;
+
+        this.left = bullet_x - 12.5;
+        this.right = bullet_x + 12.5;
+        this.top = bullet_y - 12.5;
+        this.bottom = bullet_y + 12.5;
     }
 
     /**
