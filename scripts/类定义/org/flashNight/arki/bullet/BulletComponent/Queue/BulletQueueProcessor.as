@@ -120,6 +120,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var MELEE_EXPLOSIVE_MASK:Number = FLAG_MELEE | FLAG_EXPLOSIVE;
         var PIERCE_LIMIT_REMOVE:Number = KF_PIERCE_LIMIT_REMOVE;
         var MODE_VANISH:Number = KF_MODE_VANISH;
+        // HitContext 静态常量缓存（避免循环内类属性查找）
+        var HC_FLAG_NORMAL_KILL:Number = HitContext.FLAG_NORMAL_KILL;
+        var HC_FLAG_SHOULD_STUN:Number = HitContext.FLAG_SHOULD_STUN;
+        var HC_FLAG_IS_PIERCE:Number = HitContext.FLAG_IS_PIERCE;
         
         // ================================================================
         // 统一变量声明区域（性能热点优化：避免循环内重复var声明开销）
@@ -168,13 +172,11 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
         // ---- 碰撞检测临时变量 ----
         var collisionResult:CollisionResult; // 碰撞检测结果对象
-        var overlapRatio:Number;            // 重叠比例（用于伤害计算）
+        // overlapRatio 从 collisionResult.overlapRatio 直接获取，无需单独存储
         var polygonCollider:ICollider;      // 多边形碰撞检测器（精确检测用）
 
         // ---- 子弹类型预计算标志 ----
-        var isNormalBullet:Boolean;         // 是否为普通子弹（非近战、非爆炸）
-        var isMelee:Boolean;                // 是否为近战子弹
-        var isPierce:Boolean;               // 是否具有穿透属性
+        var ctxFlags:Number;                // HitContext的位标志组合
         var isUpdatePolygon:Boolean;        // 多边形碰撞器是否已更新（避免重复更新）
         
         // ================================================================
@@ -188,7 +190,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             if (n == 0) continue;
 
             // ---- 子弹排序：按左边界排序以优化扫描线算法 ----
-            // _root.服务器.发布服务器消息(q.toString()); // 调试输出当前队列状态
+            // _root.服务器.发布服务器消息(key + " : " + q.toString()); // 调试输出当前队列状态
 
             q.sortByLeftBoundary();
 
@@ -276,9 +278,11 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 bullet.shouldGeneratePostHitEffect = true;
 
                 // ---- 子弹类型预计算：避免内层循环重复位运算 ----
-                isNormalBullet = (flags & MELEE_EXPLOSIVE_MASK) == 0;  // 普通子弹判断
-                isMelee = (flags & FLAG_MELEE) != 0;                   // 近战子弹判断
-                isPierce = (flags & FLAG_PIERCE) != 0;                 // 穿透子弹判断
+                // 直接计算context flags，避免中间布尔变量
+                ctxFlags = 0;
+                if ((flags & MELEE_EXPLOSIVE_MASK) == 0) ctxFlags |= HC_FLAG_NORMAL_KILL;  // 普通击杀
+                if ((flags & FLAG_MELEE) != 0 && !bullet.不硬直) ctxFlags |= HC_FLAG_SHOULD_STUN;  // 硬直
+                if ((flags & FLAG_PIERCE) != 0) ctxFlags |= HC_FLAG_IS_PIERCE;  // 穿透
 
                 // ---- 多边形更新控制：避免同一子弹重复更新碰撞器 ----
                 isUpdatePolygon = false;
@@ -302,17 +306,19 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                         // 仅在需要时才更新多边形碰撞体
                         if (isPointSet) {
-                            polygonCollider = bullet.polygonCollider;
-                            if(!polygonCollider) {
-                                // 对于导弹联弹，可能会因为空中旋转而没有预创建碰撞体
-                                // 这里进行懒创建
-                                polygonCollider = bullet.polygonCollider = ColliderFactoryRegistry.getFactory(ColliderFactoryRegistry.PolygonFactory).createFromBullet(bullet, bullet.子弹区域area || bullet.area);
-                            }
-
                             if(!isUpdatePolygon) {
-                                // 仅更新一次
+                                polygonCollider = bullet.polygonCollider;
+                                if(!polygonCollider) {
+                                    // 对于导弹联弹，可能会因为空中旋转而没有预创建碰撞体
+                                    // 这里进行懒创建并更新
+                                    polygonCollider = bullet.polygonCollider = ColliderFactoryRegistry.getFactory(ColliderFactoryRegistry.PolygonFactory).createFromBullet(bullet, bullet.子弹区域area || bullet.area);
+                                }
+                                // 更新碰撞器（创建时已包含更新，但既有碰撞器需要更新）
                                 polygonCollider.updateFromBullet(bullet, bullet.子弹区域area || bullet.area);
                                 isUpdatePolygon = true;
+                            } else {
+                                // 后续命中直接使用已更新的碰撞器
+                                polygonCollider = bullet.polygonCollider;
                             }
 
                             collisionResult = polygonCollider.checkCollision(unitArea, zOffset);
@@ -331,18 +337,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             AABBRenderer.renderAABB(unitArea, zOffset, "filled");
                         }
 
-                        overlapRatio = collisionResult.overlapRatio;
-
                         // ---------- 命中后的业务处理（静态 ctx 复用） ----------
                         killFlags |= handleHitCtx(_hitContext.fill(
                             bullet,
                             shooter,
                             hitTarget,
                             collisionResult,
-                            overlapRatio,
-                            isNormalBullet,
-                            isMelee && !bullet.不硬直,  // 近战且需要硬直
-                            isPierce)
+                            ctxFlags)  // 使用预计算的flags
                         );
                     }
                     
@@ -399,7 +400,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var bullet:MovieClip  = ctx.bullet;
         var shooter:MovieClip = ctx.shooter;
         var target:MovieClip  = ctx.target;
-        var overlapRatio:Number = ctx.overlapRatio;
+        var collisionResult:CollisionResult = ctx.collisionResult;
+        var ctxFlags:Number = ctx.flags;  // 缓存flags，避免重复属性访问
 
         // --- 命中计数与上下文填充（保持与原实现一致） ---
         bullet.hitCount++;
@@ -418,15 +420,16 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
         // --- 计算伤害 ---
         var damageResult:DamageResult = DamageCalculator.calculateDamage(
-            bullet, shooter, target, overlapRatio, dodgeState
+            bullet, shooter, target, collisionResult.overlapRatio, dodgeState
         );
 
         // --- 事件分发 ---
         var dispatcher:EventDispatcher = target.dispatcher;
-        dispatcher.publish("hit", target, shooter, bullet, ctx.collisionResult, damageResult);
+        dispatcher.publish("hit", target, shooter, bullet, collisionResult, damageResult);
 
         if (target.hp <= 0) {
-            dispatcher.publish(ctx.isNormalBullet ? "kill" : "death", target);
+            // 直接进行位运算判断事件名
+            dispatcher.publish((ctxFlags & HitContext.FLAG_NORMAL_KILL) != 0 ? "kill" : "death", target);
             shooter.dispatcher.publish("enemyKilled", target, bullet);
         }
 
@@ -435,8 +438,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
         // --- 终止意图：近战硬直 或 非穿刺 命中即"消失" ---
         var deltaFlags:Number = 0;
-        if (!ctx.isPierce) {
-            if (ctx.shouldStun) {  // 应该硬直（已预计算近战且不免疫条件）
+        if ((ctxFlags & HitContext.FLAG_IS_PIERCE) == 0) {  // 非穿透
+            if ((ctxFlags & HitContext.FLAG_SHOULD_STUN) != 0) {  // 应该硬直
                 shooter.硬直(shooter.man, _root.钝感硬直时间);
             }
             deltaFlags |= (KF_REASON_UNIT_HIT | KF_MODE_VANISH);
