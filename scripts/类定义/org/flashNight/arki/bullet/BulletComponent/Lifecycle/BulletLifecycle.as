@@ -35,7 +35,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle imple
     public function bindLifecycle(target:MovieClip):Void {
         // === 第1步：联弹检测与碰撞器工厂获取 ===
         // ChainDetector 内部使用位掩码技术进行高效的联弹类型检测
-        var factory:IColliderFactory = ChainDetector.processChainDetection(target).factory;
+        var factory:IColliderFactory = ChainDetector.processChainDetection(target);
         
         // === 第2步：绑定专用碰撞检测器 ===
         // 委托给子类实现，支持不同子弹类型的特化碰撞逻辑

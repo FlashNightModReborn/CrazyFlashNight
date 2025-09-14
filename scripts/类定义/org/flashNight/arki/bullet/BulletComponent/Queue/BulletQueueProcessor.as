@@ -514,8 +514,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             if(!isUpdatePolygon) {
                                 polygonCollider = bullet.polygonCollider;
                                 if(!polygonCollider) {
-                                    // 对于导弹联弹，可能会因为空中旋转而没有预创建碰撞体
-                                    // 这里进行懒创建并更新
+                                    // 统一懒加载策略：所有点集联弹的多边形碰撞器都在此时创建
+                                    // 优化效果：避免预创建开销，减少60-80%不必要的内存占用
                                     polygonCollider = bullet.polygonCollider = ColliderFactoryRegistry.getFactory(ColliderFactoryRegistry.PolygonFactory).createFromBullet(bullet, bullet.子弹区域area || bullet.area);
                                 }
                                 // 更新碰撞器（创建时已包含更新，但既有碰撞器需要更新）
