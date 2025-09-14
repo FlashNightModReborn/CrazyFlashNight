@@ -102,6 +102,9 @@ class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDa
                 damageNumber = (damageNumber > 1) ? (damageNumber | 0) : 1; // 相当于 Math.max(Math.floor(damageNumber), 1)
                 target.损伤值 = damageNumber;
                 _root.受击变红(120, target);
+                if(target.受击反制){
+                    target.受击反制(damageNumber, bullet);
+                }
         }
 
         result.damageSize = damageSize;

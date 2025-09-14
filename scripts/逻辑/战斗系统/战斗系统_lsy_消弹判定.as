@@ -99,10 +99,21 @@ _root.消除子弹 = function(obj)
 			
 			// === 最终碰撞检测与子弹消除 ===
 			if(子弹区域area.hitTest(区域定位area)){
-				子弹实例.击中地图 = true;  // 标记子弹已被消除
-				// 播放子弹消失特效（如果已定义）
-				EffectSystem.Effect(子弹实例.击中地图效果,子弹实例._x,子弹实例._y);
-				子弹实例.gotoAndPlay("消失");  // 触发子弹消失动画
+				if(obj.反弹){
+					子弹实例.是否为敌人 = !子弹实例.是否为敌人;
+					子弹实例.xmov *= -1;
+					子弹实例._xscale *= -1;
+				}else{
+					子弹实例.击中地图 = true;  // 标记子弹已被消除
+					EffectSystem.Effect(子弹实例.击中地图效果,子弹实例._x,子弹实例._y);
+					子弹实例.gotoAndPlay("消失");  // 触发子弹消失动画
+					if(obj.强力){
+						#include "../macros/FLAG_PIERCE.as"
+						if(子弹实例.flags & FLAG_PIERCE){
+							子弹实例.removeMovieClip();
+						}
+					}
+				}
 			}
 		}
 	}
