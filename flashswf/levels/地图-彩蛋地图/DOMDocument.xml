@@ -6,11 +6,11 @@
           <DOMFolderItem name="sprite/新地图" itemID="66011bb7-00000e65" isExpanded="true"/>
           <DOMFolderItem name="UI重构" itemID="668a7e49-000018c6"/>
           <DOMFolderItem name="UI重构/商店相关" itemID="668a7e49-000018c7"/>
-          <DOMFolderItem name="大圣素材" itemID="68c846c4-000025df"/>
-          <DOMFolderItem name="大圣素材/背面大圣" itemID="68c53345-000003a7"/>
-          <DOMFolderItem name="大圣素材/侧面大圣" itemID="68c53345-000003a5"/>
-          <DOMFolderItem name="大圣素材/如意金箍棒" itemID="68c845d1-00002511"/>
-          <DOMFolderItem name="大圣素材/正常大圣" itemID="68c845d1-000024f7"/>
+          <DOMFolderItem name="大圣素材" itemID="68c846c4-000025df" isExpanded="true"/>
+          <DOMFolderItem name="大圣素材/背面大圣" itemID="68c53345-000003a7" isExpanded="true"/>
+          <DOMFolderItem name="大圣素材/侧面大圣" itemID="68c53345-000003a5" isExpanded="true"/>
+          <DOMFolderItem name="大圣素材/如意金箍棒" itemID="68c845d1-00002511" isExpanded="true"/>
+          <DOMFolderItem name="大圣素材/正常大圣" itemID="68c845d1-000024f7" isExpanded="true"/>
           <DOMFolderItem name="歌留多" itemID="670cf381-0000038c"/>
           <DOMFolderItem name="零件" itemID="66012485-00000403"/>
           <DOMFolderItem name="诺艾尔" itemID="660cdfcd-00000e07"/>
@@ -122,7 +122,7 @@
           <Include href="shape/Symbol 35501.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cf6" lastModified="1704196122"/>
           <Include href="shape/Symbol 51880.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ceb" lastModified="1711349998"/>
           <Include href="sprite/新地图/Symbol 51881.xml" loadImmediate="false" itemID="6597607e-00000ced" lastModified="1711348810"/>
-          <Include href="Symbol 2363.xml" loadImmediate="false" itemID="6597607e-00000b21" lastModified="1757957574"/>
+          <Include href="Symbol 2363.xml" loadImmediate="false" itemID="6597607e-00000b21" lastModified="1757958923"/>
           <Include href="UI重构/商店相关/npc商店名称UI.xml" loadImmediate="false" itemID="668a5bba-000008f1" lastModified="1720795931"/>
           <Include href="UI重构/商店相关/npc商店名称框.xml" loadImmediate="false" itemID="668a5ba5-000008ed" lastModified="1720349306"/>
           <Include href="UI重构/商店相关/购物图标UI.xml" loadImmediate="false" itemID="668a7428-00000c8d" lastModified="1720349737"/>
@@ -750,6 +750,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4780823" publishTime="1757958910"/>
+          <PublishItem publishSize="4780815" publishTime="1757958832"/>
           <PublishItem publishSize="4780791" publishTime="1757957625"/>
           <PublishItem publishSize="4780793" publishTime="1757956676"/>
           <PublishItem publishSize="4780808" publishTime="1757955799"/>
@@ -768,7 +770,5 @@
           <PublishItem publishSize="1239862" publishTime="1712332827"/>
           <PublishItem publishSize="1237512" publishTime="1712302521"/>
           <PublishItem publishSize="1238989" publishTime="1712301370"/>
-          <PublishItem publishSize="1238986" publishTime="1712300947"/>
-          <PublishItem publishSize="1236004" publishTime="1712122922"/>
      </publishHistory>
 </DOMDocument>

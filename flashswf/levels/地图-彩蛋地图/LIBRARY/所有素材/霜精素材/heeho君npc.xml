@@ -1,5 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://ns.adobe.com/xfl/2008/" name="所有素材/霜精素材/heeho君npc" itemID="6601282d-000002e5" lastModified="1728926511" lastUniqueIdentifier="17">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="所有素材/霜精素材/heeho君npc" itemID="6601282d-000002e5" lastModified="1728926511" lastUniqueIdentifier="17">
   <timeline>
     <DOMTimeline name="heeho君npc" currentFrame="8">
       <layers>
@@ -22,7 +21,7 @@
               <Actionscript>
                 <script><![CDATA[this.swapDepths(this._y);
 Z轴坐标 = this._y;
-]]>                </script>
+                ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -32,7 +31,7 @@ Z轴坐标 = this._y;
             <DOMFrame index="8" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[gotoAndPlay(2);
-]]>                </script>
+                ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -102,7 +101,7 @@ on(rollOver){
 on(rollOut){
    gotoAndPlay(1);
 }
-]]>                    </script>
+                    ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
