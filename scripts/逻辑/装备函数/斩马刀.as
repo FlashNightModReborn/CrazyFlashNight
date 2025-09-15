@@ -60,7 +60,7 @@ _root.装备生命周期函数.斩马刀周期 = function(ref:Object, param:Obje
                 
                 _root.子弹区域shoot传递(子弹属性);
                 target.mp -= mpValue;
-                _root.发布消息(target.mp);
+                // _root.发布消息(target.mp);
                 // _root.服务器.发布服务器消息(ObjectUtil.toString(子弹属性));
             } else if (target == root.gameworld[_root.控制目标]) {
                 root.发布消息("气力不足，难以发挥装备的真正力量……");
