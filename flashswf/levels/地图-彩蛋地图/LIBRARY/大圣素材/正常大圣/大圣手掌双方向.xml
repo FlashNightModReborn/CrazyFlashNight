@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="大圣素材/正常大圣/大圣手掌双方向" itemID="68988b72-00000602" symbolType="graphic" lastModified="1754836954">
+  <timeline>
+    <DOMTimeline name="大圣手掌双方向" currentFrame="1">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大圣素材/正常大圣/正常大圣左手" selected="true">
+                  <matrix>
+                    <Matrix a="0.573974609375" b="-0.264495849609375" c="0.2662353515625" d="0.58013916015625" tx="-17.7" ty="-7.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.85" y="22.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大圣素材/正常大圣/正常大圣右手">
+                  <matrix>
+                    <Matrix a="-0.584518432617188" b="0.484375" c="0.484375" d="0.584518432617188" tx="-0.5" ty="-15.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.45" y="19.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大圣素材/正常大圣/正常大圣不同手">
+                  <matrix>
+                    <Matrix a="0.03839111328125" b="-0.071624755859375" c="0.071624755859375" d="0.03839111328125" tx="-15.05" ty="5.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="146.75" y="176.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
