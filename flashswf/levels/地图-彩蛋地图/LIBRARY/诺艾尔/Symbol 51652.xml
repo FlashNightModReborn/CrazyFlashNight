@@ -1,6 +1,7 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="诺艾尔/Symbol 51652" itemID="6597607e-00000b91" symbolType="graphic" lastModified="1749727707" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://ns.adobe.com/xfl/2008/" name="诺艾尔/Symbol 51652" itemID="6597607e-00000b91" symbolType="graphic" lastModified="1749727707" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="Symbol 51652">
+    <DOMTimeline name="Symbol 51652" currentFrame="7">
       <layers>
         <DOMLayer name="Labels Layer" color="#B78DB7" autoNamed="false">
           <frames>
@@ -21,7 +22,7 @@
               <Actionscript>
                 <script><![CDATA[this.swapDepths(this._y);
 Z轴坐标 = this._y;
-                ]]></script>
+]]>                </script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -31,7 +32,7 @@ Z轴坐标 = this._y;
             <DOMFrame index="6" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[gotoAndPlay(2);
-                ]]></script>
+]]>                </script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -101,7 +102,7 @@ on(rollOver){
 on(rollOut){
    gotoAndPlay(1);
 }
-                    ]]></script>
+]]>                    </script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
