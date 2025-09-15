@@ -1191,6 +1191,29 @@
       ],
 
       "chain": "委托"
+    },
+    {
+      "id": 20053,
+      "title": "挑战齐天大圣",
+      "description": "和大圣进行切磋",
+
+      "get_requirements": [-1],
+      "get_conversation": "$GEM_PK_WUKONG_GET",
+      "get_npc": "齐天大圣",
+
+      "finish_requirements": ["挑战齐天大圣#地狱"],
+      "finish_conversation": "$GEM_PK_WUKONG_FINISH",
+      "finish_npc": "齐天大圣",
+      "recommended_level": "100",
+      "restricted_level": 35,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "经验值#5000000"
+      ],
+
+      "chain": "委托"
     }
   ]
 }
