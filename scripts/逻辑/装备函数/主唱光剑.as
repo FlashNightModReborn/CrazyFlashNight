@@ -1,9 +1,4 @@
-﻿import org.flashNight.neur.Event.*;
-import org.flashNight.gesh.object.*;
-import org.flashNight.arki.component.Effect.*;
-
-
-_root.装备生命周期函数.主唱光剑初始化 = function(ref:Object, param:Object) 
+﻿_root.装备生命周期函数.主唱光剑初始化 = function(ref:Object, param:Object) 
 {
    var target:MovieClip = ref.自机;
    var saberLabel:String = "武器类型名" + target.刀;

@@ -2,10 +2,6 @@
 // G1111 · 装备生命周期函数 (单向推进版)
 // =======================================================
 
-import org.flashNight.gesh.object.*;
-import org.flashNight.arki.camera.*;
-import org.flashNight.arki.unit.*;
-
 _root.装备生命周期函数.G1111初始化 = function (ref, param)
 {
     var target:MovieClip = ref.自机;

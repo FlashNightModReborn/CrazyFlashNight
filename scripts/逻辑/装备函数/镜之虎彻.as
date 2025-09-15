@@ -1,7 +1,4 @@
-﻿import org.flashNight.arki.spatial.move.*;
-import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
-
-_root.装备生命周期函数.镜之虎彻初始化 = function(reflector:Object, paramObj:Object) {
+﻿_root.装备生命周期函数.镜之虎彻初始化 = function(reflector:Object, paramObj:Object) {
     reflector.lastTime = 0;
     reflector.precent = Number(paramObj.precent) || 2;
     reflector.duration = Number(paramObj.duration) || 0.25;

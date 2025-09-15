@@ -1,6 +1,4 @@
-﻿import org.flashNight.neur.Event.*;
-
-_root.装备生命周期函数.P90初始化 = function(ref:Object, param:Object) {
+﻿_root.装备生命周期函数.P90初始化 = function(ref:Object, param:Object) {
     var target:MovieClip = ref.自机;    
     
     ref.modeObject = { 双枪:true, 手枪:true, 手枪2:true };

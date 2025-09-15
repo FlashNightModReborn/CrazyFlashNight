@@ -1,11 +1,4 @@
-﻿import org.flashNight.neur.Event.*;
-import flash.geom.ColorTransform;
-import flash.filters.*;
-import org.flashNight.naki.DataStructures.*;
-import org.flashNight.arki.render.*;
-import org.flashNight.sara.util.*;
-
-/* ---------------------------------------------------------
+﻿/* ---------------------------------------------------------
  * XM214_CageFrame  初始化 (重构版)
  * --------------------------------------------------------- */
 _root.装备生命周期函数.XM214初始化 = function(ref:Object, param:Object) {

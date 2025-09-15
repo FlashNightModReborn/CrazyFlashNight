@@ -1,8 +1,31 @@
-﻿#include "../逻辑/装备函数/外观类挂载.as"
+﻿// ========== 集中管理的import语句 ==========
+// 所有装备函数文件共享的类库引用
+import org.flashNight.gesh.object.*;
+import org.flashNight.neur.Event.*;
+import org.flashNight.neur.StateMachine.*;
+import org.flashNight.arki.render.*;
+import org.flashNight.arki.camera.*;
+import org.flashNight.arki.unit.*;
+import org.flashNight.arki.spatial.move.*;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.arki.unit.Action.Regeneration.*;
+import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.arki.component.Collider.*;
+import org.flashNight.arki.component.Effect.*;
+import org.flashNight.sara.util.*;
+import org.flashNight.naki.DataStructures.*;
+import flash.geom.ColorTransform;
+import flash.filters.*;
+
+// ========== 装备函数文件include列表 ==========
+#include "../逻辑/装备函数/外观类挂载.as"
 #include "../逻辑/装备函数/红外夜视仪.as"
 #include "../逻辑/装备函数/电感切割刃.as"
 #include "../逻辑/装备函数/炎魔斩new.as"
 #include "../逻辑/装备函数/死者之手.as"
+
+#include "../逻辑/装备函数/斩马刀.as"
+
 #include "../逻辑/装备函数/键盘镰刀.as"
 #include "../逻辑/装备函数/吉他喷火.as"
 #include "../逻辑/装备函数/主唱光剑.as"

@@ -1,6 +1,4 @@
-﻿import org.flashNight.neur.Event.*;
-
-/* ============ 初始化 ============ */
+﻿/* ============ 初始化 ============ */
 _root.装备生命周期函数.XM556_OC_Overlord初始化 = function (ref:Object, param:Object) {
     var target:MovieClip = ref.自机;
     var evtType:String   = ref.装备类型 + "射击";

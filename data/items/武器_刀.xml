@@ -865,7 +865,20 @@
       <hp>0</hp>
       <mp>0</mp>
       <defence>99</defence>
-    </data>
+    </data>    
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>斩马刀初始化</initRoutines>
+          <initParam>
+            <basicStyle>落日鎏金</basicStyle>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>斩马刀周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <id>430</id>

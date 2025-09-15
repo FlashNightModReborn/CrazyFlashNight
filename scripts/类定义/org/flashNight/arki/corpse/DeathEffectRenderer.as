@@ -83,6 +83,8 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
         reusableMatrix.tx = target._x + effectOffset.x;
         reusableMatrix.ty = target._y + effectOffset.y;
 
+        _root.发布消息(reusableMatrix);
+
         gameWorld.deadbody.layers[layerIndex].draw(
             target,
             reusableMatrix,

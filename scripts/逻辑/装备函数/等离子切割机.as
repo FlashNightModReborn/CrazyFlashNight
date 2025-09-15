@@ -1,9 +1,6 @@
 ﻿// =======================================================
 // 等离子切割机 · 装备生命周期函数（含击杀动画 26–35 帧）
 // =======================================================
-import org.flashNight.arki.unit.Action.Regeneration.*;
-import org.flashNight.arki.unit.*;
-import org.flashNight.gesh.object.*;
 
 _root.装备生命周期函数.等离子切割机初始化 = function(ref, param) {
     var target:MovieClip = ref.自机;

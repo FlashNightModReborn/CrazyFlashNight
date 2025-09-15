@@ -1,12 +1,4 @@
-﻿import org.flashNight.neur.Event.*;
-import org.flashNight.arki.unit.*;
-import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
-import org.flashNight.arki.bullet.BulletComponent.Collider.*;
-import org.flashNight.arki.component.Collider.*;
-import org.flashNight.sara.util.*;
-import org.flashNight.arki.render.*;
-
-/* ---------------------------------------------------------
+﻿/* ---------------------------------------------------------
  * XM25  初始化
  * --------------------------------------------------------- */
 _root.装备生命周期函数.XM25初始化 = function (ref:Object, param:Object)

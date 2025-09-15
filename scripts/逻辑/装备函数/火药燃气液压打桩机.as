@@ -1,7 +1,4 @@
-﻿import org.flashNight.neur.Event.*;
-import org.flashNight.neur.StateMachine.*;
-
-_root.装备生命周期函数.火药燃气液压打桩机初始化 = function(reflector:Object, paramObj:Object) {
+﻿_root.装备生命周期函数.火药燃气液压打桩机初始化 = function(reflector:Object, paramObj:Object) {
     var target:MovieClip = reflector.自机;
     
     // 创建状态机

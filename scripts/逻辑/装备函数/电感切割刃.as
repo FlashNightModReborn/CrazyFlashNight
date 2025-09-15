@@ -1,6 +1,4 @@
-﻿import org.flashNight.arki.render.*;
-
-_root.装备生命周期函数.电感切割刃初始化 = function(反射对象, 参数对象) 
+﻿_root.装备生命周期函数.电感切割刃初始化 = function(反射对象, 参数对象) 
 {
    反射对象.子弹属性 = 反射对象.子弹配置.bullet_0;//通过反射对象传参通讯
    反射对象.成功率 = 参数对象.probability ? 参数对象.probability : 3;

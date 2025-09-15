@@ -2,8 +2,6 @@
 // 铁枪 · 装备生命周期函数 (FSM 改进版，优化细节)
 // =======================================================
 
-import org.flashNight.neur.StateMachine.*;
-
 _root.装备生命周期函数.铁枪初始化 = function(ref, param)
 {
     var 自机 = ref.自机;

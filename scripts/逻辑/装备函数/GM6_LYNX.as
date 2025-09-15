@@ -2,9 +2,6 @@
 // GM6_LYNX · 纯动画逻辑（互斥状态机版）
 // 1–15：展开；15–23：射击；非“长枪”则收起
 // =======================================================
-import org.flashNight.arki.unit.*;
-import org.flashNight.arki.component.Effect.*;      // 特效组件
-import org.flashNight.sara.util.*;
 
 _root.装备生命周期函数.GM6_LYNX初始化 = function(ref, param) {
     var actor:MovieClip = ref.自机;
