@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1756084133" lastUniqueIdentifier="266">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1757947218" lastUniqueIdentifier="268">
   <timeline>
-    <DOMTimeline name="主角-男" currentFrame="3">
+    <DOMTimeline name="主角-男">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4">
           <frames>
@@ -297,7 +297,7 @@ on(release){
           <frames>
             <DOMFrame index="0" duration="652" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
                   <matrix>
                     <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
                   </matrix>
@@ -976,38 +976,19 @@ on(release){
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/空手待机" name="man" centerPoint3DX="191.6" centerPoint3DY="218">
+                <DOMSymbolInstance libraryItemName="sprite/空手待机" name="man" selected="true" centerPoint3DX="191.6" centerPoint3DY="218">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	if (_parent._name == _root.控制目标 && _parent.状态 === "空手站立")
-	{
-		_parent.读取当前飞行状态();
-	}
-	//_parent._rotation = 0;  
-	if (_parent.格斗架势 == false)
-	{
-		gotoAndStop("站立");
-		play();
-	}
-	else if (_parent.格斗架势 == true)
-	{
-		gotoAndStop("格斗架势");
-		play();
-	}
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 120" name="man" centerPoint3DX="154.05" centerPoint3DY="220.05">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 120" name="man" selected="true" centerPoint3DX="154.05" centerPoint3DY="220.05">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
                   </matrix>

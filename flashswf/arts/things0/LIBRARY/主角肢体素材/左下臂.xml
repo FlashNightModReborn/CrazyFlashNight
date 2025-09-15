@@ -1,14 +1,14 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="重复项目文件夹/Symbol 54" itemID="66a1fb3c-00001f55" lastModified="1718940749" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角肢体素材/左下臂" itemID="68c82ae4-00000991" lastModified="1757948644" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="Symbol 54">
+    <DOMTimeline name="左下臂">
       <layers>
-        <DOMLayer name="Layer 1" color="#CDAD75" current="true" isSelected="true">
+        <DOMLayer name="Layer 1" color="#B5F5B0" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="重复项目文件夹/Symbol 53" selected="true" centerPoint3DX="55" centerPoint3DY="58.5">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 66" selected="true" centerPoint3DX="18.5" centerPoint3DY="95.6">
                   <matrix>
-                    <Matrix tx="15.85" ty="24.8"/>
+                    <Matrix tx="1.05" ty="39.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -16,14 +16,14 @@
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
 	var 自机 = _parent._parent._parent;
-	var 装扮 = _root.装备引用配置.配置装扮(this, 自机.脚, "装扮", "脚_引用");
+	var 装扮 = _root.装备引用配置.配置装扮(this, 自机.右下臂, "装扮", "右下臂_引用");
 	if (装扮)
 	{
 		this.基本款._visible = false;
 	}
 	else if (自机.性别 == "女")
 	{
-		_root.装备引用配置.配置装扮(this,"女变装-裸体脚","装扮","脚_引用");
+		_root.装备引用配置.配置装扮(this,"女变装-裸体右下臂","装扮","右下臂_引用");
 		this.基本款._visible = false;
 	}
 }]]></script>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/主角-女（弃用）" itemID="67c8031d-00000716" lastModified="1741161249" lastUniqueIdentifier="13">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/主角-女（弃用）" itemID="67c8031d-00000716" lastModified="1757947252" lastUniqueIdentifier="13">
   <timeline>
-    <DOMTimeline name="主角-女（弃用）">
+    <DOMTimeline name="主角-女（弃用）" currentFrame="13">
       <layers>
         <DOMLayer name="Labels Layer" color="#AC9C6D">
           <frames>
@@ -643,7 +643,7 @@ on(release){
             </DOMFrame>
             <DOMFrame index="110" duration="30" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
                   <matrix>
                     <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
                   </matrix>
@@ -665,7 +665,7 @@ on(release){
             </DOMFrame>
             <DOMFrame index="160" duration="492" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
                   <matrix>
                     <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
                   </matrix>
@@ -870,7 +870,7 @@ on(release){
           <frames>
             <DOMFrame index="0" duration="652" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
                   <matrix>
                     <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
                   </matrix>
@@ -1769,7 +1769,7 @@ on(release){
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1000" name="man" selected="true" centerPoint3DX="191.75" centerPoint3DY="218">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1000" name="man" centerPoint3DX="191.75" centerPoint3DY="218">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
                   </matrix>
@@ -1800,7 +1800,7 @@ on(release){
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1002" name="man" centerPoint3DX="153.2" centerPoint3DY="220.05">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1002" name="man" selected="true" centerPoint3DX="153.2" centerPoint3DY="220.05">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
                   </matrix>
