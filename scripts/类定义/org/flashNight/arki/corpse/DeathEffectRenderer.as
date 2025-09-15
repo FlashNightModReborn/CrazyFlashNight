@@ -2,6 +2,7 @@
 import org.flashNight.arki.component.Effect.*;
 import org.flashNight.sara.util.*;
 import flash.geom.*;
+import org.flashNight.gesh.object.*;
 
 /**
  * @class org.flashNight.arki.corpse.DeathEffectRenderer
@@ -56,18 +57,26 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
         //_root.发布消息(DeathEffectRenderer.isEnabled, DeathEffectRenderer.enableCulling)
 
         if (!DeathEffectRenderer.isEnabled) return;
-        
+
         var gameWorld:MovieClip = _root.gameworld;
+
+        // 将 target 的局部坐标 (0,0) 转换到 gameWorld 坐标系
+        var pt:Object = {x: 0, y: 0};
+        target.localToGlobal(pt);
+        gameWorld.globalToLocal(pt);
+
+        var effectOffset:Vector = SceneCoordinateManager.effectOffset;
+        var worldX:Number = pt.x + effectOffset.x;
+        var worldY:Number = pt.y + effectOffset.y;
 
         // 离屏剔除（gameworld 平移+缩放闭式映射）
         if (DeathEffectRenderer.enableCulling) {
-            
+
             var sx:Number = gameWorld._xscale * 0.01;
-            var off:Vector = SceneCoordinateManager.effectOffset;
 
             // 局部(世界)中心 → 屏幕坐标
-            var gx:Number = gameWorld._x + (target._x + off.x) * sx;
-            var gy:Number = gameWorld._y + (target._y + off.y) * sx;
+            var gx:Number = gameWorld._x + worldX * sx;
+            var gy:Number = gameWorld._y + worldY * sx;
 
             if (gx < -CORPSE_CULL_PAD || gx > Stage.width + CORPSE_CULL_PAD ||
                 gy < -CORPSE_CULL_PAD || gy > Stage.height + CORPSE_CULL_PAD) {
@@ -76,14 +85,20 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
             }
         }
 
-        var effectOffset:Vector = SceneCoordinateManager.effectOffset;
+        // 获取 target 相对于全局的累积缩放
+        var accumulatedScaleX:Number = 1;
+        var accumulatedScaleY:Number = 1;
+        var mc:MovieClip = target;
+        while (mc != gameWorld && mc != undefined) {
+            accumulatedScaleX *= mc._xscale / 100;
+            accumulatedScaleY *= mc._yscale / 100;
+            mc = mc._parent;
+        }
 
-        reusableMatrix.a  = target._xscale / 100;
-        reusableMatrix.d  = target._yscale / 100;
-        reusableMatrix.tx = target._x + effectOffset.x;
-        reusableMatrix.ty = target._y + effectOffset.y;
-
-        _root.发布消息(reusableMatrix);
+        reusableMatrix.a  = accumulatedScaleX;
+        reusableMatrix.d  = accumulatedScaleY;
+        reusableMatrix.tx = worldX;
+        reusableMatrix.ty = worldY;
 
         gameWorld.deadbody.layers[layerIndex].draw(
             target,
