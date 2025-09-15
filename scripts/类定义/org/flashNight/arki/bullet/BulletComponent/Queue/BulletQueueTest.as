@@ -445,6 +445,15 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
             robustFail++;
         }
         
+        // 测试9: addBatch方法
+        if (this.testAddBatch()) {
+            log("[PASS] addBatch方法测试");
+            robustPass++;
+        } else {
+            log("[FAIL] addBatch方法测试");
+            robustFail++;
+        }
+        
         log("鲁棒性测试: " + robustPass + " 通过, " + robustFail + " 失败");
         
         if (robustFail > 0) {
@@ -751,6 +760,166 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
         log("  [PASS] 测试5通过");
 
         log("[DEBUG] testProcessAndClear 全部测试通过");
+        return true;
+    }
+    
+    private function testAddBatch():Boolean {
+        log("[DEBUG] 开始 testAddBatch 测试");
+        
+        // 测试1: 空数组批量添加
+        log("[TEST 1] 测试空数组批量添加");
+        var q1:BulletQueue = new BulletQueue();
+        var emptyArray:Array = [];
+        var added1:Number = q1.addBatch(emptyArray);
+        log("  added1=" + added1 + " (期望:0)");
+        log("  q1.getCount()=" + q1.getCount() + " (期望:0)");
+        if (added1 != 0 || q1.getCount() != 0) {
+            log("  [FAIL] 测试1失败");
+            return false;
+        }
+        log("  [PASS] 测试1通过");
+        
+        // 测试2: null参数
+        log("[TEST 2] 测试null参数");
+        var q2:BulletQueue = new BulletQueue();
+        var added2:Number = q2.addBatch(null);
+        log("  added2=" + added2 + " (期望:0)");
+        log("  q2.getCount()=" + q2.getCount() + " (期望:0)");
+        if (added2 != 0 || q2.getCount() != 0) {
+            log("  [FAIL] 测试2失败");
+            return false;
+        }
+        log("  [PASS] 测试2通过");
+        
+        // 测试3: 正常批量添加
+        log("[TEST 3] 测试正常批量添加");
+        var q3:BulletQueue = new BulletQueue();
+        var batch3:Array = [];
+        for (var i:Number = 0; i < 50; i++) {
+            batch3.push(this.makeBullet(50 - i, 51 - i, i));
+        }
+        var added3:Number = q3.addBatch(batch3);
+        log("  added3=" + added3 + " (期望:50)");
+        log("  q3.getCount()=" + q3.getCount() + " (期望:50)");
+        
+        // 验证排序正确性
+        var sorted3:Array = q3.getSortedBullets();
+        var isSorted3:Boolean = this.isSorted(sorted3);
+        log("  排序正确性=" + isSorted3 + " (期望:true)");
+        
+        if (added3 != 50 || q3.getCount() != 50 || !isSorted3) {
+            log("  [FAIL] 测试3失败");
+            return false;
+        }
+        log("  [PASS] 测试3通过");
+        
+        // 测试4: 包含无效对象的批量添加
+        log("[TEST 4] 测试包含无效对象的批量添加");
+        var q4:BulletQueue = new BulletQueue();
+        var batch4:Array = [
+            this.makeBullet(1, 2, 1),
+            null,
+            this.makeBullet(3, 4, 2),
+            {__id: 3, _name: "noCollider"},  // 缺失aabbCollider
+            this.makeBullet(5, 6, 4),
+            {aabbCollider: {left: NaN, right: NaN}, __id: 5},  // NaN值
+            this.makeBullet(7, 8, 6),
+            undefined,
+            this.makeBullet(9, 10, 7),
+            {aabbCollider: {left: Infinity, right: 10}, __id: 8}  // Infinity值
+        ];
+        var added4:Number = q4.addBatch(batch4);
+        log("  added4=" + added4 + " (期望:5，只有有效子弹)");
+        log("  q4.getCount()=" + q4.getCount() + " (期望:5)");
+        
+        // 验证只有有效子弹被添加
+        var bullets4:Array = q4.getBulletsReference();
+        var allValid:Boolean = true;
+        for (var j:Number = 0; j < bullets4.length; j++) {
+            var b:Object = bullets4[j];
+            if (!b || !b.aabbCollider) {
+                allValid = false;
+                break;
+            }
+            var left:Number = b.aabbCollider.left;
+            var right:Number = b.aabbCollider.right;
+            if (((left - left) + (right - right)) != 0) {
+                allValid = false;
+                break;
+            }
+        }
+        log("  所有子弹有效=" + allValid + " (期望:true)");
+        
+        if (added4 != 5 || q4.getCount() != 5 || !allValid) {
+            log("  [FAIL] 测试4失败");
+            return false;
+        }
+        log("  [PASS] 测试4通过");
+        
+        // 测试5: 大批量添加性能
+        log("[TEST 5] 测试大批量添加(1000个元素)");
+        var q5:BulletQueue = new BulletQueue();
+        var batch5:Array = [];
+        for (var k:Number = 0; k < 1000; k++) {
+            batch5.push(this.makeBullet(Math.floor(this.srand() * 1000), Math.floor(this.srand() * 1000) + 1000, k));
+        }
+        
+        var startTime:Number = getTimer();
+        var added5:Number = q5.addBatch(batch5);
+        var endTime:Number = getTimer();
+        var timeTaken:Number = endTime - startTime;
+        
+        log("  added5=" + added5 + " (期望:1000)");
+        log("  q5.getCount()=" + q5.getCount() + " (期望:1000)");
+        log("  批量添加耗时=" + timeTaken + "ms");
+        
+        // 验证结果正确性
+        var sorted5:Array = q5.getSortedBullets();
+        var isSorted5:Boolean = this.isSorted(sorted5);
+        log("  排序正确性=" + isSorted5 + " (期望:true)");
+        
+        if (added5 != 1000 || q5.getCount() != 1000 || !isSorted5) {
+            log("  [FAIL] 测试5失败");
+            return false;
+        }
+        log("  [PASS] 测试5通过");
+        
+        // 测试6: 混合使用add和addBatch
+        log("[TEST 6] 测试混合使用add和addBatch");
+        var q6:BulletQueue = new BulletQueue();
+        
+        // 先单个添加
+        for (var m:Number = 0; m < 10; m++) {
+            q6.add(this.makeBullet(m * 10, m * 10 + 1, m));
+        }
+        
+        // 再批量添加
+        var batch6:Array = [];
+        for (var n:Number = 10; n < 20; n++) {
+            batch6.push(this.makeBullet(n * 10, n * 10 + 1, n));
+        }
+        var added6:Number = q6.addBatch(batch6);
+        
+        // 再单个添加
+        for (var p:Number = 20; p < 25; p++) {
+            q6.add(this.makeBullet(p * 10, p * 10 + 1, p));
+        }
+        
+        log("  批量添加返回值=" + added6 + " (期望:10)");
+        log("  总数量=" + q6.getCount() + " (期望:25)");
+        
+        // 验证排序和数量
+        var sorted6:Array = q6.getSortedBullets();
+        var isSorted6:Boolean = this.isSorted(sorted6);
+        log("  排序正确性=" + isSorted6 + " (期望:true)");
+        
+        if (added6 != 10 || q6.getCount() != 25 || !isSorted6) {
+            log("  [FAIL] 测试6失败");
+            return false;
+        }
+        log("  [PASS] 测试6通过");
+        
+        log("[DEBUG] testAddBatch 全部测试通过");
         return true;
     }
 

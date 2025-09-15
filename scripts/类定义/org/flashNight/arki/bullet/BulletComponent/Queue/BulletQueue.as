@@ -122,6 +122,52 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
         var arr:Array = this.bullets;
         arr[arr.length] = bullet;
     }
+    
+    /**
+     * 批量添加子弹到队列
+     * 对数组中的每个子弹执行严格的合法性检查，只添加有效子弹
+     * @param bulletsArray 待添加的子弹数组
+     * @return 成功添加的子弹数量
+     */
+    public function addBatch(bulletsArray:Array):Number {
+        if (!bulletsArray || bulletsArray.length == 0) {
+            return 0;
+        }
+        
+        var arr:Array = this.bullets;
+        var addedCount:Number = 0;
+        var length:Number = bulletsArray.length;
+        var i:Number = 0;
+        var bullet:Object;
+        var box:AABBCollider;
+        var left:Number;
+        var right:Number;
+        
+        // 批量处理，减少函数调用开销
+        while (i < length) {
+            bullet = bulletsArray[i++];
+            
+            // 跳过无效子弹
+            if (!bullet) {
+                continue;
+            }
+            
+            box = bullet.aabbCollider;
+            left = box.left;
+            right = box.right;
+            
+            // 一次性数值健检：挡 NaN 与 ±Infinity
+            if (((left - left) + (right - right)) != 0) {
+                continue;
+            }
+            
+            // 有效子弹，添加到队列
+            arr[arr.length] = bullet;
+            addedCount++;
+        }
+        
+        return addedCount;
+    }
 
     
     /**
