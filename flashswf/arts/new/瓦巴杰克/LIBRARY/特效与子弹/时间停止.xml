@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/时间停止" itemID="6580323f-00000852" linkageExportForAS="true" linkageIdentifier="时间停止" lastModified="1729339735" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/时间停止" itemID="6580323f-00000852" linkageExportForAS="true" linkageIdentifier="时间停止" lastModified="1757947680" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="时间停止">
       <layers>
@@ -6,71 +6,77 @@
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[	this._rotation = 0;
-	目标数组 = [];
-   for(var each in _root.gameworld)
-   {
-      if(_root.gameworld[each].是否为敌人 == !_parent._parent.是否为敌人 and _root.gameworld[each].hp > 0)
-      {
-         目标数组.push(each);
-		 _root.gameworld[each].stop();
-		 _root.gameworld[each].被时停 = true;
-		 /*
-		 _root.gameworld[each].左行=0;
-		 _root.gameworld[each].右行=0;
-		 _root.gameworld[each].上行=0;
-		 _root.gameworld[each].下行=0;
+                <script><![CDATA[this._rotation = 0;
+目标数组 = [];
+for (var each in _root.gameworld)
+{
+	var 当前目标 = _root.gameworld[each];
+	if (当前目标.是否为敌人 == !_parent._parent.是否为敌人 and 当前目标.hp > 0)
+	{
+		目标数组.push(each);
+		当前目标.stop();
+		当前目标.被时停 = true;
+		/*
+		 当前目标.左行=0;
+		 当前目标.右行=0;
+		 当前目标.上行=0;
+		 当前目标.下行=0;
 		 */
-		 _root.gameworld[each].temp_行走X速度=_root.gameworld[each].行走X速度;
-		 _root.gameworld[each].行走X速度=0;
-		 _root.gameworld[each].temp_行走Y速度=_root.gameworld[each].行走Y速度;
-		 _root.gameworld[each].行走Y速度=0;
-		 _root.gameworld[each].temp_跑X速度=_root.gameworld[each].跑X速度;
-		 _root.gameworld[each].跑X速度=0;
-		 _root.gameworld[each].temp_跑Y速度=_root.gameworld[each].跑Y速度;
-		 _root.gameworld[each].跑Y速度=0;
-   
-   		for(var eachObj in _root.gameworld[each])
-   		{
-			_root.gameworld[each][eachObj].stop();
+		if (当前目标.行走X速度 != 0)
+		{
+			当前目标.temp_行走X速度 = 当前目标.行走X速度;
+			当前目标.行走X速度 = 0;
+			当前目标.temp_行走Y速度 = 当前目标.行走Y速度;
+			当前目标.行走Y速度 = 0;
+			当前目标.temp_跑X速度 = 当前目标.跑X速度;
+			当前目标.跑X速度 = 0;
+			当前目标.temp_跑Y速度 = 当前目标.跑Y速度;
+			当前目标.跑Y速度 = 0;
 		}
-      }
-   }
-   var 秒数计数 = 0;
-   if(!子弹威力){
-	   总秒数 = 2;
-   }else{
-	   总秒数 =1+子弹威力*0.8;
-   }
-   
-   
-   this.onUnload = function()
-   {
-   		for(i=0;i<目标数组.length;i++)
-   		{
-	  		each = 目标数组[i];
-			_root.gameworld[each].被时停 = false;
-      		if( _root.gameworld[each].hp > 0)
-      		{
-		
-		 		if(_root.gameworld[each].行走X速度==0){
-		 			_root.gameworld[each].行走X速度=_root.gameworld[each].temp_行走X速度;
-		 			_root.gameworld[each].行走Y速度=_root.gameworld[each].temp_行走Y速度;
-		 			_root.gameworld[each].跑X速度=_root.gameworld[each].temp_跑X速度;
-		 			_root.gameworld[each].跑Y速度=_root.gameworld[each].temp_跑Y速度;
-		 		}
-   
-   				for(var eachObj in _root.gameworld[each])
-   				{
-					_root.gameworld[each][eachObj].play();
-				}
-      		}
-   		}
-		_root.发布消息("时停结束");
-   }
-   
-   
-   ]]></script>
+
+		for (var eachObj in 当前目标)
+		{
+			当前目标[eachObj].stop();
+		}
+	}
+}
+var 秒数计数 = 0;
+if (!子弹威力)
+{
+	总秒数 = 2;
+}
+else
+{
+	总秒数 = 1 + 子弹威力 * 0.8;
+}
+
+
+this.onUnload = function()
+{
+	for (i = 0; i < 目标数组.length; i++)
+	{
+		each = 目标数组[i];
+		var 当前目标 = _root.gameworld[each];
+		当前目标.被时停 = false;
+		if (当前目标.hp > 0)
+		{
+
+			if (当前目标.行走X速度 == 0 && 当前目标.temp_行走X速度 > 0)
+			{
+				当前目标.行走X速度 = 当前目标.temp_行走X速度;
+				当前目标.行走Y速度 = 当前目标.temp_行走Y速度;
+				当前目标.跑X速度 = 当前目标.temp_跑X速度;
+				当前目标.跑Y速度 = 当前目标.temp_跑Y速度;
+			}
+
+			for (var eachObj in 当前目标)
+			{
+				当前目标[eachObj].play();
+			}
+		}
+	}
+	_root.发布消息("时停结束");
+};]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -136,10 +142,6 @@ this.removeMovieClip();
         <DOMLayer name="Script Layer" color="#55A3DA">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[this._rotation = 0;
-]]></script>
-              </Actionscript>
               <elements>
                 <DOMSymbolInstance libraryItemName="各种图素材等/area 副本" name="area" centerPoint3DX="-0.05" centerPoint3DY="0.15">
                   <matrix>
