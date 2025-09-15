@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1752671931" lastUniqueIdentifier="48">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1757957979" lastUniqueIdentifier="50">
   <timeline>
     <DOMTimeline name="地图-彩蛋地图">
       <layers>
@@ -39,6 +39,32 @@ _root.配置场景环境信息();]]></script>
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="大圣" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大圣npc2" selected="true" centerPoint3DX="1582.5" centerPoint3DY="738.9">
+                  <matrix>
+                    <Matrix a="-0.236236572265625" d="0.236236572265625" tx="1474.55" ty="421.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	名字 = "齐天大圣";
+	身高 = 175;
+	性别 = "男";
+	方向 = "左";
+	NPC任务_任务_关卡路径 = "挑战齐天大圣";
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -140,11 +166,11 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="霜精奸商" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="霜精奸商" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="所有素材/霜精素材/heeho君npc" selected="true" centerPoint3DX="1772.65" centerPoint3DY="457.05">
+                <DOMSymbolInstance libraryItemName="所有素材/霜精素材/heeho君npc" centerPoint3DX="1772.65" centerPoint3DY="457.05">
                   <matrix>
                     <Matrix a="1.34300231933594" d="1.34300231933594" tx="1727.4" ty="388.5"/>
                   </matrix>
@@ -252,7 +278,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="背景" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

@@ -1,0 +1,85 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="大圣素材/正常大圣/大圣胸三方向" itemID="6898814d-00000562" symbolType="graphic" lastModified="1754827272" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="大圣胸三方向" currentFrame="2">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#2C2C29"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!216 -476[#4C.EA #FFFD89.53 -179 -549!-179 -549|-216 -428!-216 -428|-261 -348!-261 -348[#FFFECE.FE #FFFEE2.45 -328.5 -248!-328.5 -248[#FFFE9F.E1 #FFFF2D.D5 -413.5 -116!-413.5 -116[#FFFE25.12 #FFFFEA.0B -484 250!-484 250[-161 60 238 65
+!238 65[221 -12 225 -95!225 -95[222 -164 263 -234!263 -234|245 -309!245 -309[#D8.CF #FFFE6C.3F 216 -476"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#5E4834"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!544 -78[#210.58 #A6.76 443 303!443 303[#145.FE #17.BD 411 -292!411 -292[#1E3.AC -238.40625 544 -78"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大圣素材/正常大圣/正常大圣胸" centerPoint3DX="0.05">
+                  <matrix>
+                    <Matrix a="0.64404296875" d="0.6505126953125" tx="-40.45" ty="-45.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="76.25" y="110.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大圣素材/侧面大圣/侧面大圣胸">
+                  <matrix>
+                    <Matrix a="-0.703887939453125" d="0.707992553710938" tx="31.9" ty="-20.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.05" y="43.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大圣素材/背面大圣/背面大圣胸">
+                  <matrix>
+                    <Matrix a="-0.64404296875" d="0.64404296875" tx="40.15" ty="-38.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="70.5" y="62.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

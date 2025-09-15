@@ -1,11 +1,16 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="button" itemID="66011506-00000dd7"/>
-          <DOMFolderItem name="shape" itemID="6597616a-00000eb3" isExpanded="true"/>
-          <DOMFolderItem name="sprite" itemID="6601150c-00000dde" isExpanded="true"/>
+          <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
+          <DOMFolderItem name="sprite" itemID="6601150c-00000dde"/>
           <DOMFolderItem name="sprite/新地图" itemID="66011bb7-00000e65" isExpanded="true"/>
           <DOMFolderItem name="UI重构" itemID="668a7e49-000018c6"/>
           <DOMFolderItem name="UI重构/商店相关" itemID="668a7e49-000018c7"/>
+          <DOMFolderItem name="大圣素材" itemID="68c846c4-000025df"/>
+          <DOMFolderItem name="大圣素材/背面大圣" itemID="68c53345-000003a7"/>
+          <DOMFolderItem name="大圣素材/侧面大圣" itemID="68c53345-000003a5"/>
+          <DOMFolderItem name="大圣素材/如意金箍棒" itemID="68c845d1-00002511"/>
+          <DOMFolderItem name="大圣素材/正常大圣" itemID="68c845d1-000024f7"/>
           <DOMFolderItem name="歌留多" itemID="670cf381-0000038c"/>
           <DOMFolderItem name="零件" itemID="66012485-00000403"/>
           <DOMFolderItem name="诺艾尔" itemID="660cdfcd-00000e07"/>
@@ -57,6 +62,7 @@
           <DOMFolderItem name="所有素材/重复项目文件夹" itemID="65fbdeee-00000881"/>
           <DOMFolderItem name="所有素材/装备" itemID="65fbe6c1-00000eb2"/>
           <DOMFolderItem name="所有素材/装备/西风大剑" itemID="65fbe6c1-00000eb3"/>
+          <DOMFolderItem name="未命名文件夹 1" itemID="68c846ba-000025d9"/>
           <DOMFolderItem name="文天npc" itemID="660ce059-00000e31"/>
           <DOMFolderItem name="小绿人" itemID="6561b396-000001cd"/>
           <DOMFolderItem name="小绿人/光子破坏炮" itemID="660f9cb9-000005e5"/>
@@ -66,9 +72,37 @@
      </folders>
      <media>
           <DOMBitmapItem name="所有素材/201808-120FP0560176" itemID="570f8d8f-0000000f" sourceExternalFilepath="./LIBRARY/所有素材/201808-120FP0560176.jpg" originalCompressionType="lossless" quality="50" href="所有素材/201808-120FP0560176.jpg" bitmapDataHRef="M 5 1711009057.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="大圣素材/正常大圣/Bitmap 10" itemID="689779d4-00000604" sourceExternalFilepath="Bitmap 10.png" sourceLastImported="1754757588" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/正常大圣/Bitmap 10.png" bitmapDataHRef="M 10 1757955538.dat" frameRight="5940" frameBottom="7060"/>
+          <DOMBitmapItem name="大圣素材/背面大圣/Bitmap 12" itemID="688f6537-000011af" sourceExternalFilepath="Bitmap 12.png" sourceLastImported="1754228023" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/背面大圣/Bitmap 12.png" bitmapDataHRef="M 23 1757955538.dat" frameRight="5960" frameBottom="10360"/>
+          <DOMBitmapItem name="大圣素材/正常大圣/Bitmap 12" itemID="688f4ad6-00000faf" sourceExternalFilepath="Bitmap 12.png" sourceLastImported="1754221270" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/正常大圣/Bitmap 12.png" bitmapDataHRef="M 8 1757955538.dat" frameRight="3640" frameBottom="3900"/>
+          <DOMBitmapItem name="大圣素材/正常大圣/Bitmap 14" itemID="688f4b87-00000fc0" sourceExternalFilepath="Bitmap 14.png" sourceLastImported="1754221447" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/正常大圣/Bitmap 14.png" bitmapDataHRef="M 9 1757955538.dat" frameRight="5540" frameBottom="5460"/>
+          <DOMBitmapItem name="大圣素材/正常大圣/Bitmap 15" itemID="688f4c0f-00000fcb" sourceExternalFilepath="Bitmap 15.png" sourceLastImported="1754221583" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/正常大圣/Bitmap 15.png" bitmapDataHRef="M 7 1757955538.dat" frameRight="6520" frameBottom="16540"/>
+          <DOMBitmapItem name="大圣素材/侧面大圣/Bitmap 17" itemID="688f6761-000011e1" sourceExternalFilepath="Bitmap 17.png" sourceLastImported="1754228577" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/侧面大圣/Bitmap 17.png" bitmapDataHRef="M 30 1757955538.dat" frameRight="12500" frameBottom="19240"/>
+          <DOMBitmapItem name="大圣素材/侧面大圣/Bitmap 18" itemID="688f6810-000011ed" sourceExternalFilepath="Bitmap 18.png" sourceLastImported="1754228752" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/侧面大圣/Bitmap 18.png" bitmapDataHRef="M 27 1757955538.dat" frameRight="6680" frameBottom="6820"/>
+          <DOMBitmapItem name="大圣素材/正常大圣/Bitmap 19" itemID="688f4df7-00000fed" sourceExternalFilepath="Bitmap 19.png" sourceLastImported="1754222071" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/正常大圣/Bitmap 19.png" bitmapDataHRef="M 16 1757955538.dat" frameRight="5460" frameBottom="9580"/>
+          <DOMBitmapItem name="大圣素材/侧面大圣/Bitmap 20" itemID="688f6890-000011ff" sourceExternalFilepath="Bitmap 20.png" sourceLastImported="1754228880" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/侧面大圣/Bitmap 20.png" bitmapDataHRef="M 34 1757955538.dat" frameRight="6320" frameBottom="7180"/>
+          <DOMBitmapItem name="大圣素材/正常大圣/Bitmap 21" itemID="688f4f16-00000ffe" sourceExternalFilepath="Bitmap 21.png" sourceLastImported="1754222358" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/正常大圣/Bitmap 21.png" bitmapDataHRef="M 14 1757955538.dat" frameRight="5480" frameBottom="4500"/>
+          <DOMBitmapItem name="大圣素材/侧面大圣/Bitmap 22" itemID="688f6913-00001210" sourceExternalFilepath="Bitmap 22.png" sourceLastImported="1754229011" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/侧面大圣/Bitmap 22.png" bitmapDataHRef="M 21 1757955538.dat" frameRight="4380" frameBottom="4040"/>
+          <DOMBitmapItem name="大圣素材/侧面大圣/Bitmap 24" itemID="688f6989-00001221" sourceExternalFilepath="Bitmap 24.png" sourceLastImported="1754229129" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/侧面大圣/Bitmap 24.png" bitmapDataHRef="M 25 1757955538.dat" frameRight="4380" frameBottom="7980"/>
+          <DOMBitmapItem name="大圣素材/正常大圣/Bitmap 24" itemID="688f4f6d-00001015" sourceExternalFilepath="Bitmap 24.png" sourceLastImported="1754222445" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/正常大圣/Bitmap 24.png" bitmapDataHRef="M 18 1757955538.dat" frameRight="5960" frameBottom="9460"/>
+          <DOMBitmapItem name="大圣素材/正常大圣/Bitmap 25" itemID="688f4fd6-0000101b" sourceExternalFilepath="Bitmap 25.png" sourceLastImported="1754222550" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/正常大圣/Bitmap 25.png" bitmapDataHRef="M 17 1757955538.dat" frameRight="6860" frameBottom="5640"/>
+          <DOMBitmapItem name="大圣素材/背面大圣/Bitmap 3" itemID="688f6387-00001163" sourceExternalFilepath="Bitmap 3.png" sourceLastImported="1754227591" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/背面大圣/Bitmap 3.png" bitmapDataHRef="M 31 1757955538.dat" frameRight="14420" frameBottom="23420"/>
+          <DOMBitmapItem name="大圣素材/正常大圣/Bitmap 32" itemID="688f51e1-00001054" sourceExternalFilepath="Bitmap 32.png" sourceLastImported="1754223073" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/正常大圣/Bitmap 32.png" bitmapDataHRef="M 11 1757955538.dat" frameRight="6260" frameBottom="10760"/>
+          <DOMBitmapItem name="大圣素材/正常大圣/Bitmap 34" itemID="688f5340-00001060" sourceExternalFilepath="Bitmap 34.png" sourceLastImported="1754223424" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/正常大圣/Bitmap 34.png" bitmapDataHRef="M 15 1757955538.dat" frameRight="3120" frameBottom="6920"/>
+          <DOMBitmapItem name="大圣素材/正常大圣/Bitmap 35" itemID="688f53bf-0000106b" sourceExternalFilepath="Bitmap 35.png" sourceLastImported="1754223551" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/正常大圣/Bitmap 35.png" bitmapDataHRef="M 19 1757955538.dat" frameRight="3840" frameBottom="8000"/>
+          <DOMBitmapItem name="大圣素材/正常大圣/Bitmap 37" itemID="688f549f-0000107c" sourceExternalFilepath="Bitmap 37.png" sourceLastImported="1754223775" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/正常大圣/Bitmap 37.png" bitmapDataHRef="M 33 1757955538.dat" frameRight="8980" frameBottom="9720"/>
+          <DOMBitmapItem name="大圣素材/正常大圣/Bitmap 5" itemID="688f4924-00000f76" sourceExternalFilepath="Bitmap 5.png" sourceLastImported="1754220836" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/正常大圣/Bitmap 5.png" bitmapDataHRef="M 12 1757955538.dat" frameRight="6960" frameBottom="11620"/>
+          <DOMBitmapItem name="大圣素材/背面大圣/Bitmap 6" itemID="688f642b-00001181" sourceExternalFilepath="Bitmap 6.png" sourceLastImported="1754227755" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/背面大圣/Bitmap 6.png" bitmapDataHRef="M 28 1757955538.dat" frameRight="7560" frameBottom="6700"/>
+          <DOMBitmapItem name="大圣素材/背面大圣/Bitmap 9" itemID="688f648a-00001198" sourceExternalFilepath="Bitmap 9.png" sourceLastImported="1754227850" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/背面大圣/Bitmap 9.png" bitmapDataHRef="M 22 1757955538.dat" frameRight="7280" frameBottom="11780"/>
+          <DOMBitmapItem name="大圣素材/正常大圣/Bitmap 9" itemID="688f4a68-00000f98" sourceExternalFilepath="Bitmap 9.png" sourceLastImported="1754221160" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/正常大圣/Bitmap 9.png" bitmapDataHRef="M 13 1757955538.dat" frameRight="8900" frameBottom="12100"/>
           <DOMBitmapItem name="所有素材/bitmap1.png" itemID="65fb1448-000039bf" sourceExternalFilepath="./LIBRARY/所有素材/bitmap1.png" sourceLastImported="1710953544" originalCompressionType="lossless" quality="50" href="所有素材/bitmap1.png" bitmapDataHRef="M 3 1710953628.dat" frameRight="5540" frameBottom="4480"/>
           <DOMBitmapItem name="所有素材/bitmap37.png" itemID="65fb1448-000039c9" sourceExternalFilepath="./LIBRARY/所有素材/bitmap37.png" sourceLastImported="1710953544" originalCompressionType="lossless" quality="50" href="所有素材/bitmap37.png" bitmapDataHRef="M 1 1710953628.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="所有素材/bitmap6.jpg" itemID="65fb1448-000039c4" sourceExternalFilepath="./LIBRARY/所有素材/bitmap6.jpg" sourceLastImported="1710953544" quality="50" href="所有素材/bitmap6.jpg" bitmapDataHRef="M 2 1710953628.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
+          <DOMBitmapItem name="大圣素材/正常大圣/大圣大腿左" itemID="68987c8f-000001da" sourceExternalFilepath="Bitmap 17.png" sourceLastImported="1754823823" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/正常大圣/大圣大腿左.png" bitmapDataHRef="M 24 1757955538.dat" frameRight="8280" frameBottom="13540"/>
+          <DOMBitmapItem name="大圣素材/正常大圣/大圣头" itemID="68987b8a-00000179" sourceExternalFilepath="Bitmap 1.png" sourceLastImported="1754823562" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/正常大圣/大圣头.png" bitmapDataHRef="M 29 1757955538.dat" frameRight="23140" frameBottom="24780"/>
+          <DOMBitmapItem name="大圣素材/正常大圣/大圣下半身" itemID="68987b8e-0000017a" sourceExternalFilepath="Bitmap 7.png" sourceLastImported="1754823566" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/正常大圣/大圣下半身.png" bitmapDataHRef="M 20 1757955538.dat" frameRight="10620" frameBottom="18760"/>
+          <DOMBitmapItem name="大圣素材/正常大圣/大圣胸" itemID="68987b94-0000017b" sourceExternalFilepath="Bitmap 30.png" sourceLastImported="1754823572" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/正常大圣/大圣胸.png" bitmapDataHRef="M 26 1757955538.dat" frameRight="9380" frameBottom="10360"/>
+          <DOMBitmapItem name="大圣素材/如意金箍棒/金箍棒（图片）" itemID="68987d3d-00000506" sourceExternalFilepath="Bitmap 3.png" sourceLastImported="1754823997" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="大圣素材/如意金箍棒/金箍棒（图片）.png" bitmapDataHRef="M 32 1757955538.dat" frameRight="1040" frameBottom="22240"/>
           <DOMBitmapItem name="位图 1" itemID="6603979e-00000301" sourceExternalFilepath="./LIBRARY/位图 1.png" sourceLastImported="1711511439" externalFileCRC32="1085762004" externalFileSize="1343374" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 1.png" bitmapDataHRef="M 6 1711511439.dat" frameRight="76200" frameBottom="29540"/>
           <DOMBitmapItem name="所有素材/位图 4" itemID="65fbce45-0000042f" sourceExternalFilepath="./LIBRARY/所有素材/位图 4" sourceLastImported="1711001157" originalCompressionType="lossless" quality="50" href="所有素材/位图 4" bitmapDataHRef="M 4 1711001157.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
      </media>
@@ -88,7 +122,7 @@
           <Include href="shape/Symbol 35501.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cf6" lastModified="1704196122"/>
           <Include href="shape/Symbol 51880.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ceb" lastModified="1711349998"/>
           <Include href="sprite/新地图/Symbol 51881.xml" loadImmediate="false" itemID="6597607e-00000ced" lastModified="1711348810"/>
-          <Include href="Symbol 2363.xml" loadImmediate="false" itemID="6597607e-00000b21" lastModified="1707199899"/>
+          <Include href="Symbol 2363.xml" loadImmediate="false" itemID="6597607e-00000b21" lastModified="1757957574"/>
           <Include href="UI重构/商店相关/npc商店名称UI.xml" loadImmediate="false" itemID="668a5bba-000008f1" lastModified="1720795931"/>
           <Include href="UI重构/商店相关/npc商店名称框.xml" loadImmediate="false" itemID="668a5ba5-000008ed" lastModified="1720349306"/>
           <Include href="UI重构/商店相关/购物图标UI.xml" loadImmediate="false" itemID="668a7428-00000c8d" lastModified="1720349737"/>
@@ -97,7 +131,45 @@
           <Include href="补间 3.xml" itemIcon="1" loadImmediate="false" itemID="660fa2d6-00000af0" lastModified="1712300758"/>
           <Include href="补间 4.xml" itemIcon="1" loadImmediate="false" itemID="660fa2d6-00000af2" lastModified="1712300758"/>
           <Include href="场景门.xml" loadImmediate="false" itemID="66f5a03f-00000e56" lastModified="1727373384"/>
-          <Include href="地图-彩蛋地图.xml" itemID="660112d4-00000ccf" lastModified="1752671931"/>
+          <Include href="大圣npc2.xml" itemIcon="1" loadImmediate="false" itemID="68c84596-00002365" lastModified="1757957532"/>
+          <Include href="大圣素材/背面大圣/背面大圣头.xml" loadImmediate="false" itemID="688f63d6-0000116b" lastModified="1754227670"/>
+          <Include href="大圣素材/背面大圣/背面大圣下摆.xml" loadImmediate="false" itemID="688f655c-000011b1" lastModified="1754228060"/>
+          <Include href="大圣素材/背面大圣/背面大圣胸.xml" loadImmediate="false" itemID="688f6459-00001183" lastModified="1755093198"/>
+          <Include href="大圣素材/背面大圣/背面大圣腰.xml" loadImmediate="false" itemID="688f64e6-0000119a" lastModified="1754227942"/>
+          <Include href="大圣素材/侧面大圣/侧面大圣大臂.xml" loadImmediate="false" itemID="688f68e3-00001201" lastModified="1754228963"/>
+          <Include href="大圣素材/侧面大圣/侧面大圣大腿.xml" loadImmediate="false" itemID="688f69a0-00001223" lastModified="1754229152"/>
+          <Include href="大圣素材/侧面大圣/侧面大圣头.xml" loadImmediate="false" itemID="688f67de-000011e3" lastModified="1754228702"/>
+          <Include href="大圣素材/侧面大圣/侧面大圣胸.xml" loadImmediate="false" itemID="688f6877-000011ef" lastModified="1754228855"/>
+          <Include href="大圣素材/侧面大圣/侧面大圣腰.xml" loadImmediate="false" itemID="688f6942-00001212" lastModified="1754229058"/>
+          <Include href="大圣素材/大圣.xml" loadImmediate="false" itemID="68c84670-00002541" lastModified="1757955697"/>
+          <Include href="大圣素材/如意金箍棒/金箍棒.xml" loadImmediate="false" itemID="68976bd8-000005c7" lastModified="1755132737"/>
+          <Include href="大圣素材/阴影.xml" loadImmediate="false" itemID="65ab9909-000003b3" lastModified="1705744649"/>
+          <Include href="大圣素材/正常大圣/大圣手臂双方向.xml" itemIcon="1" loadImmediate="false" itemID="68988bc6-0000060a" lastModified="1754827785"/>
+          <Include href="大圣素材/正常大圣/大圣手掌双方向.xml" itemIcon="1" loadImmediate="false" itemID="68988b72-00000602" lastModified="1754836954"/>
+          <Include href="大圣素材/正常大圣/大圣头三方向.xml" itemIcon="1" loadImmediate="false" itemID="6898841f-000005ca" lastModified="1754827349"/>
+          <Include href="大圣素材/正常大圣/大圣外甲左三方向.xml" itemIcon="1" loadImmediate="false" itemID="689886c9-000005ef" lastModified="1755105507"/>
+          <Include href="大圣素材/正常大圣/大圣胸三方向.xml" itemIcon="1" loadImmediate="false" itemID="6898814d-00000562" lastModified="1754827272"/>
+          <Include href="大圣素材/正常大圣/大圣腰三方向.xml" itemIcon="1" loadImmediate="false" itemID="68988055-0000051f" lastModified="1754826357"/>
+          <Include href="大圣素材/正常大圣/大圣左大臂三方向.xml" itemIcon="1" loadImmediate="false" itemID="68988391-0000058b" lastModified="1754830182"/>
+          <Include href="大圣素材/正常大圣/正常大圣不同手.xml" loadImmediate="false" itemID="68977a0f-00000608" lastModified="1754757647"/>
+          <Include href="大圣素材/正常大圣/正常大圣大臂右.xml" loadImmediate="false" itemID="688f54d7-00001083" lastModified="1754223831"/>
+          <Include href="大圣素材/正常大圣/正常大圣大臂左.xml" loadImmediate="false" itemID="688f54c3-0000107e" lastModified="1754223811"/>
+          <Include href="大圣素材/正常大圣/正常大圣大腿右.xml" loadImmediate="false" itemID="688f4c30-00000fcd" lastModified="1754221616"/>
+          <Include href="大圣素材/正常大圣/正常大圣大腿左.xml" loadImmediate="false" itemID="688f4dbc-00000fde" lastModified="1754222012"/>
+          <Include href="大圣素材/正常大圣/正常大圣裤子右.xml" loadImmediate="false" itemID="688f53dc-0000106d" lastModified="1754223580"/>
+          <Include href="大圣素材/正常大圣/正常大圣裤子左.xml" loadImmediate="false" itemID="688f5365-00001062" lastModified="1754223461"/>
+          <Include href="大圣素材/正常大圣/正常大圣头.xml" loadImmediate="false" itemID="688f478b-00000f4e" lastModified="1754220427"/>
+          <Include href="大圣素材/正常大圣/正常大圣小臂右.xml" loadImmediate="false" itemID="688f4a93-00000f9a" lastModified="1754221203"/>
+          <Include href="大圣素材/正常大圣/正常大圣小腿右.xml" loadImmediate="false" itemID="688f4feb-0000101d" lastModified="1754222571"/>
+          <Include href="大圣素材/正常大圣/正常大圣小腿左.xml" loadImmediate="false" itemID="688f4e3a-00000fef" lastModified="1754222138"/>
+          <Include href="大圣素材/正常大圣/正常大圣胸.xml" loadImmediate="false" itemID="688f6072-00001139" lastModified="1754226802"/>
+          <Include href="大圣素材/正常大圣/正常大圣腰.xml" loadImmediate="false" itemID="688f4a27-00000f89" lastModified="1754221095"/>
+          <Include href="大圣素材/正常大圣/正常大圣右脚.xml" loadImmediate="false" itemID="688f5008-00001022" lastModified="1754222600"/>
+          <Include href="大圣素材/正常大圣/正常大圣右手.xml" loadImmediate="false" itemID="688f4b9e-00000fc2" lastModified="1754221470"/>
+          <Include href="大圣素材/正常大圣/正常大圣左脚.xml" loadImmediate="false" itemID="688f4f33-00001000" lastModified="1754222387"/>
+          <Include href="大圣素材/正常大圣/正常大圣左手.xml" loadImmediate="false" itemID="688f4af6-00000fb1" lastModified="1754221302"/>
+          <Include href="大圣素材/正常大圣/正常大圣左小臂.xml" loadImmediate="false" itemID="688f49a1-00000f78" lastModified="1754220961"/>
+          <Include href="地图-彩蛋地图.xml" itemID="660112d4-00000ccf" lastModified="1757957979"/>
           <Include href="地图碰撞箱.xml" loadImmediate="false" itemID="67d7e1b3-000017cf" lastModified="1749721449"/>
           <Include href="歌留多/歌留多胯.xml" itemIcon="1" loadImmediate="false" itemID="67096725-00000045" lastModified="1728926280"/>
           <Include href="歌留多/歌留多身体.xml" itemIcon="1" loadImmediate="false" itemID="67095275-0000000f" lastModified="1728926280"/>
@@ -678,6 +750,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4780791" publishTime="1757957625"/>
+          <PublishItem publishSize="4780793" publishTime="1757956676"/>
+          <PublishItem publishSize="4780808" publishTime="1757955799"/>
           <PublishItem publishSize="1251707" publishTime="1749727668"/>
           <PublishItem publishSize="1252469" publishTime="1738917371"/>
           <PublishItem publishSize="1252601" publishTime="1729504895"/>
@@ -695,8 +770,5 @@
           <PublishItem publishSize="1238989" publishTime="1712301370"/>
           <PublishItem publishSize="1238986" publishTime="1712300947"/>
           <PublishItem publishSize="1236004" publishTime="1712122922"/>
-          <PublishItem publishSize="1235767" publishTime="1712121809"/>
-          <PublishItem publishSize="1235728" publishTime="1712120091"/>
-          <PublishItem publishSize="1235724" publishTime="1712120007"/>
      </publishHistory>
 </DOMDocument>
