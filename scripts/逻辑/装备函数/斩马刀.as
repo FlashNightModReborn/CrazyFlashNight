@@ -4,11 +4,13 @@
     ref.bulletName = param.bulletName || "碎石飞扬";
     ref.power = param.power || 12; // 默认12倍蓝量伤害
     ref.blockProp = {
+        shooter: ref.自机._name,
 		shootZ:NaN,
 		消弹敌我属性:ref.自机.是否为敌人,   
 		消弹方向:null,                                  
 		Z轴攻击范围:10,                                
-		区域定位area:null
+		区域定位area:null,
+        反弹:true
 	};
 };
 
