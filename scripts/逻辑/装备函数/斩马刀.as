@@ -3,6 +3,13 @@
     ref.ratiol = param.ratio || 3; // 默认3%蓝量
     ref.bulletName = param.bulletName || "碎石飞扬";
     ref.power = param.power || 12; // 默认12倍蓝量伤害
+    ref.blockProp = {
+		shootZ:NaN,
+		消弹敌我属性:ref.自机.是否为敌人,   
+		消弹方向:null,                                  
+		Z轴攻击范围:10,                                
+		区域定位area:null
+	};
 };
 
 _root.装备生命周期函数.斩马刀周期 = function(ref:Object, param:Object) {
@@ -15,7 +22,17 @@ _root.装备生命周期函数.斩马刀周期 = function(ref:Object, param:Obje
         isAvailable = false;
     }
 
-    if (_root.兵器攻击检测(target) && isAvailable) {
+    if(!_root.兵器攻击检测(target)) {
+        return;
+    }
+
+    var saber:MovieClip = target.刀_引用;
+
+    ref.blockProp.shootZ = target.Z轴坐标;
+    ref.blockProp.区域定位area = saber;
+    _root.消除子弹(ref.blockProp);
+
+    if (isAvailable) {
         var flag:Boolean = true;
 
         switch (target.getSmallState()) {
@@ -27,7 +44,7 @@ _root.装备生命周期函数.斩马刀周期 = function(ref:Object, param:Obje
                 flag = _root.成功率(5);
         }
         if (flag) {
-            var saber:MovieClip = target.刀_引用;
+            // _root.发布消息(flag, saber);
             var attackPoint:MovieClip = saber.刀口位置3;
 
             target.man.攻击时可改变移动方向(1);
@@ -43,6 +60,7 @@ _root.装备生命周期函数.斩马刀周期 = function(ref:Object, param:Obje
                 
                 _root.子弹区域shoot传递(子弹属性);
                 target.mp -= mpValue;
+                _root.发布消息(target.mp);
                 // _root.服务器.发布服务器消息(ObjectUtil.toString(子弹属性));
             } else if (target == root.gameworld[_root.控制目标]) {
                 root.发布消息("气力不足，难以发挥装备的真正力量……");
