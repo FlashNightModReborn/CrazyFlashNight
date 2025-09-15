@@ -207,6 +207,51 @@ class org.flashNight.gesh.object.ObjectUtil {
         return (type == "number" || type == "string" || type == "boolean");
     }
 
+    private static function movieClipToString(mc:MovieClip, seenObjects:Dictionary, depth:Number):String {
+        var out:String = "{";
+        var first:Boolean = true;
+
+        function addKV(key:String, val:Object):Void {
+            if (first) { first = false; } else { out += ", "; }
+            out += '"' + key + '": ' + org.flashNight.gesh.object.ObjectUtil.toString(val, seenObjects, depth + 1);
+        }
+
+        // 1) 固定展示一些常用内建属性（不可枚举的也能拿到）
+        //    这些字段读起来是 O(1) 的属性访问，不会牵出庞大对象
+        //    _target 在很多版本等于路径字符串；若需更保守可只保留 _name
+        addKV("_name", mc._name);
+        if (mc._target != undefined) addKV("_path", mc._target);
+        addKV("_x", mc._x);
+        addKV("_y", mc._y);
+        addKV("_width", mc._width);
+        addKV("_height", mc._height);
+        addKV("_rotation", mc._rotation);
+        addKV("_alpha", mc._alpha);
+        addKV("_visible", mc._visible);
+        addKV("_currentframe", mc._currentframe);
+        addKV("_totalframes", mc._totalframes);
+
+        // 2) 再把“自有的可枚举动态键”也打印出来（如你脚本里 set 的属性、子实例等）
+        //    这里用你现有的 getKeys() + 排序，风格统一
+        var keys:Array = getKeys(mc);
+        keys = org.flashNight.naki.Sort.InsertionSort.sort(
+            keys,
+            function(a, b):Number { return a > b ? 1 : (a < b ? -1 : 0); }
+        );
+
+        for (var i:Number = 0; i < keys.length; i++) {
+            var k:String = keys[i];
+            // 建议把 _parent/_root/_level0 等重引用排除，避免冗余/环（虽然后面有 seenObjects 防循环）
+            if (!isInternalKey(k) && k != "_parent" && k != "_root" && k != "_level0" && k != "_target") {
+                addKV(k, mc[k]);
+            }
+        }
+
+        out += "}";
+        return out;
+    }
+
+
     /**
      * 将对象转换为字符串表示形式（类似于 JSON 格式）。
      * @param obj 要转换的对象。
@@ -256,6 +301,9 @@ class org.flashNight.gesh.object.ObjectUtil {
                 result += toString(obj[i], seenObjects, depth + 1);  // 递归调用时增加深度
             }
             result += "]";
+        }
+        else if (typeof(obj) == "movieclip") {
+            result += movieClipToString(MovieClip(obj), seenObjects, depth + 1);
         }
         // 处理对象类型
         else if (typeof(obj) == "object") {
