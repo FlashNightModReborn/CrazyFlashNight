@@ -1,0 +1,157 @@
+{
+    "tasks": [
+        {
+            "id": 60001,
+            "title": "$SIDE_TITLE_60001",
+            "description": "$SIDE_DESCRIPTION_60001",
+
+            "get_requirements": [21],
+            "get_conversation": "$SIDE_GET_60001",
+            "get_npc": "Blue",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_60001",
+            "finish_npc": "Boy",
+            "rewards": [
+                "金币#500",
+                "经验值#500",
+                "普通hp药剂#1",
+                "普通mp药剂#1"
+            ],
+            
+            "chain":"废城#1"
+        },
+        {
+            "id": 60002,
+            "title": "$SIDE_TITLE_60002",
+            "description": "$SIDE_DESCRIPTION_60002",
+
+            "get_requirements": [60001],
+            "get_conversation": "$SIDE_GET_60002",
+            "get_npc": "Boy",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_60002",
+            "finish_npc": "Blue",
+            "rewards": [
+                "金币#500",
+                "经验值#500",
+                "普通hp药剂#1",
+                "普通mp药剂#1"
+            ],
+            
+            "chain":"废城#2"
+        },
+        {
+            "id": 60003,
+            "title": "$SIDE_TITLE_60003",
+            "description": "$SIDE_DESCRIPTION_60003",
+
+            "get_requirements": [60002],
+            "get_conversation": "$SIDE_GET_60003",
+            "get_npc": "Blue",
+
+            "finish_requirements": [
+                "废城环线#简单"
+            ],
+            "finish_conversation": "$SIDE_FINISH_60003",
+            "finish_npc": "Blue",
+            "rewards": [
+                "金币#2000",
+                "经验值#2000",
+                "普通hp药剂#5",
+                "普通mp药剂#5"
+            ],
+            
+            "chain":"废城#3"
+        },
+        {
+            "id": 60004,
+            "title": "$SIDE_TITLE_60004",
+            "description": "$SIDE_DESCRIPTION_60004",
+
+            "get_requirements": [60003],
+            "get_conversation": "$SIDE_GET_60004",
+            "get_npc": "Blue",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_60004",
+            "finish_npc": "Boy",
+            "rewards": [
+                "金币#500",
+                "经验值#500",
+                "普通hp药剂#1",
+                "普通mp药剂#1"
+            ],
+            
+            "chain":"废城#4"
+        },
+        {
+            "id": 60005,
+            "title": "$SIDE_TITLE_60005",
+            "description": "$SIDE_DESCRIPTION_60005",
+
+            "get_requirements": [60004],
+            "get_conversation": "$SIDE_GET_60005",
+            "get_npc": "Boy",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_60005",
+            "finish_npc": "Blue",
+            "rewards": [
+                "金币#500",
+                "经验值#500",
+                "普通hp药剂#1",
+                "普通mp药剂#1"
+            ],
+            
+            "chain":"废城#5"
+        },
+        {
+            "id": 60006,
+            "title": "$SIDE_TITLE_60006",
+            "description": "$SIDE_DESCRIPTION_60006",
+
+            "get_requirements": [60005],
+            "get_conversation": "$SIDE_GET_60006",
+            "get_npc": "Blue",
+
+            "finish_requirements": [
+                "自来水厂#简单"
+            ],
+            "finish_conversation": "$SIDE_FINISH_60006",
+            "finish_npc": "Blue",
+            "rewards": [
+                "金币#2000",
+                "经验值#2000",
+                "普通hp药剂#5",
+                "普通mp药剂#5"
+            ],
+            
+            "chain":"废城#6"
+        },
+        {
+            "id": 60007,
+            "title": "$SIDE_TITLE_60007",
+            "description": "$SIDE_DESCRIPTION_60007",
+
+            "get_requirements": [60006],
+            "get_conversation": "$SIDE_GET_60007",
+            "get_npc": "Blue",
+
+            "finish_requirements": [
+                "医院#简单"
+            ],
+            "finish_conversation": "$SIDE_FINISH_60007",
+            "finish_npc": "Blue",
+            "rewards": [
+                "金币#2000",
+                "经验值#2000",
+                "普通hp药剂#5",
+                "普通mp药剂#5"
+            ],
+            
+            "chain":"废城#7"
+        }
+    ]
+}
