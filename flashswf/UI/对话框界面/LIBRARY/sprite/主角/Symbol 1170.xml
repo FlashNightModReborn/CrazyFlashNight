@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/主角/Symbol 1170" itemID="6597607e-00000895" lastModified="1751512384">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/主角/Symbol 1170" itemID="6597607e-00000895" lastModified="1757945229">
   <timeline>
     <DOMTimeline name="Symbol 1170">
       <layers>
@@ -6,9 +6,9 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1169" centerPoint3DX="27.95" centerPoint3DY="51.7">
+                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1169" centerPoint3DX="19.8" centerPoint3DY="61.15">
                   <matrix>
-                    <Matrix a="0.285324096679688" b="0.568862915039063" c="-0.568862915039063" d="0.285324096679688" tx="-1.55" ty="30.3"/>
+                    <Matrix a="0.285324096679688" b="0.568862915039063" c="-0.568862915039063" d="0.285324096679688" tx="-9.7" ty="39.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -25,9 +25,9 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1165" centerPoint3DX="10.55" centerPoint3DY="31.95">
+                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1165" centerPoint3DX="2.4" centerPoint3DY="41.4">
                   <matrix>
-                    <Matrix a="0.631072998046875" b="-0.06951904296875" c="0.06951904296875" d="0.631072998046875" tx="-6.9" ty="-23.7"/>
+                    <Matrix a="0.631072998046875" b="-0.06951904296875" c="0.06951904296875" d="0.631072998046875" tx="-15.05" ty="-14.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -44,9 +44,9 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1111" centerPoint3DX="29.85" centerPoint3DY="-19.9">
+                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1111" centerPoint3DX="24.15" centerPoint3DY="-15">
                   <matrix>
-                    <Matrix a="0.62060546875" b="0.128875732421875" c="-0.128875732421875" d="0.62060546875" tx="6.2" ty="-87"/>
+                    <Matrix a="0.62060546875" b="0.128875732421875" c="-0.128875732421875" d="0.62060546875" tx="0.5" ty="-82.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -211,7 +211,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#DE28A6" current="true" isSelected="true">
+        <DOMLayer name="Layer 12" color="#DE28A6">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -291,9 +291,9 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1119" centerPoint3DX="98.75" centerPoint3DY="44.8">
+                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1119" centerPoint3DX="102.15" centerPoint3DY="60.55">
                   <matrix>
-                    <Matrix a="0.264297485351563" b="0.578094482421875" c="-0.578094482421875" d="0.264297485351563" tx="69.25" ty="23.35"/>
+                    <Matrix a="0.264297485351563" b="0.578094482421875" c="-0.578094482421875" d="0.264297485351563" tx="72.65" ty="39.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -306,13 +306,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 17" color="#3EBCFC">
+        <DOMLayer name="Layer 17" color="#3EBCFC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1115" centerPoint3DX="82.2" centerPoint3DY="27">
+                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1115" selected="true" centerPoint3DX="81.4" centerPoint3DY="42.8">
                   <matrix>
-                    <Matrix a="0.63177490234375" b="-0.0608978271484375" c="0.0608978271484375" d="0.63177490234375" tx="64.75" ty="-28.65"/>
+                    <Matrix a="0.63177490234375" b="-0.0608978271484375" c="0.0608978271484375" d="0.63177490234375" tx="63.95" ty="-12.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -329,9 +329,9 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1111" centerPoint3DX="90" centerPoint3DY="-21.75">
+                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1111" selected="true" centerPoint3DX="86.6" centerPoint3DY="-15.25">
                   <matrix>
-                    <Matrix a="0.633712768554688" b="0.0180511474609375" c="-0.0180511474609375" d="0.633712768554688" tx="66.35" ty="-88.85"/>
+                    <Matrix a="0.630950927734375" b="0.06170654296875" c="-0.06170654296875" d="0.630950927734375" tx="67.75" ty="-83.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
