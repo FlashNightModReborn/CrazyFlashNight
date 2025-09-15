@@ -41,7 +41,6 @@
                 <script><![CDATA[if (_parent.是否为敌人)
 {
 	_root.创建可拾取物("牛仔的左轮",1,_parent._x,_parent._y,true);
-	_root.创建可拾取物("牛仔风帽",1,_parent._x,_parent._y,true);
 }]]></script>
               </Actionscript>
               <elements/>
