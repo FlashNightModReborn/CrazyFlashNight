@@ -501,7 +501,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 var didBounce:Boolean = false;
                 var didCancel:Boolean = false;
 
-                if (hasCZ && !bullet.__vanishing && !bullet.__disposing) {
+                if (hasCZ) {
                     // 仅处理非近战且移动中的子弹
                     if ((flags & FLAG_MELEE) == 0 && bullet.xmov != 0) {
                         var Lb:Number = bulletLeftKeys[idx];

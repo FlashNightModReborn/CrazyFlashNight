@@ -73,6 +73,60 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
     private static var _shooter:Array = [];
     private static var _reqRef:Array = [];       // 原始请求引用，便于未来回调处理
 
+    // 双缓冲后备数组与索引复用（零分配策略）
+    private static var _xMinB:Array = [];
+    private static var _xMaxB:Array = [];
+    private static var _yMinB:Array = [];
+    private static var _yMaxB:Array = [];
+    private static var _shootZB:Array = [];
+    private static var _zRangeB:Array = [];
+    private static var _dirCodeB:Array = [];
+    private static var _isEnemyB:Array = [];
+    private static var _isBounceB:Array = [];
+    private static var _isPowerfulB:Array = [];
+    private static var _shooterB:Array = [];
+    private static var _reqRefB:Array = [];
+
+    private static var _idx:Array = []; // 复用索引数组
+
+    /**
+     * 确保数组容量不小于 need；仅扩容，不缩容
+     * @param {Array} a 目标数组
+     * @param {Number} need 需要的最小长度
+     */
+    private static function ensureCapacity(a:Array, need:Number):Void {
+        if (a.length < need) a.length = need;
+    }
+
+    /**
+     * 索引排序比较函数：按 _xMin 升序
+     */
+    private static function cmpIdxByXMin(a:Number, b:Number):Number {
+        var xa:Number = _xMin[a];
+        var xb:Number = _xMin[b];
+        if (xa < xb) return -1;
+        if (xa > xb) return 1;
+        return 0;
+    }
+
+    /**
+     * 稳定插入排序：对 idx[0..len-1] 按 _xMin 升序进行稳定排序
+     * 使用 '>' 比较确保相等键不交换，保证稳定性
+     */
+    private static function stableInsertionSortByXMin(idx:Array, len:Number):Void {
+        var i:Number, j:Number, key:Number, keyX:Number;
+        for (i = 1; i < len; i++) {
+            key = idx[i];
+            keyX = _xMin[key];
+            j = i - 1;
+            while (j >= 0 && _xMin[idx[j]] > keyX) {
+                idx[j + 1] = idx[j];
+                j--;
+            }
+            idx[j + 1] = key;
+        }
+    }
+
     // ========================================================================
     // 系统初始化方法
     // ========================================================================
@@ -129,6 +183,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
         _shootZ.length = _zRange.length = _dirCode.length = 0;
         _isEnemy.length = _isBounce.length = _isPowerful.length = 0;
         _shooter.length = _reqRef.length = 0;
+
+        // 同步清空后备缓冲与复用索引
+        _xMinB.length = _xMaxB.length = _yMinB.length = _yMaxB.length = 0;
+        _shootZB.length = _zRangeB.length = _dirCodeB.length = 0;
+        _isEnemyB.length = _isBounceB.length = _isPowerfulB.length = 0;
+        _shooterB.length = _reqRefB.length = 0;
+        _idx.length = 0;
 
         return true;
     }
@@ -226,8 +287,18 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
         // 先将数据填充到并行数组中（未排序）
         // 为了保证后续重排高效，使用索引数组进行排序然后一次性重排
         var i:Number;
-        // 预分配索引数组
-        var idx:Array = new Array(n);
+        // 复用索引数组，避免每帧分配
+        _idx.length = n;
+        var idx:Array = _idx;
+
+        // 统一扩容：为“活动缓冲”（前台数组）和索引在进入填充前做容量保证
+        // 只增不减，避免填充阶段的隐式扩容成本
+        ensureCapacity(_xMin, n); ensureCapacity(_xMax, n);
+        ensureCapacity(_yMin, n); ensureCapacity(_yMax, n);
+        ensureCapacity(_shootZ, n); ensureCapacity(_zRange, n);
+        ensureCapacity(_dirCode, n); ensureCapacity(_isEnemy, n);
+        ensureCapacity(_isBounce, n); ensureCapacity(_isPowerful, n);
+        ensureCapacity(_shooter, n); ensureCapacity(_reqRef, n);
 
         // 填充阶段
         for (i = 0; i < n; i++) {
@@ -260,36 +331,80 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
         }
 
         if (_soaLen == 0) {
+            // 所有请求均无效：消费队列并快速返回，避免后续帧重复 getRect 开销
+            queue.length = 0;
+            _frameEnqueueCount = 0;
             return false;
         }
 
-        // 使用索引数组按 xMin 升序排序（自定义比较函数）
-        idx.length = _soaLen;
-        idx.sort(function(a:Number, b:Number):Number {
-            var xa:Number = _xMin[a];
-            var xb:Number = _xMin[b];
-            if (xa < xb) return -1;
-            if (xa > xb) return 1;
-            return 0;
-        });
+        // 极小输入快速路径：1 个元素无需排序与重排
+        if (_soaLen == 1) {
+            _xMin.length = _xMax.length = _yMin.length = _yMax.length = 1;
+            _shootZ.length = _zRange.length = _dirCode.length = 1;
+            _isEnemy.length = _isBounce.length = _isPowerful.length = 1;
+            _shooter.length = _reqRef.length = 1;
+            _soaPrepared = true;
+            queue.length = 0; _frameEnqueueCount = 0;
+            return true;
+        }
 
-        // 重排到新的数组（避免原地交换的复杂度和额外比较）
+        // 使用稳定插入排序，避免 AS2 Array.sort 不稳定带来的潜在顺序扰动
+        idx.length = _soaLen;
+        stableInsertionSortByXMin(idx, _soaLen);
+
+        // 重排到后备数组并交换引用（双缓冲；单循环写入，提高局部性）
         var t:Array;
         var j:Number;
 
-        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _xMin[idx[j]]; _xMin = t;
-        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _xMax[idx[j]]; _xMax = t;
-        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _yMin[idx[j]]; _yMin = t;
-        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _yMax[idx[j]]; _yMax = t;
+        // 准备本地别名，减少属性查找成本
+        ensureCapacity(_xMinB, _soaLen); ensureCapacity(_xMaxB, _soaLen);
+        ensureCapacity(_yMinB, _soaLen); ensureCapacity(_yMaxB, _soaLen);
+        ensureCapacity(_shootZB, _soaLen); ensureCapacity(_zRangeB, _soaLen);
+        ensureCapacity(_dirCodeB, _soaLen); ensureCapacity(_isEnemyB, _soaLen);
+        ensureCapacity(_isBounceB, _soaLen); ensureCapacity(_isPowerfulB, _soaLen);
+        ensureCapacity(_shooterB, _soaLen); ensureCapacity(_reqRefB, _soaLen);
 
-        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _shootZ[idx[j]]; _shootZ = t;
-        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _zRange[idx[j]]; _zRange = t;
-        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _dirCode[idx[j]]; _dirCode = t;
-        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _isEnemy[idx[j]]; _isEnemy = t;
-        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _isBounce[idx[j]]; _isBounce = t;
-        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _isPowerful[idx[j]]; _isPowerful = t;
-        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _shooter[idx[j]]; _shooter = t;
-        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _reqRef[idx[j]]; _reqRef = t;
+        var sxMin:Array = _xMin, sxMax:Array = _xMax, syMin:Array = _yMin, syMax:Array = _yMax;
+        var sShootZ:Array = _shootZ, sZRange:Array = _zRange, sDir:Array = _dirCode;
+        var sEnemy:Array = _isEnemy, sBounce:Array = _isBounce, sPower:Array = _isPowerful;
+        var sShooter:Array = _shooter, sReq:Array = _reqRef;
+
+        var dxMin:Array = _xMinB, dxMax:Array = _xMaxB, dyMin:Array = _yMinB, dyMax:Array = _yMaxB;
+        var dShootZ:Array = _shootZB, dZRange:Array = _zRangeB, dDir:Array = _dirCodeB;
+        var dEnemy:Array = _isEnemyB, dBounce:Array = _isBounceB, dPower:Array = _isPowerfulB;
+        var dShooter:Array = _shooterB, dReq:Array = _reqRefB;
+
+        for (j = 0; j < _soaLen; j++) {
+            var k:Number = idx[j];
+            dxMin[j] = sxMin[k];
+            dxMax[j] = sxMax[k];
+            dyMin[j] = syMin[k];
+            dyMax[j] = syMax[k];
+
+            dShootZ[j] = sShootZ[k];
+            dZRange[j] = sZRange[k];
+            dDir[j] = sDir[k];
+            dEnemy[j] = sEnemy[k];
+            dBounce[j] = sBounce[k];
+            dPower[j] = sPower[k];
+            dShooter[j] = sShooter[k];
+            dReq[j] = sReq[k];
+        }
+
+        // 交换前后缓冲并裁剪有效长度
+        t = _xMin; _xMin = _xMinB; _xMinB = t; _xMin.length = _soaLen;
+        t = _xMax; _xMax = _xMaxB; _xMaxB = t; _xMax.length = _soaLen;
+        t = _yMin; _yMin = _yMinB; _yMinB = t; _yMin.length = _soaLen;
+        t = _yMax; _yMax = _yMaxB; _yMaxB = t; _yMax.length = _soaLen;
+
+        t = _shootZ; _shootZ = _shootZB; _shootZB = t; _shootZ.length = _soaLen;
+        t = _zRange; _zRange = _zRangeB; _zRangeB = t; _zRange.length = _soaLen;
+        t = _dirCode; _dirCode = _dirCodeB; _dirCodeB = t; _dirCode.length = _soaLen;
+        t = _isEnemy; _isEnemy = _isEnemyB; _isEnemyB = t; _isEnemy.length = _soaLen;
+        t = _isBounce; _isBounce = _isBounceB; _isBounceB = t; _isBounce.length = _soaLen;
+        t = _isPowerful; _isPowerful = _isPowerfulB; _isPowerfulB = t; _isPowerful.length = _soaLen;
+        t = _shooter; _shooter = _shooterB; _shooterB = t; _shooter.length = _soaLen;
+        t = _reqRef; _reqRef = _reqRefB; _reqRefB = t; _reqRef.length = _soaLen;
 
         _soaPrepared = true;
         // 一体化路径：构建后即消费，避免队列累积&重复处理
