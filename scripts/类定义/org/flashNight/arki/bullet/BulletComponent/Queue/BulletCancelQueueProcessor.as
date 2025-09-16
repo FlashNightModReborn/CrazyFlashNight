@@ -47,22 +47,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
     private static var _frameEnqueueCount:Number = 0;
 
     /**
-     * 子弹键缓存
-     * 用于避免每帧重复枚举子弹容器
-     */
-    private static var bulletKeyCache:Array = [];
-
-    /**
      * 是否已初始化
      */
     private static var initialized:Boolean = false;
-
-    /**
-     * 未来“多消费者单排序”一体化路径总开关（预留，不改变现状）
-     * - 默认 false：沿用旧的事件型处理（本类仍由 EventBus 驱动）
-     * - 设为 true：旧路径在 processQueue() 入口短路，避免双重处理
-     */
-    public static var integratedMode:Boolean = false;
 
     // ========================================================================
     // 并行数组（SoA）区域缓存 - 预留给一体化主循环查询
@@ -106,16 +93,12 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
         // 使用 EventBus 单例订阅事件
         var eventBus:EventBus = EventBus.getInstance();
 
-        // 订阅帧更新事件
-        eventBus.subscribe("frameUpdate", function() {
-            BulletCancelQueueProcessor.processQueue();
-        }, BulletCancelQueueProcessor);
+        // 不再订阅 frameUpdate；消弹由 BulletQueueProcessor 一体化阶段处理
 
         // 订阅场景切换事件
         eventBus.subscribe("SceneChanged", function() {
             BulletCancelQueueProcessor.reset();
         }, BulletCancelQueueProcessor);
-
 
         initialized = true;
         return true;
@@ -136,11 +119,17 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
         // 清空队列和缓存
         queue.length = 0;
         _frameEnqueueCount = 0;
-        bulletKeyCache.length = 0;
 
-        // 清空 SoA 缓存元信息（数组保留以复用内存）
+        // 清空 SoA 缓存元信息
         _soaLen = 0;
         _soaPrepared = false;
+
+        // 清空并行数组，释放所有引用避免悬挂
+        _xMin.length = _xMax.length = _yMin.length = _yMax.length = 0;
+        _shootZ.length = _zRange.length = _dirCode.length = 0;
+        _isEnemy.length = _isBounce.length = _isPowerful.length = 0;
+        _shooter.length = _reqRef.length = 0;
+
         return true;
     }
 
@@ -221,7 +210,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
      * 构建并行数组（SoA）区域缓存，按 xMin 有序
      * - 输入：gameWorld（坐标换算基准）
      * - 输出：内部并行数组 _xMin/_xMax/_yMin/_yMax 等及 _soaLen
-     * - 不清空原队列，不改变旧路径；仅提供未来一体化主循环查询用的数据视图
+     * - 构建后立即消费队列，避免累积和重复处理
      *
      * 返回：是否成功生成有效缓存（当队列为空时返回 false）
      */
@@ -303,6 +292,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
         t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _reqRef[idx[j]]; _reqRef = t;
 
         _soaPrepared = true;
+        // 一体化路径：构建后即消费，避免队列累积&重复处理
+        queue.length = 0;
+        _frameEnqueueCount = 0;
         return true;
     }
 
@@ -332,119 +324,17 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
     }
 
     // ========================================================================
-    // 核心处理方法：批量消弹判定
+    // 核心处理方法：批量消弹判定（已废弃）
     // ========================================================================
 
     /**
-     * 处理消弹队列
+     * @deprecated 集成模式下无需调用，空实现避免历史代码报错
      *
-     * 这是消弹系统的核心方法，每帧调用一次。
-     * 遍历队列中的所有请求，对每个请求进行区域碰撞检测和处理。
-     *
-     * 【处理流程】
-     * 1. 构建子弹键缓存（避免重复枚举）
-     * 2. 遍历队列中的每个消弹请求
-     * 3. 对每个请求，扫描所有子弹进行碰撞检测
-     * 4. 根据模式（反弹/消除）处理命中的子弹
-     * 5. 清空队列，准备下一帧
-     *
-     * 【性能优化】
-     * - 使用缓存避免重复枚举
-     * - 早期退出减少无效检测
-     * - 复用数组对象，零分配策略
+     * 消弹处理已集成到 BulletQueueProcessor.processQueue() 的阶段1中。
+     * 保留此方法仅为向后兼容。
      */
     public static function processQueue():Void {
-        // 一体化模式启用时：旧事件型路径短路退出（避免双重处理）
-        if (integratedMode) {
-            return;
-        }
-        if (_root.暂停) return;
-
-        var gw:MovieClip = _root.gameworld;
-        if (!gw) return;
-
-        var 子弹容器:Object = gw.子弹区域;
-        if (!子弹容器 || queue.length == 0) return;
-
-        // 每帧仅构建一次子弹 key 列表
-        var keys:Array = bulletKeyCache;
-        var ki:Number = 0;
-        for (var k:String in 子弹容器) {
-            keys[ki++] = k;
-        }
-        keys.length = ki; // 截断到本帧长度
-
-        // ========================================================================
-        // 宏定义导入（编译时展开）
-        // ========================================================================
-        #include "../macros/FLAG_MELEE.as"
-
-        // 逐请求处理（合批）
-        var qlen:Number = queue.length;
-
-        for (var qi:Number = 0; qi < qlen; qi++) {
-            var req:Object = queue[qi];
-
-            // 把会在内层高频用到的字段提前缓存为局部
-            var 消弹敌我属性:Boolean = req.消弹敌我属性;
-            var dirFilter:Number; // -1 左 / 0 不限 / 1 右
-            var d:String = req.消弹方向;
-            dirFilter = (d == "左") ? -1 : (d == "右") ? 1 : 0;
-            var shootZ:Number = req.shootZ;
-            var Z轴攻击范围:Number = req.Z轴攻击范围;
-            var isBounce:Boolean = (req.反弹 == true);
-            var isPowerful:Boolean = (req.强力 == true);
-            var shooter:String = req.shooter;
-            var 区域定位area:MovieClip = req.区域定位area;
-
-            // 若区域已被移除或无 getRect，则跳过该请求
-            if (!区域定位area || !区域定位area.getRect) continue;
-
-            // 使用"最终位置"求矩形（gameworld 坐标系）
-            var R:Object = 区域定位area.getRect(gw);
-
-            // 扫描子弹（用缓存 keys）
-            for (var i:Number = 0; i < ki; i++) {
-                var b:MovieClip = 子弹容器[keys[i]];
-                if (!b || b.__vanishing || b.__disposing) continue;  // 已进入收尾/销毁
-
-                // 仅处理"敌对子弹"（位读取最便宜）
-                if (消弹敌我属性 == b.是否为敌人) continue;
-
-                // 近战/静止子弹直接跳过（位运算/比较很便宜）
-                if ((b.flags & FLAG_MELEE) || b.xmov == 0) continue;
-
-                // 方向过滤（用数值比较，比字符串更省）
-                if (dirFilter != 0) {
-                    var bdirSign:Number = (b.xmov > 0) ? 1 : -1;
-                    if (bdirSign != dirFilter) continue;
-                }
-
-                // Z轴带宽
-                var zOff:Number = b.Z轴坐标 - shootZ;
-                if (zOff > Z轴攻击范围 || zOff < -Z轴攻击范围) continue;
-
-                // 子弹坐标（gameworld 坐标系）：在 gw 下可直接使用 _x/_y
-                var bx:Number, by:Number;
-                bx = b._x; by = b._y;
-
-                // 点 ∈ 矩形（轴对齐）
-                if (bx < R.xMin || bx > R.xMax || by < R.yMin || by > R.yMax) continue;
-
-                // 命中处理（使用缓存的布尔值）
-                if (isBounce) {
-                    handleBounce(b, shooter);
-                } else {
-                    handleCancel(b, isPowerful);
-                }
-            }
-        }
-
-        // 清空队列（复用数组对象，零分配）
-        queue.length = 0;
-        _frameEnqueueCount = 0;
-        _soaLen = 0;
-        _soaPrepared = false;
+        /* no-op - 消弹由 BulletQueueProcessor 一体化阶段处理 */
     }
 
     // ========================================================================
@@ -457,9 +347,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
      * @param {MovieClip} bullet 要反弹的子弹
      * @param {String} newShooter 新的发射者名称
      */
-    private static function handleBounce(bullet:MovieClip, newShooter:String):Void {
-        bullet.发射者名 = newShooter;
-
+    public static function handleBounce(bullet:MovieClip, newShooter:String):Void {
         // 当前方向（弧度）与速度
         var rad:Number = Math.atan2(bullet.ymov, bullet.xmov);
         var speed:Number = Math.sqrt(bullet.xmov * bullet.xmov + bullet.ymov * bullet.ymov);
@@ -473,7 +361,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
         bullet.xmov = Math.cos(newRad) * speed;
         bullet.ymov = Math.sin(newRad) * speed;
         bullet._rotation = newRad * 180 / Math.PI;
-        bullet.是否为敌人 = _root.gameworld[newShooter].是否为敌人;
+
+        // 安全获取阵营，防止newShooter临时失效
+        var sh:MovieClip = _root.gameworld[newShooter];
+        if (sh) {
+            bullet.是否为敌人 = sh.是否为敌人;
+            bullet.发射者名 = newShooter;
+        }
     }
 
     /**
@@ -482,7 +376,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
      * @param {MovieClip} bullet 要消除的子弹
      * @param {Boolean} isPowerful 是否强力消除
      */
-    private static function handleCancel(bullet:MovieClip, isPowerful:Boolean):Void {
+    public static function handleCancel(bullet:MovieClip, isPowerful:Boolean):Void {
         #include "../macros/FLAG_PIERCE.as"
 
         bullet.击中地图 = true;
