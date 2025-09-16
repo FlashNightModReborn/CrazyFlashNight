@@ -385,11 +385,16 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
         for (var qi:Number = 0; qi < qlen; qi++) {
             var req:Object = queue[qi];
 
-            // 局部缓存参数
+            // 把会在内层高频用到的字段提前缓存为局部
             var 消弹敌我属性:Boolean = req.消弹敌我属性;
-            var 消弹方向:String = req.消弹方向;          // "左"/"右"/null
+            var dirFilter:Number; // -1 左 / 0 不限 / 1 右
+            var d:String = req.消弹方向;
+            dirFilter = (d == "左") ? -1 : (d == "右") ? 1 : 0;
             var shootZ:Number = req.shootZ;
             var Z轴攻击范围:Number = req.Z轴攻击范围;
+            var isBounce:Boolean = (req.反弹 == true);
+            var isPowerful:Boolean = (req.强力 == true);
+            var shooter:String = req.shooter;
             var 区域定位area:MovieClip = req.区域定位area;
 
             // 若区域已被移除或无 getRect，则跳过该请求
@@ -403,18 +408,21 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
                 var b:MovieClip = 子弹容器[keys[i]];
                 if (!b || b.__vanishing || b.__disposing) continue;  // 已进入收尾/销毁
 
-                // 早退：Z轴范围 / 近战 / 静止
-                var zOff:Number = b.Z轴坐标 - shootZ;
-                if ((zOff > Z轴攻击范围 || zOff < -Z轴攻击范围) ||
-                    (b.flags & FLAG_MELEE) ||
-                    b.xmov == 0) continue;
-
-                // 方向过滤（可选）
-                var bdir:String = (b.xmov > 0) ? "右" : "左";
-                if (消弹方向 && 消弹方向 != bdir) continue;
-
-                // 只处理"敌对子弹"（同侧跳过）
+                // 仅处理"敌对子弹"（位读取最便宜）
                 if (消弹敌我属性 == b.是否为敌人) continue;
+
+                // 近战/静止子弹直接跳过（位运算/比较很便宜）
+                if ((b.flags & FLAG_MELEE) || b.xmov == 0) continue;
+
+                // 方向过滤（用数值比较，比字符串更省）
+                if (dirFilter != 0) {
+                    var bdirSign:Number = (b.xmov > 0) ? 1 : -1;
+                    if (bdirSign != dirFilter) continue;
+                }
+
+                // Z轴带宽
+                var zOff:Number = b.Z轴坐标 - shootZ;
+                if (zOff > Z轴攻击范围 || zOff < -Z轴攻击范围) continue;
 
                 // 子弹坐标（gameworld 坐标系）：在 gw 下可直接使用 _x/_y
                 var bx:Number, by:Number;
@@ -423,11 +431,11 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
                 // 点 ∈ 矩形（轴对齐）
                 if (bx < R.xMin || bx > R.xMax || by < R.yMin || by > R.yMax) continue;
 
-                // 命中处理
-                if (req.反弹) {
-                    handleBounce(b, req.shooter);
+                // 命中处理（使用缓存的布尔值）
+                if (isBounce) {
+                    handleBounce(b, shooter);
                 } else {
-                    handleCancel(b, req.强力);
+                    handleCancel(b, isPowerful);
                 }
             }
         }
