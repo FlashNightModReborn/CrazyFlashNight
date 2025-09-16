@@ -39,6 +39,14 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
     private static var queue:Array = [];
 
     /**
+     * 本帧入队计数（帧级活跃度计数）
+     * - 仅在 enqueue 时递增
+     * - 在旧路径 processQueue 执行结束时归零
+     * - 供 hasActive() 零开销查询使用
+     */
+    private static var _frameEnqueueCount:Number = 0;
+
+    /**
      * 子弹键缓存
      * 用于避免每帧重复枚举子弹容器
      */
@@ -48,6 +56,35 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
      * 是否已初始化
      */
     private static var initialized:Boolean = false;
+
+    /**
+     * 未来“多消费者单排序”一体化路径总开关（预留，不改变现状）
+     * - 默认 false：沿用旧的事件型处理（本类仍由 EventBus 驱动）
+     * - 设为 true：旧路径在 processQueue() 入口短路，避免双重处理
+     */
+    public static var integratedMode:Boolean = false;
+
+    // ========================================================================
+    // 并行数组（SoA）区域缓存 - 预留给一体化主循环查询
+    // ========================================================================
+    private static var _soaPrepared:Boolean = false;   // 是否已基于当前队列构建缓存
+    private static var _soaLen:Number = 0;             // 缓存长度
+
+    // 轴对齐矩形（gameworld坐标系）
+    private static var _xMin:Array = [];
+    private static var _xMax:Array = [];
+    private static var _yMin:Array = [];
+    private static var _yMax:Array = [];
+
+    // 业务属性（按索引与矩形一一对应）
+    private static var _shootZ:Array = [];
+    private static var _zRange:Array = [];
+    private static var _dirCode:Array = [];      // -1:左, 0:不限, 1:右
+    private static var _isEnemy:Array = [];
+    private static var _isBounce:Array = [];
+    private static var _isPowerful:Array = [];
+    private static var _shooter:Array = [];
+    private static var _reqRef:Array = [];       // 原始请求引用，便于未来回调处理
 
     // ========================================================================
     // 系统初始化方法
@@ -98,7 +135,12 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
     public static function reset():Boolean {
         // 清空队列和缓存
         queue.length = 0;
+        _frameEnqueueCount = 0;
         bulletKeyCache.length = 0;
+
+        // 清空 SoA 缓存元信息（数组保留以复用内存）
+        _soaLen = 0;
+        _soaPrepared = false;
         return true;
     }
 
@@ -125,6 +167,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
         // 最小校验：需要区域定位area
         if (request && request.区域定位area) {
             queue.push(request);
+            // 帧级活跃度计数：供 hasActive() 查询
+            _frameEnqueueCount++;
+            // 任意入队都会使 SoA 缓存失效（等待下次显式 prepare）
+            _soaPrepared = false;
         }
     }
 
@@ -160,6 +206,132 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
     }
 
     // ========================================================================
+    // 新增：帧级活跃度与 SoA 缓存接口（不改变旧路径行为）
+    // ========================================================================
+
+    /**
+     * 是否存在本帧入队的消弹请求（零开销短路查询）
+     * - 仅检查 _frameEnqueueCount 计数，不触发任何分配或计算
+     */
+    public static function hasActive():Boolean {
+        return _frameEnqueueCount > 0;
+    }
+
+    /**
+     * 构建并行数组（SoA）区域缓存，按 xMin 有序
+     * - 输入：gameWorld（坐标换算基准）
+     * - 输出：内部并行数组 _xMin/_xMax/_yMin/_yMax 等及 _soaLen
+     * - 不清空原队列，不改变旧路径；仅提供未来一体化主循环查询用的数据视图
+     *
+     * 返回：是否成功生成有效缓存（当队列为空时返回 false）
+     */
+    public static function prepareAreaCache(gameWorld:MovieClip):Boolean {
+        var n:Number = queue.length;
+        _soaLen = 0;
+        _soaPrepared = false;
+
+        if (!gameWorld || n == 0) {
+            return false;
+        }
+
+        // 先将数据填充到并行数组中（未排序）
+        // 为了保证后续重排高效，使用索引数组进行排序然后一次性重排
+        var i:Number;
+        // 预分配索引数组
+        var idx:Array = new Array(n);
+
+        // 填充阶段
+        for (i = 0; i < n; i++) {
+            var req:Object = queue[i];
+            var area:MovieClip = req.区域定位area;
+            if (!area || !area.getRect) continue; // 跳过失效请求
+
+            var R:Object = area.getRect(gameWorld);
+
+            _xMin[_soaLen] = R.xMin;
+            _xMax[_soaLen] = R.xMax;
+            _yMin[_soaLen] = R.yMin;
+            _yMax[_soaLen] = R.yMax;
+
+            _shootZ[_soaLen] = req.shootZ;
+            _zRange[_soaLen] = req.Z轴攻击范围;
+
+            // 方向编码：左=-1, 右=1, 其他=0
+            var d:String = req.消弹方向;
+            _dirCode[_soaLen] = (d == "左") ? -1 : ((d == "右") ? 1 : 0);
+
+            _isEnemy[_soaLen] = req.消弹敌我属性;
+            _isBounce[_soaLen] = (req.反弹 == true);
+            _isPowerful[_soaLen] = (req.强力 == true);
+            _shooter[_soaLen] = req.shooter;
+            _reqRef[_soaLen] = req;
+
+            idx[_soaLen] = _soaLen;
+            _soaLen++;
+        }
+
+        if (_soaLen == 0) {
+            return false;
+        }
+
+        // 使用索引数组按 xMin 升序排序（自定义比较函数）
+        idx.length = _soaLen;
+        idx.sort(function(a:Number, b:Number):Number {
+            var xa:Number = _xMin[a];
+            var xb:Number = _xMin[b];
+            if (xa < xb) return -1;
+            if (xa > xb) return 1;
+            return 0;
+        });
+
+        // 重排到新的数组（避免原地交换的复杂度和额外比较）
+        var t:Array;
+        var j:Number;
+
+        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _xMin[idx[j]]; _xMin = t;
+        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _xMax[idx[j]]; _xMax = t;
+        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _yMin[idx[j]]; _yMin = t;
+        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _yMax[idx[j]]; _yMax = t;
+
+        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _shootZ[idx[j]]; _shootZ = t;
+        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _zRange[idx[j]]; _zRange = t;
+        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _dirCode[idx[j]]; _dirCode = t;
+        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _isEnemy[idx[j]]; _isEnemy = t;
+        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _isBounce[idx[j]]; _isBounce = t;
+        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _isPowerful[idx[j]]; _isPowerful = t;
+        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _shooter[idx[j]]; _shooter = t;
+        t = new Array(_soaLen); for (j = 0; j < _soaLen; j++) t[j] = _reqRef[idx[j]]; _reqRef = t;
+
+        _soaPrepared = true;
+        return true;
+    }
+
+    /**
+     * 获取已准备好的 SoA 区域缓存的只读视图（引用）
+     * - 不复制数组：返回内部数组引用用于零拷贝访问
+     * - 若尚未准备或为空，返回 null
+     */
+    public static function getAreaCacheRef():Object {
+        if (!_soaPrepared || _soaLen == 0) return null;
+        return {
+            prepared: _soaPrepared,
+            length: _soaLen,
+            xMin: _xMin,
+            xMax: _xMax,
+            yMin: _yMin,
+            yMax: _yMax,
+            shootZ: _shootZ,
+            zRange: _zRange,
+            dirCode: _dirCode,
+            isEnemy: _isEnemy,
+            isBounce: _isBounce,
+            isPowerful: _isPowerful,
+            shooter: _shooter,
+            reqRef: _reqRef
+        };
+    }
+
+    // ========================================================================
     // 核心处理方法：批量消弹判定
     // ========================================================================
 
@@ -182,6 +354,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
      * - 复用数组对象，零分配策略
      */
     public static function processQueue():Void {
+        // 一体化模式启用时：旧事件型路径短路退出（避免双重处理）
+        if (integratedMode) {
+            return;
+        }
         if (_root.暂停) return;
 
         var gw:MovieClip = _root.gameworld;
@@ -260,6 +436,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
 
         // 清空队列（复用数组对象，零分配）
         queue.length = 0;
+        _frameEnqueueCount = 0;
+        _soaLen = 0;
+        _soaPrepared = false;
     }
 
     // ========================================================================
