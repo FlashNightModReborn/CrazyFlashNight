@@ -401,7 +401,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
             // 扫描子弹（用缓存 keys）
             for (var i:Number = 0; i < ki; i++) {
                 var b:MovieClip = 子弹容器[keys[i]];
-                if (!b) continue;
+                if (!b || b.__vanishing || b.__disposing) continue;  // 已进入收尾/销毁
 
                 // 早退：Z轴范围 / 近战 / 静止
                 var zOff:Number = b.Z轴坐标 - shootZ;
@@ -416,14 +416,12 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
                 // 只处理"敌对子弹"（同侧跳过）
                 if (消弹敌我属性 == b.是否为敌人) continue;
 
-                // 注册点 -> gameworld 坐标
-                var pt:Object = {x:0, y:0};
-                b.localToGlobal(pt);
-                gw.globalToLocal(pt);
+                // 子弹坐标（gameworld 坐标系）：在 gw 下可直接使用 _x/_y
+                var bx:Number, by:Number;
+                bx = b._x; by = b._y;
 
                 // 点 ∈ 矩形（轴对齐）
-                if (pt.x < R.xMin || pt.x > R.xMax ||
-                    pt.y < R.yMin || pt.y > R.yMax) continue;
+                if (bx < R.xMin || bx > R.xMax || by < R.yMin || by > R.yMax) continue;
 
                 // 命中处理
                 if (req.反弹) {
@@ -467,6 +465,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
         bullet.xmov = Math.cos(newRad) * speed;
         bullet.ymov = Math.sin(newRad) * speed;
         bullet._rotation = newRad * 180 / Math.PI;
+        bullet.是否为敌人 = _root.gameworld[newShooter].是否为敌人;
     }
 
     /**
