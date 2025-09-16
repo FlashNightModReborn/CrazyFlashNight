@@ -138,6 +138,10 @@ EventBus.getInstance().subscribe("frameEnd", function():Void {
     BulletQueueProcessor.processQueue();
 }, this);
 
+EventBus.getInstance().subscribe("SceneChanged", function():Void {
+	BulletQueueProcessor.reset();
+}, this);
+
 _root.子弹区域shoot表演 = _root.子弹区域shoot;
 
 

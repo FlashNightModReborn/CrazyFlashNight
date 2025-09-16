@@ -161,6 +161,27 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     }
 
     // ========================================================================
+    // 系统重置方法
+    // ========================================================================
+
+    /**
+     * 重置子弹队列处理器
+     *
+     * 用于场景切换时清理队列，避免内存泄漏。
+     * 调用所有活动队列的clear方法清空子弹。
+     *
+     * @return {Boolean} 重置是否成功
+     */
+    public static function reset():Boolean {
+        // 遍历所有活动队列并清空
+        for (var key:String in activeQueues) {
+            var queue:BulletQueue = activeQueues[key];
+            queue.clear();
+        }
+        return true;
+    }
+
+    // ========================================================================
     // 子弹添加方法
     // ========================================================================
 
