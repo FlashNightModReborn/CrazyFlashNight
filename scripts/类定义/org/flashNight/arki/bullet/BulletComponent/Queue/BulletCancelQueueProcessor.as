@@ -33,15 +33,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
     // ========================================================================
 
     /**
-     * 消弹请求队列
-     * 存储待处理的消弹请求对象
-     */
-    private static var queue:Array = [];
-
-    /**
      * 本帧入队计数（帧级活跃度计数）
      * - 仅在 enqueue 时递增
-     * - 在旧路径 processQueue 执行结束时归零
+     * - 在帧末处理后归零
      * - 供 hasActive() 零开销查询使用
      */
     private static var _frameEnqueueCount:Number = 0;
@@ -73,21 +67,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
     private static var _shooter:Array = [];
     private static var _reqRef:Array = [];       // 原始请求引用，便于未来回调处理
 
-    // 双缓冲后备数组与索引复用（零分配策略）
-    private static var _xMinB:Array = [];
-    private static var _xMaxB:Array = [];
-    private static var _yMinB:Array = [];
-    private static var _yMaxB:Array = [];
-    private static var _shootZB:Array = [];
-    private static var _zRangeB:Array = [];
-    private static var _dirCodeB:Array = [];
-    private static var _isEnemyB:Array = [];
-    private static var _isBounceB:Array = [];
-    private static var _isPowerfulB:Array = [];
-    private static var _shooterB:Array = [];
-    private static var _reqRefB:Array = [];
-
-    private static var _idx:Array = []; // 复用索引数组
+    // 索引数组（用于排序，避免移动大量数据）
+    private static var _sortIdx:Array = [];
 
     /**
      * 确保数组容量不小于 need；仅扩容，不缩容
@@ -99,25 +80,27 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
     }
 
     /**
-     * 索引排序比较函数：按 _xMin 升序
+     * 对索引数组进行排序（数据本身保持无序）
+     * 使用插入排序保证稳定性，适合近有序数据
      */
-    private static function cmpIdxByXMin(a:Number, b:Number):Number {
-        var xa:Number = _xMin[a];
-        var xb:Number = _xMin[b];
-        if (xa < xb) return -1;
-        if (xa > xb) return 1;
-        return 0;
-    }
+    private static function sortIndices():Void {
+        if (_soaLen <= 1) return;
 
-    /**
-     * 稳定插入排序：对 idx[0..len-1] 按 _xMin 升序进行稳定排序
-     * 使用 '>' 比较确保相等键不交换，保证稳定性
-     */
-    private static function stableInsertionSortByXMin(idx:Array, len:Number):Void {
-        var i:Number, j:Number, key:Number, keyX:Number;
-        for (i = 1; i < len; i++) {
+        // 确保索引数组容量
+        ensureCapacity(_sortIdx, _soaLen);
+        var idx:Array = _sortIdx;
+        var i:Number, j:Number;
+
+        // 填充索引（0, 1, 2, ...）
+        for (i = 0; i < _soaLen; i++) {
+            idx[i] = i;
+        }
+
+        // 稳定插入排序（仅操作索引，按 xMin 升序）
+        var key:Number, keyX:Number;
+        for (i = 1; i < _soaLen; i++) {
             key = idx[i];
-            keyX = _xMin[key];
+            keyX = _xMin[key];  // 通过索引访问实际数据
             j = i - 1;
             while (j >= 0 && _xMin[idx[j]] > keyX) {
                 idx[j + 1] = idx[j];
@@ -125,6 +108,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
             }
             idx[j + 1] = key;
         }
+
+        // 索引数组长度设为有效长度
+        idx.length = _soaLen;
     }
 
     // ========================================================================
@@ -170,8 +156,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
      * @return {Boolean} 重置是否成功
      */
     public static function reset():Boolean {
-        // 清空队列和缓存
-        queue.length = 0;
+        // 清空缓存
         _frameEnqueueCount = 0;
 
         // 清空 SoA 缓存元信息
@@ -184,12 +169,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
         _isEnemy.length = _isBounce.length = _isPowerful.length = 0;
         _shooter.length = _reqRef.length = 0;
 
-        // 同步清空后备缓冲与复用索引
-        _xMinB.length = _xMaxB.length = _yMinB.length = _yMaxB.length = 0;
-        _shootZB.length = _zRangeB.length = _dirCodeB.length = 0;
-        _isEnemyB.length = _isBounceB.length = _isPowerfulB.length = 0;
-        _shooterB.length = _reqRefB.length = 0;
-        _idx.length = 0;
+        // 清空排序索引
+        _sortIdx.length = 0;
 
         return true;
     }
@@ -199,7 +180,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
     // ========================================================================
 
     /**
-     * 将消弹请求加入队列
+     * 将消弹请求加入队列（直接SoA入队优化版）
      *
      * @param {Object} request 消弹请求对象，包含以下属性：
      *   - 区域定位area {MovieClip} 消弹区域
@@ -215,13 +196,57 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
         if (_root.暂停) return;
 
         // 最小校验：需要区域定位area
-        if (request && request.区域定位area) {
-            queue.push(request);
-            // 帧级活跃度计数：供 hasActive() 查询
-            _frameEnqueueCount++;
-            // 任意入队都会使 SoA 缓存失效（等待下次显式 prepare）
-            _soaPrepared = false;
-        }
+        if (!request || !request.区域定位area) return;
+
+        var area:MovieClip = request.区域定位area;
+        if (!area.getRect) return;
+
+        // 立即计算几何边界（避免帧末重复计算）
+        var gameWorld:MovieClip = _root.gameworld;
+        if (!gameWorld) return;
+
+        var R:Object = area.getRect(gameWorld);
+
+        // 直接填充到并行数组（SoA）
+        var idx:Number = _soaLen;
+
+        // 确保容量
+        ensureCapacity(_xMin, idx + 1);
+        ensureCapacity(_xMax, idx + 1);
+        ensureCapacity(_yMin, idx + 1);
+        ensureCapacity(_yMax, idx + 1);
+        ensureCapacity(_shootZ, idx + 1);
+        ensureCapacity(_zRange, idx + 1);
+        ensureCapacity(_dirCode, idx + 1);
+        ensureCapacity(_isEnemy, idx + 1);
+        ensureCapacity(_isBounce, idx + 1);
+        ensureCapacity(_isPowerful, idx + 1);
+        ensureCapacity(_shooter, idx + 1);
+        ensureCapacity(_reqRef, idx + 1);
+
+        // 填充数据
+        _xMin[idx] = R.xMin;
+        _xMax[idx] = R.xMax;
+        _yMin[idx] = R.yMin;
+        _yMax[idx] = R.yMax;
+
+        _shootZ[idx] = request.shootZ;
+        _zRange[idx] = request.Z轴攻击范围;
+
+        // 方向编码：左=-1, 右=1, 其他=0
+        var d:String = request.消弹方向;
+        _dirCode[idx] = (d == "左") ? -1 : ((d == "右") ? 1 : 0);
+
+        _isEnemy[idx] = request.消弹敌我属性;
+        _isBounce[idx] = (request.反弹 == true);
+        _isPowerful[idx] = (request.强力 == true);
+        _shooter[idx] = request.shooter;
+        _reqRef[idx] = request;
+
+        // 更新计数器
+        _soaLen++;
+        _frameEnqueueCount++;
+        _soaPrepared = false;  // 需要排序
     }
 
     /**
@@ -268,6 +293,26 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
     }
 
     /**
+     * 帧结束清理（必须在每帧末调用）
+     * 清空所有缓存数据，为下一帧做准备
+     * 防止旧消弹区域"复活"的关键方法
+     */
+    public static function endFrame():Void {
+        // 下帧从空开始
+        _soaLen = 0;
+        _soaPrepared = false;
+        _frameEnqueueCount = 0;
+
+        // 可选：清空数组长度，避免高水位占内存
+        // 注释掉以复用容量，减少下帧扩容开销
+        // _xMin.length = _xMax.length = _yMin.length = _yMax.length = 0;
+        // _shootZ.length = _zRange.length = _dirCode.length = 0;
+        // _isEnemy.length = _isBounce.length = _isPowerful.length = 0;
+        // _shooter.length = _reqRef.length = 0;
+        // _sortIdx.length = 0;
+    }
+
+    /**
      * 构建并行数组（SoA）区域缓存，按 xMin 有序
      * - 输入：gameWorld（坐标换算基准）
      * - 输出：内部并行数组 _xMin/_xMax/_yMin/_yMax 等及 _soaLen
@@ -276,146 +321,39 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
      * 返回：是否成功生成有效缓存（当队列为空时返回 false）
      */
     public static function prepareAreaCache(gameWorld:MovieClip):Boolean {
-        var n:Number = queue.length;
-        _soaLen = 0;
-        _soaPrepared = false;
-
-        if (!gameWorld || n == 0) {
-            return false;
-        }
-
-        // 先将数据填充到并行数组中（未排序）
-        // 为了保证后续重排高效，使用索引数组进行排序然后一次性重排
-        var i:Number;
-        // 复用索引数组，避免每帧分配
-        _idx.length = n;
-        var idx:Array = _idx;
-
-        // 统一扩容：为“活动缓冲”（前台数组）和索引在进入填充前做容量保证
-        // 只增不减，避免填充阶段的隐式扩容成本
-        ensureCapacity(_xMin, n); ensureCapacity(_xMax, n);
-        ensureCapacity(_yMin, n); ensureCapacity(_yMax, n);
-        ensureCapacity(_shootZ, n); ensureCapacity(_zRange, n);
-        ensureCapacity(_dirCode, n); ensureCapacity(_isEnemy, n);
-        ensureCapacity(_isBounce, n); ensureCapacity(_isPowerful, n);
-        ensureCapacity(_shooter, n); ensureCapacity(_reqRef, n);
-
-        // 填充阶段
-        for (i = 0; i < n; i++) {
-            var req:Object = queue[i];
-            var area:MovieClip = req.区域定位area;
-            if (!area || !area.getRect) continue; // 跳过失效请求
-
-            var R:Object = area.getRect(gameWorld);
-
-            _xMin[_soaLen] = R.xMin;
-            _xMax[_soaLen] = R.xMax;
-            _yMin[_soaLen] = R.yMin;
-            _yMax[_soaLen] = R.yMax;
-
-            _shootZ[_soaLen] = req.shootZ;
-            _zRange[_soaLen] = req.Z轴攻击范围;
-
-            // 方向编码：左=-1, 右=1, 其他=0
-            var d:String = req.消弹方向;
-            _dirCode[_soaLen] = (d == "左") ? -1 : ((d == "右") ? 1 : 0);
-
-            _isEnemy[_soaLen] = req.消弹敌我属性;
-            _isBounce[_soaLen] = (req.反弹 == true);
-            _isPowerful[_soaLen] = (req.强力 == true);
-            _shooter[_soaLen] = req.shooter;
-            _reqRef[_soaLen] = req;
-
-            idx[_soaLen] = _soaLen;
-            _soaLen++;
-        }
-
+        // 数据已在enqueue时直接填充到SoA，这里只需排序
         if (_soaLen == 0) {
-            // 所有请求均无效：消费队列并快速返回，避免后续帧重复 getRect 开销
-            queue.length = 0;
             _frameEnqueueCount = 0;
             return false;
         }
 
-        // 极小输入快速路径：1 个元素无需排序与重排
+        // 单元素：必须构建索引
         if (_soaLen == 1) {
-            _xMin.length = _xMax.length = _yMin.length = _yMax.length = 1;
-            _shootZ.length = _zRange.length = _dirCode.length = 1;
-            _isEnemy.length = _isBounce.length = _isPowerful.length = 1;
-            _shooter.length = _reqRef.length = 1;
+            // 构建索引数组 [0]
+            ensureCapacity(_sortIdx, 1);
+            _sortIdx.length = 1;
+            _sortIdx[0] = 0;
+
             _soaPrepared = true;
-            queue.length = 0; _frameEnqueueCount = 0;
+            _frameEnqueueCount = 0;
             return true;
         }
 
-        // 使用稳定插入排序，避免 AS2 Array.sort 不稳定带来的潜在顺序扰动
-        idx.length = _soaLen;
-        stableInsertionSortByXMin(idx, _soaLen);
+        // 仅对索引进行排序，数据数组保持无序
+        sortIndices();
 
-        // 重排到后备数组并交换引用（双缓冲；单循环写入，提高局部性）
-        var t:Array;
-        var j:Number;
-
-        // 准备本地别名，减少属性查找成本
-        ensureCapacity(_xMinB, _soaLen); ensureCapacity(_xMaxB, _soaLen);
-        ensureCapacity(_yMinB, _soaLen); ensureCapacity(_yMaxB, _soaLen);
-        ensureCapacity(_shootZB, _soaLen); ensureCapacity(_zRangeB, _soaLen);
-        ensureCapacity(_dirCodeB, _soaLen); ensureCapacity(_isEnemyB, _soaLen);
-        ensureCapacity(_isBounceB, _soaLen); ensureCapacity(_isPowerfulB, _soaLen);
-        ensureCapacity(_shooterB, _soaLen); ensureCapacity(_reqRefB, _soaLen);
-
-        var sxMin:Array = _xMin, sxMax:Array = _xMax, syMin:Array = _yMin, syMax:Array = _yMax;
-        var sShootZ:Array = _shootZ, sZRange:Array = _zRange, sDir:Array = _dirCode;
-        var sEnemy:Array = _isEnemy, sBounce:Array = _isBounce, sPower:Array = _isPowerful;
-        var sShooter:Array = _shooter, sReq:Array = _reqRef;
-
-        var dxMin:Array = _xMinB, dxMax:Array = _xMaxB, dyMin:Array = _yMinB, dyMax:Array = _yMaxB;
-        var dShootZ:Array = _shootZB, dZRange:Array = _zRangeB, dDir:Array = _dirCodeB;
-        var dEnemy:Array = _isEnemyB, dBounce:Array = _isBounceB, dPower:Array = _isPowerfulB;
-        var dShooter:Array = _shooterB, dReq:Array = _reqRefB;
-
-        for (j = 0; j < _soaLen; j++) {
-            var k:Number = idx[j];
-            dxMin[j] = sxMin[k];
-            dxMax[j] = sxMax[k];
-            dyMin[j] = syMin[k];
-            dyMax[j] = syMax[k];
-
-            dShootZ[j] = sShootZ[k];
-            dZRange[j] = sZRange[k];
-            dDir[j] = sDir[k];
-            dEnemy[j] = sEnemy[k];
-            dBounce[j] = sBounce[k];
-            dPower[j] = sPower[k];
-            dShooter[j] = sShooter[k];
-            dReq[j] = sReq[k];
-        }
-
-        // 交换前后缓冲并裁剪有效长度
-        t = _xMin; _xMin = _xMinB; _xMinB = t; _xMin.length = _soaLen;
-        t = _xMax; _xMax = _xMaxB; _xMaxB = t; _xMax.length = _soaLen;
-        t = _yMin; _yMin = _yMinB; _yMinB = t; _yMin.length = _soaLen;
-        t = _yMax; _yMax = _yMaxB; _yMaxB = t; _yMax.length = _soaLen;
-
-        t = _shootZ; _shootZ = _shootZB; _shootZB = t; _shootZ.length = _soaLen;
-        t = _zRange; _zRange = _zRangeB; _zRangeB = t; _zRange.length = _soaLen;
-        t = _dirCode; _dirCode = _dirCodeB; _dirCodeB = t; _dirCode.length = _soaLen;
-        t = _isEnemy; _isEnemy = _isEnemyB; _isEnemyB = t; _isEnemy.length = _soaLen;
-        t = _isBounce; _isBounce = _isBounceB; _isBounceB = t; _isBounce.length = _soaLen;
-        t = _isPowerful; _isPowerful = _isPowerfulB; _isPowerfulB = t; _isPowerful.length = _soaLen;
-        t = _shooter; _shooter = _shooterB; _shooterB = t; _shooter.length = _soaLen;
-        t = _reqRef; _reqRef = _reqRefB; _reqRefB = t; _reqRef.length = _soaLen;
+        // 不裁剪SoA数组长度，保留容量供下帧复用
+        // 使用 _soaLen 作为有效长度标识即可
 
         _soaPrepared = true;
-        // 一体化路径：构建后即消费，避免队列累积&重复处理
-        queue.length = 0;
         _frameEnqueueCount = 0;
         return true;
     }
 
     /**
      * 获取已准备好的 SoA 区域缓存的只读视图（引用）
-     * - 不复制数组：返回内部数组引用用于零拷贝访问
+     * - 返回排序索引和原始无序数组，实现零拷贝间接访问
+     * - 消费端通过 array[indices[i]] 方式访问有序数据
      * - 若尚未准备或为空，返回 null
      */
     public static function getAreaCacheRef():Object {
@@ -423,7 +361,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
         return {
             prepared: _soaPrepared,
             length: _soaLen,
-            xMin: _xMin,
+            indices: _sortIdx,      // 排序后的索引数组
+            xMin: _xMin,           // 原始无序数组
             xMax: _xMax,
             yMin: _yMin,
             yMax: _yMax,
