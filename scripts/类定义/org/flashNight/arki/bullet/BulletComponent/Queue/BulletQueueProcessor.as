@@ -362,7 +362,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var isBounceArr:Array, isPowerfulArr:Array, shooterArr:Array;
 
         if (hasCZ) {
-            BulletCancelQueueProcessor.prepareAreaCache(gameWorld);
+            BulletCancelQueueProcessor.prepareAreaCache();
             areas = BulletCancelQueueProcessor.getAreaCacheRef();
             if (!areas || areas.length == 0) {
                 hasCZ = false;

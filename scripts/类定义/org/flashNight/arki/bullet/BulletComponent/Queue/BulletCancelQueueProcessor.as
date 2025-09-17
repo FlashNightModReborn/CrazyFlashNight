@@ -71,38 +71,30 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
     private static var _sortIdx:Array = [];
 
     /**
-     * 确保数组容量不小于 need；仅扩容，不缩容
-     * @param {Array} a 目标数组
-     * @param {Number} need 需要的最小长度
-     */
-    private static function ensureCapacity(a:Array, need:Number):Void {
-        if (a.length < need) a.length = need;
-    }
-
-    /**
      * 对索引数组进行排序（数据本身保持无序）
      * 使用插入排序保证稳定性，适合近有序数据
      */
     private static function sortIndices():Void {
         if (_soaLen <= 1) return;
 
-        // 确保索引数组容量
-        ensureCapacity(_sortIdx, _soaLen);
+        // 局部缓存数组引用（减少哈希查找与作用域链开销）
         var idx:Array = _sortIdx;
+        var xMin:Array = _xMin;
+        var len:Number = _soaLen;
         var i:Number, j:Number;
 
         // 填充索引（0, 1, 2, ...）
-        for (i = 0; i < _soaLen; i++) {
+        for (i = 0; i < len; i++) {
             idx[i] = i;
         }
 
         // 稳定插入排序（仅操作索引，按 xMin 升序）
         var key:Number, keyX:Number;
-        for (i = 1; i < _soaLen; i++) {
+        for (i = 1; i < len; i++) {
             key = idx[i];
-            keyX = _xMin[key];  // 通过索引访问实际数据
+            keyX = xMin[key];  // 通过索引访问实际数据
             j = i - 1;
-            while (j >= 0 && _xMin[idx[j]] > keyX) {
+            while (j >= 0 && xMin[idx[j]] > keyX) {
                 idx[j + 1] = idx[j];
                 j--;
             }
@@ -110,7 +102,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
         }
 
         // 索引数组长度设为有效长度
-        idx.length = _soaLen;
+        idx.length = len;
     }
 
     // ========================================================================
@@ -210,21 +202,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
         // 直接填充到并行数组（SoA）
         var idx:Number = _soaLen;
 
-        // 确保容量
-        ensureCapacity(_xMin, idx + 1);
-        ensureCapacity(_xMax, idx + 1);
-        ensureCapacity(_yMin, idx + 1);
-        ensureCapacity(_yMax, idx + 1);
-        ensureCapacity(_shootZ, idx + 1);
-        ensureCapacity(_zRange, idx + 1);
-        ensureCapacity(_dirCode, idx + 1);
-        ensureCapacity(_isEnemy, idx + 1);
-        ensureCapacity(_isBounce, idx + 1);
-        ensureCapacity(_isPowerful, idx + 1);
-        ensureCapacity(_shooter, idx + 1);
-        ensureCapacity(_reqRef, idx + 1);
-
-        // 填充数据
+        // 填充数据（AS2数组会自动扩容）
         _xMin[idx] = R.xMin;
         _xMax[idx] = R.xMax;
         _yMin[idx] = R.yMin;
@@ -314,13 +292,12 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
 
     /**
      * 构建并行数组（SoA）区域缓存，按 xMin 有序
-     * - 输入：gameWorld（坐标换算基准）
      * - 输出：内部并行数组 _xMin/_xMax/_yMin/_yMax 等及 _soaLen
      * - 构建后立即消费队列，避免累积和重复处理
      *
      * 返回：是否成功生成有效缓存（当队列为空时返回 false）
      */
-    public static function prepareAreaCache(gameWorld:MovieClip):Boolean {
+    public static function prepareAreaCache():Boolean {
         // 数据已在enqueue时直接填充到SoA，这里只需排序
         if (_soaLen == 0) {
             _frameEnqueueCount = 0;
@@ -330,7 +307,6 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
         // 单元素：必须构建索引
         if (_soaLen == 1) {
             // 构建索引数组 [0]
-            ensureCapacity(_sortIdx, 1);
             _sortIdx.length = 1;
             _sortIdx[0] = 0;
 
