@@ -29,6 +29,9 @@ class org.flashNight.gesh.init.GlobalInitializer{
         WaveSpawnWheel.getInstance();
         StageEventHandler.getInstance();
 
+        // arki.component
+        org.flashNight.arki.component.Effect.BitmapEffectRenderer.initialize();
+
         initialized = true;
     }
 }

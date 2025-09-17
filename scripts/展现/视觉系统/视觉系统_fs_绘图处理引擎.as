@@ -120,3 +120,12 @@ _root.绘图引擎.渲染残影 = function(mc:MovieClip, style:String):Void {
     //       style：传入给 TrailRenderer 的样式标识
     org.flashNight.arki.render.ClipFrameRenderer.renderClipTrail(mc, style);
 };
+
+
+
+_root.绘图引擎.加载位图数据 = function():Void{
+    org.flashNight.arki.component.Effect.BitmapEffectRenderer.loadBloodstains();
+}
+_root.绘图引擎.渲染血迹 = function(x, y):Void{
+    org.flashNight.arki.component.Effect.BitmapEffectRenderer.renderBloodstain(x, y);
+}
