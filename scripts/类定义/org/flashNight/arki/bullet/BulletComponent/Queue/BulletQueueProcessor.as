@@ -104,6 +104,28 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     private static var KF_PIERCE_LIMIT_REMOVE:Number = (1 << 1) | (1 << 9);  // 0x202
 
     // ========================================================================
+    // 消弹状态常量
+    // ========================================================================
+
+    /** 消弹状态：无操作，继续正常处理 */
+    private static var CANCEL_STATE_NONE:Number = 0;
+
+    /** 消弹状态：反弹处理 */
+    private static var CANCEL_STATE_BOUNCE:Number = 1;
+
+    /** 消弹状态：移除子弹 */
+    private static var CANCEL_STATE_REMOVE:Number = 2;
+
+    // ========================================================================
+    // 消弹状态缓存（逐帧复用）
+    // ========================================================================
+    private static var _cancelState:Array = [];
+    private static var _cancelKillFlags:Array = [];
+    private static var _cancelBounceShooter:Array = [];
+    private static var _cancelStamp:Array = [];
+    private static var _cancelFrameId:Number = 0;
+
+    // ========================================================================
     // 静态上下文对象（零分配优化）
     // ========================================================================
 
@@ -365,31 +387,38 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var shootZArr:Array, zRangeArr:Array, dirCodeArr:Array, isEnemyArr:Array;
         var isBounceArr:Array, isPowerfulArr:Array, shooterArr:Array;
 
-        var areaLen:Number = 0;  // 缓存areas.length，避免重复访问
+        var areaLen:Number = 0;  // 索引数组长度
         if (hasCZ) {
             BulletCancelQueueProcessor.prepareAreaCache();
             areas = BulletCancelQueueProcessor.getAreaCacheRef();
-            if (!areas || areas.length == 0) {
+            if (!areas) {
                 hasCZ = false;
             } else {
-                areaLen = areas.length;  // 缓存长度
-                // 缓存数组引用，减少热点路径的属性查找
                 idxArr = areas.indices;
-                xMinArr = areas.xMin;
-                xMaxArr = areas.xMax;
-                yMinArr = areas.yMin;
-                yMaxArr = areas.yMax;
-                shootZArr = areas.shootZ;
-                zRangeArr = areas.zRange;
-                dirCodeArr = areas.dirCode;
-                isEnemyArr = areas.isEnemy;
-                isBounceArr = areas.isBounce;
-                isPowerfulArr = areas.isPowerful;
-                shooterArr = areas.shooter;
+                if (!idxArr) {
+                    hasCZ = false;
+                } else {
+                    areaLen = idxArr.length;
+                    if (areaLen == 0) {
+                        hasCZ = false;
+                    } else {
+                        xMinArr = areas.xMin;
+                        xMaxArr = areas.xMax;
+                        yMinArr = areas.yMin;
+                        yMaxArr = areas.yMax;
+                        shootZArr = areas.shootZ;
+                        zRangeArr = areas.zRange;
+                        dirCodeArr = areas.dirCode;
+                        isEnemyArr = areas.isEnemy;
+                        isBounceArr = areas.isBounce;
+                        isPowerfulArr = areas.isPowerful;
+                        shooterArr = areas.shooter;
+                    }
+                }
             }
         }
 
-        // ================================================================
+                // ================================================================
         // 统一变量声明区域（性能热点优化：避免循环内重复var声明开销）
         // ================================================================
 
@@ -440,12 +469,24 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var polygonCollider:ICollider;      // 多边形碰撞检测器（精确检测用）
 
         // ---- 子弹类型预计算标志 ----
-        var isUpdatePolygon:Boolean;        // 多边形碰撞器是否已更新（避免重复更新）
-        
+        var isUpdatePolygon:Boolean;        // track polygon collider refresh to avoid redundant updates
+
+        // ---- 消弹状态常量（局部缓存，降低静态访问开销） ----
+        var CANCEL_NONE:Number = CANCEL_STATE_NONE;      // 0: 继续正常处理
+        var CANCEL_BOUNCE:Number = CANCEL_STATE_BOUNCE;  // 1: 反弹处理
+        var CANCEL_REMOVE:Number = CANCEL_STATE_REMOVE;  // 2: 移除子弹
+
         // ================================================================
         // 主处理循环：按阵营遍历所有活动队列
         // ================================================================
         for (key in activeQueues) {
+            _cancelFrameId++;
+            if (_cancelFrameId > 1000000000) {
+                _cancelFrameId = 1;
+                _cancelStamp.length = 0;
+            }
+            var frameId:Number = _cancelFrameId;
+
             q = activeQueues[key];
 
             // ---- 空队列优化：早期退出避免无效计算 ----
@@ -483,121 +524,113 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             sweepIndex = 0;                             // 扫描线索引重置
 
             // ================================================================
-            // 阶段1：子弹 vs 消弹区域 - 集成消弹系统
+            // 阶段1：消弹区域与子弹的双扫描线预处理
             // ================================================================
+            var cancelState:Array = null;
+            var cancelKillFlags:Array = null;
+            var cancelBounceShooter:Array = null;
+            var cancelStamp:Array = null;
+            var hasCancelResult:Boolean = false;
+            if (hasCZ && sortedLength > 0 && areaLen > 0) {
+                cancelState = _cancelState;
+                cancelKillFlags = _cancelKillFlags;
+                cancelBounceShooter = _cancelBounceShooter;
+                cancelStamp = _cancelStamp;
 
-            // 消弹区域扫描指针（每个阵营各自从0开始推进）
-            var iArea:Number = 0;
-
-            // ================================================================
-            // 子弹逐发处理循环：内联executeLogic以消除函数调用开销
-            // 核心优化：完全内联，无函数调用，最小化栈帧切换成本
-            // ================================================================
-            for (idx = 0; idx < sortedLength; idx++) {
-                bullet = sortedArr[idx];
-
-                // ---- 子弹属性缓存：减少对象属性查找的哈希开销 ----
-                flags = bullet.flags;                   // 子弹类型标志位（一次查询，多处使用）
-                areaAABB = bullet.aabbCollider;         // AABB碰撞检测器缓存
-
-                // ---- 精确碰撞检测需求判断：延迟获取旋转角度避免不必要的getter调用 ----
-                isPointSet = (flags & FLAG_CHAIN) != 0; // 先判断是否为联弹
-                if (isPointSet) {
-                    rot = bullet._rotation;              // 仅联弹需要获取旋转角度（避免getter开销）
-                    isPointSet = rot != 0 && rot != 180; // 只有旋转的联弹才需要多边形检测
-                }
-
-                // ---- Z轴检测参数缓存：高频使用的坐标数据 ----
-                bulletZOffset = bullet.Z轴坐标;          // 子弹Z轴坐标
-                bulletZRange = bullet.Z轴攻击范围;       // Z轴攻击范围
-
-                // ---- 子弹终止控制初始化：统一的生命周期管理 ----
-                killFlags = 0;                         // 重置终止标志位（单出口设计）
-
-                // ---- 调试渲染：开发阶段的可视化辅助 ----
-                if (debugMode) {
-                    AABBRenderer.renderAABB(areaAABB, 0, "line", bulletZRange);
-                }
-
-                // ---- 发射者获取：用于友伤判断和效果触发 ----
-                shooter = gameWorld[bullet.发射者名];
-
-                // ---- 子弹边界缓存：两阶段共用，减少数组访问 ----
-                var Lb:Number = bulletLeftKeys[idx];
-                var Rb:Number = bulletRightKeys[idx];
-
-                // ================================================================
-                // 阶段1：子弹 vs 消弹区域检测
-                // ================================================================
-                var didBounce:Boolean = false;
-                var didCancel:Boolean = false;
-
-                if (hasCZ) {
-                    // 仅处理非近战且移动中的子弹
-                    if ((flags & FLAG_MELEE) == 0 && bullet.xmov != 0) {
-
-                        // 推进区域指针（完全在子弹左侧的区域跳过）
-                        // 使用缓存的数组引用减少属性查找
-                        while (iArea < areaLen && xMaxArr[idxArr[iArea]] < Lb) ++iArea;
-
-                        // 遍历与子弹横向相交的候选区域
-                        for (var j:Number = iArea; j < areaLen && xMinArr[idxArr[j]] <= Rb; ++j) {
-                            // 获取实际的数据索引
-                            var areaIdx:Number = idxArr[j];
-
-                            // 敌我过滤：只处理"异侧"子弹
-                            if (isEnemyArr[areaIdx] == bullet.是否为敌人) continue;
-
-                            // 方向过滤（-1 左 / 0 不限 / 1 右）
-                            var d:Number = dirCodeArr[areaIdx];
-                            if (d != 0) {
-                                var bdir:Number = (bullet.xmov > 0) ? 1 : -1;
-                                if (bdir != d) continue;
-                            }
-
-                            // Z 轴带宽
-                            var czOff:Number = bulletZOffset - shootZArr[areaIdx];
-                            var czr:Number = zRangeArr[areaIdx];
-                            if (czOff > czr || czOff < -czr) continue;
-
-                            // 点∈矩形（坐标系与 gameworld 对齐，直接用 _x/_y）
-                            var bx:Number = bullet._x, by:Number = bullet._y;
-                            if (bx < xMinArr[areaIdx] || bx > xMaxArr[areaIdx] ||
-                                by < yMinArr[areaIdx] || by > yMaxArr[areaIdx]) continue;
-
-                            // 命中：反弹或消除
-                            if (isBounceArr[areaIdx]) {
-                                // 反弹：立即生效并跳过本发后续流程
-                                BulletCancelQueueProcessor.handleBounce(bullet, shooterArr[areaIdx]);
-                                // 轻微位移，避免下一帧重复命中
-                                bullet._x += (bullet.xmov >= 0 ? 1 : -1);
-                                bullet._y += (bullet.ymov >= 0 ? 1 : -1);
-                                didBounce = true;
-                            } else {
-                                // 消弹：交给统一收尾处理，不在这里触发 FX，避免重复
-                                bullet.击中地图 = true;
-                                if (isPowerfulArr[areaIdx] && (flags & FLAG_PIERCE)) {
-                                    killFlags |= MODE_REMOVE;
-                                } else {
-                                    killFlags |= MODE_VANISH;
-                                }
-                                didCancel = true;
-                            }
-                            break; // 消弹优先：命中一个区域后直接进入下一颗子弹
+                var bulletPtr:Number = 0;
+                var scanIndex:Number;
+                var areaIdx:Number;
+                var areaMin:Number;
+                var areaMax:Number;
+                var czOff:Number;
+                var czr:Number;
+                var d:Number;
+                var bdir:Number;
+                var bx:Number;
+                var by:Number;
+                for (var areaPtr:Number = 0; areaPtr < areaLen; ++areaPtr) {
+                    areaIdx = idxArr[areaPtr];
+                    areaMin = xMinArr[areaIdx];
+                    areaMax = xMaxArr[areaIdx];
+                    while (bulletPtr < sortedLength && bulletRightKeys[bulletPtr] < areaMin) {
+                        ++bulletPtr;
+                    }
+                    for (scanIndex = bulletPtr; scanIndex < sortedLength && bulletLeftKeys[scanIndex] <= areaMax; ++scanIndex) {
+                        if (cancelStamp[scanIndex] == frameId) continue;
+                        bullet = sortedArr[scanIndex];
+                        flags = bullet.flags;
+                        if ((flags & FLAG_MELEE) != 0) continue;
+                        // 保护条件：静止子弹不参与消弹检测
+                        if (bullet.xmov == 0 && bullet.ymov == 0) continue;
+                        if (isEnemyArr[areaIdx] == bullet.是否为敌人) continue;
+                        d = dirCodeArr[areaIdx];
+                        if (d != 0 && bullet.xmov != 0) {
+                            bdir = (bullet.xmov > 0) ? 1 : -1;
+                            if (bdir != d) continue;
+                        }
+                        czOff = bullet.Z轴坐标 - shootZArr[areaIdx];
+                        czr = zRangeArr[areaIdx];
+                        if (czOff > czr || czOff < -czr) continue;
+                        bx = bullet._x;
+                        by = bullet._y;
+                        if (bx < xMinArr[areaIdx] || bx > xMaxArr[areaIdx] ||
+                            by < yMinArr[areaIdx] || by > yMaxArr[areaIdx]) continue;
+                        hasCancelResult = true;
+                        cancelStamp[scanIndex] = frameId;
+                        if (isBounceArr[areaIdx]) {
+                            cancelState[scanIndex] = CANCEL_BOUNCE;
+                            cancelBounceShooter[scanIndex] = shooterArr[areaIdx];
+                        } else {
+                            cancelState[scanIndex] = CANCEL_REMOVE;
+                            // 强力消弹区域且穿透子弹才直接移除，否则播放消失动画
+                            cancelKillFlags[scanIndex] = (isPowerfulArr[areaIdx] && (flags & FLAG_PIERCE) != 0) ? MODE_REMOVE : MODE_VANISH;
                         }
                     }
                 }
-
-                // 反弹：立即位移并进入下一发
-                if (didBounce) {
+                if (!hasCancelResult) {
+                    cancelState = null;
+                    cancelKillFlags = null;
+                    cancelBounceShooter = null;
+                    cancelStamp = null;
+                }
+            }
+            for (idx = 0; idx < sortedLength; idx++) {
+                bullet = sortedArr[idx];
+                flags = bullet.flags;
+                areaAABB = bullet.aabbCollider;
+                isPointSet = (flags & FLAG_CHAIN) != 0;
+                if (isPointSet) {
+                    rot = bullet._rotation;
+                    isPointSet = rot != 0 && rot != 180;
+                }
+                bulletZOffset = bullet.Z轴坐标;          // 子弹Z轴坐标
+                bulletZRange = bullet.Z轴攻击范围;       // Z轴攻击范围
+                killFlags = 0;
+                if (debugMode) {
+                    AABBRenderer.renderAABB(areaAABB, 0, "line", bulletZRange);
+                }
+                shooter = gameWorld[bullet.发射者名];
+                var Lb:Number = bulletLeftKeys[idx];
+                var Rb:Number = bulletRightKeys[idx];
+                var preparedCancelState:Number = CANCEL_NONE;
+                if (cancelState && cancelStamp && cancelStamp[idx] == frameId) {
+                    preparedCancelState = cancelState[idx];
+                }
+                if (preparedCancelState == CANCEL_BOUNCE) {
+                    var bounceShooter:String = cancelBounceShooter ? cancelBounceShooter[idx] : null;
+                    BulletCancelQueueProcessor.handleBounce(bullet, bounceShooter);
                     bullet.updateMovement(bullet);
                     continue;
                 }
-
-                // 消弹：跳过"阶段2：单位碰撞"，但继续走统一收尾（释放碰撞体、FX）
-                var skipUnits:Boolean = didCancel;
-
-                // ================================================================
+                if (preparedCancelState == CANCEL_REMOVE) {
+                    // 不设置击中地图，让killFlags控制处理方式
+                    killFlags = (cancelKillFlags && cancelKillFlags[idx] != undefined) ? cancelKillFlags[idx] : MODE_VANISH;
+                    // 消弹区域命中时触发效果
+                    bullet.霰弹值 = 1;
+                    FX.Effect(bullet.击中地图效果, bullet._x, bullet._y);
+                    if (bullet.击中时触发函数) bullet.击中时触发函数();
+                }
+                var skipUnits:Boolean = (preparedCancelState == CANCEL_REMOVE);
                 // 阶段2：子弹 vs 单位碰撞检测
                 // ================================================================
                 if (!skipUnits) {
@@ -646,7 +679,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                     // Z 轴粗判（避免Math.abs函数调用开销）
                     zOffset = bulletZOffset - hitTarget.Z轴坐标;
-                    if (zOffset >= bulletZRange || zOffset <= -bulletZRange) continue;
+                    if (zOffset > bulletZRange || zOffset < -bulletZRange) continue;
 
                     if (hitTarget.hp > 0 && hitTarget.防止无限飞 != true) {
                         unitArea = hitTarget.aabbCollider;
@@ -763,17 +796,16 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         bullet.polygonCollider.getFactory().releaseCollider(bullet.polygonCollider);
                     }
                     
-                    if (bullet.击中地图) {
-                        bullet.霰弹值 = 1;
-                        FX.Effect(bullet.击中地图效果, bullet._x, bullet._y);
-                        if (bullet.击中时触发函数) bullet.击中时触发函数();
+                    // 根据killFlags优先级处理子弹终止
+                    if ((killFlags & MODE_REMOVE) != 0) {
+                        // 直接移除（强力消弹+穿透弹）
+                        bullet.removeMovieClip();
+                    } else if ((killFlags & MODE_VANISH) != 0 || bullet.击中地图) {
+                        // 播放消失动画（普通消弹或其他击中地图情况）
                         bullet.gotoAndPlay("消失");
                     } else {
-                        if ((killFlags & MODE_VANISH) != 0) {
-                            bullet.gotoAndPlay("消失");
-                        } else {
-                            bullet.removeMovieClip();
-                        }
+                        // 其他情况默认移除
+                        bullet.removeMovieClip();
                     }
                 }
             }
@@ -781,6 +813,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
             // 清空队列（仅调用一次，保留函数调用）
             q.clear();
+            cancelState = null;
+            cancelKillFlags = null;
+            cancelBounceShooter = null;
+            cancelStamp = null;
         }
 
         // 帧结束清理：清空消弹区域缓存，防止旧区域"复活"
