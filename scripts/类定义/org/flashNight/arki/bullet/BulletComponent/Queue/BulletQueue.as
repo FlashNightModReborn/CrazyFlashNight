@@ -59,12 +59,6 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
     private var _sortedBuffer:Array;
     private var _sortedLeftBuffer:Array;  // 新增：排序后的左边界缓冲
     private var _sortedRightBuffer:Array; // 新增：排序后的右边界缓冲
-
-    // ========== 点X排序支持 ==========
-    // 用于区域为主轴的消弹扫描
-    private var _pointXKeysBuffer:Array;     // 子弹点X坐标缓冲
-    private var _pointXIndexBuffer:Array;    // 点X排序的索引映射
-    private var _pointXSorted:Boolean;       // 点X排序状态标记
     
     // ========== 双缓冲支持 ==========
     // 两套完整的数组缓冲，用于避免TimSort后的O(n)回写
@@ -101,11 +95,6 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
         this._sortedBuffer = [];
         this._sortedLeftBuffer = [];
         this._sortedRightBuffer = [];
-
-        // 初始化点X排序缓冲
-        this._pointXKeysBuffer = [];
-        this._pointXIndexBuffer = [];
-        this._pointXSorted = false;
     }
     
     /**
@@ -132,8 +121,6 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
         // 比 push 更快的追加方式
         var arr:Array = this.bullets;
         arr[arr.length] = bullet;
-        // 标记点X排序失效
-        this._pointXSorted = false;
     }
     
     /**
@@ -178,12 +165,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
             arr[arr.length] = bullet;
             addedCount++;
         }
-
-        // 标记点X排序失效
-        if (addedCount > 0) {
-            this._pointXSorted = false;
-        }
-
+        
         return addedCount;
     }
 
