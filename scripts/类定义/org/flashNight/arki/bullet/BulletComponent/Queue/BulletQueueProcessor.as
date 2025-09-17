@@ -117,7 +117,6 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      *
      * 注意：此对象会在每次命中时被重新填充数据，不保留历史状态
      */
-    private static var _hitContext:HitContext = new HitContext();
 
     // ========================================================================
     // 系统初始化方法
@@ -347,10 +346,15 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var PIERCE_LIMIT_REMOVE:Number = KF_PIERCE_LIMIT_REMOVE;
         var MODE_VANISH:Number = KF_MODE_VANISH;
         var MODE_REMOVE:Number = KF_MODE_REMOVE;
-        // HitContext 静态常量缓存（避免循环内类属性查找）
-        var HC_FLAG_NORMAL_KILL:Number = HitContext.FLAG_NORMAL_KILL;
-        var HC_FLAG_SHOULD_STUN:Number = HitContext.FLAG_SHOULD_STUN;
-        var HC_FLAG_IS_PIERCE:Number = HitContext.FLAG_IS_PIERCE;
+        var REASON_UNIT_HIT:Number = KF_REASON_UNIT_HIT;  // 缓存命中单位的原因标志
+
+        // 外部静态系统引用缓存（AS2中减少作用域链查找）
+        var Dodge:Object = DodgeHandler;
+        var Damage:Object = DamageCalculator;
+        var FX:Object = EffectSystem;
+        var CFR:Object = ColliderFactoryRegistry;
+        var PolyFactoryId:String = ColliderFactoryRegistry.PolygonFactory;
+        var stunTime:Number = _root.钝感硬直时间;
 
         // === 仅准备一次消弹区域缓存，供所有阵营复用 ===
         var areas:Object = null;
@@ -361,12 +365,14 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var shootZArr:Array, zRangeArr:Array, dirCodeArr:Array, isEnemyArr:Array;
         var isBounceArr:Array, isPowerfulArr:Array, shooterArr:Array;
 
+        var areaLen:Number = 0;  // 缓存areas.length，避免重复访问
         if (hasCZ) {
             BulletCancelQueueProcessor.prepareAreaCache();
             areas = BulletCancelQueueProcessor.getAreaCacheRef();
             if (!areas || areas.length == 0) {
                 hasCZ = false;
             } else {
+                areaLen = areas.length;  // 缓存长度
                 // 缓存数组引用，减少热点路径的属性查找
                 idxArr = areas.indices;
                 xMinArr = areas.xMin;
@@ -434,7 +440,6 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var polygonCollider:ICollider;      // 多边形碰撞检测器（精确检测用）
 
         // ---- 子弹类型预计算标志 ----
-        var ctxFlags:Number;                // HitContext的位标志组合
         var isUpdatePolygon:Boolean;        // 多边形碰撞器是否已更新（避免重复更新）
         
         // ================================================================
@@ -517,6 +522,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 // ---- 发射者获取：用于友伤判断和效果触发 ----
                 shooter = gameWorld[bullet.发射者名];
 
+                // ---- 子弹边界缓存：两阶段共用，减少数组访问 ----
+                var Lb:Number = bulletLeftKeys[idx];
+                var Rb:Number = bulletRightKeys[idx];
+
                 // ================================================================
                 // 阶段1：子弹 vs 消弹区域检测
                 // ================================================================
@@ -526,15 +535,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 if (hasCZ) {
                     // 仅处理非近战且移动中的子弹
                     if ((flags & FLAG_MELEE) == 0 && bullet.xmov != 0) {
-                        var Lb:Number = bulletLeftKeys[idx];
-                        var Rb:Number = bulletRightKeys[idx];
 
                         // 推进区域指针（完全在子弹左侧的区域跳过）
                         // 使用缓存的数组引用减少属性查找
-                        while (iArea < areas.length && xMaxArr[idxArr[iArea]] < Lb) ++iArea;
+                        while (iArea < areaLen && xMaxArr[idxArr[iArea]] < Lb) ++iArea;
 
                         // 遍历与子弹横向相交的候选区域
-                        for (var j:Number = iArea; j < areas.length && xMinArr[idxArr[j]] <= Rb; ++j) {
+                        for (var j:Number = iArea; j < areaLen && xMinArr[idxArr[j]] <= Rb; ++j) {
                             // 获取实际的数据索引
                             var areaIdx:Number = idxArr[j];
 
@@ -595,7 +602,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 // ================================================================
                 if (!skipUnits) {
                     // ---- 扫描线算法：双指针优化的碰撞检测窗口计算 ----
-                    queryLeft = bulletLeftKeys[idx];        // 当前子弹左边界
+                    queryLeft = Lb;        // 使用已缓存的子弹左边界
                 // 推进扫描线：跳过所有右边界小于子弹左边界的目标
                 // 循环展开优化：每次跳4个，减少循环判断开销
                 while (sweepIndex + 3 < len && unitRightKeys[sweepIndex + 3] < queryLeft) {
@@ -607,7 +614,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     ++sweepIndex;
                 }
                 startIndex = sweepIndex;                // 记录有效检测的起始索引
-                bulletRight = bulletRightKeys[idx];     // 提前获取子弹右边界
+                bulletRight = Rb;                        // 使用已缓存的子弹右边界
 
                 // ---- 空窗口快判：O(1)时间复杂度，避免无效循环开销 ----
                 // 如果没有任何目标在子弹的横向范围内，直接跳过
@@ -619,12 +626,16 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 // ---- 击中后效果标志：确保命中时能正确触发效果 ----
                 bullet.shouldGeneratePostHitEffect = true;
 
-                // ---- 子弹类型预计算：避免内层循环重复位运算 ----
-                // 直接计算context flags，避免中间布尔变量
-                ctxFlags = 0;
-                if ((flags & MELEE_EXPLOSIVE_MASK) == 0) ctxFlags |= HC_FLAG_NORMAL_KILL;  // 普通击杀
-                if ((flags & FLAG_MELEE) != 0 && !bullet.不硬直) ctxFlags |= HC_FLAG_SHOULD_STUN;  // 硬直
-                if ((flags & FLAG_PIERCE) != 0) ctxFlags |= HC_FLAG_IS_PIERCE;  // 穿透
+                // ---- 子弹类型预计算：直接使用位运算结果作为条件判断 ----
+                var isNormalKill:Boolean = (flags & MELEE_EXPLOSIVE_MASK) == 0;  // 普通击杀
+                var shouldStun:Boolean = (flags & FLAG_MELEE) != 0 && !bullet.不硬直;  // 近战硬直
+                var isPierce:Boolean = (flags & FLAG_PIERCE) != 0;  // 穿透
+
+                // ---- 内联优化：预声明复用变量，避免内层循环重复分配 ----
+                var dodgeState:String;
+                var damageResult:DamageResult;
+                var targetDispatcher:EventDispatcher;
+                var targetX:Number, targetY:Number;
 
                 // ---- 多边形更新控制：避免同一子弹重复更新碰撞器 ----
                 isUpdatePolygon = false;
@@ -653,7 +664,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                 if(!polygonCollider) {
                                     // 统一懒加载策略：所有点集联弹的多边形碰撞器都在此时创建
                                     // 优化效果：避免预创建开销，减少60-80%不必要的内存占用
-                                    polygonCollider = bullet.polygonCollider = ColliderFactoryRegistry.getFactory(ColliderFactoryRegistry.PolygonFactory).createFromBullet(bullet, bullet.子弹区域area || bullet.area);
+                                    polygonCollider = bullet.polygonCollider = CFR.getFactory(PolyFactoryId).createFromBullet(bullet, bullet.子弹区域area || bullet.area);
                                 }
                                 // 更新碰撞器（创建时已包含更新，但既有碰撞器需要更新）
                                 polygonCollider.updateFromBullet(bullet, bullet.子弹区域area || bullet.area);
@@ -679,14 +690,53 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             AABBRenderer.renderAABB(unitArea, zOffset, "filled");
                         }
 
-                        // ---------- 命中后的业务处理（静态 ctx 复用） ----------
-                        killFlags |= handleHitCtx(_hitContext.fill(
-                            bullet,
-                            shooter,
-                            hitTarget,
-                            collisionResult,
-                            ctxFlags)  // 使用预计算的flags
+                        // ---------- 命中后的业务处理（完全内联展开） ----------
+                        // 使用预声明的局部变量，减少内存分配
+
+                        // --- 命中计数与上下文填充 ---
+                        bullet.hitCount++;
+                        bullet.附加层伤害计算 = 0;
+                        bullet.命中对象 = hitTarget;
+
+                        // --- 闪避/命中状态（使用预声明变量） ---
+                        dodgeState = (bullet.伤害类型 == "真伤") ? "未躲闪" :
+                            Dodge.calculateDodgeState(
+                                hitTarget,
+                                Dodge.calcDodgeResult(shooter, hitTarget, bullet.命中率),
+                                bullet
+                            );
+
+                        // --- 击中时触发函数（内联条件判断） ---
+                        if (bullet.击中时触发函数) bullet.击中时触发函数();
+
+                        // --- 计算伤害（使用预声明变量） ---
+                        damageResult = Damage.calculateDamage(
+                            bullet, shooter, hitTarget, collisionResult.overlapRatio, dodgeState
                         );
+
+                        // --- 事件分发（使用预声明的dispatcher变量） ---
+                        targetDispatcher = hitTarget.dispatcher;
+                        targetDispatcher.publish("hit", hitTarget, shooter, bullet, collisionResult, damageResult);
+
+                        // --- 死亡判定（内联展开） ---
+                        if (hitTarget.hp <= 0) {
+                            // 直接使用预计算的布尔值判断事件名
+                            targetDispatcher.publish(isNormalKill ? "kill" : "death", hitTarget);
+                            shooter.dispatcher.publish("enemyKilled", hitTarget, bullet);
+                        }
+
+                        // --- 表现触发（缓存坐标值） ---
+                        targetX = hitTarget._x;
+                        targetY = hitTarget._y;
+                        damageResult.triggerDisplay(targetX, targetY);
+
+                        // --- 终止意图：近战硬直 或 非穿刺 命中即"消失" ---
+                        if (!isPierce) {  // 非穿透
+                            if (shouldStun) {  // 应该硬直
+                                shooter.硬直(shooter.man, stunTime);  // 使用缓存的硬直时间
+                            }
+                            killFlags |= (REASON_UNIT_HIT | MODE_VANISH);  // 使用缓存的常量
+                        }
                     }
                     
                     // 穿刺上限：设置终止标志并结束循环
@@ -698,7 +748,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 
                     // 命中后效果（一次性）
                     if (bullet.hitCount > 0 && bullet.shouldGeneratePostHitEffect) {
-                        EffectSystem.Effect(bullet.击中后子弹的效果, bullet._x, bullet._y, shooter._xscale);
+                        FX.Effect(bullet.击中后子弹的效果, bullet._x, bullet._y, shooter._xscale);
                     }
                 } // end if (!skipUnits)
 
@@ -715,7 +765,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     
                     if (bullet.击中地图) {
                         bullet.霰弹值 = 1;
-                        EffectSystem.Effect(bullet.击中地图效果, bullet._x, bullet._y);
+                        FX.Effect(bullet.击中地图效果, bullet._x, bullet._y);
                         if (bullet.击中时触发函数) bullet.击中时触发函数();
                         bullet.gotoAndPlay("消失");
                     } else {
@@ -735,100 +785,5 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
         // 帧结束清理：清空消弹区域缓存，防止旧区域"复活"
         BulletCancelQueueProcessor.endFrame();
-    }
-
-
-    // ========================================================================
-    // 命中后处理方法：业务逻辑和事件分发
-    // ========================================================================
-
-    /**
-     * 处理子弹命中目标后的业务逻辑
-     *
-     * 此方法专注于命中后的业务处理，包括伤害计算、事件分发、状态更新等。
-     * 采用职责分离设计，不处理子弹生命周期管理（销毁、碰撞器回收等）。
-     *
-     * @param {HitContext} ctx 填充了命中信息的静态上下文对象
-     * @return {Number} 子弹终止标志位的增量值，用于与主循环的killFlags合并
-     *
-     * 【处理流程】
-     * 1. 更新命中统计和上下文信息 - hitCount++, 附加层伤害计算重置
-     * 2. 计算闪避状态和命中结果 - 基于命中率和目标闪避属性
-     * 3. 执行自定义命中时触发函数 - 支持特殊子弹的定制逻辑
-     * 4. 计算并应用伤害 - 综合考虑重叠比例和闪避状态
-     * 5. 分发事件通知系统 - hit事件、kill/death事件、enemyKilled事件
-     * 6. 触发视觉效果显示 - 伤害数字、击中特效等
-     * 7. 计算子弹终止标志 - 根据子弹类型决定后续行为
-     *
-     * 【设计原则】
-     * - 职责单一：仅处理命中后的业务逻辑，不涉及生命周期管理
-     * - 无副作用：不修改子弹的shouldDestroy状态，保持纯函数特性
-     * - 事件驱动：通过事件系统解耦各模块间的依赖关系
-     * - 性能优化：使用位运算进行快速标志判断，缓存重要属性
-     *
-     * 【返回值说明】
-     * 返回的数值是位标志的组合，主要包含：
-     * - KF_REASON_UNIT_HIT: 表示因命中单位而终止
-     * - KF_MODE_VANISH: 表示应播放消失动画而非直接移除
-     * - 0: 表示子弹应继续存在（穿透弹命中时）
-     *
-     * 【性能考虑】
-     * - 使用静态上下文对象，避免每次命中都创建新对象
-     * - 属性缓存策略，减少重复的对象属性访问
-     * - 位运算优化，快速判断子弹类型和终止条件
-     *
-     * @complexity O(1) - 常数时间复杂度
-     * @side_effects 修改target的hp，发送事件，可能触发shooter硬直
-     */
-    private static function handleHitCtx(ctx:HitContext):Number {
-        var bullet:MovieClip  = ctx.bullet;
-        var shooter:MovieClip = ctx.shooter;
-        var target:MovieClip  = ctx.target;
-        var collisionResult:CollisionResult = ctx.collisionResult;
-        var ctxFlags:Number = ctx.flags;  // 缓存flags，避免重复属性访问
-
-        // --- 命中计数与上下文填充（保持与原实现一致） ---
-        bullet.hitCount++;
-        bullet.附加层伤害计算 = 0;
-        bullet.命中对象 = target;
-
-        // --- 闪避/命中状态 ---
-        var dodgeState:String = (bullet.伤害类型 == "真伤") ? "未躲闪" :
-            DodgeHandler.calculateDodgeState(
-                target,
-                DodgeHandler.calcDodgeResult(shooter, target, bullet.命中率),
-                bullet
-            );
-
-        if (bullet.击中时触发函数) bullet.击中时触发函数();
-
-        // --- 计算伤害 ---
-        var damageResult:DamageResult = DamageCalculator.calculateDamage(
-            bullet, shooter, target, collisionResult.overlapRatio, dodgeState
-        );
-
-        // --- 事件分发 ---
-        var dispatcher:EventDispatcher = target.dispatcher;
-        dispatcher.publish("hit", target, shooter, bullet, collisionResult, damageResult);
-
-        if (target.hp <= 0) {
-            // 直接进行位运算判断事件名
-            dispatcher.publish((ctxFlags & HitContext.FLAG_NORMAL_KILL) != 0 ? "kill" : "death", target);
-            shooter.dispatcher.publish("enemyKilled", target, bullet);
-        }
-
-        // --- 表现触发 ---
-        damageResult.triggerDisplay(target._x, target._y);
-
-        // --- 终止意图：近战硬直 或 非穿刺 命中即"消失" ---
-        var deltaFlags:Number = 0;
-        if ((ctxFlags & HitContext.FLAG_IS_PIERCE) == 0) {  // 非穿透
-            if ((ctxFlags & HitContext.FLAG_SHOULD_STUN) != 0) {  // 应该硬直
-                shooter.硬直(shooter.man, _root.钝感硬直时间);
-            }
-            deltaFlags |= (KF_REASON_UNIT_HIT | KF_MODE_VANISH);
-        }
-
-        return deltaFlags;
     }
 }
