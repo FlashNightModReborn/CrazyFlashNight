@@ -69,41 +69,102 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
 
     // 索引数组（用于排序，避免移动大量数据）
     private static var _sortIdx:Array = [];
-
+    
     /**
-     * 对索引数组进行排序（数据本身保持无序）
-     * 使用插入排序保证稳定性，适合近有序数据
+     * 对消弹区域的索引数组 _sortIdx 进行**稳定升序排序**（按 _xMin 的值排序）
+     * ----------------------------------------------------------------------------
+     * 【函数目的】
+     *  - 仅对“索引数组”排序，所有 SoA 数据（_xMin/_xMax/_yMin/_yMax/...）保持原地不动；
+     *  - 这样能避免大量数据搬移，提高缓存命中率与整体吞吐。
+     *
+     * 【算法说明】
+     *  - 小规模场景（本项目实际峰值 3~5）：采用**插入排序**的单趟实现，常数最小；
+     *  - “边填充索引、边插入”的单趟策略：不再先做 0..n-1 的全量写入，进一步减少一次 O(n) 写；
+     *  - **近有序快路**：若当前键值 ≥ 上一个键值，直接追加，完全有序时退化为 O(n)；
+     *  - **带守卫的 do…while 左移**：仅在确实需要左移时进入，一次循环可连续搬移，减少分支；
+     *  - **稳定排序**：比较使用 `>` 而非 `>=`，确保相等键保持相对顺序不变。
+     *
+     * 【输入/输出（隐式）】
+     *  - 输入：_soaLen（有效元素数）；_xMin（按索引访问的排序键）；_sortIdx（将被填充/排序的索引数组）
+     *  - 输出：_sortIdx[0.._soaLen-1] 按 _xMin 升序排列；_sortIdx.length 设为 _soaLen
+     *  - 其余并行数组不做任何写入或搬移
+     *
+     * 【复杂度】
+     *  - 最好：O(n)（完全非降序，近有序快路生效）
+     *  - 平均/最坏：O(n^2)（插入排序特性；但对 n≲5 的典型负载，常数最小、效果最佳）
+     *  - 额外空间：O(1)
+     *
+     * 【边界与健壮性】
+     *  - 当 _soaLen ≤ 1：直接调整 length 并返回；
+     *  - 函数会**预扩容** _sortIdx 到至少 _soaLen，避免动态扩容分配；
+     *  - 函数结束时仅将 length 截断到 _soaLen，容量保留以便下帧复用（零分配策略）。
      */
     private static function sortIndices():Void {
-        if (_soaLen <= 1) return;
-
-        // 局部缓存数组引用（减少哈希查找与作用域链开销）
-        var idx:Array = _sortIdx;
-        var xMin:Array = _xMin;
         var len:Number = _soaLen;
-        var i:Number, j:Number;
+        var idx:Array  = _sortIdx;
+        var xMin:Array = _xMin;
 
-        // 填充索引（0, 1, 2, ...）
-        for (i = 0; i < len; i++) {
-            idx[i] = i;
+        // 空/单元素：设定有效长度后返回
+        if (len <= 0) {
+            idx.length = 0;
+            return;
         }
+        if (len == 1) {
+            idx[0] = 0;
+            idx.length = 1;
+            return;
+        }
+        // 确保索引数组有足够容量，避免访问越界
+        if (idx.length < len) idx.length = len;
 
-        // 稳定插入排序（仅操作索引，按 xMin 升序）
-        var key:Number, keyX:Number;
-        for (i = 1; i < len; i++) {
-            key = idx[i];
-            keyX = xMin[key];  // 通过索引访问实际数据
-            j = i - 1;
-            while (j >= 0 && xMin[idx[j]] > keyX) {
-                idx[j + 1] = idx[j];
-                j--;
+        // 种子：首元素恒为自身索引 0
+        idx[0] = 0;
+
+        // prev 用于“近有序快路”的非降序检测（记录当前已排序部分的最大值）
+        var prev:Number = xMin[0];
+
+        // 循环变量（函数级声明，减少重复 var 成本）
+        var i:Number = 1;
+        var j:Number;
+        var key:Number;
+        var keyX:Number;
+
+        // 单趟：边填充索引，边执行插入
+        for (; i < len; i++) {
+            key  = i;            // 目标索引
+            keyX = xMin[key];    // 其排序键（xMin）
+
+            // 近有序快路：直接追加（当前键值大于等于前一个最大值）
+            if (keyX >= prev) {
+                idx[i] = key;
+                prev   = keyX;   // 更新有序基线
+                continue;
             }
+
+            // 需要插入：从 i-1 起向左寻找插入点，并依次左移元素空出位置
+            j = i - 1;
+
+            // 守卫：仅当首比较确实需要左移时才进入 do…while 连续搬移
+            if (xMin[idx[j]] > keyX) {
+                do {
+                    idx[j + 1] = idx[j]; // 右移元素
+                    j--;
+                } while (j >= 0 && xMin[idx[j]] > keyX);
+            }
+
+            // 统一落点：
+            // - 若发生左移：j 已退到插入点左侧，写入 j+1；
+            // - 若未发生左移：j 仍为 i-1，此处等价于写回 idx[i]。
             idx[j + 1] = key;
+
+            // 注意：此分支下 keyX < prev，prev 保持不变（因为插入的元素小于当前最大值）
         }
 
-        // 索引数组长度设为有效长度
+        // 截断到有效长度（容量保留以复用，避免反复分配）
         idx.length = len;
     }
+
+
 
     // ========================================================================
     // 系统初始化方法
