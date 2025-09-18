@@ -123,7 +123,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     private static var _cancelKillFlags:Array = [];
     private static var _cancelBounceShooter:Array = [];
     private static var _cancelStamp:Array = [];
-    private static var _cancelFrameId:Number = 0;
+    // 使用项目统一的时间戳，不再维护独立的帧ID
 
     // ========================================================================
     // 静态上下文对象（零分配优化）
@@ -480,12 +480,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         // 主处理循环：按阵营遍历所有活动队列
         // ================================================================
         for (key in activeQueues) {
-            _cancelFrameId++;
-            if (_cancelFrameId > 1000000000) {
-                _cancelFrameId = 1;
-                _cancelStamp.length = 0;
-            }
-            var frameId:Number = _cancelFrameId;
+            // 使用项目统一的时间戳
+            var frameId:Number = _root.帧计时器.当前帧数;
 
             q = activeQueues[key];
 
@@ -552,6 +548,11 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     areaIdx = idxArr[areaPtr];
                     areaMin = xMinArr[areaIdx];
                     areaMax = xMaxArr[areaIdx];
+                    // 循环展开优化：每次跳4个子弹，减少条件判断开销
+                    while (bulletPtr + 3 < sortedLength && bulletRightKeys[bulletPtr + 3] < areaMin) {
+                        bulletPtr += 4;
+                    }
+                    // 处理剩余的0-3个子弹
                     while (bulletPtr < sortedLength && bulletRightKeys[bulletPtr] < areaMin) {
                         ++bulletPtr;
                     }
@@ -564,13 +565,14 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         if (bullet.xmov == 0 && bullet.ymov == 0) continue;
                         if (isEnemyArr[areaIdx] == bullet.是否为敌人) continue;
                         d = dirCodeArr[areaIdx];
-                        if (d != 0 && bullet.xmov != 0) {
+                        if (d != 0) {
+                            if (bullet.xmov == 0) continue; // 垂直/静止不匹配定向区
                             bdir = (bullet.xmov > 0) ? 1 : -1;
                             if (bdir != d) continue;
                         }
                         czOff = bullet.Z轴坐标 - shootZArr[areaIdx];
                         czr = zRangeArr[areaIdx];
-                        if (czOff > czr || czOff < -czr) continue;
+                        if (czOff >= czr || czOff <= -czr) continue;
                         bx = bullet._x;
                         by = bullet._y;
                         if (bx < xMinArr[areaIdx] || bx > xMaxArr[areaIdx] ||
@@ -623,13 +625,11 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     continue;
                 }
                 if (preparedCancelState == CANCEL_REMOVE) {
-                    // 不设置击中地图，让killFlags控制处理方式
+                    // 旧约定：仅记账，不立刻播FX，收尾统一触发
                     killFlags = (cancelKillFlags && cancelKillFlags[idx] != undefined) ? cancelKillFlags[idx] : MODE_VANISH;
-                    // 消弹区域命中时触发效果
                     bullet.霰弹值 = 1;
-                    FX.Effect(bullet.击中地图效果, bullet._x, bullet._y);
-                    if (bullet.击中时触发函数) bullet.击中时触发函数();
-                }
+                    bullet.击中地图 = true;
+}
                 var skipUnits:Boolean = (preparedCancelState == CANCEL_REMOVE);
                 // 阶段2：子弹 vs 单位碰撞检测
                 // ================================================================
@@ -679,7 +679,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                     // Z 轴粗判（避免Math.abs函数调用开销）
                     zOffset = bulletZOffset - hitTarget.Z轴坐标;
-                    if (zOffset > bulletZRange || zOffset < -bulletZRange) continue;
+                    if (zOffset >= bulletZRange || zOffset <= -bulletZRange) continue;
 
                     if (hitTarget.hp > 0 && hitTarget.防止无限飞 != true) {
                         unitArea = hitTarget.aabbCollider;
@@ -796,6 +796,12 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         bullet.polygonCollider.getFactory().releaseCollider(bullet.polygonCollider);
                     }
                     
+                    
+                    // 地图命中表现（旧约定：收尾统一触发）
+                    if (bullet.击中地图) {
+                        FX.Effect(bullet.击中地图效果, bullet._x, bullet._y);
+                        if (bullet.击中时触发函数) bullet.击中时触发函数();
+                    }
                     // 根据killFlags优先级处理子弹终止
                     if ((killFlags & MODE_REMOVE) != 0) {
                         // 直接移除（强力消弹+穿透弹）
