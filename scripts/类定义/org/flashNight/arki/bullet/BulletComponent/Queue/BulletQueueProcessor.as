@@ -38,15 +38,16 @@
 
 import org.flashNight.arki.bullet.BulletComponent.Queue.*;
 import org.flashNight.arki.component.Collider.*;
-import org.flashNight.arki.bullet.BulletComponent.Collider.*;  
-import org.flashNight.arki.component.Damage.*;     
+import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.arki.component.Damage.*;
 import org.flashNight.arki.component.*;
 import org.flashNight.arki.component.Effect.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.render.*;
-import org.flashNight.sara.util.*;      
-import org.flashNight.neur.Event.*;     
+import org.flashNight.sara.util.*;
+import org.flashNight.neur.Event.*;
 import org.flashNight.arki.component.StatHandler.*;
+import org.flashNight.naki.DataStructures.Dictionary;
 
 /**
  * 高性能子弹队列处理器类
@@ -104,25 +105,22 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     private static var KF_PIERCE_LIMIT_REMOVE:Number = (1 << 1) | (1 << 9);  // 0x202
 
     // ========================================================================
-    // 消弹状态常量
+    // 消弹状态常量（已不再使用，改用tokenMode）
     // ========================================================================
-
-    /** 消弹状态：无操作，继续正常处理 */
-    private static var CANCEL_STATE_NONE:Number = 0;
-
-    /** 消弹状态：反弹处理 */
-    private static var CANCEL_STATE_BOUNCE:Number = 1;
-
-    /** 消弹状态：移除子弹 */
-    private static var CANCEL_STATE_REMOVE:Number = 2;
 
     // ========================================================================
     // 消弹状态缓存（逐帧复用）
     // ========================================================================
-    private static var _cancelState:Array = [];
-    private static var _cancelKillFlags:Array = [];
+    /**
+     * 消弹结果 Token（逐帧复用）
+     * 结构：token = (queueStamp << 2) | mode
+     * queueStamp = (frameId << 12) | (queueUID & 0x0FFF)
+     * mode: 0=NONE, 1=VANISH, 2=REMOVE, 3=BOUNCE
+     * 读取时：验证frameId和queueUID判定是否本队列本帧有效
+     */
+    private static var _cancelToken:Array = [];
+    // 仅当 mode==3(BOUNCE) 时使用，存发射者名
     private static var _cancelBounceShooter:Array = [];
-    private static var _cancelStamp:Array = [];
     // 使用项目统一的时间戳，不再维护独立的帧ID
 
     // ========================================================================
@@ -386,6 +384,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var idxArr:Array, xMinArr:Array, xMaxArr:Array, yMinArr:Array, yMaxArr:Array;
         var shootZArr:Array, zRangeArr:Array, dirCodeArr:Array, isEnemyArr:Array;
         var isBounceArr:Array, isPowerfulArr:Array, shooterArr:Array;
+        var i:Number;  // 统一的循环变量，在阶段1和阶段2中复用
 
         var areaLen:Number = 0;  // 索引数组长度
         if (hasCZ) {
@@ -457,11 +456,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var queryLeft:Number;               // 子弹左边界查询坐标
         var startIndex:Number;              // 目标扫描起始索引
         var len:Number;                     // 目标数组长度（循环边界）
-        var ii:Number;                      // 内层目标遍历索引
         var hitTarget:MovieClip;            // 当前命中的目标单位
         var zOffset:Number;                 // Z轴偏移量（子弹与目标的高度差）
         var unitArea:AABBCollider;          // 目标单位的AABB碰撞检测器
-        var bulletRight:Number;             // 子弹右边界（用于早期截断优化）
 
         // ---- 碰撞检测临时变量 ----
         var collisionResult:CollisionResult; // 碰撞检测结果对象
@@ -471,10 +468,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         // ---- 子弹类型预计算标志 ----
         var isUpdatePolygon:Boolean;        // track polygon collider refresh to avoid redundant updates
 
-        // ---- 消弹状态常量（局部缓存，降低静态访问开销） ----
-        var CANCEL_NONE:Number = CANCEL_STATE_NONE;      // 0: 继续正常处理
-        var CANCEL_BOUNCE:Number = CANCEL_STATE_BOUNCE;  // 1: 反弹处理
-        var CANCEL_REMOVE:Number = CANCEL_STATE_REMOVE;  // 2: 移除子弹
+        // 消弹模式常量已直接使用数字：0=NONE, 1=VANISH, 2=REMOVE, 3=BOUNCE
 
         // ================================================================
         // 主处理循环：按阵营遍历所有活动队列
@@ -489,6 +483,11 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             n = q.getCount();
             if (n == 0) continue;
 
+            // 为本队列计算唯一 UID，并打包"帧戳+队列戳"
+            fakeUnit = fakeUnits[key];
+            var queueUID:Number = Dictionary.getStaticUID(fakeUnit) & 0x0FFF; // 12bits
+            var queueStamp:Number = (frameId << 12) | queueUID;
+
             // ---- 子弹排序：按左边界排序以优化扫描线算法 ----
             // _root.服务器.发布服务器消息(key + " : " + q.toString()); // 调试输出当前队列状态
 
@@ -499,7 +498,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             sortedLength = sortedArr.length;            // 长度快照，避免.length属性重复查询
 
             // ---- 阵营单位获取：用于目标缓存查询 ----
-            fakeUnit = fakeUnits[key];
+            // fakeUnit 已在上面获取过
 
             // ---- 目标缓存获取：根据阵营类型选择合适的缓存策略 ----
             if(key == "all") {
@@ -522,28 +521,18 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             // ================================================================
             // 阶段1：消弹区域与子弹的双扫描线预处理
             // ================================================================
-            var cancelState:Array = null;
-            var cancelKillFlags:Array = null;
+            var cancelToken:Array = null;
             var cancelBounceShooter:Array = null;
-            var cancelStamp:Array = null;
             var hasCancelResult:Boolean = false;
             if (hasCZ && sortedLength > 0 && areaLen > 0) {
-                cancelState = _cancelState;
-                cancelKillFlags = _cancelKillFlags;
+                cancelToken = _cancelToken;
                 cancelBounceShooter = _cancelBounceShooter;
-                cancelStamp = _cancelStamp;
 
                 var bulletPtr:Number = 0;
-                var scanIndex:Number;
-                var areaIdx:Number;
-                var areaMin:Number;
-                var areaMax:Number;
-                var czOff:Number;
-                var czr:Number;
-                var d:Number;
-                var bdir:Number;
-                var bx:Number;
-                var by:Number;
+                // 不要重复声明 i（函数级作用域），只声明其它临时量
+                var areaIdx:Number, areaMin:Number, areaMax:Number;
+                var czOff:Number, czr:Number, d:Number, bdir:Number, bx:Number, by:Number;
+                var mode:Number, token:Number;
                 for (var areaPtr:Number = 0; areaPtr < areaLen; ++areaPtr) {
                     areaIdx = idxArr[areaPtr];
                     areaMin = xMinArr[areaIdx];
@@ -556,9 +545,11 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     while (bulletPtr < sortedLength && bulletRightKeys[bulletPtr] < areaMin) {
                         ++bulletPtr;
                     }
-                    for (scanIndex = bulletPtr; scanIndex < sortedLength && bulletLeftKeys[scanIndex] <= areaMax; ++scanIndex) {
-                        if (cancelStamp[scanIndex] == frameId) continue;
-                        bullet = sortedArr[scanIndex];
+                    for (i = bulletPtr; i < sortedLength && bulletLeftKeys[i] <= areaMax; ++i) {
+                        // 基于 token 的逐帧有效性判定
+                        token = cancelToken[i];
+                        if ((token >>> 2) == queueStamp) continue; // 仅当本队列本帧已写过才跳过
+                        bullet = sortedArr[i];
                         flags = bullet.flags;
                         if ((flags & FLAG_MELEE) != 0) continue;
                         // 保护条件：静止子弹不参与消弹检测
@@ -578,22 +569,20 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         if (bx < xMinArr[areaIdx] || bx > xMaxArr[areaIdx] ||
                             by < yMinArr[areaIdx] || by > yMaxArr[areaIdx]) continue;
                         hasCancelResult = true;
-                        cancelStamp[scanIndex] = frameId;
+                        // 写入 token：低两位为 mode，高位为 queueStamp=(frameId<<12)|queueUID
                         if (isBounceArr[areaIdx]) {
-                            cancelState[scanIndex] = CANCEL_BOUNCE;
-                            cancelBounceShooter[scanIndex] = shooterArr[areaIdx];
+                            mode = 3; // BOUNCE
+                            cancelBounceShooter[i] = shooterArr[areaIdx];
                         } else {
-                            cancelState[scanIndex] = CANCEL_REMOVE;
-                            // 强力消弹区域且穿透子弹才直接移除，否则播放消失动画
-                            cancelKillFlags[scanIndex] = (isPowerfulArr[areaIdx] && (flags & FLAG_PIERCE) != 0) ? MODE_REMOVE : MODE_VANISH;
+                            // 强力消弹且穿透 -> REMOVE，否则 VANISH
+                            mode = (isPowerfulArr[areaIdx] && (flags & FLAG_PIERCE) != 0) ? 2 : 1;
                         }
+                        cancelToken[i] = (queueStamp << 2) | mode;
                     }
                 }
                 if (!hasCancelResult) {
-                    cancelState = null;
-                    cancelKillFlags = null;
+                    cancelToken = null;
                     cancelBounceShooter = null;
-                    cancelStamp = null;
                 }
             }
             for (idx = 0; idx < sortedLength; idx++) {
@@ -614,23 +603,25 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 shooter = gameWorld[bullet.发射者名];
                 var Lb:Number = bulletLeftKeys[idx];
                 var Rb:Number = bulletRightKeys[idx];
-                var preparedCancelState:Number = CANCEL_NONE;
-                if (cancelState && cancelStamp && cancelStamp[idx] == frameId) {
-                    preparedCancelState = cancelState[idx];
-                }
-                if (preparedCancelState == CANCEL_BOUNCE) {
+                // —— 读取 token：是否本帧消弹，以及具体模式
+                var token:Number = (cancelToken != null) ? (cancelToken[idx] | 0) : 0; // undefined -> 0
+                var stamp:Number = token >>> 2;
+                var valid:Boolean = ((stamp >>> 12) == frameId) && ((stamp & 0x0FFF) == queueUID);
+                var tokenMode:Number = valid ? (token & 3) : 0; // 0=NONE,1=VANISH,2=REMOVE,3=BOUNCE
+
+                if (tokenMode == 3) {
                     var bounceShooter:String = cancelBounceShooter ? cancelBounceShooter[idx] : null;
                     BulletCancelQueueProcessor.handleBounce(bullet, bounceShooter);
                     bullet.updateMovement(bullet);
                     continue;
                 }
-                if (preparedCancelState == CANCEL_REMOVE) {
-                    // 旧约定：仅记账，不立刻播FX，收尾统一触发
-                    killFlags = (cancelKillFlags && cancelKillFlags[idx] != undefined) ? cancelKillFlags[idx] : MODE_VANISH;
+                if (tokenMode == 1 || tokenMode == 2) {
+                    // 旧约定：记账到收尾统一表现
+                    killFlags = (tokenMode == 2) ? MODE_REMOVE : MODE_VANISH;
                     bullet.霰弹值 = 1;
                     bullet.击中地图 = true;
-}
-                var skipUnits:Boolean = (preparedCancelState == CANCEL_REMOVE);
+                }
+                var skipUnits:Boolean = (tokenMode == 1 || tokenMode == 2);
                 // 阶段2：子弹 vs 单位碰撞检测
                 // ================================================================
                 if (!skipUnits) {
@@ -647,11 +638,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     ++sweepIndex;
                 }
                 startIndex = sweepIndex;                // 记录有效检测的起始索引
-                bulletRight = Rb;                        // 使用已缓存的子弹右边界
-
                 // ---- 空窗口快判：O(1)时间复杂度，避免无效循环开销 ----
                 // 如果没有任何目标在子弹的横向范围内，直接跳过
-                if (startIndex >= len || bulletRight < unitLeftKeys[startIndex]) {
+                if (startIndex >= len || Rb < unitLeftKeys[startIndex]) {
                     bullet.updateMovement(bullet);
                     continue;  // 直接进入下一发子弹的处理
                 }
@@ -674,8 +663,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 isUpdatePolygon = false;
 
                 // ----------- 命中循环（带右边界截断） -----------
-                for (ii = startIndex; ii < len && unitLeftKeys[ii] <= bulletRight; ++ii) {
-                    hitTarget = unitMap[ii];  // 只读取目标，延迟写入
+                for (i = startIndex; i < len && unitLeftKeys[i] <= Rb; ++i) {
+                    hitTarget = unitMap[i];  // 只读取目标，延迟写入
 
                     // Z 轴粗判（避免Math.abs函数调用开销）
                     zOffset = bulletZOffset - hitTarget.Z轴坐标;
@@ -819,10 +808,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
             // 清空队列（仅调用一次，保留函数调用）
             q.clear();
-            cancelState = null;
-            cancelKillFlags = null;
+            cancelToken = null;
             cancelBounceShooter = null;
-            cancelStamp = null;
         }
 
         // 帧结束清理：清空消弹区域缓存，防止旧区域"复活"
