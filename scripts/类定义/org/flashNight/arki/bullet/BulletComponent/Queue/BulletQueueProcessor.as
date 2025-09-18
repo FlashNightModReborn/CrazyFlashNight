@@ -70,21 +70,23 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
     /**
      * 按阵营分类的活动队列映射表
-     * 键: 阵营名称字符串 ("player", "enemy", "all"等)
+     * 键: 阵营名称字符串（与FactionManager.getAllFactions()返回值一致，以及特殊的"all"）
      * 值: BulletQueue实例
+     * 注意：键名大小写需与FactionManager注册时保持一致
      */
     public static var activeQueues:Object;
 
     /**
      * 按阵营分类的假单位映射表
      * 用于查询目标缓存时提供阵营上下文信息
-     * 键: 阵营名称字符串
+     * 键: 阵营名称字符串 (与activeQueues保持一致)
      * 值: 该阵营的代理单位对象
      */
     public static var fakeUnits:Object;
 
     // ========================================================================
     // 子弹终止控制标志位（位运算优化）
+    // 说明：REASON_* 位用于统计/诊断；实际终止分支仅依据 MODE_* 位（见收尾处理）
     // ========================================================================
 
     /** 终止原因：命中单位 */
@@ -106,38 +108,35 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     private static var KF_PIERCE_LIMIT_REMOVE:Number = (1 << 1) | (1 << 9);  // 0x202
 
     // ========================================================================
-    // 消弹状态常量（已不再使用，改用tokenMode）
-    // ========================================================================
-
-    // ========================================================================
     // 消弹状态缓存（逐帧复用）
     // ========================================================================
     /**
      * 消弹结果 Token（逐帧复用）
-     * 结构：token = (queueStamp << 2) | mode
-     * queueStamp = (frameId << 12) | (queueUID & 0x0FFF)
-     * mode: 0=NONE, 1=VANISH, 2=REMOVE, 3=BOUNCE
-     * 读取时：验证frameId和queueUID判定是否本队列本帧有效
+     *
+     * 编码结构：token = (queueStamp << 2) | mode
+     *   - queueStamp = (frameId << 12) | (queueUID & 0x0FFF)
+     *   - mode: 0=NONE, 1=VANISH, 2=REMOVE, 3=BOUNCE
+     *
+     * 不变量与安全性：
+     *   - 每个token绑定特定帧ID和队列UID，跨帧/跨队列自动失效
+     *   - mode 占 token 的低 2 位；其余位为 queueStamp
+     *   - 在 (token>>>2) 得到的 stamp 中：高位为 frameId，**低 12 位为 queueUID
+     *   - 验证时必须同时检查frameId和queueUID，确保token来自当前队列当前帧
+     *
+     * 写入示例：
+     *   queueStamp = (frameId << 12) | (queueUID & 0x0FFF);
+     *   cancelToken[i] = (queueStamp << 2) | mode;
+     *
+     * 读取示例：
+     *   token = cancelToken[bulletIndex] | 0;  // undefined -> 0
+     *   stamp = token >>> 2;
+     *   valid = ((stamp >>> 12) == frameId) && ((stamp & 0x0FFF) == queueUID);
+     *   tokenMode = valid ? (token & 3) : 0;
      */
     private static var _cancelToken:Array = [];
     // 仅当 mode==3(BOUNCE) 时使用，存发射者名
     private static var _cancelBounceShooter:Array = [];
-    // 使用项目统一的时间戳，不再维护独立的帧ID
-
-    // ========================================================================
-    // 静态上下文对象（零分配优化）
-    // ========================================================================
-
-    /**
-     * 全局共享的命中上下文对象
-     *
-     * 设计说明：
-     * - 采用静态对象复用策略，避免每次命中都创建新对象
-     * - 基于帧末同步处理的特性，单个上下文对象足够使用
-     * - 显著减少GC压力，提升性能稳定性
-     *
-     * 注意：此对象会在每次命中时被重新填充数据，不保留历史状态
-     */
+    // 不再维护额外的帧ID；统一使用全局帧计数
 
     // ========================================================================
     // 系统初始化方法
@@ -148,6 +147,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      *
      * 创建所有阵营的子弹队列和对应的假单位对象，为后续的碰撞检测做准备。
      * 此方法应在游戏启动时调用一次。
+     *
+     * 重要约束：
+     * - 所有自定义阵营必须在调用此方法之前通过FactionManager.registerFaction()注册
+     * - 在初始化完成后再注册新阵营会导致add()方法访问不存在的队列并抛出错误
      *
      * @return {Boolean} 初始化是否成功，始终返回true
      *
@@ -223,7 +226,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      *
      * 性能说明：
      * - 使用条件表达式简化分支逻辑
-     * - 阵营查询结果会被缓存，避免重复计算
+     * - 阵营查询结果存入局部变量queueKey后立即使用
      */
     public static function add(bullet:Object):Void {
         // 根据友军伤害标志选择队列类型
@@ -359,6 +362,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         // - sortByLeftBoundary和clear保留函数调用（每帧仅调用数次）
         // - 所有热点代码完全内联，最小化栈帧切换成本
         // ================================================================
+
+        // 子弹类型标志位（通过宏引入，用于位运算判断）
+        // FLAG_CHAIN: 联弹标志 - 需要精确多边形碰撞检测
+        // FLAG_MELEE: 近战标志 - 触发硬直，不受消弹影响
+        // FLAG_PIERCE: 穿透标志 - 可贯穿多个目标
+        // FLAG_EXPLOSIVE: 爆炸标志 - 特殊终止处理
+        // 标志位可叠加使用，如 FLAG_MELEE | FLAG_PIERCE 表示穿透近战弹
         #include "../macros/FLAG_CHAIN.as"
         #include "../macros/FLAG_MELEE.as"
         #include "../macros/FLAG_PIERCE.as"
@@ -386,6 +396,16 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var hasCZ:Boolean = BulletCancelQueueProcessor.hasActive();
 
         // 消弹数组引用缓存（减少属性查找开销）
+        // 各字段语义：
+        //   idxArr: 消弹区域索引数组
+        //   xMinArr/xMaxArr/yMinArr/yMaxArr: 消弹区域的AABB边界
+        //   shootZArr: 消弹区域的Z轴基准高度
+        //   zRangeArr: 消弹区域的Z轴有效范围
+        //   dirCodeArr: 方向过滤码（0=全向，1=向右，-1=向左）
+        //   isEnemyArr: 区域阵营标识（与bullet.是否为敌人比较，相同则跳过）
+        //   isBounceArr: 是否反弹模式
+        //   isPowerfulArr: 是否强力消弹（穿透弹会直接移除）
+        //   shooterArr: 反弹模式下的新发射者名称
         var idxArr:Array, xMinArr:Array, xMaxArr:Array, yMinArr:Array, yMaxArr:Array;
         var shootZArr:Array, zRangeArr:Array, dirCodeArr:Array, isEnemyArr:Array;
         var isBounceArr:Array, isPowerfulArr:Array, shooterArr:Array;
@@ -547,9 +567,11 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             // ---- 目标缓存获取：根据阵营类型选择合适的缓存策略 ----
             if(key == "all") {
                 // 友伤模式：获取所有单位（包括友军）
+                // updateInterval=1 强制每帧刷新缓存，保证碰撞检测使用最新数据
                 cache = TargetCacheManager.acquireAllCache(fakeUnit, 1);
             } else {
                 // 敌对模式：仅获取敌方单位
+                // updateInterval=1 强制每帧刷新缓存，避免碰撞检测读取超期数据
                 cache = TargetCacheManager.acquireEnemyCache(fakeUnit, 1);
             }
 
@@ -564,6 +586,15 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
             // ================================================================
             // 阶段1：消弹区域与子弹的双扫描线预处理
+            //
+            // 跳过规则（按顺序检查，任一满足即continue）：
+            // 1. token已被本队列本帧写入 -> 跳过（避免重复处理）
+            // 2. 近战子弹(FLAG_MELEE) -> 跳过（近战不受消弹影响）
+            // 3. 静止子弹(xmov==0 && ymov==0) -> 跳过（静止弹不参与消弹）
+            // 4. 同阵营(isEnemyArr==是否为敌人) -> 跳过（同阵营区域不消同阵营子弹）
+            // 5. 方向不匹配(dirCode!=0且方向相反) -> 跳过（定向区域过滤）
+            // 6. Z轴超出范围 -> 跳过（高度差超过有效范围）
+            // 7. XY坐标在区域外 -> 跳过（位置不在消弹区域内）
             // ================================================================
             cancelToken = null;
             cancelBounceShooter = null;
@@ -693,6 +724,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 isNormalKill = (flags & MELEE_EXPLOSIVE_MASK) == 0;  // 普通击杀
                 shouldStun = (flags & FLAG_MELEE) != 0 && !bullet.不硬直;  // 近战硬直
                 isPierce = (flags & FLAG_PIERCE) != 0;  // 穿透
+                // 注意：当前实现下，若同时标记 MELEE 与 PIERCE，则命中时不会触发硬直（由 !isPierce 分支控制）
 
                 // ---- 多边形更新控制：避免同一子弹重复更新碰撞器 ----
                 isUpdatePolygon = false;
@@ -714,16 +746,22 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             continue;
                         }
 
-                        // 仅在需要时才更新多边形碰撞体
+                        // 多边形碰撞器的懒加载与生命周期管理
+                        // 契约说明：
+                        // 1. 创建时机：首次需要精确碰撞检测时懒创建（减少60-80%内存占用）
+                        // 2. 更新策略：每帧首次使用时更新一次，同帧后续命中复用
+                        // 3. 工厂职责：ColliderFactoryRegistry管理对象池，负责创建和回收
+                        // 4. 回收时机：子弹终止时调用releaseCollider归还对象池
+                        // 5. 对象池假设：工厂内部维护碰撞器池，避免频繁GC
                         if (isPointSet) {
                             if(!isUpdatePolygon) {
                                 polygonCollider = bullet.polygonCollider;
                                 if(!polygonCollider) {
                                     // 统一懒加载策略：所有点集联弹的多边形碰撞器都在此时创建
-                                    // 优化效果：避免预创建开销，减少60-80%不必要的内存占用
+                                    // 注意：createFromBullet内部已包含初始更新
                                     polygonCollider = bullet.polygonCollider = CFR.getFactory(PolyFactoryId).createFromBullet(bullet, bullet.子弹区域area || bullet.area);
                                 }
-                                // 更新碰撞器（创建时已包含更新，但既有碰撞器需要更新）
+                                // 更新碰撞器（创建时已包含更新，但既有碰撞器需要显式更新）
                                 polygonCollider.updateFromBullet(bullet, bullet.子弹区域area || bullet.area);
                                 isUpdatePolygon = true;
                             } else {
@@ -814,27 +852,40 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 
                 // ---------------- 单出口收尾 ----------------
                 if (killFlags != 0 || bullet.shouldDestroy(bullet)) {
-                    // 回收碰撞体
+                    // 碰撞器回收：归还对象池供后续复用
+                    // 注意：必须在子弹销毁前回收，避免内存泄漏
                     areaAABB.getFactory().releaseCollider(areaAABB);
                     if (bullet.polygonCollider) {
+                        // 多边形碰撞器存在时才回收（懒加载可能未创建）
                         bullet.polygonCollider.getFactory().releaseCollider(bullet.polygonCollider);
                     }
                     
-                    
-                    // 地图命中表现（旧约定：收尾统一触发）
+
+                    // 地图命中表现（收尾统一触发）
+                    // 注意：消弹token决策（tokenMode=1/2）优先级高于单位命中流程
+                    // 已在前面设置击中地图标志的情况下，此处统一处理表现
                     if (bullet.击中地图) {
                         FX.Effect(bullet.击中地图效果, bullet._x, bullet._y);
                         if (bullet.击中时触发函数) bullet.击中时触发函数();
                     }
-                    // 根据killFlags优先级处理子弹终止
+
+                    // 子弹终止优先级处理表：
+                    // ┌──────────────────┬────────────────┬──────────────┐
+                    // │ 条件              │ 处理方式       │ 优先级        │
+                    // ├──────────────────┼────────────────┼──────────────┤
+                    // │ MODE_REMOVE      │ removeMovieClip│ 最高（1）    │
+                    // │ MODE_VANISH      │ gotoAndPlay    │ 次高（2）    │
+                    // │ 击中地图          │ gotoAndPlay    │ 中等（3）    │
+                    // │ shouldDestroy    │ removeMovieClip│ 最低（4）    │
+                    // └──────────────────┴────────────────┴──────────────┘
                     if ((killFlags & MODE_REMOVE) != 0) {
-                        // 直接移除（强力消弹+穿透弹）
+                        // 优先级1：直接移除（强力消弹+穿透弹）
                         bullet.removeMovieClip();
                     } else if ((killFlags & MODE_VANISH) != 0 || bullet.击中地图) {
-                        // 播放消失动画（普通消弹或其他击中地图情况）
+                        // 优先级2-3：播放消失动画（普通消弹或击中地图）
                         bullet.gotoAndPlay("消失");
                     } else {
-                        // 其他情况默认移除
+                        // 优先级4：其他情况默认移除
                         bullet.removeMovieClip();
                     }
                 }
@@ -847,7 +898,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             cancelBounceShooter = null;
         }
 
-        // 帧结束清理：清空消弹区域缓存，防止旧区域"复活"
-        BulletCancelQueueProcessor.endFrame();
+        // 帧结束清理：仅在有消弹区域时清空缓存，防止旧区域"复活"
+        if (hasCZ) {
+            BulletCancelQueueProcessor.endFrame();
+        }
     }
 }
