@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="加载mc库-2" itemID="68230ec2-00000982" linkageExportForAS="true" linkageIdentifier="加载mc库-2" lastModified="1747128002">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="加载mc库-2" itemID="68230ec2-00000982" linkageExportForAS="true" linkageIdentifier="加载mc库-2" lastModified="1758265382">
   <timeline>
     <DOMTimeline name="加载mc库-2" currentFrame="2">
       <layers>
@@ -68,7 +68,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#DEFDDE" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#DEFDDE">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -573,7 +573,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 20" color="#A0EB95">
+        <DOMLayer name="Layer 20" color="#A0EB95" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -615,7 +615,7 @@
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="敌人-黑色异形兵1" centerPoint3DX="792.7" centerPoint3DY="212.9">
+                <DOMSymbolInstance libraryItemName="敌人-黑色异形兵1" selected="true" centerPoint3DX="792.7" centerPoint3DY="212.9">
                   <matrix>
                     <Matrix tx="339.85" ty="62.9"/>
                   </matrix>

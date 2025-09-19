@@ -1206,13 +1206,14 @@ _root.战宠进阶函数.钙化 = {
 			this.提升属性抗性 = _root.敌人函数.提升属性抗性;
 			this.提升属性抗性(60 + this.等级 * 0.3);
 			this.已有称号 =  true;
-			this.宠物属性.色彩单位 = true;
-			this.宠物属性.红色偏移 = 124;
-			this.宠物属性.绿色偏移 = 116;
-			this.宠物属性.蓝色偏移 = 106;
-			if(this.宠物属性.色彩单位){
-				_root.设置色彩(this.man, NaN, NaN, NaN, this.宠物属性.红色偏移, this.宠物属性.绿色偏移, this.宠物属性.蓝色偏移, NaN, NaN);
-			}
+
+			var param:Object = {
+				亮度:200,
+				对比度:200,
+				饱和度:-100
+			};
+
+			this.dyeParam = param;
 		}
 	}
 }

@@ -24,6 +24,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventInitializer {
         // 初始化仇恨事件组件
         AggroEventComponent.initialize(target);
 
+        DyeEventComponent.initialize(target);
+
 
         // 发布特殊单位出生事件
         if(target.publishStageEvent === true){

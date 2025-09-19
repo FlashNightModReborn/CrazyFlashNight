@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-球形异形兵1" itemID="67e3c92e-00000973" linkageExportForAS="true" linkageIdentifier="敌人-球形异形兵1" lastModified="1756641093">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-球形异形兵1" itemID="67e3c92e-00000973" linkageExportForAS="true" linkageIdentifier="敌人-球形异形兵1" lastModified="1758245588">
   <timeline>
-    <DOMTimeline name="敌人-球形异形兵1" currentFrame="109">
+    <DOMTimeline name="敌人-球形异形兵1" currentFrame="3">
       <layers>
         <DOMLayer name="Labels Layer" color="#A79FAC">
           <frames>
@@ -290,7 +290,7 @@
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 487" name="man" centerPoint3DX="100.35" centerPoint3DY="15.05">
+                <DOMSymbolInstance libraryItemName="Symbol 487" name="man" selected="true" centerPoint3DX="100.35" centerPoint3DY="15.05">
                   <matrix>
                     <Matrix tx="-19.05" ty="-57.85"/>
                   </matrix>
@@ -299,17 +299,11 @@
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	if (_parent.宠物属性.色彩单位)
-	{
-		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
-	}
+	_parent.dispatcher.publish("dyeing");
 	gotoAndPlay(random(15));
 
 }]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -324,16 +318,9 @@
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-
-	if (_parent.宠物属性.色彩单位)
-	{
-		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
-	}
+	_parent.dispatcher.publish("dyeing");
 }]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -348,16 +335,9 @@
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-
-	if (_parent.宠物属性.色彩单位)
-	{
-		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
-	}
+	_parent.dispatcher.publish("dyeing");
 }]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -380,10 +360,7 @@
       是否原本刚体 = true;
    }
    _parent.刚体 = true;
-	if (_parent.宠物属性.色彩单位)
-	{
-		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
-	}
+	_parent.dispatcher.publish("dyeing");
 }
 onClipEvent(unload){
    if(是否原本刚体 != true)
@@ -393,9 +370,6 @@ onClipEvent(unload){
 }
 ]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -410,16 +384,9 @@ onClipEvent(unload){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-
-	if (_parent.宠物属性.色彩单位)
-	{
-		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
-	}
+	_parent.dispatcher.publish("dyeing");
 }]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -437,10 +404,7 @@ onClipEvent(unload){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-	if (_parent.宠物属性.色彩单位)
-	{
-		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
-	}
+	_parent.dispatcher.publish("dyeing");
    gotoAndPlay(random(15));
    躲闪 = true;
 }
@@ -448,9 +412,6 @@ onClipEvent(unload){
    躲闪 = false;
 }]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -465,17 +426,11 @@ onClipEvent(unload){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-	if (_parent.宠物属性.色彩单位)
-	{
-		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
-	}
+	_parent.dispatcher.publish("dyeing");
    gotoAndPlay("a" + random(2));
 }
 ]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -490,17 +445,11 @@ onClipEvent(unload){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	if (_parent.宠物属性.色彩单位)
-	{
-		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
-	}
+	_parent.dispatcher.publish("dyeing");
 	_parent.击飞浮空();
 }
 ]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -515,16 +464,10 @@ onClipEvent(unload){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	if (_parent.宠物属性.色彩单位)
-	{
-		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
-	}
+	_parent.dispatcher.publish("dyeing");
 	_parent.击飞倒地();
 }]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -539,23 +482,17 @@ onClipEvent(unload){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-	if (_parent.宠物属性.色彩单位)
-	{
-		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
-	}
+	_parent.dispatcher.publish("dyeing");
    gotoAndStop("a" + random(2));
 }
 ]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="104" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 544" selected="true" centerPoint3DX="291.4" centerPoint3DY="68.5">
+                <DOMSymbolInstance libraryItemName="Symbol 544" centerPoint3DX="291.4" centerPoint3DY="68.5">
                   <matrix>
                     <Matrix tx="8.5" ty="-72"/>
                   </matrix>
@@ -564,17 +501,11 @@ onClipEvent(unload){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-	if (_parent.宠物属性.色彩单位)
-	{
-		_root.设置色彩(this,NaN,NaN,NaN,_parent.宠物属性.红色偏移,_parent.宠物属性.绿色偏移,_parent.宠物属性.蓝色偏移,NaN,NaN);
-	}
+	_parent.dispatcher.publish("dyeing");
    gotoAndPlay("a" + random(2));
 }
 ]]></script>
                   </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
