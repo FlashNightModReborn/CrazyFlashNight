@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 503" itemID="65e1d4ea-00000408" lastModified="1698678736">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 503" itemID="65e1d4ea-00000408" lastModified="1758283627">
   <timeline>
-    <DOMTimeline name="Symbol 503" currentFrame="147">
+    <DOMTimeline name="Symbol 503" currentFrame="1">
       <layers>
         <DOMLayer name="Labels Layer" color="#DDFCCA">
           <frames>
@@ -90,7 +90,23 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#EC24CE" current="true" isSelected="true">
+        <DOMLayer name="刚体标签" color="#9933CC" locked="true" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="179" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="171.2" centerPoint3DY="171.25">
+                  <matrix>
+                    <Matrix tx="171.2" ty="160.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#EC24CE">
           <frames>
             <DOMFrame index="0" duration="90" keyMode="9728">
               <elements/>

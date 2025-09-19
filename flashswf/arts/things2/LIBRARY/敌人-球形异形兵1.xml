@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-球形异形兵1" itemID="67e3c92e-00000973" linkageExportForAS="true" linkageIdentifier="敌人-球形异形兵1" lastModified="1758245588">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-球形异形兵1" itemID="67e3c92e-00000973" linkageExportForAS="true" linkageIdentifier="敌人-球形异形兵1" lastModified="1758284145">
   <timeline>
-    <DOMTimeline name="敌人-球形异形兵1" currentFrame="3">
+    <DOMTimeline name="敌人-球形异形兵1" currentFrame="104">
       <layers>
         <DOMLayer name="Labels Layer" color="#A79FAC">
           <frames>
@@ -290,7 +290,7 @@
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 487" name="man" selected="true" centerPoint3DX="100.35" centerPoint3DY="15.05">
+                <DOMSymbolInstance libraryItemName="Symbol 487" name="man" centerPoint3DX="100.35" centerPoint3DY="15.05">
                   <matrix>
                     <Matrix tx="-19.05" ty="-57.85"/>
                   </matrix>
@@ -354,21 +354,29 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_parent.刚体 == true)
-   {
-      是否原本刚体 = true;
-   }
-   _parent.刚体 = true;
+                    <script><![CDATA[onClipEvent (load) {
 	_parent.dispatcher.publish("dyeing");
+/*	if (_parent.刚体 == true)
+	{
+		是否原本刚体 = true;
+	}
+	_parent.刚体 = true;
+	this.onUnload = function()
+	{
+		if (是否原本刚体 != true)
+		{
+			_parent.刚体 = false;
+		}
+
+	};*/
 }
-onClipEvent(unload){
+/*onClipEvent(unload){
    if(是否原本刚体 != true)
    {
       _parent.刚体 = false;
    }
 }
-]]></script>
+*/]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
@@ -403,14 +411,19 @@ onClipEvent(unload){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
+                    <script><![CDATA[onClipEvent (load) {
 	_parent.dispatcher.publish("dyeing");
-   gotoAndPlay(random(15));
-   躲闪 = true;
+	gotoAndPlay(random(15));
+	//躲闪 = true;
+/*	this.onUnload = function()
+	{
+		躲闪 = false;
+
+	};*/
 }
-onClipEvent(unload){
+/*onClipEvent(unload){
    躲闪 = false;
-}]]></script>
+}*/]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
@@ -492,7 +505,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="104" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 544" centerPoint3DX="291.4" centerPoint3DY="68.5">
+                <DOMSymbolInstance libraryItemName="Symbol 544" name="man" selected="true" centerPoint3DX="291.4" centerPoint3DY="68.5">
                   <matrix>
                     <Matrix tx="8.5" ty="-72"/>
                   </matrix>

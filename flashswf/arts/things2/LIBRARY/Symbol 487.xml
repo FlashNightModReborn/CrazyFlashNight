@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 487" itemID="65e1d4ea-000003fa" lastModified="1698678736">
   <timeline>
-    <DOMTimeline name="Symbol 487">
+    <DOMTimeline name="Symbol 487" currentFrame="4">
       <layers>
-        <DOMLayer name="Script Layer" color="#F88B91">
+        <DOMLayer name="Script Layer" color="#F88B91" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -71,11 +71,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#95DE2B" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#95DE2B">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 485" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Symbol 485" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.20849609375" d="0.20849609375" tx="26.45" ty="24.15"/>
                   </matrix>

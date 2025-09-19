@@ -1,7 +1,10 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" frameRate="12" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+     <folders>
+          <DOMFolderItem name="属性标签标志元件" itemID="68cd4763-000013fc"/>
+     </folders>
      <fonts>
-          <DOMFontItem name="Font 2" itemID="65e1d4e3-000001d1" font="SimSun" size="0" id="2" embeddedCharacters="-子异弹形片碎血迹铁飙飞"/>
           <DOMFontItem name="Font 159" itemID="65e1d4e3-000001d3" font="MicrosoftYaHei" size="0" id="159" embeddedCharacters=".LV"/>
+          <DOMFontItem name="Font 2" itemID="65e1d4e3-000001d1" font="SimSun" size="0" id="2" embeddedCharacters="-子异弹形片碎血迹铁飙飞"/>
      </fonts>
      <media>
           <DOMBitmapItem name="bitmap11.png" itemID="65e1d4e3-000001e8" sourceExternalFilepath="../things2/LIBRARY/bitmap11.png" sourceLastImported="1709298915" externalFileCRC32="1767640263" externalFileSize="32015" originalCompressionType="lossless" quality="50" href="bitmap11.png" bitmapDataHRef="M 5 1698678736.dat" frameRight="4800" frameBottom="3000"/>
@@ -482,7 +485,7 @@
           <Include href="Symbol 499.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000405" lastModified="1698678736"/>
           <Include href="Symbol 500.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000406" lastModified="1698678736"/>
           <Include href="Symbol 501.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-00000407" lastModified="1698678736"/>
-          <Include href="Symbol 503.xml" loadImmediate="false" itemID="65e1d4ea-00000408" lastModified="1698678736"/>
+          <Include href="Symbol 503.xml" loadImmediate="false" itemID="65e1d4ea-00000408" lastModified="1758283627"/>
           <Include href="Symbol 504.xml" loadImmediate="false" itemID="65e1d4ea-00000409" lastModified="1698678736"/>
           <Include href="Symbol 505.xml" loadImmediate="false" itemID="65e1d4ea-0000040a" lastModified="1698678736"/>
           <Include href="Symbol 506.xml" loadImmediate="false" itemID="65e1d4ea-0000040b" lastModified="1698678736"/>
@@ -836,7 +839,7 @@
           <Include href="敌人-黄色铁血战士.xml" itemID="67e3c934-00000976" lastModified="1755245185"/>
           <Include href="敌人-蓝色铁血战士.xml" itemID="67e3c932-00000975" lastModified="1746447681"/>
           <Include href="敌人-蓝色异形兵1.xml" itemID="67e3c930-00000974" lastModified="1747140844"/>
-          <Include href="敌人-球形异形兵1.xml" itemID="67e3c92e-00000973" lastModified="1758245588"/>
+          <Include href="敌人-球形异形兵1.xml" itemID="67e3c92e-00000973" lastModified="1758284145"/>
           <Include href="敌人-肉色异形兵1.xml" itemID="67e3c92a-00000972" lastModified="1747138360"/>
           <Include href="敌人-蛇形异形幼虫.xml" itemID="67e3c928-00000971" lastModified="1747138312"/>
           <Include href="敌人-铁血小飞机.xml" itemID="67e3c926-00000970" lastModified="1747135048"/>
@@ -844,6 +847,7 @@
           <Include href="敌人-异形女王-联机版.xml" loadImmediate="false" itemID="67e3c91f-0000096d" lastModified="1742981407"/>
           <Include href="敌人-蜘蛛形异形幼虫.xml" itemID="67e3c922-0000096e" lastModified="1747135034"/>
           <Include href="加载mc库-2.xml" itemID="68230ec2-00000982" lastModified="1758265382"/>
+          <Include href="属性标签标志元件/刚体标签.xml" loadImmediate="false" itemID="66cf12fa-00000756" lastModified="1724846848"/>
           <Include href="思考标签.xml" loadImmediate="false" itemID="67e3c95a-00000980" lastModified="1742981508"/>
           <Include href="铁血飙血.xml" itemID="68230ec0-00000981" lastModified="1747128000"/>
           <Include href="铁血弹爆炸.xml" itemID="68230ebe-00000980" lastModified="1747127998"/>
@@ -886,6 +890,12 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1476087" publishTime="1758283920"/>
+          <PublishItem publishSize="1476137" publishTime="1758283651"/>
+          <PublishItem publishSize="1476157" publishTime="1758283214"/>
+          <PublishItem publishSize="1476128" publishTime="1758283023"/>
+          <PublishItem publishSize="1476111" publishTime="1758282875"/>
+          <PublishItem publishSize="1476126" publishTime="1758282362"/>
           <PublishItem publishSize="1475733" publishTime="1758264350"/>
           <PublishItem publishSize="1475735" publishTime="1758248347"/>
           <PublishItem publishSize="1475737" publishTime="1758247713"/>
@@ -900,11 +910,5 @@
           <PublishItem publishSize="1475306" publishTime="1755243610"/>
           <PublishItem publishSize="1475073" publishTime="1755243396"/>
           <PublishItem publishSize="1475073" publishTime="1755242700"/>
-          <PublishItem publishSize="1481310" publishTime="1746447397"/>
-          <PublishItem publishSize="1489133" publishTime="1734960895"/>
-          <PublishItem publishSize="1489441" publishTime="1734948736"/>
-          <PublishItem publishSize="1491641" publishTime="1730305336"/>
-          <PublishItem publishSize="1491620" publishTime="1730305239"/>
-          <PublishItem publishSize="1491620" publishTime="1730305221"/>
      </publishHistory>
 </DOMDocument>
