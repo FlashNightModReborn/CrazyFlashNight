@@ -1,12 +1,28 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/锐器-重/斩马刀/刀-斩马刀" itemID="65f6b57f-00001b0d" linkageExportForAS="true" linkageIdentifier="刀-斩马刀" lastModified="1757899302">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/锐器-重/斩马刀/刀-斩马刀" itemID="65f6b57f-00001b0d" linkageExportForAS="true" linkageIdentifier="刀-斩马刀" lastModified="1758335908" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="刀-斩马刀">
       <layers>
-        <DOMLayer name="Layer 1" color="#C0E427" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置3" selected="true" centerPoint3DX="-49.6" centerPoint3DY="306.3">
+                <DOMSymbolInstance libraryItemName="斩马刀发光纹路" name="发光纹路" centerPoint3DX="-3.65" centerPoint3DY="162" isVisible="false">
+                  <matrix>
+                    <Matrix tx="-70.2" ty="-66.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="66.55" y="228.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#C0E427" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置3" centerPoint3DX="-49.6" centerPoint3DY="306.3">
                   <matrix>
                     <Matrix a="3.60836791992188" d="5.1103515625" tx="-62.1" ty="293.8"/>
                   </matrix>
@@ -50,11 +66,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#359CC1" locked="true">
+        <DOMLayer name="Layer 4" color="#359CC1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="冷兵/锐器-重/斩马刀/斩马刀" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="冷兵/锐器-重/斩马刀/斩马刀" selected="true" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

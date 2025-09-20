@@ -1540,6 +1540,7 @@ _root.主角函数.释放主动战技 = function() {
         this.hp -= 当前战技.消耗hp;
         this.mp -= 当前战技.消耗mp;
         当前战技.战技函数.释放(this);
+        this.dispatcher.publish("WeaponSkill", 攻击模式);
         return true;
     }
     return false;

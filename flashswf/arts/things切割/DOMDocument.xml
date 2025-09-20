@@ -33,7 +33,7 @@
           <DOMFolderItem name="冷兵/锐器-重" itemID="65f6e80c-00001d9a" isExpanded="true"/>
           <DOMFolderItem name="冷兵/锐器-重/单刃斧头" itemID="660f668c-000016a6"/>
           <DOMFolderItem name="冷兵/锐器-重/光刀狮子" itemID="6609924b-00003f5a"/>
-          <DOMFolderItem name="冷兵/锐器-重/光斧金牛" itemID="66099206-00003ea0"/>
+          <DOMFolderItem name="冷兵/锐器-重/光斧金牛" itemID="66099206-00003ea0" isExpanded="true"/>
           <DOMFolderItem name="冷兵/锐器-重/黑铁重剑" itemID="6609915b-00003cdd"/>
           <DOMFolderItem name="冷兵/锐器-重/巨尸长斧" itemID="6672ff5c-000031a1" isExpanded="true"/>
           <DOMFolderItem name="冷兵/锐器-重/双面斧" itemID="660f66be-00001733"/>
@@ -101,7 +101,7 @@
           <DOMBitmapItem name="长枪/炎魔枪AB100/位图火焰特效" itemID="65f6bf8e-00001baa" sourceExternalFilepath="../things切割/LIBRARY/长枪/炎魔枪AB100/位图火焰特效.png" sourceLastImported="1710669710" originalCompressionType="lossless" quality="50" href="长枪/炎魔枪AB100/位图火焰特效.png" bitmapDataHRef="M 3 1710668334.dat" frameRight="11120" frameBottom="3720"/>
      </media>
      <symbols>
-          <Include href="0.总元件-things切割.xml" itemID="65f68c8a-00001bc3" lastModified="1746522027"/>
+          <Include href="0.总元件-things切割.xml" itemID="65f68c8a-00001bc3" lastModified="1758328768"/>
           <Include href="2次调用.xml" itemID="668d4841-000024a6" lastModified="1720538463"/>
           <Include href="6次调用.xml" itemID="668d509c-000024b7" lastModified="1720538582"/>
           <Include href="M14 /7.62x51mm.xml" loadImmediate="false" itemID="683fcfe2-000003e3" lastModified="1749012450"/>
@@ -351,7 +351,7 @@
           <Include href="冷兵/锐器-重/光刀狮子/刀-光刀狮子.xml" itemID="661b5af7-00001237" lastModified="1722687621"/>
           <Include href="冷兵/锐器-重/光刀狮子/光刀狮子.xml" loadImmediate="false" itemID="661b5af9-00001239" lastModified="1718618549"/>
           <Include href="冷兵/锐器-重/光刀狮子/图标-光刀狮子.xml" itemID="661b5af3-00001236" lastModified="1718028908"/>
-          <Include href="冷兵/锐器-重/光斧金牛/刀-光斧金牛.xml" itemID="660e865e-0000189f" lastModified="1722687613"/>
+          <Include href="冷兵/锐器-重/光斧金牛/刀-光斧金牛.xml" itemID="660e865e-0000189f" lastModified="1758328799"/>
           <Include href="冷兵/锐器-重/光斧金牛/光斧金牛.xml" loadImmediate="false" itemID="660e8660-000018a1" lastModified="1712227936"/>
           <Include href="冷兵/锐器-重/光斧金牛/图标-光斧金牛.xml" itemID="660e865c-0000189e" lastModified="1718028908"/>
           <Include href="冷兵/锐器-重/黑铁重剑/刀-黑铁重剑.xml" itemID="660e8cb0-000018b5" lastModified="1727765241"/>
@@ -365,9 +365,9 @@
           <Include href="冷兵/锐器-重/双面斧/图标-双面斧.xml" itemID="660f7d40-00001963" lastModified="1718028908"/>
           <Include href="冷兵/锐器-重/西洋重剑/刀-西洋重剑.xml" itemID="65f6e8a4-00001da3" lastModified="1722687591"/>
           <Include href="冷兵/锐器-重/西洋重剑/图标-西洋重剑.xml" itemID="65f6e8a2-00001da2" lastModified="1718028908"/>
-          <Include href="冷兵/锐器-重/斩马刀/刀-斩马刀.xml" itemID="65f6b57f-00001b0d" lastModified="1757899302"/>
-          <Include href="冷兵/锐器-重/斩马刀/图标-斩马刀.xml" itemID="65f6b57d-00001b0c" lastModified="1718028908"/>
-          <Include href="冷兵/锐器-重/斩马刀/斩马刀.xml" itemIcon="1" loadImmediate="false" itemID="65f6b57b-00001b0b" lastModified="1710667131"/>
+          <Include href="冷兵/锐器-重/斩马刀/刀-斩马刀.xml" itemID="65f6b57f-00001b0d" lastModified="1758335908"/>
+          <Include href="冷兵/锐器-重/斩马刀/图标-斩马刀.xml" itemID="65f6b57d-00001b0c" lastModified="1758335120"/>
+          <Include href="冷兵/锐器-重/斩马刀/斩马刀.xml" itemIcon="1" loadImmediate="false" itemID="65f6b57b-00001b0b" lastModified="1758337752"/>
           <Include href="冷兵/锐器-重/诛神剑/Symbol 3002.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000e04" lastModified="1710653981"/>
           <Include href="冷兵/锐器-重/诛神剑/冰.xml" loadImmediate="false" itemID="5855e998-000036cc" lastModified="1482025458"/>
           <Include href="冷兵/锐器-重/诛神剑/刀-诛神剑.xml" itemID="668d7877-000035fb" lastModified="1723904310"/>
@@ -524,6 +524,7 @@
           <Include href="杂七杂八/Symbol 4091.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-0000115a" lastModified="1710653981"/>
           <Include href="杂七杂八/Symbol 4217.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-000011bf" lastModified="1710653981"/>
           <Include href="杂七杂八/Symbol 4218.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-000011c0" lastModified="1710653981"/>
+          <Include href="斩马刀发光纹路.xml" loadImmediate="false" itemID="68ce111c-00002402" lastModified="1758335260"/>
           <Include href="长枪/M14/枪-长枪-m14.xml" itemID="66b840ae-000006d4" lastModified="1749020639"/>
           <Include href="长枪/M14/图标-m14.xml" itemID="66b840ac-000006d3" lastModified="1723351212"/>
           <Include href="长枪/SPAS12/枪-长枪-SPAS12.xml" itemID="66100c12-000024d3" lastModified="1718028908"/>
@@ -578,6 +579,14 @@
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="217.45" y="46.4"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="冷兵/锐器-重/斩马刀/刀-斩马刀" selected="true" centerPoint3DX="122.4" centerPoint3DY="-143.1">
+                                             <matrix>
+                                                  <Matrix a="0" b="-1" c="1" d="0" tx="-46.75" ty="-153.7"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="-10.6" y="169.2"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
                                    </elements>
@@ -867,6 +876,23 @@
                     <SolidSwatchItem color="#CEA58B" hue="15" saturation="98" brightness="163"/>
                     <SolidSwatchItem color="#B07F5F" hue="16" saturation="82" brightness="128"/>
                     <SolidSwatchItem color="#919299" hue="155" saturation="10" brightness="140"/>
+                    <SolidSwatchItem color="#060A0E" hue="143" saturation="88" brightness="10"/>
+                    <SolidSwatchItem color="#0B141B" hue="136" saturation="103" brightness="18"/>
+                    <SolidSwatchItem color="#827FC2" hue="161" saturation="85" brightness="152"/>
+                    <SolidSwatchItem color="#0E1B1C" hue="123" saturation="80" brightness="20"/>
+                    <SolidSwatchItem color="#1E1C2B" hue="166" saturation="51" brightness="33"/>
+                    <SolidSwatchItem color="#E3FEFE" hue="120" saturation="222" brightness="227"/>
+                    <SolidSwatchItem color="#E3FEFE" alpha="0.498039215686275" hue="120" saturation="222" brightness="227"/>
+                    <SolidSwatchItem color="#00A7D7" alpha="0.749019607843137" hue="129" saturation="239" brightness="101"/>
+                    <SolidSwatchItem color="#00D2F0" hue="125" saturation="239" brightness="113"/>
+                    <SolidSwatchItem color="#FAFEFC" hue="100" saturation="160" brightness="237"/>
+                    <SolidSwatchItem color="#3F83D4" hue="142" saturation="153" brightness="130"/>
+                    <SolidSwatchItem color="#16ABE9" hue="132" saturation="198" brightness="120"/>
+                    <SolidSwatchItem color="#1D6C80" hue="128" saturation="152" brightness="74"/>
+                    <SolidSwatchItem color="#58EBFB" hue="124" saturation="228" brightness="160"/>
+                    <SolidSwatchItem color="#0091C8" alpha="0.498039215686275" hue="131" saturation="239" brightness="94"/>
+                    <SolidSwatchItem color="#207797" hue="131" saturation="156" brightness="86"/>
+                    <SolidSwatchItem color="#06ECFF" alpha="0.247058823529412" hue="123" saturation="239" brightness="123"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -945,6 +971,13 @@
                          <GradientEntry color="#CEA58B" ratio="0"/>
                          <GradientEntry color="#E5B79A" ratio="1"/>
                     </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#24464B" ratio="0.00392156862745098"/>
+                         <GradientEntry color="#2F4656" ratio="0.243137254901961"/>
+                         <GradientEntry color="#38465E" ratio="0.505882352941176"/>
+                         <GradientEntry color="#44476A" ratio="0.8"/>
+                         <GradientEntry color="#4D4773" ratio="1"/>
+                    </LinearGradientSwatchItem>
                </swatches>
           </swatchList>
      </extendedSwatchLists>
@@ -953,6 +986,10 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1035866" publishTime="1758335968"/>
+          <PublishItem publishSize="1035860" publishTime="1758335911"/>
+          <PublishItem publishSize="1035855" publishTime="1758335724"/>
+          <PublishItem publishSize="1035877" publishTime="1758335318"/>
           <PublishItem publishSize="1020912" publishTime="1747104251"/>
           <PublishItem publishSize="1020912" publishTime="1747103568"/>
           <PublishItem publishSize="1020900" publishTime="1747103297"/>
@@ -969,9 +1006,5 @@
           <PublishItem publishSize="686303" publishTime="1727541357"/>
           <PublishItem publishSize="682580" publishTime="1723351224"/>
           <PublishItem publishSize="682580" publishTime="1723350989"/>
-          <PublishItem publishSize="685184" publishTime="1722687660"/>
-          <PublishItem publishSize="682673" publishTime="1720790699"/>
-          <PublishItem publishSize="683612" publishTime="1720540806"/>
-          <PublishItem publishSize="683616" publishTime="1720540767"/>
      </publishHistory>
 </DOMDocument>
