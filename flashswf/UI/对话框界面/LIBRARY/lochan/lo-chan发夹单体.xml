@@ -29,15 +29,16 @@
                   </strokes>
                   <edges>
                     <Edge fillStyle0="1" strokeStyle="1" edges="!532 881|688 841!688 841|550 270!550 270|409 299"/>
-                    <Edge fillStyle0="3" strokeStyle="1" edges="!409 299|300 0"/>
-                    <Edge fillStyle0="3" fillStyle1="1" edges="!300 0|532 881"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!532 881|641 1204!641 1204|592 1221"/>
-                    <Edge fillStyle0="2" fillStyle1="1" edges="!592 1221|471 894!471 894|256 13"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!256 13|300 0!397 1289|353 1304!353 1304|196 990!196 990|0 83!0 83|44 71"/>
-                    <Edge fillStyle0="2" fillStyle1="1" edges="!44 71|248 977!248 977|397 1289"/>
-                    <Edge fillStyle0="2" strokeStyle="1" edges="!256 13|44 71"/>
                     <Edge fillStyle0="1" fillStyle1="3" edges="!409 299|532 881"/>
-                    <Edge fillStyle0="2" strokeStyle="1" edges="!397 1289|592 1221"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!532 881|641 1204!641 1204|592 1221"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!592 1221|397 1289"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!397 1289|248 977!248 977|44 71"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!44 71|0 83!0 83|196 990!196 990|353 1304!353 1304|397 1289"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!256 13|44 71"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!256 13|300 0"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="!300 0|532 881"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!409 299|300 0"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!592 1221|471 894!471 894|256 13"/>
                     <Edge cubics="!0 83(;0,83 196,990 196,990q0 83 196 990);"/>
                     <Edge cubics="!196 990(;196,990 353,1304 353,1304q196 990 353 1304);"/>
                     <Edge cubics="!353 1304(;353,1304 397,1289 397,1289q353 1304 397 1289);"/>

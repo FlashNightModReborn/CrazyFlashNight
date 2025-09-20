@@ -36,11 +36,11 @@
                   </strokes>
                   <edges>
                     <Edge fillStyle1="3" strokeStyle="1" edges="!12 43|12 -4!12 -4|208 -4!208 -4|208 25"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!208 25|208 36"/>
-                    <Edge fillStyle1="3" strokeStyle="1" edges="!208 36|208 63!208 63|174 63"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!174 63|12 63!12 63|0 51!0 51|12 51!12 51|12 43"/>
                     <Edge fillStyle0="1" fillStyle1="3" edges="!208 25|150 25!150 25|150 36!150 36|208 36"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!208 36|208 63!208 63|174 63"/>
                     <Edge fillStyle0="2" fillStyle1="3" edges="!174 63|141 53!141 53|141 59!141 59|12 43"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!12 43|12 51!12 51|0 51!0 51|12 63!12 63|174 63"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!208 25|208 36"/>
                     <Edge cubics="!150 36(;150,36 150,25 150,25q150 36 150 25);"/>
                     <Edge cubics="!150 25(;150,25 208,25 208,25q150 25 208 25);"/>
                     <Edge cubics="!208 36(;208,36 208,25 208,25q208 36 208 25);"/>
