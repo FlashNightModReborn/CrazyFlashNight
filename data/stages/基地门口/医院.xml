@@ -542,6 +542,19 @@
                 <WaveInformation>
                     <Duration>0</Duration>
                 </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种430</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <x>830</x>
+                        <y>490</y>
+                        <Parameters>
+                            <身高>180</身高>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
             </SubWave>
         </Wave>
     </SubStage>
