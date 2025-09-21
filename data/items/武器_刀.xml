@@ -903,7 +903,17 @@
       <hp>0</hp>
       <mp>0</mp>
       <defence>260</defence>
-    </data>
+    </data>    
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>烈焰斩马刀初始化</initRoutines>
+        </init>
+        <cycle>
+          <cycleRoutines>烈焰斩马刀周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <id>431</id>

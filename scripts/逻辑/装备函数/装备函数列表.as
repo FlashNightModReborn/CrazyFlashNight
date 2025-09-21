@@ -25,6 +25,7 @@ import flash.filters.*;
 #include "../逻辑/装备函数/死者之手.as"
 
 #include "../逻辑/装备函数/斩马刀.as"
+#include "../逻辑/装备函数/烈焰斩马刀.as"
 
 #include "../逻辑/装备函数/键盘镰刀.as"
 #include "../逻辑/装备函数/吉他喷火.as"
