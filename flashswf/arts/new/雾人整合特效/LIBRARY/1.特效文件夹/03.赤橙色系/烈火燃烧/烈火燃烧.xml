@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧" itemID="66d719e1-00004984" linkageExportForAS="true" linkageIdentifier="烈火燃烧" lastModified="1754668585" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧" itemID="66d719e1-00004984" linkageExportForAS="true" linkageIdentifier="烈火燃烧" lastModified="1758542863" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="烈火燃烧" currentFrame="1">
+    <DOMTimeline name="烈火燃烧" currentFrame="64">
       <layers>
-        <DOMLayer name="代码&amp;判定" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="代码&amp;判定" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -29,7 +29,7 @@ this.魔法伤害属性 = "热";*/]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码&amp;判定" color="#4FFF4F" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="代码&amp;判定" color="#4FFF4F" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -261,260 +261,17 @@ this.魔法伤害属性 = "热";*/]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="淘宝-懒人动画素材库0554" color="#9933CC" autoNamed="false">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
-            <DOMFrame index="0" duration="54" keyMode="9728">
+            <DOMFrame index="0" duration="65" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧-内火-3" centerPoint3DX="1.65" centerPoint3DY="-52.85">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧位图容器" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.909286499023438" d="1.2080078125" tx="-97.85" ty="-115.35"/>
+                    <Matrix tx="-124.3" ty="-237.85"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="123" y="150"/>
                   </transformationPoint>
-                  <filters>
-                    <GlowFilter blurX="15" blurY="15" color="#FF3300" quality="3"/>
-                    <DropShadowFilter angle="90" blurX="30" blurY="30" distance="-30" quality="3" strength="0.6"/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="54" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧-内火-3">
-                  <matrix>
-                    <Matrix a="0.909286499023438" d="1.2080078125" tx="-97.85" ty="-115.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="116.25" y="59.55"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="64" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧-内火-3">
-                  <matrix>
-                    <Matrix a="0.669830322265625" d="0.889862060546875" tx="-72.5" ty="-94.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="128.75" y="55.05"/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="淘宝-懒人动画素材库0593" color="#FF800A" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="54" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧-内火-1">
-                  <matrix>
-                    <Matrix a="0.141555786132813" d="0.173721313476563" tx="-40.35" ty="-37"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <GlowFilter blurX="15" blurY="15" color="#FF3300" quality="3"/>
-                    <DropShadowFilter angle="90" blurX="30" blurY="30" distance="-30" quality="3" strength="0.6"/>
-                  </filters>
-                  <color>
-                    <Color tintMultiplier="0.55" tintColor="#FFFF33"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="54" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧-内火-1">
-                  <matrix>
-                    <Matrix a="0.141555786132813" d="0.173721313476563" tx="-40.35" ty="-37"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <color>
-                    <Color tintMultiplier="0.55" tintColor="#FFFF33"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="64" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧-内火-1">
-                  <matrix>
-                    <Matrix a="0.09503173828125" d="0.116622924804688" tx="-40.35" ty="-37"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="-74.2" y="-24.85"/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="淘宝-懒人动画素材库0554" color="#FF4FFF" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="54" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧-内火-3">
-                  <matrix>
-                    <Matrix a="0.817092895507813" d="1.2080078125" tx="-80.6" ty="-127.7"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <GlowFilter blurX="15" blurY="15" color="#FF3300" quality="3"/>
-                    <DropShadowFilter angle="90" blurX="30" blurY="30" distance="-30" quality="3" strength="0.6"/>
-                  </filters>
-                  <color>
-                    <Color alphaMultiplier="0.71875"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="54" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧-内火-3">
-                  <matrix>
-                    <Matrix a="0.817092895507813" d="1.2080078125" tx="-80.6" ty="-127.7"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="119.1" y="55.3"/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0.71875"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="64" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧-内火-3">
-                  <matrix>
-                    <Matrix a="0.677871704101563" d="1.00218200683594" tx="-64" ty="-116.7"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="119.05" y="53.1"/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="淘宝-懒人动画素材库0593" color="#4FFFFF" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="54" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧-内火-1">
-                  <matrix>
-                    <Matrix a="0.254364013671875" d="0.312149047851563" tx="-29.65" ty="-62.2"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <GlowFilter blurX="15" blurY="15" color="#FF3300" quality="3"/>
-                    <DropShadowFilter angle="90" blurX="30" blurY="30" distance="-30" quality="3" strength="0.6"/>
-                  </filters>
-                  <color>
-                    <Color tintMultiplier="0.71" tintColor="#FF6633"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="54" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧-内火-1">
-                  <matrix>
-                    <Matrix a="0.254364013671875" d="0.312149047851563" tx="-29.65" ty="-62.2"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <color>
-                    <Color tintMultiplier="0.71" tintColor="#FF6633"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="64" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧-内火-1">
-                  <matrix>
-                    <Matrix a="0.17279052734375" d="0.212066650390625" tx="-29.65" ty="-62.2"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="淘宝-懒人动画素材库0593" color="#808080" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="54" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧-内火-1">
-                  <matrix>
-                    <Matrix a="-0.198272705078125" d="0.312149047851563" tx="24.4" ty="-71.9"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <GlowFilter blurX="15" blurY="15" color="#FF3300" quality="3"/>
-                    <DropShadowFilter angle="90" blurX="30" blurY="30" distance="-30" quality="3" strength="0.6"/>
-                  </filters>
-                  <color>
-                    <Color tintMultiplier="0.33" tintColor="#FF6633"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="54" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧-内火-1">
-                  <matrix>
-                    <Matrix a="-0.198272705078125" d="0.312149047851563" tx="24.4" ty="-71.9"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <color>
-                    <Color tintMultiplier="0.33" tintColor="#FF6633"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="64" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧-内火-1">
-                  <matrix>
-                    <Matrix a="-0.156402587890625" d="0.246231079101563" tx="24.4" ty="-71.9"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
