@@ -1,0 +1,39 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角肢体素材/左手臂" itemID="68d173a2-00001549" lastModified="1758557090" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="左手臂">
+      <layers>
+        <DOMLayer name="Layer 1" color="#E3C645" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 20" selected="true" centerPoint3DX="23.5" centerPoint3DY="93.65">
+                  <matrix>
+                    <Matrix a="0.995834350585938" b="-0.0911712646484375" c="0.0911712646484375" d="0.995834350585938" tx="1.05" ty="39.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	var 自机 = _parent._parent._parent;
+	var 装扮 = _root.装备引用配置.配置装扮(this, 自机.左下臂, "装扮", "左下臂_引用");
+	if (装扮)
+	{
+		this.基本款._visible = false;
+	}
+	else if (自机.性别 == "女")
+	{
+		_root.装备引用配置.配置装扮(this,"女变装-裸体左下臂","装扮","左下臂_引用");
+		this.基本款._visible = false;
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

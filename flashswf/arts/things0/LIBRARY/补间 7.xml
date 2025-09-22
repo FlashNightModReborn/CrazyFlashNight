@@ -1,0 +1,286 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 7" itemID="6850039e-0000074d" symbolType="graphic" lastModified="1750074270">
+  <timeline>
+    <DOMTimeline name="补间 7">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击点1" selected="true" centerPoint3DX="428.15" centerPoint3DY="187.85">
+                  <matrix>
+                    <Matrix a="0.610641479492188" d="0.508224487304688" tx="327.25" ty="93.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-73.6" y="74.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8"/>
+                    <AdjustColorFilter brightness="-100" contrast="50" saturation="100" hue="-180"/>
+                    <BlurFilter blurX="30" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击点2" selected="true" centerPoint3DX="-225.35" centerPoint3DY="175">
+                  <matrix>
+                    <Matrix a="0.511566162109375" d="0.49273681640625" tx="-333.5" ty="81.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-73.6" y="74.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8"/>
+                    <AdjustColorFilter brightness="-100" contrast="50" saturation="100" hue="-180"/>
+                    <BlurFilter blurX="30" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="攻击代码" selected="true" centerPoint3DX="140" centerPoint3DY="0.25">
+                  <matrix>
+                    <Matrix a="0.610641479492188" d="0.508224487304688" tx="39.1" ty="-94.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-73.6" y="74.1"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+    // 初始化帧计数器
+    当前已持续帧1 = _parent.手枪射击间隔帧;
+    当前已持续帧2 = _parent.手枪射击间隔帧_2;
+    
+    // 初始化攻击点绑定（手枪1绑定攻击点1，手枪2绑定攻击点2）
+    绑定攻击点1 = _parent.攻击点1;
+    绑定攻击点2 = _parent.攻击点2;
+    
+    // 初始化射击状态标志
+    手枪1已射击 = false;
+    手枪2已射击 = false;
+    // 换向计时器（每5帧换向一次）
+    换向计时器 = 0;
+    换向间隔 = 5;
+}
+
+onClipEvent (enterFrame) {
+    // 更新帧计数器
+    当前已持续帧1++;
+    当前已持续帧2++;
+    换向计时器++;
+    if (换向计时器 >= 换向间隔) {
+        // 交换攻击点绑定
+        if (手枪1已射击) {
+            绑定攻击点1 =  绑定攻击点1 == _parent.攻击点1? _parent.攻击点2:_parent.攻击点1;
+            手枪1已射击 = false;
+        }
+        if (手枪2已射击) {
+            绑定攻击点2 =  绑定攻击点2 == _parent.攻击点1? _parent.攻击点2:_parent.攻击点1;
+            手枪2已射击 = false;
+        }
+        
+        换向计时器 = 0;
+    }
+    
+    // ========== 手枪1射击逻辑 ==========
+    if (_parent.手枪射击许可 && 
+        当前已持续帧1 >= _parent.手枪射击间隔帧 && 
+        _parent._parent.手枪射击次数[_parent._parent.手枪] < _parent.弹夹容量) {
+        
+        _parent._parent.手枪射击次数[_parent._parent.手枪]++;
+        
+        // 检查换弹
+        if (_parent._parent.手枪射击次数[_parent._parent.手枪] >= _parent.弹夹容量) {
+            _parent.手枪换弹();
+        }
+        
+        // 更新UI子弹数
+        if (_parent._parent.攻击模式 == "双枪" || 
+            _parent._parent.攻击模式 == "手枪" || 
+            _parent._parent.攻击模式 == "手枪2") {
+            _root.玩家信息界面.玩家必要信息界面.子弹数 = 
+                _parent.弹夹容量 - _parent._parent.手枪射击次数[_parent._parent.手枪];
+        }
+        
+        当前已持续帧1 = 0;
+        var 子弹属性 = _root.子弹属性初始化(绑定攻击点1);
+        
+        // 设置子弹属性（使用手枪1的属性）
+        子弹属性.声音 = _parent.声音;
+        子弹属性.霰弹值 = _parent.霰弹值;
+        子弹属性.子弹散射度 = _parent.子弹散射度 + 3;
+        子弹属性.子弹种类 = _parent.子弹种类;
+        子弹属性.发射效果 = _parent.发射效果;
+        子弹属性.击中地图效果 = _parent.击中地图效果;
+        
+        
+        // 伤害类型设置
+        if (_parent._parent.手枪伤害类型) {
+            子弹属性.伤害类型 = _parent._parent.手枪伤害类型;
+        }
+        if (_parent._parent.手枪魔法伤害属性) {
+            子弹属性.魔法伤害属性 = _parent._parent.手枪魔法伤害属性;
+        }
+        if (_parent._parent.手枪毒) {
+            子弹属性.毒 = _parent._parent.手枪毒;
+        }
+        if (_parent._parent.手枪吸血) {
+            子弹属性.吸血 = _parent._parent.手枪吸血;
+        }
+        if (_parent._parent.手枪击溃) {
+            子弹属性.血量上限击溃 = _parent._parent.手枪击溃;
+        }
+        
+        // 暴击逻辑
+        if (_parent._parent.手枪暴击) {
+            if (!isNaN(Number(_parent._parent.手枪暴击))) {
+                子弹属性.暴击 = function(当前子弹) {
+                    if (_root.成功率(Number(_parent._parent.手枪暴击))) {
+                        return 1.5;
+                    }
+                    return 1;
+                };
+            } else if (_parent._parent.手枪暴击 == "满血暴击") {
+                子弹属性.暴击 = function(当前子弹) {
+                    if (当前子弹.hitTarget.hp >= 当前子弹.hitTarget.hp满血值) {
+                        return 1.5;
+                    }
+                    return 1;
+                };
+            }
+        }
+        
+        // 斩杀逻辑
+        if (_parent._parent.手枪斩杀 && !isNaN(Number(_parent._parent.手枪斩杀))) {
+            子弹属性.斩杀 = Number(_parent._parent.手枪斩杀);
+        }
+        
+        // 子弹威力计算
+        var 自机 = _root.获得父节点(this, 2);
+        子弹属性.子弹威力 = _parent.子弹威力 * (1.1 + _parent._parent.技能等级 * 0.06);
+        
+        // 子弹速度计算（根据绑定攻击点调整方向）
+        子弹属性.子弹速度 = _parent.子弹速度 + 5 + _parent._parent.技能等级 * 0.5;
+        if (绑定攻击点1 == _parent.攻击点2) {
+            子弹属性.子弹速度 = -Math.abs(子弹属性.子弹速度); // 攻击点2发射时速度取负
+        }
+        
+        // 其他属性
+        子弹属性.Z轴攻击范围 = _parent.Z轴攻击范围;
+        子弹属性.击倒率 = _parent.击倒率;
+        子弹属性.击中后子弹的效果 = _parent.击中后子弹的效果;
+        
+        
+        // 发射子弹
+        _root.子弹区域shoot传递(子弹属性);
+        
+        // 更新射击状态
+        手枪1已射击 = true;
+
+    }
+    
+    // ========== 手枪2射击逻辑 ==========
+    if (_parent.手枪2射击许可 && 
+        当前已持续帧2 >= _parent.手枪射击间隔帧_2 && 
+        _parent._parent.手枪2射击次数[_parent._parent.手枪2] < _parent.弹夹容量_2) {
+        
+        _parent._parent.手枪2射击次数[_parent._parent.手枪2]++;
+        
+        // 检查换弹
+        if (_parent._parent.手枪2射击次数[_parent._parent.手枪2] >= _parent.弹夹容量_2) {
+            _parent.手枪2换弹();
+        }
+        
+        // 更新UI子弹数
+        if (_parent._parent.攻击模式 == "双枪" || 
+            _parent._parent.攻击模式 == "手枪" || 
+            _parent._parent.攻击模式 == "手枪2") {
+            _root.玩家信息界面.玩家必要信息界面.子弹数_2 = 
+                _parent.弹夹容量_2 - _parent._parent.手枪2射击次数[_parent._parent.手枪2];
+        }
+        
+        当前已持续帧2 = 0;
+        var 子弹属性 = _root.子弹属性初始化(绑定攻击点2);
+        
+        // 设置子弹属性（使用手枪2的属性）
+        子弹属性.声音 = _parent.声音_2;
+        子弹属性.霰弹值 = _parent.霰弹值_2;
+        子弹属性.子弹散射度 = _parent.子弹散射度_2 + 3;
+        子弹属性.子弹种类 = _parent.子弹种类_2;
+        子弹属性.发射效果 = _parent.发射效果_2;
+        子弹属性.击中地图效果 = _parent.击中地图效果_2;
+        
+        
+        // 伤害类型设置
+        if (_parent._parent.手枪2伤害类型) {
+            子弹属性.伤害类型 = _parent._parent.手枪2伤害类型;
+        }
+        if (_parent._parent.手枪2魔法伤害属性) {
+            子弹属性.魔法伤害属性 = _parent._parent.手枪2魔法伤害属性;
+        }
+        if (_parent._parent.手枪2毒) {
+            子弹属性.毒 = _parent._parent.手枪2毒;
+        }
+        if (_parent._parent.手枪2吸血) {
+            子弹属性.吸血 = _parent._parent.手枪2吸血;
+        }
+        if (_parent._parent.手枪2击溃) {
+            子弹属性.血量上限击溃 = _parent._parent.手枪2击溃;
+        }
+        
+        // 暴击逻辑
+        if (_parent._parent.手枪2暴击) {
+            if (!isNaN(Number(_parent._parent.手枪2暴击))) {
+                子弹属性.暴击 = function(当前子弹) {
+                    if (_root.成功率(Number(_parent._parent.手枪2暴击))) {
+                        return 1.5;
+                    }
+                    return 1;
+                };
+            } else if (_parent._parent.手枪2暴击 == "满血暴击") {
+                子弹属性.暴击 = function(当前子弹) {
+                    if (当前子弹.hitTarget.hp >= 当前子弹.hitTarget.hp满血值) {
+                        return 1.5;
+                    }
+                    return 1;
+                };
+            }
+        }
+        
+        // 斩杀逻辑
+        if (_parent._parent.手枪2斩杀 && !isNaN(Number(_parent._parent.手枪2斩杀))) {
+            子弹属性.斩杀 = Number(_parent._parent.手枪2斩杀);
+        }
+        
+        // 子弹威力计算
+        var 自机 = _root.获得父节点(this, 2);
+        子弹属性.子弹威力 = _parent.子弹威力_2 * (1.1 + _parent._parent.技能等级 * 0.06);
+        
+        // 子弹速度计算（根据绑定攻击点调整方向）
+        子弹属性.子弹速度 = _parent.子弹速度_2 + 5 + _parent._parent.技能等级 * 0.5;
+        if (绑定攻击点2 == _parent.攻击点2) {
+            子弹属性.子弹速度 = -Math.abs(子弹属性.子弹速度); // 攻击点2发射时速度取负
+        }
+        
+        // 其他属性
+        子弹属性.Z轴攻击范围 = _parent.Z轴攻击范围_2;
+        子弹属性.击倒率 = _parent.击倒率_2;
+        子弹属性.击中后子弹的效果 = _parent.击中后子弹的效果_2;
+        
+        
+        // 发射子弹
+        _root.子弹区域shoot传递(子弹属性);
+        
+        // 更新射击状态
+        手枪2已射击 = true;
+    }
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8"/>
+                    <AdjustColorFilter brightness="-100" contrast="50" saturation="100" hue="-180"/>
+                    <BlurFilter blurX="30" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
