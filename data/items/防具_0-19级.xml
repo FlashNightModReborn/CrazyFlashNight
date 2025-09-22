@@ -3,6 +3,30 @@
 ID已倒序排序，在最上方新增新物品即可，使用最新id，同时可修改注释
 预留ID区间：15004-15300--><root>
   <item>
+    <id>2611</id>
+    <name>尖塔战士面具</name>
+    <displayname>尖塔战士面具</displayname>
+    <icon>尖塔战士面具</icon>
+    <type>防具</type>
+    <use>头部装备</use>
+    <price>26000</price>
+    <description>据说……在一个遥远的地方，有一座通天的尖塔。在最初，仅有穿戴这种面具的战士拥有闯进其中杀戮的资格。</description>
+    <data>
+      <level>13</level>
+      <weight>1</weight>
+      <dressup>男变装-尖塔战士面具</dressup>
+      <hp>80</hp>
+      <mp>3</mp>
+      <damage>6</damage>
+      <knifepower>10</knifepower>
+      <defence>99</defence>
+      <evasion>5</evasion>
+      <magicdefence>
+        <热>6</热>
+      </magicdefence>
+    </data>
+  </item>
+  <item>
     <id>8509</id>
     <name>废城加强军装脚</name>
     <displayname>EEEA式战靴加强版</displayname>
