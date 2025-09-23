@@ -1,4 +1,20 @@
-﻿_root.装备生命周期函数.初期特效初始化 = function(反射对象, 参数对象) 
+﻿import org.flashNight.gesh.object.*;
+import org.flashNight.neur.Event.*;
+import org.flashNight.neur.StateMachine.*;
+import org.flashNight.arki.render.*;
+import org.flashNight.arki.camera.*;
+import org.flashNight.arki.unit.*;
+import org.flashNight.arki.spatial.move.*;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.arki.unit.Action.Regeneration.*;
+import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.arki.component.Collider.*;
+import org.flashNight.arki.component.Effect.*;
+import org.flashNight.sara.util.*;
+import org.flashNight.naki.DataStructures.*;
+import flash.filters.*;
+
+_root.装备生命周期函数.初期特效初始化 = function(反射对象, 参数对象) 
 {
    反射对象.子弹属性 = 反射对象.子弹配置.bullet_0;//通过反射对象传参通讯
    反射对象.成功率 = 参数对象.probability ? 参数对象.probability : 3;
