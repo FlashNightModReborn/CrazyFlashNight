@@ -26,6 +26,7 @@ import flash.filters.*;
 
 #include "../逻辑/装备函数/光刀狮子.as"
 #include "../逻辑/装备函数/光斧金牛.as"
+#include "../逻辑/装备函数/光剑天秤.as"
 
 #include "../逻辑/装备函数/斩马刀.as"
 #include "../逻辑/装备函数/烈焰斩马刀.as"
