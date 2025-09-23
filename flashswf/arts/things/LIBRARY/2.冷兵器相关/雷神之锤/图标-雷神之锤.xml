@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2.冷兵器相关/烈焰斩/Symbol 4150" itemID="668e7c1e-0000103a" linkageExportForAS="true" linkageIdentifier="图标-烈焰斩" lastModified="1720769780">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2.冷兵器相关/雷神之锤/图标-雷神之锤" itemID="68d25e74-00000d9c" linkageExportForAS="true" linkageIdentifier="图标-雷神之锤" lastModified="1758617204">
   <timeline>
-    <DOMTimeline name="Symbol 4150">
+    <DOMTimeline name="图标-雷神之锤">
       <layers>
-        <DOMLayer name="Script Layer" color="#D0B995">
+        <DOMLayer name="Script Layer" color="#BAECCB">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -13,17 +13,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#3AEF6A">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 3" color="#30EE66" locked="true" outline="true" useOutlineView="true" layerType="mask">
+        <DOMLayer name="Layer 3" color="#30D7E5" locked="true" layerType="mask">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -36,13 +26,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#AA907B" parentLayerIndex="2" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#34E6D5" parentLayerIndex="1" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="2.冷兵器相关/烈焰斩/Symbol 4149" centerPoint3DX="43.35" centerPoint3DY="292.6">
+                <DOMSymbolInstance libraryItemName="2.冷兵器相关/雷神之锤/刀-雷神之锤" centerPoint3DX="55" centerPoint3DY="105">
                   <matrix>
-                    <Matrix a="0.169692993164063" b="-0.169692993164063" c="0.169692993164063" d="0.169692993164063" tx="-27.15" ty="-28"/>
+                    <Matrix a="0.191314697265625" b="-0.191314697265625" c="0.191314697265625" d="0.191314697265625" tx="-20.05" ty="-20.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -52,11 +42,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#DF8871">
+        <DOMLayer name="Layer 5" color="#E799CF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 16" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 16" selected="true" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -65,9 +55,9 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="2.冷兵器相关/烈焰斩/Symbol 4149" centerPoint3DX="22.45" centerPoint3DY="363.35">
+                <DOMSymbolInstance libraryItemName="2.冷兵器相关/雷神之锤/刀-雷神之锤" centerPoint3DX="55.05" centerPoint3DY="126">
                   <matrix>
-                    <Matrix a="0" b="-0.3187255859375" c="0.3187255859375" d="0" tx="-57" ty="1.9"/>
+                    <Matrix a="0" b="-0.3187255859375" c="0.3187255859375" d="0" tx="-20" ty="0.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

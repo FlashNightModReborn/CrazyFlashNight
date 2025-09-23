@@ -19005,7 +19005,7 @@
             </DOMFrame>
             <DOMFrame index="86" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="2.冷兵器相关/雷神之锤/Symbol 4174" centerPoint3DX="354.5" centerPoint3DY="-450.5">
+                <DOMSymbolInstance libraryItemName="2.冷兵器相关/雷神之锤/图标-雷神之锤" centerPoint3DX="354.5" centerPoint3DY="-450.5">
                   <matrix>
                     <Matrix tx="311.7" ty="-488.8"/>
                   </matrix>
@@ -19457,7 +19457,7 @@
             </DOMFrame>
             <DOMFrame index="86" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="2.冷兵器相关/雷神之锤/Symbol 4173" centerPoint3DX="244.4" centerPoint3DY="-481.6">
+                <DOMSymbolInstance libraryItemName="2.冷兵器相关/雷神之锤/刀-雷神之锤" centerPoint3DX="244.4" centerPoint3DY="-481.6">
                   <matrix>
                     <Matrix tx="169.35" ty="-606.7"/>
                   </matrix>
@@ -24392,7 +24392,7 @@
             </DOMFrame>
             <DOMFrame index="86" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="2.冷兵器相关/烈焰斩/Symbol 4150" centerPoint3DX="602.4" centerPoint3DY="685.05">
+                <DOMSymbolInstance libraryItemName="2.冷兵器相关/烈焰斩/图标-烈焰斩" centerPoint3DX="602.4" centerPoint3DY="685.05">
                   <matrix>
                     <Matrix tx="487.2" ty="600.7"/>
                   </matrix>
@@ -24873,7 +24873,7 @@
             </DOMFrame>
             <DOMFrame index="86" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="2.冷兵器相关/烈焰斩/Symbol 4149" centerPoint3DX="472.3" centerPoint3DY="844.25">
+                <DOMSymbolInstance libraryItemName="2.冷兵器相关/烈焰斩/刀-烈焰斩" centerPoint3DX="472.3" centerPoint3DY="844.25">
                   <matrix>
                     <Matrix tx="392.85" ty="482.8"/>
                   </matrix>
@@ -25709,7 +25709,7 @@
             </DOMFrame>
             <DOMFrame index="84" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="2.冷兵器相关/烈焰斩马刀/Symbol 4086" centerPoint3DX="-320.4" centerPoint3DY="412">
+                <DOMSymbolInstance libraryItemName="2.冷兵器相关/烈焰斩马刀/图标-烈焰斩马刀" centerPoint3DX="-320.4" centerPoint3DY="412">
                   <matrix>
                     <Matrix tx="-402.05" ty="350.25"/>
                   </matrix>
@@ -26484,7 +26484,7 @@
             </DOMFrame>
             <DOMFrame index="84" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="2.冷兵器相关/烈焰斩马刀/Symbol 4085" centerPoint3DX="-425.8" centerPoint3DY="447.5">
+                <DOMSymbolInstance libraryItemName="2.冷兵器相关/烈焰斩马刀/刀-烈焰斩马刀" centerPoint3DX="-425.8" centerPoint3DY="447.5">
                   <matrix>
                     <Matrix tx="-509.05" ty="187.3"/>
                   </matrix>
@@ -31015,12 +31015,12 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="
-!52394 20187|52392 20185"/>
-                    <Edge fillStyle0="1" edges="
-!52392 20185|52069 20186!52069 20186|52069 20187!52069 20187|52394 20187"/>
                     <Edge fillStyle0="2" edges="
 !52394 20187|52428 20187!52428 20187|52428 20185!52428 20185|52392 20185"/>
+                    <Edge fillStyle0="1" edges="
+!52392 20185|52069 20186!52069 20186|52069 20187!52069 20187|52394 20187"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!52394 20187|52392 20185"/>
                   </edges>
                 </DOMShape>
               </elements>
