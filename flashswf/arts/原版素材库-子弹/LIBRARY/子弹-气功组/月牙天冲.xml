@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/月牙天冲" itemID="669d34cf-00001772" linkageExportForAS="true" linkageIdentifier="月牙天冲" lastModified="1722875629">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/月牙天冲" itemID="669d34cf-00001772" linkageExportForAS="true" linkageIdentifier="月牙天冲" lastModified="1758618273">
   <timeline>
-    <DOMTimeline name="月牙天冲" currentFrame="2">
+    <DOMTimeline name="月牙天冲">
       <layers>
         <DOMLayer name="Labels Layer" color="#D43C7C">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#FBB32D" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#FBB32D">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -63,11 +63,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#4E75CC">
+        <DOMLayer name="Layer 3" color="#4E75CC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="12" centerPoint3DY="-116.95">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="12" centerPoint3DY="-116.95">
                   <matrix>
                     <Matrix a="4.79998779296875" d="4.7999267578125" tx="-0.5" ty="-129.45"/>
                   </matrix>
@@ -87,13 +87,13 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#FCE2A8">
+        <DOMLayer name="Layer 4" color="#FCE2A8" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4831" centerPoint3DX="69.2" centerPoint3DY="-6.7">
+                <DOMSymbolInstance libraryItemName="无AS链接/月牙刀光" selected="true" centerPoint3DX="-2.1" centerPoint3DY="-58">
                   <matrix>
-                    <Matrix a="0.439102172851563" d="0.439102172851563" tx="46.5" ty="-11.7"/>
+                    <Matrix a="0.705093383789063" d="0.705093383789063" tx="-24.8" ty="-63"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
