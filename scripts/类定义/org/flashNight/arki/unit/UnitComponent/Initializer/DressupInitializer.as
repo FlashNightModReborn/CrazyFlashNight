@@ -185,6 +185,17 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.魔法伤害属性 = undefined; //equipped.magictype
         target.魔法抗性 = {全属性: 0, 基础: 10, 电: 10, 热: 10, 冷: 10, 波: 10, 蚀: 10, 毒: 10, 冲: 30 + target.等级 * 0.5}; //equipped.magicdefence
         target.魔法抗性.人类 = target.等级;
+
+        var areaHeight:Number = target.area._height * target._yscale;
+        var threshold:Number = 16000;
+
+        if (areaHeight >= threshold * 2) {
+            target.魔法抗性.巨体 = 0;
+        } else if(areaHeight >= threshold) {
+            target.魔法抗性.巨体 = 50 * (1 - (areaHeight - threshold) / threshold);
+        }
+
+        _root.发布消息(target.area._height, target._yscale, areaHeight, target.魔法抗性.巨体)
         target.基础毒 = 0;
         target.基础吸血 = 0;
         target.基础击溃 = 0;

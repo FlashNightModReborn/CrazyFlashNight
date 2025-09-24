@@ -637,6 +637,17 @@ _root.初始化敌人模板 = function() {
     this.Z轴坐标 = this._y;
     this.swapDepths(this._y + random(10));
 
+    var areaHeight:Number = this.area._height * this._yscale;
+    var threshold:Number = 16000;
+
+    if (areaHeight >= threshold * 2) {
+        this.魔法抗性.巨体 = 0;
+    } else if(areaHeight >= threshold) {
+        this.魔法抗性.巨体 = 50 * (1 - (areaHeight - threshold) / threshold);
+    }
+
+    _root.发布消息(this.area._height, this._yscale, areaHeight, this.魔法抗性.巨体)
+
     // 应用新版人物文字信息
     if (this.人物文字信息) {
         this.attachMovie("新版人物文字信息", "新版人物文字信息", this.getNextHighestDepth());
