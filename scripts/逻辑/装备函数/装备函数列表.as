@@ -24,6 +24,8 @@ import flash.filters.*;
 #include "../逻辑/装备函数/炎魔斩new.as"
 #include "../逻辑/装备函数/死者之手.as"
 
+#include "../逻辑/装备函数/RPG.as"
+
 #include "../逻辑/装备函数/光刀狮子.as"
 #include "../逻辑/装备函数/光斧金牛.as"
 #include "../逻辑/装备函数/光剑天秤.as"

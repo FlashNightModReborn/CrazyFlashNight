@@ -8,7 +8,7 @@
 
     // 直接从装备数据读取弹容，以50发为基准计算比例
     var equipmentData = target[ref.装备类型 + "属性"];
-    var bulletCapacity = equipmentData.capacity > 0 ? equipmentData.data.capacity : 50;
+    var bulletCapacity = equipmentData.capacity > 0 ? equipmentData.capacity : 50;
     ref.bulletRate = bulletCapacity / 50; // 以50发为基准的比例
 };
 

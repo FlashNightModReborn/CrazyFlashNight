@@ -6028,6 +6028,19 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
       <bulletsize>50</bulletsize>
       <power>1600</power>
       <impact>0</impact>
-    </data>
+    </data>    
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>RPG初始化</initRoutines>
+          <initParam>
+            <temp>1</temp>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>RPG周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
 </root>
