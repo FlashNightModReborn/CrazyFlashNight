@@ -638,6 +638,7 @@ _root.初始化敌人模板 = function() {
     this.swapDepths(this._y + random(10));
 
     var areaHeight:Number = this.area._height * this._yscale;
+    areaHeight = !isNaN(areaHeight) ? areaHeight : 136;
     var threshold:Number = 16000;
 
     if (areaHeight >= threshold * 2) {

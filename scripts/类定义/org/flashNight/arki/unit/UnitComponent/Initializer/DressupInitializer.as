@@ -187,6 +187,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.魔法抗性.人类 = target.等级;
 
         var areaHeight:Number = target.area._height * target._yscale;
+        areaHeight = !isNaN(areaHeight) ? areaHeight : 136;
         var threshold:Number = 16000;
 
         if (areaHeight >= threshold * 2) {
