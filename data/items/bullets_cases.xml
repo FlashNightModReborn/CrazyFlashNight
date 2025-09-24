@@ -271,6 +271,12 @@
         </movement>
     </bullet>
     <bullet>
+        <name>重型火箭弹</name>
+        <movement>
+            <func>accelerated</func>
+        </movement>
+    </bullet>
+    <bullet>
         <name>普通火箭弹</name>
         <movement>
             <func>accelerated</func>

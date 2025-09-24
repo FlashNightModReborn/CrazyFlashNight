@@ -1,0 +1,109 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/PF98A/PF98A" itemID="68d36460-000011b4" linkageExportForAS="true" linkageIdentifier="枪-长枪-PF98A" lastModified="1758703659" lastUniqueIdentifier="7">
+  <timeline>
+    <DOMTimeline name="PF98A">
+      <layers>
+        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="枪口" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="242.75" centerPoint3DY="-53.05">
+                  <matrix>
+                    <Matrix tx="230.25" ty="-65.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="398.6" centerPoint3DY="-53.05">
+                  <matrix>
+                    <Matrix tx="386.1" ty="-65.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/PF98A/PF98A筒子" centerPoint3DX="-29.6" centerPoint3DY="-35.65">
+                  <matrix>
+                    <Matrix tx="-286.3" ty="-107.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="256.7" y="71.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/PF98A/PF98A筒子" centerPoint3DX="126.25" centerPoint3DY="-35.65">
+                  <matrix>
+                    <Matrix tx="-130.45" ty="-107.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="256.7" y="71.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/PF98A/PF98A后筒发射药" name="弹头" centerPoint3DX="-333.25" centerPoint3DY="-56">
+                  <matrix>
+                    <Matrix tx="-425.2" ty="-82.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="91.95" y="26.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/PF98A/PF98A后筒发射药" name="弹头" centerPoint3DX="-177.4" centerPoint3DY="-56">
+                  <matrix>
+                    <Matrix tx="-269.35" ty="-82.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="91.95" y="26.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="步枪" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -36,9 +36,9 @@
           <DOMFolderItem name="无AS链接/气功弹（和爆炸）素材" itemID="669d393b-0000178c"/>
           <DOMFolderItem name="子弹-持续组" itemID="669d3984-0000179c"/>
           <DOMFolderItem name="子弹-近战子弹专享座位" itemID="669d3aec-000017c1"/>
-          <DOMFolderItem name="子弹-炮弹与爆炸组" itemID="669d34e9-0000177b"/>
+          <DOMFolderItem name="子弹-炮弹与爆炸组" itemID="669d34e9-0000177b" isExpanded="true"/>
           <DOMFolderItem name="子弹-普通与穿刺组" itemID="669d349c-00001757"/>
-          <DOMFolderItem name="子弹-气功组" itemID="669d3a53-000017b3" isExpanded="true"/>
+          <DOMFolderItem name="子弹-气功组" itemID="669d3a53-000017b3"/>
           <DOMFolderItem name="子弹-特殊组" itemID="669d3a9d-000017bc"/>
           <DOMFolderItem name="自瞄准星特效" itemID="67139c16-00000684"/>
      </folders>
@@ -181,8 +181,8 @@
           <Include href="弹壳/霰弹弹壳.xml" itemID="6634e7c1-0000196a" lastModified="1714811989"/>
           <Include href="弹壳/重机枪弹壳.xml" itemID="66357b12-00000b67" lastModified="1714811998"/>
           <Include href="导弹.xml" loadImmediate="false" itemID="671dc67e-000007ce" lastModified="1730004606"/>
-          <Include href="地雷激光扫描线.xml" itemIcon="1" loadImmediate="false" itemID="687af4b5-000005e2" lastModified="1752890259"/>
           <Include href="等离子光片.xml" loadImmediate="false" itemID="6883540e-00000e06" lastModified="1753438466"/>
+          <Include href="地雷激光扫描线.xml" itemIcon="1" loadImmediate="false" itemID="687af4b5-000005e2" lastModified="1752890259"/>
           <Include href="联弹/白色手里剑/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000250" lastModified="1705503817"/>
           <Include href="联弹/白色手里剑/Symbol 23.xml" loadImmediate="false" itemID="6577efbc-00000251" lastModified="1705503796"/>
           <Include href="联弹/白色手里剑/Symbol 573.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000416" lastModified="1705503893"/>
@@ -601,7 +601,7 @@
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 664.xml" loadImmediate="false" itemID="668b9cdd-000001e0" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 1217.xml" itemIcon="1" loadImmediate="false" itemID="668b9f53-000001d0" lastModified="1720426265"/>
           <Include href="无AS链接/月牙刀光.xml" loadImmediate="false" itemID="68d25fac-000012ee" lastModified="1758618233"/>
-          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1758105890"/>
+          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1758707686"/>
           <Include href="子弹-持续组/电球.xml" itemID="669d343b-00001740" lastModified="1722876120"/>
           <Include href="子弹-持续组/火焰.xml" itemID="669d3404-00001734" lastModified="1754922735"/>
           <Include href="子弹-持续组/声波.xml" itemID="669d34bf-0000176e" lastModified="1722875808"/>
@@ -621,6 +621,7 @@
           <Include href="子弹-炮弹与爆炸组/气锤地雷.xml" itemID="6878f9c7-00000a5c" lastModified="1753436110"/>
           <Include href="子弹-炮弹与爆炸组/气锤地雷素材.xml" loadImmediate="false" itemID="6878fa5b-00000a6f" lastModified="1752760717"/>
           <Include href="子弹-炮弹与爆炸组/小型导弹.xml" itemID="669d34c7-00001770" lastModified="1730004177"/>
+          <Include href="子弹-炮弹与爆炸组/重型火箭弹.xml" itemID="68d3b57d-00001bdf" lastModified="1758707723"/>
           <Include href="子弹-普通与穿刺组/巴雷特子弹.xml" itemID="669d3447-00001743" lastModified="1721578567"/>
           <Include href="子弹-普通与穿刺组/穿刺子弹.xml" itemID="669d3454-00001746" lastModified="1721578580"/>
           <Include href="子弹-普通与穿刺组/等离子穿刺子弹.xml" itemID="68a2938d-00001541" lastModified="1755485069"/>
@@ -646,21 +647,13 @@
           <Include href="自瞄准星特效/火力支援新瞄准镜.xml" loadImmediate="false" itemID="671399a0-00002828" lastModified="1729337760"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="场景 1" currentFrame="15">
+          <DOMTimeline name="场景 1" currentFrame="1">
                <layers>
                     <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
                          <frames>
                               <DOMFrame index="0" duration="54" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="原版素材库-子弹" centerPoint3DX="66.7" centerPoint3DY="8.8">
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="子弹-持续组/火焰" selected="true" centerPoint3DX="369.65" centerPoint3DY="296.1">
-                                             <matrix>
-                                                  <Matrix a="2.79559326171875" d="2.79559326171875" tx="306.95" ty="297.85"/>
-                                             </matrix>
+                                        <DOMSymbolInstance libraryItemName="原版素材库-子弹" selected="true" centerPoint3DX="66.7" centerPoint3DY="8.8">
                                              <transformationPoint>
                                                   <Point/>
                                              </transformationPoint>
@@ -979,7 +972,7 @@
                     <SolidSwatchItem color="#FFE843" hue="35" saturation="239" brightness="152"/>
                     <SolidSwatchItem color="#FEE99A" hue="32" saturation="235" brightness="192"/>
                     <SolidSwatchItem color="#E14001" alpha="0.498039215686275" hue="11" saturation="238" brightness="107"/>
-                    <SolidSwatchItem color="#FFA700" alpha="0.72156862745098" hue="26" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FFA700" alpha="0.717647058823529" hue="26" saturation="239" brightness="120"/>
                     <SolidSwatchItem color="#E14001" alpha="0.298039215686275" hue="11" saturation="238" brightness="107"/>
                     <SolidSwatchItem color="#FFA700" alpha="0.447058823529412" hue="26" saturation="239" brightness="120"/>
                     <SolidSwatchItem color="#FFDE39" alpha="0.6" hue="33" saturation="239" brightness="147"/>
@@ -1001,6 +994,10 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4078437" publishTime="1758707720"/>
+          <PublishItem publishSize="4078523" publishTime="1758707695"/>
+          <PublishItem publishSize="4078491" publishTime="1758707256"/>
+          <PublishItem publishSize="4078491" publishTime="1758707235"/>
           <PublishItem publishSize="4076513" publishTime="1758103800"/>
           <PublishItem publishSize="4076528" publishTime="1758102273"/>
           <PublishItem publishSize="4075039" publishTime="1756077905"/>
@@ -1017,9 +1014,5 @@
           <PublishItem publishSize="4102588" publishTime="1754919813"/>
           <PublishItem publishSize="4102343" publishTime="1754919477"/>
           <PublishItem publishSize="4102165" publishTime="1754919066"/>
-          <PublishItem publishSize="4102090" publishTime="1754918574"/>
-          <PublishItem publishSize="3979738" publishTime="1754905940"/>
-          <PublishItem publishSize="3973627" publishTime="1754881660"/>
-          <PublishItem publishSize="3973644" publishTime="1754836936"/>
      </publishHistory>
 </DOMDocument>

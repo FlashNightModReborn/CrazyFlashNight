@@ -6027,7 +6027,7 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
       <clipname>火箭弹弹药</clipname>
       <bulletsize>50</bulletsize>
       <power>1600</power>
-      <impact>0</impact>
+      <impact>0</impact>      
     </data>    
     <lifecycle>
       <attr_0>
@@ -6039,6 +6039,50 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
         </init>
         <cycle>
           <cycleRoutines>RPG周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
+  </item>   
+  <item weapontype="发射器">
+    <id>17707</id>
+    <name>PF98A</name>
+    <displayname>PF98A</displayname>
+    <icon>PF98A</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>200000</price>
+    <description>由C国北方工业集团研制的肩扛式火箭发射器。末日后因前线对重复装填的刚需，被改造为可循环使用的重型火箭筒兵。</description>
+    <data>
+      <level>33</level>
+      <weight>5</weight>
+      <dressup>枪-长枪-PF98A</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>122</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>30</velocity>
+      <bullet>重型火箭弹</bullet>
+      <sound>re_GL_m202.wav</sound>
+      <muzzle>发射器枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>火箭弹弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>5200</power>
+      <impact>0</impact>
+      <damagetype>破击</damagetype>
+      <magictype>巨体</magictype>
+    </data>    
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>PF98A初始化</initRoutines>
+          <initParam>
+            <temp>1</temp>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>PF98A周期</cycleRoutines>
         </cycle>
       </attr_0>
     </lifecycle>

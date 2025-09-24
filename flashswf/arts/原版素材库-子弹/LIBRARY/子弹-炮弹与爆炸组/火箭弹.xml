@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-炮弹与爆炸组/火箭弹" itemID="669d33f7-00001731" linkageExportForAS="true" linkageIdentifier="火箭弹" lastModified="1722875576">
   <timeline>
-    <DOMTimeline name="火箭弹">
+    <DOMTimeline name="火箭弹" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;35&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#725BC2">
           <frames>
@@ -63,11 +63,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#F2BE25">
+        <DOMLayer name="Layer 3" color="#F2BE25" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 478" centerPoint3DY="-18">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 478" selected="true" centerPoint3DY="-18">
                   <matrix>
                     <Matrix tx="-5" ty="-23"/>
                   </matrix>
@@ -82,11 +82,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#80E249" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#80E249">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" selected="true">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area">
                   <matrix>
                     <Matrix d="0.999984741210938" tx="-12.5" ty="-12.5"/>
                   </matrix>
