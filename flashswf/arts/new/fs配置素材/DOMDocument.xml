@@ -4,6 +4,8 @@
           <DOMFolderItem name="2.音效文件夹/爆炸" itemID="656c296a-0000103c" isExpanded="true"/>
           <DOMFolderItem name="2.音效文件夹/未命名文件夹 2" itemID="687108c8-00002251"/>
           <DOMFolderItem name="ashcore" itemID="688350b6-00000e01"/>
+          <DOMFolderItem name="rpg武器" itemID="68d4b845-00000844" isExpanded="true"/>
+          <DOMFolderItem name="rpg武器/RPG素材" itemID="68d4b845-00000845" isExpanded="true"/>
           <DOMFolderItem name="sprite" itemID="667d1fff-00000d61"/>
           <DOMFolderItem name="电感切割刃" itemID="655c5883-00000334"/>
           <DOMFolderItem name="光玉的剑相关" itemID="68668bb8-000033c6"/>
@@ -35,7 +37,7 @@
           <DOMFolderItem name="炎魔斩/炎魔斩alter" itemID="6558af7c-000002b4"/>
           <DOMFolderItem name="炎魔斩/炎魔斩刀光" itemID="65597827-0000029d" isExpanded="true"/>
           <DOMFolderItem name="长枪" itemID="68982df5-00002672" isExpanded="true"/>
-          <DOMFolderItem name="长枪/53式步骑枪" itemID="659ea370-00000ca4" isExpanded="true"/>
+          <DOMFolderItem name="长枪/53式步骑枪" itemID="659ea370-00000ca4"/>
           <DOMFolderItem name="长枪/g11" itemID="6878f46b-000007fd"/>
           <DOMFolderItem name="长枪/GM6_LYNX" itemID="68979216-000016b1"/>
           <DOMFolderItem name="长枪/Jackhammer" itemID="6870de51-00000afb"/>
@@ -43,6 +45,7 @@
           <DOMFolderItem name="长枪/NEGEV" itemID="686a7a3e-0000131c"/>
           <DOMFolderItem name="长枪/PF98A" itemID="68d38e78-0000168e" isExpanded="true"/>
           <DOMFolderItem name="长枪/PKP" itemID="686b8a7f-000003a1"/>
+          <DOMFolderItem name="长枪/RPG7V2" itemID="68d4b946-0000085f" isExpanded="true"/>
           <DOMFolderItem name="长枪/wa90" itemID="6559d3b1-000002db"/>
           <DOMFolderItem name="长枪/wa90/AR57" itemID="68905807-0000a61f" isExpanded="true"/>
           <DOMFolderItem name="长枪/wa90/Graphic" itemID="5e86cc75-00001260"/>
@@ -135,7 +138,7 @@
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="ashcore/ashcore.xml" itemID="688340fd-00000819" lastModified="1753436006"/>
           <Include href="ashcore/图标-ashcore.xml" itemID="68835078-00000a95" lastModified="1753436313"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1758693771"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1758772942"/>
           <Include href="q.xml" loadImmediate="false" itemID="6898491a-00000406" lastModified="1754812780"/>
           <Include href="sprite/Symbol 35.xml" itemID="6577b699-00000971" lastModified="1718635260"/>
           <Include href="sprite/Symbol 36.xml" loadImmediate="false" itemID="6577b699-00000972" lastModified="1719476235"/>
@@ -452,6 +455,10 @@
           <Include href="长枪/PKP/pkp子弹2.xml" loadImmediate="false" itemID="686ba89d-00000cb1" lastModified="1751886289"/>
           <Include href="长枪/PKP/pkp子弹3.xml" loadImmediate="false" itemID="686ba8ab-00000cb7" lastModified="1751886231"/>
           <Include href="长枪/PKP/图标-PKP.xml" itemID="686b8a7a-000003a0" lastModified="1751887291"/>
+          <Include href="长枪/RPG7V2/RPG7V2.xml" itemID="68d4b6fc-00000828" lastModified="1758773452"/>
+          <Include href="长枪/RPG7V2/rpg7v2发射器.xml" itemIcon="1" loadImmediate="false" itemID="68d4b833-0000083f" lastModified="1758771373"/>
+          <Include href="长枪/RPG7V2/弹头.xml" loadImmediate="false" itemID="68d4b907-0000085a" lastModified="1758771535"/>
+          <Include href="长枪/RPG7V2/图标-RPG7V2.xml" itemID="68d4b979-00000874" lastModified="1758773313"/>
           <Include href="长枪/wa90/AR57/AR57.xml" itemID="68904bb0-0000a3d3" lastModified="1754290230"/>
           <Include href="长枪/wa90/AR57/图标-AR57.xml" itemID="689057e5-0000a41b" lastModified="1754290211"/>
           <Include href="长枪/wa90/Graphic/shape 3716.xml" itemIcon="1" loadImmediate="false" itemID="5e86cc7d-00000e85" lastModified="1585892477"/>
@@ -1366,6 +1373,7 @@
                     <SolidSwatchItem color="#766F60" hue="27" saturation="25" brightness="101"/>
                     <SolidSwatchItem color="#918B7D" hue="29" saturation="19" brightness="127"/>
                     <SolidSwatchItem color="#979180" hue="29" saturation="24" brightness="131"/>
+                    <SolidSwatchItem color="#373F44" hue="137" saturation="25" brightness="58"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1448,6 +1456,11 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2416671" publishTime="1758773457"/>
+          <PublishItem publishSize="2416671" publishTime="1758773392"/>
+          <PublishItem publishSize="2416662" publishTime="1758773317"/>
+          <PublishItem publishSize="2416669" publishTime="1758773198"/>
+          <PublishItem publishSize="2416670" publishTime="1758771685"/>
           <PublishItem publishSize="2406320" publishTime="1758703663"/>
           <PublishItem publishSize="2406314" publishTime="1758703647"/>
           <PublishItem publishSize="2406315" publishTime="1758703593"/>
@@ -1463,10 +1476,5 @@
           <PublishItem publishSize="2396227" publishTime="1756363827"/>
           <PublishItem publishSize="2396282" publishTime="1756363374"/>
           <PublishItem publishSize="2396237" publishTime="1755485474"/>
-          <PublishItem publishSize="2398351" publishTime="1755447218"/>
-          <PublishItem publishSize="2398352" publishTime="1755446976"/>
-          <PublishItem publishSize="2398352" publishTime="1755446951"/>
-          <PublishItem publishSize="2398352" publishTime="1755446911"/>
-          <PublishItem publishSize="2398355" publishTime="1755446735"/>
      </publishHistory>
 </DOMDocument>

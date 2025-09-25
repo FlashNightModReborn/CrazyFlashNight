@@ -6086,5 +6086,47 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
         </cycle>
       </attr_0>
     </lifecycle>
-  </item>
+  </item>   
+  <item weapontype="发射器">
+    <id>17708</id>
+    <name>RPG7V2</name>
+    <displayname>RPG7V2</displayname>
+    <icon>RPG7V2</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>250000</price>
+    <description>RPG作为一款高度实用且价格低廉的单兵武器，和AK系列自动步枪一样，RPG在其问世以来的国际武装冲突和不对称战争中扮演着无可替代的角色。</description>
+    <data>
+      <level>13</level>
+      <weight>8</weight>
+      <dressup>枪-长枪-RPG7V2</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>800</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>20</velocity>
+      <bullet>火箭弹</bullet>
+      <sound>re_GL_m202.wav</sound>
+      <muzzle>发射器枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>火箭弹弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>4000</power>
+      <impact>0</impact>      
+    </data>    
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>RPG初始化</initRoutines>
+          <initParam>
+            <temp>1</temp>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>RPG周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
+  </item>   
 </root>
