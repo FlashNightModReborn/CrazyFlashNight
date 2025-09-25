@@ -138,8 +138,9 @@
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="ashcore/ashcore.xml" itemID="688340fd-00000819" lastModified="1753436006"/>
           <Include href="ashcore/图标-ashcore.xml" itemID="68835078-00000a95" lastModified="1753436313"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1758772942"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1758790580"/>
           <Include href="q.xml" loadImmediate="false" itemID="6898491a-00000406" lastModified="1754812780"/>
+          <Include href="RPG28发射器.xml" itemIcon="1" loadImmediate="false" itemID="68d50204-00000d2a" lastModified="1758790191"/>
           <Include href="sprite/Symbol 35.xml" itemID="6577b699-00000971" lastModified="1718635260"/>
           <Include href="sprite/Symbol 36.xml" loadImmediate="false" itemID="6577b699-00000972" lastModified="1719476235"/>
           <Include href="补间 11.xml" itemIcon="1" loadImmediate="false" itemID="688b0839-00000754" lastModified="1753942073"/>
@@ -148,6 +149,7 @@
           <Include href="补间 14.xml" itemIcon="1" loadImmediate="false" itemID="688b39ff-000007ec" lastModified="1753954815"/>
           <Include href="补间 17.xml" itemIcon="1" loadImmediate="false" itemID="68a0d0c3-00001dfc" lastModified="1755369667"/>
           <Include href="补间 18.xml" itemIcon="1" loadImmediate="false" itemID="68a0d0c3-00001dfe" lastModified="1755369667"/>
+          <Include href="串联破甲火箭弹.xml" itemIcon="1" loadImmediate="false" itemID="68d50246-00000d30" lastModified="1758790242"/>
           <Include href="弹舱.xml" loadImmediate="false" itemID="68a0c3b6-00001440" lastModified="1755396060"/>
           <Include href="等离子光片.xml" loadImmediate="false" itemID="6883540e-00000e06" lastModified="1753438466"/>
           <Include href="电感切割刃/刀-电感切割刃.xml" itemID="655c55d9-00000308" lastModified="1721580831"/>
@@ -448,7 +450,9 @@
           <Include href="长枪/PF98A/PF98A.xml" itemID="68d36460-000011b4" lastModified="1758703659"/>
           <Include href="长枪/PF98A/PF98A后筒发射药.xml" loadImmediate="false" itemID="68d38e84-00001690" lastModified="1758695044"/>
           <Include href="长枪/PF98A/PF98A筒子.xml" loadImmediate="false" itemID="68d38e7e-0000168f" lastModified="1758695038"/>
+          <Include href="长枪/PF98A/RPG28.xml" itemID="68d500c8-00000d19" lastModified="1758792335"/>
           <Include href="长枪/PF98A/图标-PF98A.xml" itemID="68d38e9f-00001691" lastModified="1758695071"/>
+          <Include href="长枪/PF98A/图标-RPG28.xml" itemID="68d50369-00000d49" lastModified="1758790537"/>
           <Include href="长枪/PKP/PKP.xml" itemID="686b8a62-00000383" lastModified="1754217284"/>
           <Include href="长枪/PKP/PKP弹链动画.xml" loadImmediate="false" itemID="686ba7f6-00000b49" lastModified="1751886658"/>
           <Include href="长枪/PKP/PKP子弹1.xml" loadImmediate="false" itemID="686ba894-00000cab" lastModified="1751886365"/>
@@ -1374,6 +1378,11 @@
                     <SolidSwatchItem color="#918B7D" hue="29" saturation="19" brightness="127"/>
                     <SolidSwatchItem color="#979180" hue="29" saturation="24" brightness="131"/>
                     <SolidSwatchItem color="#373F44" hue="137" saturation="25" brightness="58"/>
+                    <SolidSwatchItem color="#696934" hue="40" saturation="81" brightness="74"/>
+                    <SolidSwatchItem color="#887F59" hue="33" saturation="50" brightness="106"/>
+                    <SolidSwatchItem color="#C8C19F" hue="34" saturation="64" brightness="169"/>
+                    <SolidSwatchItem color="#615A40" hue="32" saturation="49" brightness="76"/>
+                    <SolidSwatchItem color="#877E58" hue="33" saturation="50" brightness="105"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1456,6 +1465,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2430292" publishTime="1758791678"/>
+          <PublishItem publishSize="2430292" publishTime="1758791621"/>
           <PublishItem publishSize="2416671" publishTime="1758773457"/>
           <PublishItem publishSize="2416671" publishTime="1758773392"/>
           <PublishItem publishSize="2416662" publishTime="1758773317"/>
@@ -1474,7 +1485,5 @@
           <PublishItem publishSize="2396316" publishTime="1756365275"/>
           <PublishItem publishSize="2396227" publishTime="1756363898"/>
           <PublishItem publishSize="2396227" publishTime="1756363827"/>
-          <PublishItem publishSize="2396282" publishTime="1756363374"/>
-          <PublishItem publishSize="2396237" publishTime="1755485474"/>
      </publishHistory>
 </DOMDocument>

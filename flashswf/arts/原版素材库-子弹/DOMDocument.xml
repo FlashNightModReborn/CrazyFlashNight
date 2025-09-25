@@ -162,6 +162,7 @@
           <Include href="Symbol 721.xml" itemIcon="1" loadImmediate="false" itemID="65a50f67-00000570" lastModified="1705316192"/>
           <Include href="Symbol 722.xml" loadImmediate="false" itemID="65a50f67-00000571" lastModified="1705316192"/>
           <Include href="Symbol 1540.xml" loadImmediate="false" itemID="6577faef-0000173e" lastModified="1746217049"/>
+          <Include href="串联破甲火箭弹.xml" itemIcon="1" loadImmediate="false" itemID="68d50246-00000d30" lastModified="1758790813"/>
           <Include href="弹壳/步枪弹壳.xml" itemID="6634970f-00000eef" lastModified="1714742965"/>
           <Include href="弹壳/加强弹壳.xml" itemID="66357ced-00000b76" lastModified="1714781421"/>
           <Include href="弹壳/加强榴弹弹壳.xml" itemID="66384119-00001761" lastModified="1752978353"/>
@@ -601,7 +602,7 @@
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 664.xml" loadImmediate="false" itemID="668b9cdd-000001e0" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 1217.xml" itemIcon="1" loadImmediate="false" itemID="668b9f53-000001d0" lastModified="1720426265"/>
           <Include href="无AS链接/月牙刀光.xml" loadImmediate="false" itemID="68d25fac-000012ee" lastModified="1758618233"/>
-          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1758707686"/>
+          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1758791491"/>
           <Include href="子弹-持续组/电球.xml" itemID="669d343b-00001740" lastModified="1722876120"/>
           <Include href="子弹-持续组/火焰.xml" itemID="669d3404-00001734" lastModified="1754922735"/>
           <Include href="子弹-持续组/声波.xml" itemID="669d34bf-0000176e" lastModified="1722875808"/>
@@ -613,6 +614,7 @@
           <Include href="子弹-持续组/诛神闪电.xml" itemID="669d33fc-00001732" lastModified="1752981174"/>
           <Include href="子弹-近战子弹专享座位/近战子弹.xml" itemID="668fd762-000019f9" lastModified="1720702818"/>
           <Include href="子弹-炮弹与爆炸组/爆炎手里剑.xml" itemID="669d3b07-000017c2" lastModified="1752979880"/>
+          <Include href="子弹-炮弹与爆炸组/串联破甲火箭弹.xml" itemID="68d50469-00001436" lastModified="1758792072"/>
           <Include href="子弹-炮弹与爆炸组/火箭弹.xml" itemID="669d33f7-00001731" lastModified="1722875576"/>
           <Include href="子弹-炮弹与爆炸组/榴弹.xml" itemID="669d34cb-00001771" lastModified="1752979729"/>
           <Include href="子弹-炮弹与爆炸组/普通爆炸.xml" itemID="669d33e6-0000172d" lastModified="1754673338"/>
@@ -621,7 +623,7 @@
           <Include href="子弹-炮弹与爆炸组/气锤地雷.xml" itemID="6878f9c7-00000a5c" lastModified="1753436110"/>
           <Include href="子弹-炮弹与爆炸组/气锤地雷素材.xml" loadImmediate="false" itemID="6878fa5b-00000a6f" lastModified="1752760717"/>
           <Include href="子弹-炮弹与爆炸组/小型导弹.xml" itemID="669d34c7-00001770" lastModified="1730004177"/>
-          <Include href="子弹-炮弹与爆炸组/重型火箭弹.xml" itemID="68d3b57d-00001bdf" lastModified="1758707723"/>
+          <Include href="子弹-炮弹与爆炸组/重型火箭弹.xml" itemID="68d3b57d-00001bdf" lastModified="1758792063"/>
           <Include href="子弹-普通与穿刺组/巴雷特子弹.xml" itemID="669d3447-00001743" lastModified="1721578567"/>
           <Include href="子弹-普通与穿刺组/穿刺子弹.xml" itemID="669d3454-00001746" lastModified="1721578580"/>
           <Include href="子弹-普通与穿刺组/等离子穿刺子弹.xml" itemID="68a2938d-00001541" lastModified="1755485069"/>
@@ -647,7 +649,7 @@
           <Include href="自瞄准星特效/火力支援新瞄准镜.xml" loadImmediate="false" itemID="671399a0-00002828" lastModified="1729337760"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="场景 1" currentFrame="1">
+          <DOMTimeline name="场景 1" currentFrame="3">
                <layers>
                     <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
                          <frames>
@@ -972,7 +974,7 @@
                     <SolidSwatchItem color="#FFE843" hue="35" saturation="239" brightness="152"/>
                     <SolidSwatchItem color="#FEE99A" hue="32" saturation="235" brightness="192"/>
                     <SolidSwatchItem color="#E14001" alpha="0.498039215686275" hue="11" saturation="238" brightness="107"/>
-                    <SolidSwatchItem color="#FFA700" alpha="0.717647058823529" hue="26" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FFA700" alpha="0.713725490196078" hue="26" saturation="239" brightness="120"/>
                     <SolidSwatchItem color="#E14001" alpha="0.298039215686275" hue="11" saturation="238" brightness="107"/>
                     <SolidSwatchItem color="#FFA700" alpha="0.447058823529412" hue="26" saturation="239" brightness="120"/>
                     <SolidSwatchItem color="#FFDE39" alpha="0.6" hue="33" saturation="239" brightness="147"/>
@@ -994,6 +996,13 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4084649" publishTime="1758792078"/>
+          <PublishItem publishSize="4084667" publishTime="1758791908"/>
+          <PublishItem publishSize="4084668" publishTime="1758791855"/>
+          <PublishItem publishSize="4084656" publishTime="1758791501"/>
+          <PublishItem publishSize="4084657" publishTime="1758791401"/>
+          <PublishItem publishSize="4084661" publishTime="1758791186"/>
+          <PublishItem publishSize="4084652" publishTime="1758790910"/>
           <PublishItem publishSize="4078437" publishTime="1758707720"/>
           <PublishItem publishSize="4078523" publishTime="1758707695"/>
           <PublishItem publishSize="4078491" publishTime="1758707256"/>
@@ -1007,12 +1016,5 @@
           <PublishItem publishSize="4074361" publishTime="1754922189"/>
           <PublishItem publishSize="4113464" publishTime="1754922075"/>
           <PublishItem publishSize="4113465" publishTime="1754922030"/>
-          <PublishItem publishSize="4112615" publishTime="1754921296"/>
-          <PublishItem publishSize="4112682" publishTime="1754921075"/>
-          <PublishItem publishSize="4111143" publishTime="1754920744"/>
-          <PublishItem publishSize="4111143" publishTime="1754920692"/>
-          <PublishItem publishSize="4102588" publishTime="1754919813"/>
-          <PublishItem publishSize="4102343" publishTime="1754919477"/>
-          <PublishItem publishSize="4102165" publishTime="1754919066"/>
      </publishHistory>
 </DOMDocument>

@@ -6129,5 +6129,51 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
         </cycle>
       </attr_0>
     </lifecycle>
-  </item>   
+  </item>     
+  <item weapontype="发射器">
+    <id>17709</id>
+    <name>RPG28</name>
+    <displayname>RPG28</displayname>
+    <icon>RPG28</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>411840</price>
+    <description>单兵反坦克武器的巅峰之作，125mm口径的毁灭使者。
+    串联装药战斗部能够击穿千毫米级别的复合装甲，将全部工程智慧凝聚于一发必杀的极致威力。
+    末日后出现的“纳米复装套件”在尾段加入快拆闭锁与自清洁小仓，使其具备有限复用能力；但重量与后喷更为严苛，只适合近中距的决战射击。</description>
+    <data>
+      <level>44</level>
+      <weight>22</weight>
+      <dressup>枪-长枪-RPG28</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>800</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>20</velocity>
+      <bullet>串联破甲火箭弹</bullet>
+      <sound>re_GL_m202.wav</sound>
+      <muzzle>发射器枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>火箭弹弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>6700</power>
+      <impact>0</impact>      
+      <damagetype>破击</damagetype>
+      <magictype>装甲</magictype>
+    </data>        
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>RPG28初始化</initRoutines>
+          <initParam>
+            <temp>1</temp>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>RPG28周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
+  </item> 
 </root>
