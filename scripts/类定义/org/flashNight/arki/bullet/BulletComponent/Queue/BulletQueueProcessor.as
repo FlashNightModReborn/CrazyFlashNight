@@ -697,6 +697,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 // 阶段2：子弹 vs 单位碰撞检测
                 // ================================================================
                 if (!skipUnits) {
+                    __initDeferScatter(bullet);
                     // ---- 扫描线算法：双指针优化的碰撞检测窗口计算 ----
                     queryLeft = Lb;        // 使用已缓存的子弹左边界
                 // 推进扫描线：跳过所有右边界小于子弹左边界的目标
@@ -714,6 +715,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 // 如果没有任何目标在子弹的横向范围内，直接跳过
                 if (startIndex >= len || Rb < unitLeftKeys[startIndex]) {
                     bullet.updateMovement(bullet);
+                    __commitDeferScatter(bullet);
                     continue;  // 直接进入下一发子弹的处理
                 }
 
@@ -845,6 +847,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     if (bullet.hitCount > 0 && bullet.shouldGeneratePostHitEffect) {
                         FX.Effect(bullet.击中后子弹的效果, bullet._x, bullet._y, shooter._xscale);
                     }
+                    __commitDeferScatter(bullet);
                 } // end if (!skipUnits)
 
                 // 与原实现一致：执行段末尾做一次位移更新
@@ -902,5 +905,37 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         if (hasCZ) {
             BulletCancelQueueProcessor.endFrame();
         }
+    }
+
+    static function __initDeferScatter(bullet:Object):Void {
+        if (bullet == null) {
+            return;
+        }
+        var initialValue:Number = (bullet.霰弹值 != undefined) ? Number(bullet.霰弹值) : 0;
+        bullet.__dfScatterBase = initialValue;
+        bullet.__dfScatterShadow = initialValue;
+        bullet.__dfScatterPending = 0;
+    }
+
+    static function __commitDeferScatter(bullet:Object):Void {
+        if (bullet == null) {
+            return;
+        }
+        var baseValue:Number = (bullet.__dfScatterBase != undefined) ? Number(bullet.__dfScatterBase) : NaN;
+        var pending:Number = (bullet.__dfScatterPending != undefined) ? Number(bullet.__dfScatterPending) : 0;
+        if (!isNaN(baseValue) && pending > 0) {
+            var currentValue:Number = (bullet.霰弹值 != undefined) ? Number(bullet.霰弹值) : baseValue;
+            var nextValue:Number = baseValue - pending;
+            if (nextValue < 0) {
+                nextValue = 0;
+            }
+            if (isNaN(currentValue)) {
+                currentValue = baseValue;
+            }
+            bullet.霰弹值 = (currentValue < nextValue) ? currentValue : nextValue;
+        }
+        delete bullet.__dfScatterBase;
+        delete bullet.__dfScatterShadow;
+        delete bullet.__dfScatterPending;
     }
 }
