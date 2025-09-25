@@ -6051,9 +6051,9 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
     <type>武器</type>
     <use>长枪</use>
     <price>200000</price>
-    <description>由C国北方工业集团研制的肩扛式火箭发射器。末日后因前线对重复装填的刚需，被改造为可循环使用的重型火箭筒兵。</description>
+    <description>由C国北方工业集团研制的肩扛式火箭发射器。末日后因前线对重复装填的刚需，被改造为可循环使用的重型火箭筒。</description>
     <data>
-      <level>33</level>
+      <level>31</level>
       <weight>5</weight>
       <dressup>枪-长枪-PF98A</dressup>
       <capacity>1</capacity>
@@ -6094,10 +6094,11 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
     <icon>RPG7V2</icon>
     <type>武器</type>
     <use>长枪</use>
-    <price>250000</price>
-    <description>RPG作为一款高度实用且价格低廉的单兵武器，和AK系列自动步枪一样，RPG在其问世以来的国际武装冲突和不对称战争中扮演着无可替代的角色。</description>
+    <price>124800</price>
+    <description>经典RPG-7的深度改进型，化了发射筒结构以承受更强力的新型弹药。
+作为全球流通量最大的反坦克武器家族成员，RPG-7V2见证了无数次不对称战争的胜利。在末日废土中，它依然是游荡者们最信赖的重型火力——简单、可靠、致命。</description>
     <data>
-      <level>13</level>
+      <level>20</level>
       <weight>8</weight>
       <dressup>枪-长枪-RPG7V2</dressup>
       <capacity>1</capacity>
@@ -6112,7 +6113,7 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
       <bullethit>火花</bullethit>
       <clipname>火箭弹弹药</clipname>
       <bulletsize>50</bulletsize>
-      <power>4000</power>
+      <power>4100</power>
       <impact>0</impact>      
     </data>    
     <lifecycle>
