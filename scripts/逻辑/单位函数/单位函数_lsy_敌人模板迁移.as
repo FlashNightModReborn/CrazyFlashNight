@@ -639,7 +639,7 @@ _root.初始化敌人模板 = function() {
 
     var areaHeight:Number = this.area._height * this._yscale;
     areaHeight = !isNaN(areaHeight) ? areaHeight : 136;
-    var threshold:Number = 16000;
+    var threshold:Number = 19000;
 
     if (areaHeight >= threshold * 2) {
         this.魔法抗性.巨体 = 0;
@@ -647,7 +647,7 @@ _root.初始化敌人模板 = function() {
         this.魔法抗性.巨体 = 50 * (1 - (areaHeight - threshold) / threshold);
     }
 
-    _root.发布消息(this.area._height, this._yscale, areaHeight, this.魔法抗性.巨体)
+    // _root.发布消息(this.area._height, this._yscale, areaHeight, this.魔法抗性.巨体)
 
     // 应用新版人物文字信息
     if (this.人物文字信息) {

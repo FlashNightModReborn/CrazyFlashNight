@@ -158,10 +158,10 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
             isMelee:Boolean = (Obj.flags & FLAG_MELEE) != 0,                // 近战子弹标志检测
             
 
-            // === 基于位掩码标志的智能散射角度计算 ===  
+            // === 基于位掩码标志的智能散射角度计算 ===
             // 利用之前检测的位标志结果，避免重复的类型判断
             // • isMelee = true: 近战子弹无散射，角度为0
-            // • isChain = true: 联弹子弹无随机偏移，使用精确射击角度  
+            // • isChain = true: 联弹子弹无随机偏移，使用精确射击角度
             // • 其他情况: 应用随机散射偏移，模拟武器精度
             scatteringAngle:Number = isMelee ? 0 : (shootingAngle + (isChain ? 0 : LinearCongruentialEngine.getInstance().randomOffset(Obj.子弹散射度))),
 
@@ -171,8 +171,8 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
         // 设置旋转角度
 
         // 优化后的条件判断和角度计算
-        Obj._rotation = (zyRatio && speedX && speedY) 
-            ? (Math.atan2(speedY, speedX) * (180 / Math.PI) + 360) % 360 
+        Obj._rotation = (zyRatio && speedX && speedY)
+            ? (Math.atan2(speedY, speedX) * (180 / Math.PI) + 360) % 360
             : scatteringAngle;
 
         // 创建子弹实例
@@ -181,18 +181,24 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
         } else {
             // 利用子弹计数来管理子弹深度
             bulletInstance = gameWorld.子弹区域.attachMovie(
-                Obj.baseAsset, 
+                Obj.baseAsset,
                 Obj.发射者名 + Obj.子弹种类 + count + scatteringAngle,
-                count++, 
+                count++,
                 Obj);
         }
 
-        // count = (++count) % 100; 
+        // count = (++count) % 100;
         // 计数器改为在外部重置
 
-        // 设置运动参数
-
-        bulletInstance.霰弹值 = isChain ? Obj.霰弹值 : 1;
+        // ========== 霰弹值初始化保证（性能优化：2025年9月） ==========
+        // 确保联弹霰弹值为有效正整数，避免运行时防御检查
+        if (isChain) {
+            var scatterValue:Number = Obj.霰弹值;
+            // 强制转换为正整数（位运算实现向下取整 + 边界检查）
+            bulletInstance.霰弹值 = (scatterValue > 0) ? (scatterValue >> 0) : 1;
+        } else {
+            bulletInstance.霰弹值 = 1;
+        }
 
         // 初始化纳米毒性功能
         BulletInitializer.initializeNanoToxicfunction(Obj, bulletInstance, shooter);

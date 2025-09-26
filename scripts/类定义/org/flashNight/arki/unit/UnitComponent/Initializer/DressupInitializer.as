@@ -188,7 +188,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
 
         var areaHeight:Number = target.area._height * target._yscale;
         areaHeight = !isNaN(areaHeight) ? areaHeight : 136;
-        var threshold:Number = 16000;
+        var threshold:Number = 19000;
 
         if (areaHeight >= threshold * 2) {
             target.魔法抗性.巨体 = 0;
@@ -196,7 +196,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             target.魔法抗性.巨体 = 50 * (1 - (areaHeight - threshold) / threshold);
         }
 
-        _root.发布消息(target.area._height, target._yscale, areaHeight, target.魔法抗性.巨体)
+        // _root.发布消息(target.area._height, target._yscale, areaHeight, target.魔法抗性.巨体)
+        
         target.基础毒 = 0;
         target.基础吸血 = 0;
         target.基础击溃 = 0;
