@@ -27,7 +27,7 @@ import flash.filters.*;
 #include "../逻辑/装备函数/RPG.as"
 #include "../逻辑/装备函数/PF98A.as"
 #include "../逻辑/装备函数/RPG28.as"
-
+#include "../逻辑/装备函数/RShG4.as"
 
 #include "../逻辑/装备函数/光刀狮子.as"
 #include "../逻辑/装备函数/光斧金牛.as"

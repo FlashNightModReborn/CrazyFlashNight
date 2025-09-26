@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#666666" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" objectsSnapTo="false" nextSceneIdentifier="2" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#999999" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" objectsSnapTo="false" nextSceneIdentifier="2" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="2.音效文件夹" itemID="656c28f2-00000fe5"/>
           <DOMFolderItem name="2.音效文件夹/爆炸" itemID="656c296a-0000103c" isExpanded="true"/>
@@ -138,7 +138,7 @@
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="ashcore/ashcore.xml" itemID="688340fd-00000819" lastModified="1753436006"/>
           <Include href="ashcore/图标-ashcore.xml" itemID="68835078-00000a95" lastModified="1753436313"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1758790580"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1758878889"/>
           <Include href="q.xml" loadImmediate="false" itemID="6898491a-00000406" lastModified="1754812780"/>
           <Include href="RPG28发射器.xml" itemIcon="1" loadImmediate="false" itemID="68d50204-00000d2a" lastModified="1758790191"/>
           <Include href="sprite/Symbol 35.xml" itemID="6577b699-00000971" lastModified="1718635260"/>
@@ -288,6 +288,10 @@
           <Include href="提把.xml" loadImmediate="false" itemID="68a08614-00002d17" lastModified="1755391446"/>
           <Include href="调试用定位.xml" itemID="689f43ef-00002651" lastModified="1755268079"/>
           <Include href="调试用失败定位.xml" itemID="689f43e7-00002650" lastModified="1755268071"/>
+          <Include href="铁锤弹头罩.xml" loadImmediate="false" itemID="68d65b86-0000109d" lastModified="1758878816"/>
+          <Include href="铁锤筒子.xml" loadImmediate="false" itemID="68d65ae5-00001095" lastModified="1758878775"/>
+          <Include href="铁锤文字1.xml" loadImmediate="false" itemID="68d65a98-0000108d" lastModified="1758878516"/>
+          <Include href="铁锤文字2.xml" loadImmediate="false" itemID="68d65aa3-00001091" lastModified="1758878372"/>
           <Include href="铁枪高级logo图腾.xml" loadImmediate="false" itemID="685e57a7-00000725" lastModified="1751013287"/>
           <Include href="未命名文件夹 1/1/shape 9 (Up Over Down Hit).xml" itemIcon="1" loadImmediate="false" itemID="6551edd1-0000219f" lastModified="1443854724"/>
           <Include href="未命名文件夹 1/1/shape 1194.xml" itemIcon="1" loadImmediate="false" itemID="560f79ad-000004ab" lastModified="1443854765"/>
@@ -451,8 +455,10 @@
           <Include href="长枪/PF98A/PF98A后筒发射药.xml" loadImmediate="false" itemID="68d38e84-00001690" lastModified="1758695044"/>
           <Include href="长枪/PF98A/PF98A筒子.xml" loadImmediate="false" itemID="68d38e7e-0000168f" lastModified="1758695038"/>
           <Include href="长枪/PF98A/RPG28.xml" itemID="68d500c8-00000d19" lastModified="1758792335"/>
+          <Include href="长枪/PF98A/RShG4.xml" itemID="68d65626-0000106d" lastModified="1758879975"/>
           <Include href="长枪/PF98A/图标-PF98A.xml" itemID="68d38e9f-00001691" lastModified="1758695071"/>
           <Include href="长枪/PF98A/图标-RPG28.xml" itemID="68d50369-00000d49" lastModified="1758790537"/>
+          <Include href="长枪/PF98A/图标-RShG4.xml" itemID="68d65c8b-000010c1" lastModified="1758878925"/>
           <Include href="长枪/PKP/PKP.xml" itemID="686b8a62-00000383" lastModified="1754217284"/>
           <Include href="长枪/PKP/PKP弹链动画.xml" loadImmediate="false" itemID="686ba7f6-00000b49" lastModified="1751886658"/>
           <Include href="长枪/PKP/PKP子弹1.xml" loadImmediate="false" itemID="686ba894-00000cab" lastModified="1751886365"/>
@@ -1383,6 +1389,9 @@
                     <SolidSwatchItem color="#C8C19F" hue="34" saturation="64" brightness="169"/>
                     <SolidSwatchItem color="#615A40" hue="32" saturation="49" brightness="76"/>
                     <SolidSwatchItem color="#877E58" hue="33" saturation="50" brightness="105"/>
+                    <SolidSwatchItem color="#959473" hue="39" saturation="33" brightness="124"/>
+                    <SolidSwatchItem color="#671A0E" hue="5" saturation="183" brightness="55"/>
+                    <SolidSwatchItem color="#2D2C09" hue="39" saturation="163" brightness="25"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1465,6 +1474,11 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2465886" publishTime="1758879315"/>
+          <PublishItem publishSize="2465886" publishTime="1758879260"/>
+          <PublishItem publishSize="2465887" publishTime="1758879009"/>
+          <PublishItem publishSize="2465886" publishTime="1758878935"/>
+          <PublishItem publishSize="2469586" publishTime="1758878665"/>
           <PublishItem publishSize="2430292" publishTime="1758791678"/>
           <PublishItem publishSize="2430292" publishTime="1758791621"/>
           <PublishItem publishSize="2416671" publishTime="1758773457"/>
@@ -1480,10 +1494,5 @@
           <PublishItem publishSize="2406281" publishTime="1758698463"/>
           <PublishItem publishSize="2406281" publishTime="1758697603"/>
           <PublishItem publishSize="2406281" publishTime="1758694881"/>
-          <PublishItem publishSize="2406286" publishTime="1758693798"/>
-          <PublishItem publishSize="2396234" publishTime="1756366199"/>
-          <PublishItem publishSize="2396316" publishTime="1756365275"/>
-          <PublishItem publishSize="2396227" publishTime="1756363898"/>
-          <PublishItem publishSize="2396227" publishTime="1756363827"/>
      </publishHistory>
 </DOMDocument>

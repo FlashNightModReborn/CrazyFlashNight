@@ -6157,7 +6157,7 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
       <bullethit>火花</bullethit>
       <clipname>火箭弹弹药</clipname>
       <bulletsize>50</bulletsize>
-      <power>6700</power>
+      <power>16000</power>
       <impact>0</impact>      
       <damagetype>破击</damagetype>
       <magictype>装甲</magictype>
@@ -6172,6 +6172,52 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
         </init>
         <cycle>
           <cycleRoutines>RPG28周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
+  </item>   
+  <item weapontype="发射器">
+    <id>17710</id>
+    <name>RShG4</name>
+    <displayname>RShG4</displayname>
+    <icon>RShG4</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>533520</price>
+    <description>统合军制式四型反应式突击榴弹发射器，代号 Молот。
+该武器平台专为应对超重型装甲单位及永固工事而设计，是动力装甲小队的标准攻坚火力。
+其核心为一套140mm可重复装填发射系统，采用复合串联战斗部，具备毫不妥协的毁灭能力。</description>
+    <data>
+      <level>57</level>
+      <weight>45</weight>
+      <dressup>枪-长枪-RShG4</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>800</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>40</velocity>
+      <bullet>串联破甲火箭弹</bullet>
+      <sound>re_GL_m202.wav</sound>
+      <muzzle>发射器枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>火箭弹弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>18500</power>
+      <impact>0</impact>      
+      <damagetype>破击</damagetype>
+      <magictype>装甲</magictype>
+    </data>        
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>RShG4初始化</initRoutines>
+          <initParam>
+            <temp>1</temp>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>RShG4周期</cycleRoutines>
         </cycle>
       </attr_0>
     </lifecycle>
