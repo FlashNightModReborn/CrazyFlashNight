@@ -62,29 +62,26 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
     }
 
     /**
-     * 处理联弹伤害。
+     * 处理联弹伤害
      *
-     * 核心逻辑：
-     * - 根据子弹的霰弹值、目标的血量和损伤值，计算实际消耗的霰弹值
-     * - 使用影子记账机制优化对群手感（2025年9月新增）
+     * 核心功能：
+     * - 根据子弹霰弹值、目标血量和损伤值计算实际消耗
+     * - 使用影子记账机制优化对群手感
      * - 支持纵向穿刺联弹的覆盖率削弱
-     * - 更新子弹的霰弹值和目标的损伤值，并将结果存储在 DamageResult 中
      *
-     * 性能优化（2025年9月更新）：
-     * - 快慢双路径设计：正常运行时走快速路径，测试/特殊情况走防御路径
-     * - 快速路径信任BulletQueueProcessor的初始化，省略防御性检查
-     * - 使用位运算替代布尔属性检测
-     * - 使用位移运算实现向下取整
-     * - 合并多个条件判断为原子操作
+     * 性能优化（2025年9月）：
+     * - 信任BulletQueueProcessor的初始化，移除冗余检查
+     * - 使用位运算优化类型检测和数值计算
+     * - 简化为单一快速路径，减少分支判断
      *
-     * @param bullet  子弹对象，包含霰弹值、最小霰弹值、flags等属性
+     * @param bullet  子弹对象
      * @param shooter 射击者对象
-     * @param target  目标对象，包含hp、损伤值等属性
-     * @param manager 管理器对象，提供overlapRatio（覆盖率）
-     * @param result  伤害结果对象，用于存储计算结果
+     * @param target  目标对象
+     * @param manager 管理器对象
+     * @param result  伤害结果对象
      */
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
-        // ========== 位标志常量注入 ==========
+        // 位标志常量注入（编译时零开销）
         #include "../macros/FLAG_PIERCE.as"
         #include "../macros/FLAG_VERTICAL.as"
         #include "../macros/FLAG_NORMAL.as"
@@ -94,132 +91,65 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
         var RELEVANT_BITS_MASK:Number = FLAG_NORMAL | FLAG_TRANSPARENCY;
         var EXPECTED_STATE:Number = FLAG_NORMAL;
 
-        // ========== 快速路径判定 ==========
+        var overlapRatio:Number = manager.overlapRatio;
         var isNormalNonTransparent:Boolean = (bullet.flags & RELEVANT_BITS_MASK) == EXPECTED_STATE;
+        // 临时用的防御，仅在测试路径使用
         var hasDeferredSnapshot:Boolean = (bullet.__dfScatterBase != undefined);
 
-        // ========== 快速路径：高频联弹场景（信任BulletQueueProcessor初始化） ==========
+        // 获取霰弹值（根据是否有影子记账选择数据源）
+        var currentScatter:Number, scatterBase:Number, scatterShadow:Number, scatterForCalc:Number;
+
         if (hasDeferredSnapshot && isNormalNonTransparent) {
-            // 快速路径：省略防御性检查，直接使用值
-            var overlapRatio:Number = manager.overlapRatio;
-            var scatterBase:Number = bullet.__dfScatterBase;
-            var scatterShadow:Number = bullet.__dfScatterShadow;
-            var scatterForCalc:Number = (scatterBase + scatterShadow) * 0.5;
-
-            // 纵向穿刺削弱
-            if ((bullet.flags & PIERCE_AND_VERTICAL_MASK) == PIERCE_AND_VERTICAL_MASK) {
-                overlapRatio = overlapRatio * 7 / 18;
-            }
-
-            // 核心计算
-            var A:Number = bullet.最小霰弹值 + overlapRatio * (scatterForCalc - bullet.最小霰弹值 + 1) * 1.2;
-            var B:Number = target.损伤值 > 0 ? target.hp / target.损伤值 : target.hp;
-            var C:Number = A < B ? A : B;
-            var ceilC:Number = (C > (C >> 0)) ? (C >> 0) + 1 : (C >> 0);
-
-            // 实际消耗（仅保留必要边界检查）
-            var actualScatterUsed:Number = scatterShadow < ceilC ? scatterShadow : ceilC;
-            if (actualScatterUsed < 0) actualScatterUsed = 0;
-
-            // 更新影子记账
-            var pendingScatter:Number = bullet.__dfScatterPending || 0;
-            bullet.__dfScatterPending = pendingScatter + actualScatterUsed;
-
-            var nextShadow:Number = scatterShadow - actualScatterUsed;
-            if (nextShadow < 0) nextShadow = 0;
-            bullet.__dfScatterShadow = nextShadow;
-
-            // 设置结果
-            result.actualScatterUsed = actualScatterUsed;
-            result.finalScatterValue = nextShadow;
-            target.损伤值 *= actualScatterUsed;
-            return;
-        }
-
-        // ========== 慢速路径：防御性处理（测试/特殊情况/非标准流程） ==========
-        var overlapRatio:Number = manager.overlapRatio;
-
-        // 获取当前霰弹值（带防御检查）
-        var currentScatter:Number = (bullet.霰弹值 != undefined) ? Number(bullet.霰弹值) : 0;
-        if (isNaN(currentScatter)) {
-            currentScatter = 0;
-        }
-
-        // 初始化基准值和影子值（带防御检查）
-        var scatterBase:Number = hasDeferredSnapshot ? Number(bullet.__dfScatterBase) : currentScatter;
-        if (isNaN(scatterBase)) {
-            scatterBase = currentScatter;
-        }
-
-        var scatterShadow:Number = hasDeferredSnapshot ?
-            ((bullet.__dfScatterShadow != undefined) ? Number(bullet.__dfScatterShadow) : scatterBase) :
-            currentScatter;
-        if (isNaN(scatterShadow)) {
-            scatterShadow = scatterBase;
-        }
-
-        // 计算模式判定
-        var useDeferred:Boolean = hasDeferredSnapshot && isNormalNonTransparent;
-        var scatterForCalc:Number = useDeferred ? ((scatterBase + scatterShadow) * 0.5) : currentScatter;
-        if (isNaN(scatterForCalc)) {
+            // 影子记账模式：BulletQueueProcessor已保证数据有效
+            scatterBase = bullet.__dfScatterBase;
+            scatterShadow = bullet.__dfScatterShadow;
+            scatterForCalc = (scatterBase + scatterShadow) * 0.5;
+            
+        } else {
+            // 直接模式：使用当前霰弹值
+            currentScatter = bullet.霰弹值 || 0;
             scatterForCalc = currentScatter;
         }
 
-        // 纵向穿刺削弱
+        // 纵向穿刺削弱（覆盖率降至39%）
         if ((bullet.flags & PIERCE_AND_VERTICAL_MASK) == PIERCE_AND_VERTICAL_MASK) {
             overlapRatio = overlapRatio * 7 / 18;
         }
 
         // 核心伤害计算
         var A:Number = bullet.最小霰弹值 + overlapRatio * (scatterForCalc - bullet.最小霰弹值 + 1) * 1.2;
-        var thp:Number = target.hp;
-        var B:Number = target.损伤值 > 0 ? thp / target.损伤值 : thp;
+        var B:Number = target.损伤值 > 0 ? target.hp / target.损伤值 : target.hp;
         var C:Number = A < B ? A : B;
-        var floorC:Number = C >> 0;
-        var ceilC:Number = (C > floorC) ? floorC + 1 : floorC;
+        var ceilC:Number = (C > (C >> 0)) ? (C >> 0) + 1 : (C >> 0);
 
-        // 实际消耗计算（带防御检查）
-        var availableScatter:Number = useDeferred ? scatterShadow : currentScatter;
-        if (isNaN(availableScatter) || availableScatter < 0) {
-            availableScatter = 0;
-        }
-
+        // 计算实际消耗
+        var availableScatter:Number = (hasDeferredSnapshot && isNormalNonTransparent) ? scatterShadow : currentScatter;
         var actualScatterUsed:Number = availableScatter < ceilC ? availableScatter : ceilC;
-        if (isNaN(actualScatterUsed) || actualScatterUsed < 0) {
-            actualScatterUsed = 0;
-        }
 
-        result.actualScatterUsed = actualScatterUsed;
+        // 向上取整避免0段
+        if (actualScatterUsed < 1) actualScatterUsed = 1;
+
+        // _root.发布消息(scatterBase, scatterShadow, scatterForCalc, actualScatterUsed);
 
         // 更新霰弹值
-        var finalScatter:Number = useDeferred ? scatterShadow : currentScatter;
-
-        if (useDeferred) {
-            // 影子记账模式
-            var pendingScatter:Number = (bullet.__dfScatterPending != undefined) ? Number(bullet.__dfScatterPending) : 0;
-            if (isNaN(pendingScatter)) {
-                pendingScatter = 0;
-            }
-            pendingScatter += actualScatterUsed;
-            bullet.__dfScatterPending = pendingScatter;
-
-            var nextShadow:Number = scatterShadow - actualScatterUsed;
-            if (isNaN(nextShadow) || nextShadow < 0) {
-                nextShadow = 0;
-            }
-            bullet.__dfScatterShadow = nextShadow;
-            finalScatter = nextShadow;
+        if (hasDeferredSnapshot && isNormalNonTransparent) {
+            // 影子记账更新
+            bullet.__dfScatterPending = (bullet.__dfScatterPending || 0) + actualScatterUsed;
+            bullet.__dfScatterShadow = scatterShadow - actualScatterUsed;
+            if (bullet.__dfScatterShadow < 0) bullet.__dfScatterShadow = 0;
+            result.finalScatterValue = bullet.__dfScatterShadow;
         } else if (isNormalNonTransparent) {
-            // 普通模式
-            currentScatter -= actualScatterUsed;
-            if (currentScatter < 0) {
-                currentScatter = 0;
-            }
-            bullet.霰弹值 = currentScatter;
-            finalScatter = currentScatter;
+            // 直接更新
+            bullet.霰弹值 = currentScatter - actualScatterUsed;
+            if (bullet.霰弹值 < 0) bullet.霰弹值 = 0;
+            result.finalScatterValue = bullet.霰弹值;
+        } else {
+            // 非普通子弹不消耗霰弹值
+            result.finalScatterValue = currentScatter;
         }
 
-        result.finalScatterValue = finalScatter;
+        // 设置结果
+        result.actualScatterUsed = actualScatterUsed;
         target.损伤值 *= actualScatterUsed;
     }
 
