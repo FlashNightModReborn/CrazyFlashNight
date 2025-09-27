@@ -14,7 +14,7 @@
     target.syncRequiredEquips[ref.gunString] = true;
     target.dispatcher.subscribe("StatusChange", function() {
        _root.装备生命周期函数.P90周期(ref,param);
-       _root.发布消息(ref.gunString)
+       // _root.发布消息(ref.gunString)
    });
 };
 
