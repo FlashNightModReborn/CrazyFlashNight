@@ -103,7 +103,8 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
             // 影子记账模式：BulletQueueProcessor已保证数据有效
             scatterBase = bullet.__dfScatterBase;
             scatterShadow = bullet.__dfScatterShadow;
-            scatterForCalc = (scatterBase + scatterShadow) * 0.5;
+            // scatterForCalc = (scatterBase + scatterShadow) * 0.5;
+            scatterForCalc = scatterBase;
             
         } else {
             // 直接模式：使用当前霰弹值
