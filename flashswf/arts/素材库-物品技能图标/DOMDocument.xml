@@ -1,8 +1,8 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#999999" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" nextSceneIdentifier="2" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="3.位图相关" itemID="6690e84b-000017e9"/>
-          <DOMFolderItem name="材料相关" itemID="6690f5aa-00003203"/>
-          <DOMFolderItem name="材料相关/材料元件" itemID="66e97f71-00001436" isExpanded="true"/>
+          <DOMFolderItem name="材料相关" itemID="6690f5aa-00003203" isExpanded="true"/>
+          <DOMFolderItem name="材料相关/材料元件" itemID="66e97f71-00001436"/>
           <DOMFolderItem name="技能相关" itemID="67bdcc9b-00000d7f"/>
           <DOMFolderItem name="技能相关/图标素材" itemID="669b8912-000011e2" isExpanded="true"/>
           <DOMFolderItem name="技能相关/图标素材/强震地(代码空缺)" itemID="67beafff-0000066f"/>
@@ -14,7 +14,7 @@
           <DOMFolderItem name="未命名文件夹 1" itemID="67b9acf1-00000e73"/>
           <DOMFolderItem name="无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="项链相关" itemID="67bdcc7a-00000d2f"/>
-          <DOMFolderItem name="消耗道具相关" itemID="67bdcbfd-00000ccc" isExpanded="true"/>
+          <DOMFolderItem name="消耗道具相关" itemID="67bdcbfd-00000ccc"/>
           <DOMFolderItem name="消耗道具相关/0.回复增益类相关" itemID="67bdcc15-00000ce3" isExpanded="true"/>
           <DOMFolderItem name="消耗道具相关/1.弹药相关" itemID="67bdcc36-00000cff" isExpanded="true"/>
           <DOMFolderItem name="消耗道具相关/各种图素材等" itemID="65e07117-00000783"/>
@@ -212,6 +212,7 @@
           <Include href="材料相关/图标-电脑芯片.xml" itemID="66adbdbf-00001874" lastModified="1756954880"/>
           <Include href="材料相关/图标-动力液压杆.xml" itemID="66adbdd2-00001879" lastModified="1756954091"/>
           <Include href="材料相关/图标-毒素样本.xml" itemID="66adbc1b-00001833" lastModified="1722661915"/>
+          <Include href="材料相关/图标-二阶复合防御组件.xml" itemID="68d7e636-00004ed0" lastModified="1758983736"/>
           <Include href="材料相关/图标-方舟秘钥.xml" itemID="66adbc17-00001832" lastModified="1722661911"/>
           <Include href="材料相关/图标-方舟卫士样本.xml" itemID="66adbc04-00001831" lastModified="1722661892"/>
           <Include href="材料相关/图标-防沙皮革.xml" itemID="66adbe3a-00001883" lastModified="1756949308"/>
@@ -263,6 +264,7 @@
           <Include href="材料相关/图标-枪械内构强化套件.xml" itemID="66adc3fe-00001933" lastModified="1756949331"/>
           <Include href="材料相关/图标-强化金属管.xml" itemID="66adc3dd-0000192a" lastModified="1756949391"/>
           <Include href="材料相关/图标-强力胶.xml" itemID="66adc2da-00001925" lastModified="1756949358"/>
+          <Include href="材料相关/图标-三阶复合防御组件.xml" itemID="68d7f64a-00005098" lastModified="1758983813"/>
           <Include href="材料相关/图标-上色涂料.xml" itemID="66adc294-00001920" lastModified="1756948503"/>
           <Include href="材料相关/图标-神铁碎片.xml" itemID="688dbf67-00000863" lastModified="1754120045"/>
           <Include href="材料相关/图标-生物催化剂.xml" itemID="66adc256-00001919" lastModified="1756949337"/>
@@ -274,6 +276,7 @@
           <Include href="材料相关/图标-兽王碎片.xml" itemID="66adc21d-0000190f" lastModified="1722663459"/>
           <Include href="材料相关/图标-鼠年碎片.xml" itemID="66adc1c6-00001905" lastModified="1722663380"/>
           <Include href="材料相关/图标-水冷机构.xml" itemID="66adba05-000017fb" lastModified="1756950277"/>
+          <Include href="材料相关/图标-四阶复合防御组件.xml" itemID="68d7e9f0-0000507d" lastModified="1758980654"/>
           <Include href="材料相关/图标-碳纤维布料.xml" itemID="66adb9ff-000017fa" lastModified="1756951664"/>
           <Include href="材料相关/图标-铁枪核心.xml" itemID="68a473b8-00001209" lastModified="1755609061"/>
           <Include href="材料相关/图标-透镜.xml" itemID="66adb9f3-000017f9" lastModified="1756949382"/>
@@ -550,7 +553,7 @@
           <Include href="食材相关/猪肉.xml" itemIcon="1" loadImmediate="false" itemID="67bdc63d-000000de" lastModified="1740490301"/>
           <Include href="食材相关/竹笋.xml" loadImmediate="false" itemID="6814918b-0000039e" lastModified="1746178443"/>
           <Include href="食材相关/柱侯酱.xml" loadImmediate="false" itemID="6814612e-000005fb" lastModified="1746166062"/>
-          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1758975695"/>
+          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1758983759"/>
           <Include href="图标-方舟碎片.xml" itemID="66adbe1b-0000187e" lastModified="1722662433"/>
           <Include href="图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="666e7c83-00000d39" lastModified="1718516867"/>
           <Include href="未命名文件夹 1/Symbol 34.xml" itemIcon="1" loadImmediate="false" itemID="664c57d7-0000029e" lastModified="1740222009"/>
@@ -1140,6 +1143,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3588603" publishTime="1758988252"/>
+          <PublishItem publishSize="3588603" publishTime="1758988204"/>
+          <PublishItem publishSize="3588603" publishTime="1758984433"/>
           <PublishItem publishSize="3551774" publishTime="1758975700"/>
           <PublishItem publishSize="3556468" publishTime="1758514875"/>
           <PublishItem publishSize="3552319" publishTime="1758514255"/>
@@ -1157,8 +1163,5 @@
           <PublishItem publishSize="3408885" publishTime="1756890867"/>
           <PublishItem publishSize="3409011" publishTime="1756890735"/>
           <PublishItem publishSize="3397322" publishTime="1756889600"/>
-          <PublishItem publishSize="3401159" publishTime="1756884438"/>
-          <PublishItem publishSize="3369893" publishTime="1756872270"/>
-          <PublishItem publishSize="3354101" publishTime="1756869316"/>
      </publishHistory>
 </DOMDocument>
