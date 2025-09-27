@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧" itemID="66d719e1-00004984" linkageExportForAS="true" linkageIdentifier="烈火燃烧" lastModified="1758542863" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧" itemID="66d719e1-00004984" linkageExportForAS="true" linkageIdentifier="烈火燃烧" lastModified="1758993491" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="烈火燃烧" currentFrame="64">
       <layers>
-        <DOMLayer name="代码&amp;判定" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="代码&amp;判定" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -29,16 +29,16 @@ this.魔法伤害属性 = "热";*/]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码&amp;判定" color="#4FFF4F" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="代码&amp;判定" color="#4FFF4F" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DY="-38.95">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-13.3" centerPoint3DY="-82.75">
                   <matrix>
-                    <Matrix a="3.63949584960938" d="1.72972106933594" tx="-72.8" ty="-73.55"/>
+                    <Matrix a="9.78932189941406" d="2.85453796386719" tx="-208.8" ty="-140.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="20" y="20"/>
@@ -49,26 +49,14 @@ this.魔法伤害属性 = "热";*/]]></script>
             <DOMFrame index="2" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DY="-38.95">
-                  <matrix>
-                    <Matrix a="3.63949584960938" d="1.72972106933594" tx="-72.8" ty="-73.55"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="20" y="20"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="6" duration="3" keyMode="9728">
+            <DOMFrame index="5" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" keyMode="9728">
+            <DOMFrame index="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DY="-38.95">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-13.3" centerPoint3DY="-82.75">
                   <matrix>
-                    <Matrix a="3.63949584960938" d="1.72972106933594" tx="-72.8" ty="-73.55"/>
+                    <Matrix a="9.78932189941406" d="2.85453796386719" tx="-208.8" ty="-140.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="20" y="20"/>
@@ -76,44 +64,17 @@ this.魔法伤害属性 = "热";*/]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" duration="3" keyMode="9728">
+            <DOMFrame index="11" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="13" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DY="-38.95">
-                  <matrix>
-                    <Matrix a="3.63949584960938" d="1.72972106933594" tx="-72.8" ty="-73.55"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="20" y="20"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="14" duration="3" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="17" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DY="-38.95">
-                  <matrix>
-                    <Matrix a="3.63949584960938" d="1.72972106933594" tx="-72.8" ty="-73.55"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="20" y="20"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="18" duration="3" keyMode="9728">
+            <DOMFrame index="14" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="21" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DY="-38.95">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-13.3" centerPoint3DY="-82.75">
                   <matrix>
-                    <Matrix a="3.63949584960938" d="1.72972106933594" tx="-72.8" ty="-73.55"/>
+                    <Matrix a="9.78932189941406" d="2.85453796386719" tx="-208.8" ty="-140.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="20" y="20"/>
@@ -124,26 +85,14 @@ this.魔法伤害属性 = "热";*/]]></script>
             <DOMFrame index="22" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="25" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DY="-38.95">
-                  <matrix>
-                    <Matrix a="3.63949584960938" d="1.72972106933594" tx="-72.8" ty="-73.55"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="20" y="20"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="26" duration="3" keyMode="9728">
+            <DOMFrame index="25" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="29" keyMode="9728">
+            <DOMFrame index="36" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DY="-38.95">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-13.3" centerPoint3DY="-82.75">
                   <matrix>
-                    <Matrix a="3.63949584960938" d="1.72972106933594" tx="-72.8" ty="-73.55"/>
+                    <Matrix a="9.78932189941406" d="2.85453796386719" tx="-208.8" ty="-140.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="20" y="20"/>
@@ -151,89 +100,23 @@ this.魔法伤害属性 = "热";*/]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="30" duration="3" keyMode="9728">
+            <DOMFrame index="37" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="33" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DY="-38.95">
-                  <matrix>
-                    <Matrix a="3.63949584960938" d="1.72972106933594" tx="-72.8" ty="-73.55"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="20" y="20"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="34" duration="3" keyMode="9728">
+            <DOMFrame index="40" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="37" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DY="-38.95">
-                  <matrix>
-                    <Matrix a="3.63949584960938" d="1.72972106933594" tx="-72.8" ty="-73.55"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="20" y="20"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="38" duration="3" keyMode="9728">
+            <DOMFrame index="44" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="41" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DY="-38.95">
-                  <matrix>
-                    <Matrix a="3.63949584960938" d="1.72972106933594" tx="-72.8" ty="-73.55"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="20" y="20"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="42" duration="3" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="45" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DY="-38.95">
-                  <matrix>
-                    <Matrix a="3.63949584960938" d="1.72972106933594" tx="-72.8" ty="-73.55"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="20" y="20"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="46" duration="3" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="49" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DY="-38.95">
-                  <matrix>
-                    <Matrix a="3.63949584960938" d="1.72972106933594" tx="-72.8" ty="-73.55"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="20" y="20"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="50" duration="3" keyMode="9728">
+            <DOMFrame index="48" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="53" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DY="-38.95">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-13.3" centerPoint3DY="-82.75">
                   <matrix>
-                    <Matrix a="3.63949584960938" d="1.72972106933594" tx="-72.8" ty="-73.55"/>
+                    <Matrix a="9.78932189941406" d="2.85453796386719" tx="-208.8" ty="-140.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="20" y="20"/>
@@ -241,33 +124,72 @@ this.魔法伤害属性 = "热";*/]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="54" duration="3" keyMode="9728">
+            <DOMFrame index="54" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="57" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DY="-38.95">
-                  <matrix>
-                    <Matrix a="3.63949584960938" d="1.72972106933594" tx="-72.8" ty="-73.55"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="20" y="20"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+            <DOMFrame index="55" duration="4" keyMode="9728">
+              <elements/>
             </DOMFrame>
-            <DOMFrame index="58" duration="7" keyMode="9728">
+            <DOMFrame index="59" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="65" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧位图容器" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧位图容器" symbolType="graphic" loop="play once">
                   <matrix>
                     <Matrix tx="-124.3" ty="-237.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="123" y="150"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="65" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧位图容器" selected="true" symbolType="graphic" firstFrame="5" loop="play once">
+                  <matrix>
+                    <Matrix tx="-10.3" ty="-275.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="123" y="150"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="65" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧位图容器" selected="true" symbolType="graphic" firstFrame="2" loop="play once">
+                  <matrix>
+                    <Matrix tx="-260.3" ty="-277.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="123" y="150"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="65" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧位图容器" symbolType="graphic" firstFrame="6" loop="play once">
+                  <matrix>
+                    <Matrix tx="-145.3" ty="-330.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="123" y="150"/>
