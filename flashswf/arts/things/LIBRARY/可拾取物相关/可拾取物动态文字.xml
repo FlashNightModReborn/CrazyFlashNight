@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="可拾取物相关/可拾取物动态文字" itemID="678d1c0c-00000d64" lastModified="1737854945" lastUniqueIdentifier="7">
   <timeline>
-    <DOMTimeline name="可拾取物动态文字" currentFrame="34">
+    <DOMTimeline name="可拾取物动态文字">
       <layers>
         <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
@@ -20,7 +20,7 @@
                 </CustomEase>
               </tweens>
               <elements>
-                <DOMSymbolInstance libraryItemName="可拾取物相关/可拾取物文字">
+                <DOMSymbolInstance libraryItemName="可拾取物相关/可拾取物文字" selected="true">
                   <matrix>
                     <Matrix tx="-75" ty="-2"/>
                   </matrix>

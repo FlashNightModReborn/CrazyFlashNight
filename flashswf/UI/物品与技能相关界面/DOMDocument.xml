@@ -11,7 +11,7 @@
           <DOMFolderItem name="个人信息界面素材" itemID="6772301e-00000396"/>
           <DOMFolderItem name="购买执行界面素材" itemID="677cd948-0000091f"/>
           <DOMFolderItem name="互动提示" itemID="676c09f4-00000f72"/>
-          <DOMFolderItem name="物品栏" itemID="659d3927-00003122"/>
+          <DOMFolderItem name="物品栏" itemID="659d3927-00003122" isExpanded="true"/>
           <DOMFolderItem name="新强化界面" itemID="68a01abf-000002a3" isExpanded="true"/>
      </folders>
      <media>
@@ -76,7 +76,6 @@
           <Include href="shape/Symbol 1752.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ec" lastModified="1704196122"/>
           <Include href="shape/Symbol 1753.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ed" lastModified="1704196122"/>
           <Include href="shape/Symbol 1754.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ee" lastModified="1704196122"/>
-          <Include href="shape/Symbol 1788.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a04" lastModified="1704196122"/>
           <Include href="shape/Symbol 1935.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a57" lastModified="1712935928"/>
           <Include href="shape/Symbol 1951.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a58" lastModified="1704196122"/>
           <Include href="shape/Symbol 1952.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000a59" lastModified="1704196122"/>
@@ -84,6 +83,7 @@
           <Include href="shape/材料背景网格.xml" itemIcon="1" loadImmediate="false" itemID="677e1ffe-000002e8" lastModified="1736318997"/>
           <Include href="shape/商店背景格.xml" itemIcon="1" loadImmediate="false" itemID="676cf8f4-0000035f" lastModified="1735196051"/>
           <Include href="shape/通用背景.xml" itemIcon="1" loadImmediate="false" itemID="659d3fae-00003178" lastModified="1710752365"/>
+          <Include href="shape/装备图标框.xml" itemIcon="1" loadImmediate="false" itemID="68cfb93b-000002ca" lastModified="1758443835"/>
           <Include href="sprite/Symbol 292.xml" loadImmediate="false" itemID="6597607e-00000792" lastModified="1704196122"/>
           <Include href="sprite/Symbol 298.xml" loadImmediate="false" itemID="6597607e-00000795" lastModified="1704196122"/>
           <Include href="sprite/Symbol 314.xml" loadImmediate="false" itemID="6597607e-0000079a" lastModified="1704196122"/>
@@ -132,18 +132,22 @@
           <Include href="新版仓库界面.xml" itemID="676f9b88-0000028e" lastModified="1752747706"/>
           <Include href="新版商店界面.xml" itemID="676cf8b9-00000359" lastModified="1752753966"/>
           <Include href="新版通用勾选框.xml" loadImmediate="false" itemID="677d58e7-00000cb8" lastModified="1736268332"/>
-          <Include href="新版物品栏界面.xml" itemID="67699dcd-00000abf" lastModified="1756915614"/>
-          <Include href="新版装备强化界面.xml" loadImmediate="false" itemID="68a01bda-000002a7" lastModified="1756916592"/>
+          <Include href="新版物品栏界面.xml" itemID="67699dcd-00000abf" lastModified="1758443684"/>
+          <Include href="新版装备强化界面.xml" loadImmediate="false" itemID="68a01bda-000002a7" lastModified="1758967564"/>
+          <Include href="新强化界面/槽位选择按钮.xml" itemIcon="0" loadImmediate="false" itemID="68d1894d-000002b9" lastModified="1758966946"/>
+          <Include href="新强化界面/槽位选择动画.xml" loadImmediate="false" itemID="68d18941-000002b7" lastModified="1758562625"/>
+          <Include href="新强化界面/槽位选择加号.xml" itemIcon="1" loadImmediate="false" itemID="68d1893d-000002b6" lastModified="1758562621"/>
           <Include href="新强化界面/返回按钮.xml" itemIcon="0" loadImmediate="false" itemID="68a4245a-00000b21" lastModified="1755588017"/>
+          <Include href="新强化界面/进阶按钮.xml" itemIcon="0" loadImmediate="false" itemID="68cfb493-0000027c" lastModified="1758446107"/>
           <Include href="新强化界面/进入强化界面标志.xml" loadImmediate="false" itemID="68a42ceb-00000bec" lastModified="1756986743"/>
           <Include href="新强化界面/进入强化界面小图标.xml" itemIcon="1" loadImmediate="false" itemID="68a42cd3-00000beb" lastModified="1756986429"/>
+          <Include href="新强化界面/配件物品格 1&amp;#042n.xml" loadImmediate="false" itemID="68cfc030-000002d6" lastModified="1758445715"/>
           <Include href="新强化界面/强化按钮.xml" itemIcon="0" loadImmediate="false" itemID="68a04233-00000b28" lastModified="1755357559"/>
           <Include href="新强化界面/强化度转换按钮.xml" itemIcon="0" loadImmediate="false" itemID="68a09107-00000b36" lastModified="1755357550"/>
           <Include href="新强化界面/强化界面背景.xml" loadImmediate="false" itemID="68a00e73-0000026d" lastModified="1755578372"/>
           <Include href="新强化界面/强化界面物品选择框.xml" loadImmediate="false" itemID="68a02043-00000405" lastModified="1755536839"/>
           <Include href="新强化界面/强化执行按钮.xml" itemIcon="0" loadImmediate="false" itemID="68a40047-0000027b" lastModified="1755587862"/>
-          <Include href="新强化界面/外观改造按钮.xml" itemIcon="0" loadImmediate="false" itemID="68b7ea39-000002d6" lastModified="1757062093"/>
-          <Include href="新强化界面/物品格 6&amp;#0422.xml" itemIcon="1" loadImmediate="false" itemID="68b7ef2e-000002f6" lastModified="1756884782"/>
+          <Include href="新强化界面/物品格 6&amp;#0422.xml" loadImmediate="false" itemID="68b7ef2e-000002f6" lastModified="1758561746"/>
           <Include href="新强化界面/物品图标容器.xml" loadImmediate="false" itemID="68a01aa8-0000029e" lastModified="1755323063"/>
           <Include href="资源箱界面.xml" itemID="684482b6-000002a2" lastModified="1749387337"/>
           <Include href="资源箱界面网格.xml" loadImmediate="false" itemID="6844832f-000002a5" lastModified="1749359714"/>
@@ -625,6 +629,10 @@
                          <GradientEntry color="#31322C" ratio="0"/>
                          <GradientEntry color="#111111" ratio="1"/>
                     </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#FFFFFF" alpha="0" ratio="0"/>
+                         <GradientEntry color="#FFFFFF" alpha="0.2" ratio="1"/>
+                    </LinearGradientSwatchItem>
                </swatches>
           </swatchList>
      </extendedSwatchLists>
@@ -633,6 +641,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="58085" publishTime="1758963690"/>
+          <PublishItem publishSize="57585" publishTime="1758446331"/>
           <PublishItem publishSize="57460" publishTime="1757062065"/>
           <PublishItem publishSize="57471" publishTime="1756986761"/>
           <PublishItem publishSize="57464" publishTime="1756986567"/>

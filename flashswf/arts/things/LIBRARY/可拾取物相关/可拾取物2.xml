@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="可拾取物相关/可拾取物2" itemID="66adb4fd-00000cac" linkageExportForAS="true" linkageIdentifier="可拾取物2" lastModified="1743063088" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="可拾取物相关/可拾取物2" itemID="66adb4fd-00000cac" linkageExportForAS="true" linkageIdentifier="可拾取物2" lastModified="1758976432" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="可拾取物2" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;5&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="可拾取物2" currentFrame="21" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;5&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="Labels Layer" color="#B8E7BC" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Labels Layer" color="#B8E7BC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -21,11 +21,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#8287DA" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Script Layer" color="#8287DA" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if (物品名 == "金币")
+                <script><![CDATA[this.itemData = _root.getItemData(this.物品名);
+this.displayName = itemData.displayname;
+
+if (物品名 == "金币")
 {
 	物品名 = "金钱";
 }
@@ -68,19 +71,19 @@ else if (物品名 == "金钱")
 	}
 }
 
-mytext = 物品名 + " X" + 数量;
+mytext = displayName + " X" + 数量;
 if (物品名 !== "金钱" && 物品名 !== "K点")
 {
-	var type = _root.getItemData(物品名).type;
-	if (type == "武器" || type == "防具")
+	var type = itemData.type;
+	if (type === "武器" || type === "防具")
 	{
 		if (数量 > 1)
 		{
-			mytext = 物品名 + " +" + 数量;
+			mytext = displayName + " +" + 数量;
 		}
 		else
 		{
-			mytext = 物品名;
+			mytext = displayName;
 		}
 	}
 }
@@ -120,8 +123,7 @@ stop();]]></script>
             </DOMFrame>
             <DOMFrame index="21" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[
-this.removeMovieClip();
+                <script><![CDATA[this.removeMovieClip();
 stop();
 ]]></script>
               </Actionscript>
@@ -137,7 +139,7 @@ stop();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#338BF5" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#338BF5">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
@@ -156,7 +158,7 @@ stop();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#2AE1FD" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 4" color="#2AE1FD">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
@@ -175,11 +177,11 @@ stop();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#D47DF8" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#D47DF8">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="-2.05" centerPoint3DY="2.2">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="-2.05" centerPoint3DY="2.2">
                   <matrix>
                     <Matrix a="1.20001220703125" d="0.960556030273438" tx="-15" ty="-12"/>
                   </matrix>
@@ -206,9 +208,12 @@ stop();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#AEAAE8" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 6" color="#AEAAE8">
           <frames>
-            <DOMFrame index="0" duration="11" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="无AS链接/Symbol 19" name="物品图标" centerPoint3DX="12" centerPoint3DY="11">
                   <matrix>
@@ -220,7 +225,7 @@ stop();
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
 	this.游戏世界 = _root.gameworld;
-	this.attachMovie("图标-" + _parent.物品名,"图标",this.getNextHighestDepth());
+	this.attachMovie("图标-" + _parent.itemData.icon,"图标",this.getNextHighestDepth());
 	this.图标.gotoAndStop(2);
 	if (this.图标._x != undefined)
 	{
@@ -334,7 +339,7 @@ stop();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="焦点高亮框" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="焦点高亮框" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements>
@@ -353,7 +358,7 @@ stop();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#D0CA06" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 7" color="#D0CA06">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
@@ -385,7 +390,7 @@ stop();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 0" color="#AA7B70" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Sound Layer 0" color="#AA7B70">
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements/>

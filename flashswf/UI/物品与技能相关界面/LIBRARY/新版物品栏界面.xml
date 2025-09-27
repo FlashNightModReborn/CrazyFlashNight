@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1756915614" lastUniqueIdentifier="61">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1758443684" lastUniqueIdentifier="64">
   <timeline>
-    <DOMTimeline name="新版物品栏界面" currentFrame="9">
+    <DOMTimeline name="新版物品栏界面" currentFrame="10">
       <layers>
         <DOMLayer name="Labels Layer" color="#23D4A1">
           <frames>
@@ -432,9 +432,9 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="5" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="物品图标" centerPoint3DX="28.15" centerPoint3DY="185.15">
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="物品图标" centerPoint3DX="27.3" centerPoint3DY="187.15">
                   <matrix>
-                    <Matrix tx="14.85" ty="171"/>
+                    <Matrix tx="14" ty="173"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1273,7 +1273,7 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/装备图标框" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="72.85" ty="50.7"/>
                   </matrix>
@@ -1281,7 +1281,7 @@ on(rollOut){
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/装备图标框" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="72.85" ty="82.5"/>
                   </matrix>
@@ -1289,7 +1289,7 @@ on(rollOut){
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/装备图标框" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="72.85" ty="113.75"/>
                   </matrix>
@@ -1297,7 +1297,7 @@ on(rollOut){
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/装备图标框" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="209.9" ty="50.7"/>
                   </matrix>
@@ -1305,7 +1305,7 @@ on(rollOut){
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/装备图标框" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="209.9" ty="82.5"/>
                   </matrix>
@@ -1313,7 +1313,7 @@ on(rollOut){
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/装备图标框" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="209.9" ty="113.75"/>
                   </matrix>
@@ -1321,7 +1321,7 @@ on(rollOut){
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/装备图标框" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="108.9" ty="137.6"/>
                   </matrix>
@@ -1329,7 +1329,7 @@ on(rollOut){
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/装备图标框" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="141.15" ty="137.6"/>
                   </matrix>
@@ -1337,7 +1337,7 @@ on(rollOut){
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/装备图标框" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="173" ty="137.6"/>
                   </matrix>
@@ -1345,7 +1345,7 @@ on(rollOut){
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/装备图标框" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="104.75" ty="50.7"/>
                   </matrix>
@@ -1353,7 +1353,7 @@ on(rollOut){
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/装备图标框" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="178" ty="50.7"/>
                   </matrix>
@@ -1416,7 +1416,7 @@ onClipEvent (unload) {
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 1935" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix tx="-4.85"/>
+                    <Matrix tx="-5" ty="2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

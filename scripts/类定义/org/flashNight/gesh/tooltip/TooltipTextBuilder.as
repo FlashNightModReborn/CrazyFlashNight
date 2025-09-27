@@ -5,6 +5,8 @@ import org.flashNight.gesh.tooltip.TooltipDataSelector;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.component.Damage.*;
 
+import org.flashNight.naki.Sort.QuickSort;
+
 /**
  * 注释文本构建器类
  * 包含所有文本拼接的纯函数，用于生成各种类型的注释内容
@@ -298,6 +300,28 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     return result;
   }
 
+  // === 生成进阶数据属性块 ===
+  public static function buildTierInfo(equipDisplayName:String, itemName:String, tierName:String, tierData:Object):Array {
+    var result:Array = [];
+    var displayName = ItemUtil.getItemData(itemName).displayname;
+    result.push("<B>", displayName, "</B><BR>");
+    if(!tierData) {
+      tierData = EquipmentUtil.defaultTierDataDict[tierName];
+      if(!tierData) {
+        result.push("无加成数据");
+        return result;
+      }
+    }
+    result.push("对装备<B>",equipDisplayName,"</B>的加成：<BR>");
+
+    var sortedList = getSortedAttrList(tierData);
+    for(var i = 0; i < sortedList.length; i++){
+      var key = sortedList[i];
+      TooltipFormatter.enhanceLine(result, "override", null, key, tierData[key], null);
+    }
+    return result;
+  }
+  
   // === 生成插件数据属性块 ===
   public static function buildModInfo(item:Object, tier:String, level:Number):Array {
     return null; // TODO
@@ -308,6 +332,19 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   // === 生成单个插件加成 ===
   public static function buildModStat(modData:Object):Array {
     return null; // TODO
+  }
+
+
+  public static function getSortedAttrList(data:Object):Array{
+    var list:Array = [];
+    var priorities = TooltipConstants.PROPERTY_PRIORITIES;
+    for(var key in data){
+      if(!isNaN(priorities[key])) list.push(key);
+    }
+    var sortFunc = function(keyA, keyB){
+      return priorities[keyA] - priorities[keyB];
+    }
+    return QuickSort.adaptiveSort(list, sortFunc);
   }
 
 

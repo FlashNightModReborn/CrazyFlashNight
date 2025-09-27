@@ -88,7 +88,7 @@
 
   // 各个属性的显示优先级
   public static var PROPERTY_PRIORITIES:Object = {
-    // 先显示等级，重量，威力
+    // 先显示等级限制，重量，威力
     level: 0,
     weight: 1,
     power: 2,

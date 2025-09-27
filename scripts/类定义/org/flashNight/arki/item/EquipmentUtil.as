@@ -27,38 +27,52 @@ class org.flashNight.arki.item.EquipmentUtil{
         3.04  // Lv13
     ];
 
-    public static var tierDataDict:Object = {
+    // 进阶名称->进阶数据键字典
+    public static var tierNameToKeyDict:Object = {
         二阶: "data_2",
         三阶: "data_3",
         四阶: "data_4",
         墨冰: "data_ice",
         狱火: "data_fire"
     };
-    public static var tierMaterialDict:Object = {
+    // 进阶数据键->进阶名称反向字典
+    public static var tierKeyToNameDict:Object;
+
+    // 进阶数据键->进阶材料字典
+    public static var tierToMaterialDict:Object = {
         data_2: "二阶复合防御组件",
         data_3: "三阶复合防御组件",
         data_4: "四阶复合防御组件",
         data_ice: "墨冰战术涂料",
         data_fire: "狱火战术涂料"
     };
+    // 进阶材料->进阶数据键反向字典
+    public static var materialToTierDict:Object;
+
+    // 进阶名称->进阶材料字典
+    public static var tierNameToMaterialDict:Object;
+    // 进阶材料->进阶名称反向字典
+    public static var tierMaterialToNameDict:Object;
+
     public static var tierDataList:Array = ["data_2", "data_3", "data_4", "data_ice", "data_fire"];
-    public static var defaultTierDataDict = {
+    
+    public static var defaultTierDataDict:Object = {
         二阶: {
-            level: 20,
+            level: 12,
             defence: 80,
             hp: 50,
             mp: 50,
             damage: 15
         },
         三阶: {
-            level: 30,
+            level: 25,
             defence: 180,
             hp: 80,
             mp: 80,
             damage: 35
         },
         四阶: {
-            level: 40,
+            level: 35,
             defence: 255,
             hp: 100,
             mp: 100,
@@ -77,6 +91,25 @@ class org.flashNight.arki.item.EquipmentUtil{
 
 
     public static function loadModData(modData:Array):Void{
+        // 初始化字典
+        tierKeyToNameDict = {};
+        tierNameToMaterialDict = {};
+        tierMaterialToNameDict = {};
+        for(var tierName in tierNameToKeyDict){
+            var tierKey = tierNameToKeyDict[tierName];
+            var mat = tierToMaterialDict[tierKey];
+            tierKeyToNameDict[tierKey] = tierName;
+            tierNameToMaterialDict[tierName] = mat;
+            tierMaterialToNameDict[mat] = tierName;
+        }
+        materialToTierDict = {};
+        for(var tierKey in tierToMaterialDict){
+            materialToTierDict[tierToMaterialDict[tierKey]] = tierKey;
+        }
+
+        if(modData.length <= 0) return;
+
+        //
         var dict = {};
         var useLists = {
             头部装备: [],
@@ -84,7 +117,7 @@ class org.flashNight.arki.item.EquipmentUtil{
             手部装备: [],
             下装装备: [],
             脚部装备: [],
-            颈部装备: [], // 目前还没有给颈部装备使用的插件
+            颈部装备: [], // 颈部装备可能不考虑允许插件
             长枪: [],
             手枪: [],
             刀: []
@@ -114,20 +147,36 @@ class org.flashNight.arki.item.EquipmentUtil{
     }
 
 
+    public static function getTierItem(tier:String):String{
+        var tierData:String = tierNameToKeyDict[tier];
+        return tierData ? tierToMaterialDict[tierData] : null;
+    }
 
-    public static function getAvailableTierMaterials(itemName:String):Array{
-        var rawItemData = ItemUtil.getRawItemData(itemName);
+
+
+    public static function getAvailableTierMaterials(item:BaseItem):Array{
+        var rawItemData = ItemUtil.getRawItemData(item.name);
         var list = [];
         for(var i=0; i<tierDataList.length; i++){
             var tierKey = tierDataList[i];
-            if(rawItemData[tierKey]) list.push(tierMaterialDict[tierKey]);
+            if(rawItemData[tierKey]) list.push(tierToMaterialDict[tierKey]);
         }
         if(list.length === 0){
             if(rawItemData.type === "防具" && rawItemData.use !== "颈部装备" && rawItemData.data.level < 10){
-                return [tierMaterialDict["data_2"], tierMaterialDict["data_3"], tierMaterialDict["data_4"]];
+                return [tierToMaterialDict["data_2"],tierToMaterialDict["data_3"],tierToMaterialDict["data_4"]];
             }
         }
         return list;
+    }
+
+    public static function isTierMaterialAvailable(item:BaseItem, matName:String):Boolean{
+        var rawItemData = ItemUtil.getRawItemData(item.name);
+        var tierKey = materialToTierDict[matName];
+        if(rawItemData[tierKey]) return true;
+        if(rawItemData.type === "防具" && rawItemData.use !== "颈部装备" && rawItemData.data.level < 10){
+            if(tierKey === "data_2" || tierKey === "data_3" ||tierKey === "data_3") return true;
+        }
+        return false;
     }
 
 
@@ -141,7 +190,7 @@ class org.flashNight.arki.item.EquipmentUtil{
 
         // 获取对应的多阶数据，若不存在则使用默认数据覆盖
         if(value.tier){
-            var tierKey = tierDataDict[value.tier];
+            var tierKey = tierNameToKeyDict[value.tier];
             if(tierKey){
                 var tierData = itemData[tierKey];
                 if(tierData){

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1756143340">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1758972032">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="62">
+    <DOMTimeline name="asLoader" currentFrame="70">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -498,7 +498,7 @@ scene_env_loader.loadSceneEnvironment(
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="69" duration="5" keyMode="9728">
+            <DOMFrame index="69" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[打印加载内容("加载基建数据……");
 
@@ -534,6 +534,14 @@ infra_loader.loadInfrastructure(
         trace("主程序：基建项目数据加载失败！");
     }
 );]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="70" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[// 插件占位
+org.flashNight.arki.item.EquipmentUtil.loadModData(null);
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

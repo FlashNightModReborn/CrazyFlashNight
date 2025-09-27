@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版装备强化界面" itemID="68a01bda-000002a7" lastModified="1756916592" lastUniqueIdentifier="28">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版装备强化界面" itemID="68a01bda-000002a7" lastModified="1758967564" lastUniqueIdentifier="48">
   <timeline>
-    <DOMTimeline name="新版装备强化界面" currentFrame="7">
+    <DOMTimeline name="新版装备强化界面" currentFrame="22">
       <layers>
         <DOMLayer name="label" color="#4FFFFF" autoNamed="false">
           <frames>
@@ -16,7 +16,7 @@
             <DOMFrame index="12" duration="8" name="强化装备" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="20" duration="9" name="外观改造" labelType="name" keyMode="9728">
+            <DOMFrame index="20" duration="9" name="插件改装" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -35,9 +35,15 @@
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="12" duration="17" keyMode="9728">
+            <DOMFrame index="12" duration="8" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this.刷新强化装备界面();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.初始化插件改装界面();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -50,22 +56,9 @@
             </DOMFrame>
             <DOMFrame index="6" duration="6" keyMode="9728">
               <elements>
-                <DOMDynamicText name="外观改造文本" fontRenderingMode="device" width="160.45" height="18.45" isSelectable="false">
+                <DOMDynamicText name="插件文本" fontRenderingMode="device" width="164.95" height="46.5" isSelectable="false">
                   <matrix>
-                    <Matrix tx="17" ty="122"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" size="14" bitmapSize="280" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMDynamicText>
-                <DOMDynamicText name="配件文本" fontRenderingMode="device" width="132.5" height="18.45" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="17" ty="222"/>
+                    <Matrix tx="17" ty="172"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -178,36 +171,22 @@
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="新强化界面/外观改造按钮" name="外观改造按钮" symbolType="button">
+                <DOMSymbolInstance libraryItemName="新强化界面/进阶按钮" name="插件改装按钮" symbolType="button">
                   <matrix>
-                    <Matrix tx="80" ty="160"/>
+                    <Matrix tx="80" ty="240"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="35" y="9.1"/>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (press) {
-	gotoAndStop("外观改造");
+	gotoAndStop("插件改装");
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="73.95" centerPoint3DY="111">
                   <matrix>
                     <Matrix a="0.886749267578125" tx="10" ty="110"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
-                  </filters>
-                  <color>
-                    <Color alphaMultiplier="0.6015625"/>
-                  </color>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="73.95" centerPoint3DY="211">
-                  <matrix>
-                    <Matrix a="0.886749267578125" tx="10" ty="210"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -310,44 +289,66 @@
               </elements>
             </DOMFrame>
             <DOMFrame index="20" duration="9" keyMode="9728">
-              <elements/>
+              <elements>
+                <DOMSymbolInstance libraryItemName="新强化界面/槽位选择按钮" name="槽位选择按钮_进阶" selected="true" symbolType="button">
+                  <matrix>
+                    <Matrix tx="29" ty="135"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+	this.选择槽位_进阶();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新强化界面/槽位选择按钮" name="槽位选择按钮_配件" symbolType="button">
+                  <matrix>
+                    <Matrix tx="64" ty="135"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图标" color="#FF800A" autoNamed="false">
+        <DOMLayer name="图标" color="#FF800A" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="6" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="外观改造图标" centerPoint3DX="43.3" centerPoint3DY="186.15">
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="进阶图标" centerPoint3DX="42.3" centerPoint3DY="154.15">
                   <matrix>
-                    <Matrix tx="30" ty="172"/>
+                    <Matrix tx="29" ty="140"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="插件图标1" centerPoint3DX="43.3" centerPoint3DY="289.15">
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="插件图标1" centerPoint3DX="77.3" centerPoint3DY="154.15">
                   <matrix>
-                    <Matrix tx="30" ty="275"/>
+                    <Matrix tx="64" ty="140"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="插件图标2" centerPoint3DX="71.3" centerPoint3DY="289.15">
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="插件图标2" centerPoint3DX="105.3" centerPoint3DY="154.15">
                   <matrix>
-                    <Matrix tx="58" ty="275"/>
+                    <Matrix tx="92" ty="140"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="插件图标3" centerPoint3DX="99.3" centerPoint3DY="289.15">
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="插件图标3" centerPoint3DX="133.3" centerPoint3DY="154.15">
                   <matrix>
-                    <Matrix tx="86" ty="275"/>
+                    <Matrix tx="120" ty="140"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -360,12 +361,25 @@
             </DOMFrame>
             <DOMFrame index="20" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新强化界面/物品格 6*2" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="材料选择图标" centerPoint3DX="43.3" centerPoint3DY="259.15">
                   <matrix>
-                    <Matrix tx="16" ty="120"/>
+                    <Matrix tx="30" ty="245"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="84" y="28"/>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	this._visible = false;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="改装图标_进阶" centerPoint3DX="42.3" centerPoint3DY="149.15">
+                  <matrix>
+                    <Matrix tx="29" ty="135"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -404,7 +418,65 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="UI" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/装备图标框" name="进阶图标框" centerPoint3DX="29" centerPoint3DY="140">
+                  <matrix>
+                    <Matrix tx="29" ty="140"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新强化界面/配件物品格 1*n" name="配件物品格" centerPoint3DX="64" centerPoint3DY="140">
+                  <matrix>
+                    <Matrix tx="50" ty="126"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="新强化界面/物品格 6*2" name="材料物品格" centerPoint3DX="100" centerPoint3DY="259">
+                  <matrix>
+                    <Matrix tx="16" ty="231"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="84" y="28"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/装备图标框" name="进阶图标框" centerPoint3DX="29" centerPoint3DY="135">
+                  <matrix>
+                    <Matrix tx="29" ty="135"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新强化界面/配件物品格 1*n" name="配件物品格" centerPoint3DX="64" centerPoint3DY="135">
+                  <matrix>
+                    <Matrix tx="50" ty="121"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
@@ -432,6 +504,14 @@
 	this.清空强化物品();
 }]]></script>
                   </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/装备图标框" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.497314453125" d="1.497314453125" tx="35" ty="70"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

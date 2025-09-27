@@ -433,6 +433,7 @@ _root.物品UI函数.创建材料图标 = function(methodName:String){
 _root.物品UI函数.删除材料图标 = function(){
 	var 材料图标列表 = _root.物品栏界面.材料图标列表;
 	for(var i=0; i<材料图标列表.length; i++){
+		材料图标列表[i].itemIcon.dispose();
 		材料图标列表[i].removeMovieClip();
 	}
 	_root.物品栏界面.材料图标列表 = null;
@@ -494,6 +495,7 @@ _root.物品UI函数.创建情报图标 = function(){
 _root.物品UI函数.删除情报图标 = function(){
 	var 情报图标列表 = _root.物品栏界面.情报图标列表;
 	for(var i=0; i<情报图标列表.length; i++){
+		情报图标列表[i].itemIcon.dispose();
 		情报图标列表[i].removeMovieClip();
 	}
 	_root.物品栏界面.情报图标列表 = null;
@@ -595,6 +597,11 @@ _root.物品UI函数.初始化强化界面 = function(UI:MovieClip){
 	UI.计算强化装备等级 = this.计算强化装备等级;
 	UI.执行强化装备 = this.执行强化装备;
 
+	UI.初始化插件改装界面 = this.初始化插件改装界面;
+	UI.刷新插件信息 = this.刷新插件信息;
+	UI.选择槽位_进阶 = this.选择槽位_进阶;
+	UI.执行进阶 = this.执行进阶;
+
 	UI.gotoAndStop("空");
 }
 
@@ -611,29 +618,35 @@ _root.物品UI函数.刷新强化物品 = function(item, index, itemIcon, invent
 	};
 	inventory.getDispatcher().subscribe("ItemRemoved", _root.物品UI函数.检查强化物品是否移动, this);
 	
-	this.名字文本.text = this.强化物品图标.itemIcon.itemData.displayname;
+	this.当前物品显示名字 = this.强化物品图标.itemIcon.itemData.displayname;
+	this.名字文本.text = this.当前物品显示名字;
 	if(item.value.level > 1){
 		this.名字文本.text += " +" + item.value.level;
 	}
 
+	var 配件槽数 = 0;
+	this.插件图标1.itemIcon = new ItemIcon(this.插件图标1, null, null);
+	this.插件图标2.itemIcon = new ItemIcon(this.插件图标2, null, null);
+	this.插件图标3.itemIcon = new ItemIcon(this.插件图标3, null, null);
+	this.插件文本.text = "配件槽：0/0\n进阶/涂装：";
+
 	// 进阶
+	this.进阶材料列表 = EquipmentUtil.getAvailableTierMaterials(item);
 	if(item.value.tier){
-		this.外观改造按钮._visible = true;
-		this.外观改造文本.text = "当前外观为[" + item.value.tier + "]";
-		this.外观改造图标.itemIcon = new ItemIcon(this.外观改造图标, null, null);
+		this.进阶图标框._visible = true;
+		this.插件文本.text += "[" + item.value.tier + "]";
+		this.进阶图标.itemIcon = new ItemIcon(this.进阶图标, EquipmentUtil.getTierItem(item.value.tier), 1);
 	}else{
-		var 外观改造材料列表 = EquipmentUtil.getAvailableTierMaterials(item.name);
-		if(外观改造材料列表.length > 0){
-			this.外观改造按钮._visible = true;
-			this.外观改造文本.text = "有 " + 外观改造材料列表.length + " 项可用进阶";
+		if(this.进阶材料列表.length > 0){
+			this.进阶图标框._visible = true;
+			this.插件文本.text += "空";
 		}else{
-			this.外观改造按钮._visible = false;
-			this.外观改造文本.text = "无可用进阶";
+			this.进阶图标框._visible = false;
+			this.插件文本.text += "不可用";
 		}
-		this.外观改造图标.itemIcon = new ItemIcon(this.外观改造图标, null, null);
+		this.进阶图标.itemIcon = new ItemIcon(this.进阶图标, null, null);
 	}
-	
-	this.配件文本.text = "配件系统（开发中）";
+	this.插件改装按钮._visible = 配件槽数 > 0 || this.进阶材料列表.length > 0;
 }
 
 _root.物品UI函数.检查强化物品是否移动 = function(inventory, index){
@@ -647,6 +660,10 @@ _root.物品UI函数.清空强化物品 = function(){
 	this.当前物品格 = null;
 	this.当前物品栏.getDispatcher().unsubscribe("ItemRemoved", _root.物品UI函数.检查强化物品是否移动);
 	this.当前物品栏 = null;
+	this.当前物品显示名字 = null;
+
+	this.进阶材料列表 = null;
+	
 	this.gotoAndStop("空");
 }
 
@@ -713,8 +730,126 @@ _root.物品UI函数.执行强化装备 = function(){
 	}
 }
 
+_root.物品UI函数.初始化插件改装界面 = function(){
+	var panel = this;
+
+	this.改装图标_进阶.itemIcon = new ItemIcon(this.改装图标_进阶, null, null);
+	this.改装图标_进阶.itemIcon.Press = function(){
+		panel.选择槽位_进阶();
+	};
+	this.改装图标_进阶.itemIcon.Release = null;
+
+	this.槽位选择按钮_进阶._visible = false;
+	this.槽位选择按钮_配件._visible = false;
+
+	// 创建选择图标
+	var onIconRollOver = function(){
+		var tierName = EquipmentUtil.tierMaterialToNameDict[this.name];
+		var tierKey = EquipmentUtil.materialToTierDict[this.name];
+		var tierData = this.itemData(panel.当前物品.name)[tierKey];
+		var list = org.flashNight.gesh.tooltip.TooltipTextBuilder.buildTierInfo(panel.当前物品显示名字, this.name, tierName, tierData);
+		if(list.length > 0){
+			_root.注释(250, list.join(""));
+		}
+	}
+	var onIconPress = function(){
+		if(!this.locked) panel.执行进阶(this.name);
+	}
+	var func = function(iconMC, i){
+		var itemIcon = new ItemIcon(iconMC, null, null);
+		itemIcon.RollOver = onIconRollOver;
+		itemIcon.Press = onIconPress;
+		return itemIcon;
+	}
+	var info = {
+		startindex: 0, 
+		startdepth: 0, 
+		row: 2, 
+		col: 6, 
+		padding: 28,
+		unloadCallback: function(){
+			this.材料选择图标列表 = null;
+		}
+	}
+	this.材料选择图标列表 = IconFactory.createIconLayout(this.材料选择图标, func, info);
+
+	this.刷新插件信息();
+}
 
 
+_root.物品UI函数.刷新插件信息 = function(){
+	var item = this.当前物品;
+	if(item.value.tier){
+		this.改装图标_进阶.itemIcon.init(EquipmentUtil.getTierItem(item.value.tier), 1);
+		this.槽位选择按钮_进阶._visible = false;
+	}else{
+		this.改装图标_进阶.itemIcon.init(null,null);
+		if(this.进阶材料列表.length > 0){
+			this.槽位选择按钮_进阶._visible = true;
+		}else{
+			this.槽位选择按钮_进阶._visible = false;
+		}
+	}
+
+	this.槽位选择按钮_配件._visible = false;
+	this.配件物品格._visible = false;
+
+	this.材料物品格._visible = false;
+	for(var iconIndex=0; iconIndex<12; iconIndex++){
+		var icon = this.材料选择图标列表[iconIndex].itemIcon;
+		icon.unlock();
+		icon.init(null,null);
+	}
+}
+
+_root.物品UI函数.选择槽位_进阶 = function(){
+	this.槽位选择按钮_进阶._visible = false;
+	this.材料物品格._visible = true;
+
+	var currentTier = this.当前物品.value.tier;
+
+	var 材料栏 = _root.收集品栏.材料;
+	var iconIndex = 0;
+	for(var i=0; i<this.进阶材料列表.length; i++){
+		var itemName = this.进阶材料列表[i];
+		var val = 材料栏.getValue(itemName);
+		if(val > 0){
+			var icon = this.材料选择图标列表[iconIndex].itemIcon;
+			icon.unlock();
+			icon.init(itemName, val);
+			// 检查是否能安装
+			if(currentTier) {
+				if(!(currentTier === "二阶" && itemName === "三阶复合防御组件") && !(currentTier === "三阶" && itemName === "四阶复合防御组件")){
+					icon.lock();
+				}
+			}else if(itemName === "三阶复合防御组件" || itemName === "四阶复合防御组件"){
+				icon.lock();
+			}
+			iconIndex++;
+		}
+	}
+
+	for(iconIndex; iconIndex<12; iconIndex++){
+		var icon = this.材料选择图标列表[iconIndex].itemIcon;
+		icon.unlock();
+		icon.init(null,null);
+	}
+}
+
+_root.物品UI函数.执行进阶 = function(matName:String){
+	var item = this.当前物品;
+	if(EquipmentUtil.isTierMaterialAvailable(item, matName)){
+		if(ItemUtil.singleSubmit(matName, 1)){
+			var tierName = EquipmentUtil.tierMaterialToNameDict[matName];
+			item.value.tier = tierName;
+			// 完成
+			_root.播放音效("9mmclip2.wav");
+		}else{
+			_root.发布消息("材料不足！")
+		}
+		this.刷新插件信息();
+	}
+}
 
 
 
