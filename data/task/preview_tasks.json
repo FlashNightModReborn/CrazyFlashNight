@@ -156,6 +156,26 @@
             ],
             
             "chain":"预览#7"
+        },
+        {
+            "id": 150100,
+            "title": "$SIDE_TITLE_150100",
+            "description": "$SIDE_DESCRIPTION_150100",
+
+            "get_requirements": [77],
+            "get_conversation": "$SIDE_GET_150100",
+            "get_npc": "酒保",
+
+            "finish_requirements": ["通缉任务之异形#冒险"],
+            "finish_conversation": "$SIDE_FINISH_150100",
+            "finish_npc": "酒保",
+            "rewards": [
+                "金币#20000",
+                "K点#2000",
+                "异形毒刺#1"
+            ],
+            
+            "chain":"异形#1"
         }
     ]
 }
