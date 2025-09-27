@@ -319,6 +319,17 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       var key = sortedList[i];
       TooltipFormatter.enhanceLine(result, "override", null, key, tierData[key], null);
     }
+    // 打印魔法抗性
+    if (tierData.magicdefence) {
+      var mdList = [];
+      for(var key in tierData.magicdefence) {
+        var mdName = (key === "基础" ? "能量" : key);
+        var value = tierData.magicdefence[key];
+        if (value) mdList.push(mdName + ": " + value);
+      }
+      if(mdList.length > 0) result.push("抗性 -> ", mdList.join(", "));
+    }
+
     return result;
   }
   

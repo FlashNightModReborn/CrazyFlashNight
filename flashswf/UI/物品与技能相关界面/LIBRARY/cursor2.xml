@@ -1,0 +1,38 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="cursor2" itemID="68d82177-000002bb" symbolType="graphic" lastModified="1758995463">
+  <timeline>
+    <DOMTimeline name="cursor2">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFF00"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!40 -400|-40 -400!-40 -400|0 -360!0 -360|40 -400!0 360|-40 400!-40 400|40 400!40 400|0 360!400 40|400 -40!400 -40|360 0!360 0|400 40!-360 0|-400 -40!-400 -40|-400 40!-400 40|-360 0"/>
+                    <Edge cubics="!40 400(;40,400 0,360 0,360q40 400 0 360);"/>
+                    <Edge cubics="!360 0(;360,0 400,40 400,40q360 0 400 40);"/>
+                    <Edge cubics="!400 -40(;400,-40 400,40 400,40q400 -40 400 40);"/>
+                    <Edge cubics="!400 -40(;400,-40 360,0 360,0q400 -40 360 0);"/>
+                    <Edge cubics="!-400 40(;-400,40 -400,-40 -400,-40q-400 40 -400 -40);"/>
+                    <Edge cubics="!-400 40(;-400,40 -360,0 -360,0q-400 40 -360 0);"/>
+                    <Edge cubics="!-360 0(;-360,0 -400,-40 -400,-40q-360 0 -400 -40);"/>
+                    <Edge cubics="!-40 400(;-40,400 40,400 40,400q-40 400 40 400);"/>
+                    <Edge cubics="!0 360(;0,360 -40,400 -40,400q0 360 -40 400);"/>
+                    <Edge cubics="!-40 -400(;-40,-400 40,-400 40,-400q-40 -400 40 -400);"/>
+                    <Edge cubics="!0 -360(;0,-360 40,-400 40,-400q0 -360 40 -400);"/>
+                    <Edge cubics="!-40 -400(;-40,-400 0,-360 0,-360q-40 -400 0 -360);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="物品栏/新版物品图标" itemID="676a60d0-00000262" linkageExportForAS="true" linkageIdentifier="物品图标" lastModified="1755320517" lastUniqueIdentifier="8">
   <timeline>
-    <DOMTimeline name="新版物品图标" currentFrame="1">
+    <DOMTimeline name="新版物品图标">
       <layers>
         <DOMLayer name="Labels Layer" color="#4DC4D9">
           <frames>
@@ -66,7 +66,7 @@ if(this.图标壳.图标)this.图标壳.基本款._visible = false;]]></script>
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="互动提示/互动提示" name="互动提示">
+                <DOMSymbolInstance libraryItemName="互动提示/互动提示" name="互动提示" selected="true">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

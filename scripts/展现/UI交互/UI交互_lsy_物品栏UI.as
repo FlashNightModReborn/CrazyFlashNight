@@ -749,7 +749,7 @@ _root.物品UI函数.初始化插件改装界面 = function(){
 		var tierData = this.itemData(panel.当前物品.name)[tierKey];
 		var list = org.flashNight.gesh.tooltip.TooltipTextBuilder.buildTierInfo(panel.当前物品显示名字, this.name, tierName, tierData);
 		if(list.length > 0){
-			_root.注释(250, list.join(""));
+			_root.注释(200, list.join(""));
 		}
 	}
 	var onIconPress = function(){
@@ -805,6 +805,9 @@ _root.物品UI函数.刷新插件信息 = function(){
 _root.物品UI函数.选择槽位_进阶 = function(){
 	this.槽位选择按钮_进阶._visible = false;
 	this.材料物品格._visible = true;
+	this.cursor.gotoAndPlay("选中");
+	this.cursor._x = this.槽位选择按钮_进阶._x;
+	this.cursor._y = this.槽位选择按钮_进阶._y;
 
 	var currentTier = this.当前物品.value.tier;
 
@@ -844,8 +847,10 @@ _root.物品UI函数.执行进阶 = function(matName:String){
 			item.value.tier = tierName;
 			// 完成
 			_root.播放音效("9mmclip2.wav");
+			this.cursor.gotoAndPlay("消失");
 		}else{
 			_root.发布消息("材料不足！")
+			this.cursor.gotoAndStop("空");
 		}
 		this.刷新插件信息();
 	}

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版装备强化界面" itemID="68a01bda-000002a7" lastModified="1758967564" lastUniqueIdentifier="48">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版装备强化界面" itemID="68a01bda-000002a7" lastModified="1758995538" lastUniqueIdentifier="48">
   <timeline>
-    <DOMTimeline name="新版装备强化界面" currentFrame="22">
+    <DOMTimeline name="新版装备强化界面" currentFrame="28">
       <layers>
-        <DOMLayer name="label" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="label" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -21,7 +21,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <Actionscript>
@@ -49,7 +49,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文字" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="文字" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -138,7 +138,26 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="按钮" color="#808080" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="cursor" name="cursor" selected="true" centerPoint3DX="49" centerPoint3DY="155">
+                  <matrix>
+                    <Matrix tx="29" ty="135"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="按钮" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -290,7 +309,7 @@
             </DOMFrame>
             <DOMFrame index="20" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新强化界面/槽位选择按钮" name="槽位选择按钮_进阶" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="新强化界面/槽位选择按钮" name="槽位选择按钮_进阶" symbolType="button">
                   <matrix>
                     <Matrix tx="29" ty="135"/>
                   </matrix>
@@ -311,11 +330,27 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新强化界面/返回按钮 大" symbolType="button">
+                  <matrix>
+                    <Matrix tx="3" ty="302"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="97" y="12.1"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+	this.gotoAndStop("默认");
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <BevelFilter blurX="1" blurY="1" distance="2" shadowColor="#333333"/>
+                  </filters>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图标" color="#FF800A" autoNamed="false" visible="false">
+        <DOMLayer name="图标" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -361,9 +396,9 @@
             </DOMFrame>
             <DOMFrame index="20" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="材料选择图标" centerPoint3DX="43.3" centerPoint3DY="259.15">
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="材料选择图标" centerPoint3DX="43.3" centerPoint3DY="249.15">
                   <matrix>
-                    <Matrix tx="30" ty="245"/>
+                    <Matrix tx="30" ty="235"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -386,7 +421,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="物品基础信息" color="#9933CC" autoNamed="false">
+        <DOMLayer name="物品基础信息" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -418,7 +453,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="UI" color="#FF800A" autoNamed="false">
+        <DOMLayer name="UI" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -448,9 +483,9 @@
             </DOMFrame>
             <DOMFrame index="20" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新强化界面/物品格 6*2" name="材料物品格" centerPoint3DX="100" centerPoint3DY="259">
+                <DOMSymbolInstance libraryItemName="新强化界面/物品格 6*2" name="材料物品格" centerPoint3DX="100" centerPoint3DY="249">
                   <matrix>
-                    <Matrix tx="16" ty="231"/>
+                    <Matrix tx="16" ty="221"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="84" y="28"/>
