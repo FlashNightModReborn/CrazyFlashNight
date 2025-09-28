@@ -358,7 +358,11 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     public static function processQueue():Void {
         
         if (_root.暂停) {
+            // 重置并清空消弹队列，确保暂停期间不会累积消弹区域
             BulletCancelQueueProcessor.reset();
+            BulletCancelQueueProcessor.clear();
+
+            // 清空所有子弹队列，确保暂停期间不会累积子弹
             var __k:String;
             var __q:BulletQueue;
             for (__k in activeQueues) {
