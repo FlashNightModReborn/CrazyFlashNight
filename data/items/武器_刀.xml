@@ -1,6 +1,37 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!--已用ID：[392, 393, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425, 426, 427, 428, 429, 430, 431, 445, 453, 472, 498, 499, 519, 523, 563, 564, 565, 595, 608, 609, 620, 622, 626, 630, 631, 632, 634, 635, 636, 637, 638, 639, 640, 641, 649, 650, 651, 652, 657, 676, 681, 685, 689, 690, 702, 703, 749, 799, 800, 832, 845, 846, 847, 848, 852, 853, 854, 855, 857, 900, 1501, 1502, 1503, 1504, 1505, 1506, 1509, 1510, 1511, 1512, 1513, 1514, 1515, 1516, 1517, 1518, 1519, 1520, 1525, 1554, 1555, 1556, 1557, 1558, 1559, 1560, 1561, 5002, 5500, 5509, 5510, 6000, 6009, 6010, 6011, 6012, 6013, 6014, 6015, 6016, 6028, 6029, 6061, 6062, 6069, 6070, 8010, 8011, 8029, 8030, 8031, 8032, 9001, 12018, 12020, 12118, 12120, 13007, 13013, 22000]
-预留ID区间：17302-17500--><root>
+预留ID区间：17303-17500--><root>
+  <item>
+    <id>17302</id>
+    <name>如意金箍棒（仿）</name>
+    <displayname>如意金箍棒（仿）</displayname>
+    <icon>如意金箍棒</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>长棍</actiontype>
+    <price>800000</price>
+    <skill>
+      <skillname>狼跳</skillname>
+      <description>手持该武器时可以使用狼跳。</description>
+      <cd>5000</cd>
+      <mp>50</mp>
+    </skill>
+    <description>尽管是仿品，但用料厚实，实战威力颇高——如果你拿得动的话。
+    &lt;font color="#FF0000"&gt;“那块铁，挽着些儿就死，磕着些儿就亡，挨挨儿皮破，擦擦儿筋伤！”&lt;/font&gt;</description>
+    <data>
+      <level>50</level>
+      <weight>67.5</weight>
+      <dressup>刀-如意金箍棒</dressup>
+      <power>1100</power>
+      <hp>100</hp>
+      <mp>100</mp>
+      <defence>50</defence>
+      <accuracy>10</accuracy>
+      <evasion>10</evasion>
+      <lazymiss>10</lazymiss>
+      <rout>0.15</rout>
+    </data>
+  </item>
   <item>
     <id>17301</id>
     <name>流星枪</name>
@@ -1857,7 +1888,7 @@
     <icon>如意金箍棒</icon>
     <type>武器</type>
     <use>刀</use>
-    <actiontype>长枪</actiontype>
+    <actiontype>长棍</actiontype>
     <price>9999999</price>
     <skill>
       <skillname>狼跳</skillname>
@@ -3891,7 +3922,7 @@
     <icon>终极战斗仪</icon>
     <type>武器</type>
     <use>刀</use>
-    <actiontype>狂野</actiontype>
+    <actiontype>长棍</actiontype>
     <price>240000</price>
     <skill>
       <skillname>雷鸣感召</skillname>
