@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/RPG7V2/RPG7V2" itemID="68d4b6fc-00000828" linkageExportForAS="true" linkageIdentifier="枪-长枪-RPG7V2" lastModified="1758773452" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/RPG7V2/RPG7V2" itemID="68d4b6fc-00000828" linkageExportForAS="true" linkageIdentifier="枪-长枪-RPG7V2" lastModified="1759050029" lastUniqueIdentifier="9">
   <timeline>
     <DOMTimeline name="RPG7V2">
       <layers>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="枪口" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="枪口" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -28,11 +28,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A">
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="长枪/RPG7V2/rpg7v2发射器" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="长枪/RPG7V2/rpg7v2发射器" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="-292.6" ty="-77.55"/>
                   </matrix>

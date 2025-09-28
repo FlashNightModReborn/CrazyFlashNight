@@ -1,0 +1,73 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/RPG7V2/图标-NLAW" itemID="68d9008c-00000ed1" linkageExportForAS="true" linkageIdentifier="图标-NLAW" lastModified="1759051953" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="图标-NLAW">
+      <layers>
+        <DOMLayer name="Action Layer" color="#FFFF00" locked="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[stop ();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Mask Layer 2" color="#FFFF00" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/未命名文件夹 1/shape 85" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Masked Layer 3 - 2" color="#FFFF00" parentLayerIndex="1" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/RPG7V2/NLAW" selected="true" centerPoint3DX="-279.85" centerPoint3DY="256.9">
+                  <matrix>
+                    <Matrix a="0.0885772705078125" b="-0.0756988525390625" c="0.0756988525390625" d="0.0885772705078125" tx="-5" ty="7.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="994" y="72.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/未命名文件夹 1/shape 770" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/RPG7V2/NLAW" centerPoint3DX="6.9" centerPoint3DY="-89">
+                  <matrix>
+                    <Matrix a="0.212646484375" d="0.212646484375" tx="-8.1" ty="-0.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1014.6" y="65.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

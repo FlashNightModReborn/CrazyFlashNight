@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="原版素材库-子弹" itemID="668b9f9e-000001f3" linkageExportForAS="true" linkageIdentifier="原版素材库-子弹" lastModified="1758791491" lastUniqueIdentifier="233">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="原版素材库-子弹" itemID="668b9f9e-000001f3" linkageExportForAS="true" linkageIdentifier="原版素材库-子弹" lastModified="1759049949" lastUniqueIdentifier="234">
   <timeline>
     <DOMTimeline name="原版素材库-子弹" currentFrame="2">
       <layers>
@@ -27,7 +27,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文字" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="文字" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2220,7 +2220,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -2821,6 +2821,14 @@
                   </matrix>
                   <transformationPoint>
                     <Point x="14.15" y="-3.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子弹-炮弹与爆炸组/反坦克导弹" selected="true" centerPoint3DX="207.3" centerPoint3DY="379.15">
+                  <matrix>
+                    <Matrix tx="199.45" ty="386.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.85" y="-7.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

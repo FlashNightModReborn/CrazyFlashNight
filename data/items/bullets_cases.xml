@@ -100,6 +100,16 @@
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
         </attribute>
+    </bullet>    
+    <bullet>
+        <name>反坦克导弹</name>
+        <movement>
+            <func>DefaultMissile</func>
+            <param>
+                <missileConfig>cruise</missileConfig>
+                <usePreLaunch>true</usePreLaunch>
+            </param>
+        </movement>
     </bullet>
     <bullet>
         <name>无壳子弹</name>

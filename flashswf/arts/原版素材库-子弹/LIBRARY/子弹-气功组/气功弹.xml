@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/气功弹" itemID="668b9d18-000001e7" linkageExportForAS="true" linkageIdentifier="气功弹" lastModified="1759043660">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/气功弹" itemID="668b9d18-000001e7" linkageExportForAS="true" linkageIdentifier="气功弹" lastModified="1722856067">
   <timeline>
     <DOMTimeline name="气功弹" currentFrame="1">
       <layers>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#7F42FB">
+        <DOMLayer name="Script Layer" color="#7F42FB" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -56,11 +56,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#1CAFD9" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#1CAFD9">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/气功弹（和爆炸）素材/Symbol 13" name="area" selected="true">
+                <DOMSymbolInstance libraryItemName="无AS链接/气功弹（和爆炸）素材/Symbol 13" name="area">
                   <matrix>
                     <Matrix d="0.999984741210938" tx="-12.5" ty="-12.5"/>
                   </matrix>

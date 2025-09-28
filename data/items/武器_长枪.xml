@@ -6243,5 +6243,35 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
         </cycle>
       </attr_0>
     </lifecycle>
+  </item>   
+  <item weapontype="发射器">
+    <id>17711</id>
+    <name>NLAW</name>
+    <displayname>NLAW</displayname>
+    <icon>NLAW</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>181350</price>
+    <description>次世代轻型反坦克武器，联合研发的便携式反坦克系统。
+审判日后经过改造支持重复装填，具软发射与射后不管能力，适合室内与城市巷战。</description>
+    <data>
+      <level>31</level>
+      <weight>13</weight>
+      <dressup>枪-长枪-NLAW</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>800</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>20</velocity>
+      <bullet>反坦克导弹</bullet>
+      <sound>re_GL_m202.wav</sound>
+      <muzzle>发射器枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>导弹弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>12200</power>
+      <impact>0</impact>      
+    </data>        
   </item> 
 </root>
