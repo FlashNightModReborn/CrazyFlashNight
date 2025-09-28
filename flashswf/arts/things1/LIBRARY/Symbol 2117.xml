@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 2117" itemID="6577f78a-00001342" linkageExportForAS="true" linkageIdentifier="加载mc库1" lastModified="1735664990" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="Symbol 2117">
+    <DOMTimeline name="Symbol 2117" currentFrame="1">
       <layers>
         <DOMLayer name="Script Layer" color="#C430F9">
           <frames>
@@ -409,14 +409,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 14" color="#89DE7B" current="true" isSelected="true">
+        <DOMLayer name="Layer 14" color="#89DE7B">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="敌人-忍者BOSS" selected="true" centerPoint3DX="-246.5" centerPoint3DY="870.65">
+                <DOMSymbolInstance libraryItemName="敌人-忍者BOSS" centerPoint3DX="-246.5" centerPoint3DY="870.65">
                   <matrix>
                     <Matrix tx="-607.25" ty="491.4"/>
                   </matrix>
@@ -442,14 +442,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 15" color="#9B7EAC">
+        <DOMLayer name="Layer 15" color="#9B7EAC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="敌人-boss大僵尸" centerPoint3DX="577.15" centerPoint3DY="583.8">
+                <DOMSymbolInstance libraryItemName="敌人-boss大僵尸" selected="true" centerPoint3DX="577.15" centerPoint3DY="583.8">
                   <matrix>
                     <Matrix tx="2.25" ty="295.55"/>
                   </matrix>

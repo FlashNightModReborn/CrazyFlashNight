@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-boss大僵尸" itemID="67bc37fc-0000061f" linkageExportForAS="true" linkageIdentifier="敌人-boss大僵尸" lastModified="1742980869">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-boss大僵尸" itemID="67bc37fc-0000061f" linkageExportForAS="true" linkageIdentifier="敌人-boss大僵尸" lastModified="1759042547">
   <timeline>
-    <DOMTimeline name="敌人-boss大僵尸">
+    <DOMTimeline name="敌人-boss大僵尸" currentFrame="83">
       <layers>
         <DOMLayer name="Labels Layer" color="#6B6DFC">
           <frames>
@@ -131,11 +131,11 @@ if(!身高)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#B2DA38">
+        <DOMLayer name="Layer 4" color="#B2DA38" visible="false">
           <frames>
             <DOMFrame index="0" duration="130" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 423" symbolType="button">
+                <DOMSymbolInstance libraryItemName="Symbol 423" selected="true" symbolType="button">
                   <matrix>
                     <Matrix a="2.11715698242188" d="6.9327392578125" tx="-26.45" ty="-162.7"/>
                   </matrix>
@@ -173,13 +173,13 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#517CE4" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#517CE4" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="98" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 19" name="area" centerPoint3DX="-13.95" centerPoint3DY="-140.6">
+                <DOMSymbolInstance libraryItemName="Symbol 19" name="area" selected="true" centerPoint3DX="-13.95" centerPoint3DY="-179.1">
                   <matrix>
-                    <Matrix a="2.11715698242188" d="6.54815673828125" tx="-26.45" ty="-153.1"/>
+                    <Matrix a="2.11715698242188" d="8.52571105957031" tx="-26.45" ty="-191.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -216,11 +216,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#AE06FF" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 6" color="#AE06FF" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="思考标签" selected="true" centerPoint3DX="-33.5" centerPoint3DY="18.85">
+                <DOMSymbolInstance libraryItemName="思考标签" centerPoint3DX="-33.5" centerPoint3DY="18.85">
                   <matrix>
                     <Matrix tx="-36" ty="16.35"/>
                   </matrix>
