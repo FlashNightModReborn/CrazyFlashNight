@@ -4,6 +4,108 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
 预留ID区间：15622-15900-->
 <root>
   <item>
+  <id>15626</id>
+    <name>大圣头甲</name>
+    <displayname> &lt;font color="#FFE358"&gt;【凡品】凤翅紫金冠&lt;/font&gt;</displayname>
+    <icon>大圣头甲</icon>
+    <type>防具</type>
+    <use>头部装备</use>
+    <price>9981</price>
+    <description> &lt;font color="#FF0000"&gt;“好！好！好！”&lt;/font&gt;</description>
+    <helmet>true</helmet>
+    <data>
+      <level>60</level>
+      <weight>12</weight>
+      <dressup>男变装-大圣头甲</dressup>
+      <hp>500</hp>
+      <force>100</force>
+      <gunpower>-999</gunpower>
+      <knifepower>260</knifepower>
+      <defence>500</defence>
+    </data>
+  </item>
+  <item>
+    <id>15625</id>
+    <name>大圣下装</name>
+    <displayname> &lt;font color="#FFE358"&gt;【凡品】藕丝步云履&lt;/font&gt;</displayname>
+    <icon>大圣腿甲</icon>
+    <type>防具</type>
+    <use>下装装备</use>
+    <price>9981</price>
+    <description> &lt;font color="#FF0000"&gt;“好！好！好！”&lt;/font&gt;</description>
+    <data>
+      <level>60</level>
+      <weight>12</weight>
+      <dressup>变装-大圣下装</dressup>
+      <hp>500</hp>
+      <force>100</force>
+      <gunpower>-999</gunpower>
+      <knifepower>260</knifepower>
+      <defence>500</defence>
+    </data>  
+</item>
+  <item>
+    <id>15624</id>
+    <name>大圣手甲</name>
+    <displayname> &lt;font color="#FFE358"&gt;【凡品】点翠飞龙釬&lt;/font&gt;</displayname>
+    <icon>大圣手甲</icon>
+    <type>防具</type>
+    <use>手部装备</use>
+    <actiontype>截拳</actiontype>
+    <price>9981</price>
+    <description> &lt;font color="#FF0000"&gt;“好！好！好！”&lt;/font&gt;</description>
+    <data>
+      <level>60</level>
+      <weight>12</weight>
+      <dressup>男变装-大圣手甲</dressup>
+      <hp>500</hp>
+      <force>100</force>
+      <gunpower>-999</gunpower>
+      <knifepower>260</knifepower>
+      <defence>500</defence>
+    </data>
+  </item>
+  <item>
+    <id>15623</id>
+    <name>大圣上装</name>
+    <displayname> &lt;font color="#FFE358"&gt;【凡品】锁子黄金甲&lt;/font&gt;</displayname>
+    <icon>大圣胸甲</icon>
+    <type>防具</type>
+    <use>上装装备</use>
+    <price>9981</price>
+    <description> &lt;font color="#FF0000"&gt;“好！好！好！”&lt;/font&gt;</description>
+    <data>
+      <level>60</level>
+      <weight>12</weight>
+      <dressup>变装-大圣上装</dressup>
+      <hp>500</hp>
+      <force>100</force>
+      <gunpower>-999</gunpower>
+      <knifepower>260</knifepower>
+      <defence>500</defence>
+    </data>
+  </item>
+  <item>
+    <id>15622</id>
+    <name>大圣鞋</name>
+    <displayname> &lt;font color="#FFE358"&gt;【凡品】大圣的脚&lt;/font&gt;</displayname>
+    <icon>大圣鞋</icon>
+    <type>防具</type>
+    <use>脚部装备</use>
+    <price>9981</price>
+    <description> &lt;font color="#FF0000"&gt;“好！好！好！”&lt;/font&gt;</description>
+    <data>
+      <level>60</level>
+      <weight>1</weight>
+      <dressup>男变装-大圣鞋</dressup>
+      <hp>500</hp>
+      <force>100</force>
+      <gunpower>-999</gunpower>
+      <knifepower>260</knifepower>
+      <defence>500</defence>
+    </data>
+  </item>
+  <item>
     <id>15621</id>
     <name>黑铁布鞋</name>
     <displayname>黑铁布鞋</displayname>
@@ -792,140 +894,6 @@ ID已倒序排序，在最上方新增新物品即可，使用最新id，同时�
         <冲>5</冲>
         <波>5</波>
       </magicdefence>
-    </data>
-  </item>
-  <item>
-    <id>2002</id>
-    <name>大圣头甲</name>
-    <displayname>凤翅紫金冠</displayname>
-    <icon>大圣头甲</icon>
-    <type>防具</type>
-    <use>头部装备</use>
-    <price>9981</price>
-    <description> &lt;font color="#FF0000"&gt;“好！好！好！”&lt;/font&gt;</description>
-    <helmet>true</helmet>
-    <data>
-      <level>81</level>
-      <weight>4</weight>
-      <dressup>男变装-大圣头甲</dressup>
-      <hp>9981</hp>
-      <mp>9981</mp>
-      <force>81</force>
-      <damage>500</damage>
-      <gunpower>-500</gunpower>
-      <knifepower>500</knifepower>
-      <defence>9981</defence>
-      <magicdefence>
-        <全属性>81</全属性>
-      </magicdefence>
-      <toughness>200</toughness>
-    </data>
-  </item>
-  <item>
-    <id>2001</id>
-    <name>大圣下装</name>
-    <displayname>藕丝步云履</displayname>
-    <icon>大圣腿甲</icon>
-    <type>防具</type>
-    <use>下装装备</use>
-    <price>9981</price>
-    <description> &lt;font color="#FF0000"&gt;“好！好！好！”&lt;/font&gt;</description>
-    <data>
-      <level>81</level>
-      <weight>8</weight>
-      <dressup>变装-大圣下装</dressup>
-      <hp>9981</hp>
-      <mp>9981</mp>
-      <force>81</force>
-      <damage>500</damage>
-      <gunpower>-500</gunpower>
-      <knifepower>500</knifepower>
-      <defence>9981</defence>
-      <magicdefence>
-        <全属性>81</全属性>
-      </magicdefence>
-      <toughness>200</toughness>
-    </data>
-  </item>
-  <item>
-    <id>2000</id>
-    <name>大圣手甲</name>
-    <displayname>点翠飞龙釬</displayname>
-    <icon>大圣手甲</icon>
-    <type>防具</type>
-    <use>手部装备</use>
-    <actiontype>截拳</actiontype>
-    <price>9981</price>
-    <description> &lt;font color="#FF0000"&gt;“好！好！好！”&lt;/font&gt;</description>
-    <data>
-      <level>81</level>
-      <weight>4</weight>
-      <dressup>男变装-大圣手甲</dressup>
-      <hp>9981</hp>
-      <mp>9981</mp>
-      <force>81</force>
-      <damage>500</damage>
-      <gunpower>-500</gunpower>
-      <knifepower>500</knifepower>
-      <punch>500</punch>
-      <defence>9981</defence>
-      <vampirism>81</vampirism>
-      <magicdefence>
-        <全属性>81</全属性>
-      </magicdefence>
-      <toughness>200</toughness>
-    </data>
-  </item>
-  <item>
-    <id>1999</id>
-    <name>大圣上装</name>
-    <displayname>锁子黄金甲</displayname>
-    <icon>大圣胸甲</icon>
-    <type>防具</type>
-    <use>上装装备</use>
-    <price>9981</price>
-    <description> &lt;font color="#FF0000"&gt;“好！好！好！”&lt;/font&gt;</description>
-    <data>
-      <level>81</level>
-      <weight>12</weight>
-      <dressup>变装-大圣上装</dressup>
-      <hp>9981</hp>
-      <mp>9981</mp>
-      <force>81</force>
-      <damage>500</damage>
-      <gunpower>-500</gunpower>
-      <knifepower>500</knifepower>
-      <defence>9981</defence>
-      <magicdefence>
-        <全属性>81</全属性>
-      </magicdefence>
-      <toughness>200</toughness>
-    </data>
-  </item>
-  <item>
-    <id>1998</id>
-    <name>大圣鞋</name>
-    <displayname>大圣的脚</displayname>
-    <icon>大圣鞋</icon>
-    <type>防具</type>
-    <use>脚部装备</use>
-    <price>9981</price>
-    <description> &lt;font color="#FF0000"&gt;“好！好！好！”&lt;/font&gt;</description>
-    <data>
-      <level>81</level>
-      <weight>4</weight>
-      <dressup>男变装-大圣鞋</dressup>
-      <hp>9981</hp>
-      <mp>9981</mp>
-      <force>81</force>
-      <damage>500</damage>
-      <gunpower>-500</gunpower>
-      <knifepower>500</knifepower>
-      <defence>9981</defence>
-      <magicdefence>
-        <全属性>81</全属性>
-      </magicdefence>
-      <toughness>200</toughness>
     </data>
   </item>
   <item>
