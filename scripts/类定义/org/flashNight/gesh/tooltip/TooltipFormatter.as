@@ -72,12 +72,51 @@ class org.flashNight.gesh.tooltip.TooltipFormatter {
     if(type === "add"){
       var n:Number = Number(val);
       if(isNaN(n) || n === 0) return;
-      buf.push(label, " + ", n, "<BR>");
+      var sign = " + ";
+      if(n < 0){
+        n = -n;
+        sign = " - ";
+      }
+      buf.push(label, sign, n, "<BR>");
     }else if(type === "multiply"){
       if(!base) return;
       var n:Number = (Number(val) * 100) >> 0;
+      var sign = " + ";
+      if(n < 0){
+        n = -n;
+        sign = " - ";
+      }
       if(isNaN(n) || n === 0) return;
-      buf.push(label, " + ", n, "%<BR>");
+      buf.push(label, sign, n, "%<BR>");
+    }else if(type === "override"){
+      buf.push(label, " -> ", val, "<BR>");
+    }
+  }
+
+  public static function statLine(buf:Array, type:String, property:String, val, label:String):Void {
+    if (!val) return;
+
+    if(!label) label = TooltipConstants.PROPERTY_DICT[property];
+    if(!label) label = property;
+
+    if(type === "add"){
+      var n:Number = Number(val);
+      if(isNaN(n) || n === 0) return;
+      var sign = " + ";
+      if(n < 0){
+        n = -n;
+        sign = " - ";
+      }
+      buf.push(label, sign, n, "<BR>");
+    }else if(type === "multiply"){
+      var n:Number = (Number(val) * 100) >> 0;
+      var sign = " + ";
+      if(n < 0){
+        n = -n;
+        sign = " - ";
+      }
+      if(isNaN(n) || n === 0) return;
+      buf.push(label, sign, n, "%<BR>");
     }else if(type === "override"){
       buf.push(label, " -> ", val, "<BR>");
     }

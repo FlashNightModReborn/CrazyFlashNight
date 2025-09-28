@@ -317,17 +317,11 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     var sortedList = getSortedAttrList(tierData);
     for(var i = 0; i < sortedList.length; i++){
       var key = sortedList[i];
-      TooltipFormatter.enhanceLine(result, "override", null, key, tierData[key], null);
+      TooltipFormatter.statLine(result, "override", key, tierData[key], null);
     }
     // 打印魔法抗性
     if (tierData.magicdefence) {
-      var mdList = [];
-      for(var key in tierData.magicdefence) {
-        var mdName = (key === "基础" ? "能量" : key);
-        var value = tierData.magicdefence[key];
-        if (value) mdList.push(mdName + ": " + value);
-      }
-      if(mdList.length > 0) result.push("抗性 -> ", mdList.join(", "));
+      result.push(quickBuildMagicDefence(tierData.magicdefence));
     }
 
     return result;
@@ -341,8 +335,57 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
 
 
   // === 生成单个插件加成 ===
-  public static function buildModStat(modData:Object):Array {
-    return null; // TODO
+  public static function buildModStat(itemName:String):Array {
+    var result = [];
+    var modData = EquipmentUtil.modDict[itemName];
+    if(!modData) return result;
+    result.push("<font color='" + TooltipConstants.COL_HL + "'>【配件信息】</font><BR>");
+    result.push("适用装备类型：" + modData.use + "<BR>");
+
+    var stats = modData.stats;
+    var percentage = stats.percentage;
+    var flat = stats.flat;
+    var override = stats.override;
+    if(percentage){
+      var sortedList = getSortedAttrList(percentage);
+      for(var i = 0; i < sortedList.length; i++){
+        var key = sortedList[i];
+        TooltipFormatter.statLine(result, "multiply", key, percentage[key], null);
+      }
+    }
+    if(flat){
+      var sortedList = getSortedAttrList(flat);
+      for(var i = 0; i < sortedList.length; i++){
+        var key = sortedList[i];
+        TooltipFormatter.statLine(result, "add", key, flat[key], null);
+      }
+    }
+    if(override){
+      var sortedList = getSortedAttrList(override);
+      for(var i = 0; i < sortedList.length; i++){
+        var key = sortedList[i];
+        TooltipFormatter.statLine(result, "override", key, override[key], null);
+      }
+    }
+    if(override.magicdefence){
+      result.push(quickBuildMagicDefence(override.magicdefence));
+    }
+    if(modData.skill){
+      result = result.concat(buildSkillInfo(modData.skill));
+    }
+    return result;
+  }
+
+  // === 快速打印魔法抗性数据 ===
+  public static function quickBuildMagicDefence(magicdefence:Object):String{
+    var mdList = [];
+    for(var key in magicdefence) {
+      var mdName = (key === "基础" ? "能量" : key);
+      var value = magicdefence[key];
+      if (value) mdList.push(mdName + ": " + value);
+    }
+    if(mdList.length > 0) return "抗性 -> " + mdList.join(", ") + "<BR>";
+    return "";
   }
 
 

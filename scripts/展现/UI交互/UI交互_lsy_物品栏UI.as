@@ -746,7 +746,7 @@ _root.物品UI函数.初始化插件改装界面 = function(){
 	var onIconRollOver = function(){
 		var tierName = EquipmentUtil.tierMaterialToNameDict[this.name];
 		var tierKey = EquipmentUtil.materialToTierDict[this.name];
-		var tierData = this.itemData(panel.当前物品.name)[tierKey];
+		var tierData = ItemUtil.getItemData(panel.当前物品.name)[tierKey];
 		var list = org.flashNight.gesh.tooltip.TooltipTextBuilder.buildTierInfo(panel.当前物品显示名字, this.name, tierName, tierData);
 		if(list.length > 0){
 			_root.注释(200, list.join(""));

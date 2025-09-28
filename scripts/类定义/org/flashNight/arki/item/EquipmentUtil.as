@@ -90,6 +90,9 @@ class org.flashNight.arki.item.EquipmentUtil{
     public static var modUseLists:Object;
 
 
+    /**
+    * 初始化字典并加载配件数据
+    */
     public static function loadModData(modData:Array):Void{
         // 初始化字典
         tierKeyToNameDict = {};
@@ -154,6 +157,9 @@ class org.flashNight.arki.item.EquipmentUtil{
 
 
 
+    /**
+    * 查找所有可用的进阶材料
+    */
     public static function getAvailableTierMaterials(item:BaseItem):Array{
         var rawItemData = ItemUtil.getRawItemData(item.name);
         var list = [];
@@ -169,6 +175,9 @@ class org.flashNight.arki.item.EquipmentUtil{
         return list;
     }
 
+    /**
+    * 查找进阶材料是否能合法装备
+    */
     public static function isTierMaterialAvailable(item:BaseItem, matName:String):Boolean{
         var rawItemData = ItemUtil.getRawItemData(item.name);
         var tierKey = materialToTierDict[matName];
@@ -181,6 +190,12 @@ class org.flashNight.arki.item.EquipmentUtil{
 
 
 
+    /**
+    * 计算装备经过进阶、强化与配件之后的最终数值。
+    *
+    * @param item 装备物品对象。
+    * @param itemData 原始物品数据。
+    */
     public static function calculateData(item:BaseItem, itemData:Object):Void{
         var data:Object = itemData.data;
         var value = item.value;
@@ -252,7 +267,7 @@ class org.flashNight.arki.item.EquipmentUtil{
         // 以百分比加成-固定加成-覆盖的顺序应用所有加成
         operators.multiply(data, multiplier);
         operators.add(data, adder, 0);
-        operators.override(data, ObjectUtil.clone(overrider));
+        operators.override(data, ObjectUtil.clone(overrider)); // 最终覆盖操作前进行一次深拷贝
 
         // 替换战技
         if(skill){

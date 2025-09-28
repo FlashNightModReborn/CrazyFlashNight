@@ -25,6 +25,7 @@
 // ──────────────────────────────────────────────────────────────────────────────
 
 import org.flashNight.arki.item.BaseItem;
+import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.gesh.tooltip.*;
 import org.flashNight.gesh.string.StringUtils;
 
@@ -67,13 +68,19 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
    */
   public static function generateItemDescriptionText(item:Object):String {
     var buffer:Array = [];
+    var itemName = item.name;
     
     append(buffer, TooltipTextBuilder.buildBasicDescription(item));
-    append(buffer, TooltipTextBuilder.buildStoryTip(item));
-    append(buffer, TooltipTextBuilder.buildSynthesisMaterials(item));
-    append(buffer, TooltipTextBuilder.buildBladeSkillMultipliers(item));
-    append(buffer, TooltipTextBuilder.buildSkillInfo(item.skill));
-    append(buffer, TooltipTextBuilder.buildLifecycleInfo(item.lifecyle));
+    if(ItemUtil.isInformation(itemName)){
+      append(buffer, TooltipTextBuilder.buildStoryTip(item));
+      append(buffer, TooltipTextBuilder.buildSynthesisMaterials(item));
+    }else if(ItemUtil.isMaterial(itemName)){
+      append(buffer, TooltipTextBuilder.buildModStat(itemName));
+    }else if(ItemUtil.isEquipment(itemName)){
+      append(buffer, TooltipTextBuilder.buildBladeSkillMultipliers(item));
+      append(buffer, TooltipTextBuilder.buildSkillInfo(item.skill));
+      append(buffer, TooltipTextBuilder.buildLifecycleInfo(item.lifecyle));
+    }
     
     return buffer.join("");
   }
@@ -159,7 +166,7 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
    */
   public static function renderItemIcon(enable:Boolean, name:String, value:Object, introString:String, extraString:String):Void {
     if (enable) {
-      var data:Object = org.flashNight.arki.item.ItemUtil.getItemData(name);
+      var data:Object = ItemUtil.getItemData(name);
       
       // 交给布局模块决定尺寸与偏移
       var target:MovieClip = TooltipBridge.getIconTarget();

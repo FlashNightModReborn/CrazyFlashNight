@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1758972032">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1759049118">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="70">
+    <DOMTimeline name="asLoader" currentFrame="72">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -539,8 +539,17 @@ infra_loader.loadInfrastructure(
             </DOMFrame>
             <DOMFrame index="70" duration="4" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[// 插件占位
-org.flashNight.arki.item.EquipmentUtil.loadModData(null);
+                <script><![CDATA[// 插件数据
+var moddata_loader = org.flashNight.gesh.xml.LoadXml.EquipModDataLoader.getInstance();
+
+moddata_loader.loadModData(
+    function(data:Object):Void {
+		org.flashNight.arki.item.EquipmentUtil.loadModData(data.mod);
+    },
+    function():Void {
+    }
+);
+
 ]]></script>
               </Actionscript>
               <elements/>
