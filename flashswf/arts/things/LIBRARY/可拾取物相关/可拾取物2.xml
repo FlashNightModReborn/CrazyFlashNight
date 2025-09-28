@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="可拾取物相关/可拾取物2" itemID="66adb4fd-00000cac" linkageExportForAS="true" linkageIdentifier="可拾取物2" lastModified="1758976432" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="可拾取物相关/可拾取物2" itemID="66adb4fd-00000cac" linkageExportForAS="true" linkageIdentifier="可拾取物2" lastModified="1759082160" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="可拾取物2" currentFrame="21" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;5&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="可拾取物2" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;5&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#B8E7BC">
           <frames>
@@ -25,53 +25,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[this.itemData = _root.getItemData(this.物品名);
-this.displayName = itemData.displayname;
-
-if (物品名 == "金币")
-{
-	物品名 = "金钱";
-}
-if (物品名 == "K点")
-{
-	if (数量 < 10)
-	{
-		数量 += 10;
-	}
-	if (!_root.isEasyMode())
-	{
-		数量上限 = 50 + _root.等级 * _root.等级 * 10;
-		if (数量 > 数量上限)
-		{
-			数量 = 数量上限 + random((数量 - 数量上限) / 100);
-		}
-	}
-	if (_root.isChallengeMode())
-	{
-		数量 = Math.floor(数量 * 0.5);
-	}
-}
-else if (物品名 == "金钱")
-{
-	if (数量 < 10)
-	{
-		数量 += 10;
-	}
-	if (!_root.isEasyMode())
-	{
-		数量上限 = 50 + _root.等级 * 3000;
-		if (数量 > 数量上限)
-		{
-			数量 = 数量上限 + random((数量 - 数量上限) / 5);
-		}
-	}
-	if (_root.isChallengeMode())
-	{
-		数量 = Math.floor(数量 * 0.5);
-	}
-}
-
-mytext = displayName + " X" + 数量;
+                <script><![CDATA[mytext = displayName + " X" + 数量;
 if (物品名 !== "金钱" && 物品名 !== "K点")
 {
 	var type = itemData.type;
@@ -88,14 +42,77 @@ if (物品名 !== "金钱" && 物品名 !== "K点")
 	}
 }
 
+this.物品图标.游戏世界 = _root.gameworld;
+this.物品图标.attachMovie("图标-" + this.itemData.icon,"图标",0);
+if (this.物品图标.图标._x != undefined)
+{
+	this.物品图标.基本款._visible = false;
+	this.物品图标.图标.gotoAndStop(2);
+}
+else
+{
+	this.物品图标.基本款._visible = true;
+}
+
+this.xmov = !isNaN(this.xmov) ? this.xmov : random(11) - 5;
+//this.旋转速度 = 90 - random(180); //未使用
+this.起始Y = this._y;
+this.垂直速度 = !isNaN(this.垂直速度) ? this.垂直速度 : -(random(5)) - 10;
+
+
 
 Z轴坐标 = this._y;
-if(在飞){
+
+if (this.在飞)
+{
 	gotoAndStop("飞出");
-}else{
-	gotoAndStop("静止");
+	this.onEnterFrame = function()
+	{
+
+		if (this._y - 起始Y > 10)
+		{
+			if (Math.floor(垂直速度) > 1)
+			{
+				垂直速度 = (-垂直速度) / 2;
+			}
+			else
+			{
+				delete this.onEnterFrame;
+				this.gotoAndStop("静止");
+			}
+		}
+		var temp_x = this._x + xmov;
+		var _loc4_ = {x:temp_x, y:起始Y};
+		游戏世界.localToGlobal(_loc4_);
+		var xx = _loc4_.x;
+		var yy = _loc4_.y;
+		if (xmov > 0 && temp_x < _root.Xmax && !游戏世界.地图.hitTest(xx, yy, true))
+		{
+			this._x = temp_x;
+		}
+		else if (xmov < 0 && temp_x > _root.Xmin && !游戏世界.地图.hitTest(xx, yy, true))
+		{
+			this._x = temp_x;
+		}
+		else
+		{
+			xmov = -Math.floor(xmov * 0.7);//撞墙弹回
+		}
+		if (_root.重力加速度 > 3)
+		{
+			this.垂直速度 += 3;
+		}
+		else
+		{
+			this.垂直速度 += _root.重力加速度;
+		}
+		this._y += 垂直速度;
+	};
 }
-]]></script>
+else
+{
+	gotoAndStop("静止");
+}]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -177,7 +194,7 @@ stop();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#D47DF8">
+        <DOMLayer name="Layer 5" color="#D47DF8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
@@ -210,10 +227,7 @@ stop();
         </DOMLayer>
         <DOMLayer name="Layer 6" color="#AEAAE8">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="1" duration="10" keyMode="9728">
+            <DOMFrame index="0" duration="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="无AS链接/Symbol 19" name="物品图标" centerPoint3DX="12" centerPoint3DY="11">
                   <matrix>
@@ -222,74 +236,6 @@ stop();
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	this.游戏世界 = _root.gameworld;
-	this.attachMovie("图标-" + _parent.itemData.icon,"图标",this.getNextHighestDepth());
-	this.图标.gotoAndStop(2);
-	if (this.图标._x != undefined)
-	{
-		this.基本款._visible = 0;
-	}
-	else
-	{
-		this.基本款._visible = 1;
-	}
-	xmov = !isNaN(_parent.xmov) ? _parent.xmov : random(11) - 5;
-	//旋转速度 = 90 - random(180); //未使用
-	起始Y = _parent._y;
-	垂直速度 = !isNaN(_parent.垂直速度) ? _parent.垂直速度 : -(random(5)) - 10;
-	this.onEnterFrame = function()
-	{
-		if (_parent.在飞)
-		{
-			if (_parent._y - 起始Y > 10)
-			{
-				if (Math.floor(垂直速度) > 1)
-				{
-					垂直速度 = (-垂直速度) / 2;
-				}
-				else
-				{
-					delete this.onEnterFrame;
-					_parent.gotoAndStop("静止");
-				}
-			}
-			var temp_x = _parent._x + xmov;
-			var _loc4_ = {x:temp_x, y:起始Y};
-			游戏世界.localToGlobal(_loc4_);
-			var xx = _loc4_.x;
-			var yy = _loc4_.y;
-			if (xmov > 0 && temp_x < _root.Xmax && !游戏世界.地图.hitTest(xx, yy, true))
-			{
-				_parent._x = temp_x;
-			}
-			else if (xmov < 0 && temp_x > _root.Xmin && !游戏世界.地图.hitTest(xx, yy, true))
-			{
-				_parent._x = temp_x;
-			}
-			else
-			{
-				xmov = -Math.floor(xmov * 0.7);//撞墙弹回
-			}
-			if (_root.重力加速度 > 3)
-			{
-				垂直速度 += 3;
-			}
-			else
-			{
-				垂直速度 += _root.重力加速度;
-			}
-			_parent._y += 垂直速度;
-		}
-		else
-		{
-			delete this.onEnterFrame;
-			_parent.gotoAndStop("静止");
-		}
-	};
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -302,20 +248,6 @@ stop();
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	this.attachMovie("图标-" + _parent.物品名,"图标",this.getNextHighestDepth());
-	this.图标.gotoAndStop(2);
-	if (this.图标._x != undefined)
-	{
-		this.基本款._visible = 0;
-	}
-	else
-	{
-		this.基本款._visible = 1;
-	}
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

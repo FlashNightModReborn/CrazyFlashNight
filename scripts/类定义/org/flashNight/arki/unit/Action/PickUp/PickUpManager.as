@@ -38,6 +38,7 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             }
         );
     }
+
     
     /**
      * 拾取物品
@@ -140,10 +141,38 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             数量 = 1;
         }
 
-        // _root.发布消息("创建" + 物品名);
-        
+        if (物品名 === "金币") 物品名 = "金钱";
         if (物品名 === "金钱" && LinearCongruentialEngine.instance.randomCheck(_root.打怪掉钱机率)) {
             物品名 = "K点";
+        }
+
+        // 根据等级对金币和K点掉落进行数量补正
+        if (物品名 === "K点"){
+            if (数量 < 10){
+                数量 += 10;
+            }
+            if (!_root.isEasyMode()){
+                var 数量上限 = 50 + _root.等级 * _root.等级 * 10;
+                if (数量 > 数量上限){
+                    数量 = 数量上限 + random((数量 - 数量上限) / 100);
+                }
+                if (_root.isChallengeMode()){
+                    数量 = Math.floor(数量 * 0.5);
+                }
+            }
+        }else if (物品名 === "金钱"){
+            if (数量 < 10){
+                数量 += 10;
+            }
+            if (!_root.isEasyMode()){
+                var 数量上限 = 50 + _root.等级 * 3000;
+                if (数量 > 数量上限){
+                    数量 = 数量上限 + random((数量 - 数量上限) / 5);
+                }
+                if (_root.isChallengeMode()){
+                    数量 = Math.floor(数量 * 0.5);
+                }
+            }
         }
         
         if (!parameterObject) {
@@ -197,6 +226,10 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
         
         this.dispatcher.subscribeGlobal("interactionKeyDown", pickUpFunc, pickupItem);
         this.dispatcher.subscribeGlobal("interactionKeyUp", resetFunc, pickupItem);
+
+        // 可拾取物内部函数
+        pickupItem.itemData = _root.getItemData(物品名 === "金钱" ? "金币" : 物品名);
+        pickupItem.displayName = pickupItem.itemData.displayname;
         
         this.count++;
     }
