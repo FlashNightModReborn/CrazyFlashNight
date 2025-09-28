@@ -356,6 +356,18 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      * @complexity 摊还时间复杂度 O(B+T)，B=子弹数量，T=目标数量
      */
     public static function processQueue():Void {
+        
+        if (_root.暂停) {
+            BulletCancelQueueProcessor.reset();
+            var __k:String;
+            var __q:BulletQueue;
+            for (__k in activeQueues) {
+                __q = activeQueues[__k];
+                __q.clear();
+            }
+            return;
+        }
+
         // ================================================================
         // 性能优化说明：
         // - 内联展开executeLogic以消除高频函数调用开销
