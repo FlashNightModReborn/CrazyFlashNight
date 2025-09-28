@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/天冲命中" itemID="669d34d3-00001773" linkageExportForAS="true" linkageIdentifier="天冲命中" lastModified="1722875661">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/天冲命中" itemID="669d34d3-00001773" linkageExportForAS="true" linkageIdentifier="天冲命中" lastModified="1759044438">
   <timeline>
-    <DOMTimeline name="天冲命中" currentFrame="11">
+    <DOMTimeline name="天冲命中" currentFrame="4">
       <layers>
-        <DOMLayer name="Script Layer" color="#B34FAF">
+        <DOMLayer name="Script Layer" color="#B34FAF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -15,7 +15,14 @@ this._rotation = 0;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="10" keyMode="9728">
+            <DOMFrame index="1" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.伤害类型 = "魔法";
+this.魔法伤害属性 = "冲";]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="11" keyMode="9728">
@@ -28,7 +35,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="area" color="#F4C6E5" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="area" color="#F4C6E5" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

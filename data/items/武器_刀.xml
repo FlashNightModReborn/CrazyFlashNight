@@ -870,6 +870,8 @@
       <hp>0</hp>
       <mp>0</mp>
       <defence>99</defence>
+      <damagetype>破击</damagetype>
+      <magictype>巨体</magictype>
     </data>    
     <lifecycle>
       <attr_0>
@@ -908,6 +910,8 @@
       <hp>0</hp>
       <mp>0</mp>
       <defence>260</defence>
+      <damagetype>破击</damagetype>
+      <magictype>巨体</magictype>
     </data>    
     <lifecycle>
       <attr_0>
@@ -2756,10 +2760,12 @@
       <level>30</level>
       <weight>15</weight>
       <dressup>刀-斩月</dressup>
-      <power>200</power>
+      <power>300</power>
       <hp>0</hp>
       <mp>0</mp>
-      <defence>199</defence>
+      <evasion>50</evasion>
+      <damagetype>破击</damagetype>
+      <magictype>巨体</magictype>
     </data>
   </item>
   <item>
@@ -2786,6 +2792,8 @@
       <hp>120</hp>
       <mp>0</mp>
       <defence>0</defence>
+      <damagetype>破击</damagetype>
+      <magictype>巨体</magictype>
     </data>
   </item>
   <item>
@@ -2814,6 +2822,8 @@
       <hp>0</hp>
       <mp>0</mp>
       <defence>240</defence>
+      <damagetype>破击</damagetype>
+      <magictype>巨体</magictype>
     </data>
   </item>
   <item>
@@ -2983,6 +2993,8 @@
       <hp>0</hp>
       <mp>0</mp>
       <defence>240</defence>
+      <damagetype>破击</damagetype>
+      <magictype>巨体</magictype>
     </data>
   </item>
   <item>
@@ -3012,6 +3024,8 @@
       <hp>150</hp>
       <mp>150</mp>
       <defence>150</defence>
+      <damagetype>破击</damagetype>
+      <magictype>巨体</magictype>
     </data>
   </item>
   <item>
@@ -3028,9 +3042,9 @@
       <weight>10</weight>
       <dressup>刀-月光大剑</dressup>
       <power>200</power>
-      <hp>100</hp>
-      <mp>600</mp>
-      <defence>100</defence>
+      <mp>300</mp>
+      <evasion>20</evasion>
+      <damagetype>魔法</damagetype>
     </data>
   </item>
   <item>

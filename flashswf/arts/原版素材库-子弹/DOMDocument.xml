@@ -38,7 +38,7 @@
           <DOMFolderItem name="子弹-近战子弹专享座位" itemID="669d3aec-000017c1"/>
           <DOMFolderItem name="子弹-炮弹与爆炸组" itemID="669d34e9-0000177b" isExpanded="true"/>
           <DOMFolderItem name="子弹-普通与穿刺组" itemID="669d349c-00001757"/>
-          <DOMFolderItem name="子弹-气功组" itemID="669d3a53-000017b3"/>
+          <DOMFolderItem name="子弹-气功组" itemID="669d3a53-000017b3" isExpanded="true"/>
           <DOMFolderItem name="子弹-特殊组" itemID="669d3a9d-000017bc"/>
           <DOMFolderItem name="自瞄准星特效" itemID="67139c16-00000684"/>
      </folders>
@@ -182,8 +182,8 @@
           <Include href="弹壳/霰弹弹壳.xml" itemID="6634e7c1-0000196a" lastModified="1714811989"/>
           <Include href="弹壳/重机枪弹壳.xml" itemID="66357b12-00000b67" lastModified="1714811998"/>
           <Include href="导弹.xml" loadImmediate="false" itemID="671dc67e-000007ce" lastModified="1730004606"/>
-          <Include href="等离子光片.xml" loadImmediate="false" itemID="6883540e-00000e06" lastModified="1753438466"/>
           <Include href="地雷激光扫描线.xml" itemIcon="1" loadImmediate="false" itemID="687af4b5-000005e2" lastModified="1752890259"/>
+          <Include href="等离子光片.xml" loadImmediate="false" itemID="6883540e-00000e06" lastModified="1753438466"/>
           <Include href="联弹/白色手里剑/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000250" lastModified="1705503817"/>
           <Include href="联弹/白色手里剑/Symbol 23.xml" loadImmediate="false" itemID="6577efbc-00000251" lastModified="1705503796"/>
           <Include href="联弹/白色手里剑/Symbol 573.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000416" lastModified="1705503893"/>
@@ -639,11 +639,11 @@
           <Include href="子弹-普通与穿刺组/铁枪磁轨弹.xml" itemID="68786a09-00004fe9" lastModified="1752807102"/>
           <Include href="子弹-普通与穿刺组/铁枪磁轨弹动画.xml" itemIcon="1" loadImmediate="false" itemID="6879b5cc-00001095" lastModified="1752807115"/>
           <Include href="子弹-普通与穿刺组/无壳穿刺子弹.xml" itemID="687775d5-00002db3" lastModified="1752659449"/>
-          <Include href="子弹-气功组/气功弹.xml" itemID="668b9d18-000001e7" lastModified="1722856067"/>
-          <Include href="子弹-气功组/气功弹爆炸.xml" itemID="668b9d1d-000001e8" lastModified="1723547810"/>
+          <Include href="子弹-气功组/气功弹.xml" itemID="668b9d18-000001e7" lastModified="1759043660"/>
+          <Include href="子弹-气功组/气功弹爆炸.xml" itemID="668b9d1d-000001e8" lastModified="1759043896"/>
           <Include href="子弹-气功组/屎块爆炸.xml" itemID="66bb409c-00001c97" lastModified="1754669881"/>
-          <Include href="子弹-气功组/天冲命中.xml" itemID="669d34d3-00001773" lastModified="1722875661"/>
-          <Include href="子弹-气功组/月牙天冲.xml" itemID="669d34cf-00001772" lastModified="1758618273"/>
+          <Include href="子弹-气功组/天冲命中.xml" itemID="669d34d3-00001773" lastModified="1759044438"/>
+          <Include href="子弹-气功组/月牙天冲.xml" itemID="669d34cf-00001772" lastModified="1759043685"/>
           <Include href="子弹-特殊组/火力支援-炸弹.xml" itemID="669d345c-00001748" lastModified="1729338582"/>
           <Include href="子弹-特殊组/火力支援开始.xml" itemID="669d3458-00001747" lastModified="1722660646"/>
           <Include href="自瞄准星特效/火力支援新瞄准镜.xml" loadImmediate="false" itemID="671399a0-00002828" lastModified="1729337760"/>
@@ -996,6 +996,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4083010" publishTime="1759044274"/>
+          <PublishItem publishSize="4083010" publishTime="1759043955"/>
+          <PublishItem publishSize="4083042" publishTime="1759043708"/>
           <PublishItem publishSize="4084681" publishTime="1758858040"/>
           <PublishItem publishSize="4084681" publishTime="1758857971"/>
           <PublishItem publishSize="4084652" publishTime="1758857787"/>
@@ -1013,8 +1016,5 @@
           <PublishItem publishSize="4078491" publishTime="1758707235"/>
           <PublishItem publishSize="4076513" publishTime="1758103800"/>
           <PublishItem publishSize="4076528" publishTime="1758102273"/>
-          <PublishItem publishSize="4075039" publishTime="1756077905"/>
-          <PublishItem publishSize="4074766" publishTime="1755483513"/>
-          <PublishItem publishSize="4074762" publishTime="1755483469"/>
      </publishHistory>
 </DOMDocument>
