@@ -306,7 +306,7 @@
           <DOMBitmapItem name="1.特效文件夹/03.赤橙色系/烈火燃烧/火焰2_0062.png" itemID="68d13c11-00001837" sourceExternalFilepath="./LIBRARY/1.特效文件夹/03.赤橙色系/烈火燃烧/火焰2_0062.png" sourceLastImported="1758513450" externalFileSize="24987" originalCompressionType="lossless" quality="50" href="1.特效文件夹/03.赤橙色系/烈火燃烧/火焰2_0062.png" bitmapDataHRef="M 189 1758542679.dat" frameRight="4920" frameBottom="6000"/>
           <DOMBitmapItem name="1.特效文件夹/03.赤橙色系/烈火燃烧/火焰2_0063.png" itemID="68d13c11-00001838" sourceExternalFilepath="./LIBRARY/1.特效文件夹/03.赤橙色系/烈火燃烧/火焰2_0063.png" sourceLastImported="1758513450" externalFileSize="22385" originalCompressionType="lossless" quality="50" href="1.特效文件夹/03.赤橙色系/烈火燃烧/火焰2_0063.png" bitmapDataHRef="M 190 1758542679.dat" frameRight="4920" frameBottom="6000"/>
           <DOMBitmapItem name="1.特效文件夹/03.赤橙色系/烈火燃烧/火焰2_0064.png" itemID="68d13c11-00001839" sourceExternalFilepath="./LIBRARY/1.特效文件夹/03.赤橙色系/烈火燃烧/火焰2_0064.png" sourceLastImported="1758513450" externalFileSize="20001" originalCompressionType="lossless" quality="50" href="1.特效文件夹/03.赤橙色系/烈火燃烧/火焰2_0064.png" bitmapDataHRef="M 191 1758542679.dat" frameRight="4920" frameBottom="6000"/>
-          <DOMBitmapItem name="1.特效文件夹/03.赤橙色系/烈火燃烧/火焰2_0065.png" itemID="68d13c11-0000183a" sourceExternalFilepath="./LIBRARY/1.特效文件夹/03.赤橙色系/烈火燃烧/火焰2_0065.png" sourceLastImported="1758513450" externalFileSize="387" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="1.特效文件夹/03.赤橙色系/烈火燃烧/火焰2_0065.png" bitmapDataHRef="M 192 1758542679.dat" frameRight="4920" frameBottom="6000"/>
+          <DOMBitmapItem name="1.特效文件夹/03.赤橙色系/烈火燃烧/火焰2_0065.png" itemID="68d13c11-0000183a" sourceExternalFilepath="./LIBRARY/1.特效文件夹/03.赤橙色系/烈火燃烧/火焰2_0065.png" sourceLastImported="1758513450" externalFileSize="387" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="1.特效文件夹/03.赤橙色系/烈火燃烧/火焰2_0065.png" bitmapDataHRef="M 192 1758542679.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMSoundItem name="2.音效文件夹/战斗/武器 从套中拿出警棍 01.mp3" itemID="657437a2-000008bd" sourceExternalFilepath="../雾人整合特效/LIBRARY/2.音效文件夹/战斗/武器 从套中拿出警棍 01.mp3" sourceLastImported="1699969706" externalFileCRC32="2724787078" externalFileSize="16289" href="2.音效文件夹/战斗/武器 从套中拿出警棍 01.mp3" soundDataHRef="M 62 1702115234.dat" format="44kHz 16bit Stereo" sampleCount="43776" exportFormat="1" exportBits="7" dataLength="11677" exportNative="true" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="5472"/>
           <DOMSoundItem name="2.音效文件夹/战斗/战斗-挥舞(10).mp3" itemID="65743799-000008a0" sourceExternalFilepath="../雾人整合特效/LIBRARY/2.音效文件夹/战斗/战斗-挥舞(10).mp3" sourceLastImported="1699970028" externalFileCRC32="284002943" externalFileSize="15903" href="2.音效文件夹/战斗/战斗-挥舞(10).mp3" soundDataHRef="M 56 1702115225.dat" format="44kHz 16bit Stereo" sampleCount="41472" exportFormat="1" exportBits="7" dataLength="11099" exportNative="true" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="5184"/>
           <DOMSoundItem name="2.音效文件夹/战斗/战斗-挥舞(11).mp3" itemID="65743799-000008a4" sourceExternalFilepath="../雾人整合特效/LIBRARY/2.音效文件夹/战斗/战斗-挥舞(11).mp3" sourceLastImported="1699970034" externalFileCRC32="1123551177" externalFileSize="4365" href="2.音效文件夹/战斗/战斗-挥舞(11).mp3" soundDataHRef="M 57 1702115225.dat" format="44kHz 16bit Stereo" sampleCount="12672" exportFormat="1" exportBits="7" dataLength="3341" exportNative="true" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="1584"/>
@@ -843,10 +843,11 @@
           <Include href="1.特效文件夹/03.赤橙色系/火焰喷射/Graphic/shape 695.xml" itemIcon="1" loadImmediate="false" itemID="58132bff-000002b7" lastModified="1477651455"/>
           <Include href="1.特效文件夹/03.赤橙色系/火焰喷射/Graphic/shape 696.xml" itemIcon="1" loadImmediate="false" itemID="58132bff-000002b8" lastModified="1477651455"/>
           <Include href="1.特效文件夹/03.赤橙色系/火焰喷射/MovieClip/火焰喷射.xml" loadImmediate="false" itemID="66687e2a-000029d3" lastModified="1718124136"/>
-          <Include href="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧.xml" itemID="66d719e1-00004984" lastModified="1758993491"/>
+          <Include href="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧.xml" itemID="66d719e1-00004984" lastModified="1759064094"/>
           <Include href="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧-内火-1.xml" itemIcon="1" loadImmediate="false" itemID="66d71f61-000050c5" lastModified="1725374305"/>
           <Include href="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧-内火-2.xml" itemIcon="1" loadImmediate="false" itemID="66d71f64-000050c6" lastModified="1725374308"/>
           <Include href="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧-内火-3.xml" loadImmediate="false" itemID="66d71f67-000050c7" lastModified="1725374311"/>
+          <Include href="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧大.xml" itemID="68d92edd-00000995" lastModified="1759063884"/>
           <Include href="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧位图容器.xml" itemIcon="1" loadImmediate="false" itemID="68d13b45-000016f2" lastModified="1758542735"/>
           <Include href="1.特效文件夹/03.赤橙色系/烈炎斜升/烈炎斜升.xml" itemID="654f37b8-00004baf" lastModified="1730486222"/>
           <Include href="1.特效文件夹/03.赤橙色系/烈炎斜升/未命名文件夹 1/Symbol 125.xml" loadImmediate="false" itemID="654ba156-00002683" lastModified="1696643875"/>
@@ -2003,6 +2004,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="5494065" publishTime="1759063834"/>
           <PublishItem publishSize="5491482" publishTime="1758991848"/>
           <PublishItem publishSize="5491482" publishTime="1758991378"/>
           <PublishItem publishSize="5491574" publishTime="1758542790"/>
@@ -2022,6 +2024,5 @@
           <PublishItem publishSize="3725804" publishTime="1740222409"/>
           <PublishItem publishSize="3727386" publishTime="1740145284"/>
           <PublishItem publishSize="3727373" publishTime="1740145120"/>
-          <PublishItem publishSize="3679506" publishTime="1730486275"/>
      </publishHistory>
 </DOMDocument>
