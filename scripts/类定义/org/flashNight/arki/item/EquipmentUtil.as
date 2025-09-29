@@ -183,7 +183,7 @@ class org.flashNight.arki.item.EquipmentUtil{
         var tierKey = materialToTierDict[matName];
         if(rawItemData[tierKey]) return true;
         if(rawItemData.type === "防具" && rawItemData.use !== "颈部装备" && rawItemData.data.level < 10){
-            if(tierKey === "data_2" || tierKey === "data_3" ||tierKey === "data_3") return true;
+            if(tierKey === "data_2" || tierKey === "data_3" || tierKey === "data_4") return true;
         }
         return false;
     }
