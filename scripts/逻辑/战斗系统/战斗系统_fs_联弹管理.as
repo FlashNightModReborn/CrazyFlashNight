@@ -156,6 +156,8 @@ _root.联弹系统.横向联弹初始化 = function(clip:MovieClip):Void {
     
     // 设置 onEnterFrame 每帧更新子弹单元体的运动逻辑
     clip.onEnterFrame = function():Void {
+        if(_root.暂停) return;
+
         // 累加衰竭计数
         clip.衰竭计数器 += _root.子弹衰竭计数(clip._parent);
         var y_min:Number = Infinity;
@@ -270,6 +272,7 @@ _root.联弹系统.横向拖尾联弹初始化 = function (clip:MovieClip):Void
     /* ---------- ③ 帧循环 ---------- */
     clip.onEnterFrame = function ():Void
     {
+        if (_root.暂停) return;
         var y_min:Number = Infinity;
         var y_max:Number = -Infinity;
 
@@ -430,6 +433,7 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
     clip.单元体列表.push(firstUnit);
     
     clip.onEnterFrame = function():Void {
+        if(_root.暂停) return;
         var parentMC:MovieClip = this._parent;
         var bulletSpeedX:Number = parentMC.xmov;
         var countTotal:Number = parentMC.霰弹值;
@@ -578,6 +582,7 @@ _root.联弹系统.滑翔联弹初始化 = function(clip:MovieClip):Void {
     
     // 每帧更新处理逻辑
     clip.onEnterFrame = function():Void {
+        if(_root.暂停) return;
         var y_min:Number = Infinity;
         var y_max:Number = -Infinity;
         
@@ -641,6 +646,7 @@ _root.联弹系统.爆炸联弹初始化 = function(clip:MovieClip):Void {
     
     // 设置每帧执行的更新逻辑
     clip.onEnterFrame = function():Void {
+        if(_root.暂停) return;
         var y_min:Number = Infinity;
         var y_max:Number = -Infinity;
         
