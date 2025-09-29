@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-boss大僵尸" itemID="67bc37fc-0000061f" linkageExportForAS="true" linkageIdentifier="敌人-boss大僵尸" lastModified="1759042547">
   <timeline>
-    <DOMTimeline name="敌人-boss大僵尸" currentFrame="83">
+    <DOMTimeline name="敌人-boss大僵尸" currentFrame="136">
       <layers>
         <DOMLayer name="Labels Layer" color="#6B6DFC">
           <frames>
@@ -173,13 +173,13 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#517CE4" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#517CE4" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="98" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 19" name="area" selected="true" centerPoint3DX="-13.95" centerPoint3DY="-179.1">
                   <matrix>
-                    <Matrix a="2.11715698242188" d="8.52571105957031" tx="-26.45" ty="-191.6"/>
+                    <Matrix a="2.11715698242188" d="8.52569580078125" tx="-26.45" ty="-191.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -564,7 +564,7 @@ onClipEvent(unload){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#FC4EEA">
+        <DOMLayer name="Layer 12" color="#FC4EEA" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements>
