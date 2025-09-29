@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#000000" width="1024" height="576" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" timelineLabelWidth="253" viewAngle3D="67.3530907632092" sharedLibraryURL="Font" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#000000" width="1024" height="576" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" timelineLabelWidth="253" viewAngle3D="67.3530907632092" sharedLibraryURL="Font" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
           <DOMFolderItem name="image" itemID="65976161-00000eac"/>
@@ -882,7 +882,7 @@
           <Include href="无限过图计时器.xml" itemID="689c1899-000001f2" lastModified="1755135414"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="63" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;guideline direction="h"&gt;476&lt;/guideline&gt;&lt;guideline direction="h"&gt;516&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" currentFrame="118" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;guideline direction="h"&gt;476&lt;/guideline&gt;&lt;guideline direction="h"&gt;516&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Labels Layer 1" color="#E88C68" autoNamed="false">
                          <frames>
@@ -1002,7 +1002,7 @@
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="as" color="#7B84C3" current="true" isSelected="true" autoNamed="false">
+                    <DOMLayer name="as" color="#7B84C3" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <Actionscript>
@@ -2348,7 +2348,7 @@ onClipEvent (mouseMove) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="Layer 179" color="#417BFC" parentLayerIndex="9" autoNamed="false">
+                    <DOMLayer name="Layer 179" color="#417BFC" parentLayerIndex="9" current="true" isSelected="true" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="5" keyMode="9728">
                                    <elements/>
@@ -4994,15 +4994,15 @@ on(rollOut){
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!9355 5089|9645 5270!9645 5270|9949 5270!9949 5270|9659 5089!9659 5089|9355 5089!9355 5089|9065 4908!9065 4908|9369 4908!9369 4908|9659 5089!9659 5089|9962 5089!9962 5089|9672 4908!9672 4908|9382 4727!9382 4727|9079 4727!9079 4727|9369
- 4908!9369 4908|9672 4908!9672 4908|9975 4908!9975 4908|10265 5089!10265 5089|10569 5089!10569 5089|10279 4908!10279 4908|9975 4908!9975 4908|9685 4727!9685 4727|9382 4727!9382 4727|9092 4546!9092 4546|8789 4546!8789 4546|9079 4727!9685
- 4727|9395 4546!9395 4546|9699 4546!9699 4546|10002 4546!10002 4546|10305 4546!10305 4546|10609 4546!10609 4546|10899 4727!10899 4727|11189 4908!11189 4908|11479 5089!11479 5089|11769 5270!11769 5270|12059 5451!12059 5451|11755 5451!11755
- 5451|11465 5270!11465 5270|11162 5270!11162 5270|11452 5451!11452 5451|11755 5451!9092 4546|9395 4546!8789 4546|8485 4546!8485 4546|8775 4727!8775 4727|8472 4727!8472 4727|8762 4908!8762 4908|9065 4908!9065 4908|8775 4727!8485 4546|8182
- 4546!8182 4546|8472 4727!11452 5451|11149 5451!11149 5451|10845 5451!10845 5451|10542 5451!10542 5451|10239 5451!10239 5451|9935 5451!9935 5451|9633 5451!9633 5451|9342 5270!9342 5270|9052 5089!9052 5089|8762 4908!9342 5270|9645 5270
-!9645 5270|9935 5451!9355 5089|9052 5089!8775 4727|9079 4727!11769 5270|11465 5270!11465 5270|11175 5089!11175 5089|10872 5089!10872 5089|10582 4908!10582 4908|10885 4908!10885 4908|11175 5089!11175 5089|11479 5089!10899 4727|10595 4727
-!10595 4727|10305 4546!10595 4727|10885 4908!10885 4908|11189 4908!9989 4727|10279 4908!10279 4908|10582 4908!10582 4908|10292 4727!10292 4727|9989 4727!10002 4546|10292 4727!10292 4727|10595 4727!10542 5451|10252 5270!10252 5270|9949
- 5270!9949 5270|10239 5451!9962 5089|10265 5089!10265 5089|10555 5270!10555 5270|10859 5270!10859 5270|11149 5451!10252 5270|9962 5089!11162 5270|10872 5089!10872 5089|10569 5089!10569 5089|10859 5270!10859 5270|11162 5270!10845 5451
-|10555 5270!10555 5270|10252 5270!9989 4727|9685 4727!9699 4546|9989 4727"/>
+!9382 4727|9079 4727!9079 4727|9369 4908!9369 4908|9672 4908!9672 4908|9382 4727!9672 4908|9975 4908!9975 4908|9685 4727!9685 4727|9382 4727!9685 4727|9395 4546!9395 4546|9092 4546!9092 4546|9382 4727!9395 4546|9699 4546!9699 4546|10002
+ 4546!10002 4546|10305 4546!10305 4546|10609 4546!10609 4546|10899 4727!10899 4727|11189 4908!11189 4908|11479 5089!11479 5089|11769 5270!11769 5270|12059 5451!12059 5451|11755 5451!11755 5451|11452 5451!11452 5451|11149 5451!11149 5451
+|10845 5451!10845 5451|10542 5451!10542 5451|10239 5451!10239 5451|9935 5451!9935 5451|9633 5451!9633 5451|9342 5270!9342 5270|9052 5089!9052 5089|8762 4908!8762 4908|8472 4727!8472 4727|8182 4546!8182 4546|8485 4546!8485 4546|8789 4546
+!8789 4546|9092 4546!9079 4727|8775 4727!8775 4727|9065 4908!9065 4908|9369 4908!8775 4727|8472 4727!8485 4546|8775 4727!9342 5270|9645 5270!9645 5270|9355 5089!9355 5089|9052 5089!9645 5270|9949 5270!9949 5270|9659 5089!9659 5089|9355
+ 5089!8762 4908|9065 4908!8789 4546|9079 4727!9369 4908|9659 5089!9659 5089|9962 5089!9962 5089|9672 4908!9355 5089|9065 4908!11769 5270|11465 5270!11465 5270|11755 5451!10899 4727|10595 4727!10595 4727|10885 4908!10885 4908|11189 4908
+!10595 4727|10292 4727!10292 4727|10582 4908!10582 4908|10885 4908!10002 4546|10292 4727!10292 4727|9989 4727!9989 4727|10279 4908!10279 4908|10582 4908!9975 4908|10265 5089!10265 5089|10569 5089!10569 5089|10279 4908!10279 4908|9975
+ 4908!9949 5270|10252 5270!10252 5270|9962 5089!9962 5089|10265 5089!9949 5270|10239 5451!10265 5089|10555 5270!10555 5270|10859 5270!10859 5270|10569 5089!10859 5270|11162 5270!11162 5270|10872 5089!10872 5089|10569 5089!10845 5451|10555
+ 5270!10555 5270|10252 5270!10252 5270|10542 5451!11162 5270|11465 5270!11465 5270|11175 5089!11175 5089|10872 5089!10859 5270|11149 5451!10595 4727|10305 4546!10885 4908|11175 5089!11175 5089|11479 5089!10872 5089|10582 4908!11162 5270
+|11452 5451!9699 4546|9989 4727!9989 4727|9685 4727!9645 5270|9935 5451"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="865.35" centerPoint3DY="164.1">
@@ -5038,7 +5038,7 @@ on(rollOut){
 ]]></script>
                                              </Actionscript>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 1057" name="gameworld" selected="true" centerPoint3DX="121.75" centerPoint3DY="39.45">
+                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 1057" name="gameworld" centerPoint3DX="121.75" centerPoint3DY="39.45">
                                              <matrix>
                                                   <Matrix d="0.999755859375" tx="109.1" ty="24.8"/>
                                              </matrix>
@@ -5297,7 +5297,7 @@ on (rollOut) {
                                              </transformationPoint>
                                              <Actionscript>
                                                   <script><![CDATA[onClipEvent(load){
-   标题 = _root.获得翻译("请选择难度");
+   标题 = _root.获得翻译("请选择难度（悬浮查看说明）");
    控制值 = "难度";
    库 = [];
    库[0] = "平衡模式（困难）";
@@ -5309,10 +5309,10 @@ on (rollOut) {
                                         </DOMSymbolInstance>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 292" centerPoint3DX="775.65" centerPoint3DY="381.8">
                                              <matrix>
-                                                  <Matrix a="0.876312255859375" c="0.00494384765625" d="0.428970336914063" tx="671.35" ty="336.8"/>
+                                                  <Matrix a="0.876312255859375" c="0.007080078125" d="0.614242553710938" tx="671.15" ty="320.15"/>
                                              </matrix>
                                              <transformationPoint>
-                                                  <Point/>
+                                                  <Point x="104.05" y="89.95"/>
                                              </transformationPoint>
                                              <Actionscript>
                                                   <script><![CDATA[on (rollOver) {
@@ -5415,15 +5415,15 @@ on (rollOut) {
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!9979 4714|10282 4714!10282 4714|10572 4895!10572 4895|10875 4895!10875 4895|11165 5076!11165 5076|10862 5076!10862 5076|10572 4895!10572 4895|10269 4895!10269 4895|9965 4895!9965 4895|9675 4714!9675 4714|9979 4714!9979 4714|10269 4895
-!10269 4895|10559 5076!10559 5076|10862 5076!10862 5076|11152 5257!11152 5257|10849 5257!10849 5257|10559 5076!10559 5076|10255 5076!10255 5076|9952 5076!9952 5076|9662 4895!9662 4895|9965 4895!9965 4895|10255 5076!10255 5076|10545 5257
-!10545 5257|10242 5257!10242 5257|9952 5076!9952 5076|9649 5076!9649 5076|9359 4895!9359 4895|9662 4895!9662 4895|9372 4714!9372 4714|9069 4714!9069 4714|8765 4714!8765 4714|8475 4533!8475 4533|8779 4533!8779 4533|9069 4714!9069 4714
-|9359 4895!9359 4895|9055 4895!9055 4895|9345 5076!9345 5076|9042 5076!9042 5076|8752 4895!8752 4895|9055 4895!9055 4895|8765 4714!9372 4714|9675 4714!9675 4714|9385 4533!9385 4533|9082 4533!9082 4533|8779 4533!9385 4533|9689 4533!9689
- 4533|9979 4714!9082 4533|9372 4714!8752 4895|8462 4714!8462 4714|8765 4714!8462 4714|8172 4533!8172 4533|8475 4533!9345 5076|9649 5076!9649 5076|9939 5257!9939 5257|9635 5257!9635 5257|9345 5076!9635 5257|9925 5438!9925 5438|9623 5438
-!9623 5438|9332 5257!9332 5257|9635 5257!9332 5257|9042 5076!11152 5257|11455 5257!11455 5257|11745 5438!11745 5438|11442 5438!11442 5438|11152 5257!11165 5076|11469 5076!11469 5076|11759 5257!11759 5257|11455 5257!11455 5257|11165 5076
-!11759 5257|12049 5438!12049 5438|11745 5438!10875 4895|11179 4895!11179 4895|11469 5076!10295 4533|10599 4533!10599 4533|10889 4714!10889 4714|10585 4714!10585 4714|10282 4714!10282 4714|9992 4533!9992 4533|10295 4533!10295 4533|10585
- 4714!10585 4714|10875 4895!10889 4714|11179 4895!9939 5257|10229 5438!10229 5438|9925 5438!9939 5257|10242 5257!10242 5257|10532 5438!10532 5438|10229 5438!10545 5257|10835 5438!10835 5438|10532 5438!10849 5257|10545 5257!10849 5257
-|11139 5438!11139 5438|10835 5438!11442 5438|11139 5438!9689 4533|9992 4533"/>
+!9662 4895|9372 4714!9372 4714|9069 4714!9069 4714|9359 4895!9359 4895|9662 4895!9675 4714|9385 4533!9385 4533|9082 4533!9082 4533|9372 4714!9372 4714|9675 4714!9385 4533|9689 4533!9689 4533|9992 4533!9992 4533|10295 4533!10295 4533|10599
+ 4533!10599 4533|10889 4714!10889 4714|11179 4895!11179 4895|11469 5076!11469 5076|11759 5257!11759 5257|12049 5438!12049 5438|11745 5438!11745 5438|11442 5438!11442 5438|11139 5438!11139 5438|10835 5438!10835 5438|10532 5438!10532 5438
+|10229 5438!10229 5438|9925 5438!9925 5438|9623 5438!9623 5438|9332 5257!9332 5257|9042 5076!9042 5076|8752 4895!8752 4895|8462 4714!8462 4714|8172 4533!8172 4533|8475 4533!8475 4533|8779 4533!8779 4533|9082 4533!9055 4895|9345 5076!9345
+ 5076|9649 5076!9649 5076|9359 4895!9359 4895|9055 4895!8462 4714|8765 4714!8765 4714|8475 4533!9332 5257|9635 5257!9635 5257|9345 5076!9345 5076|9042 5076!8752 4895|9055 4895!9055 4895|8765 4714!8779 4533|9069 4714!9069 4714|8765 4714
+!11759 5257|11455 5257!11455 5257|11745 5438!10889 4714|10585 4714!10585 4714|10875 4895!10875 4895|11179 4895!10585 4714|10282 4714!10282 4714|10572 4895!10572 4895|10875 4895!9689 4533|9979 4714!9979 4714|10282 4714!10282 4714|9992
+ 4533!9979 4714|10269 4895!10269 4895|10572 4895!9965 4895|10255 5076!10255 5076|10559 5076!10559 5076|10269 4895!10269 4895|9965 4895!10242 5257|9952 5076!9952 5076|9649 5076!9649 5076|9939 5257!9939 5257|10242 5257!9939 5257|10229 5438
+!10242 5257|10545 5257!10545 5257|10255 5076!10255 5076|9952 5076!10559 5076|10862 5076!10862 5076|10572 4895!10545 5257|10849 5257!10849 5257|10559 5076!10545 5257|10835 5438!10862 5076|11152 5257!11152 5257|11455 5257!11455 5257|11165
+ 5076!11165 5076|10862 5076!11442 5438|11152 5257!11152 5257|10849 5257!10849 5257|11139 5438!10242 5257|10532 5438!10295 4533|10585 4714!10875 4895|11165 5076!11165 5076|11469 5076!9939 5257|9635 5257!9635 5257|9925 5438!9662 4895|9965
+ 4895!9965 4895|9675 4714!9952 5076|9662 4895!9675 4714|9979 4714"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="864.85" centerPoint3DY="163.45">
@@ -5690,7 +5690,7 @@ on(rollOut){
 ]]></script>
                                              </Actionscript>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-难度选择" centerPoint3DX="864.8" centerPoint3DY="397.65">
+                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-难度选择" selected="true" centerPoint3DX="864.8" centerPoint3DY="397.65">
                                              <matrix>
                                                   <Matrix tx="760.5" ty="352.15"/>
                                              </matrix>
@@ -5699,7 +5699,7 @@ on(rollOut){
                                              </transformationPoint>
                                              <Actionscript>
                                                   <script><![CDATA[onClipEvent(load){
-   标题 = _root.获得翻译("请选择难度");
+   标题 = _root.获得翻译("请选择难度（悬浮查看说明）");
    控制值 = "难度";
    库 = [];
    库[0] = "平衡模式（困难）";
@@ -5711,10 +5711,10 @@ on(rollOut){
                                         </DOMSymbolInstance>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 292" centerPoint3DX="775.15" centerPoint3DY="381.15">
                                              <matrix>
-                                                  <Matrix a="0.876312255859375" c="0.00494384765625" d="0.428970336914063" tx="670.85" ty="336.15"/>
+                                                  <Matrix a="0.876312255859375" c="0.0068206787109375" d="0.592575073242188" tx="670.7" ty="321.4"/>
                                              </matrix>
                                              <transformationPoint>
-                                                  <Point/>
+                                                  <Point x="104.05" y="90.05"/>
                                              </transformationPoint>
                                              <Actionscript>
                                                   <script><![CDATA[on (rollOver) {
@@ -7138,7 +7138,7 @@ onClipEvent (unload) {
                               </DOMFrame>
                               <DOMFrame index="144" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/透明元件" name="gameworld层级定位器" selected="true" centerPoint3DX="12.5" centerPoint3DY="12.5">
+                                        <DOMSymbolInstance libraryItemName="sprite/透明元件" name="gameworld层级定位器" centerPoint3DX="12.5" centerPoint3DY="12.5">
                                              <transformationPoint>
                                                   <Point/>
                                              </transformationPoint>
@@ -7686,6 +7686,8 @@ onClipEvent (enterFrame) {
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="626964" publishTime="1759150285"/>
+          <PublishItem publishSize="626964" publishTime="1759150172"/>
           <PublishItem publishSize="629526" publishTime="1755966251"/>
           <PublishItem publishSize="629535" publishTime="1755966011"/>
           <PublishItem publishSize="633280" publishTime="1755331677"/>
@@ -7704,7 +7706,5 @@ onClipEvent (enterFrame) {
           <PublishItem publishSize="667737" publishTime="1754437323"/>
           <PublishItem publishSize="686196" publishTime="1754050476"/>
           <PublishItem publishSize="667459" publishTime="1753882318"/>
-          <PublishItem publishSize="670375" publishTime="1753776854"/>
-          <PublishItem publishSize="670536" publishTime="1753776463"/>
      </publishHistory>
 </DOMDocument>
