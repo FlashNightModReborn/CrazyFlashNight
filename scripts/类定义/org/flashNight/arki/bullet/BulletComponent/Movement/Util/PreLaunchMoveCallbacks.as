@@ -14,12 +14,16 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.PreLaunchMoveCall
     /**
      * 构造预发射移动回调函数
      * @param config 导弹配置对象
+     * @param angleDegrees 导弹初始的旋转角度（度数）
      * @return Function 带随机化参数的抛物线/振荡动画函数
      */
-    public static function create(config:Object):Function {
+    public static function create(config:Object, angleDegrees:Number):Function {
         return function(flag:String):Boolean {
             if (this._preFrame == undefined) {
                 this._preFrame = 0;
+                // 设置初始角度
+                this.rotationAngle = angleDegrees;
+
                 // 使用配置中的帧数范围
                 this._preTotal = config.preLaunchFrames.min + 
                                Math.floor(Math.random() * (config.preLaunchFrames.max - config.preLaunchFrames.min + 1));
@@ -59,11 +63,16 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.PreLaunchMoveCall
             
             // 使用配置中的旋转抖动参数
             if (t > config.rotationShakeTime.start && t < config.rotationShakeTime.end) {
-                this.rotationAngle += (Math.random() - 0.5) * config.rotationShakeAmplitude;
+                this.rotationAngle = angleDegrees + (Math.random() - 0.5) * config.rotationShakeAmplitude;
+            } else {
+                this.rotationAngle = angleDegrees;
             }
             
             this.targetObject._x = this._launchX + x;
             this.targetObject._y = this._launchY + y;
+            // 更新导弹旋转以匹配当前角度
+            this.targetObject._rotation = this.rotationAngle;
+            this.lockRotation = true;
             return false;
         };
     }

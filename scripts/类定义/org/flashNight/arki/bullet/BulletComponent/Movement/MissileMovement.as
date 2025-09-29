@@ -168,7 +168,11 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement
         
         // 更新速度和角度
         this.speed = newSpeed;
-        this.rotationAngle = Math.atan2(this.vy, this.vx) * 180 / Math.PI;
+        if(this.lockRotation) {
+            this.lockRotation = false;
+        } else {
+            this.rotationAngle += this.desiredAngularVelocity * 180 / Math.PI;
+        }
         
         // 更新位置和显示
         target._x += this.vx;

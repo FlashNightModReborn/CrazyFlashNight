@@ -19,6 +19,8 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.BaseMissileMovement ex
     public var hasTarget:Boolean = false; // 是否已经锁定目标
     public var usePreLaunch:Boolean = false; // 是否启用“预发射（PreLaunch）”状态
 
+    public var lockRotation:Boolean = false; // 是否锁定旋转
+
     // 外部提供的回调方法
     public var onInitializeMissile:Function; // 导弹初始化的回调方法
     public var onSearchForTarget:Function; // 搜索目标的回调方法

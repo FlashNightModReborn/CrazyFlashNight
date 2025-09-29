@@ -35,7 +35,7 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.DefaultMissileCal
             onInitializeMissile: InitMissileCallbacks.create(shooter, velocity, angleDegrees, config),
             onSearchForTarget: SearchForTargetCallbacks.create(config),
             onTrackTarget: TrackTargetCallbacks.create(config),
-            onPreLaunchMove: PreLaunchMoveCallbacks.create(config)
+            onPreLaunchMove: PreLaunchMoveCallbacks.create(config, angleDegrees)
         };
     }
     
