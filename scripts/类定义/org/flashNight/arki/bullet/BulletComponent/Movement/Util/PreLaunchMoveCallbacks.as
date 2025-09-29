@@ -32,12 +32,25 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.PreLaunchMoveCall
                 // 使用配置中的高度范围
                 this._peakHeight = config.preLaunchPeakHeight.min + 
                                  Math.random() * (config.preLaunchPeakHeight.max - config.preLaunchPeakHeight.min);
-                // 使用配置中的水平振幅范围
-                this._horizAmp = config.preLaunchHorizAmp.min +
-                               Math.random() * (config.preLaunchHorizAmp.max - config.preLaunchHorizAmp.min);
-                // 使用配置中的振荡周期范围
-                this._horizCycles = config.preLaunchCycles.min +
-                                  Math.random() * (config.preLaunchCycles.max - config.preLaunchCycles.min);
+                // 使用配置中的水平振幅范围（添加安全检查）
+                if (config.preLaunchHorizAmp != undefined &&
+                    config.preLaunchHorizAmp.min != undefined &&
+                    config.preLaunchHorizAmp.max != undefined) {
+                    this._horizAmp = Number(config.preLaunchHorizAmp.min) +
+                                   Math.random() * (Number(config.preLaunchHorizAmp.max) - Number(config.preLaunchHorizAmp.min));
+                } else {
+                    this._horizAmp = 5; // 默认值
+                }
+
+                // 使用配置中的振荡周期范围（添加安全检查）
+                if (config.preLaunchCycles != undefined &&
+                    config.preLaunchCycles.min != undefined &&
+                    config.preLaunchCycles.max != undefined) {
+                    this._horizCycles = Number(config.preLaunchCycles.min) +
+                                      Math.random() * (Number(config.preLaunchCycles.max) - Number(config.preLaunchCycles.min));
+                } else {
+                    this._horizCycles = 2; // 默认值
+                }
             }
             
             if (flag == "isComplete") {
@@ -59,8 +72,13 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.PreLaunchMoveCall
             
             // 水平振荡运动
             var decay:Number = 1 - t;
-            var x:Number = this._horizAmp * decay * Math.sin(2 * Math.PI * this._horizCycles * t);
-            
+            var radians:Number = angleDegrees * Math.PI / 180;
+            var direction:Number = (Math.cos(radians) > 0) ? 1 : -1;
+            var sinValue:Number = Math.sin(2 * Math.PI * this._horizCycles * t);
+            var x:Number = direction * this._horizAmp * decay * sinValue;
+
+            // 调试信息
+            // _root.服务器.发布服务器消息(this._launchX + " " + "方向:" + direction + ", _horizAmp:" + this._horizAmp + ", decay:" + decay + ", cycles:" + this._horizCycles + ", x:" + x);
             // 使用配置中的旋转抖动参数
             if (t > config.rotationShakeTime.start && t < config.rotationShakeTime.end) {
                 this.rotationAngle = angleDegrees + (Math.random() - 0.5) * config.rotationShakeAmplitude;

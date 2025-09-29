@@ -2,7 +2,7 @@
 
 import org.flashNight.arki.bullet.BulletComponent.Movement.BaseMissileMovement;
 import org.flashNight.arki.bullet.BulletComponent.Movement.IMovement;
-
+import org.flashNight.gesh.object.ObjectUtil;
 /**
  * MissileMovement
  * ===============
@@ -101,7 +101,6 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement
         super.updateMovement(target);
         
         ++frame;
-        
 
         if(frame === 1) {
             target.zOffset = target.Z轴坐标 - target._y;
@@ -172,11 +171,11 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement
             this.lockRotation = false;
         } else {
             this.rotationAngle += this.desiredAngularVelocity * 180 / Math.PI;
+            target._x += this.vx;
+            target._y += this.vy;
         }
         
         // 更新位置和显示
-        target._x += this.vx;
-        target._y += this.vy;
         target._rotation = this.rotationAngle;
         target.Z轴坐标 = target._y + (target.yOffset || target.zOffset);
     }
