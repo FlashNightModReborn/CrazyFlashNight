@@ -55,11 +55,12 @@ _root.转场景数据传递 = function(){
 	}
 
 	var 操控对象 = _root.gameworld[_root.控制目标];
+
 	if(_root.当前为战斗地图) {
 		if (_root.转场景数据[0] > 0){
 			操控对象.hp = _root.转场景数据[0];
 		}
-		if (_root.转场景数据[1] >= 0){
+		if (_root.转场景数据[1] > 0){
 			操控对象.mp = _root.转场景数据[1];
 		}
 
@@ -72,6 +73,7 @@ _root.转场景数据传递 = function(){
 					  操控对象.mp + " " +
 					  _root.转场景数据[1]);
 		*/
+
 	} else {
 		if(操控对象.hp > 0) {
 			_root.转场景数据[0] = 操控对象.hp;
