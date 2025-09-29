@@ -570,23 +570,27 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
             result += " orderness:N/A(empty)";
         }
         
-        // 显示前5个子弹的左边界值（如果有）
+        // 显示所有子弹的名称和左边界值
         if (this.bullets.length > 0) {
-            result += " leftBounds:[";
-            var showCount:Number = Math.min(5, this.bullets.length);
-            for (var k:Number = 0; k < showCount; k++) {
+            result += "\n  bulletDetails:[";
+            for (var k:Number = 0; k < this.bullets.length; k++) {
                 if (k > 0) result += ",";
                 var bullet:Object = this.bullets[k];
-                if (bullet && bullet.aabbCollider) {
-                    result += bullet.aabbCollider.left;
+                if (bullet) {
+                    result += "\n    {";
+                    result += "name:'" + (bullet._name || "unnamed") + "'";
+                    result += ", left:";
+                    if (bullet.aabbCollider) {
+                        result += bullet.aabbCollider.left;
+                    } else {
+                        result += "null";
+                    }
+                    result += "}";
                 } else {
-                    result += "null";
+                    result += "\n    {null}";
                 }
             }
-            if (this.bullets.length > 5) {
-                result += ",...";
-            }
-            result += "]";
+            result += "\n  ]";
         }
         
         return result;

@@ -569,9 +569,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             queueStamp = (frameId << 12) | queueUID;
 
             // ---- 子弹排序：按左边界排序以优化扫描线算法 ----
-            // _root.服务器.发布服务器消息(key + " : " + q.toString()); // 调试输出当前队列状态
-
             q.sortByLeftBoundary();
+
+            // _root.服务器.发布服务器消息(key + " : " + q.toString()); // 调试输出当前队列状态
 
             // ---- 获取排序后数据：避免重复方法调用的性能开销 ----
             sortedArr = q.getBulletsReference();        // 排序后子弹数组的直接引用
@@ -728,12 +728,30 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 }
                 startIndex = sweepIndex;                // 记录有效检测的起始索引
                 // ---- 空窗口快判：O(1)时间复杂度，避免无效循环开销 ----
-                // 如果没有任何目标在子弹的横向范围内，直接跳过
                 if (startIndex >= len || Rb < unitLeftKeys[startIndex]) {
                     bullet.updateMovement(bullet);
                     __commitDeferScatter(bullet);
-                    continue;  // 直接进入下一发子弹的处理
+
+                    // ★★★ 新增：早退前做一次销毁判定（与统一收口保持一致） ★★★
+                    if (bullet.shouldDestroy(bullet)) {
+                        // 回收碰撞器（与统一收口一致，先回收再销毁）
+                        areaAABB.getFactory().releaseCollider(areaAABB);
+                        if (bullet.polygonCollider) {
+                            bullet.polygonCollider.getFactory().releaseCollider(bullet.polygonCollider);
+                        }
+                        // 击中地图的表现（shouldDestroy 内可能已置位 bullet.击中地图）
+                        if (bullet.击中地图) {
+                            FX.Effect(bullet.击中地图效果, bullet._x, bullet._y);
+                            if (bullet.击中时触发函数) bullet.击中时触发函数();
+                        }
+                        // 这里没有 killFlags，按优先级表走默认移除
+                        bullet.removeMovieClip();
+                        continue;
+                    }
+
+                    continue;  // 原有早退
                 }
+
 
                 // ---- 击中后效果标志：确保命中时能正确触发效果 ----
                 bullet.shouldGeneratePostHitEffect = true;

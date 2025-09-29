@@ -101,6 +101,7 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement
         super.updateMovement(target);
         
         ++frame;
+        
 
         if(frame === 1) {
             target.zOffset = target.Z轴坐标 - target._y;
