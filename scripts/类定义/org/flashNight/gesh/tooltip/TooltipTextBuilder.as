@@ -230,8 +230,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     TooltipFormatter.upgradeLine(result, data, equipData, "gunpower", null, null);
 
     if (data.criticalhit) {
-      if (!isNaN(Number(data.criticalhit))) result.push("<FONT COLOR='" + TooltipConstants.COL_CRIT + "'>暴击：</FONT><FONT COLOR='" + TooltipConstants.COL_CRIT + "'>", data.criticalhit, TooltipConstants.SUF_PERCENT + "概率造成1.5倍伤害</FONT><BR>");
-      else if (data.criticalhit == "满血暴击") result.push("<FONT COLOR='" + TooltipConstants.COL_CRIT + "'>暴击：对满血敌人造成1.5倍伤害</FONT><BR>");
+      result.push(quickBuildCriticalHit(data.criticalhit));
     }
     
     TooltipFormatter.upgradeLine(result, data, equipData, "accuracy", null, TooltipConstants.SUF_PERCENT);
@@ -367,6 +366,10 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         TooltipFormatter.statLine(result, "override", key, override[key], null);
       }
     }
+    // 查找criticalhit和magicdefence
+    if(override.criticalhit){
+      result.push(quickBuildCriticalHit(override.criticalhit));
+    }
     if(override.magicdefence){
       result.push(quickBuildMagicDefence(override.magicdefence));
     }
@@ -374,6 +377,15 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       result = result.concat(buildSkillInfo(modData.skill));
     }
     return result;
+  }
+
+  // === 快速打印暴击数据 ===
+  public static function quickBuildCriticalHit(criticalhit:Object):String{
+    if (!isNaN(Number(criticalhit))) 
+      return "<FONT COLOR='" + TooltipConstants.COL_CRIT + "'>暴击：</FONT><FONT COLOR='" + TooltipConstants.COL_CRIT + "'>", criticalhit, TooltipConstants.SUF_PERCENT + "概率造成1.5倍伤害</FONT><BR>";
+    else if (criticalhit === "满血暴击") 
+        return "<FONT COLOR='" + TooltipConstants.COL_CRIT + "'>暴击：对满血敌人造成1.5倍伤害</FONT><BR>";
+    return "";
   }
 
   // === 快速打印魔法抗性数据 ===

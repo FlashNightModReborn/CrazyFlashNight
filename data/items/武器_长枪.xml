@@ -327,7 +327,7 @@
     <use>长枪</use>
     <price>58500</price>
     <description>AK家族新宠，酷并恐怖着。
-     很难想象，在原版游戏里只有战术版而没有原版的AK200</description>
+很难想象，在原版游戏里只有战术版而没有原版的AK200</description>
     <data>
       <level>15</level>
       <weight>4</weight>
@@ -601,6 +601,7 @@
     <data>
       <level>50</level>
       <weight>4</weight>
+      <modslot>0</modslot>
       <dressup>枪-长枪-HK416战术版</dressup>
       <capacity>60</capacity>
       <split>1</split>
@@ -630,6 +631,7 @@
     <data>
       <level>50</level>
       <weight>50</weight>
+      <modslot>0</modslot>
       <dressup>枪-长枪-MG42战术版</dressup>
       <capacity>250</capacity>
       <split>1</split>
@@ -661,6 +663,7 @@ PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳�
     <data>
       <level>50</level>
       <weight>10</weight>
+      <modslot>0</modslot>
       <dressup>枪-长枪-PKP</dressup>
       <capacity>200</capacity>
       <split>1</split>
@@ -701,6 +704,7 @@ PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳�
     <data>
       <level>40</level>
       <weight>5</weight>
+      <modslot>0</modslot>
       <dressup>枪-长枪-SPAS12战术版</dressup>
       <capacity>12</capacity>
       <split>1</split>
@@ -731,6 +735,7 @@ PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳�
     <data>
       <level>50</level>
       <weight>18</weight>
+      <modslot>0</modslot>
       <dressup>枪-长枪-巴雷特印花集</dressup>
       <capacity>8</capacity>
       <split>1</split>
@@ -759,8 +764,7 @@ PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳�
     <type>武器</type>
     <use>长枪</use>
     <price>100000</price>
-    <description>
-      巴雷特半自动反器材步枪战术版，由巴雷特加装配件改进而成。射程远、精度高、威力大。
+    <description>巴雷特半自动反器材步枪战术版，由巴雷特加装配件改进而成。射程远、精度高、威力大。
 巴雷特最大及最成功的订单紧接在1990年，A军宣布全面采用M82A1，以用于科威特的沙漠之盾和沙漠风暴行动。作为A军唯一的「特殊用途狙击步枪」，时至21世纪，战场上仍能见到它的身影。
     </description>
     <data>
@@ -2559,7 +2563,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     <use>长枪</use>
     <price>190000</price>
     <description>M16是尤金· M·斯通纳于1964年研发，由柯尔特制造公司所生产。作为1967年以来A国陆军使用的步兵轻兵器主力，亦被至少15个北约国家所采用，更是同口径枪械中产量最多的一个型号。
-    便是如今的21世纪，也仍能在战争中见到它的身影；虽然加装了瞄准镜与下挂式榴弹发射器，但不知为何，这管榴弹发射器的内部在此前一直都是空的。</description>
+便是如今的21世纪，也仍能在战争中见到它的身影；虽然加装了瞄准镜与下挂式榴弹发射器，但不知为何，这管榴弹发射器的内部在此前一直都是空的。</description>
     <skill>
       <skillname>发射榴弹</skillname>
       <description>持枪瞄准时可以发射一枚榴弹，消耗1发榴弹弹药，换弹后可再次发射。</description>
@@ -2571,6 +2575,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     <data>
       <level>22</level>
       <weight>5</weight>
+      <modslot>0</modslot>
       <dressup>枪-长枪-M4A1改</dressup>
       <capacity>40</capacity>
       <split>1</split>
@@ -3337,7 +3342,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     <use>长枪</use>
     <price>62000</price>
     <description>M4A1突击步枪战术版根据M4A1改装获得，加装了瞄准镜和侧导轨，激光指示器与下挂式榴弹发射器。
-    便是如今的21世纪，也仍能在战争中见到它的身影；虽然早就加装了榴弹发射器，但不知为何，这管榴弹发射器的内部在此前一直都是空的。</description>
+便是如今的21世纪，也仍能在战争中见到它的身影；虽然早就加装了榴弹发射器，但不知为何，这管榴弹发射器的内部在此前一直都是空的。</description>
     <skill>
       <skillname>发射榴弹</skillname>
       <description>持枪瞄准时可以发射榴弹，每弹夹消耗1发榴弹弹药，可射击三发，换弹后可再次发射。</description>
@@ -3349,6 +3354,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     <data>
       <level>35</level>
       <weight>6</weight>
+      <modslot>0</modslot>
       <dressup>枪-长枪-M4A1战术版</dressup>
       <capacity>50</capacity>
       <split>1</split>
@@ -3374,7 +3380,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     <use>长枪</use>
     <price>60000</price>
     <description>AK74突击步枪战术版根据AK74改装获得，加装了瞄准镜，激光指示器与下挂式榴弹发射器。
-    便是如今的21世纪，也仍能在战争中见到它的身影；虽然加装了榴弹发射器，但不知为何，这管榴弹发射器的内部在此前一直都是空的。</description>
+便是如今的21世纪，也仍能在战争中见到它的身影；虽然加装了榴弹发射器，但不知为何，这管榴弹发射器的内部在此前一直都是空的。</description>
     <skill>
       <skillname>发射榴弹</skillname>
       <description>持枪瞄准时可以发射榴弹，每弹夹消耗1发榴弹弹药，可射击三发，换弹后可再次发射。</description>
@@ -3386,6 +3392,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     <data>
       <level>35</level>
       <weight>7</weight>
+      <modslot>0</modslot>
       <dressup>枪-长枪-AK74战术版</dressup>
       <capacity>50</capacity>
       <split>1</split>
@@ -3414,6 +3421,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     <data>
       <level>27</level>
       <weight>6</weight>
+      <modslot>0</modslot>
       <dressup>枪-长枪-XM1014战术版</dressup>
       <capacity>13</capacity>
       <split>8</split>
@@ -3557,10 +3565,11 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     <use>长枪</use>
     <price>250000</price>
     <description>FIM-92 Air Defense Missile，是A国通用动力公司研制的一款单兵便携式防空导弹。末日后由于缺少弹药与目标，被改造成了巡飞弹发射器，再利用武器平台所搭载的系统模块。
-    发射器备弹充沛且具备急促射能力，能发射巡飞弹弹幕灵活应对海量敌人，抑或是强大单体。然而由于巡飞弹价格非常低廉，追踪追尾与锁定性能都有所牺牲，可谓是相当意义上的妥协产物了</description>
+发射器备弹充沛且具备急促射能力，能发射巡飞弹弹幕灵活应对海量敌人，抑或是强大单体。然而由于巡飞弹价格非常低廉，追踪追尾与锁定性能都有所牺牲，可谓是相当意义上的妥协产物了</description>
     <data>
       <level>45</level>
       <weight>16</weight>
+      <modslot>0</modslot>
       <dressup>枪-长枪-战术版FIM92</dressup>
       <capacity>8</capacity>
       <split>3</split>
@@ -3590,6 +3599,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     <data>
       <level>27</level>
       <weight>5</weight>
+      <modslot>0</modslot>
       <dressup>枪-长枪-战术版AK200</dressup>
       <capacity>50</capacity>
       <split>1</split>
@@ -3618,6 +3628,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     <data>
       <level>60</level>
       <weight>8</weight>
+      <modslot>0</modslot>
       <dressup>枪-长枪-战术版喷火器</dressup>
       <capacity>100</capacity>
       <split>1</split>
@@ -4025,6 +4036,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     <data>
       <level>50</level>
       <weight>18</weight>
+      <modslot>0</modslot>
       <dressup>枪-长枪-战术巴雷特</dressup>
       <capacity>8</capacity>
       <split>1</split>

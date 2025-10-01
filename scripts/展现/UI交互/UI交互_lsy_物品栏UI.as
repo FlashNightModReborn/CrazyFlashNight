@@ -601,6 +601,9 @@ _root.物品UI函数.初始化强化界面 = function(UI:MovieClip){
 	UI.刷新插件信息 = this.刷新插件信息;
 	UI.选择槽位_进阶 = this.选择槽位_进阶;
 	UI.执行进阶 = this.执行进阶;
+	UI.选择槽位_配件 = this.选择槽位_配件;
+	UI.执行安装配件 = this.执行安装配件;
+	UI.执行卸下配件 = this.执行卸下配件;
 
 	UI.gotoAndStop("空");
 }
@@ -618,17 +621,34 @@ _root.物品UI函数.刷新强化物品 = function(item, index, itemIcon, invent
 	};
 	inventory.getDispatcher().subscribe("ItemRemoved", _root.物品UI函数.检查强化物品是否移动, this);
 	
-	this.当前物品显示名字 = this.强化物品图标.itemIcon.itemData.displayname;
+	var itemData = item.getData();
+
+	this.当前物品显示名字 = itemData.displayname;
 	this.名字文本.text = this.当前物品显示名字;
 	if(item.value.level > 1){
 		this.名字文本.text += " +" + item.value.level;
 	}
 
-	var 配件槽数 = 0;
-	this.插件图标1.itemIcon = new ItemIcon(this.插件图标1, null, null);
-	this.插件图标2.itemIcon = new ItemIcon(this.插件图标2, null, null);
-	this.插件图标3.itemIcon = new ItemIcon(this.插件图标3, null, null);
-	this.插件文本.text = "配件槽：0/0\n进阶/涂装：";
+	var modslot = itemData.data.modslot;
+	if(modslot > 0){
+		this.配件物品格._visible = true;
+		this.配件物品格.gotoAndStop(modslot);
+	}else{
+		this.配件物品格._visible = false;
+	}
+	var mods = item.value.mods;
+	var len = mods.length > 0 ? mods.length : 0;
+	var modIconMCs = [this.配件图标1, this.配件图标2, this.配件图标3];
+	for(var i=0; i < 3; i++){
+		if(mods[i]){
+			modIconMCs[i].itemIcon = new ItemIcon(modIconMCs[i], mods[i], 1);
+		}else{
+			modIconMCs[i].itemIcon = new ItemIcon(modIconMCs[i], null, null);
+		}
+	}
+	this.配件材料列表 = EquipmentUtil.getAvailableModMaterials(item);
+
+	this.插件文本.text = "配件槽：" + len + "/" + modslot + "\n进阶/涂装：";
 
 	// 进阶
 	this.进阶材料列表 = EquipmentUtil.getAvailableTierMaterials(item);
@@ -663,6 +683,8 @@ _root.物品UI函数.清空强化物品 = function(){
 	this.当前物品显示名字 = null;
 
 	this.进阶材料列表 = null;
+	this.配件材料列表 = null;
+	this.modAvailabilityDict = null;
 	
 	this.gotoAndStop("空");
 }
@@ -733,27 +755,46 @@ _root.物品UI函数.执行强化装备 = function(){
 _root.物品UI函数.初始化插件改装界面 = function(){
 	var panel = this;
 
+	this.槽位选择按钮_进阶._visible = false;
+	this.槽位选择按钮_配件._visible = false;
+
 	this.改装图标_进阶.itemIcon = new ItemIcon(this.改装图标_进阶, null, null);
 	this.改装图标_进阶.itemIcon.Press = function(){
 		panel.选择槽位_进阶();
 	};
-	this.改装图标_进阶.itemIcon.Release = null;
 
-	this.槽位选择按钮_进阶._visible = false;
-	this.槽位选择按钮_配件._visible = false;
+	var modslotMCs = [this.改装图标_配件1, this.改装图标_配件2, this.改装图标_配件3];
+	for(var i=0; i<3; i++){
+		modslotMCs[i].itemIcon = new ItemIcon(modslotMCs[i], null, null);
+		modslotMCs[i].itemIcon.Press = function(){
+			panel.执行卸下配件(this.name);
+		};
+	}
 
 	// 创建选择图标
 	var onIconRollOver = function(){
-		var tierName = EquipmentUtil.tierMaterialToNameDict[this.name];
-		var tierKey = EquipmentUtil.materialToTierDict[this.name];
-		var tierData = ItemUtil.getItemData(panel.当前物品.name)[tierKey];
-		var list = org.flashNight.gesh.tooltip.TooltipTextBuilder.buildTierInfo(panel.当前物品显示名字, this.name, tierName, tierData);
-		if(list.length > 0){
-			_root.注释(200, list.join(""));
+		if(panel.选中的槽位 === 1){
+			var tierName = EquipmentUtil.tierMaterialToNameDict[this.name];
+			var tierKey = EquipmentUtil.materialToTierDict[this.name];
+			var tierData = ItemUtil.getItemData(panel.当前物品.name)[tierKey];
+			var list = org.flashNight.gesh.tooltip.TooltipTextBuilder.buildTierInfo(panel.当前物品显示名字, this.name, tierName, tierData);
+			if(list.length > 0){
+				_root.注释(200, list.join(""));
+			}
+		}else if(panel.选中的槽位 === 2){
+			var avail = panel.modAvailabilityDict[this.name]
+			if(avail === 1){
+				_root.物品图标注释(this.name, this.value);
+			}else{
+				_root.注释(200, EquipmentUtil.modAvailabilityResults[avail]);
+			}
 		}
 	}
 	var onIconPress = function(){
-		if(!this.locked) panel.执行进阶(this.name);
+		if(!this.locked) {
+			if(panel.选中的槽位 === 1) panel.执行进阶(this.name);
+			else if(panel.选中的槽位 === 2) panel.执行安装配件(this.name);
+		}
 	}
 	var func = function(iconMC, i){
 		var itemIcon = new ItemIcon(iconMC, null, null);
@@ -778,21 +819,53 @@ _root.物品UI函数.初始化插件改装界面 = function(){
 
 
 _root.物品UI函数.刷新插件信息 = function(){
+	this.选中的槽位 = 0;
+
 	var item = this.当前物品;
+	var itemData = item.getData();
+
+	// 进阶UI
+	this.tierVisible = false;
 	if(item.value.tier){
 		this.改装图标_进阶.itemIcon.init(EquipmentUtil.getTierItem(item.value.tier), 1);
-		this.槽位选择按钮_进阶._visible = false;
 	}else{
 		this.改装图标_进阶.itemIcon.init(null,null);
 		if(this.进阶材料列表.length > 0){
-			this.槽位选择按钮_进阶._visible = true;
-		}else{
-			this.槽位选择按钮_进阶._visible = false;
+			this.tierVisible = true;
 		}
 	}
+	this.槽位选择按钮_进阶._visible = this.tierVisible;
 
-	this.槽位选择按钮_配件._visible = false;
-	this.配件物品格._visible = false;
+	// 配件UI
+	this.modVisible = false;
+	var modslot = itemData.data.modslot;
+	var modslotMCs = [this.改装图标_配件1, this.改装图标_配件2, this.改装图标_配件3];
+	if(modslot <= 0){
+		this.配件物品格._visible = false;
+		modslotMCs[0].init(null,null);
+		modslotMCs[1].init(null,null);
+		modslotMCs[2].init(null,null);
+	}else{
+		var mods = item.value.mods;
+		var len = mods.length > 0 ? mods.length : 0;
+		for(var i=0; i<3; i++){
+			if(mods[i]) modslotMCs[i].init(mods[i], 1);
+			else modslotMCs[i].init(null,null);
+		}
+		if(len < modslot){
+			this.modVisible = true;
+			this.槽位选择按钮_配件._x = modslotMCs[len]._x;
+			this.槽位选择按钮_配件._y = modslotMCs[len]._y;
+		}
+		this.配件物品格._visible = true;
+		this.配件物品格.gotoAndStop(modslot);
+	}
+	this.槽位选择按钮_配件._visible = this.modVisible;
+
+	this.modAvailabilityDict = {};
+	for(var i = 0; i < this.配件材料列表.length; i++){
+		this.modAvailabilityDict[this.配件材料列表[i]] = EquipmentUtil.isModMaterialAvailable(item, itemData, this.配件材料列表[i]);
+	}
 
 	this.材料物品格._visible = false;
 	for(var iconIndex=0; iconIndex<12; iconIndex++){
@@ -803,11 +876,13 @@ _root.物品UI函数.刷新插件信息 = function(){
 }
 
 _root.物品UI函数.选择槽位_进阶 = function(){
+	this.选中的槽位 = 1;
 	this.槽位选择按钮_进阶._visible = false;
 	this.材料物品格._visible = true;
 	this.cursor.gotoAndPlay("选中");
 	this.cursor._x = this.槽位选择按钮_进阶._x;
 	this.cursor._y = this.槽位选择按钮_进阶._y;
+	this.槽位选择按钮_配件._visible = this.modVisible;
 
 	var currentTier = this.当前物品.value.tier;
 
@@ -853,6 +928,43 @@ _root.物品UI函数.执行进阶 = function(matName:String){
 			this.cursor.gotoAndStop("空");
 		}
 		this.刷新插件信息();
+	}
+}
+
+
+_root.物品UI函数.选择槽位_配件 = function(){
+	this.选中的槽位 = 2;
+	this.槽位选择按钮_配件._visible = false;
+	this.材料物品格._visible = true;
+	this.cursor.gotoAndPlay("选中");
+	this.cursor._x = this.槽位选择按钮_配件._x;
+	this.cursor._y = this.槽位选择按钮_配件._y;
+	this.槽位选择按钮_进阶._visible = this.tierVisible;
+
+	var currentTier = this.当前物品.value.tier;
+
+	var 材料栏 = _root.收集品栏.材料;
+	var iconIndex = 0;
+	for(var i=0; i<this.配件材料列表.length; i++){
+		var itemName = this.配件材料列表[i];
+		var val = 材料栏.getValue(itemName);
+		if(val > 0){
+			var icon = this.材料选择图标列表[iconIndex].itemIcon;
+			icon.unlock();
+			icon.init(itemName, val);
+			// 检查是否能安装
+			var avail = this.modAvailabilityDict[itemName];
+			if(avail !== 1) {
+				icon.lock();
+			}
+			iconIndex++;
+		}
+	}
+
+	for(iconIndex; iconIndex<12; iconIndex++){
+		var icon = this.材料选择图标列表[iconIndex].itemIcon;
+		icon.unlock();
+		icon.init(null,null);
 	}
 }
 

@@ -57,6 +57,10 @@ class org.flashNight.arki.item.ItemUtil{
                         _multiTierDict[multiTierList[tierIndex]][itemName] = true;
                     }
                 }
+                // 快速生成槽位数据
+                if(itemData.data.modslot == null){
+                    itemData.data.modslot = getDefaultModSlot(itemData);
+                }
             }
             else if(itemData.use === "材料") _materialDict[itemName] = true;
             else if(itemData.use === "情报") _informationMaxValueDict[itemName] = itemData.maxvalue;
@@ -123,11 +127,25 @@ class org.flashNight.arki.item.ItemUtil{
         return informationMaxValueDict[name] > 0;
     }
     /*
-     * 辅助函数，判断物品是否存在进阶数据
+     * 辅助函数，判断装备物品是否存在进阶数据
      */
     public static function hasTier(name:String, tier:String):Boolean{
         return multiTierDict[tier][name] === true;
     }
+
+    /*
+     * 辅助函数，快速判断装备物品的配件槽数量
+     * 1-11级：3槽
+     * 12-29级：2槽
+     * 30+级：1槽
+     */
+     public static function getDefaultModSlot(itemData:Object):Number{
+        if(itemData.use === "颈部装备") return 0;
+        var level = itemData.data.level;
+        if(level < 12) return 3;
+        if(level < 30) return 2;
+        return 1;
+     }
 
 
 

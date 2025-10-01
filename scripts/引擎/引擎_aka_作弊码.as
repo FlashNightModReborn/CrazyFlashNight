@@ -60,6 +60,16 @@ _root.cheatFunction.ultrarapidfire = function(){
 }
 _root.cheatFunction.fire = _root.cheatFunction.ultrarapidfire;
 
+_root.cheatFunction.getallmods = function(){
+	var modlist = org.flashNight.arki.item.EquipmentUtil.modList;
+	var acarr = [];
+	for(var i=0; i<modlist.length; i++){
+		acarr.push({name:modlist[i], value:1});
+	}
+	org.flashNight.arki.item.ItemUtil.acquire(acarr);
+	_root.最上层发布文字提示("获得所有配件材料各1个");
+}
+
 
 
 _root.cheatCode = function(作弊码){

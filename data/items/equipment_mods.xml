@@ -21,13 +21,12 @@
             </override>
         </stats>
     </mod>
-    <mod>
+    <!-- <mod>
         <name>弹簧</name>
         <use>长枪,手枪</use>
         <stats>
-            <!-- 这游戏怎么没有后坐力啊？这让我怎么编数值？ -->
         </stats>
-    </mod>
+    </mod> 这游戏怎么没有后坐力啊？这让我怎么编数值？-->
     <mod>
         <name>增效剂</name>
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备,刀,手枪,长枪</use>
@@ -52,8 +51,7 @@
     <mod>
         <name>战术导轨</name>
         <use>长枪</use>
-        <tag>导轨</tag>
-        <!-- 导轨类插件具体如何发挥作用，是否直接影响插件槽位等还需要进一步讨论 -->
+        <description>为武器提供通用导轨，以安装其他配件。</description>
     </mod>
     <mod>
         <name>螺丝套件</name>
@@ -252,8 +250,8 @@
     </mod>
     <mod>
         <name>水冷机构</name>
-        <use>长枪</use>
-        <tag>枪机</tag>
+        <use>长枪,手枪</use>
+        <weapontype>机枪,压制机枪</weapontype>
         <stats>
             <percentage>
                 <interval>-10</interval><!-- 这里也是待定 减射击间隔不管在代码还是平衡上都是极度危险的设计 -->
@@ -266,13 +264,20 @@
     <mod>
         <name>战术鱼骨零件</name>
         <use>长枪</use>
-        <tag>导轨</tag>
-        <!-- 导轨类插件具体如何发挥作用，是否直接影响插件槽位等还需要进一步讨论 -->
+        <weapontype>突击步枪,战斗步枪</weapontype>
+        <stats>
+            <override>
+                <modslot>3</modslot>
+            </override>
+            <flat>
+                <weight>1</weight>
+            </flat>
+        </stats>
+        <description>为武器提供通用导轨，以安装其他配件。</description>
     </mod>
     <mod>
         <name>突击型光学瞄具</name>
         <use>长枪,手枪</use>
-        <tag>枪口</tag>
         <stats>
             <override>
                 <criticalhit>满血暴击</criticalhit>
@@ -282,7 +287,7 @@
             </flat>
         </stats>
     </mod>
-    <mod>
+    <!-- <mod>
         <name>KM型消声器</name>
         <use>长枪,手枪</use>
         <tag>枪口</tag>
@@ -291,9 +296,8 @@
                 <sound>null</sound>
                 <muzzle>null</muzzle>
             </override>
-            <!-- 后续应该还有降低嘲讽相关的数值加成，待补充 -->
         </stats>
-    </mod>
+    </mod> 后续应该还有降低嘲讽相关的数值加成，待补充 -->
     <mod>
         <name>镭射瞄准具</name>
         <use>长枪,手枪</use>
@@ -329,21 +333,19 @@
             </flat>
         </stats>
     </mod>
-    <mod>
+    <!-- <mod>
         <name>非栓式机构</name>
         <use>长枪,手枪</use>
         <tag>枪机</tag>
         <stats>
-            <!-- 所以这到底是什么东西啊.jpg 等描述更新之后再填数值吧 -->
         </stats>
-    </mod>
+    </mod> 所以这到底是什么东西啊.jpg 等描述更新之后再填数值吧 -->
+
     <!-- 后面可能实装的新插件举例 -->
     <mod>
         <name>霰弹枪口收束器</name>
         <use>长枪,手枪</use>
-        <filter>
-            <weapontype>霰弹枪</weapontype>
-        </filter>
+        <weapontype>霰弹枪</weapontype>
         <tag>枪口</tag>
         <stats>
             <percentage>
@@ -354,7 +356,7 @@
     <mod>
         <name>M203榴弹发射器</name>
         <use>长枪</use>
-        <tag>下挂</tag>
+        <weapontype>突击步枪,战斗步枪</weapontype>
         <stats>
             <flat>
                 <weight>2</weight>
@@ -375,6 +377,7 @@
             <velocity>20</velocity>
             <impact>10</impact>
         </skill>
+        <description>只能安装在有导轨的武器上。</description>
     </mod>
     <mod>
         <name>纳米执行单元</name>

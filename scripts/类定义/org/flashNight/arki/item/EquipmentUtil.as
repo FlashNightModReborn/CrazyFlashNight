@@ -27,6 +27,13 @@ class org.flashNight.arki.item.EquipmentUtil{
         3.04  // Lv13
     ];
 
+    // 数值计算中需要保留小数点的属性字典，目前逻辑为在字典中的属性保留1位小数，否则去尾取整
+    public static var decimalPropDict:Object = {
+        weight: 1,
+        rout: 1,
+        vampirism: 1
+    }
+
     // 进阶名称->进阶数据键字典
     public static var tierNameToKeyDict:Object = {
         二阶: "data_2",
@@ -87,6 +94,7 @@ class org.flashNight.arki.item.EquipmentUtil{
     }
 
     public static var modDict:Object;
+    public static var modList:Array;
     public static var modUseLists:Object;
 
 
@@ -114,6 +122,7 @@ class org.flashNight.arki.item.EquipmentUtil{
 
         //
         var dict = {};
+        var list = [];
         var useLists = {
             头部装备: [],
             上装装备: [],
@@ -137,16 +146,32 @@ class org.flashNight.arki.item.EquipmentUtil{
                     useLists[useKey].push(name);
                 }
             }
-            //
+            if(mod.weapontype){
+                var typeArr = mod.weapontype.split(",");
+                if(typeArr.length > 0){
+                    var wdict = {};
+                    for(var typeIndex = 0; typeIndex < typeArr.length; typeIndex++){
+                        wdict[typeArr[typeIndex]] = true;
+                    }
+                    mod.weapontypeDict = wdict;
+                }
+            }
+            // 调整百分比区的值为小数
             var percentage = mod.stats.percentage;
             for(var key in percentage){
                 percentage[key] *= 0.01;
             }
+
+            list.push(name);
             dict[name] = mod;
         }
 
         modDict = dict;
+        modList = list;
         modUseLists = useLists;
+
+
+        initializeModAvailabilityResults();
     }
 
 
@@ -176,7 +201,7 @@ class org.flashNight.arki.item.EquipmentUtil{
     }
 
     /**
-    * 查找进阶材料是否能合法装备
+    * 查找进阶插件是否能合法装备
     */
     public static function isTierMaterialAvailable(item:BaseItem, matName:String):Boolean{
         var rawItemData = ItemUtil.getRawItemData(item.name);
@@ -187,6 +212,55 @@ class org.flashNight.arki.item.EquipmentUtil{
         }
         return false;
     }
+
+
+    
+    /**
+    * 查找所有可用的配件材料
+    */
+    public static function getAvailableModMaterials(item:BaseItem):Array{
+        var rawItemData = ItemUtil.getRawItemData(item.name);
+        var list = [];
+        var useList = modUseLists[rawItemData.use];
+        for(var i=0; i < useList.length; i++){
+            var modName = useList[i];
+            var modData = modDict[modName];
+            if(!modData.weapontypeDict || modData.weapontypeDict[rawItemData.weapontype]){
+                list.push(modName);
+            }
+        }
+        return list;
+    }
+
+    /**
+    * 查找配件插件是否能合法装备
+    */
+    public static function isModMaterialAvailable(item:BaseItem, itemData:Object, matName:String):Number{
+        var mods = item.value.mods;
+        var modData = modDict[matName];
+        if(!modData) return 0;
+
+        var modslot = itemData.data.modslot;
+        var len = mods.length;
+        if(len > 0 && len >= modslot) return -1; // 槽位已满
+        for(var i=0; i<len; i++){
+            if(mods[i] === matName) return -2; // 已装备同名配件
+        }
+        //
+        if(itemData.skill && modData.skill) return -4; // 已有战技
+        return 1; // 允许装备
+    }
+
+    public static function initializeModAvailabilityResults():Void{
+        modAvailabilityResults = {};
+        modAvailabilityResults[1] = "可装备";
+        modAvailabilityResults[0] = "配件数据不存在";
+        modAvailabilityResults[-1] = "装备配件槽已满";
+        modAvailabilityResults[-2] = "已装备";
+        modAvailabilityResults[-4] = "配件无法覆盖装备原本的主动战技";
+    }
+
+    public static var modAvailabilityResults:Object;
 
 
 
@@ -250,13 +324,13 @@ class org.flashNight.arki.item.EquipmentUtil{
         for(var modName in value.mods){
             var modInfo = modDict[modName];
             if(modInfo){
-                var override = modInfo.stats.override;
-                var percentage = modInfo.stats.percentage;
-                var flat = modInfo.stats.flat;
+                var overrideStat = modInfo.stats.override;
+                var percentageStat = modInfo.stats.percentage;
+                var flatStat = modInfo.stats.flat;
                 // 应用对应的加成
-                if(flat) operators.add(adder, flat, 0);
-                if(percentage) operators.add(multiplier, percentage, 1);
-                if(override) operators.override(overrider, override);
+                if(flatStat) operators.add(adder, flatStat, 0);
+                if(percentageStat) operators.add(multiplier, percentageStat, 1);
+                if(overrideStat) operators.override(overrider, overrideStat);
                 // 查找战技
                 if(!skill && modInfo.skill){
                     skill = modInfo.skill;
@@ -306,11 +380,12 @@ class org.flashNight.arki.item.EquipmentUtil{
     * @param multiProp 用于相乘的属性对象。
     */
     public static function multiplyProperty(prop:Object, multiProp:Object):Void {
+        var dpd = decimalPropDict;
         for (var key:String in multiProp) {
-            var multiVal = multiProp[key];
-            var val = prop[key];
-            if (val && !isNaN(multiVal)) {
-                prop[key] = (val * multiVal) >> 0;
+            var val = prop[key] * multiProp[key];
+            // 判断val是否为非0数字
+            if (val) {
+                prop[key] = dpd[key] ? ((val * 10) >> 0) * 0.1 : val >> 0;
             }
         }
     }
