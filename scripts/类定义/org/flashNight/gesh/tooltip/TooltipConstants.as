@@ -72,6 +72,7 @@
     clipname: "使用弹夹",
     capacity: "弹夹容量",
     diffusion: "子弹散射度",
+    velocity: "出膛速度",
     bulletsize: "纵向攻击范围",
     impact: "冲击力",
     // 额外加成
@@ -98,8 +99,9 @@
     clipname: 11,
     capacity: 12,
     diffusion: 13,
-    bulletsize: 14,
-    impact: 15,
+    velocity: 14,
+    bulletsize: 15,
+    impact: 16,
 
     // 5种伤害加成
     force: 21,

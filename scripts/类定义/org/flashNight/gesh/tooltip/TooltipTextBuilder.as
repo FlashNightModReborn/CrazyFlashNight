@@ -344,6 +344,9 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     if(!modData) return result;
     result.push("<font color='" + TooltipConstants.COL_HL + "'>【配件信息】</font><BR>");
     result.push("适用装备类型：" + modData.use + "<BR>");
+    if(modData.weapontype){
+      result.push("适用武器子类：" + modData.weapontype + "<BR>");
+    }
 
     var stats = modData.stats;
     var percentage = stats.percentage;
