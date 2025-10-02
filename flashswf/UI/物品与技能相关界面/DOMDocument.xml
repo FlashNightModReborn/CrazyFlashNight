@@ -136,7 +136,7 @@
           <Include href="新版商店界面.xml" itemID="676cf8b9-00000359" lastModified="1752753966"/>
           <Include href="新版通用勾选框.xml" loadImmediate="false" itemID="677d58e7-00000cb8" lastModified="1736268332"/>
           <Include href="新版物品栏界面.xml" itemID="67699dcd-00000abf" lastModified="1758443684"/>
-          <Include href="新版装备强化界面.xml" loadImmediate="false" itemID="68a01bda-000002a7" lastModified="1759305692"/>
+          <Include href="新版装备强化界面.xml" loadImmediate="false" itemID="68a01bda-000002a7" lastModified="1759431160"/>
           <Include href="新强化界面/槽位选择按钮.xml" itemIcon="0" loadImmediate="false" itemID="68d1894d-000002b9" lastModified="1758966946"/>
           <Include href="新强化界面/槽位选择动画.xml" loadImmediate="false" itemID="68d18941-000002b7" lastModified="1758562625"/>
           <Include href="新强化界面/槽位选择加号.xml" itemIcon="1" loadImmediate="false" itemID="68d1893d-000002b6" lastModified="1758562621"/>
@@ -146,12 +146,13 @@
           <Include href="新强化界面/进入强化界面标志.xml" loadImmediate="false" itemID="68a42ceb-00000bec" lastModified="1756986743"/>
           <Include href="新强化界面/进入强化界面小图标.xml" itemIcon="1" loadImmediate="false" itemID="68a42cd3-00000beb" lastModified="1756986429"/>
           <Include href="新强化界面/配件物品格 1&amp;#042n.xml" loadImmediate="false" itemID="68cfc030-000002d6" lastModified="1758445715"/>
-          <Include href="新强化界面/强化按钮.xml" itemIcon="0" loadImmediate="false" itemID="68a04233-00000b28" lastModified="1755357559"/>
+          <Include href="新强化界面/强化按钮.xml" itemIcon="0" loadImmediate="false" itemID="68a04233-00000b28" lastModified="1759312424"/>
           <Include href="新强化界面/强化度转换按钮.xml" itemIcon="0" loadImmediate="false" itemID="68a09107-00000b36" lastModified="1755357550"/>
+          <Include href="新强化界面/强化度转换执行按钮.xml" itemIcon="0" loadImmediate="false" itemID="68dcf7f8-000004bd" lastModified="1759311990"/>
           <Include href="新强化界面/强化界面背景.xml" loadImmediate="false" itemID="68a00e73-0000026d" lastModified="1755578372"/>
           <Include href="新强化界面/强化界面物品选择框.xml" loadImmediate="false" itemID="68a02043-00000405" lastModified="1755536839"/>
           <Include href="新强化界面/强化执行按钮.xml" itemIcon="0" loadImmediate="false" itemID="68a40047-0000027b" lastModified="1755587862"/>
-          <Include href="新强化界面/物品格 6&amp;#0422.xml" loadImmediate="false" itemID="68b7ef2e-000002f6" lastModified="1758561746"/>
+          <Include href="新强化界面/物品格 6&amp;#0423.xml" loadImmediate="false" itemID="68dec810-00000abf" lastModified="1759430689"/>
           <Include href="新强化界面/物品图标容器.xml" loadImmediate="false" itemID="68a01aa8-0000029e" lastModified="1755323063"/>
           <Include href="资源箱界面.xml" itemID="684482b6-000002a2" lastModified="1749387337"/>
           <Include href="资源箱界面网格.xml" loadImmediate="false" itemID="6844832f-000002a5" lastModified="1749359714"/>
@@ -645,6 +646,12 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="59689" publishTime="1759430720"/>
+          <PublishItem publishSize="59665" publishTime="1759430509"/>
+          <PublishItem publishSize="59656" publishTime="1759430284"/>
+          <PublishItem publishSize="59648" publishTime="1759430233"/>
+          <PublishItem publishSize="59648" publishTime="1759429946"/>
+          <PublishItem publishSize="59047" publishTime="1759311321"/>
           <PublishItem publishSize="59044" publishTime="1759305699"/>
           <PublishItem publishSize="59045" publishTime="1759305203"/>
           <PublishItem publishSize="59104" publishTime="1758995767"/>
@@ -659,9 +666,5 @@
           <PublishItem publishSize="57259" publishTime="1756889656"/>
           <PublishItem publishSize="57049" publishTime="1755592292"/>
           <PublishItem publishSize="57049" publishTime="1755591035"/>
-          <PublishItem publishSize="57047" publishTime="1755590926"/>
-          <PublishItem publishSize="57154" publishTime="1755590812"/>
-          <PublishItem publishSize="56597" publishTime="1755587899"/>
-          <PublishItem publishSize="56460" publishTime="1755586811"/>
      </publishHistory>
 </DOMDocument>

@@ -21,18 +21,20 @@
             </override>
         </stats>
     </mod>
-    <!-- <mod>
+    <mod>
         <name>弹簧</name>
         <use>长枪,手枪</use>
         <stats>
+            <percentage>
+                <power>15</power>
+            </percentage>
         </stats>
-    </mod> 这游戏怎么没有后坐力啊？这让我怎么编数值？-->
+    </mod>
     <mod>
         <name>增效剂</name>
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备,刀,手枪,长枪</use>
         <stats>
             <percentage>
-                <power>10</power>
                 <defence>10</defence>
                 <damage>10</damage>
             </percentage>
@@ -51,12 +53,11 @@
     <mod>
         <name>战术导轨</name>
         <use>长枪</use>
-        <description>为武器提供通用导轨，以安装其他配件。</description>
+        <description>使子类不为[突击步枪]的枪械可以安装对应子类的配件。</description>
     </mod>
     <mod>
         <name>螺丝套件</name>
         <use>长枪,手枪</use>
-        <tag>枪机</tag>
         <stats>
             <flat>
                 <power>20</power>
@@ -64,17 +65,28 @@
         </stats>
     </mod>
     <!-- 中级材料 -->
+     <!-- 还差一个可充锂电池 -->
+    <mod>
+        <name>小型液晶屏</name>
+        <use>长枪,手枪</use>
+        <stats>
+            <override>
+                <criticalhit>10</criticalhit>
+            </override>
+        </stats>
+    </mod>
     <mod>
         <name>战术背带</name>
-        <use>上装装备,长枪</use>
+        <use>上装装备</use>
         <stats>
-            <percentage>
-                <accuracy>20</accuracy>
-            </percentage>
+            <override>
+                <modslot>3</modslot>
+            </override>
             <flat>
-                <defence>20</defence>
+                <weight>2</weight>
             </flat>
         </stats>
+        <description>将装备的配件槽拓展至3个。</description>
     </mod>
     <mod>
         <name>防沙皮革</name>
@@ -83,6 +95,18 @@
             <percentage>
                 <defence>30</defence>
             </percentage>
+        </stats>
+    </mod>
+    <mod>
+        <name>烈性火药</name>
+        <use>手枪,长枪</use>
+        <stats>
+            <override>
+                <criticalhit>25</criticalhit>
+            </override>
+            <flat>
+                <accuracy>-25</accuracy>
+            </flat>
         </stats>
     </mod>
     <mod>
@@ -100,11 +124,6 @@
         <name>护手</name>
         <use>刀</use>
         <tag>刀身</tag>
-        <stats>
-            <percentage>
-                <power>20</power>
-            </percentage>
-        </stats>
         <skill>
             <skillname>弧光斩</skillname>
             <description>经过护手改装的武器可以使用弧光斩。</description>
@@ -150,10 +169,9 @@
     <mod>
         <name>强化金属管</name>
         <use>长枪,手枪</use>
-        <tag>枪机</tag>
         <stats>
             <percentage>
-                <power>50</power>
+                <power>40</power>
                 <velocity>20</velocity>
             </percentage>
         </stats>
@@ -173,6 +191,25 @@
         </stats>
     </mod>
     <mod>
+        <name>透镜</name>
+        <use>长枪,手枪</use>
+        <stats>
+            <flat>
+                <accuracy>20</accuracy>
+            </flat>
+        </stats>
+    </mod>
+    <mod>
+        <name>高强度合金</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备,刀</use>
+        <stats>
+            <percentage>
+                <power>20</power>
+                <defence>30</defence>
+            </percentage>
+        </stats>
+    </mod>
+    <mod>
         <name>强力胶</name>
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
@@ -186,7 +223,6 @@
     <mod>
         <name>枪械内构强化套件</name>
         <use>长枪,手枪</use>
-        <tag>枪机</tag>
         <stats>
             <percentage>
                 <power>30</power>
@@ -224,9 +260,9 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <percentage>
-                <defence>30</defence>
-                <hp>30</hp>
-                <mp>30</mp>
+                <defence>25</defence>
+                <hp>25</hp>
+                <mp>25</mp>
             </percentage>
         </stats>
     </mod>
@@ -254,7 +290,8 @@
         <weapontype>机枪,压制机枪</weapontype>
         <stats>
             <percentage>
-                <interval>-10</interval><!-- 这里也是待定 减射击间隔不管在代码还是平衡上都是极度危险的设计 -->
+                <!-- <interval>-10</interval>这里也是待定 减射击间隔不管在代码还是平衡上都是极度危险的设计 -->
+                 <power>30</power>
             </percentage>
             <flat>
                 <weight>2</weight>
@@ -264,7 +301,6 @@
     <mod>
         <name>战术鱼骨零件</name>
         <use>长枪</use>
-        <weapontype>突击步枪,战斗步枪</weapontype>
         <stats>
             <override>
                 <modslot>3</modslot>
@@ -273,7 +309,7 @@
                 <weight>1</weight>
             </flat>
         </stats>
-        <description>为武器提供通用导轨，以安装其他配件。</description>
+        <description>使子类不为[突击步枪]的枪械可以安装对应子类的配件，并将枪械的配件槽拓展至3个。</description>
     </mod>
     <mod>
         <name>突击型光学瞄具</name>
@@ -297,11 +333,11 @@
                 <muzzle>null</muzzle>
             </override>
         </stats>
-    </mod> 后续应该还有降低嘲讽相关的数值加成，待补充 -->
+        <description>消除枪械的射击声音和枪火。（后续应该还有降低嘲讽相关的数值加成，待补充）</description>
+    </mod> -->
     <mod>
         <name>镭射瞄准具</name>
         <use>长枪,手枪</use>
-        <tag>下挂</tag>
         <stats>
             <flat>
                 <accuracy>20</accuracy>
@@ -312,7 +348,6 @@
     <mod>
         <name>加长弹匣</name>
         <use>长枪,手枪</use>
-        <tag>弹匣</tag>
         <stats>
             <percentage>
                 <capacity>20</capacity>
@@ -322,21 +357,17 @@
     <mod>
         <name>战术握把</name>
         <use>长枪</use>
-        <tag>下挂</tag>
+        <weapontype>突击步枪,战斗步枪,冲锋枪,压制冲锋枪</weapontype>
         <stats>
             <percentage>
                 <diffusion>-20</diffusion>
                 <power>20</power>
             </percentage>
-            <flat>
-                <accuracy>10</accuracy>
-            </flat>
         </stats>
     </mod>
     <!-- <mod>
         <name>非栓式机构</name>
         <use>长枪,手枪</use>
-        <tag>枪机</tag>
         <stats>
         </stats>
     </mod> 所以这到底是什么东西啊.jpg 等描述更新之后再填数值吧 -->
@@ -356,7 +387,7 @@
     <mod>
         <name>M203榴弹发射器</name>
         <use>长枪</use>
-        <weapontype>突击步枪,战斗步枪</weapontype>
+        <weapontype>突击步枪</weapontype>
         <stats>
             <flat>
                 <weight>2</weight>
@@ -377,7 +408,6 @@
             <velocity>20</velocity>
             <impact>10</impact>
         </skill>
-        <description>只能安装在有导轨的武器上。</description>
     </mod>
     <mod>
         <name>纳米执行单元</name>

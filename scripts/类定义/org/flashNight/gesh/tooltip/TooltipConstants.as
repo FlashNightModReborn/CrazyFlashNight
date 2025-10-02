@@ -71,6 +71,7 @@
     // 枪械数据
     clipname: "使用弹夹",
     capacity: "弹夹容量",
+    diffusion: "子弹散射度",
     bulletsize: "纵向攻击范围",
     impact: "冲击力",
     // 额外加成
@@ -96,7 +97,9 @@
     // 显示枪械数据
     clipname: 11,
     capacity: 12,
-    impact: 13,
+    diffusion: 13,
+    bulletsize: 14,
+    impact: 15,
 
     // 5种伤害加成
     force: 21,

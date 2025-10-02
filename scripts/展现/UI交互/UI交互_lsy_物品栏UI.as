@@ -593,9 +593,14 @@ _root.物品UI函数.初始化强化界面 = function(UI:MovieClip){
 	UI.物品选择框._visible = false;
 	UI.刷新强化物品 = this.刷新强化物品;
 	UI.清空强化物品 = this.清空强化物品;
+	UI.刷新默认界面 = this.刷新默认界面;
+
 	UI.刷新强化装备界面 = this.刷新强化装备界面;
 	UI.计算强化装备等级 = this.计算强化装备等级;
 	UI.执行强化装备 = this.执行强化装备;
+
+	UI.刷新强化度转换界面 = this.刷新强化度转换界面;
+	UI.执行强化度转换 = this.执行强化度转换;
 
 	UI.初始化插件改装界面 = this.初始化插件改装界面;
 	UI.刷新插件信息 = this.刷新插件信息;
@@ -620,14 +625,20 @@ _root.物品UI函数.刷新强化物品 = function(item, index, itemIcon, invent
 		// 空
 	};
 	inventory.getDispatcher().subscribe("ItemRemoved", _root.物品UI函数.检查强化物品是否移动, this);
-	
+}
+
+_root.物品UI函数.刷新默认界面 = function(){
+	var item = this.当前物品;
 	var itemData = item.getData();
+	var tier = item.value.tier;
+	var mods = item.value.mods;
 
 	this.当前物品显示名字 = itemData.displayname;
-	this.名字文本.text = this.当前物品显示名字;
+	this.名字文本.htmlText = "<B>" + (tier ? "[" + tier + "]" : "" ) + this.当前物品显示名字;
 	if(item.value.level > 1){
-		this.名字文本.text += " +" + item.value.level;
+		this.名字文本.htmlText += " +" + item.value.level;
 	}
+	this.名字文本.htmlText += "</B>";
 
 	var modslot = itemData.data.modslot;
 	if(modslot > 0){
@@ -636,7 +647,6 @@ _root.物品UI函数.刷新强化物品 = function(item, index, itemIcon, invent
 	}else{
 		this.配件物品格._visible = false;
 	}
-	var mods = item.value.mods;
 	var len = mods.length > 0 ? mods.length : 0;
 	var modIconMCs = [this.配件图标1, this.配件图标2, this.配件图标3];
 	for(var i=0; i < 3; i++){
@@ -652,10 +662,10 @@ _root.物品UI函数.刷新强化物品 = function(item, index, itemIcon, invent
 
 	// 进阶
 	this.进阶材料列表 = EquipmentUtil.getAvailableTierMaterials(item);
-	if(item.value.tier){
+	if(tier){
 		this.进阶图标框._visible = true;
-		this.插件文本.text += "[" + item.value.tier + "]";
-		this.进阶图标.itemIcon = new ItemIcon(this.进阶图标, EquipmentUtil.getTierItem(item.value.tier), 1);
+		this.插件文本.text += "[" + tier + "]";
+		this.进阶图标.itemIcon = new ItemIcon(this.进阶图标, EquipmentUtil.getTierItem(tier), 1);
 	}else{
 		if(this.进阶材料列表.length > 0){
 			this.进阶图标框._visible = true;
@@ -752,6 +762,21 @@ _root.物品UI函数.执行强化装备 = function(){
 	}
 }
 
+
+_root.物品UI函数.刷新强化度转换界面 = function(){
+	var panel = this;
+	this.强化度转换物品 = null;
+	this.强化度转换物品栏 = null;
+	this.强化度转换物品图标.itemIcon = new ItemIcon(this.强化度转换物品图标, null, null);
+}
+
+_root.物品UI函数.执行强化度转换 = function(){
+	//
+}
+
+
+
+
 _root.物品UI函数.初始化插件改装界面 = function(){
 	var panel = this;
 
@@ -766,7 +791,14 @@ _root.物品UI函数.初始化插件改装界面 = function(){
 	var modslotMCs = [this.改装图标_配件1, this.改装图标_配件2, this.改装图标_配件3];
 	for(var i=0; i<3; i++){
 		modslotMCs[i].itemIcon = new ItemIcon(modslotMCs[i], null, null);
+		modslotMCs[i].itemIcon.RollOver = function(){
+			this.icon.互动提示.gotoAndPlay("卸下");
+		};
+		modslotMCs[i].itemIcon.RollOut = function(){
+			this.icon.互动提示.gotoAndStop("空");
+		};
 		modslotMCs[i].itemIcon.Press = function(){
+			this.icon.互动提示.gotoAndStop("空");
 			panel.执行卸下配件(this.name);
 		};
 	}
@@ -805,7 +837,7 @@ _root.物品UI函数.初始化插件改装界面 = function(){
 	var info = {
 		startindex: 0, 
 		startdepth: 0, 
-		row: 2, 
+		row: 3, 
 		col: 6, 
 		padding: 28,
 		unloadCallback: function(){
@@ -825,42 +857,42 @@ _root.物品UI函数.刷新插件信息 = function(){
 	var itemData = item.getData();
 
 	// 进阶UI
-	this.tierVisible = false;
+	this.enableTier = false;
 	if(item.value.tier){
 		this.改装图标_进阶.itemIcon.init(EquipmentUtil.getTierItem(item.value.tier), 1);
 	}else{
 		this.改装图标_进阶.itemIcon.init(null,null);
 		if(this.进阶材料列表.length > 0){
-			this.tierVisible = true;
+			this.enableTier = true;
 		}
 	}
-	this.槽位选择按钮_进阶._visible = this.tierVisible;
+	this.槽位选择按钮_进阶._visible = this.enableTier;
 
 	// 配件UI
-	this.modVisible = false;
+	this.enableMod = false;
 	var modslot = itemData.data.modslot;
 	var modslotMCs = [this.改装图标_配件1, this.改装图标_配件2, this.改装图标_配件3];
 	if(modslot <= 0){
 		this.配件物品格._visible = false;
-		modslotMCs[0].init(null,null);
-		modslotMCs[1].init(null,null);
-		modslotMCs[2].init(null,null);
+		modslotMCs[0].itemIcon.init(null,null);
+		modslotMCs[1].itemIcon.init(null,null);
+		modslotMCs[2].itemIcon.init(null,null);
 	}else{
 		var mods = item.value.mods;
 		var len = mods.length > 0 ? mods.length : 0;
 		for(var i=0; i<3; i++){
-			if(mods[i]) modslotMCs[i].init(mods[i], 1);
-			else modslotMCs[i].init(null,null);
+			if(mods[i]) modslotMCs[i].itemIcon.init(mods[i], 1);
+			else modslotMCs[i].itemIcon.init(null,null);
 		}
 		if(len < modslot){
-			this.modVisible = true;
+			this.enableMod = true;
 			this.槽位选择按钮_配件._x = modslotMCs[len]._x;
 			this.槽位选择按钮_配件._y = modslotMCs[len]._y;
 		}
 		this.配件物品格._visible = true;
 		this.配件物品格.gotoAndStop(modslot);
 	}
-	this.槽位选择按钮_配件._visible = this.modVisible;
+	this.槽位选择按钮_配件._visible = this.enableMod;
 
 	this.modAvailabilityDict = {};
 	for(var i = 0; i < this.配件材料列表.length; i++){
@@ -868,7 +900,7 @@ _root.物品UI函数.刷新插件信息 = function(){
 	}
 
 	this.材料物品格._visible = false;
-	for(var iconIndex=0; iconIndex<12; iconIndex++){
+	for(var iconIndex=0; iconIndex<18; iconIndex++){
 		var icon = this.材料选择图标列表[iconIndex].itemIcon;
 		icon.unlock();
 		icon.init(null,null);
@@ -877,12 +909,13 @@ _root.物品UI函数.刷新插件信息 = function(){
 
 _root.物品UI函数.选择槽位_进阶 = function(){
 	this.选中的槽位 = 1;
+	this.插件描述文本._visible = false;
 	this.槽位选择按钮_进阶._visible = false;
 	this.材料物品格._visible = true;
 	this.cursor.gotoAndPlay("选中");
 	this.cursor._x = this.槽位选择按钮_进阶._x;
 	this.cursor._y = this.槽位选择按钮_进阶._y;
-	this.槽位选择按钮_配件._visible = this.modVisible;
+	this.槽位选择按钮_配件._visible = this.enableMod;
 
 	var currentTier = this.当前物品.value.tier;
 
@@ -907,7 +940,7 @@ _root.物品UI函数.选择槽位_进阶 = function(){
 		}
 	}
 
-	for(iconIndex; iconIndex<12; iconIndex++){
+	for(iconIndex; iconIndex<18; iconIndex++){
 		var icon = this.材料选择图标列表[iconIndex].itemIcon;
 		icon.unlock();
 		icon.init(null,null);
@@ -920,6 +953,14 @@ _root.物品UI函数.执行进阶 = function(matName:String){
 		if(ItemUtil.singleSubmit(matName, 1)){
 			var tierName = EquipmentUtil.tierMaterialToNameDict[matName];
 			item.value.tier = tierName;
+			
+			// 重置物品名称
+			this.名字文本.htmlText = "<B>" + (tierName ? "[" + tierName + "]" : "" ) + this.当前物品显示名字;
+			if(item.value.level > 1){
+				this.名字文本.htmlText += " +" + item.value.level;
+			}
+			this.名字文本.htmlText += "</B>";
+
 			// 完成
 			_root.播放音效("9mmclip2.wav");
 			this.cursor.gotoAndPlay("消失");
@@ -934,12 +975,13 @@ _root.物品UI函数.执行进阶 = function(matName:String){
 
 _root.物品UI函数.选择槽位_配件 = function(){
 	this.选中的槽位 = 2;
+	this.插件描述文本._visible = false;
 	this.槽位选择按钮_配件._visible = false;
 	this.材料物品格._visible = true;
 	this.cursor.gotoAndPlay("选中");
 	this.cursor._x = this.槽位选择按钮_配件._x;
 	this.cursor._y = this.槽位选择按钮_配件._y;
-	this.槽位选择按钮_进阶._visible = this.tierVisible;
+	this.槽位选择按钮_进阶._visible = this.enableTier;
 
 	var currentTier = this.当前物品.value.tier;
 
@@ -961,10 +1003,68 @@ _root.物品UI函数.选择槽位_配件 = function(){
 		}
 	}
 
-	for(iconIndex; iconIndex<12; iconIndex++){
+	for(iconIndex; iconIndex<18; iconIndex++){
 		var icon = this.材料选择图标列表[iconIndex].itemIcon;
 		icon.unlock();
 		icon.init(null,null);
+	}
+}
+
+_root.物品UI函数.执行安装配件 = function(matName:String){
+	var item = this.当前物品;
+	if(this.modAvailabilityDict[matName]){
+		var mods = item.value.mods;
+		if(!mods) mods = item.value.mods = [];
+		if(ItemUtil.singleSubmit(matName, 1)){
+			mods.push(matName);
+			
+			// 刷新可安装的配件
+			this.配件材料列表 = EquipmentUtil.getAvailableModMaterials(item);
+
+			// 完成
+			_root.播放音效("9mmclip2.wav");
+			this.cursor.gotoAndPlay("消失");
+		}else{
+			_root.发布消息("材料不足！")
+			this.cursor.gotoAndStop("空");
+		}
+		this.刷新插件信息();
+	}
+}
+
+_root.物品UI函数.特殊卸下配件列表 = {
+	战术导轨: true,
+	战术背带: true,
+	战术鱼骨零件: true
+}
+
+_root.物品UI函数.执行卸下配件 = function(matName:String){
+	var item = this.当前物品;
+	var mods = item.value.mods;
+	for(var index=0; index < mods.length; index++){
+		if(mods[index] === matName){
+			break;
+		}
+	}
+	if(mods.length > 0 && index < mods.length){
+		if(_root.物品UI函数.特殊卸下配件列表[matName]){
+			var arr = [];
+			for(var i=0; i< mods.length; i++){
+				arr.push({name:mods[i],value:1});
+			}
+			ItemUtil.acquire(arr);
+			item.value.mods = [];
+		}else{
+			ItemUtil.singleAcquire(matName, 1);
+			mods.splice(index, 1);
+		}
+
+		// 刷新可安装的配件
+		this.配件材料列表 = EquipmentUtil.getAvailableModMaterials(item);
+
+		// 完成
+		this.cursor.gotoAndPlay("消失");
+		this.刷新插件信息();
 	}
 }
 

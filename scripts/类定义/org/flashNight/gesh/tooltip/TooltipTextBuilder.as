@@ -260,8 +260,8 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     if (data.magicdefence) {
       for (var key in data.magicdefence) {
         var displayName = (key == "基础" ? "能量" : key);
-        var value = data.magicdefence[key];
-        if (value != undefined && Number(value) != 0) result.push(displayName, "抗性：", value, "<BR>");
+        var val = data.magicdefence[key];
+        if (val != undefined && Number(val) != 0) result.push(displayName, "抗性：", val, "<BR>");
       }
     }
 
@@ -270,6 +270,10 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     TooltipFormatter.upgradeLine(result, data, equipData, "mp", null, null);
 
     if (item.actiontype !== undefined) result.push("动作：", item.actiontype, "<BR>");
+
+    if(value.mods.length > 0){
+      result.push("已安装", value.mods.length, "个配件：", value.mods.join("，"), "<BR>");
+    }
 
     return result;
   }
@@ -375,6 +379,11 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     }
     if(modData.skill){
       result = result.concat(buildSkillInfo(modData.skill));
+    }
+
+    // 读取描述（如果有）
+    if(typeof modData.description === "string"){
+      result.push(modData.description.split("\r\n").join(TooltipFormatter.br()), TooltipFormatter.br());
     }
     return result;
   }

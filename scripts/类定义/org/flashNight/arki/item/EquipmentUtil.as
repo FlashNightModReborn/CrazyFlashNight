@@ -221,11 +221,32 @@ class org.flashNight.arki.item.EquipmentUtil{
     public static function getAvailableModMaterials(item:BaseItem):Array{
         var rawItemData = ItemUtil.getRawItemData(item.name);
         var list = [];
+        var mods = item.value.mods;
+
+        // 查找长枪类装备是否有导轨
+        var hasRail = false;
+        if(rawItemData.use === "长枪"){
+            if(rawItemData.weapontype === "突击步枪") hasRail = true;
+            else{
+                for(var i=0; i<mods.length; i++){
+                    if(mods[i] === "战术导轨" || mods[i] === "战术鱼骨零件"){
+                        hasRail = true;
+                        break;
+                    }
+                }
+            }
+        }
+
         var useList = modUseLists[rawItemData.use];
         for(var i=0; i < useList.length; i++){
             var modName = useList[i];
             var modData = modDict[modName];
-            if(!modData.weapontypeDict || modData.weapontypeDict[rawItemData.weapontype]){
+            var weapontypeDict = modData.weapontypeDict;
+            if(!weapontypeDict){
+                list.push(modName);
+            }else if(weapontypeDict[rawItemData.weapontype]){
+                list.push(modName);
+            }else if(hasRail && weapontypeDict["突击步枪"]){
                 list.push(modName);
             }
         }
@@ -294,7 +315,7 @@ class org.flashNight.arki.item.EquipmentUtil{
             }
         }
 
-        if(level < 2 && !value.mods) return; // 若没有强化和插件则提前返回
+        if(level < 2 && value.mods.length <= 0) return; // 若没有强化和插件则提前返回
 
         var adder = {};
         var multiplier;
@@ -321,8 +342,8 @@ class org.flashNight.arki.item.EquipmentUtil{
         }
 
         // 计算插件加成
-        for(var modName in value.mods){
-            var modInfo = modDict[modName];
+        for(var i = 0; i < value.mods.length; i++){
+            var modInfo = modDict[value.mods[i]];
             if(modInfo){
                 var overrideStat = modInfo.stats.override;
                 var percentageStat = modInfo.stats.percentage;
