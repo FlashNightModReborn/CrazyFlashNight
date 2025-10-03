@@ -24,6 +24,8 @@ import flash.filters.*;
 #include "../逻辑/装备函数/炎魔斩new.as"
 #include "../逻辑/装备函数/死者之手.as"
 
+#include "../逻辑/装备函数/雷铁斩斧.as"
+
 #include "../逻辑/装备函数/RPG.as"
 #include "../逻辑/装备函数/PF98A.as"
 #include "../逻辑/装备函数/RPG28.as"
