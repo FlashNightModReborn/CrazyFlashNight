@@ -518,6 +518,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var Rb:Number;                      // 子弹右边界
         var skipUnits:Boolean;              // 是否跳过单位碰撞检测
         var isUpdatePolygon:Boolean;        // 多边形碰撞器是否已更新
+        
+        var wantDestroy:Boolean;            // 早退销毁路径控制
 
         // ---- 消弹状态变量 ----
         var token:Number;                   // 当前子弹的消弹token
@@ -676,6 +678,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 bullet = sortedArr[bulletIndex];
                 flags = bullet.flags;
                 areaAABB = bullet.aabbCollider;
+                
+                // 每次弹体循环初始化销毁路径标志
+                wantDestroy = false;
                 isPointSet = (flags & FLAG_CHAIN) != 0;
                 if (isPointSet) {
                     rot = bullet._rotation;
@@ -728,30 +733,22 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 startIndex = sweepIndex;                // 记录有效检测的起始索引
                 // ---- 空窗口快判：O(1)时间复杂度，避免无效循环开销 ----
                 if (startIndex >= len || Rb < unitLeftKeys[startIndex]) {
-                    bullet.updateMovement(bullet);
-                    __commitDeferScatter(bullet);
 
-                    // ★★★ 新增：早退前做一次销毁判定（与统一收口保持一致） ★★★
-                    if (bullet.shouldDestroy(bullet)) {
-                        // 回收碰撞器（与统一收口一致，先回收再销毁）
-                        areaAABB.getFactory().releaseCollider(areaAABB);
-                        if (bullet.polygonCollider) {
-                            bullet.polygonCollider.getFactory().releaseCollider(bullet.polygonCollider);
-                        }
-                        // 击中地图的表现（shouldDestroy 内可能已置位 bullet.击中地图）
-                        if (bullet.击中地图) {
-                            FX.Effect(bullet.击中地图效果, bullet._x, bullet._y);
-                            if (bullet.击中时触发函数) bullet.击中时触发函数();
-                        }
-                        // 这里没有 killFlags，按优先级表走默认移除
-                        bullet.removeMovieClip();
+                    // 【极快路径】无销毁需求 → 维持旧逻辑，最快早退
+                    if (!bullet.shouldDestroy(bullet)) {
+                        bullet.updateMovement(bullet);
+                        __commitDeferScatter(bullet);
                         continue;
                     }
 
-                    continue;  // 原有早退
+                    // 【需要销毁】不在这里做释放/FX/移除，只声明“终止意图”，交给单出口收尾
+                    wantDestroy = true;
+
+                    // 与统一收尾规则保持一致
+                    killFlags |= MODE_VANISH;
+                    // 跳过单位循环（但不 continue），让流程落到统一尾部
+                    startIndex = len;
                 }
-
-
                 // ---- 击中后效果标志：确保命中时能正确触发效果 ----
                 bullet.shouldGeneratePostHitEffect = true;
 
@@ -887,7 +884,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 bullet.updateMovement(bullet);
                 
                 // ---------------- 单出口收尾 ----------------
-                if (killFlags != 0 || bullet.shouldDestroy(bullet)) {
+                if (killFlags != 0 || wantDestroy || bullet.shouldDestroy(bullet)) {
                     // 碰撞器回收：归还对象池供后续复用
                     // 注意：必须在子弹销毁前回收，避免内存泄漏
                     areaAABB.getFactory().releaseCollider(areaAABB);
@@ -916,12 +913,15 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     // └──────────────────┴────────────────┴──────────────┘
                     if ((killFlags & MODE_REMOVE) != 0) {
                         // 优先级1：直接移除（强力消弹+穿透弹）
+                        // _root.发布消息("rank 1: removeMovieClip");
                         bullet.removeMovieClip();
                     } else if ((killFlags & MODE_VANISH) != 0 || bullet.击中地图) {
                         // 优先级2-3：播放消失动画（普通消弹或击中地图）
+                        // _root.发布消息("rank 2/3: gotoAndPlay 消失");
                         bullet.gotoAndPlay("消失");
                     } else {
                         // 优先级4：其他情况默认移除
+                        // _root.发布消息("rank 4: removeMovieClip by shouldDestroy");
                         bullet.removeMovieClip();
                     }
                 }
