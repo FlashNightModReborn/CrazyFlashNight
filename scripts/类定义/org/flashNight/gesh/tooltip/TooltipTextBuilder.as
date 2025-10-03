@@ -392,9 +392,9 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   }
 
   // === 快速打印暴击数据 ===
-  public static function quickBuildCriticalHit(criticalhit:Object):String{
+  public static function quickBuildCriticalHit(criticalhit):String{
     if (!isNaN(Number(criticalhit))) 
-      return "<FONT COLOR='" + TooltipConstants.COL_CRIT + "'>暴击：</FONT><FONT COLOR='" + TooltipConstants.COL_CRIT + "'>", criticalhit, TooltipConstants.SUF_PERCENT + "概率造成1.5倍伤害</FONT><BR>";
+      return "<FONT COLOR='" + TooltipConstants.COL_CRIT + "'>暴击：</FONT><FONT COLOR='" + TooltipConstants.COL_CRIT + "'>" + criticalhit + TooltipConstants.SUF_PERCENT + "概率造成1.5倍伤害</FONT><BR>";
     else if (criticalhit === "满血暴击") 
         return "<FONT COLOR='" + TooltipConstants.COL_CRIT + "'>暴击：对满血敌人造成1.5倍伤害</FONT><BR>";
     return "";
