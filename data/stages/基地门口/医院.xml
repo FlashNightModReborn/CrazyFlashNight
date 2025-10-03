@@ -94,7 +94,7 @@
             </SubWave>
             <SubWave id="1">
                 <WaveInformation>
-                    <Duration>8</Duration>
+                    <Duration>20</Duration>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
@@ -121,21 +121,21 @@
                     <Enemy>
                         <Type>兵种39</Type>
                         <Interval>1000</Interval>
-                        <Quantity>3</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>1</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种400</Type>
-                        <Interval>1200</Interval>
-                        <Quantity>2</Quantity>
+                        <Type>兵种424</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种401</Type>
-                        <Interval>2000</Interval>
-                        <Quantity>2</Quantity>
+                        <Type>兵种400</Type>
+                        <Interval>1200</Interval>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
@@ -170,13 +170,20 @@
                     <Enemy>
                         <Type>兵种39</Type>
                         <Interval>1500</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>1</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种424</Type>
                         <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种401</Type>
+                        <Interval>2000</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>right</SpawnIndex>
@@ -221,9 +228,17 @@
                         <y>490</y>
                     </Enemy>
                     <Enemy>
+                        <Type>兵种5</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <x>630</x>
+                        <y>490</y>
+                    </Enemy>
+                    <Enemy>
                         <Type>兵种6</Type>
                         <Interval>1000</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
@@ -246,21 +261,21 @@
                     <Enemy>
                         <Type>兵种9</Type>
                         <Interval>1800</Interval>
-                        <Quantity>3</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>2</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种10</Type>
                         <Interval>1500</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种39</Type>
                         <Interval>1000</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>1</SpawnIndex>
                     </Enemy>
@@ -291,14 +306,14 @@
                     <Enemy>
                         <Type>兵种400</Type>
                         <Interval>1200</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>1</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种401</Type>
                         <Interval>1000</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>2</SpawnIndex>
                     </Enemy>
@@ -313,7 +328,7 @@
             </SubWave>
             <SubWave id="1">
                 <WaveInformation>
-                    <Duration>10</Duration>
+                    <Duration>0</Duration>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
@@ -326,7 +341,7 @@
                     <Enemy>
                         <Type>兵种401</Type>
                         <Interval>2000</Interval>
-                        <Quantity>4</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>1</SpawnIndex>
                     </Enemy>
@@ -340,21 +355,21 @@
                     <Enemy>
                         <Type>兵种9</Type>
                         <Interval>1500</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种10</Type>
                         <Interval>1500</Interval>
-                        <Quantity>3</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>1</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种39</Type>
                         <Interval>1500</Interval>
-                        <Quantity>3</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>2</SpawnIndex>
                     </Enemy>
@@ -382,44 +397,16 @@
                     <Enemy>
                         <Type>兵种401</Type>
                         <Interval>2000</Interval>
-                        <Quantity>4</Quantity>
+                        <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>2</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种424</Type>
                         <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>1</SpawnIndex>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种9</Type>
-                        <Interval>1500</Interval>
                         <Quantity>2</Quantity>
                         <Level>25</Level>
-                        <SpawnIndex>2</SpawnIndex>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种10</Type>
-                        <Interval>1500</Interval>
-                        <Quantity>3</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>0</SpawnIndex>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种39</Type>
-                        <Interval>1500</Interval>
-                        <Quantity>3</Quantity>
-                        <Level>25</Level>
                         <SpawnIndex>1</SpawnIndex>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种425</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -460,23 +447,9 @@
                         <y>420</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种401</Type>
-                        <Interval>1200</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>left</SpawnIndex>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种424</Type>
-                        <Interval>1500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>left</SpawnIndex>
-                    </Enemy>
-                    <Enemy>
                         <Type>兵种39</Type>
                         <Interval>1500</Interval>
-                        <Quantity>3</Quantity>
+                        <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
@@ -514,13 +487,6 @@
                         <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>right</SpawnIndex>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种39</Type>
-                        <Interval>1800</Interval>
-                        <Quantity>3</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>left</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种425</Type>
