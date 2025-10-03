@@ -1753,4 +1753,37 @@
         <KPrice>180000</KPrice>
         <IncreasePrice>0</IncreasePrice>
     </Pet>
+    <Pet>
+        <id>107</id>
+        <Name>兽化变种</Name>
+        <Identifier>敌人-兽化变种</Identifier>
+        <Height>175</Height>
+        <InitialLevel>1</InitialLevel>
+        <UnlockLevel>10</UnlockLevel>
+        <UnlockTask>23</UnlockTask>
+        <Unique>false</Unique>
+        <Price>45000</Price>
+        <KPrice>1260</KPrice>
+        <IncreasePrice>0</IncreasePrice>
+        <Promotion>
+            <Item>强化药剂</Item>
+            <Item>超级血清</Item>
+        </Promotion>
+    </Pet>
+    <Pet>
+        <id>107</id>
+        <Name>巨臂僵尸</Name>
+        <Identifier>敌人-巨臂僵尸</Identifier>
+        <Height>175</Height>
+        <InitialLevel>1</InitialLevel>
+        <UnlockLevel>10</UnlockLevel>
+        <UnlockTask>23</UnlockTask>
+        <Unique>false</Unique>
+        <Price>76500</Price>
+        <KPrice>2180</KPrice>
+        <IncreasePrice>0</IncreasePrice>
+        <Promotion>
+            <Item>超级血清</Item>
+        </Promotion>
+    </Pet>
 </Pets>
