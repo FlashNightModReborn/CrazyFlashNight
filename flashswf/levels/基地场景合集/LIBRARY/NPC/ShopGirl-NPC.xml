@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/ShopGirl-NPC" itemID="668a8ce5-000030f4" lastModified="1754402639" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/ShopGirl-NPC" itemID="668a8ce5-000030f4" lastModified="1759490216" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="ShopGirl-NPC">
       <layers>
@@ -66,9 +66,9 @@ Z轴坐标 = this._y;
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="UI重构/商店相关/npc商店名称UI" name="商店名" centerPoint3DX="48.5" centerPoint3DY="-171.95">
+                <DOMSymbolInstance libraryItemName="UI重构/商店相关/npc商店名称UI" name="商店名" selected="true" centerPoint3DX="48.5" centerPoint3DY="-151.8">
                   <matrix>
-                    <Matrix tx="-15.5" ty="-181.7"/>
+                    <Matrix tx="-15.5" ty="-161.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="64" y="9.75"/>
@@ -116,9 +116,9 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2363" name="文字信息" selected="true" centerPoint3DX="52" centerPoint3DY="-121.75">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2363" name="文字信息" selected="true" centerPoint3DX="52" centerPoint3DY="-101.6">
                   <matrix>
-                    <Matrix ty="-145.35"/>
+                    <Matrix ty="-125.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

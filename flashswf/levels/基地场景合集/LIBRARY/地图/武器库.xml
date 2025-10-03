@@ -162,11 +162,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#7E77A1">
+        <DOMLayer name="Layer 7" color="#7E77A1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/ShopGirl-NPC" centerPoint3DX="500.75" centerPoint3DY="445.6">
+                <DOMSymbolInstance libraryItemName="NPC/ShopGirl-NPC" selected="true" centerPoint3DX="500.75" centerPoint3DY="445.6">
                   <matrix>
                     <Matrix tx="412.45" ty="321.55"/>
                   </matrix>
@@ -237,11 +237,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#A2D97F" current="true" isSelected="true">
+        <DOMLayer name="Layer 11" color="#A2D97F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2540" name="背景" selected="true" centerPoint3DX="1530.65" centerPoint3DY="582.65">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2540" name="背景" centerPoint3DX="1530.65" centerPoint3DY="582.65">
                   <matrix>
                     <Matrix tx="937.7" ty="245.1"/>
                   </matrix>
