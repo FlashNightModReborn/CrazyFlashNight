@@ -218,11 +218,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="蓝发女" color="#AFB740" parentLayerIndex="8" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="蓝发女" color="#AFB740" parentLayerIndex="8" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/蓝发女-NPC" selected="true" centerPoint3DX="689.75" centerPoint3DY="384.75">
+                <DOMSymbolInstance libraryItemName="NPC/蓝发女-NPC" centerPoint3DX="689.75" centerPoint3DY="384.75">
                   <matrix>
                     <Matrix tx="601.45" ty="260.7"/>
                   </matrix>
@@ -295,11 +295,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Andy Law" color="#9BCD8B" parentLayerIndex="8" autoNamed="false">
+        <DOMLayer name="Andy Law" color="#9BCD8B" parentLayerIndex="8" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/Andy-NPC" centerPoint3DX="819.7" centerPoint3DY="382.95">
+                <DOMSymbolInstance libraryItemName="NPC/Andy-NPC" selected="true" centerPoint3DX="819.7" centerPoint3DY="382.95">
                   <matrix>
                     <Matrix tx="731.4" ty="258.9"/>
                   </matrix>

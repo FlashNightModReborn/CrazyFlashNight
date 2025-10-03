@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/Andy-NPC" itemID="668a8cfe-000031c4" lastModified="1740678517" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/Andy-NPC" itemID="668a8cfe-000031c4" lastModified="1759495457" lastUniqueIdentifier="8">
   <timeline>
     <DOMTimeline name="Andy-NPC">
       <layers>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#BCA922" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#BCA922">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -69,13 +69,13 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="UI重构/商店相关/npc商店名称UI" name="商店名" centerPoint3DX="43.45" centerPoint3DY="-171.95">
+                <DOMSymbolInstance libraryItemName="UI重构/商店相关/npc商店名称UI" name="商店名" selected="true" centerPoint3DX="43.45" centerPoint3DY="-158.55">
                   <matrix>
-                    <Matrix tx="-20.55" ty="-181.7"/>
+                    <Matrix tx="-20.55" ty="-168.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="64" y="9.75"/>
@@ -123,9 +123,9 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2363" name="文字信息" centerPoint3DX="52" centerPoint3DY="-121.75">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2363" name="文字信息" selected="true" centerPoint3DX="52" centerPoint3DY="-108.35">
                   <matrix>
-                    <Matrix ty="-145.35"/>
+                    <Matrix ty="-131.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
