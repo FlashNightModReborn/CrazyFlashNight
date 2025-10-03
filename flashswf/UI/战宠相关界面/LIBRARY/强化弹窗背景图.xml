@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="强化弹窗背景图" itemID="67268719-0000025e" symbolType="graphic" lastModified="1731243869">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="强化弹窗背景图" itemID="67268719-0000025e" symbolType="graphic" lastModified="1759520758">
   <timeline>
-    <DOMTimeline name="强化弹窗背景图">
+    <DOMTimeline name="强化弹窗背景图" currentFrame="4">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -10,23 +10,84 @@
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="6" name="默认" labelType="name" keyMode="9728">
+            <DOMFrame index="1" duration="5" name="默认" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="7" duration="6" name="药剂" labelType="name" keyMode="9728">
+            <DOMFrame index="6" duration="5" name="训练" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="13" duration="4" name="空白" labelType="name" keyMode="9728">
+            <DOMFrame index="11" duration="5" name="生化" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="17" keyMode="9728">
+            <DOMFrame index="16" duration="5" name="装备" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" duration="5" name="武术" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" duration="5" name="进化" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" duration="6" name="超能" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="5" name="外观" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="6" name="空白" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" locked="true" outline="true" useOutlineView="true">
           <frames>
-            <DOMFrame index="0" duration="13" keyMode="9728">
+            <DOMFrame index="0" duration="42" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance selected="true" libraryItemName="未标题-1.png">
+                  <matrix>
+                    <Matrix a="0.116790771484375" d="0.116790771484375"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1753.55" y="1239.8"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="Generated Image October 04, 2025 - 2_04AM.png">
+                  <matrix>
+                    <Matrix a="0.346084594726563" d="0.335586547851563"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="5" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="Generated Image October 04, 2025 - 1_31AM.png">
+                  <matrix>
+                    <Matrix a="0.34613037109375" d="0.33489990234375"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="5" keyMode="9728">
               <elements>
                 <DOMBitmapInstance libraryItemName="未标题-1.png">
                   <matrix>
@@ -37,6 +98,69 @@
                   </transformationPoint>
                 </DOMBitmapInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="5" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="Generated Image October 04, 2025 - 1_07AM.png">
+                  <matrix>
+                    <Matrix a="0.346343994140625" d="0.33563232421875"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="5" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance selected="true" libraryItemName="Gemini_Generated_Image_uzsgvnuzsgvnuzsg.png">
+                  <matrix>
+                    <Matrix a="0.346038818359375" d="0.334747314453125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="5" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="Generated Image October 04, 2025 - 1_42AM.png">
+                  <matrix>
+                    <Matrix a="0.346450805664063" d="0.334426879882813"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" duration="6" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="Generated Image October 04, 2025 - 1_10AM.png">
+                  <matrix>
+                    <Matrix a="0.345947265625" d="0.33416748046875" tx="-0.3" ty="1.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.45" y="2.25"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="5" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="Generated Image October 04, 2025 - 1_12AM.png">
+                  <matrix>
+                    <Matrix a="0.3465576171875" d="0.334991455078125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="6" keyMode="9728">
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>

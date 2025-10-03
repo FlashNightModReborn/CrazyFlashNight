@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="宠物进阶页">
       <layers>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -193,11 +193,11 @@ stop();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/进阶方案详情页" name="详情页" centerPoint3DX="281.1" centerPoint3DY="272.95">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/进阶方案详情页" name="详情页" selected="true" centerPoint3DX="281.1" centerPoint3DY="272.95">
                   <matrix>
                     <Matrix tx="18.7" ty="-4.3"/>
                   </matrix>
