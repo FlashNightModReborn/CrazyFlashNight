@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="强化弹窗背景图" itemID="67268719-0000025e" symbolType="graphic" lastModified="1759520758">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="强化弹窗背景图" itemID="67268719-0000025e" symbolType="graphic" lastModified="1759521440">
   <timeline>
-    <DOMTimeline name="强化弹窗背景图" currentFrame="4">
+    <DOMTimeline name="强化弹窗背景图">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC" locked="true" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -39,31 +39,9 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 3" color="#FF800A" locked="true" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="42" keyMode="9728">
-              <elements>
-                <DOMBitmapInstance selected="true" libraryItemName="未标题-1.png">
-                  <matrix>
-                    <Matrix a="0.116790771484375" d="0.116790771484375"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="1753.55" y="1239.8"/>
-                  </transformationPoint>
-                </DOMBitmapInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="42" duration="6" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" locked="true">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="1" duration="5" keyMode="9728">
+            <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
                 <DOMBitmapInstance libraryItemName="Generated Image October 04, 2025 - 2_04AM.png">
                   <matrix>
