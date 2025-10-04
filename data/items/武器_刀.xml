@@ -51,7 +51,22 @@
       <power>520</power>
       <damagetype>破击</damagetype>
       <magictype>巨体</magictype>
-    </data_4>
+    </data_4>    
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>雷铁斩斧初始化</initRoutines>
+          <initParam>
+            <actionTypeA>null</actionTypeA>
+            <actionTypeB>狂野</actionTypeB>
+            <frameMax>15</frameMax>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>雷铁斩斧周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <id>17304</id>
