@@ -1,0 +1,77 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="公社打桩矛/图标-公社打桩矛" itemID="68e125a4-00003940" linkageExportForAS="true" linkageIdentifier="图标-公社打桩矛" lastModified="1759585823" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="图标-公社打桩矛">
+      <layers>
+        <DOMLayer name="Action Layer" color="#FFFF00" locked="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[stop ();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Mask Layer 2" color="#FFFF00" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/未命名文件夹 1/shape 85" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Masked Layer 3 - 2" color="#FFFF00" parentLayerIndex="2" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="公社打桩矛/刀-公社打桩矛" selected="true" centerPoint3DX="-35.95" centerPoint3DY="24.85">
+                  <matrix>
+                    <Matrix a="-0.0816497802734375" b="-0.0816497802734375" c="0.0816497802734375" d="-0.0816497802734375" tx="-36.8" ty="36"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="61.25" y="80.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="公社打桩矛/刀-公社打桩矛" centerPoint3DX="-123.15" centerPoint3DY="-12.2">
+                  <matrix>
+                    <Matrix a="0" b="-0.161483764648438" c="0.161483764648438" d="0" tx="-27.85" ty="-0.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="58.85" y="127.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
