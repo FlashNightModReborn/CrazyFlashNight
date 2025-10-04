@@ -13,6 +13,8 @@
 
 _root.装备生命周期函数.光刃摩羯周期 = function(ref:Object, param:Object) 
 {
+    _root.装备生命周期函数.移除异常周期函数(ref);
+    
     if(ref.draw > 0) {
         ref.draw--;
         _root.装备生命周期函数.通用刀光周期(ref, param);

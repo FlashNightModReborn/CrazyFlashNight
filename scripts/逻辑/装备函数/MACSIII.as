@@ -10,8 +10,7 @@
     ref.state = "NORMAL";            // 初始状态为 "普通"
     ref.transitionCounter = 0;       // 过渡动画播放计数器
 
-    // ... 您原有的等级判断和事件绑定代码保持不变 ...
-    var upgradeLevel:Number = 自机.长枪.value.level;
+    var upgradeLevel:Number = target.长枪.value.level;
     var executeLevel:Number = param.executeLevel || 3;
     var lifeStealLevel:Number = param.lifeStealLevel || 6;
     
@@ -30,6 +29,8 @@
 };
 
 _root.装备生命周期函数.MACSIII周期 = function(ref:Object, param:Object) {
+    _root.装备生命周期函数.移除异常周期函数(ref);
+    
     var target:MovieClip = ref.自机;
     var gun:MovieClip = target.长枪_引用;
 
@@ -107,6 +108,7 @@ _root.装备生命周期函数.MACSIII周期 = function(ref:Object, param:Object
     // 安全检查并应用最终帧
     if (animFrame) {
         gun.gotoAndStop(Math.floor(animFrame));
+        // _root.发布消息("MACSIII Frame: " + Math.floor(animFrame) + " | State: " + ref.state);
     }
     
     // 重置射击状态

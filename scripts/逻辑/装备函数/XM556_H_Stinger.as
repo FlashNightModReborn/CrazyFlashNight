@@ -24,6 +24,8 @@ _root.装备生命周期函数.XM556_H_Stinger初始化 = function (ref:Object, 
  * --------------------------------------------------------- */
 _root.装备生命周期函数.XM556_H_Stinger周期 = function (ref:Object, param:Object)
 {
+    _root.装备生命周期函数.移除异常周期函数(ref);
+    
     /* --- ① 先执行 XM556 周期逻辑（旋转 / 连射 / 退转等） --- */
     _root.装备生命周期函数.XM556周期(ref, param);
 

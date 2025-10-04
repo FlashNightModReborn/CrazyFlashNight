@@ -66,6 +66,8 @@ _root.装备生命周期函数.wa90变形款初始化 = function(reflector:Objec
 
 //【12】wa90专用周期逻辑：在通用周期基础上同步实例切换
 _root.装备生命周期函数.wa90变形款周期 = function(reflector:Object, paramObj:Object) {
+    _root.装备生命周期函数.移除异常周期函数(reflector);
+
     _root.装备生命周期函数.通用变形周期(reflector, paramObj);
     
     // 从注入的统一配置中获取参数

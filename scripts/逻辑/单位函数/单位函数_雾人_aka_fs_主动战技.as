@@ -148,6 +148,7 @@ _root.主动战技函数.长枪.混凝土切割机超载打击 = {初始化: fun
     var duration:Number = skill.duration || 5;
 
     var upgradeLevel:Number = 自机.长枪.value.level;
+    
     duration += upgradeLevel;
     var overRideCountMax:Number = duration * 30;
     自机.混凝土切割机超载打击持续时间 = overRideCountMax;
