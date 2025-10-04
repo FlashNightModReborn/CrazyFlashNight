@@ -4,14 +4,13 @@
           <DOMFolderItem name="2.音效文件夹/爆炸" itemID="656c296a-0000103c" isExpanded="true"/>
           <DOMFolderItem name="2.音效文件夹/未命名文件夹 2" itemID="687108c8-00002251"/>
           <DOMFolderItem name="ashcore" itemID="688350b6-00000e01"/>
-          <DOMFolderItem name="rpg武器" itemID="68d4b845-00000844" isExpanded="true"/>
-          <DOMFolderItem name="rpg武器/RPG素材" itemID="68d4b845-00000845" isExpanded="true"/>
           <DOMFolderItem name="sprite" itemID="667d1fff-00000d61"/>
           <DOMFolderItem name="电感切割刃" itemID="655c5883-00000334"/>
+          <DOMFolderItem name="公社打桩矛" itemID="68e1124a-00003912" isExpanded="true"/>
           <DOMFolderItem name="光玉的剑相关" itemID="68668bb8-000033c6"/>
           <DOMFolderItem name="吉他喷火" itemID="65546112-000049ff"/>
           <DOMFolderItem name="吉他喷火/未命名文件夹 1" itemID="65546b1d-00004a12"/>
-          <DOMFolderItem name="键盘镰刀" itemID="655480e9-00005ea5"/>
+          <DOMFolderItem name="键盘镰刀" itemID="655480e9-00005ea5" isExpanded="true"/>
           <DOMFolderItem name="将军 披风" itemID="667d1ed9-00000ce9"/>
           <DOMFolderItem name="军阀精英敌人" itemID="68843a37-00003366"/>
           <DOMFolderItem name="军阀精英敌人/重甲" itemID="68843a37-00003367" isExpanded="true"/>
@@ -36,7 +35,7 @@
           <DOMFolderItem name="炎魔斩/炎魔斩/未命名文件夹 2" itemID="65f6fea9-000020b2"/>
           <DOMFolderItem name="炎魔斩/炎魔斩alter" itemID="6558af7c-000002b4"/>
           <DOMFolderItem name="炎魔斩/炎魔斩刀光" itemID="65597827-0000029d" isExpanded="true"/>
-          <DOMFolderItem name="长枪" itemID="68982df5-00002672" isExpanded="true"/>
+          <DOMFolderItem name="长枪" itemID="68982df5-00002672"/>
           <DOMFolderItem name="长枪/53式步骑枪" itemID="659ea370-00000ca4"/>
           <DOMFolderItem name="长枪/g11" itemID="6878f46b-000007fd"/>
           <DOMFolderItem name="长枪/GM6_LYNX" itemID="68979216-000016b1"/>
@@ -135,10 +134,11 @@
           <DOMSoundItem name="2.音效文件夹/未命名文件夹 2/测试火焰.mp3" itemID="658ac9c8-00000d41" linkageExportForAS="true" linkageIdentifier="测试火焰.mp3" sourceExternalFilepath="./LIBRARY/测试火焰.mp3" sourceLastImported="1702286558" href="2.音效文件夹/未命名文件夹 2/测试火焰.mp3" soundDataHRef="M 49 1702286599.dat" format="11kHz 16bit Mono" sampleCount="14400" exportFormat="5" exportBits="7" dataLength="2600" exportNative="true" cachedSampleCount="7200"/>
      </media>
      <symbols>
+          <Include href="0.area.xml" loadImmediate="false" itemID="656a9ee0-00000818" lastModified="1701486304"/>
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="ashcore/ashcore.xml" itemID="688340fd-00000819" lastModified="1753436006"/>
           <Include href="ashcore/图标-ashcore.xml" itemID="68835078-00000a95" lastModified="1753436313"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1759051921"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1759580919"/>
           <Include href="NLAW筒子.xml" itemIcon="1" loadImmediate="false" itemID="68d8f28b-00000aab" lastModified="1759048620"/>
           <Include href="q.xml" loadImmediate="false" itemID="6898491a-00000406" lastModified="1754812780"/>
           <Include href="RPG28发射器.xml" itemIcon="1" loadImmediate="false" itemID="68d50204-00000d2a" lastModified="1758790191"/>
@@ -172,6 +172,8 @@
           <Include href="电感切割刃/中间刀.xml" loadImmediate="false" itemID="655c4fdd-0000063b" lastModified="1700548573"/>
           <Include href="电容器舱.xml" loadImmediate="false" itemID="68a0d830-00001f8c" lastModified="1755396083"/>
           <Include href="反坦克导弹图像.xml" itemIcon="1" loadImmediate="false" itemID="68d8f8ee-00000eb8" lastModified="1759049966"/>
+          <Include href="公社打桩矛/刀-公社打桩矛.xml" itemID="68e111a0-00003904" lastModified="1759580576"/>
+          <Include href="公社打桩矛/公社打桩矛图像.xml" itemIcon="1" loadImmediate="false" itemID="68e11197-00003903" lastModified="1759580649"/>
           <Include href="光玉的剑相关/刀-光玉的剑.xml" itemID="68668bb2-000033c5" lastModified="1751550918"/>
           <Include href="光玉的剑相关/光玉剑柄1.xml" itemIcon="1" loadImmediate="false" itemID="68668bba-000033c8" lastModified="1751550906"/>
           <Include href="光玉的剑相关/光玉剑缓存用.xml" loadImmediate="false" itemID="68668bbc-000033ca" lastModified="1751550908"/>

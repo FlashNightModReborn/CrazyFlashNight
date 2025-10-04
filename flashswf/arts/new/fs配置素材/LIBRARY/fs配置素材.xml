@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1759051921" lastUniqueIdentifier="245">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1759580919" lastUniqueIdentifier="247">
   <timeline>
-    <DOMTimeline name="fs配置素材" currentFrame="19" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="36" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
         <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
@@ -34,7 +34,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="文件夹 3" color="#808080" layerType="folder"/>
-        <DOMLayer name="图层 4" color="#4F80FF" current="true" isSelected="true">
+        <DOMLayer name="图层 4" color="#4F80FF">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -597,7 +597,7 @@
                     <Point x="12.85" y="-22.85"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="长枪/RPG7V2/图标-NLAW" selected="true" centerPoint3DX="21.05" centerPoint3DY="-866.9">
+                <DOMSymbolInstance libraryItemName="长枪/RPG7V2/图标-NLAW" centerPoint3DX="21.05" centerPoint3DY="-866.9">
                   <matrix>
                     <Matrix tx="21.05" ty="-866.9"/>
                   </matrix>
@@ -612,7 +612,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="12" name="标题页" labelType="name" keyMode="9728">
               <elements>
@@ -921,6 +921,14 @@
                   </matrix>
                   <transformationPoint>
                     <Point x="-10.05" y="-7.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="公社打桩矛/刀-公社打桩矛" centerPoint3DX="-738.85" centerPoint3DY="-98.7">
+                  <matrix>
+                    <Matrix tx="-737.5" ty="-298.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.45" y="199.6"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
