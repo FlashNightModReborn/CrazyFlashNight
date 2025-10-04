@@ -6,7 +6,7 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <flat>
-                <defence>20</defence>
+                <defence>8</defence>
             </flat>
         </stats>
     </mod>
@@ -26,7 +26,7 @@
         <use>长枪,手枪</use>
         <stats>
             <percentage>
-                <power>15</power>
+                <power>5</power>
             </percentage>
         </stats>
     </mod>
@@ -35,8 +35,8 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备,刀,手枪,长枪</use>
         <stats>
             <percentage>
-                <defence>10</defence>
-                <damage>10</damage>
+                <defence>3</defence>
+                <damage>2</damage>
             </percentage>
         </stats>
     </mod>
@@ -45,7 +45,7 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <flat>
-                <defence>40</defence>
+                <defence>18</defence>
                 <weight>2</weight>
             </flat>
         </stats>
@@ -60,7 +60,7 @@
         <use>长枪,手枪</use>
         <stats>
             <flat>
-                <power>20</power>
+                <power>7</power>
             </flat>
         </stats>
     </mod>
@@ -93,7 +93,7 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <percentage>
-                <defence>30</defence>
+                <defence>8</defence>
             </percentage>
         </stats>
     </mod>
@@ -136,7 +136,7 @@
         <use>刀</use>
         <stats>
             <percentage>
-                <power>30</power>
+                <power>8</power>
             </percentage>
         </stats>
     </mod>
@@ -145,7 +145,7 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <flat>
-                <defence>80</defence>
+                <defence>35</defence>
                 <weight>4</weight>
             </flat>
         </stats>
@@ -171,8 +171,8 @@
         <use>长枪,手枪</use>
         <stats>
             <percentage>
-                <power>40</power>
-                <velocity>20</velocity>
+                <power>7</power>
+                <velocity>10</velocity>
             </percentage>
         </stats>
     </mod>
@@ -204,8 +204,8 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备,刀</use>
         <stats>
             <percentage>
-                <power>20</power>
-                <defence>30</defence>
+                <power>3</power>
+                <defence>5</defence>
             </percentage>
         </stats>
     </mod>
@@ -250,7 +250,7 @@
         <use>上装装备,下装装备,手部装备</use>
         <stats>
             <flat>
-                <punch>20</punch>
+                <punch>12</punch>
                 <weight>-1</weight>
             </flat>
         </stats>
@@ -260,9 +260,9 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <percentage>
-                <defence>25</defence>
-                <hp>25</hp>
-                <mp>25</mp>
+                <defence>15</defence>
+                <hp>10</hp>
+                <mp>10</mp>
             </percentage>
         </stats>
     </mod>
@@ -280,7 +280,7 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <flat>
-                <evasion>15</evasion>
+                <evasion>20</evasion>
             </flat>
         </stats>
     </mod>
@@ -291,7 +291,7 @@
         <stats>
             <percentage>
                 <!-- <interval>-10</interval>这里也是待定 减射击间隔不管在代码还是平衡上都是极度危险的设计 -->
-                 <power>30</power>
+                 <power>25</power>
             </percentage>
             <flat>
                 <weight>2</weight>
@@ -350,7 +350,7 @@
         <use>长枪,手枪</use>
         <stats>
             <percentage>
-                <capacity>20</capacity>
+                <capacity>15</capacity>
             </percentage>
         </stats>
     </mod>
@@ -414,10 +414,10 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备,刀,手枪,长枪</use>
         <stats>
             <percentage>
-                <damage>30</damage>
-                <punch>30</punch>
-                <knifepower>30</knifepower>
-                <gunpower>30</gunpower>
+                <damage>8</damage>
+                <punch>8</punch>
+                <knifepower>8</knifepower>
+                <gunpower>8</gunpower>
             </percentage>
         </stats>
     </mod>
