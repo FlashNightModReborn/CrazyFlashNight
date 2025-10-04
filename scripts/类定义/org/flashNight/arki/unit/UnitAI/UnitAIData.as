@@ -83,7 +83,7 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
         this.z = self.Z轴坐标;
         this.right = self.方向 === "右";
         this.left = self.方向 === "左";
-        this.standby = self.待机 === true ? true : false;
+        this.standby = self.待机 ? true : false;
     }
     
     public function updateTarget():Void{

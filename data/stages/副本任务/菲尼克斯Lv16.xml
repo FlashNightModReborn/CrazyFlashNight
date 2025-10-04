@@ -57,18 +57,24 @@
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种330</Type>
+                        <Type>兵种310</Type>
                         <Interval>2000</Interval>
                         <Quantity>2</Quantity>
                         <Level>100</Level>
                         <SpawnIndex>1</SpawnIndex>
+                        <Parameters>
+                            <待机>26000</待机>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种331</Type>
+                        <Type>兵种311</Type>
                         <Interval>2000</Interval>
                         <Quantity>2</Quantity>
                         <Level>100</Level>
                         <SpawnIndex>1</SpawnIndex>
+                        <Parameters>
+                            <待机>30000</待机>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种326</Type>
@@ -76,6 +82,9 @@
                         <Quantity>1</Quantity>
                         <Level>100</Level>
                         <SpawnIndex>1</SpawnIndex>
+                        <Parameters>
+                            <待机>270000</待机>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种318</Type>
@@ -83,6 +92,9 @@
                         <Quantity>1</Quantity>
                         <Level>100</Level>
                         <SpawnIndex>2</SpawnIndex>
+                        <Parameters>
+                            <待机>250000</待机>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -93,25 +105,34 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种332</Type>
+                        <Type>兵种317</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>100</Level>
                         <SpawnIndex>1</SpawnIndex>
+                        <Parameters>
+                            <待机>27000</待机>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种332</Type>
+                        <Type>兵种317</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>100</Level>
                         <SpawnIndex>2</SpawnIndex>
+                        <Parameters>
+                            <待机>27100</待机>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种333</Type>
+                        <Type>兵种315</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>100</Level>
                         <SpawnIndex>0</SpawnIndex>
+                        <Parameters>
+                            <待机>27200</待机>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -177,6 +198,9 @@
                         <Quantity>1</Quantity>
                         <Level>100</Level>
                         <SpawnIndex>1</SpawnIndex>
+                        <Parameters>
+                            <待机>260000</待机>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
