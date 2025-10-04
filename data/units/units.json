@@ -5247,62 +5247,10 @@
       "melee": null
     }
   },
-  { 
-    "id": 330,
-    "spritename": "敌人-凤凰眷属连射兵",
-    "level": 20,
-    "name": "射手眷属-废弃",
-    "is_hostile": true,
-    "height": 180,
-    "data": {
-      "primary":  "待机",
-      "secondary": null,
-      "secondary2": null,
-      "melee": null
-    }
-  },
-  { 
-    "id": 331,
-    "spritename": "敌人-凤凰眷属狙击兵",
-    "level": 20,
-    "name": "狙击眷属-废弃",
-    "is_hostile": true,
-    "height": 180,
-    "data": {
-      "primary": "待机",
-      "secondary": null,
-      "secondary2": null,
-      "melee": null
-    }
-  },
-  { 
-    "id": 332,
-    "spritename": "敌人-凤凰眷属火精灵",
-    "level": 20,
-    "name": "火精灵眷属-废弃",
-    "is_hostile": true,
-    "height": 180,
-    "data": {
-      "primary": "待机",
-      "secondary": null,
-      "secondary2": null,
-      "melee": null
-    }
-  },
-  { 
-    "id": 333,
-    "spritename": "敌人-凤凰眷属飞行",
-    "level": 20,
-    "name": "魔法飞行眷属-废弃",
-    "is_hostile": true,
-    "height": 175,
-    "data": {
-      "primary": "待机",
-      "secondary": null,
-      "secondary2": null,
-      "melee": null
-    }
-  },
+  
+
+
+
   { 
     "id": 334,
     "spritename": "敌人-锡蒙利范围光环发生器",
@@ -5431,9 +5379,9 @@
   },
   { 
     "id": 343,
-    "spritename": "敌人-恶魔骑士",
+    "spritename": "敌人-黑炎骑士",
     "level": 20,
-    "name": "恶魔骑士-废弃",
+    "name": "黑炎骑士",
     "is_hostile": true,
     "height": 175,
     "data": {
@@ -5443,34 +5391,8 @@
       "melee": null
     }
   },
-  { 
-    "id": 344,
-    "spritename": "敌人-重盾骑士",
-    "level": 20,
-    "name": "重盾骑士-废弃",
-    "is_hostile": true,
-    "height": 175,
-    "data": {
-      "primary": null,
-      "secondary": null,
-      "secondary2": null,
-      "melee": null
-    }
-  },
-  { 
-    "id": 345,
-    "spritename": "敌人-重剑骑士",
-    "level": 20,
-    "name": "重剑骑士-废弃",
-    "is_hostile": true,
-    "height": 175,
-    "data": {
-      "primary": null,
-      "secondary": null,
-      "secondary2": null,
-      "melee": null
-    }
-  },
+  
+  
   { 
     "id": 346,
     "spritename": "敌人-lady",
