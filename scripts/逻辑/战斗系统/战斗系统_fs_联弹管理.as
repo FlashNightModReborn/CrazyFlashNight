@@ -446,7 +446,7 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
         var unit:MovieClip;
         
         // 检查地图碰撞状态
-        var isHitMap:Boolean = Mover.isMovieClipValid(this);
+        // var isHitMap:Boolean = Mover.isMovieClipValid(this);
         var y_min:Number = Infinity, y_max:Number = -Infinity;
         var x_min:Number, x_max:Number;
         var sinVal:Number;
@@ -546,10 +546,27 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
                 if (unit._y < y_min) y_min = unit._y;
             }
         }
+
+        // 检查父对象是否超出边界,当前纵向联弹在中秋地图上存在隧穿问题
+        // 未定位到原因，暂时额外加上边界检测
+        
+        if(parentMC._x < _root.Xmin || parentMC._x > _root.Xmax ||
+           parentMC._y < _root.Ymin || parentMC._y > _root.Ymax) {
+            // 超出边界时，回收所有单元体并移除自身
+            for (var j:Number = this.单元体列表.length - 1; j >= 0; j--) {
+                unit = this.单元体列表[j];
+                _root.回收单元体(unit);
+                this.单元体列表.splice(j, 1);
+            }
+            parentMC.霰弹值 = 0;
+            this.removeMovieClip();
+            return;
+        }
         
         // 始终更新Y轴碰撞箱
         this._y = y_min;
         this._height = Math.max(this.y_基准 * -2, y_max - y_min);
+        // _root.服务器.发布服务器消息(this._width + " " + this._height + ":" + _parent + " " + x_max + " " + x_min + " " + y_max + " " + y_min);
     };
 };
 
