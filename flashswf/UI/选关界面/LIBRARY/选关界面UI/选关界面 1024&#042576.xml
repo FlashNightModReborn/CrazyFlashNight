@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关界面 1024*576" itemID="663b46a2-000023af" linkageExportForAS="true" linkageIdentifier="选关界面" lastModified="1759676428" lastUniqueIdentifier="215">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关界面 1024*576" itemID="663b46a2-000023af" linkageExportForAS="true" linkageIdentifier="选关界面" lastModified="1759677322" lastUniqueIdentifier="215">
   <timeline>
-    <DOMTimeline name="选关界面 1024*576" currentFrame="20">
+    <DOMTimeline name="选关界面 1024*576" currentFrame="22">
       <layers>
         <DOMLayer name="Labels Layer" color="#5E5DCA">
           <frames>
@@ -1755,7 +1755,7 @@ onClipEvent(load){
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
    this.配置关卡属性 = _root.配置关卡属性;
-   this.配置关卡属性("外交-黑铁会");
+   this.配置关卡属性("外交-黑铁会修炼场");
 }
 ]]></script>
                   </Actionscript>
