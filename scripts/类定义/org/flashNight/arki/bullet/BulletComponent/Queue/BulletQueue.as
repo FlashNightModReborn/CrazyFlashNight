@@ -119,6 +119,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
         }
 
         // 比 push 更快的追加方式
+        // _root.服务器.发布服务器消息("BulletQueue.add: enqueue bullet " + bullet._name + " with aabb (" + left + ", " + right + ")");
         var arr:Array = this.bullets;
         arr[arr.length] = bullet;
     }

@@ -298,12 +298,20 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     public static function createNormalPreCheck(bullet:MovieClip):Function {
         // 返回针对该MovieClip子弹特化的预检查函数
         return function():Boolean {
+            if(this._x < _root.Xmin || this._x > _root.Xmax ||
+               this._y < _root.Ymin || this._y > _root.Ymax) {
+                // 超出边界的子弹直接移除
+                this.removeMovieClip();
+                return false;
+            }
+
             var detectionArea:MovieClip = this.area;
 
             // 纯运动弹分支：无碰撞区域的装饰性子弹
             if (!detectionArea) {
                 // 仅执行位移更新，不参与碰撞检测
                 this.updateMovement(this);
+                // _root.服务器.发布服务器消息("BulletQueueProcessor: skip non-combat bullet " + this._name);
                 return false;
             }
 
@@ -313,6 +321,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
             // 加入碰撞检测执行段
             BulletQueueProcessor.add(this);
+            // _root.服务器.发布服务器消息("BulletQueueProcessor: enqueue combat bullet " + this._name);
             return true;
         };
     }
