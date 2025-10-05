@@ -601,6 +601,17 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             bulletRightKeys = q.getRightKeysRef();      // 子弹右边界数组（截断终点）
             sweepIndex = 0;                             // 扫描线索引重置
 
+            // --- 调试期单位池预检与清洗 ---
+            if (true) {
+                var __pc:Object = __debugPrecheckAndCleanUnitArrays(unitMap, unitLeftKeys, unitRightKeys, key);
+                if (__pc != null) {
+                    unitMap       = __pc.map;
+                    unitLeftKeys  = __pc.left;
+                    unitRightKeys = __pc.right;
+                    len           = __pc.len;
+                }
+            }
+
             // ================================================================
             // 阶段1：消弹区域与子弹的双扫描线预处理
             //
@@ -971,4 +982,106 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         delete bullet.__dfScatterShadow;
         delete bullet.__dfScatterPending;
     }
+    // ------------------------------------------------------------------------
+    // 调试辅助：单位池预检与清洗（仅调试模式调用）
+    //  - 验证长度一致性、NaN/undefined、left<=right、不变式：left非降序
+    //  - 发现异常时：记录告警，并在本帧内返回“清洗后”的本地数组以避免整帧 miss
+    //  - 不修改缓存源数组（cache.*），避免影响其他系统
+    // ------------------------------------------------------------------------
+    static function __debugPrecheckAndCleanUnitArrays(unitMap:Array, unitLeftKeys:Array, unitRightKeys:Array, tag:String):Object {
+        var nM:Number = unitMap.length;
+        var nL:Number = unitLeftKeys.length;
+        var nR:Number = unitRightKeys.length;
+
+        var minLen:Number = nM;
+        var issues:Number = 0;
+        var msgs:Array = [];
+
+        if (nM != nL || nM != nR) {
+            msgs.push("长度不一致 map=" + nM + " left=" + nL + " right=" + nR);
+            // 三者取最小，避免越界
+            minLen = (nM < nL ? (nM < nR ? nM : nR) : (nL < nR ? nL : nR));
+            issues++;
+        }
+
+        var cleanedMap:Array = [];
+        var cleanedLeft:Array = [];
+        var cleanedRight:Array = [];
+        var lastLeft:Number = -Infinity;
+        var nonMonotonic:Boolean = false;
+        var nonMonoIndex:Number = -1;
+        var invalidCnt:Number = 0;
+
+        var i:Number;
+        for (i = 0; i < minLen; ++i) {
+            var u:Object = unitMap[i];
+            var L:Number = unitLeftKeys[i];
+            var R:Number = unitRightKeys[i];
+
+            // 条目有效性：对象存在 + L/R 为数值 + L<=R
+            if (u == undefined || u == null || isNaN(L) || isNaN(R) || (L > R)) {
+                if (invalidCnt < 3) {
+                    msgs.push("无效条目 i=" + i + " L=" + L + " R=" + R + " u=" + u);
+                }
+                invalidCnt++;
+                continue;
+            }
+
+            if (L < lastLeft) {
+                if (!nonMonotonic) {
+                    nonMonoIndex = i;
+                }
+                nonMonotonic = true;
+            }
+
+            cleanedMap.push(u);
+            cleanedLeft.push(L);
+            cleanedRight.push(R);
+            lastLeft = L;
+        }
+
+        if (invalidCnt > 0) {
+            issues++;
+            msgs.push("无效/NaN/逆界(L>R)条目数量=" + invalidCnt);
+        }
+        if (nonMonotonic) {
+            issues++;
+            msgs.push("left 非单调(应升序) 首次发生在 i=" + nonMonoIndex);
+        }
+
+        if (issues > 0) {
+            var msg:String = "[UnitCache预检][" + tag + "] 发现异常: " + msgs.join(" | ");
+            // _root.服务器.发布服务器消息(msg);
+
+            // 如存在非单调问题，对清洗结果按 left 做一次轻量稳定插入排序
+            if (nonMonotonic && cleanedLeft.length > 1) {
+                var j:Number;
+                for (i = 1; i < cleanedLeft.length; ++i) {
+                    var l:Number = cleanedLeft[i];
+                    var r:Number = cleanedRight[i];
+                    var um:Object = cleanedMap[i];
+                    j = i - 1;
+                    while (j >= 0 && cleanedLeft[j] > l) {
+                        cleanedLeft[j + 1]  = cleanedLeft[j];
+                        cleanedRight[j + 1] = cleanedRight[j];
+                        cleanedMap[j + 1]   = cleanedMap[j];
+                        --j;
+                    }
+                    cleanedLeft[j + 1]  = l;
+                    cleanedRight[j + 1] = r;
+                    cleanedMap[j + 1]   = um;
+                }
+            }
+
+            var out:Object = new Object();
+            out.map  = cleanedMap;
+            out.left = cleanedLeft;
+            out.right= cleanedRight;
+            out.len  = cleanedMap.length;
+            return out;
+        }
+
+        return null; // 正常，无需清洗
+    }
+
 }
