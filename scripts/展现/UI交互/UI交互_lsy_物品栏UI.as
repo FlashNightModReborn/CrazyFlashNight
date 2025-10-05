@@ -676,7 +676,7 @@ _root.物品UI函数.刷新默认界面 = function(){
 		}
 		this.进阶图标.itemIcon = new ItemIcon(this.进阶图标, null, null);
 	}
-	this.插件改装按钮._visible = 配件槽数 > 0 || this.进阶材料列表.length > 0;
+	this.插件改装按钮._visible = modslot > 0 || this.进阶材料列表.length > 0;
 }
 
 _root.物品UI函数.检查强化物品是否移动 = function(inventory, index){
