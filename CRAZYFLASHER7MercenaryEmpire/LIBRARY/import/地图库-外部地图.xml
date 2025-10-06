@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/地图库-外部地图" itemID="65c79a79-00000dc4" lastModified="1759677755" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/地图库-外部地图" itemID="65c79a79-00000dc4" lastModified="1759750837" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="地图库-外部地图" currentFrame="20">
+    <DOMTimeline name="地图库-外部地图" currentFrame="21">
       <layers>
         <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
@@ -228,12 +228,21 @@
             </DOMFrame>
             <DOMFrame index="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="import/外部地图/地图-黑铁会修炼场" selected="true" centerPoint3DX="132.5" centerPoint3DY="8.35">
+                <DOMSymbolInstance libraryItemName="import/外部地图/地图-黑铁会修炼场" centerPoint3DX="132.5" centerPoint3DY="8.35">
                   <matrix>
                     <Matrix tx="0.35" ty="-9.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="132.15" y="17.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地图-黑铁阁" centerPoint3DX="131.75" centerPoint3DY="17.3">
+                  <transformationPoint>
+                    <Point x="131.75" y="17.3"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
