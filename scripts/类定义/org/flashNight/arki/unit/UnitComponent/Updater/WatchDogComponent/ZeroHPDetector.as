@@ -49,6 +49,8 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
         // 获取组件数据
         var data:Object = watchDogData[NAMESPACE];
         if (data == null || !data.enabled) return;
+
+        // _root.发布消息("update");
         
         // 如果正在等待复活，则处理复活等待逻辑
         if (data.waitingForRespawn) {
@@ -78,6 +80,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
         
         // 检测到HP为0，增加零血计数
         data.zeroHPCounter++;
+        // _root.发布消息("zeroHPCounter: " + data.zeroHPCounter);
         
         // 超过阈值，触发处理
         if (data.zeroHPCounter >= ZERO_HP_THRESHOLD) {
@@ -116,8 +119,8 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
      * @private
      */
     private static function _publishRespawnEvent(target:MovieClip):Void {
-        // target.dispatcher.publish("respawn", target);
-        // _root.发布消息("[WatchDog] 单位已成功复活: ", target);
+        target.dispatcher.publish("respawn", target);
+        _root.发布消息("[WatchDog] 单位已成功复活: ", target);
     }
     
     /**

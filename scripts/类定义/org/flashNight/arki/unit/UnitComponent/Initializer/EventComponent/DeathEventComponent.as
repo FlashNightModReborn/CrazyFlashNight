@@ -1,7 +1,7 @@
 ﻿// 路径: org/flashNight/arki/unit/UnitComponent/Initializer/EventComponent/KillEventComponent.as
 import org.flashNight.neur.Event.EventDispatcher;
 import org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater;
-import org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManager;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEventComponent {
     /**
@@ -47,6 +47,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEve
         }
 
 
+        TargetCacheUpdater.removeUnit(target);
+        // _root.服务器.发布服务器消息("单位死亡 " + target);
         // if(!target.已加经验值 && FactionManager.getFactionFromUnit(target) == FactionManager.FACTION_HOSTILE_NEUTRAL)
         // {
         //     _root.敌人死亡计数 = _root.敌人死亡计数 + 1;

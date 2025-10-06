@@ -1180,10 +1180,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
                 result.errors.push("unit " + (nm != undefined ? nm : ("#"+i)) + " hp is undefined/NaN");
                 result.isValid = false;
             }
-            if (u.maxhp == undefined || isNaN(u.maxhp) || u.maxhp <= 0) {
-                result.errors.push("unit " + (nm != undefined ? nm : ("#"+i)) + " maxhp is undefined/NaN/<=0");
-                result.isValid = false;
-            }
         }
 
         // --- 左坐标单调性（真正检查 NaN）---
