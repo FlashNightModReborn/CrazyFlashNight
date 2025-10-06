@@ -611,13 +611,15 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             sweepIndex = 0;                             // 扫描线索引重置
 
             // --- 调试期单位池预检与清洗 ---
-            if (true) {
+            if (false) {
                 var __pc:Object = __debugPrecheckAndCleanUnitArrays(unitMap, unitLeftKeys, unitRightKeys, key);
                 if (__pc != null) {
                     unitMap       = __pc.map;
                     unitLeftKeys  = __pc.left;
                     unitRightKeys = __pc.right;
                     len           = __pc.len;
+
+                    _root.服务器.发布服务器消息(cache.getStatusReport());
                 }
             }
 
