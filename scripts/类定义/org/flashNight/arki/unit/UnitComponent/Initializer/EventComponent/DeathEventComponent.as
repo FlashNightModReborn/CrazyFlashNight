@@ -44,10 +44,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEve
             if(target.publishStageEvent === true){
                 _root.gameworld.dispatcher.publish("UnitDeath", target._name);
             }
+            TargetCacheUpdater.removeUnit(target);
         }
 
 
-        TargetCacheUpdater.removeUnit(target);
+
         // _root.服务器.发布服务器消息("单位死亡 " + target);
         // if(!target.已加经验值 && FactionManager.getFactionFromUnit(target) == FactionManager.FACTION_HOSTILE_NEUTRAL)
         // {

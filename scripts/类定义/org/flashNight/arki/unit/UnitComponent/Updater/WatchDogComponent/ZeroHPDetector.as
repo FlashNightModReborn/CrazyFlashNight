@@ -120,7 +120,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDet
      */
     private static function _publishRespawnEvent(target:MovieClip):Void {
         target.dispatcher.publish("respawn", target);
-        _root.发布消息("[WatchDog] 单位已成功复活: ", target);
+        // _root.发布消息("[WatchDog] 单位已成功复活: ", target);
     }
     
     /**
