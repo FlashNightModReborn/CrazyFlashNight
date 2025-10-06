@@ -1102,15 +1102,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
      * @return {Object} 验证结果
      */
     public function validateData():Object {
-        var result:Object = {
-            isValid: true,
-            errors: [],
-            warnings: []
-        };
-
+        var result:Object = { isValid: true, errors: [], warnings: [] };
         var len:Number = this.data.length;
-        
-        // 检查数组长度一致性
+
+        // --- 长度一致性 ---
         if (this.leftValues.length != len) {
             result.errors.push("leftValues length mismatch: " + this.leftValues.length + " vs " + len);
             result.isValid = false;
@@ -1120,35 +1115,115 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
             result.isValid = false;
         }
 
-        // 检查排序是否正确
-        for (var i:Number = 1; i < len; i++) {
-            if (this.leftValues[i] < this.leftValues[i - 1]) {
-                result.errors.push("Sort order violation at index " + i);
+        // --- 逐项结构与数值完整性检查 ---
+        // 走简单 for 循环，避免 NaN 比较陷阱
+        var i:Number;
+        for (i = 0; i < len; i++) {
+            var u:Object = this.data[i];
+            if (u == undefined || u == null) {
+                result.errors.push("data[" + i + "] is undefined/null");
+                result.isValid = false;
+                continue;
+            }
+
+            // aabb 基础字段
+            var col:Object = u.aabbCollider;
+            var lv:Number = this.leftValues[i];
+            var rv:Number = this.rightValues[i];
+
+            if (col == undefined || col == null ||
+                col.left == undefined || col.right == undefined ||
+                isNaN(col.left) || isNaN(col.right)) {
+                result.errors.push("invalid aabbCollider at index " + i);
+                result.isValid = false;
+            } else {
+                // AABB 合法：left <= right
+                if (col.left > col.right) {
+                    result.errors.push("inverted AABB at index " + i + " (left > right)");
+                    result.isValid = false;
+                }
+            }
+
+            // left/rightValues 与 aabb 同步性 + 数值有效
+            if (lv == undefined || isNaN(lv)) {
+                result.errors.push("leftValues[" + i + "] is undefined/NaN");
+                result.isValid = false;
+            } else if (col && !isNaN(col.left) && lv != col.left) {
+                result.errors.push("leftValues[" + i + "] != aabb.left (" + lv + " vs " + col.left + ")");
+                result.isValid = false;
+            }
+
+            if (rv == undefined || isNaN(rv)) {
+                result.errors.push("rightValues[" + i + "] is undefined/NaN");
+                result.isValid = false;
+            } else if (col && !isNaN(col.right) && rv != col.right) {
+                result.errors.push("rightValues[" + i + "] != aabb.right (" + rv + " vs " + col.right + ")");
+                result.isValid = false;
+            }
+
+            // nameIndex 的双向一致性（索引 → 名称 → 索引）
+            var nm:String = u._name;
+            var idxFromName:Number = this.nameIndex[nm];
+            if (nm == undefined) {
+                result.errors.push("unit at index " + i + " has no _name");
+                result.isValid = false;
+            } else if (idxFromName == undefined) {
+                result.errors.push("nameIndex missing entry for " + nm);
+                result.isValid = false;
+            } else if (idxFromName != i) {
+                result.errors.push("nameIndex mismatch for " + nm + ": map=" + idxFromName + ", real=" + i);
+                result.isValid = false;
+            }
+
+            // HP 字段健壮性
+            if (u.hp == undefined || isNaN(u.hp)) {
+                result.errors.push("unit " + (nm != undefined ? nm : ("#"+i)) + " hp is undefined/NaN");
+                result.isValid = false;
+            }
+            if (u.maxhp == undefined || isNaN(u.maxhp) || u.maxhp <= 0) {
+                result.errors.push("unit " + (nm != undefined ? nm : ("#"+i)) + " maxhp is undefined/NaN/<=0");
+                result.isValid = false;
+            }
+        }
+
+        // --- 左坐标单调性（真正检查 NaN）---
+        for (i = 1; i < len; i++) {
+            var a:Number = this.leftValues[i - 1];
+            var b:Number = this.leftValues[i];
+            if (isNaN(a) || isNaN(b) || b < a) {
+                result.errors.push("leftValues sort violation at index " + i);
                 result.isValid = false;
                 break;
             }
         }
 
-        // 检查nameIndex的一致性
-        var indexCount:Number = 0;
-        for (var name:String in this.nameIndex) {
-            indexCount++;
-            var idx:Number = this.nameIndex[name];
-            if (idx < 0 || idx >= len) {
-                result.errors.push("Invalid nameIndex for " + name + ": " + idx);
+        // --- 右坐标单调性---
+        for (i = 1; i < len; i++) {
+            var ra:Number = this.rightValues[i - 1];
+            var rb:Number = this.rightValues[i];
+            if (isNaN(ra) || isNaN(rb)) {
+                result.errors.push("rightValues contain NaN at index " + i);
                 result.isValid = false;
-            } else if (this.data[idx]._name != name) {
-                result.errors.push("nameIndex mismatch for " + name);
-                result.isValid = false;
+                break;
+            }
+            if (rb < ra) {
+                // 这里给 warning，提示你的 getTargetsFromIndex 二分假设不成立
+                result.warnings.push("rightValues not monotonic at index " + i + " (binary search on right is unsafe)");
+                break;
             }
         }
 
+        // --- nameIndex 完备性：把“缺口”升级为错误 ---
+        var indexCount:Number = 0;
+        for (var k:String in this.nameIndex) { indexCount++; }
         if (indexCount != len) {
-            result.warnings.push("nameIndex count (" + indexCount + ") != data length (" + len + ")");
+            result.errors.push("nameIndex count (" + indexCount + ") != data length (" + len + ")");
+            result.isValid = false;
         }
 
         return result;
     }
+
 
     // ========================================================================
     // 调试和状态方法
@@ -1182,22 +1257,27 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
     public function getStatusReport():String {
         var status:Object = getStatus();
         var validation:Object = validateData();
-        
+
+        var level:String;
+        if (!validation.isValid) level = "FAILED";
+        else if (validation.warnings.length > 0) level = "PASSED_WITH_WARNINGS";
+        else level = "PASSED";
+
         var report:String = "=== SortedUnitCache Status ===\n";
         report += "Units: " + status.unitCount + "\n";
         report += "Last Updated: Frame " + status.lastUpdatedFrame + "\n";
         report += "Query Cache: Left=" + status.queryCache.lastQueryLeft + ", Index=" + status.queryCache.lastIndex + "\n";
-        report += "Validation: " + (validation.isValid ? "PASSED" : "FAILED") + "\n";
-        
+        report += "Validation: " + level + "\n";
+
         if (validation.errors.length > 0) {
             report += "Errors: " + validation.errors.join(", ") + "\n";
         }
         if (validation.warnings.length > 0) {
             report += "Warnings: " + validation.warnings.join(", ") + "\n";
         }
-        
         return report;
     }
+
 
     /**
      * 转换为简单的调试字符串
