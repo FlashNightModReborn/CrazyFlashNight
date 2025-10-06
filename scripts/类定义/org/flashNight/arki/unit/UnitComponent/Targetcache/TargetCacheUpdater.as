@@ -264,31 +264,34 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         
         for (key in gameWorld) {
             u = gameWorld[key];
-            if (u.hp <= 0) continue; // 跳过已死亡单位
             
-            // 获取单位的阵营
-            var unitFaction:String = FactionManager.getFactionFromUnit(u);
-            
-            // 使用FactionManager判断关系
-            var shouldInclude:Boolean = false;
-            if (isEnemyRequest) {
-                // 敌人请求：检查是否为敌对关系
-                shouldInclude = FactionManager.areEnemies(requesterFaction, unitFaction);
-            } else {
-                // 友军请求：检查是否为友好关系
-                shouldInclude = FactionManager.areAllies(requesterFaction, unitFaction);
+            // 仅处理存活单位
+            if (u.hp > 0) {
+                // 获取单位的阵营
+                var unitFaction:String = FactionManager.getFactionFromUnit(u);
+                
+                // 使用FactionManager判断关系
+                var shouldInclude:Boolean = false;
+                if (isEnemyRequest) {
+                    // 敌人请求：检查是否为敌对关系
+                    shouldInclude = FactionManager.areEnemies(requesterFaction, unitFaction);
+                } else {
+                    // 友军请求：检查是否为友好关系
+                    shouldInclude = FactionManager.areAllies(requesterFaction, unitFaction);
+                }
+                /*
+                _root.服务器.发布服务器消息(key + " : " + unitFaction + " , " + 
+                FactionManager.areEnemies(requesterFaction, unitFaction) + " " +
+                FactionManager.areAllies(requesterFaction, unitFaction) + " : " +
+                shouldInclude)
+                */
+                
+                if (shouldInclude) {
+                    // 更新碰撞器并添加到目标列表
+                    u.aabbCollider.updateFromUnitArea(targetList[targetList.length] = u);
+                }
             }
-            /*
-            _root.服务器.发布服务器消息(key + " : " + unitFaction + " , " + 
-            FactionManager.areEnemies(requesterFaction, unitFaction) + " " +
-            FactionManager.areAllies(requesterFaction, unitFaction) + " : " +
-            shouldInclude)
-            */
-            
-            if (shouldInclude) {
-                // 更新碰撞器并添加到目标列表
-                u.aabbCollider.updateFromUnitArea(targetList[targetList.length] = u);
-            }
+        
         }
     }
 
@@ -308,10 +311,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         
         for (key in gameWorld) {
             u = gameWorld[key];
-            if (u.hp <= 0) continue; // 跳过已死亡单位
-            
-            // 更新碰撞器并添加到目标列表
-            u.aabbCollider.updateFromUnitArea(targetList[targetList.length] = u);
+            if (u.hp > 0) {
+                // 更新碰撞器并添加到目标列表
+                u.aabbCollider.updateFromUnitArea(targetList[targetList.length] = u);
+            }
         }
     }
 
