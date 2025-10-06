@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="美洲狮异形/敌人-美洲狮异形" itemID="68b2d975-000006b0" linkageExportForAS="true" linkageIdentifier="敌人-美洲狮异形" lastModified="1756578190" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="敌人-美洲狮异形">
+    <DOMTimeline name="敌人-美洲狮异形" currentFrame="87">
       <layers>
         <DOMLayer name="Labels Layer" color="#6AF18F" locked="true">
           <frames>
@@ -208,7 +208,7 @@
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 151" selected="true" centerPoint3DX="188.95" centerPoint3DY="-27.05">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 151" centerPoint3DX="188.95" centerPoint3DY="-27.05">
                   <matrix>
                     <Matrix a="10.4154205322266" d="0.72247314453125" tx="35.35" ty="-108.1"/>
                   </matrix>
@@ -418,7 +418,7 @@
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 383" name="man" selected="true" centerPoint3DX="105.6" centerPoint3DY="8.15">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 383" name="man" centerPoint3DX="105.6" centerPoint3DY="8.15">
                   <matrix>
                     <Matrix tx="-19.05" ty="-57.85"/>
                   </matrix>
