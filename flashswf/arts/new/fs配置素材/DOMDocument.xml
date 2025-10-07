@@ -5,7 +5,7 @@
           <DOMFolderItem name="2.音效文件夹/未命名文件夹 2" itemID="687108c8-00002251"/>
           <DOMFolderItem name="ashcore" itemID="688350b6-00000e01"/>
           <DOMFolderItem name="sprite" itemID="667d1fff-00000d61"/>
-          <DOMFolderItem name="电感切割刃" itemID="655c5883-00000334"/>
+          <DOMFolderItem name="电感切割刃" itemID="655c5883-00000334" isExpanded="true"/>
           <DOMFolderItem name="公社打桩矛" itemID="68e1124a-00003912" isExpanded="true"/>
           <DOMFolderItem name="光玉的剑相关" itemID="68668bb8-000033c6"/>
           <DOMFolderItem name="吉他喷火" itemID="65546112-000049ff"/>
@@ -35,20 +35,20 @@
           <DOMFolderItem name="炎魔斩/炎魔斩/未命名文件夹 2" itemID="65f6fea9-000020b2"/>
           <DOMFolderItem name="炎魔斩/炎魔斩alter" itemID="6558af7c-000002b4"/>
           <DOMFolderItem name="炎魔斩/炎魔斩刀光" itemID="65597827-0000029d" isExpanded="true"/>
-          <DOMFolderItem name="长枪" itemID="68982df5-00002672"/>
+          <DOMFolderItem name="长枪" itemID="68982df5-00002672" isExpanded="true"/>
           <DOMFolderItem name="长枪/53式步骑枪" itemID="659ea370-00000ca4"/>
           <DOMFolderItem name="长枪/g11" itemID="6878f46b-000007fd"/>
           <DOMFolderItem name="长枪/GM6_LYNX" itemID="68979216-000016b1"/>
           <DOMFolderItem name="长枪/Jackhammer" itemID="6870de51-00000afb"/>
           <DOMFolderItem name="长枪/M1918A2" itemID="6872364e-00003591"/>
           <DOMFolderItem name="长枪/NEGEV" itemID="686a7a3e-0000131c"/>
-          <DOMFolderItem name="长枪/PF98A" itemID="68d38e78-0000168e" isExpanded="true"/>
+          <DOMFolderItem name="长枪/PF98A" itemID="68d38e78-0000168e"/>
           <DOMFolderItem name="长枪/PKP" itemID="686b8a7f-000003a1"/>
-          <DOMFolderItem name="长枪/RPG7V2" itemID="68d4b946-0000085f" isExpanded="true"/>
-          <DOMFolderItem name="长枪/wa90" itemID="6559d3b1-000002db"/>
-          <DOMFolderItem name="长枪/wa90/AR57" itemID="68905807-0000a61f" isExpanded="true"/>
+          <DOMFolderItem name="长枪/RPG7V2" itemID="68d4b946-0000085f"/>
+          <DOMFolderItem name="长枪/wa90" itemID="6559d3b1-000002db" isExpanded="true"/>
+          <DOMFolderItem name="长枪/wa90/AR57" itemID="68905807-0000a61f"/>
           <DOMFolderItem name="长枪/wa90/Graphic" itemID="5e86cc75-00001260"/>
-          <DOMFolderItem name="长枪/wa90/P50" itemID="689057d2-0000a3f3"/>
+          <DOMFolderItem name="长枪/wa90/P50" itemID="689057d2-0000a3f3" isExpanded="true"/>
           <DOMFolderItem name="长枪/XM25" itemID="6874cd16-000007b9"/>
           <DOMFolderItem name="长枪/XM214" itemID="689a24d4-000032b3"/>
           <DOMFolderItem name="长枪/XM556" itemID="686bba3f-000040b0"/>
@@ -171,8 +171,10 @@
           <Include href="电感切割刃/元件 10.xml" loadImmediate="false" itemID="55900939-00000014" lastModified="1435503030"/>
           <Include href="电感切割刃/中间刀.xml" loadImmediate="false" itemID="655c4fdd-0000063b" lastModified="1700548573"/>
           <Include href="电容器舱.xml" loadImmediate="false" itemID="68a0d830-00001f8c" lastModified="1755396083"/>
+          <Include href="调试用定位.xml" itemID="689f43ef-00002651" lastModified="1755268079"/>
+          <Include href="调试用失败定位.xml" itemID="689f43e7-00002650" lastModified="1755268071"/>
           <Include href="反坦克导弹图像.xml" itemIcon="1" loadImmediate="false" itemID="68d8f8ee-00000eb8" lastModified="1759049966"/>
-          <Include href="公社打桩矛/刀-公社打桩矛.xml" itemID="68e111a0-00003904" lastModified="1759580576"/>
+          <Include href="公社打桩矛/刀-公社打桩矛.xml" itemID="68e111a0-00003904" lastModified="1759803830"/>
           <Include href="公社打桩矛/公社打桩矛图像.xml" itemIcon="1" loadImmediate="false" itemID="68e11197-00003903" lastModified="1759580649"/>
           <Include href="公社打桩矛/图标-公社打桩矛.xml" itemID="68e125a4-00003940" lastModified="1759585823"/>
           <Include href="光玉的剑相关/刀-光玉的剑.xml" itemID="68668bb2-000033c5" lastModified="1751550918"/>
@@ -291,8 +293,6 @@
           <Include href="特效与子弹/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="65e08f36-00001ff1" lastModified="1702237154"/>
           <Include href="特效与子弹/Symbol 13.xml" loadImmediate="false" itemID="65e08f36-00001ff0" lastModified="1702237154"/>
           <Include href="提把.xml" loadImmediate="false" itemID="68a08614-00002d17" lastModified="1755391446"/>
-          <Include href="调试用定位.xml" itemID="689f43ef-00002651" lastModified="1755268079"/>
-          <Include href="调试用失败定位.xml" itemID="689f43e7-00002650" lastModified="1755268071"/>
           <Include href="铁锤弹头罩.xml" loadImmediate="false" itemID="68d65b86-0000109d" lastModified="1758878816"/>
           <Include href="铁锤筒子.xml" loadImmediate="false" itemID="68d65ae5-00001095" lastModified="1758878775"/>
           <Include href="铁锤文字1.xml" loadImmediate="false" itemID="68d65a98-0000108d" lastModified="1758878516"/>
@@ -393,10 +393,10 @@
           <Include href="炎魔斩纹路.xml" loadImmediate="false" itemID="6678d078-000005ae" lastModified="1719193720"/>
           <Include href="长枪/53式步骑枪/53式步骑枪.xml" itemID="659e146e-000007c4" lastModified="1704953208"/>
           <Include href="长枪/53式步骑枪/弹仓.xml" loadImmediate="false" itemID="659e932d-00000b3c" lastModified="1704891181"/>
+          <Include href="长枪/53式步骑枪/调整层.xml" loadImmediate="false" itemID="659eb6ee-000005a7" lastModified="1704953093"/>
           <Include href="长枪/53式步骑枪/枪管.xml" loadImmediate="false" itemID="659ea149-00000b60" lastModified="1704953006"/>
           <Include href="长枪/53式步骑枪/枪机.xml" loadImmediate="false" itemID="659e9856-00000b4e" lastModified="1704953025"/>
           <Include href="长枪/53式步骑枪/枪身.xml" loadImmediate="false" itemID="659ea159-00000b64" lastModified="1704953133"/>
-          <Include href="长枪/53式步骑枪/调整层.xml" loadImmediate="false" itemID="659eb6ee-000005a7" lastModified="1704953093"/>
           <Include href="长枪/53式步骑枪/图标-53式步骑枪.xml" itemID="659eadd3-00000327" lastModified="1704901315"/>
           <Include href="长枪/g11/G11.xml" itemID="68751898-0000072e" lastModified="1752656002"/>
           <Include href="长枪/g11/G11动画.xml" loadImmediate="false" itemID="68776282-000017ba" lastModified="1752654466"/>
@@ -480,7 +480,7 @@
           <Include href="长枪/wa90/AR57/图标-AR57.xml" itemID="689057e5-0000a41b" lastModified="1754290211"/>
           <Include href="长枪/wa90/Graphic/shape 3716.xml" itemIcon="1" loadImmediate="false" itemID="5e86cc7d-00000e85" lastModified="1585892477"/>
           <Include href="长枪/wa90/Graphic/shape 4006.xml" itemIcon="1" loadImmediate="false" itemID="5e86cc7d-00000fa7" lastModified="1754200354"/>
-          <Include href="长枪/wa90/P50/Kel-Tec-P50.xml" itemID="688f2946-000075a6" lastModified="1754290237"/>
+          <Include href="长枪/wa90/P50/Kel-Tec-P50.xml" itemID="688f2946-000075a6" lastModified="1759803938"/>
           <Include href="长枪/wa90/P50/图标-Kel-Tec-P50.xml" itemID="688f460b-0000768a" lastModified="1754224051"/>
           <Include href="长枪/wa90/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="60abe370-00000028" lastModified="1621882292"/>
           <Include href="长枪/wa90/Symbol 5.xml" itemIcon="1" loadImmediate="false" itemID="60abe379-0000002c" lastModified="1700386543"/>
