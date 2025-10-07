@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/十字螺旋手里剑中转" itemID="68e4e5f8-00002063" linkageExportForAS="true" linkageIdentifier="十字螺旋手里剑中转" lastModified="1759831996" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/暗器/十字螺旋手里剑中转" itemID="68e4e5f8-00002063" linkageExportForAS="true" linkageIdentifier="十字螺旋手里剑中转" lastModified="1759833441" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="十字螺旋手里剑中转" currentFrame="1">
       <layers>
@@ -40,14 +40,14 @@ if(力量投射 == undefined)
 子弹属性.子弹散射度 = 6;
 子弹属性.发射效果 = "";
 子弹属性.子弹种类 = "十字螺旋手里剑";
-子弹属性.子弹速度 = 50;
+子弹属性.子弹速度 = 40;
 子弹属性.击中地图效果 = "";
 子弹属性.Z轴攻击范围 = 20;
 子弹属性.击倒率 = 25;
 子弹属性.击中后子弹的效果 = "";
 子弹属性.子弹敌我属性 = 子弹敌我属性值;
 //_root.发布消息("读到空手攻击力: " + 力量投射);
-子弹属性.子弹威力 = 150 + 力量投射 * 1;
+子弹属性.子弹威力 = 150 + 力量投射 * 3;
 /*
 子弹属性.伤害类型 =  "魔法";
 子弹属性.魔法伤害属性 =  "热";

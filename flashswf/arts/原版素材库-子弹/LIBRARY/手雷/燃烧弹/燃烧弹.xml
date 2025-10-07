@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/燃烧弹/燃烧弹" itemID="66d71398-00001953" linkageExportForAS="true" linkageIdentifier="燃烧弹" lastModified="1759824689" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/燃烧弹/燃烧弹" itemID="66d71398-00001953" linkageExportForAS="true" linkageIdentifier="燃烧弹" lastModified="1759833047" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="燃烧弹">
+    <DOMTimeline name="燃烧弹" currentFrame="2">
       <layers>
-        <DOMLayer name="Labels Layer" color="#F31BF0" current="true" isSelected="true">
+        <DOMLayer name="Labels Layer" color="#F31BF0">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#DE72FA">
+        <DOMLayer name="Script Layer" color="#DE72FA" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>

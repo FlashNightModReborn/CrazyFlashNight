@@ -38,6 +38,7 @@
           <DOMFolderItem name="子弹-近战子弹专享座位" itemID="669d3aec-000017c1"/>
           <DOMFolderItem name="子弹-炮弹与爆炸组" itemID="669d34e9-0000177b"/>
           <DOMFolderItem name="子弹-普通与穿刺组" itemID="669d349c-00001757" isExpanded="true"/>
+          <DOMFolderItem name="子弹-普通与穿刺组/暗器" itemID="68e4ed93-000020b3" isExpanded="true"/>
           <DOMFolderItem name="子弹-气功组" itemID="669d3a53-000017b3" isExpanded="true"/>
           <DOMFolderItem name="子弹-特殊组" itemID="669d3a9d-000017bc"/>
           <DOMFolderItem name="自瞄准星特效" itemID="67139c16-00000684"/>
@@ -252,13 +253,14 @@
           <Include href="手雷/普通手雷/手雷-普通手雷.xml" itemID="66a5da75-0000145a" lastModified="1759817069"/>
           <Include href="手雷/普通手雷/手雷-自制燃烧弹.xml" itemID="66a5da78-0000145b" lastModified="1723814221"/>
           <Include href="手雷/普通手雷/图标-普通手雷.xml" itemID="66a5ea72-000017d8" lastModified="1722149490"/>
-          <Include href="手雷/燃烧弹/燃烧弹.xml" itemID="66d71398-00001953" lastModified="1759824689"/>
+          <Include href="手雷/燃烧弹/燃烧弹.xml" itemID="66d71398-00001953" lastModified="1759833047"/>
           <Include href="手雷/燃烧弹/燃烧弹手雷.xml" itemID="68963356-0000313b" lastModified="1754675603"/>
           <Include href="手雷/燃烧弹/燃烧弹图形.xml" loadImmediate="false" itemID="66d71380-00001938" lastModified="1725371525"/>
           <Include href="手雷/燃烧弹/燃烧弹旋转动画.xml" loadImmediate="false" itemID="66d7138b-00001943" lastModified="1725371465"/>
-          <Include href="手雷/燃烧弹/手雷-燃烧弹.xml" itemID="66d713a2-00001961" lastModified="1759492336"/>
+          <Include href="手雷/燃烧弹/手雷-燃烧弹.xml" itemID="66d713a2-00001961" lastModified="1759832886"/>
           <Include href="手雷/燃烧弹/图标-燃烧弹.xml" itemID="6896334a-0000312b" lastModified="1754675544"/>
-          <Include href="手雷/手雷-十字螺旋手里剑.xml" itemID="68e4e6a8-0000206d" lastModified="1759832000"/>
+          <Include href="手雷/手雷-寒铁镖.xml" itemID="68e4e8f9-0000208f" lastModified="1759833284"/>
+          <Include href="手雷/手雷-十字螺旋手里剑.xml" itemID="68e4e6a8-0000206d" lastModified="1759832316"/>
           <Include href="手雷/手雷-翼炎钉针.xml" itemID="68e4ad63-00001c90" lastModified="1759826494"/>
           <Include href="手雷/素材/Symbol 24.xml" itemIcon="1" loadImmediate="false" itemID="6896ec18-00003d66" lastModified="1701508661"/>
           <Include href="手雷/素材/Symbol 25.xml" loadImmediate="false" itemID="6896ec18-00003d65" lastModified="1701508661"/>
@@ -628,6 +630,12 @@
           <Include href="子弹-炮弹与爆炸组/气锤地雷素材.xml" loadImmediate="false" itemID="6878fa5b-00000a6f" lastModified="1752760717"/>
           <Include href="子弹-炮弹与爆炸组/小型导弹.xml" itemID="669d34c7-00001770" lastModified="1730004177"/>
           <Include href="子弹-炮弹与爆炸组/重型火箭弹.xml" itemID="68d3b57d-00001bdf" lastModified="1758792063"/>
+          <Include href="子弹-普通与穿刺组/暗器/寒铁镖.xml" itemID="68e4ed8a-000020af" lastModified="1759834318"/>
+          <Include href="子弹-普通与穿刺组/暗器/寒铁镖中转.xml" itemID="68e4ec85-000020a1" lastModified="1759834333"/>
+          <Include href="子弹-普通与穿刺组/暗器/十字螺旋手里剑.xml" itemID="68e4e321-00002057" lastModified="1759831814"/>
+          <Include href="子弹-普通与穿刺组/暗器/十字螺旋手里剑中转.xml" itemID="68e4e5f8-00002063" lastModified="1759833441"/>
+          <Include href="子弹-普通与穿刺组/暗器/翼炎钉针.xml" itemID="68e4a962-00001c68" lastModified="1759833258"/>
+          <Include href="子弹-普通与穿刺组/暗器/翼炎钉针中转.xml" itemID="68e4c9f9-00001ffc" lastModified="1759833265"/>
           <Include href="子弹-普通与穿刺组/巴雷特子弹.xml" itemID="669d3447-00001743" lastModified="1721578567"/>
           <Include href="子弹-普通与穿刺组/穿刺子弹.xml" itemID="669d3454-00001746" lastModified="1759824420"/>
           <Include href="子弹-普通与穿刺组/等离子穿刺子弹.xml" itemID="68a2938d-00001541" lastModified="1755485069"/>
@@ -639,14 +647,10 @@
           <Include href="子弹-普通与穿刺组/普通弩箭.xml" itemID="669d3432-0000173e" lastModified="1722661273"/>
           <Include href="子弹-普通与穿刺组/普通无壳子弹.xml" itemID="68ab9f43-00000456" lastModified="1756077891"/>
           <Include href="子弹-普通与穿刺组/山猫反器材普通子弹.xml" itemID="689818c0-0000266c" lastModified="1754798272"/>
-          <Include href="子弹-普通与穿刺组/十字螺旋手里剑.xml" itemID="68e4e321-00002057" lastModified="1759831814"/>
-          <Include href="子弹-普通与穿刺组/十字螺旋手里剑中转.xml" itemID="68e4e5f8-00002063" lastModified="1759831996"/>
           <Include href="子弹-普通与穿刺组/糖果子弹.xml" itemID="669d3450-00001745" lastModified="1759830760"/>
           <Include href="子弹-普通与穿刺组/铁枪磁轨弹.xml" itemID="68786a09-00004fe9" lastModified="1752807102"/>
           <Include href="子弹-普通与穿刺组/铁枪磁轨弹动画.xml" itemIcon="1" loadImmediate="false" itemID="6879b5cc-00001095" lastModified="1752807115"/>
           <Include href="子弹-普通与穿刺组/无壳穿刺子弹.xml" itemID="687775d5-00002db3" lastModified="1759823934"/>
-          <Include href="子弹-普通与穿刺组/翼炎钉针.xml" itemID="68e4a962-00001c68" lastModified="1759827029"/>
-          <Include href="子弹-普通与穿刺组/翼炎钉针中转.xml" itemID="68e4c9f9-00001ffc" lastModified="1759830739"/>
           <Include href="子弹-气功组/气功弹.xml" itemID="668b9d18-000001e7" lastModified="1759817747"/>
           <Include href="子弹-气功组/气功弹爆炸.xml" itemID="668b9d1d-000001e8" lastModified="1759817767"/>
           <Include href="子弹-气功组/屎块爆炸.xml" itemID="66bb409c-00001c97" lastModified="1759818997"/>

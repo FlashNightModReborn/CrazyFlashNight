@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/翼炎钉针中转" itemID="68e4c9f9-00001ffc" linkageExportForAS="true" linkageIdentifier="翼炎钉针中转" lastModified="1759830739" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/暗器/翼炎钉针中转" itemID="68e4c9f9-00001ffc" linkageExportForAS="true" linkageIdentifier="翼炎钉针中转" lastModified="1759833265" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="翼炎钉针中转" currentFrame="1">
+    <DOMTimeline name="翼炎钉针中转">
       <layers>
         <DOMLayer name="Labels Layer" color="#F31BF0">
           <frames>
@@ -47,7 +47,7 @@ if(力量投射 == undefined)
 子弹属性.击中后子弹的效果 = "";
 子弹属性.子弹敌我属性 = 子弹敌我属性值;
 //_root.发布消息("读到空手攻击力: " + 力量投射);
-子弹属性.子弹威力 = 100 + 力量投射 * 1;
+子弹属性.子弹威力 = 100 + 力量投射 * 1.5;
 子弹属性.伤害类型 =  "魔法";
 子弹属性.魔法伤害属性 =  "热";
 子弹属性.shootX = this._x;
