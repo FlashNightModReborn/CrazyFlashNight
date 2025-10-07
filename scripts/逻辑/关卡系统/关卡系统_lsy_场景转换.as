@@ -332,6 +332,7 @@ _root.返回基地 = function(){
 
 _root.场景转换函数 = new Object();
 
+_root.场景转换函数.上次切换帧数 = 0;
 
 _root.场景转换函数.切换场景 = function(对应门名, 目标场景帧, 开门效果, 同时按键值){
 	var 游戏世界 = _root.gameworld;
@@ -354,17 +355,16 @@ _root.场景转换函数.切换场景 = function(对应门名, 目标场景帧, 
 			break;
 	}
 	
-	var 条件满足 = false;
-	if (对应方向 && this.hitTest(控制对象.area) && 控制对象.hp > 0){
-		条件满足 = true;
-	}
-	
-	if (条件满足 === true){
+	var currentFrame:Number = _root.帧计时器.当前帧数;
+	// _root.发布消息("场景转换函数.切换场景 " + (currentFrame - _root.场景转换函数.上次切换帧数) + " " + 对应方向 + " " + this.hitTest(控制对象.area) + " " + 控制对象.hp);
+	if ((currentFrame - _root.场景转换函数.上次切换帧数 > 60) && 对应方向 && this.hitTest(控制对象.area) && 控制对象.hp > 0){
+		
 		var pt = {x:控制对象._x, y:控制对象.Z轴坐标};
 		游戏世界.localToGlobal(pt);
 		if (this.hitTest(pt.x, pt.y, true)){
 			_root.场景进入位置名 = 对应门名;
 			_root.转场景记录数据();
+			_root.场景转换函数.上次切换帧数 = currentFrame;
 			if (开门效果 == null || 开门效果 == ""){
 				_root.淡出动画.淡出跳转帧(目标场景帧);
 				this.gotoAndStop(3);
