@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/十字螺旋手里剑" itemID="68e4e321-00002057" linkageExportForAS="true" linkageIdentifier="十字螺旋手里剑" lastModified="1759830881">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/十字螺旋手里剑" itemID="68e4e321-00002057" linkageExportForAS="true" linkageIdentifier="十字螺旋手里剑" lastModified="1759831814" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="十字螺旋手里剑">
       <layers>
@@ -31,11 +31,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#B3FD2D" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#B3FD2D" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="12.55" centerPoint3DY="7.5">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="12.55" centerPoint3DY="7.5">
                   <matrix>
                     <Matrix a="0.399993896484375" d="0.399993896484375" tx="0.05" ty="-5"/>
                   </matrix>
@@ -50,11 +50,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMGroup>
+                <DOMGroup selected="true">
                   <matrix>
                     <Matrix a="0.5" d="0.5" tx="5.55" ty="-0.05"/>
                   </matrix>
@@ -62,7 +62,7 @@ this.removeMovieClip();
                     <Point/>
                   </transformationPoint>
                   <members>
-                    <DOMShape>
+                    <DOMShape selected="true">
                       <matrix>
                         <Matrix a="0.5" d="0.5" tx="5.55" ty="-0.05"/>
                       </matrix>
