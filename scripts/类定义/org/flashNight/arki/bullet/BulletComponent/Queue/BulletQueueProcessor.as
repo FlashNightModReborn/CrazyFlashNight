@@ -298,12 +298,17 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     public static function createNormalPreCheck(bullet:MovieClip):Function {
         // 返回针对该MovieClip子弹特化的预检查函数
         return function():Boolean {
-            if(this._x < _root.Xmin || this._x > _root.Xmax ||
-               this._y < _root.Ymin || this._y > _root.Ymax) {
+
+            if(this._x < _root.Xmin || this._x > _root.Xmax) {
                 // 超出边界的子弹直接移除
+                // 目前存在未定位的僵尸子弹成因
+                // 引入更强的边界清理以防万一
+                // 不检测y轴避免视觉上的误判
+                
                 this.removeMovieClip();
                 return false;
             }
+
 
             var detectionArea:MovieClip = this.area;
 

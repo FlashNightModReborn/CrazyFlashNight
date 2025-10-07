@@ -4,6 +4,7 @@ import org.flashNight.neur.Event.*;
 import org.flashNight.arki.component.Collider.*;
 import org.flashNight.arki.component.Damage.*;
 import org.flashNight.arki.bullet.BulletComponent.Lifecycle.*;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 /**
  * 普通子弹生命周期管理器
@@ -38,12 +39,18 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle
     public function shouldDestroy(target:MovieClip):Boolean {
         // 获取发射者对象
         var shooter:MovieClip = _root.gameworld[target.发射者名];
-        //  发射者不存在：只做地图碰撞检测
-        if (shooter == undefined) {
-            var hitOnly:Boolean = this.checkMapCollision(target);
-            if (hitOnly) target.击中地图 = true;
-            return hitOnly;
+        //  发射者不存在：使用主角作为发射者校验射程
+        if(!shooter) {
+           shooter = TargetCacheManager.findHero();
+
+            // 主角也不存在：仅进行地图碰撞检测
+            if (!shooter) {
+                var hitOnly:Boolean = this.checkMapCollision(target);
+                if (hitOnly) target.击中地图 = true;
+                return hitOnly;
+            }
         }
+
 
         // 射程判定逻辑：仅对需要进行射程检测的子弹进行判断
         // 当子弹类型不具备“远距离不消失”的特性时，检查其水平和垂直位移是否超过预设的射程阈值
