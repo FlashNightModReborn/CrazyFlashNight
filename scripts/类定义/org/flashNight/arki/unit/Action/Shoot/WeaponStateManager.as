@@ -70,8 +70,10 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
         
         _mainIsFull = mainNumber == 0;
         _subIsFull = subNumber == 0;
+
+        // _root.发布消息(parentRef[mainWeaponType].name, parentRef[subWeaponType].name, parentRef[mainWeaponType].name == parentRef[subWeaponType].name)
         
-        _isSameWeapon = (parentRef[mainWeaponType] == parentRef[subWeaponType]);
+        _isSameWeapon = (parentRef[mainWeaponType].name == parentRef[subWeaponType].name);
     }
     
     // 状态判断 getter 方法
