@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/暗器/寒铁镖中转" itemID="68e4ec85-000020a1" linkageExportForAS="true" linkageIdentifier="寒铁镖中转" lastModified="1759834333" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/暗器/寒铁镖中转" itemID="68e4ec85-000020a1" linkageExportForAS="true" linkageIdentifier="寒铁镖中转" lastModified="1759835105" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="寒铁镖中转" currentFrame="1">
       <layers>
@@ -19,7 +19,7 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹属性 = _root.子弹属性初始化(this,"翼炎钉针",发射者名);
+                <script><![CDATA[子弹属性 = _root.子弹属性初始化(this,"寒铁镖",发射者名);
 
 if(子弹敌我属性值 == undefined)
 {

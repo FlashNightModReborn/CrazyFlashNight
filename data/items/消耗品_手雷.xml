@@ -1,7 +1,36 @@
 ﻿<?xml version='1.0' encoding='UTF-8'?>
 <!--已用ID：[4, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 41, 42, 43, 44, 45, 46, 47, 143, 437, 438, 471, 517, 569, 579, 580, 581, 582, 583, 653, 833, 1553, 1702, 2517, 22011]
-预留ID区间： 18609-18700 -->
+预留ID区间： 18611-18700 -->
 <root>
+  <item>
+    <id>18610</id>
+    <name>鎏金雀翎</name>
+    <displayname>鎏金雀翎</displayname>
+    <icon>鎏金雀翎</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>1000</price>
+    <description>三发一组，采用了东洋风格的设计，危险的设计风格以至于需要有经验者使用。
+作为产自黑铁会的暗器，与手雷等爆炸物不同的是，暗器的威力基本取决于发射者本身的力道，因此在不同人手上威力也各不相同。</description>
+    <data>
+      <level>35</level>
+      <weight>0.1</weight>
+      <dressup>手雷-鎏金雀翎</dressup>
+      <capacity>1</capacity>
+      <split>3</split>
+      <diffusion>6</diffusion>
+      <interval>10</interval>
+      <velocity>36</velocity>
+      <bullet>鎏金雀翎中转</bullet>
+      <sound/>
+      <muzzle/>
+      <bullethit/>
+      <clipname>鎏金雀翎</clipname>
+      <bulletsize>50</bulletsize>
+      <power>500</power>
+      <impact>1</impact>
+    </data>
+  </item>
   <item>
     <id>18609</id>
     <name>寒铁镖</name>
@@ -10,7 +39,7 @@
     <type>消耗品</type>
     <use>手雷</use>
     <price>600</price>
-    <description>三发一组，圆孔的设计使其便于携带，也便于在极端情况下贴身械斗使用，广受杀手刺客们青睐。
+    <description>三发一组，被刺中后有如寒冰附骨。圆孔的设计使其便于携带，也便于在极端情况下贴身械斗使用，广受杀手刺客们青睐。
 作为产自黑铁会的暗器，与手雷等爆炸物不同的是，暗器的威力基本取决于发射者本身的力道，因此在不同人手上威力也各不相同。</description>
     <data>
       <level>35</level>
@@ -20,7 +49,7 @@
       <split>1</split>
       <diffusion>1</diffusion>
       <interval>10</interval>
-      <velocity>50</velocity>
+      <velocity>40</velocity>
       <bullet>寒铁镖中转</bullet>
       <sound/>
       <muzzle/>
@@ -29,6 +58,8 @@
       <bulletsize>50</bulletsize>
       <power>240</power>
       <impact>1</impact>
+      <damagetype>魔法</damagetype>
+      <magictype>冷</magictype>
     </data>
   </item>
   <item>
@@ -49,7 +80,7 @@
       <split>3</split>
       <diffusion>6</diffusion>
       <interval>10</interval>
-      <velocity>50</velocity>
+      <velocity>40</velocity>
       <bullet>十字螺旋手里剑中转</bullet>
       <sound/>
       <muzzle/>
