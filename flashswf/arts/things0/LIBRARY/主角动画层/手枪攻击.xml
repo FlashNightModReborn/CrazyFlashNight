@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角动画层/手枪攻击" itemID="6657384b-0000061d" lastModified="1720908276" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="手枪攻击" currentFrame="83">
+    <DOMTimeline name="手枪攻击" currentFrame="81">
       <layers>
         <DOMLayer name="Labels Layer" color="#F383D0">
           <frames>
@@ -961,7 +961,7 @@ play();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#C4E7E2">
+        <DOMLayer name="Layer 7" color="#C4E7E2" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -2225,7 +2225,7 @@ play();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 1" color="#6264C9" current="true" isSelected="true">
+        <DOMLayer name="Sound Layer 1" color="#6264C9">
           <frames>
             <DOMFrame index="0" duration="51" keyMode="9728">
               <elements/>

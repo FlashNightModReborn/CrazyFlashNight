@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="移动射击动画层/双枪上身" itemID="66577d1d-00002eb7" lastModified="1725364696" lastUniqueIdentifier="173">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="移动射击动画层/双枪上身" itemID="66577d1d-00002eb7" lastModified="1759804879" lastUniqueIdentifier="173">
   <timeline>
-    <DOMTimeline name="双枪上身" currentFrame="106">
+    <DOMTimeline name="双枪上身" currentFrame="103">
       <layers>
         <DOMLayer name="Labels Layer" color="#24AAF0">
           <frames>
@@ -177,170 +177,137 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#C448D7" current="true" isSelected="true">
+        <DOMLayer name="Layer 6" color="#C448D7">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="155.15" centerPoint3DY="-81.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="156.2" centerPoint3DY="-79.45">
                   <matrix>
-                    <Matrix a="0.844207763671875" b="-0.0782470703125" c="0.0782470703125" d="0.844207763671875" tx="125.65" ty="-103"/>
+                    <Matrix a="0.844207763671875" b="-0.0782470703125" c="0.0782470703125" d="0.844207763671875" tx="126.7" ty="-100.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="7" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="158.8" centerPoint3DY="-90.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="160" centerPoint3DY="-88.65">
                   <matrix>
-                    <Matrix a="0.819137573242188" b="-0.216827392578125" c="0.216827392578125" d="0.819137573242188" tx="129.3" ty="-111.9"/>
+                    <Matrix a="0.819137573242188" b="-0.216827392578125" c="0.216827392578125" d="0.819137573242188" tx="130.5" ty="-110.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="9" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="160.55" centerPoint3DY="-78.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="163" centerPoint3DY="-77.05">
                   <matrix>
-                    <Matrix a="0.844207763671875" b="-0.0782470703125" c="0.0782470703125" d="0.844207763671875" tx="131.05" ty="-100.3"/>
+                    <Matrix a="0.844207763671875" b="-0.0782470703125" c="0.0782470703125" d="0.844207763671875" tx="133.5" ty="-98.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="13" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="154.75" centerPoint3DY="-155.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="154.75" centerPoint3DY="-152.9">
                   <matrix>
-                    <Matrix a="0.686447143554688" b="-0.492446899414063" c="0.492446899414063" d="0.686447143554688" tx="125.25" ty="-176.8"/>
+                    <Matrix a="0.686447143554688" b="-0.492446899414063" c="0.492446899414063" d="0.686447143554688" tx="125.25" ty="-174.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="14" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="142.35" centerPoint3DY="-176.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="143.9" centerPoint3DY="-175.7">
                   <matrix>
-                    <Matrix a="0.487380981445313" b="-0.689010620117188" c="0.689010620117188" d="0.487380981445313" tx="112.85" ty="-198.05"/>
+                    <Matrix a="0.487380981445313" b="-0.689010620117188" c="0.689010620117188" d="0.487380981445313" tx="114.4" ty="-197.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="16" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="160.15" centerPoint3DY="-155.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="161.7" centerPoint3DY="-153.85">
                   <matrix>
-                    <Matrix a="0.686447143554688" b="-0.492446899414063" c="0.492446899414063" d="0.686447143554688" tx="130.65" ty="-176.8"/>
+                    <Matrix a="0.686447143554688" b="-0.492446899414063" c="0.492446899414063" d="0.686447143554688" tx="132.2" ty="-175.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="21" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="137.65" centerPoint3DY="-43.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="137.35" centerPoint3DY="-41.65">
                   <matrix>
-                    <Matrix a="0.824737548828125" b="0.174758911132813" c="-0.174758911132813" d="0.824737548828125" tx="108.15" ty="-64.6"/>
+                    <Matrix a="0.824737548828125" b="0.174758911132813" c="-0.174758911132813" d="0.824737548828125" tx="107.85" ty="-63.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="22" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="142.6" centerPoint3DY="-70.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="143.85" centerPoint3DY="-68.6">
                   <matrix>
-                    <Matrix a="0.832672119140625" b="-0.125885009765625" c="0.125885009765625" d="0.832672119140625" tx="113.1" ty="-92.05"/>
+                    <Matrix a="0.832672119140625" b="-0.125885009765625" c="0.125885009765625" d="0.832672119140625" tx="114.35" ty="-90"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="24" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="140.35" centerPoint3DY="-40.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="140.35" centerPoint3DY="-38.35">
                   <matrix>
-                    <Matrix a="0.824737548828125" b="0.174758911132813" c="-0.174758911132813" d="0.824737548828125" tx="110.85" ty="-61.9"/>
+                    <Matrix a="0.824737548828125" b="0.174758911132813" c="-0.174758911132813" d="0.824737548828125" tx="110.85" ty="-59.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="29" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="149.75" centerPoint3DY="-78.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="153.8" centerPoint3DY="-77.35">
                   <matrix>
-                    <Matrix a="0.844207763671875" b="-0.0782470703125" c="0.0782470703125" d="0.844207763671875" tx="120.25" ty="-100.3"/>
+                    <Matrix a="0.844207763671875" b="-0.0782470703125" c="0.0782470703125" d="0.844207763671875" tx="124.3" ty="-98.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="36" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="154.75" centerPoint3DY="-155.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="157.45" centerPoint3DY="-153.85">
                   <matrix>
-                    <Matrix a="0.686447143554688" b="-0.492446899414063" c="0.492446899414063" d="0.686447143554688" tx="125.25" ty="-176.8"/>
+                    <Matrix a="0.686447143554688" b="-0.492446899414063" c="0.492446899414063" d="0.686447143554688" tx="127.95" ty="-175.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -353,9 +320,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -368,9 +332,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -383,9 +344,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -398,9 +356,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -413,9 +368,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -428,9 +380,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -443,9 +392,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -458,9 +404,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -473,9 +416,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -488,9 +428,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -507,9 +444,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -522,9 +456,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -537,9 +468,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -552,9 +480,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -567,9 +492,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -582,9 +504,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -597,9 +516,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -612,9 +528,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -627,9 +540,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -642,9 +552,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -657,9 +564,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -672,9 +576,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -687,9 +588,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -702,9 +600,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -717,9 +612,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -732,9 +624,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -747,9 +636,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -762,9 +648,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -777,9 +660,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -792,9 +672,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -807,9 +684,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -826,9 +700,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -841,9 +712,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -856,9 +724,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -871,9 +736,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -886,9 +748,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -901,9 +760,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -916,9 +772,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -931,9 +784,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -946,9 +796,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -961,9 +808,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -976,9 +820,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -991,9 +832,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1006,9 +844,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1021,9 +856,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1036,178 +868,142 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#A349AF">
+        <DOMLayer name="手枪1" color="#A349AF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="181.8" centerPoint3DY="-69.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="182.85" centerPoint3DY="-67.3">
                   <matrix>
-                    <Matrix a="0.99884033203125" b="0.0304412841796875" c="-0.0304412841796875" d="0.99884033203125" tx="123.05" ty="-101.6"/>
+                    <Matrix a="0.99884033203125" b="0.0304412841796875" c="-0.0304412841796875" d="0.99884033203125" tx="124.1" ty="-99.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="7" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="185.75" centerPoint3DY="-77.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="186.95" centerPoint3DY="-76.1">
                   <matrix>
-                    <Matrix a="0.989547729492188" b="-0.135299682617188" c="0.135299682617188" d="0.989547729492188" tx="127" ty="-110.1"/>
+                    <Matrix a="0.989547729492188" b="-0.135299682617188" c="0.135299682617188" d="0.989547729492188" tx="128.2" ty="-108.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="9" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="187.2" centerPoint3DY="-66.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="189.65" centerPoint3DY="-64.9">
                   <matrix>
-                    <Matrix a="0.99884033203125" b="0.0304412841796875" c="-0.0304412841796875" d="0.99884033203125" tx="128.45" ty="-98.9"/>
+                    <Matrix a="0.99884033203125" b="0.0304412841796875" c="-0.0304412841796875" d="0.99884033203125" tx="130.9" ty="-97.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="13" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="182.4" centerPoint3DY="-141.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="182.4" centerPoint3DY="-139.45">
                   <matrix>
-                    <Matrix a="0.87420654296875" b="-0.476852416992188" c="0.476852416992188" d="0.87420654296875" tx="123.65" ty="-174.1"/>
+                    <Matrix a="0.87420654296875" b="-0.476852416992188" c="0.476852416992188" d="0.87420654296875" tx="123.65" ty="-171.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="14" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" selected="true" centerPoint3DX="170.95" centerPoint3DY="-162.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="172.5" centerPoint3DY="-161.85">
                   <matrix>
-                    <Matrix a="0.66973876953125" b="-0.735565185546875" c="0.735565185546875" d="0.66973876953125" tx="112.2" ty="-194.95"/>
+                    <Matrix a="0.66973876953125" b="-0.735565185546875" c="0.735565185546875" d="0.66973876953125" tx="113.75" ty="-194"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="16" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="187.8" centerPoint3DY="-141.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="189.35" centerPoint3DY="-140.4">
                   <matrix>
-                    <Matrix a="0.87420654296875" b="-0.476852416992188" c="0.476852416992188" d="0.87420654296875" tx="129.05" ty="-174.1"/>
+                    <Matrix a="0.87420654296875" b="-0.476852416992188" c="0.476852416992188" d="0.87420654296875" tx="130.6" ty="-172.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="21" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="163.75" centerPoint3DY="-31.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="163.45" centerPoint3DY="-30.25">
                   <matrix>
-                    <Matrix a="0.93951416015625" b="0.323654174804688" c="-0.323654174804688" d="0.93951416015625" tx="105" ty="-63.95"/>
+                    <Matrix a="0.93951416015625" b="0.323654174804688" c="-0.323654174804688" d="0.93951416015625" tx="104.7" ty="-62.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="22" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="169.1" centerPoint3DY="-58.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="170.35" centerPoint3DY="-56.15">
                   <matrix>
-                    <Matrix a="0.99224853515625" b="-0.0269012451171875" c="0.0269012451171875" d="0.99224853515625" tx="110.35" ty="-90.35"/>
+                    <Matrix a="0.99224853515625" b="-0.0269012451171875" c="0.0269012451171875" d="0.99224853515625" tx="111.6" ty="-88.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="24" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="166.45" centerPoint3DY="-29.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="166.45" centerPoint3DY="-26.95">
                   <matrix>
-                    <Matrix a="0.93951416015625" b="0.323654174804688" c="-0.323654174804688" d="0.93951416015625" tx="107.7" ty="-61.25"/>
+                    <Matrix a="0.93951416015625" b="0.323654174804688" c="-0.323654174804688" d="0.93951416015625" tx="107.7" ty="-59.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="29" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="176.4" centerPoint3DY="-66.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="180.45" centerPoint3DY="-65.2">
                   <matrix>
-                    <Matrix a="0.99884033203125" b="0.0304412841796875" c="-0.0304412841796875" d="0.99884033203125" tx="117.65" ty="-98.9"/>
+                    <Matrix a="0.99884033203125" b="0.0304412841796875" c="-0.0304412841796875" d="0.99884033203125" tx="121.7" ty="-97.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="36" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="182.4" centerPoint3DY="-141.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" name="枪" centerPoint3DX="185.1" centerPoint3DY="-140.4">
                   <matrix>
-                    <Matrix a="0.87420654296875" b="-0.476852416992188" c="0.476852416992188" d="0.87420654296875" tx="123.65" ty="-174.1"/>
+                    <Matrix a="0.87420654296875" b="-0.476852416992188" c="0.476852416992188" d="0.87420654296875" tx="126.35" ty="-172.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1220,9 +1016,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1235,9 +1028,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1250,9 +1040,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1265,9 +1052,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1280,9 +1064,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1295,9 +1076,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1310,9 +1088,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1325,9 +1100,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1340,9 +1112,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1355,9 +1124,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1374,9 +1140,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1393,9 +1156,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1408,9 +1168,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1423,9 +1180,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1438,9 +1192,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1453,9 +1204,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1468,9 +1216,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1487,9 +1232,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1499,106 +1241,85 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="236.5" centerPoint3DY="-125.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="234.35" centerPoint3DY="-131.2">
                   <matrix>
-                    <Matrix a="0.840057373046875" b="-0.0908660888671875" c="0.0908660888671875" d="0.840057373046875" tx="207" ty="-147.35"/>
+                    <Matrix a="0.840057373046875" b="-0.0908660888671875" c="0.0908660888671875" d="0.840057373046875" tx="204.85" ty="-152.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="13" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="210.9" centerPoint3DY="-154.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="207.8" centerPoint3DY="-159.75">
                   <matrix>
-                    <Matrix a="0.7650146484375" b="-0.356765747070313" c="0.356765747070313" d="0.7650146484375" tx="181.4" ty="-176.2"/>
+                    <Matrix a="0.7650146484375" b="-0.356765747070313" c="0.356765747070313" d="0.7650146484375" tx="178.3" ty="-181.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="21" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="216.9" centerPoint3DY="-55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="217.7" centerPoint3DY="-61">
                   <matrix>
-                    <Matrix a="0.791183471679688" b="0.290252685546875" c="-0.290252685546875" d="0.791183471679688" tx="187.4" ty="-76.45"/>
+                    <Matrix a="0.791183471679688" b="0.290252685546875" c="-0.290252685546875" d="0.791183471679688" tx="188.2" ty="-82.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="236.5" centerPoint3DY="-125.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="234.5" centerPoint3DY="-131.5">
                   <matrix>
-                    <Matrix a="0.840057373046875" b="-0.0908660888671875" c="0.0908660888671875" d="0.840057373046875" tx="207" ty="-147.35"/>
+                    <Matrix a="0.840057373046875" b="-0.0908660888671875" c="0.0908660888671875" d="0.840057373046875" tx="205" ty="-152.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="30" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="233.55" centerPoint3DY="-158.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="229.8" centerPoint3DY="-163.55">
                   <matrix>
-                    <Matrix a="0.752105712890625" b="-0.383056640625" c="0.383056640625" d="0.752105712890625" tx="204.05" ty="-180"/>
+                    <Matrix a="0.752105712890625" b="-0.383056640625" c="0.383056640625" d="0.752105712890625" tx="200.3" ty="-185"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="32" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="236.5" centerPoint3DY="-125.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="234.8" centerPoint3DY="-131.85">
                   <matrix>
-                    <Matrix a="0.840057373046875" b="-0.0908660888671875" c="0.0908660888671875" d="0.840057373046875" tx="207" ty="-147.35"/>
+                    <Matrix a="0.840057373046875" b="-0.0908660888671875" c="0.0908660888671875" d="0.840057373046875" tx="205.3" ty="-153.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="36" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="210.9" centerPoint3DY="-154.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="207.45" centerPoint3DY="-159.75">
                   <matrix>
-                    <Matrix a="0.7650146484375" b="-0.356765747070313" c="0.356765747070313" d="0.7650146484375" tx="181.4" ty="-176.2"/>
+                    <Matrix a="0.7650146484375" b="-0.356765747070313" c="0.356765747070313" d="0.7650146484375" tx="177.95" ty="-181.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1611,9 +1332,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1626,9 +1344,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1641,9 +1356,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1656,9 +1368,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1671,9 +1380,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1686,9 +1392,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1701,9 +1404,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1716,9 +1416,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1731,9 +1428,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1746,9 +1440,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1761,9 +1452,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1776,9 +1464,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1791,9 +1476,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1806,334 +1488,12 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 20" color="#4D7BDD">
-          <frames>
-            <DOMFrame index="0" duration="13" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="283.2" centerPoint3DY="-118">
-                  <matrix>
-                    <Matrix tx="224.45" ty="-150.15"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="13" duration="8" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="255.75" centerPoint3DY="-152.25">
-                  <matrix>
-                    <Matrix a="0.945541381835938" b="-0.322402954101563" c="0.322402954101563" d="0.945541381835938" tx="197" ty="-184.4"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="21" duration="8" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="262.9" centerPoint3DY="-39.05">
-                  <matrix>
-                    <Matrix a="0.893966674804688" b="0.442230224609375" c="-0.442230224609375" d="0.893966674804688" tx="204.15" ty="-71.2"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="29" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="283.2" centerPoint3DY="-118">
-                  <matrix>
-                    <Matrix tx="224.45" ty="-150.15"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="30" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="278.05" centerPoint3DY="-156.65">
-                  <matrix>
-                    <Matrix a="0.933700561523438" b="-0.354995727539063" c="0.354995727539063" d="0.933700561523438" tx="219.3" ty="-188.8"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="283.2" centerPoint3DY="-118">
-                  <matrix>
-                    <Matrix tx="224.45" ty="-150.15"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="255.75" centerPoint3DY="-152.25">
-                  <matrix>
-                    <Matrix a="0.945541381835938" b="-0.322402954101563" c="0.322402954101563" d="0.945541381835938" tx="197" ty="-184.4"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="37" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="211" centerPoint3DY="-210.2">
-                  <matrix>
-                    <Matrix a="0.4765625" b="-0.876129150390625" c="0.876129150390625" d="0.4765625" tx="152.25" ty="-242.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="39" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="255.75" centerPoint3DY="-152.25">
-                  <matrix>
-                    <Matrix a="0.945541381835938" b="-0.322402954101563" c="0.322402954101563" d="0.945541381835938" tx="197" ty="-184.4"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="44" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="262.9" centerPoint3DY="-39.05">
-                  <matrix>
-                    <Matrix a="0.893966674804688" b="0.442230224609375" c="-0.442230224609375" d="0.893966674804688" tx="204.15" ty="-71.2"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="45" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="271.6" centerPoint3DY="-69.55">
-                  <matrix>
-                    <Matrix a="0.986602783203125" b="0.139251708984375" c="-0.139251708984375" d="0.986602783203125" tx="212.85" ty="-101.7"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="47" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="262.9" centerPoint3DY="-39.05">
-                  <matrix>
-                    <Matrix a="0.893966674804688" b="0.442230224609375" c="-0.442230224609375" d="0.893966674804688" tx="204.15" ty="-71.2"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="52" duration="4" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="249.85" centerPoint3DY="1.25">
-                  <matrix>
-                    <Matrix a="0.884017944335938" b="0.456710815429688" c="-0.456710815429688" d="0.884017944335938" tx="191.1" ty="-30.9"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="56" duration="4" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="199.05" centerPoint3DY="47.65">
-                  <matrix>
-                    <Matrix a="0.64227294921875" b="0.761489868164063" c="-0.761489868164063" d="0.64227294921875" tx="140.3" ty="15.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="60" duration="13" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="168.55" centerPoint3DY="9.4">
-                  <matrix>
-                    <Matrix a="0.8958740234375" b="0.432876586914063" c="-0.432876586914063" d="0.8958740234375" tx="109.8" ty="-22.75"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="73" duration="11" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="190.95" centerPoint3DY="44.95">
-                  <matrix>
-                    <Matrix a="0.64227294921875" b="0.761489868164063" c="-0.761489868164063" d="0.64227294921875" tx="132.2" ty="12.8"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="84" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="213.6" centerPoint3DY="11.85">
-                  <matrix>
-                    <Matrix a="0.71856689453125" b="0.689453125" c="-0.689453125" d="0.71856689453125" tx="154.85" ty="-20.3"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="89" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="172.45" centerPoint3DY="-14.7">
-                  <matrix>
-                    <Matrix a="0.71856689453125" b="0.689453125" c="-0.689453125" d="0.71856689453125" tx="113.7" ty="-46.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="94" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="213.6" centerPoint3DY="11.85">
-                  <matrix>
-                    <Matrix a="0.71856689453125" b="0.689453125" c="-0.689453125" d="0.71856689453125" tx="154.85" ty="-20.3"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="99" duration="4" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="190.95" centerPoint3DY="44.95">
-                  <matrix>
-                    <Matrix a="0.64227294921875" b="0.761489868164063" c="-0.761489868164063" d="0.64227294921875" tx="132.2" ty="12.8"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="103" duration="4" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="249.85" centerPoint3DY="1.25">
-                  <matrix>
-                    <Matrix a="0.884017944335938" b="0.456710815429688" c="-0.456710815429688" d="0.884017944335938" tx="191.1" ty="-30.9"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 21" color="#EDA5E0">
+        <DOMLayer name="左小臂" color="#EDA5E0" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements>
@@ -2144,9 +1504,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2159,9 +1516,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2174,9 +1528,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2189,9 +1540,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2204,9 +1552,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2219,9 +1564,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2234,144 +1576,114 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="37" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="127.1" centerPoint3DY="-98.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="122.9" centerPoint3DY="-96.9">
                   <matrix>
-                    <Matrix a="-0.767242431640625" b="-0.346359252929688" c="0.346359252929688" d="-0.767242431640625" tx="109.65" ty="-153.9"/>
+                    <Matrix a="-0.739578247070313" b="-0.402069091796875" c="0.402069091796875" d="-0.739578247070313" tx="109.65" ty="-153.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="39" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="123.05" centerPoint3DY="-92.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="118.55" centerPoint3DY="-91.2">
                   <matrix>
-                    <Matrix a="-0.330474853515625" b="-0.775711059570313" c="0.775711059570313" d="-0.330474853515625" tx="105.6" ty="-148.1"/>
+                    <Matrix a="-0.265716552734375" b="-0.800216674804688" c="0.800216674804688" d="-0.265716552734375" tx="105.6" ty="-148.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="44" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="131.55" centerPoint3DY="-54.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="127" centerPoint3DY="-53.5">
                   <matrix>
-                    <Matrix a="0.316329956054688" b="-0.78009033203125" c="0.78009033203125" d="0.316329956054688" tx="114.1" ty="-110.35"/>
+                    <Matrix a="0.379119873046875" b="-0.751571655273438" c="0.751571655273438" d="0.379119873046875" tx="114.1" ty="-110.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="45" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="132.6" centerPoint3DY="-54.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="127.15" centerPoint3DY="-53.35">
                   <matrix>
-                    <Matrix a="0.0555419921875" b="-0.839111328125" c="0.839111328125" d="0.0555419921875" tx="115.15" ty="-110.55"/>
+                    <Matrix a="0.135345458984375" b="-0.829986572265625" c="0.829986572265625" d="0.135345458984375" tx="115.15" ty="-110.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="47" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="131.55" centerPoint3DY="-54.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="126.8" centerPoint3DY="-53.35">
                   <matrix>
-                    <Matrix a="0.316329956054688" b="-0.78009033203125" c="0.78009033203125" d="0.316329956054688" tx="114.1" ty="-110.35"/>
+                    <Matrix a="0.382797241210938" b="-0.749710083007813" c="0.749710083007813" d="0.382797241210938" tx="114.1" ty="-110.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="52" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="119.45" centerPoint3DY="-15.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="114.4" centerPoint3DY="-14.5">
                   <matrix>
-                    <Matrix a="0.329132080078125" b="-0.772613525390625" c="0.772613525390625" d="0.329132080078125" tx="102" ty="-71.5"/>
+                    <Matrix a="0.3980712890625" b="-0.739456176757813" c="0.739456176757813" d="0.3980712890625" tx="102" ty="-71.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="56" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="90.95" centerPoint3DY="-0.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="86.4" centerPoint3DY="0.85">
                   <matrix>
-                    <Matrix a="0.60076904296875" b="-0.58819580078125" c="0.58819580078125" d="0.60076904296875" tx="73.5" ty="-56.25"/>
+                    <Matrix a="0.64739990234375" b="-0.536453247070313" c="0.536453247070313" d="0.64739990234375" tx="73.5" ty="-56.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="60" duration="13" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="37.1" centerPoint3DY="-5.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="31.9" centerPoint3DY="-4.1">
                   <matrix>
-                    <Matrix a="0.308319091796875" b="-0.781097412109375" c="0.781097412109375" d="0.308319091796875" tx="19.65" ty="-61"/>
+                    <Matrix a="0.381195068359375" b="-0.748245239257813" c="0.748245239257813" d="0.381195068359375" tx="19.65" ty="-61"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="73" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="82.85" centerPoint3DY="-3.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="78.2" centerPoint3DY="-0.15">
                   <matrix>
-                    <Matrix a="0.60076904296875" b="-0.58819580078125" c="0.58819580078125" d="0.60076904296875" tx="65.4" ty="-58.95"/>
+                    <Matrix a="0.633087158203125" b="-0.553253173828125" c="0.553253173828125" d="0.633087158203125" tx="63.95" ty="-56.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2384,9 +1696,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2399,9 +1708,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2414,39 +1720,286 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="99" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="82.85" centerPoint3DY="-3.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="78.1" centerPoint3DY="1.15">
                   <matrix>
-                    <Matrix a="0.60076904296875" b="-0.58819580078125" c="0.58819580078125" d="0.60076904296875" tx="65.4" ty="-58.95"/>
+                    <Matrix a="0.625564575195313" b="-0.561737060546875" c="0.561737060546875" d="0.625564575195313" tx="62.7" ty="-55.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="103" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="119.45" centerPoint3DY="-15.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="114.95" centerPoint3DY="-14.35">
                   <matrix>
-                    <Matrix a="0.329132080078125" b="-0.772613525390625" c="0.772613525390625" d="0.329132080078125" tx="102" ty="-71.5"/>
+                    <Matrix a="0.394775390625" b="-0.741226196289063" c="0.741226196289063" d="0.394775390625" tx="102" ty="-71.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="手枪2" color="#4D7BDD" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="281.05" centerPoint3DY="-123.3">
+                  <matrix>
+                    <Matrix tx="222.3" ty="-155.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="252.65" centerPoint3DY="-157.25">
+                  <matrix>
+                    <Matrix a="0.945541381835938" b="-0.322402954101563" c="0.322402954101563" d="0.945541381835938" tx="193.9" ty="-189.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="263.7" centerPoint3DY="-45.05">
+                  <matrix>
+                    <Matrix a="0.893966674804688" b="0.442230224609375" c="-0.442230224609375" d="0.893966674804688" tx="204.95" ty="-77.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="281.2" centerPoint3DY="-123.6">
+                  <matrix>
+                    <Matrix tx="222.45" ty="-155.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="274.3" centerPoint3DY="-161.65">
+                  <matrix>
+                    <Matrix a="0.933700561523438" b="-0.354995727539063" c="0.354995727539063" d="0.933700561523438" tx="215.55" ty="-193.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="281.5" centerPoint3DY="-123.95">
+                  <matrix>
+                    <Matrix tx="222.75" ty="-156.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="252.3" centerPoint3DY="-157.25">
+                  <matrix>
+                    <Matrix a="0.945541381835938" b="-0.322402954101563" c="0.322402954101563" d="0.945541381835938" tx="193.55" ty="-189.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="211" centerPoint3DY="-210.2">
+                  <matrix>
+                    <Matrix a="0.4765625" b="-0.876129150390625" c="0.876129150390625" d="0.4765625" tx="152.25" ty="-242.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="255.75" centerPoint3DY="-152.25">
+                  <matrix>
+                    <Matrix a="0.945541381835938" b="-0.322402954101563" c="0.322402954101563" d="0.945541381835938" tx="197" ty="-184.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="262.9" centerPoint3DY="-39.05">
+                  <matrix>
+                    <Matrix a="0.893966674804688" b="0.442230224609375" c="-0.442230224609375" d="0.893966674804688" tx="204.15" ty="-71.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="271.6" centerPoint3DY="-69.55">
+                  <matrix>
+                    <Matrix a="0.986602783203125" b="0.139251708984375" c="-0.139251708984375" d="0.986602783203125" tx="212.85" ty="-101.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="262.9" centerPoint3DY="-39.05">
+                  <matrix>
+                    <Matrix a="0.893966674804688" b="0.442230224609375" c="-0.442230224609375" d="0.893966674804688" tx="204.15" ty="-71.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="249.85" centerPoint3DY="1.25">
+                  <matrix>
+                    <Matrix a="0.884017944335938" b="0.456710815429688" c="-0.456710815429688" d="0.884017944335938" tx="191.1" ty="-30.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="199.05" centerPoint3DY="47.65">
+                  <matrix>
+                    <Matrix a="0.64227294921875" b="0.761489868164063" c="-0.761489868164063" d="0.64227294921875" tx="140.3" ty="15.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="60" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="168.55" centerPoint3DY="9.4">
+                  <matrix>
+                    <Matrix a="0.8958740234375" b="0.432876586914063" c="-0.432876586914063" d="0.8958740234375" tx="109.8" ty="-22.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="190.95" centerPoint3DY="44.95">
+                  <matrix>
+                    <Matrix a="0.64227294921875" b="0.761489868164063" c="-0.761489868164063" d="0.64227294921875" tx="132.2" ty="12.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="84" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="213.6" centerPoint3DY="11.85">
+                  <matrix>
+                    <Matrix a="0.71856689453125" b="0.689453125" c="-0.689453125" d="0.71856689453125" tx="154.85" ty="-20.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="172.45" centerPoint3DY="-14.7">
+                  <matrix>
+                    <Matrix a="0.71856689453125" b="0.689453125" c="-0.689453125" d="0.71856689453125" tx="113.7" ty="-46.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="94" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="213.6" centerPoint3DY="11.85">
+                  <matrix>
+                    <Matrix a="0.71856689453125" b="0.689453125" c="-0.689453125" d="0.71856689453125" tx="154.85" ty="-20.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="99" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="190.95" centerPoint3DY="44.95">
+                  <matrix>
+                    <Matrix a="0.64227294921875" b="0.761489868164063" c="-0.761489868164063" d="0.64227294921875" tx="132.2" ty="12.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="103" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" name="枪2" centerPoint3DX="249.85" centerPoint3DY="1.25">
+                  <matrix>
+                    <Matrix a="0.884017944335938" b="0.456710815429688" c="-0.456710815429688" d="0.884017944335938" tx="191.1" ty="-30.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2463,9 +2016,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2478,9 +2028,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2493,9 +2040,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2508,9 +2052,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2523,24 +2064,18 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="44" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="67.85" centerPoint3DY="-70.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="63.5" centerPoint3DY="-69.1">
                   <matrix>
-                    <Matrix a="0.294631958007813" b="-0.789016723632813" c="0.789016723632813" d="0.294631958007813" tx="44.2" ty="-137.85"/>
+                    <Matrix a="0.351425170898438" b="-0.765411376953125" c="0.765411376953125" d="0.351425170898438" tx="44.2" ty="-137.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2553,9 +2088,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2568,9 +2100,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2583,9 +2112,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2598,9 +2124,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2613,9 +2136,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2628,9 +2148,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2643,9 +2160,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2662,9 +2176,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -2681,9 +2192,6 @@ if (_parent._name == _root.控制目标 && _parent.被动技能.枪械师 && _pa
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

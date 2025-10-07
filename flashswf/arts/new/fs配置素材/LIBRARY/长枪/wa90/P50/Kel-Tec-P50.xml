@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/wa90/P50/Kel-Tec-P50" itemID="688f2946-000075a6" linkageExportForAS="true" linkageIdentifier="枪-手枪-Kel-Tec-P50" lastModified="1759803938" lastUniqueIdentifier="10">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/wa90/P50/Kel-Tec-P50" itemID="688f2946-000075a6" linkageExportForAS="true" linkageIdentifier="枪-手枪-Kel-Tec-P50" lastModified="1759804159" lastUniqueIdentifier="10">
   <timeline>
     <DOMTimeline name="Kel-Tec-P50" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;154&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -16,13 +16,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="枪口" color="#4FFFFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="枪口" color="#4FFFFF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/未命名文件夹 1/sprite 10" name="枪口位置" selected="true" centerPoint3DX="109.1" centerPoint3DY="-29">
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/未命名文件夹 1/sprite 10" name="枪口位置" selected="true" centerPoint3DX="87.5" centerPoint3DY="-24.3">
                   <matrix>
-                    <Matrix a="0.79254150390625" d="0.79254150390625" tx="99.35" ty="-38.9"/>
+                    <Matrix a="0.634017944335938" d="0.634017944335938" tx="79.7" ty="-32.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -38,10 +38,10 @@
               <elements>
                 <DOMShape selected="true" isFloating="true">
                   <matrix>
-                    <Matrix a="0.899993896484375" d="0.899993896484375" tx="10.95" ty="-11.35"/>
+                    <Matrix a="0.719985961914063" d="0.719985961914063" tx="8.95" ty="-10.2"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="17.45" y="6.55"/>
+                    <Point x="17.45" y="6.6"/>
                   </transformationPoint>
                   <fills>
                     <FillStyle index="1">
@@ -7325,10 +7325,10 @@
                 </DOMShape>
                 <DOMShape selected="true" isDrawingObject="true">
                   <matrix>
-                    <Matrix a="0.899993896484375" d="0.899993896484375" tx="-243.75" ty="-84.95"/>
+                    <Matrix a="0.719985961914063" d="0.719985961914063" tx="-194.8" ty="-69.05"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="249" y="61.85"/>
+                    <Point x="249.05" y="61.8"/>
                   </transformationPoint>
                   <fills>
                     <FillStyle index="1">
@@ -7361,9 +7361,9 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="长枪/wa90/Symbol 10" name="弹匣" selected="true" centerPoint3DX="44.35" centerPoint3DY="-19.95">
+                <DOMSymbolInstance libraryItemName="长枪/wa90/Symbol 10" name="弹匣" selected="true" centerPoint3DX="35.7" centerPoint3DY="-17.05">
                   <matrix>
-                    <Matrix a="-0.566482543945313" d="-0.746917724609375" tx="90.8" ty="-16.45"/>
+                    <Matrix a="-0.45318603515625" d="-0.597518920898438" tx="72.85" ty="-14.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="82.1" y="5"/>
@@ -7373,16 +7373,16 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 7" color="#4F80FF" current="true" isSelected="true">
+        <DOMLayer name="图层 7" color="#4F80FF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMShape selected="true" isFloating="true">
                   <matrix>
-                    <Matrix a="0.899993896484375" d="0.899993896484375" tx="10.95" ty="-11.35"/>
+                    <Matrix a="0.719985961914063" d="0.719985961914063" tx="8.95" ty="-10.2"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="71.65" y="12.6"/>
+                    <Point x="71.65" y="12.65"/>
                   </transformationPoint>
                   <fills>
                     <FillStyle index="1">
@@ -8083,9 +8083,9 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="长枪/wa90/Graphic/shape 3716" name="激光模组" selected="true" centerPoint3DX="346.25" centerPoint3DY="-2.95" isVisible="false">
+                <DOMSymbolInstance libraryItemName="长枪/wa90/Graphic/shape 3716" name="激光模组" selected="true" centerPoint3DX="277.2" centerPoint3DY="-3.45" isVisible="false">
                   <matrix>
-                    <Matrix a="0.704376220703125" d="-0.312332153320313" tx="86.5" ty="-1.2"/>
+                    <Matrix a="0.563491821289063" d="-0.249862670898438" tx="69.4" ty="-2.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

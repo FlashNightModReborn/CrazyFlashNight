@@ -1288,7 +1288,7 @@
           <Include href="移动射击动画层/手枪2-双枪站立左腿.xml" loadImmediate="false" itemID="66576a70-00002de0" lastModified="1717004917"/>
           <Include href="移动射击动画层/手枪2上身.xml" loadImmediate="false" itemID="665dec2d-000011fa" lastModified="1725362218"/>
           <Include href="移动射击动画层/手枪上身.xml" loadImmediate="false" itemID="6657388b-0000068a" lastModified="1725362164"/>
-          <Include href="移动射击动画层/双枪上身.xml" loadImmediate="false" itemID="66577d1d-00002eb7" lastModified="1725364696"/>
+          <Include href="移动射击动画层/双枪上身.xml" loadImmediate="false" itemID="66577d1d-00002eb7" lastModified="1759804879"/>
           <Include href="移动射击动画层/长枪-手枪2行走右腿.xml" loadImmediate="false" itemID="66561df5-00002e71" lastModified="1716919797"/>
           <Include href="移动射击动画层/长枪-手枪2站立右腿.xml" loadImmediate="false" itemID="66561e06-00002e74" lastModified="1716919814"/>
           <Include href="移动射击动画层/长枪-手枪行走左腿.xml" loadImmediate="false" itemID="66561ded-00002e70" lastModified="1725361518"/>
@@ -1357,7 +1357,7 @@
           <Include href="组合拳幻影4‘.xml" loadImmediate="false" itemID="674dba4f-00000597" lastModified="1733147216"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="3" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;465&lt;/guideline&gt;&lt;guideline direction="v"&gt;338&lt;/guideline&gt;&lt;guideline direction="v"&gt;220&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;465&lt;/guideline&gt;&lt;guideline direction="v"&gt;338&lt;/guideline&gt;&lt;guideline direction="v"&gt;220&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Layer 1" color="#DEEE3E" current="true" isSelected="true">
                          <frames>
@@ -1366,7 +1366,7 @@
                                         <script><![CDATA[stop();]]></script>
                                    </Actionscript>
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="加载MC库-00" centerPoint3DX="1277" centerPoint3DY="546.05">
+                                        <DOMSymbolInstance libraryItemName="加载MC库-00" selected="true" centerPoint3DX="1277" centerPoint3DY="546.05">
                                              <matrix>
                                                   <Matrix tx="356.3" ty="-65.75"/>
                                              </matrix>
