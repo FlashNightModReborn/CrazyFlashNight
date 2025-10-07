@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1759826094" lastUniqueIdentifier="250">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1759829511" lastUniqueIdentifier="252">
   <timeline>
-    <DOMTimeline name="fs配置素材" currentFrame="33" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="35" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
         <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
@@ -34,7 +34,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="文件夹 3" color="#808080" layerType="folder"/>
-        <DOMLayer name="图层 4" color="#4F80FF" current="true" isSelected="true">
+        <DOMLayer name="图层 4" color="#4F80FF">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -609,15 +609,7 @@
             </DOMFrame>
             <DOMFrame index="27" duration="30" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="公社打桩矛/刀-公社爆燃钻矛" centerPoint3DX="-892" centerPoint3DY="-87.2">
-                  <matrix>
-                    <Matrix tx="-888.4" ty="-286.9"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="-3.6" y="199.75"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="公社打桩矛/图标-公社爆燃钻矛" selected="true" centerPoint3DX="-915.7" centerPoint3DY="268.85">
+                <DOMSymbolInstance libraryItemName="公社打桩矛/图标-公社爆燃钻矛" centerPoint3DX="-915.7" centerPoint3DY="268.85">
                   <matrix>
                     <Matrix tx="-915.7" ty="268.85"/>
                   </matrix>
@@ -629,7 +621,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="12" name="标题页" labelType="name" keyMode="9728">
               <elements>
@@ -956,6 +948,22 @@
                     <Point x="-1.95" y="4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="公社打桩矛/刀-公社爆燃钻矛" centerPoint3DX="-892" centerPoint3DY="-87.2">
+                  <matrix>
+                    <Matrix tx="-888.4" ty="-286.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.6" y="199.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="公社打桩矛/刀-公社爆燃钻矛" centerPoint3DX="-148.15" centerPoint3DY="605.3">
+                  <matrix>
+                    <Matrix a="0" b="-1" c="1" d="0" tx="-347.95" ty="601.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-3.6" y="199.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="44" duration="12" name="素材工作区" labelType="name" keyMode="9728">
@@ -976,7 +984,7 @@
                     <Point x="74.25" y="-42"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="调试用失败定位" selected="true" centerPoint3DX="-85.8" centerPoint3DY="-75.1">
+                <DOMSymbolInstance libraryItemName="调试用失败定位" centerPoint3DX="-85.8" centerPoint3DY="-75.1">
                   <matrix>
                     <Matrix tx="-107.8" ty="-97.1"/>
                   </matrix>

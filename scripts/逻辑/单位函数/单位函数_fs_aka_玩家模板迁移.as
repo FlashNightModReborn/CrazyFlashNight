@@ -1450,6 +1450,7 @@ _root.主角函数.刀口位置生成子弹 = function(子弹参数:Object) {
 
             for (key in 子弹参数) {
                 子弹属性[key] = 子弹参数[key];
+                // _root.发布消息("覆盖子弹参数 " + key + " 为 " + 子弹参数[key]);
             }
             var myPoint = {x: 当前刀口._x, y: 当前刀口._y};
             this.man.刀.刀.装扮.localToGlobal(myPoint);

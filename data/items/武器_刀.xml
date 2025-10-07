@@ -1226,7 +1226,6 @@
             <power>100%</power>
             <diffusion>5</diffusion>
             <bullet>炎魔刀光</bullet>
-            <muzzle/>
             <velocity>6</velocity>
             <bullethit/>
             <range>300</range>
@@ -1238,7 +1237,6 @@
             <power>100%</power>
             <diffusion>5</diffusion>
             <bullet>炎魔刀光追踪</bullet>
-            <muzzle/>
             <velocity>6</velocity>
             <bullethit/>
             <range>300</range>
@@ -2102,7 +2100,6 @@
             <power>50%</power>
             <diffusion>0</diffusion>
             <bullet>凶斩刀光特效</bullet>
-            <muzzle/>
             <velocity>0</velocity>
             <bullethit/>
             <range>200</range>
@@ -2235,7 +2232,6 @@
             <power>445%</power>
             <diffusion>0</diffusion>
             <bullet>诛神闪电</bullet>
-            <muzzle/>
             <velocity>0</velocity>
             <bullethit/>
             <range>300</range>
@@ -4266,24 +4262,50 @@
     <type>武器</type>
     <use>刀</use>
     <actiontype>长枪</actiontype>
-    <price>149760</price>
+    <price>495206</price>
     <skill>
       <skillname>突刺</skillname>
-      <description>手持该武器时可以使用突刺。</description>
-      <cd>5000</cd>
-      <mp>40</mp>
+      <description>手持该武器时可以使用突刺。使用突刺时会启动喷火装置。</description>
+      <cd>8000</cd>
+      <mp>100</mp>
     </skill>
-    <description>由一根硬木长矛改装而成：原矛头被拆去，换上用多根螺纹钢筋缠绕锻打而成的螺旋钻头。
-钻头用喉箍和铁丝勒进木杆，杆端被撑裂后又用胶带缠死——与其说是刺穿敌人的武器，不如说是用蛮力将其钻进躯体的工具。
-对公社的幸存者而言，美观毫无意义。只有能高效解决威胁的，才是好工具。</description>
+    <description>为了应对义体改造盗贼的袭击，公社不惜血本，耗尽全部战备物资储备，与铁枪会达成一次性技术合作。
+    在打桩矛的基础上加粗加固螺旋钻头，以废弃燃气管与高压阀拼焊喷火装置，外覆从报废车辆上拆下的隔热装甲以免回焰自焚。
+    再以棘轮链条锁止回扭，末端接一根点火拉杆，矛尾焊钉锤配重把那惊人的前置重心勉力拉回。
+    但公社里那些能源备受节制、启动全看运气的农用动力机甲，真的能发挥出这把武器的全部威力吗？</description>
     <data>
       <level>15</level>
-      <weight>28</weight>
+      <weight>45</weight>
       <dressup>刀-公社爆燃钻矛</dressup>
-      <power>260</power>
+      <power>670</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
-    </data>
-  </item>
+    </data>  
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>公社爆燃钻矛初始化</initRoutines>
+          <initParam>
+            <fireCount>5</fireCount>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>公社爆燃钻矛周期</cycleRoutines>
+        </cycle>        
+        <bullet>
+          <bullet_1>
+            <sound/>
+            <split>1</split>
+            <power>100%</power>
+            <diffusion>5</diffusion>
+            <bullet>火焰</bullet>
+            <velocity>6</velocity>
+            <range>300</range>
+            <impact>100</impact>
+          </bullet_1>
+        </bullet>
+      </attr_0>
+    </lifecycle>
+  </item>    
 </root>
