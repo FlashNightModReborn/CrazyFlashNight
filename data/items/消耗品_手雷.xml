@@ -3,6 +3,36 @@
 预留ID区间： 18607-18700 -->
 <root>
   <item>
+    <id>18607</id>
+    <name>翼炎钉针</name>
+    <displayname>翼炎钉针</displayname>
+    <icon>翼炎钉针</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>600</price>
+    <description>三根一组，穿透力强，被刺中后有如火焰附骨。作为产自黑铁会的暗器，与手雷等爆炸物不同的是，暗器的威力基本取决于发射者本身的力道，因此在不同人手上威力也各不相同。</description>
+    <data>
+      <level>30</level>
+      <weight>0.01</weight>
+      <dressup>手雷-翼炎钉针</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>1</diffusion>
+      <interval>10</interval>
+      <velocity>50</velocity>
+      <bullet>翼炎钉针中转</bullet>
+      <sound/>
+      <muzzle/>
+      <bullethit/>
+      <clipname>翼炎钉针</clipname>
+      <bulletsize>50</bulletsize>
+      <power>100</power>
+      <impact>1</impact>
+      <damagetype>魔法</damagetype>
+      <magictype>热</magictype>
+    </data>
+  </item>
+  <item>
     <id>18606</id>
     <name>战术核弹手雷</name>
     <displayname>战术核弹手雷</displayname>

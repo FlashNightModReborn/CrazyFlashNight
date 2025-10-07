@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/月牙天冲" itemID="669d34cf-00001772" linkageExportForAS="true" linkageIdentifier="月牙天冲" lastModified="1758618273">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/月牙天冲" itemID="669d34cf-00001772" linkageExportForAS="true" linkageIdentifier="月牙天冲" lastModified="1759826646">
   <timeline>
     <DOMTimeline name="月牙天冲">
       <layers>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#FBB32D">
+        <DOMLayer name="Script Layer" color="#FBB32D" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -21,7 +21,8 @@
    this._xscale = -100;
 }
 this._rotation = 0;
-]]></script>
+this.伤害类型 = "魔法";
+this.魔法伤害属性 = "冲";]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -34,36 +35,49 @@ this._rotation = 0;
             </DOMFrame>
             <DOMFrame index="2" duration="5" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[声音 = "";
-霰弹值 = 1;
-子弹散射度 = 0;
-发射效果 = "";
-子弹种类 = "天冲命中";
-子弹威力 = 0;
-子弹速度 = 0;
-击中地图效果 = "";
-Z轴攻击范围 = 100;
-击倒率 = 1;
-击中后子弹的效果 = "";
-shootX = this._x;
-shootY = this._y;
-if(_root.client != null && _root.me != null)
+                <script><![CDATA[子弹属性 = _root.子弹属性初始化(this,"天冲命中",发射者名);
+
+if(子弹敌我属性值 == undefined)
 {
-   _root.子弹区域shoot表演(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,null,击倒率,击中后子弹的效果);
+   子弹敌我属性值 = true;
 }
-else
+if(发射者名 == undefined)
 {
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,null,击倒率,击中后子弹的效果);
+   发射者名 = _root.控制目标;
 }
+if(力量投射 == undefined)
+{
+   力量投射 = _root.gameworld[this.发射者名].空手攻击力;
+}
+
+子弹属性.声音 = "";
+子弹属性.霰弹值 = 1;
+子弹属性.子弹散射度 = 0;
+子弹属性.发射效果 = "";
+子弹属性.子弹种类 = "天冲命中";
+子弹属性.子弹威力 = 100 + 力量投射 * 1;
+//_root.发布消息("读到空手攻击力: " + 力量投射);
+子弹属性.子弹速度 = 0;
+子弹属性.击中地图效果 = "";
+子弹属性.Z轴攻击范围 = 100;
+子弹属性.击倒率 = 1;
+子弹属性.击中后子弹的效果 = "";
+//子弹属性.子弹敌我属性 = 子弹敌我属性值;
+子弹属性.伤害类型 =  "魔法";
+子弹属性.魔法伤害属性 =  "冲";
+子弹属性.shootX = this._x;
+子弹属性.shootY = Z轴坐标;
+子弹属性.shootZ = Z轴坐标;
+子弹属性.发射者 = 发射者名;
+_root.子弹区域shoot传递(子弹属性);
 stop();
-this.removeMovieClip();
-]]></script>
+this.removeMovieClip();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#4E75CC" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#4E75CC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -87,11 +101,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#FCE2A8" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#FCE2A8">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/月牙刀光" selected="true" centerPoint3DX="-2.1" centerPoint3DY="-58">
+                <DOMSymbolInstance libraryItemName="无AS链接/月牙刀光" centerPoint3DX="-2.1" centerPoint3DY="-58">
                   <matrix>
                     <Matrix a="0.705093383789063" d="0.705093383789063" tx="-24.8" ty="-63"/>
                   </matrix>

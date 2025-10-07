@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/天冲命中" itemID="669d34d3-00001773" linkageExportForAS="true" linkageIdentifier="天冲命中" lastModified="1722875661">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/天冲命中" itemID="669d34d3-00001773" linkageExportForAS="true" linkageIdentifier="天冲命中" lastModified="1759821960">
   <timeline>
-    <DOMTimeline name="天冲命中" currentFrame="11">
+    <DOMTimeline name="天冲命中" currentFrame="5">
       <layers>
         <DOMLayer name="Script Layer" color="#B34FAF">
           <frames>
@@ -11,7 +11,9 @@
    this._xscale = -100;
 }
 this._rotation = 0;
-]]></script>
+
+this.伤害类型 = "魔法";
+this.魔法伤害属性 = "冲";]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -32,9 +34,9 @@ this.removeMovieClip();
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="-25.5" centerPoint3DY="-106.5">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="4.25" centerPoint3DY="-106.5">
                   <matrix>
-                    <Matrix a="1.51998901367188" d="2.00006103515625" tx="-38" ty="-119"/>
+                    <Matrix a="1.51998901367188" d="2.00006103515625" tx="-8.25" ty="-119"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -42,14 +44,14 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="1" duration="3" keyMode="9728">
+            <DOMFrame index="1" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="4" duration="6" keyMode="9728">
+            <DOMFrame index="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="-79.45" centerPoint3DY="-168.5">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="-54.45" centerPoint3DY="-164.4">
                   <matrix>
-                    <Matrix a="3.65997314453125" d="7.919921875" tx="-91.95" ty="-181"/>
+                    <Matrix a="5.77830505371094" d="7.919921875" tx="-66.95" ty="-176.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -57,7 +59,7 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" duration="2" keyMode="9728">
+            <DOMFrame index="6" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>

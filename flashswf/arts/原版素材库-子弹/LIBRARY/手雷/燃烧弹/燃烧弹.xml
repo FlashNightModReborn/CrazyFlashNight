@@ -1,18 +1,18 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/燃烧弹/燃烧弹" itemID="66d71398-00001953" linkageExportForAS="true" linkageIdentifier="燃烧弹" lastModified="1759492343" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手雷/燃烧弹/燃烧弹" itemID="66d71398-00001953" linkageExportForAS="true" linkageIdentifier="燃烧弹" lastModified="1759824689" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="燃烧弹" currentFrame="2">
+    <DOMTimeline name="燃烧弹">
       <layers>
-        <DOMLayer name="Labels Layer" color="#F31BF0">
+        <DOMLayer name="Labels Layer" color="#F31BF0" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" name="消失" labelType="name" keyMode="9728">
+            <DOMFrame index="2" duration="5" name="消失" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#DE72FA" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#DE72FA">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -57,6 +57,7 @@ if(发射者名 == undefined)
 子弹属性.shootZ = Z轴坐标;
 子弹属性.发射者 = 发射者名;
 _root.子弹区域shoot传递(子弹属性);
+
 stop();
 this.removeMovieClip();
 ]]></script>

@@ -13,14 +13,14 @@
           <DOMFolderItem name="其他" itemID="656cb4b0-0000042a"/>
           <DOMFolderItem name="其他武器" itemID="6551e8df-000015b7"/>
           <DOMFolderItem name="手雷" itemID="689365e6-00002ce7" isExpanded="true"/>
-          <DOMFolderItem name="手雷/BBPLAYER炸弹" itemID="66d5f180-00001b06" isExpanded="true"/>
-          <DOMFolderItem name="手雷/鞭炮" itemID="66a5e01d-000014f1" isExpanded="true"/>
-          <DOMFolderItem name="手雷/地瓜手雷" itemID="6896ec0b-00003d51" isExpanded="true"/>
+          <DOMFolderItem name="手雷/BBPLAYER炸弹" itemID="66d5f180-00001b06"/>
+          <DOMFolderItem name="手雷/鞭炮" itemID="66a5e01d-000014f1"/>
+          <DOMFolderItem name="手雷/地瓜手雷" itemID="6896ec0b-00003d51"/>
           <DOMFolderItem name="手雷/高爆手雷" itemID="6893651b-00002cce"/>
-          <DOMFolderItem name="手雷/冷爆弹手雷" itemID="6896eab3-0000339f" isExpanded="true"/>
-          <DOMFolderItem name="手雷/普通手雷" itemID="66a5e023-000014f2" isExpanded="true"/>
-          <DOMFolderItem name="手雷/燃烧弹" itemID="66d71372-0000192e" isExpanded="true"/>
-          <DOMFolderItem name="手雷/素材" itemID="6896ec18-00003d56" isExpanded="true"/>
+          <DOMFolderItem name="手雷/冷爆弹手雷" itemID="6896eab3-0000339f"/>
+          <DOMFolderItem name="手雷/普通手雷" itemID="66a5e023-000014f2"/>
+          <DOMFolderItem name="手雷/燃烧弹" itemID="66d71372-0000192e"/>
+          <DOMFolderItem name="手雷/素材" itemID="6896ec18-00003d56"/>
           <DOMFolderItem name="手雷/无AS链接" itemID="6896e872-0000330b"/>
           <DOMFolderItem name="手雷/战术核弹手雷" itemID="6896ea94-0000339a"/>
           <DOMFolderItem name="特效-动画与文字组" itemID="669d3a20-000017ae"/>
@@ -36,9 +36,9 @@
           <DOMFolderItem name="无AS链接/气功弹（和爆炸）素材" itemID="669d393b-0000178c"/>
           <DOMFolderItem name="子弹-持续组" itemID="669d3984-0000179c"/>
           <DOMFolderItem name="子弹-近战子弹专享座位" itemID="669d3aec-000017c1"/>
-          <DOMFolderItem name="子弹-炮弹与爆炸组" itemID="669d34e9-0000177b" isExpanded="true"/>
-          <DOMFolderItem name="子弹-普通与穿刺组" itemID="669d349c-00001757"/>
-          <DOMFolderItem name="子弹-气功组" itemID="669d3a53-000017b3"/>
+          <DOMFolderItem name="子弹-炮弹与爆炸组" itemID="669d34e9-0000177b"/>
+          <DOMFolderItem name="子弹-普通与穿刺组" itemID="669d349c-00001757" isExpanded="true"/>
+          <DOMFolderItem name="子弹-气功组" itemID="669d3a53-000017b3" isExpanded="true"/>
           <DOMFolderItem name="子弹-特殊组" itemID="669d3a9d-000017bc"/>
           <DOMFolderItem name="自瞄准星特效" itemID="67139c16-00000684"/>
      </folders>
@@ -227,7 +227,7 @@
           <Include href="手雷/BBPLAYER炸弹/BBPLAYER手雷.xml" itemID="6896eacb-000033ae" lastModified="1754726073"/>
           <Include href="手雷/BBPLAYER炸弹/BBPLAYER图形.xml" loadImmediate="false" itemID="66d5f305-000025e4" lastModified="1725297448"/>
           <Include href="手雷/BBPLAYER炸弹/BBPLAYER旋转动画.xml" loadImmediate="false" itemID="66d5f2c4-00001b31" lastModified="1725297495"/>
-          <Include href="手雷/BBPLAYER炸弹/BBPLAYER炸弹.xml" itemID="66d5f280-00001b26" lastModified="1754725648"/>
+          <Include href="手雷/BBPLAYER炸弹/BBPLAYER炸弹.xml" itemID="66d5f280-00001b26" lastModified="1759817679"/>
           <Include href="手雷/BBPLAYER炸弹/手雷-BBPLAYER炸弹.xml" itemID="66d5f1f5-00001b14" lastModified="1725297416"/>
           <Include href="手雷/BBPLAYER炸弹/图标-BBPLAYER手雷.xml" itemID="6896eaf3-000033c7" lastModified="1754726107"/>
           <Include href="手雷/鞭炮/Symbol 3951.xml" loadImmediate="false" itemID="668e7c1e-00000fbe" lastModified="1720533000"/>
@@ -249,15 +249,16 @@
           <Include href="手雷/普通手雷/Symbol 3796.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000f61" lastModified="1720533000"/>
           <Include href="手雷/普通手雷/普通手雷.xml" itemID="66a5d97c-00001455" lastModified="1754725686"/>
           <Include href="手雷/普通手雷/普通手雷旋转动画.xml" loadImmediate="false" itemID="66a5dfe6-000014e3" lastModified="1722148709"/>
-          <Include href="手雷/普通手雷/手雷-普通手雷.xml" itemID="66a5da75-0000145a" lastModified="1754668883"/>
+          <Include href="手雷/普通手雷/手雷-普通手雷.xml" itemID="66a5da75-0000145a" lastModified="1759817069"/>
           <Include href="手雷/普通手雷/手雷-自制燃烧弹.xml" itemID="66a5da78-0000145b" lastModified="1723814221"/>
           <Include href="手雷/普通手雷/图标-普通手雷.xml" itemID="66a5ea72-000017d8" lastModified="1722149490"/>
-          <Include href="手雷/燃烧弹/燃烧弹.xml" itemID="66d71398-00001953" lastModified="1759492343"/>
+          <Include href="手雷/燃烧弹/燃烧弹.xml" itemID="66d71398-00001953" lastModified="1759824689"/>
           <Include href="手雷/燃烧弹/燃烧弹手雷.xml" itemID="68963356-0000313b" lastModified="1754675603"/>
           <Include href="手雷/燃烧弹/燃烧弹图形.xml" loadImmediate="false" itemID="66d71380-00001938" lastModified="1725371525"/>
           <Include href="手雷/燃烧弹/燃烧弹旋转动画.xml" loadImmediate="false" itemID="66d7138b-00001943" lastModified="1725371465"/>
           <Include href="手雷/燃烧弹/手雷-燃烧弹.xml" itemID="66d713a2-00001961" lastModified="1759492336"/>
           <Include href="手雷/燃烧弹/图标-燃烧弹.xml" itemID="6896334a-0000312b" lastModified="1754675544"/>
+          <Include href="手雷/手雷-翼炎钉针.xml" itemID="68e4ad63-00001c90" lastModified="1759826494"/>
           <Include href="手雷/素材/Symbol 24.xml" itemIcon="1" loadImmediate="false" itemID="6896ec18-00003d66" lastModified="1701508661"/>
           <Include href="手雷/素材/Symbol 25.xml" loadImmediate="false" itemID="6896ec18-00003d65" lastModified="1701508661"/>
           <Include href="手雷/素材/地瓜手雷素材.xml" loadImmediate="false" itemID="6724f246-00008154" lastModified="1730474566"/>
@@ -627,25 +628,27 @@
           <Include href="子弹-炮弹与爆炸组/小型导弹.xml" itemID="669d34c7-00001770" lastModified="1730004177"/>
           <Include href="子弹-炮弹与爆炸组/重型火箭弹.xml" itemID="68d3b57d-00001bdf" lastModified="1758792063"/>
           <Include href="子弹-普通与穿刺组/巴雷特子弹.xml" itemID="669d3447-00001743" lastModified="1721578567"/>
-          <Include href="子弹-普通与穿刺组/穿刺子弹.xml" itemID="669d3454-00001746" lastModified="1721578580"/>
+          <Include href="子弹-普通与穿刺组/穿刺子弹.xml" itemID="669d3454-00001746" lastModified="1759824420"/>
           <Include href="子弹-普通与穿刺组/等离子穿刺子弹.xml" itemID="68a2938d-00001541" lastModified="1755485069"/>
           <Include href="子弹-普通与穿刺组/等离子大穿刺子弹.xml" itemID="68a29385-00001540" lastModified="1755485061"/>
           <Include href="子弹-普通与穿刺组/反器材普通子弹.xml" itemID="689818c8-0000266d" lastModified="1754798280"/>
           <Include href="子弹-普通与穿刺组/反器材子弹图像.xml" itemIcon="1" loadImmediate="false" itemID="6897c822-0000261c" lastModified="1754778046"/>
           <Include href="子弹-普通与穿刺组/加强普通子弹.xml" itemID="669d3477-0000174e" lastModified="1721578615"/>
-          <Include href="子弹-普通与穿刺组/能量子弹.xml" itemID="669d33e2-0000172c" lastModified="1721578466"/>
+          <Include href="子弹-普通与穿刺组/能量子弹.xml" itemID="669d33e2-0000172c" lastModified="1759818341"/>
           <Include href="子弹-普通与穿刺组/普通弩箭.xml" itemID="669d3432-0000173e" lastModified="1722661273"/>
           <Include href="子弹-普通与穿刺组/普通无壳子弹.xml" itemID="68ab9f43-00000456" lastModified="1756077891"/>
           <Include href="子弹-普通与穿刺组/山猫反器材普通子弹.xml" itemID="689818c0-0000266c" lastModified="1754798272"/>
           <Include href="子弹-普通与穿刺组/糖果子弹.xml" itemID="669d3450-00001745" lastModified="1721578576"/>
           <Include href="子弹-普通与穿刺组/铁枪磁轨弹.xml" itemID="68786a09-00004fe9" lastModified="1752807102"/>
           <Include href="子弹-普通与穿刺组/铁枪磁轨弹动画.xml" itemIcon="1" loadImmediate="false" itemID="6879b5cc-00001095" lastModified="1752807115"/>
-          <Include href="子弹-普通与穿刺组/无壳穿刺子弹.xml" itemID="687775d5-00002db3" lastModified="1752659449"/>
-          <Include href="子弹-气功组/气功弹.xml" itemID="668b9d18-000001e7" lastModified="1722856067"/>
-          <Include href="子弹-气功组/气功弹爆炸.xml" itemID="668b9d1d-000001e8" lastModified="1723547810"/>
-          <Include href="子弹-气功组/屎块爆炸.xml" itemID="66bb409c-00001c97" lastModified="1754669881"/>
-          <Include href="子弹-气功组/天冲命中.xml" itemID="669d34d3-00001773" lastModified="1722875661"/>
-          <Include href="子弹-气功组/月牙天冲.xml" itemID="669d34cf-00001772" lastModified="1758618273"/>
+          <Include href="子弹-普通与穿刺组/无壳穿刺子弹.xml" itemID="687775d5-00002db3" lastModified="1759823934"/>
+          <Include href="子弹-普通与穿刺组/翼炎钉针.xml" itemID="68e4a962-00001c68" lastModified="1759827029"/>
+          <Include href="子弹-普通与穿刺组/翼炎钉针中转.xml" itemID="68e4c9f9-00001ffc" lastModified="1759826568"/>
+          <Include href="子弹-气功组/气功弹.xml" itemID="668b9d18-000001e7" lastModified="1759817747"/>
+          <Include href="子弹-气功组/气功弹爆炸.xml" itemID="668b9d1d-000001e8" lastModified="1759817767"/>
+          <Include href="子弹-气功组/屎块爆炸.xml" itemID="66bb409c-00001c97" lastModified="1759818997"/>
+          <Include href="子弹-气功组/天冲命中.xml" itemID="669d34d3-00001773" lastModified="1759821960"/>
+          <Include href="子弹-气功组/月牙天冲.xml" itemID="669d34cf-00001772" lastModified="1759826646"/>
           <Include href="子弹-特殊组/火力支援-炸弹.xml" itemID="669d345c-00001748" lastModified="1729338582"/>
           <Include href="子弹-特殊组/火力支援开始.xml" itemID="669d3458-00001747" lastModified="1722660646"/>
           <Include href="自瞄准星特效/火力支援新瞄准镜.xml" loadImmediate="false" itemID="671399a0-00002828" lastModified="1729337760"/>
@@ -657,7 +660,7 @@
                          <frames>
                               <DOMFrame index="0" duration="54" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="原版素材库-子弹" selected="true" centerPoint3DX="66.7" centerPoint3DY="8.8">
+                                        <DOMSymbolInstance libraryItemName="原版素材库-子弹" centerPoint3DX="66.7" centerPoint3DY="8.8">
                                              <transformationPoint>
                                                   <Point/>
                                              </transformationPoint>
@@ -998,25 +1001,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
-          <PublishItem publishSize="4086189" publishTime="1759050351"/>
-          <PublishItem publishSize="4084681" publishTime="1758858040"/>
-          <PublishItem publishSize="4084681" publishTime="1758857971"/>
-          <PublishItem publishSize="4084652" publishTime="1758857787"/>
-          <PublishItem publishSize="4084649" publishTime="1758857658"/>
-          <PublishItem publishSize="4084649" publishTime="1758792078"/>
-          <PublishItem publishSize="4084667" publishTime="1758791908"/>
-          <PublishItem publishSize="4084668" publishTime="1758791855"/>
-          <PublishItem publishSize="4084656" publishTime="1758791501"/>
-          <PublishItem publishSize="4084657" publishTime="1758791401"/>
-          <PublishItem publishSize="4084661" publishTime="1758791186"/>
-          <PublishItem publishSize="4084652" publishTime="1758790910"/>
-          <PublishItem publishSize="4078437" publishTime="1758707720"/>
-          <PublishItem publishSize="4078523" publishTime="1758707695"/>
-          <PublishItem publishSize="4078491" publishTime="1758707256"/>
-          <PublishItem publishSize="4078491" publishTime="1758707235"/>
-          <PublishItem publishSize="4076513" publishTime="1758103800"/>
-          <PublishItem publishSize="4076528" publishTime="1758102273"/>
-          <PublishItem publishSize="4075039" publishTime="1756077905"/>
-          <PublishItem publishSize="4074766" publishTime="1755483513"/>
+          <PublishItem publishSize="4090271" publishTime="1759826962"/>
+          <PublishItem publishSize="4090270" publishTime="1759826924"/>
+          <PublishItem publishSize="4090297" publishTime="1759826766"/>
+          <PublishItem publishSize="4090366" publishTime="1759826692"/>
+          <PublishItem publishSize="4090292" publishTime="1759826581"/>
+          <PublishItem publishSize="4090312" publishTime="1759826529"/>
+          <PublishItem publishSize="4090309" publishTime="1759826467"/>
+          <PublishItem publishSize="4090298" publishTime="1759826417"/>
+          <PublishItem publishSize="4090301" publishTime="1759826393"/>
+          <PublishItem publishSize="4090350" publishTime="1759826210"/>
+          <PublishItem publishSize="4090283" publishTime="1759826010"/>
+          <PublishItem publishSize="4090294" publishTime="1759825945"/>
+          <PublishItem publishSize="4089246" publishTime="1759825864"/>
+          <PublishItem publishSize="4089172" publishTime="1759825702"/>
+          <PublishItem publishSize="4089251" publishTime="1759825492"/>
+          <PublishItem publishSize="4089298" publishTime="1759824999"/>
+          <PublishItem publishSize="4089217" publishTime="1759824954"/>
+          <PublishItem publishSize="4089222" publishTime="1759824830"/>
+          <PublishItem publishSize="4089200" publishTime="1759824708"/>
+          <PublishItem publishSize="4089195" publishTime="1759824472"/>
      </publishHistory>
 </DOMDocument>

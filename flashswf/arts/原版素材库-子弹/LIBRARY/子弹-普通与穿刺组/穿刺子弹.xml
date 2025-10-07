@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/穿刺子弹" itemID="669d3454-00001746" linkageExportForAS="true" linkageIdentifier="穿刺子弹" lastModified="1721578580">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/穿刺子弹" itemID="669d3454-00001746" linkageExportForAS="true" linkageIdentifier="穿刺子弹" lastModified="1759824420">
   <timeline>
     <DOMTimeline name="穿刺子弹">
       <layers>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#8FA3C6">
+        <DOMLayer name="Script Layer" color="#8FA3C6" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -121,11 +121,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#C2F890" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#C2F890">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 722" selected="true" centerPoint3DX="52.25" centerPoint3DY="0.25">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 722" centerPoint3DX="52.25" centerPoint3DY="0.25">
                   <matrix>
                     <Matrix a="1.11727905273438" d="-1.11727905273438" tx="13.15" ty="-0.7"/>
                   </matrix>
