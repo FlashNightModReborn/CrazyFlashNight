@@ -144,6 +144,7 @@
           <Include href="RPG28发射器.xml" itemIcon="1" loadImmediate="false" itemID="68d50204-00000d2a" lastModified="1758790191"/>
           <Include href="sprite/Symbol 35.xml" itemID="6577b699-00000971" lastModified="1718635260"/>
           <Include href="sprite/Symbol 36.xml" loadImmediate="false" itemID="6577b699-00000972" lastModified="1719476235"/>
+          <Include href="爆燃钻矛金属件.xml" itemIcon="1" loadImmediate="false" itemID="68e59bf7-00006feb" lastModified="1759878135"/>
           <Include href="补间 11.xml" itemIcon="1" loadImmediate="false" itemID="688b0839-00000754" lastModified="1753942073"/>
           <Include href="补间 12.xml" itemIcon="1" loadImmediate="false" itemID="688b0839-00000756" lastModified="1753942073"/>
           <Include href="补间 13.xml" itemIcon="1" loadImmediate="false" itemID="688b39ff-000007ea" lastModified="1753954815"/>
@@ -172,8 +173,8 @@
           <Include href="电感切割刃/中间刀.xml" loadImmediate="false" itemID="655c4fdd-0000063b" lastModified="1700548573"/>
           <Include href="电容器舱.xml" loadImmediate="false" itemID="68a0d830-00001f8c" lastModified="1755396083"/>
           <Include href="反坦克导弹图像.xml" itemIcon="1" loadImmediate="false" itemID="68d8f8ee-00000eb8" lastModified="1759049966"/>
-          <Include href="公社爆燃钻矛图像.xml" itemIcon="1" loadImmediate="false" itemID="68e4cdc4-000044d0" lastModified="1759825349"/>
-          <Include href="公社打桩矛/刀-公社爆燃钻矛.xml" itemID="68e4cbcb-000044c3" lastModified="1759826552"/>
+          <Include href="公社爆燃钻矛图像.xml" itemIcon="1" loadImmediate="false" itemID="68e4cdc4-000044d0" lastModified="1759878071"/>
+          <Include href="公社打桩矛/刀-公社爆燃钻矛.xml" itemID="68e4cbcb-000044c3" lastModified="1759878774"/>
           <Include href="公社打桩矛/刀-公社打桩矛.xml" itemID="68e111a0-00003904" lastModified="1759803830"/>
           <Include href="公社打桩矛/公社打桩矛图像.xml" itemIcon="1" loadImmediate="false" itemID="68e11197-00003903" lastModified="1759824843"/>
           <Include href="公社打桩矛/图标-公社爆燃钻矛.xml" itemID="68e4d0a9-000044e8" lastModified="1759826566"/>
@@ -1484,6 +1485,10 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2530031" publishTime="1759878713"/>
+          <PublishItem publishSize="2530031" publishTime="1759878608"/>
+          <PublishItem publishSize="2530041" publishTime="1759878453"/>
+          <PublishItem publishSize="2507726" publishTime="1759838298"/>
           <PublishItem publishSize="2507691" publishTime="1759826673"/>
           <PublishItem publishSize="2507691" publishTime="1759826575"/>
           <PublishItem publishSize="2507682" publishTime="1759826482"/>
@@ -1500,9 +1505,5 @@
           <PublishItem publishSize="2430292" publishTime="1758791678"/>
           <PublishItem publishSize="2430292" publishTime="1758791621"/>
           <PublishItem publishSize="2416671" publishTime="1758773457"/>
-          <PublishItem publishSize="2416671" publishTime="1758773392"/>
-          <PublishItem publishSize="2416662" publishTime="1758773317"/>
-          <PublishItem publishSize="2416669" publishTime="1758773198"/>
-          <PublishItem publishSize="2416670" publishTime="1758771685"/>
      </publishHistory>
 </DOMDocument>

@@ -4265,8 +4265,12 @@
     <price>495206</price>
     <skill>
       <skillname>突刺</skillname>
-      <description>手持该武器时可以使用突刺。使用突刺时会启动喷火装置。</description>
-      <cd>8000</cd>
+      <description>手持该武器可发动突刺。发动时若消耗一个火焰喷射器燃料罐，便会猛拉点火杆，转变为爆燃突刺。
+高压燃气在钻头处瞬间爆燃，在向前方连续喷射3道炽热火焰，并让矛身进入灼热状态。
+此状态下，所有兵器攻击都附加额外的热能伤害，持续时间会随武器强化等级提升。
+矛身上的隔热装甲会发出红光，并随热量消散逐渐冷却暗淡。
+连击进入第五段时，会派生一次额外的火焰喷射，此次喷射不消耗燃料。</description>
+      <cd>10000</cd>
       <mp>100</mp>
     </skill>
     <description>为了应对义体改造盗贼的袭击，公社不惜血本，耗尽全部战备物资储备，与铁枪会达成一次性技术合作。
@@ -4274,7 +4278,7 @@
     再以棘轮链条锁止回扭，末端接一根点火拉杆，矛尾焊钉锤配重把那惊人的前置重心勉力拉回。
     但公社里那些能源备受节制、启动全看运气的农用动力机甲，真的能发挥出这把武器的全部威力吗？</description>
     <data>
-      <level>15</level>
+      <level>31</level>
       <weight>45</weight>
       <dressup>刀-公社爆燃钻矛</dressup>
       <power>670</power>
@@ -4287,7 +4291,7 @@
         <init>
           <initRoutines>公社爆燃钻矛初始化</initRoutines>
           <initParam>
-            <fireCount>5</fireCount>
+            <fireCount>3</fireCount>
           </initParam>
         </init>
         <cycle>
