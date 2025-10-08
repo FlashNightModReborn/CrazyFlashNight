@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="公社打桩矛/刀-公社爆燃钻矛" itemID="68e4cbcb-000044c3" linkageExportForAS="true" linkageIdentifier="刀-公社爆燃钻矛" lastModified="1759826552" lastUniqueIdentifier="15">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="公社打桩矛/刀-公社爆燃钻矛" itemID="68e4cbcb-000044c3" linkageExportForAS="true" linkageIdentifier="刀-公社爆燃钻矛" lastModified="1759878774" lastUniqueIdentifier="15">
   <timeline>
     <DOMTimeline name="刀-公社爆燃钻矛">
       <layers>
-        <DOMLayer name="刀口位置" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="刀口位置" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -42,10 +42,22 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <elements/>
+              <elements>
+                <DOMSymbolInstance libraryItemName="爆燃钻矛金属件" name="金属件" blendMode="multiply" centerPoint3DX="-14.2" centerPoint3DY="75.15" isVisible="false">
+                  <matrix>
+                    <Matrix a="-1" tx="-14.2" ty="75.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redOffset="255"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
