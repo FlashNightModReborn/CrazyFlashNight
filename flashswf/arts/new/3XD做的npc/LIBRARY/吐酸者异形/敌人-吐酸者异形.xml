@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吐酸者异形/敌人-吐酸者异形" itemID="68ac408a-000000af" linkageExportForAS="true" linkageIdentifier="敌人-吐酸者异形" lastModified="1756585791" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="敌人-吐酸者异形">
+    <DOMTimeline name="敌人-吐酸者异形" currentFrame="42">
       <layers>
         <DOMLayer name="Labels Layer" color="#92E16E">
           <frames>
@@ -84,7 +84,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#C8B468" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#C8B468">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -439,7 +439,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#78C9CA">
+        <DOMLayer name="Layer 11" color="#78C9CA" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -497,7 +497,7 @@
             </DOMFrame>
             <DOMFrame index="35" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="吐酸者异形/Symbol 188" name="man" selected="true" centerPoint3DX="283.1" centerPoint3DY="-33.75">
+                <DOMSymbolInstance libraryItemName="吐酸者异形/Symbol 188" name="man" centerPoint3DX="283.1" centerPoint3DY="-33.75">
                   <matrix>
                     <Matrix a="-1.09814453125" d="1.09814453125" tx="103.45" ty="-187.1"/>
                   </matrix>

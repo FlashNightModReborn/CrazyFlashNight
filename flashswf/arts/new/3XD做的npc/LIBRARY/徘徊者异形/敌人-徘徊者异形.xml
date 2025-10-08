@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="徘徊者异形/敌人-徘徊者异形" itemID="68ac4294-0000023f" linkageExportForAS="true" linkageIdentifier="敌人-徘徊者异形" lastModified="1756585796" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="徘徊者异形/敌人-徘徊者异形" itemID="68ac4294-0000023f" linkageExportForAS="true" linkageIdentifier="敌人-徘徊者异形" lastModified="1759893357" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="敌人-徘徊者异形">
+    <DOMTimeline name="敌人-徘徊者异形" currentFrame="45">
       <layers>
         <DOMLayer name="Labels Layer" color="#6AF18F" locked="true">
           <frames>
@@ -81,7 +81,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#BF21DB" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#BF21DB" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -419,7 +419,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#FE26F5">
+        <DOMLayer name="Layer 12" color="#FE26F5" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -508,7 +508,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="徘徊者异形/单独动作/Symbol 390" name="man" centerPoint3DX="157.85" centerPoint3DY="13.85">
+                <DOMSymbolInstance libraryItemName="徘徊者异形/单独动作/Symbol 390" name="man" selected="true" centerPoint3DX="157.85" centerPoint3DY="13.85">
                   <matrix>
                     <Matrix tx="6.45" ty="-63.5"/>
                   </matrix>

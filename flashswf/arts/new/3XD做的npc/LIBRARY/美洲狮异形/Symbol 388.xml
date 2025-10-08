@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="美洲狮异形/Symbol 388" itemID="65e1d4ea-0000039e" lastModified="1759761006" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="美洲狮异形/Symbol 388" itemID="65e1d4ea-0000039e" lastModified="1759893244" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="Symbol 388" currentFrame="87">
+    <DOMTimeline name="Symbol 388" currentFrame="115">
       <layers>
         <DOMLayer name="Labels Layer" color="#6AD8A7">
           <frames>
@@ -93,7 +93,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="87" keyMode="9728">
               <elements/>
@@ -103,7 +103,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#F528D4">
+        <DOMLayer name="Layer 3" color="#F528D4" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -350,7 +350,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="88" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/近战子弹定位用" centerPoint3DX="-139.9" centerPoint3DY="37.1">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/近战子弹定位用" selected="true" centerPoint3DX="-139.9" centerPoint3DY="37.1">
                   <matrix>
                     <Matrix a="1.37371826171875" d="4.59866333007813" tx="-104.65" ty="61.45"/>
                   </matrix>
@@ -806,7 +806,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#4186F8">
+        <DOMLayer name="Layer 4" color="#4186F8" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -820,7 +820,257 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="2" duration="196" keyMode="9728">
+            <DOMFrame index="2" duration="85" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="87" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0809783935546875" b="0.00079345703125" d="0.006591796875" tx="80.95" ty="64.9"/>
+                        </matrix>
+                        <GradientEntry alpha="0" ratio="0.47843137254902"/>
+                        <GradientEntry color="#FF0000" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!2023 1306[2023 1261 1635 1226!1635 1226[1249 1190 704 1185!704 1185[157 1180 -230 1208!-230 1208[-616 1235 -616 1280!-616 1280[-616 1324 -230 1360!-230 1360[157 1395 704 1400!704 1400[1249 1405 1635 1378!1635 1378[2023 1350 2023 1306"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" duration="5" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="-10.578125, #6.3C" startPointB="-18, #6.6E" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="-10.578125, #6.0F" anchorPointA="-7.125, #5.F4" controlPointB="-18, #6.54" anchorPointB="-14.546875, #6.44"/>
+                    <MorphCurves controlPointA="-3.65625, #5.D8" anchorPointA="#1.3E, #5.DD" controlPointB="-11.078125, #6.34" anchorPointB="-6.1796875, #6.36"/>
+                    <MorphCurves controlPointA="#6.1E, #5.E2" anchorPointA="#9.94, #6.06" controlPointB="-1.3046875, #6.39" anchorPointB="#2.28, #6.4E"/>
+                    <MorphCurves controlPointA="#D.0D, #6.29" anchorPointA="#D.0D, #6.56" controlPointB="#5.A1, #6.63" anchorPointB="#5.A1, #6.7D"/>
+                    <MorphCurves controlPointA="#D.0D, #6.82" anchorPointA="#9.94, #6.9E" controlPointB="#5.A1, #6.97" anchorPointB="#2.28, #6.A7"/>
+                    <MorphCurves controlPointA="#6.1E, #6.B9" anchorPointA="#1.3E, #6.B4" controlPointB="-1.3046875, #6.B7" anchorPointB="-6.1796875, #6.B4"/>
+                    <MorphCurves controlPointA="-3.65625, #6.AF" anchorPointA="-7.125, #6.8C" controlPointB="-11.078125, #6.B1" anchorPointB="-14.546875, #6.9D"/>
+                    <MorphCurves controlPointA="-10.578125, #6.68" anchorPointA="-10.578125, #6.3C" controlPointB="-18, #6.88" anchorPointB="-18, #6.6E"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.18560791015625" b="0.00079345703125" d="0.006591796875" tx="120.7" ty="80.7"/>
+                        </matrix>
+                        <GradientEntry alpha="0" ratio="0.47843137254902"/>
+                        <GradientEntry color="#FF0000" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!318 1501[-936 1496 -1824 1524!-1824 1524[-2708 1551 -2708 1596!-2708 1596[-2708 1640 -1824 1676!-1824 1676[-936 1711 318 1716!318 1716[1566 1721 2452 1694!2452 1694[3341 1666 3341 1622!3341 1622[3341 1577 2452 1542!2452 1542[1566 1506
+ 318 1501"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="93" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.256179809570313" b="0.0006256103515625" d="0.0053253173828125" tx="-24.75" ty="82.75"/>
+                        </matrix>
+                        <GradientEntry alpha="0" ratio="0.47843137254902"/>
+                        <GradientEntry color="#FF0000" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!1441 1661S1[1441 1635 552 1614!552 1614[-334 1593 -1582 1590!-1582 1590[-2836 1588 -3724 1604!-3724 1604[-4608 1620 -4608 1646!-4608 1646[-4608 1672 -3724 1693!-3724 1693[-2836 1713 -1582 1716!-1582 1716[-334 1719 552 1703!552 1703[1441
+ 1687 1441 1661"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="94" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="100" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0809783935546875" b="0.00079345703125" d="0.006591796875" tx="75.45" ty="71.4"/>
+                        </matrix>
+                        <GradientEntry alpha="0" ratio="0.47843137254902"/>
+                        <GradientEntry color="#FF0000" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!1525 1508[1913 1480 1913 1436!1913 1436[1913 1391 1525 1356!1525 1356[1139 1320 594 1315!594 1315[47 1310 -340 1338!-340 1338[-726 1365 -726 1410!-726 1410[-726 1454 -340 1490!-340 1490[47 1525 594 1530!594 1530[1139 1535 1525 1508"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="101" duration="5" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#FFFFF3.FA, #6.28" startPointB="-18, #6.6E" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#FFFFF3.FA, #5.FB" anchorPointA="-8.5703125, #5.E" controlPointB="-18, #6.54" anchorPointB="-14.546875, #6.44"/>
+                    <MorphCurves controlPointA="-5.1015625, #5.C4" anchorPointA="-0.203125, #5.C9" controlPointB="-11.078125, #6.34" anchorPointB="-6.1796875, #6.36"/>
+                    <MorphCurves controlPointA="#4.AC, #5.CE" anchorPointA="#8.22, #5.F2" controlPointB="-1.3046875, #6.39" anchorPointB="#2.28, #6.4E"/>
+                    <MorphCurves controlPointA="#B.9B, #6.15" anchorPointA="#B.9B, #6.42" controlPointB="#5.A1, #6.63" anchorPointB="#5.A1, #6.7D"/>
+                    <MorphCurves controlPointA="#B.9B, #6.6E" anchorPointA="#8.22, #6.8A" controlPointB="#5.A1, #6.97" anchorPointB="#2.28, #6.A7"/>
+                    <MorphCurves controlPointA="#4.AC, #6.A5" anchorPointA="-0.203125, #6.A" controlPointB="-1.3046875, #6.B7" anchorPointB="-6.1796875, #6.B4"/>
+                    <MorphCurves controlPointA="-5.1015625, #6.9B" anchorPointA="-8.5703125, #6.78" controlPointB="-11.078125, #6.B1" anchorPointB="-14.546875, #6.9D"/>
+                    <MorphCurves controlPointA="#FFFFF3.FA, #6.54" anchorPointA="#FFFFF3.FA, #6.28" controlPointB="-18, #6.88" anchorPointB="-18, #6.6E"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.18560791015625" b="0.00079345703125" d="0.006591796875" tx="102.2" ty="79.7"/>
+                        </matrix>
+                        <GradientEntry alpha="0" ratio="0.47843137254902"/>
+                        <GradientEntry color="#FF0000" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!2082 1522[1196 1486 -52 1481!-52 1481[-1306 1476 -2194 1504!-2194 1504[-3078 1531 -3078 1576!-3078 1576[-3078 1620 -2194 1656!-2194 1656[-1306 1691 -52 1696!-52 1696[1196 1701 2082 1674!2082 1674[2971 1646 2971 1602!2971 1602[2971 1557
+ 2082 1522"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="106" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.256179809570313" b="0.0006256103515625" d="0.0053253173828125" tx="-24.75" ty="82.75"/>
+                        </matrix>
+                        <GradientEntry alpha="0" ratio="0.47843137254902"/>
+                        <GradientEntry color="#FF0000" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!1441 1661S1[1441 1635 552 1614!552 1614[-334 1593 -1582 1590!-1582 1590[-2836 1588 -3724 1604!-3724 1604[-4608 1620 -4608 1646!-4608 1646[-4608 1672 -3724 1693!-3724 1693[-2836 1713 -1582 1716!-1582 1716[-334 1719 552 1703!552 1703[1441
+ 1687 1441 1661"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="108" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="110" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0809783935546875" b="0.00079345703125" d="0.006591796875" tx="75.45" ty="71.4"/>
+                        </matrix>
+                        <GradientEntry alpha="0" ratio="0.47843137254902"/>
+                        <GradientEntry color="#FF0000" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!1525 1508[1913 1480 1913 1436!1913 1436[1913 1391 1525 1356!1525 1356[1139 1320 594 1315!594 1315[47 1310 -340 1338!-340 1338[-726 1365 -726 1410!-726 1410[-726 1454 -340 1490!-340 1490[47 1525 594 1530!594 1530[1139 1535 1525 1508"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="111" duration="5" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#FFFFF3.FA, #6.28" startPointB="-18, #6.6E" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#FFFFF3.FA, #5.FB" anchorPointA="-8.5703125, #5.E" controlPointB="-18, #6.54" anchorPointB="-14.546875, #6.44"/>
+                    <MorphCurves controlPointA="-5.1015625, #5.C4" anchorPointA="-0.203125, #5.C9" controlPointB="-11.078125, #6.34" anchorPointB="-6.1796875, #6.36"/>
+                    <MorphCurves controlPointA="#4.AC, #5.CE" anchorPointA="#8.22, #5.F2" controlPointB="-1.3046875, #6.39" anchorPointB="#2.28, #6.4E"/>
+                    <MorphCurves controlPointA="#B.9B, #6.15" anchorPointA="#B.9B, #6.42" controlPointB="#5.A1, #6.63" anchorPointB="#5.A1, #6.7D"/>
+                    <MorphCurves controlPointA="#B.9B, #6.6E" anchorPointA="#8.22, #6.8A" controlPointB="#5.A1, #6.97" anchorPointB="#2.28, #6.A7"/>
+                    <MorphCurves controlPointA="#4.AC, #6.A5" anchorPointA="-0.203125, #6.A" controlPointB="-1.3046875, #6.B7" anchorPointB="-6.1796875, #6.B4"/>
+                    <MorphCurves controlPointA="-5.1015625, #6.9B" anchorPointA="-8.5703125, #6.78" controlPointB="-11.078125, #6.B1" anchorPointB="-14.546875, #6.9D"/>
+                    <MorphCurves controlPointA="#FFFFF3.FA, #6.54" anchorPointA="#FFFFF3.FA, #6.28" controlPointB="-18, #6.88" anchorPointB="-18, #6.6E"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.18560791015625" b="0.00079345703125" d="0.006591796875" tx="102.2" ty="79.7"/>
+                        </matrix>
+                        <GradientEntry alpha="0" ratio="0.47843137254902"/>
+                        <GradientEntry color="#FF0000" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!2082 1522[1196 1486 -52 1481!-52 1481[-1306 1476 -2194 1504!-2194 1504[-3078 1531 -3078 1576!-3078 1576[-3078 1620 -2194 1656!-2194 1656[-1306 1691 -52 1696!-52 1696[1196 1701 2082 1674!2082 1674[2971 1646 2971 1602!2971 1602[2971 1557
+ 2082 1522"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="116" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.256179809570313" b="0.0006256103515625" d="0.0053253173828125" tx="-24.75" ty="82.75"/>
+                        </matrix>
+                        <GradientEntry alpha="0" ratio="0.47843137254902"/>
+                        <GradientEntry color="#FF0000" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!1441 1661S1[1441 1635 552 1614!552 1614[-334 1593 -1582 1590!-1582 1590[-2836 1588 -3724 1604!-3724 1604[-4608 1620 -4608 1646!-4608 1646[-4608 1672 -3724 1693!-3724 1693[-2836 1713 -1582 1716!-1582 1716[-334 1719 552 1703!552 1703[1441
+ 1687 1441 1661"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" duration="81" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -5887,7 +6137,7 @@ gotoAndPlay(_parent.近战招式);
             <DOMFrame index="34" duration="45" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 381" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
@@ -5899,7 +6149,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 373" symbolType="graphic" loop="loop">
                   <matrix>
@@ -5911,7 +6161,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 373" symbolType="graphic" loop="loop">
                   <matrix>
@@ -5923,7 +6173,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 381" symbolType="graphic" loop="loop">
                   <matrix>
@@ -5996,7 +6246,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -6052,7 +6302,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -6119,7 +6369,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 381" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 381" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.48968505859375" b="0.0357666015625" c="-0.0357666015625" d="0.48968505859375" tx="47.8" ty="182.9"/>
                   </matrix>
@@ -6406,7 +6656,7 @@ gotoAndPlay(_parent.近战招式);
             <DOMFrame index="34" duration="45" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 380" symbolType="graphic" loop="loop">
                   <matrix>
@@ -6418,7 +6668,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 382" symbolType="graphic" loop="loop">
                   <matrix>
@@ -6430,7 +6680,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 382" symbolType="graphic" loop="loop">
                   <matrix>
@@ -6442,7 +6692,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 380" symbolType="graphic" loop="loop">
                   <matrix>
@@ -6515,7 +6765,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -6571,7 +6821,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -6638,7 +6888,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 380" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 380" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.477767944335938" b="0.114761352539063" c="-0.114761352539063" d="0.477767944335938" tx="69.65" ty="156.85"/>
                   </matrix>
@@ -6937,7 +7187,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 373" symbolType="graphic" loop="loop">
                   <matrix>
@@ -6949,7 +7199,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 372" symbolType="graphic" loop="loop">
                   <matrix>
@@ -6961,7 +7211,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 372" symbolType="graphic" loop="loop">
                   <matrix>
@@ -6973,7 +7223,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 375" symbolType="graphic" loop="loop">
                   <matrix>
@@ -7046,7 +7296,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -7102,7 +7352,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -7169,7 +7419,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 375" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 375" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.292572021484375" b="-0.3931884765625" c="0.3931884765625" d="0.292572021484375" tx="61.15" ty="129.8"/>
                   </matrix>
@@ -7369,7 +7619,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 382" symbolType="graphic" loop="loop">
                   <matrix>
@@ -7381,7 +7631,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 371" symbolType="graphic" loop="loop">
                   <matrix>
@@ -7393,7 +7643,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 371" symbolType="graphic" loop="loop">
                   <matrix>
@@ -7405,7 +7655,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 373" symbolType="graphic" loop="loop">
                   <matrix>
@@ -7478,7 +7728,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -7534,7 +7784,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -7601,7 +7851,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 373" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 373" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.45751953125" b="-0.177413940429688" c="0.177413940429688" d="0.45751953125" tx="93.1" ty="127"/>
                   </matrix>
@@ -7741,7 +7991,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 372" symbolType="graphic" loop="loop">
                   <matrix>
@@ -7753,7 +8003,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 381" symbolType="graphic" loop="loop">
                   <matrix>
@@ -7765,7 +8015,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 381" symbolType="graphic" loop="loop">
                   <matrix>
@@ -7777,7 +8027,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 382" symbolType="graphic" loop="loop">
                   <matrix>
@@ -7850,7 +8100,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -7906,7 +8156,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -7973,7 +8223,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 382" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 382" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.491592407226563" b="-0.0561981201171875" c="0.0561981201171875" d="0.491592407226563" tx="115" ty="172.65"/>
                   </matrix>
@@ -8113,7 +8363,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 371" symbolType="graphic" loop="loop">
                   <matrix>
@@ -8125,7 +8375,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 380" symbolType="graphic" loop="loop">
                   <matrix>
@@ -8137,7 +8387,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 380" symbolType="graphic" loop="loop">
                   <matrix>
@@ -8149,7 +8399,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 372" symbolType="graphic" loop="loop">
                   <matrix>
@@ -8222,7 +8472,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -8278,7 +8528,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -8345,7 +8595,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 372" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 372" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.466629028320313" b="-0.163543701171875" c="0.163543701171875" d="0.466629028320313" tx="117.5" ty="153.5"/>
                   </matrix>
@@ -8605,7 +8855,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 382" symbolType="graphic" loop="loop">
                   <matrix>
@@ -8617,7 +8867,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 379" symbolType="graphic" loop="loop">
                   <matrix>
@@ -8629,7 +8879,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 379" symbolType="graphic" loop="loop">
                   <matrix>
@@ -8641,7 +8891,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 371" symbolType="graphic" loop="loop">
                   <matrix>
@@ -8714,7 +8964,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -8770,7 +9020,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -8837,7 +9087,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 371" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 371" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.461761474609375" b="-0.172805786132813" c="0.172805786132813" d="0.461761474609375" tx="101.2" ty="148.65"/>
                   </matrix>
@@ -9037,7 +9287,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 379" symbolType="graphic" loop="loop">
                   <matrix>
@@ -9049,7 +9299,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 375" symbolType="graphic" loop="loop">
                   <matrix>
@@ -9061,7 +9311,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 375" symbolType="graphic" loop="loop">
                   <matrix>
@@ -9073,7 +9323,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 379" symbolType="graphic" loop="loop">
                   <matrix>
@@ -9146,7 +9396,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -9202,7 +9452,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -9269,7 +9519,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 379" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 379" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.454315185546875" b="-0.20111083984375" c="0.20111083984375" d="0.454315185546875" tx="28.05" ty="129.9"/>
                   </matrix>
@@ -9409,7 +9659,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 375" symbolType="graphic" loop="loop">
                   <matrix>
@@ -9421,7 +9671,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 378" symbolType="graphic" loop="loop">
                   <matrix>
@@ -9433,7 +9683,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 378" symbolType="graphic" loop="loop">
                   <matrix>
@@ -9445,7 +9695,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 378" symbolType="graphic" loop="loop">
                   <matrix>
@@ -9518,7 +9768,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -9574,7 +9824,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -9641,7 +9891,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 378" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 378" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.476593017578125" b="-0.139633178710938" c="0.139633178710938" d="0.476593017578125" tx="24.55" ty="144.8"/>
                   </matrix>
@@ -9781,7 +10031,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 378" symbolType="graphic" loop="loop">
                   <matrix>
@@ -9793,7 +10043,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 377" symbolType="graphic" loop="loop">
                   <matrix>
@@ -9805,7 +10055,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 381" symbolType="graphic" loop="loop">
                   <matrix>
@@ -9817,7 +10067,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 381" symbolType="graphic" loop="loop">
                   <matrix>
@@ -9890,7 +10140,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -9946,7 +10196,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -10013,7 +10263,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 381" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 381" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.479248046875" b="0.112823486328125" c="-0.112823486328125" d="0.479248046875" tx="58.6" ty="174.9"/>
                   </matrix>
@@ -10153,7 +10403,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 377" symbolType="graphic" loop="loop">
                   <matrix>
@@ -10165,7 +10415,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 376" symbolType="graphic" loop="loop">
                   <matrix>
@@ -10177,7 +10427,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 377" symbolType="graphic" loop="loop">
                   <matrix>
@@ -10189,7 +10439,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 377" symbolType="graphic" loop="loop">
                   <matrix>
@@ -10262,7 +10512,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -10318,7 +10568,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -10385,7 +10635,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 377" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 377" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.454315185546875" b="-0.20111083984375" c="0.20111083984375" d="0.454315185546875" tx="35.85" ty="135.25"/>
                   </matrix>
@@ -10525,7 +10775,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 376" symbolType="graphic" loop="loop">
                   <matrix>
@@ -10537,7 +10787,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 374" symbolType="graphic" loop="loop">
                   <matrix>
@@ -10549,7 +10799,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 376" symbolType="graphic" loop="loop">
                   <matrix>
@@ -10561,7 +10811,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 376" symbolType="graphic" loop="loop">
                   <matrix>
@@ -10634,7 +10884,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -10690,7 +10940,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -10757,7 +11007,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 376" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 376" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.459228515625" b="-0.186508178710938" c="0.186508178710938" d="0.459228515625" tx="56.1" ty="131.5"/>
                   </matrix>
@@ -10897,7 +11147,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 374" symbolType="graphic" loop="loop">
                   <matrix>
@@ -10909,7 +11159,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 373" symbolType="graphic" loop="loop">
                   <matrix>
@@ -10921,7 +11171,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 374" symbolType="graphic" loop="loop">
                   <matrix>
@@ -10933,7 +11183,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 374" symbolType="graphic" loop="loop">
                   <matrix>
@@ -11006,7 +11256,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -11062,7 +11312,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -11129,7 +11379,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 374" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 374" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.4844970703125" b="-0.0989990234375" c="0.0989990234375" d="0.4844970703125" tx="77.65" ty="119.3"/>
                   </matrix>
@@ -11269,7 +11519,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 373" symbolType="graphic" loop="loop">
                   <matrix>
@@ -11281,7 +11531,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 382" symbolType="graphic" loop="loop">
                   <matrix>
@@ -11293,7 +11543,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 373" symbolType="graphic" loop="loop">
                   <matrix>
@@ -11305,7 +11555,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 373" symbolType="graphic" loop="loop">
                   <matrix>
@@ -11378,7 +11628,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -11434,7 +11684,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -11501,7 +11751,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 373" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 373" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.462371826171875" b="-0.162872314453125" c="0.162872314453125" d="0.462371826171875" tx="88.7" ty="125.6"/>
                   </matrix>
@@ -11761,7 +12011,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 372" symbolType="graphic" loop="loop">
                   <matrix>
@@ -11773,7 +12023,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 372" symbolType="graphic" loop="loop">
                   <matrix>
@@ -11785,7 +12035,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 382" symbolType="graphic" loop="loop">
                   <matrix>
@@ -11797,7 +12047,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 382" symbolType="graphic" loop="loop">
                   <matrix>
@@ -11870,7 +12120,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -11926,7 +12176,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -11993,7 +12243,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 382" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 382" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.492233276367188" b="0.025787353515625" c="-0.025787353515625" d="0.492233276367188" tx="104.15" ty="166"/>
                   </matrix>
@@ -12313,7 +12563,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 371" symbolType="graphic" loop="loop">
                   <matrix>
@@ -12325,7 +12575,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 371" symbolType="graphic" loop="loop">
                   <matrix>
@@ -12337,7 +12587,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 372" symbolType="graphic" loop="loop">
                   <matrix>
@@ -12349,7 +12599,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 372" symbolType="graphic" loop="loop">
                   <matrix>
@@ -12422,7 +12672,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -12478,7 +12728,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -12545,7 +12795,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 372" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 372" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.484268188476563" b="-0.0902099609375" c="0.0902099609375" d="0.484268188476563" tx="109.3" ty="147.9"/>
                   </matrix>
@@ -12745,7 +12995,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 381" symbolType="graphic" loop="loop">
                   <matrix>
@@ -12757,7 +13007,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 381" symbolType="graphic" loop="loop">
                   <matrix>
@@ -12769,7 +13019,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 371" symbolType="graphic" loop="loop">
                   <matrix>
@@ -12781,7 +13031,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 371" symbolType="graphic" loop="loop">
                   <matrix>
@@ -12854,7 +13104,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -12910,7 +13160,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -12977,7 +13227,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 371" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 371" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.346649169921875" b="-0.348983764648438" c="0.348983764648438" d="0.346649169921875" tx="95.5" ty="146.1"/>
                   </matrix>
@@ -13117,7 +13367,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 380" symbolType="graphic" loop="loop">
                   <matrix>
@@ -13129,7 +13379,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 380" symbolType="graphic" loop="loop">
                   <matrix>
@@ -13141,7 +13391,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 380" symbolType="graphic" loop="loop">
                   <matrix>
@@ -13153,7 +13403,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 380" symbolType="graphic" loop="loop">
                   <matrix>
@@ -13226,7 +13476,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -13282,7 +13532,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -13349,7 +13599,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 380" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 380" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.491119384765625" b="0.0128936767578125" c="-0.0128936767578125" d="0.491119384765625" tx="77.25" ty="149.9"/>
                   </matrix>
@@ -13489,7 +13739,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 375" symbolType="graphic" loop="loop">
                   <matrix>
@@ -13501,7 +13751,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 375" symbolType="graphic" loop="loop">
                   <matrix>
@@ -13513,7 +13763,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 375" symbolType="graphic" loop="loop">
                   <matrix>
@@ -13525,7 +13775,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 375" symbolType="graphic" loop="loop">
                   <matrix>
@@ -13598,7 +13848,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -13654,7 +13904,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -13721,7 +13971,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 375" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 375" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.215286254882813" b="-0.441162109375" c="0.441162109375" d="0.215286254882813" tx="56.1" ty="129.85"/>
                   </matrix>
@@ -14074,7 +14324,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -14086,7 +14336,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -14098,7 +14348,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -14110,7 +14360,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -14183,7 +14433,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -14239,7 +14489,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -14306,7 +14556,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.377166748046875" b="-0.317703247070313" c="0.317703247070313" d="0.377166748046875" tx="94.8" ty="108.45"/>
                   </matrix>
@@ -14740,7 +14990,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -14752,7 +15002,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -14764,7 +15014,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -14776,7 +15026,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -14849,7 +15099,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -14905,7 +15155,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -14972,7 +15222,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.2625732421875" b="-0.363540649414063" c="0.363540649414063" d="0.2625732421875" tx="99.95" ty="99.15"/>
                   </matrix>
@@ -15406,7 +15656,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -15418,7 +15668,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -15430,7 +15680,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -15442,7 +15692,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -15515,7 +15765,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -15571,7 +15821,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -15638,7 +15888,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.034912109375" b="-0.400787353515625" c="0.400787353515625" d="0.034912109375" tx="102.45" ty="88.05"/>
                   </matrix>
@@ -16072,7 +16322,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -16084,7 +16334,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -16096,7 +16346,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -16108,7 +16358,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -16181,7 +16431,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -16237,7 +16487,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -16304,7 +16554,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.194625854492188" b="-0.290740966796875" c="0.290740966796875" d="-0.194625854492188" tx="101.6" ty="79.35"/>
                   </matrix>
@@ -16738,7 +16988,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -16750,7 +17000,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -16762,7 +17012,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -16774,7 +17024,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -16847,7 +17097,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -16903,7 +17153,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -16970,7 +17220,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.274429321289063" b="-0.183578491210938" c="0.183578491210938" d="-0.274429321289063" tx="97.7" ty="72.75"/>
                   </matrix>
@@ -17404,7 +17654,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -17416,7 +17666,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -17428,7 +17678,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -17440,7 +17690,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -17513,7 +17763,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -17569,7 +17819,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -17636,7 +17886,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.274749755859375" b="-0.157058715820313" c="0.157058715820313" d="-0.274749755859375" tx="91" ty="67.7"/>
                   </matrix>
@@ -18070,7 +18320,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -18082,7 +18332,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -18094,7 +18344,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -18106,7 +18356,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -18179,7 +18429,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -18235,7 +18485,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -18302,7 +18552,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.2738037109375" b="-0.0781402587890625" c="0.0781402587890625" d="-0.2738037109375" tx="83.75" ty="65"/>
                   </matrix>
@@ -18736,7 +18986,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -18748,7 +18998,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -18760,7 +19010,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -18772,7 +19022,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -18845,7 +19095,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -18901,7 +19151,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -18968,7 +19218,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.284027099609375" b="0.01165771484375" c="-0.01165771484375" d="-0.284027099609375" tx="76.4" ty="64.05"/>
                   </matrix>
@@ -19402,7 +19652,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -19414,7 +19664,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -19426,7 +19676,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -19438,7 +19688,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -19511,7 +19761,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -19567,7 +19817,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -19634,7 +19884,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.259521484375" b="0.06060791015625" c="-0.06060791015625" d="-0.259521484375" tx="68.9" ty="64.05"/>
                   </matrix>
@@ -20068,7 +20318,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -20080,7 +20330,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -20092,7 +20342,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -20104,7 +20354,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -20177,7 +20427,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -20233,7 +20483,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -20300,7 +20550,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.265579223632813" b="0.0134735107421875" c="-0.0134735107421875" d="-0.265548706054688" tx="62.5" ty="64.85"/>
                   </matrix>
@@ -20734,7 +20984,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -20746,7 +20996,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -20758,7 +21008,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -20770,7 +21020,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -20843,7 +21093,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -20899,7 +21149,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -20966,7 +21216,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.247344970703125" b="0.018646240234375" c="-0.018646240234375" d="-0.247344970703125" tx="55.7" ty="64.85"/>
                   </matrix>
@@ -21400,7 +21650,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -21412,7 +21662,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -21424,7 +21674,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -21436,7 +21686,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -21509,7 +21759,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -21565,7 +21815,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -21632,7 +21882,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.236648559570313" b="0.0726165771484375" c="-0.0726470947265625" d="-0.236740112304688" tx="49" ty="65.3"/>
                   </matrix>
@@ -22066,7 +22316,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -22078,7 +22328,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -22090,7 +22340,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -22102,7 +22352,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -22175,7 +22425,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -22231,7 +22481,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -22298,7 +22548,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.23358154296875" b="0.045501708984375" c="-0.045501708984375" d="-0.23358154296875" tx="43.3" ty="66.15"/>
                   </matrix>
@@ -22732,7 +22982,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -22744,7 +22994,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -22756,7 +23006,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -22768,7 +23018,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -22841,7 +23091,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -22897,7 +23147,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -22964,7 +23214,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.20855712890625" b="0.03204345703125" c="-0.03204345703125" d="-0.20855712890625" tx="37.35" ty="66.3"/>
                   </matrix>
@@ -23398,7 +23648,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -23410,7 +23660,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -23422,7 +23672,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -23434,7 +23684,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -23507,7 +23757,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -23563,7 +23813,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -23630,7 +23880,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.194931030273438" b="0.0169219970703125" c="-0.0169219970703125" d="-0.194931030273438" tx="31.35" ty="66.75"/>
                   </matrix>
@@ -24064,7 +24314,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -24076,7 +24326,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -24088,7 +24338,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -24100,7 +24350,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -24173,7 +24423,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -24229,7 +24479,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -24296,7 +24546,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.157302856445313" b="0.05816650390625" c="-0.0582122802734375" d="-0.1572265625" tx="25.8" ty="66.95"/>
                   </matrix>
@@ -24730,7 +24980,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -24742,7 +24992,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -24754,7 +25004,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -24766,7 +25016,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -24839,7 +25089,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -24895,7 +25145,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -24962,7 +25212,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.132431030273438" b="0.04986572265625" c="-0.049835205078125" d="-0.132492065429688" tx="21.1" ty="68.3"/>
                   </matrix>
@@ -25396,7 +25646,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -25408,7 +25658,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -25420,7 +25670,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -25432,7 +25682,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
@@ -25505,7 +25755,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -25561,7 +25811,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -25628,7 +25878,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 370" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.125015258789063" b="0.0149383544921875" c="-0.0149383544921875" d="-0.125015258789063" tx="16.6" ty="69.25"/>
                   </matrix>
@@ -26062,7 +26312,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="15872">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 369" symbolType="graphic" loop="loop">
                   <matrix>
@@ -26074,7 +26324,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="2" keyMode="15872">
+            <DOMFrame index="81" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 369" symbolType="graphic" loop="loop">
                   <matrix>
@@ -26086,7 +26336,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="83" duration="2" keyMode="15872">
+            <DOMFrame index="83" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 369" symbolType="graphic" loop="loop">
                   <matrix>
@@ -26098,7 +26348,7 @@ gotoAndPlay(_parent.近战招式);
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="85" duration="2" keyMode="15872">
+            <DOMFrame index="85" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 369" symbolType="graphic" loop="loop">
                   <matrix>
@@ -26171,7 +26421,7 @@ gotoAndPlay(_parent.近战招式);
                 <CustomEase target="all">
                   <Point/>
                   <Point x="0.0755" y="0.0755"/>
-                  <Point x="0.1532" y="-0.0163"/>
+                  <Point x="0.1532"/>
                   <Point x="0.2" y="0.1164"/>
                   <Point x="0.2449" y="0.2436"/>
                   <Point x="0.3442" y="0.1571"/>
@@ -26227,7 +26477,7 @@ gotoAndPlay(_parent.近战招式);
                   <Point x="0.2544" y="0.8897"/>
                   <Point x="0.3699" y="0.9178"/>
                   <Point x="0.4476" y="0.9367"/>
-                  <Point x="0.4029" y="1.0031"/>
+                  <Point x="0.4029" y="1"/>
                   <Point x="0.5102" y="1"/>
                   <Point x="0.642" y="0.9962"/>
                   <Point x="0.9256" y="0.9256"/>
@@ -26294,7 +26544,7 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
             <DOMFrame index="110" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 369" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="美洲狮异形/Symbol 369" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.483749389648438" b="-0.11181640625" c="0.11181640625" d="-0.483749389648438" tx="-1.4" ty="67.1"/>
                   </matrix>

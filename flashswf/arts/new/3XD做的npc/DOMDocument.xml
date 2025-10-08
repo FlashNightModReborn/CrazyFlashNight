@@ -89,7 +89,7 @@
           <DOMFolderItem name="劫掠少女/基础部件/部件2 副本" itemID="68566cdf-00000fe9"/>
           <DOMFolderItem name="劫掠少女/基础部件/部件2/头1" itemID="663dc41b-000002b1" isExpanded="true"/>
           <DOMFolderItem name="劫掠少女/基础部件/部件3" itemID="663e2429-0000084a"/>
-          <DOMFolderItem name="美洲狮异形" itemID="68b2e2fb-000010cf" isExpanded="true"/>
+          <DOMFolderItem name="美洲狮异形" itemID="68b2e2fb-000010cf"/>
           <DOMFolderItem name="徘徊者异形" itemID="68b2e308-000011ae" isExpanded="true"/>
           <DOMFolderItem name="徘徊者异形/单独动作" itemID="68ac44e6-00000276"/>
           <DOMFolderItem name="徘徊者异形/好像是血" itemID="68ac4514-0000027a"/>
@@ -779,7 +779,7 @@
           <Include href="美洲狮异形/Symbol 385.xml" loadImmediate="false" itemID="65e1d4ea-0000039b" lastModified="1698678736"/>
           <Include href="美洲狮异形/Symbol 386.xml" loadImmediate="false" itemID="65e1d4ea-0000039c" lastModified="1698678736"/>
           <Include href="美洲狮异形/Symbol 387.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-0000039d" lastModified="1698678736"/>
-          <Include href="美洲狮异形/Symbol 388.xml" loadImmediate="false" itemID="65e1d4ea-0000039e" lastModified="1759761006"/>
+          <Include href="美洲狮异形/Symbol 388.xml" loadImmediate="false" itemID="65e1d4ea-0000039e" lastModified="1759893244"/>
           <Include href="美洲狮异形/Symbol 389.xml" itemIcon="1" loadImmediate="false" itemID="65e1d4ea-0000039f" lastModified="1755248285"/>
           <Include href="美洲狮异形/Symbol 390.xml" loadImmediate="false" itemID="65e1d4ea-000003a0" lastModified="1756553563"/>
           <Include href="美洲狮异形/Symbol 391.xml" loadImmediate="false" itemID="65e1d4ea-000003a1" lastModified="1698678736"/>
@@ -875,7 +875,7 @@
           <Include href="徘徊者异形/单独动作/Symbol 392.xml" loadImmediate="false" itemID="68b2e308-00001292" lastModified="1755861104"/>
           <Include href="徘徊者异形/单独动作/Symbol 393.xml" loadImmediate="false" itemID="68b2e308-00001293" lastModified="1755861104"/>
           <Include href="徘徊者异形/单独动作/Symbol 394.xml" loadImmediate="false" itemID="68b2e308-00001296" lastModified="1755861104"/>
-          <Include href="徘徊者异形/敌人-徘徊者异形.xml" itemID="68ac4294-0000023f" lastModified="1756585796"/>
+          <Include href="徘徊者异形/敌人-徘徊者异形.xml" itemID="68ac4294-0000023f" lastModified="1759893357"/>
           <Include href="徘徊者异形/好像是血/Symbol 74.xml" itemIcon="1" loadImmediate="false" itemID="68b2e308-00001289" lastModified="1698678736"/>
           <Include href="徘徊者异形/好像是血/Symbol 75.xml" loadImmediate="false" itemID="68b2e308-00001288" lastModified="1698678736"/>
           <Include href="徘徊者异形/好像是血/Symbol 76.xml" loadImmediate="false" itemID="68b2e308-00001287" lastModified="1712337393"/>
@@ -1523,6 +1523,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1668633" publishTime="1759893235" publishDebug="true"/>
           <PublishItem publishSize="1667518" publishTime="1756574765"/>
           <PublishItem publishSize="1667450" publishTime="1756574644"/>
           <PublishItem publishSize="1667062" publishTime="1756557273"/>
@@ -1542,6 +1543,5 @@
           <PublishItem publishSize="802550" publishTime="1743068429"/>
           <PublishItem publishSize="802545" publishTime="1743068383"/>
           <PublishItem publishSize="803080" publishTime="1743068037"/>
-          <PublishItem publishSize="808109" publishTime="1741080085"/>
      </publishHistory>
 </DOMDocument>
