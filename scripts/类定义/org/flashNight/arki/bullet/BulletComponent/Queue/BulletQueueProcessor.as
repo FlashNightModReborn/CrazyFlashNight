@@ -298,12 +298,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     public static function createNormalPreCheck(bullet:MovieClip):Function {
         // 返回针对该MovieClip子弹特化的预检查函数
         return function():Boolean {
+            var x:Number = this._x;
+            var y:Number = this.Z轴坐标;
 
-            if(this._x < _root.Xmin || this._x > _root.Xmax) {
+            if(x < _root.Xmin || x > _root.Xmax || y < _root.Ymin || y > _root.Ymax) {
                 // 超出边界的子弹直接移除
                 // 目前存在未定位的僵尸子弹成因
                 // 引入更强的边界清理以防万一
-                // 不检测y轴避免视觉上的误判
                 
                 this.removeMovieClip();
                 return false;
@@ -701,6 +702,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     cancelBounceShooter = null;
                 }
             }
+
             for (bulletIndex = 0; bulletIndex < sortedLength; bulletIndex++) {
                 bullet = sortedArr[bulletIndex];
                 flags = bullet.flags;
@@ -746,160 +748,160 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 if (!skipUnits) {
                     __initDeferScatter(bullet);
                     // ---- 扫描线算法：双指针优化的碰撞检测窗口计算 ----
-                    queryLeft = Lb;        // 使用已缓存的子弹左边界
-                // 推进扫描线：跳过所有右边界小于子弹左边界的目标
-                // 循环展开优化：每次跳4个，减少循环判断开销
-                while (sweepIndex + 3 < len && unitRightKeys[sweepIndex + 3] < queryLeft) {
-                    sweepIndex += 4;
-                    // _root.服务器.发布服务器消息("快速推进4步至索引 " + sweepIndex); // 调试输出
-                }
-                // 处理剩余的0-3个元素
-                while (sweepIndex < len && unitRightKeys[sweepIndex] < queryLeft) {
-                    ++sweepIndex;
-                }
-                startIndex = sweepIndex;                // 记录有效检测的起始索引
-                // ---- 空窗口快判：O(1)时间复杂度，避免无效循环开销 ----
-                if (startIndex >= len || Rb < unitLeftKeys[startIndex]) {
-
-                    // 【极快路径】无销毁需求 → 维持旧逻辑，最快早退
-                    if (!bullet.shouldDestroy(bullet)) {
-                        bullet.updateMovement(bullet);
-                        __commitDeferScatter(bullet);
-                        continue;
+                        queryLeft = Lb;        // 使用已缓存的子弹左边界
+                    // 推进扫描线：跳过所有右边界小于子弹左边界的目标
+                    // 循环展开优化：每次跳4个，减少循环判断开销
+                    while (sweepIndex + 3 < len && unitRightKeys[sweepIndex + 3] < queryLeft) {
+                        sweepIndex += 4;
+                        // _root.服务器.发布服务器消息("快速推进4步至索引 " + sweepIndex); // 调试输出
                     }
+                    // 处理剩余的0-3个元素
+                    while (sweepIndex < len && unitRightKeys[sweepIndex] < queryLeft) {
+                        ++sweepIndex;
+                    }
+                    startIndex = sweepIndex;                // 记录有效检测的起始索引
+                    // ---- 空窗口快判：O(1)时间复杂度，避免无效循环开销 ----
+                    if (startIndex >= len || Rb < unitLeftKeys[startIndex]) {
 
-                    // 【需要销毁】不在这里做释放/FX/移除，只声明“终止意图”，交给单出口收尾
-                    wantDestroy = true;
-
-                    // 与统一收尾规则保持一致
-                    killFlags |= MODE_VANISH;
-                    // 跳过单位循环（但不 continue），让流程落到统一尾部
-                    startIndex = len;
-                }
-                // ---- 击中后效果标志：确保命中时能正确触发效果 ----
-                bullet.shouldGeneratePostHitEffect = true;
-
-                // ---- 子弹类型预计算：直接使用位运算结果作为条件判断 ----
-                isNormalKill = (flags & MELEE_EXPLOSIVE_MASK) == 0;  // 普通击杀
-                shouldStun = (flags & FLAG_MELEE) != 0 && !bullet.不硬直;  // 近战硬直
-                isPierce = (flags & FLAG_PIERCE) != 0;  // 穿透
-                // 注意：当前实现下，若同时标记 MELEE 与 PIERCE，则命中时不会触发硬直（由 !isPierce 分支控制）
-
-                // ---- 多边形更新控制：避免同一子弹重复更新碰撞器 ----
-                isUpdatePolygon = false;
-
-                // ----------- 命中循环（带右边界截断） -----------
-                for (unitIndex = startIndex; unitIndex < len && unitLeftKeys[unitIndex] <= Rb; ++unitIndex) {
-                    hitTarget = unitMap[unitIndex];  // 只读取目标，延迟写入
-
-                    // Z 轴粗判（避免Math.abs函数调用开销）
-                    zOffset = bulletZOffset - hitTarget.Z轴坐标;
-                    if (zOffset >= bulletZRange || zOffset <= -bulletZRange) continue;
-
-                    if (hitTarget.hp > 0 && hitTarget.防止无限飞 != true) {
-                        unitArea = hitTarget.aabbCollider;
-
-                        // AABB 检测（无序早退交由右边界截断处理）
-                        collisionResult = areaAABB.checkCollision(unitArea, zOffset);
-                        if (!collisionResult.isColliding) {
+                        // 【极快路径】无销毁需求 → 维持旧逻辑，最快早退
+                        if (!bullet.shouldDestroy(bullet)) {
+                            bullet.updateMovement(bullet);
+                            __commitDeferScatter(bullet);
                             continue;
                         }
 
-                        // 多边形碰撞器的懒加载与生命周期管理
-                        // 契约说明：
-                        // 1. 创建时机：首次需要精确碰撞检测时懒创建（减少60-80%内存占用）
-                        // 2. 更新策略：每帧首次使用时更新一次，同帧后续命中复用
-                        // 3. 工厂职责：ColliderFactoryRegistry管理对象池，负责创建和回收
-                        // 4. 回收时机：子弹终止时调用releaseCollider归还对象池
-                        // 5. 对象池假设：工厂内部维护碰撞器池，避免频繁GC
-                        if (isPointSet) {
-                            if(!isUpdatePolygon) {
-                                polygonCollider = bullet.polygonCollider;
-                                if(!polygonCollider) {
-                                    // 统一懒加载策略：所有点集联弹的多边形碰撞器都在此时创建
-                                    // 注意：createFromBullet内部已包含初始更新
-                                    polygonCollider = bullet.polygonCollider = CFR.getFactory(PolyFactoryId).createFromBullet(bullet, bullet.子弹区域area || bullet.area);
-                                }
-                                // 更新碰撞器（创建时已包含更新，但既有碰撞器需要显式更新）
-                                polygonCollider.updateFromBullet(bullet, bullet.子弹区域area || bullet.area);
-                                isUpdatePolygon = true;
-                            } else {
-                                // 后续命中直接使用已更新的碰撞器
-                                polygonCollider = bullet.polygonCollider;
-                            }
+                        // 【需要销毁】不在这里做释放/FX/移除，只声明“终止意图”，交给单出口收尾
+                        wantDestroy = true;
 
-                            collisionResult = polygonCollider.checkCollision(unitArea, zOffset);
+                        // 与统一收尾规则保持一致
+                        killFlags |= MODE_VANISH;
+                        // 跳过单位循环（但不 continue），让流程落到统一尾部
+                        startIndex = len;
+                    }
+                    // ---- 击中后效果标志：确保命中时能正确触发效果 ----
+                    bullet.shouldGeneratePostHitEffect = true;
 
-                            // 如果更精确的多边形检测都没有碰撞，则跳过这个目标
+                    // ---- 子弹类型预计算：直接使用位运算结果作为条件判断 ----
+                    isNormalKill = (flags & MELEE_EXPLOSIVE_MASK) == 0;  // 普通击杀
+                    shouldStun = (flags & FLAG_MELEE) != 0 && !bullet.不硬直;  // 近战硬直
+                    isPierce = (flags & FLAG_PIERCE) != 0;  // 穿透
+                    // 注意：当前实现下，若同时标记 MELEE 与 PIERCE，则命中时不会触发硬直（由 !isPierce 分支控制）
+
+                    // ---- 多边形更新控制：避免同一子弹重复更新碰撞器 ----
+                    isUpdatePolygon = false;
+
+                    // ----------- 命中循环（带右边界截断） -----------
+                    for (unitIndex = startIndex; unitIndex < len && unitLeftKeys[unitIndex] <= Rb; ++unitIndex) {
+                        hitTarget = unitMap[unitIndex];  // 只读取目标，延迟写入
+
+                        // Z 轴粗判（避免Math.abs函数调用开销）
+                        zOffset = bulletZOffset - hitTarget.Z轴坐标;
+                        if (zOffset >= bulletZRange || zOffset <= -bulletZRange) continue;
+
+                        if (hitTarget.hp > 0 && hitTarget.防止无限飞 != true) {
+                            unitArea = hitTarget.aabbCollider;
+
+                            // AABB 检测（无序早退交由右边界截断处理）
+                            collisionResult = areaAABB.checkCollision(unitArea, zOffset);
                             if (!collisionResult.isColliding) {
                                 continue;
                             }
-                        }
 
-                        // 确认命中后才写入hitTarget，避免无效的哈希表操作
-                        bullet.hitTarget = hitTarget;
+                            // 多边形碰撞器的懒加载与生命周期管理
+                            // 契约说明：
+                            // 1. 创建时机：首次需要精确碰撞检测时懒创建（减少60-80%内存占用）
+                            // 2. 更新策略：每帧首次使用时更新一次，同帧后续命中复用
+                            // 3. 工厂职责：ColliderFactoryRegistry管理对象池，负责创建和回收
+                            // 4. 回收时机：子弹终止时调用releaseCollider归还对象池
+                            // 5. 对象池假设：工厂内部维护碰撞器池，避免频繁GC
+                            if (isPointSet) {
+                                if(!isUpdatePolygon) {
+                                    polygonCollider = bullet.polygonCollider;
+                                    if(!polygonCollider) {
+                                        // 统一懒加载策略：所有点集联弹的多边形碰撞器都在此时创建
+                                        // 注意：createFromBullet内部已包含初始更新
+                                        polygonCollider = bullet.polygonCollider = CFR.getFactory(PolyFactoryId).createFromBullet(bullet, bullet.子弹区域area || bullet.area);
+                                    }
+                                    // 更新碰撞器（创建时已包含更新，但既有碰撞器需要显式更新）
+                                    polygonCollider.updateFromBullet(bullet, bullet.子弹区域area || bullet.area);
+                                    isUpdatePolygon = true;
+                                } else {
+                                    // 后续命中直接使用已更新的碰撞器
+                                    polygonCollider = bullet.polygonCollider;
+                                }
 
-                        if (debugMode) {
-                            AABBRenderer.renderAABB(areaAABB, zOffset, "thick");
-                            AABBRenderer.renderAABB(unitArea, zOffset, "filled");
-                        }
+                                collisionResult = polygonCollider.checkCollision(unitArea, zOffset);
 
-                        // ---------- 命中后的业务处理（完全内联展开） ----------
-                        // 使用预声明的局部变量，减少内存分配
+                                // 如果更精确的多边形检测都没有碰撞，则跳过这个目标
+                                if (!collisionResult.isColliding) {
+                                    continue;
+                                }
+                            }
 
-                        // --- 命中计数与上下文填充 ---
-                        bullet.hitCount++;
-                        bullet.附加层伤害计算 = 0;
-                        bullet.命中对象 = hitTarget;
+                            // 确认命中后才写入hitTarget，避免无效的哈希表操作
+                            bullet.hitTarget = hitTarget;
 
-                        // --- 闪避/命中状态（使用预声明变量） ---
-                        dodgeState = (bullet.伤害类型 == "真伤") ? "未躲闪" :
-                            Dodge.calculateDodgeState(
-                                hitTarget,
-                                Dodge.calcDodgeResult(shooter, hitTarget, bullet.命中率),
-                                bullet
+                            if (debugMode) {
+                                AABBRenderer.renderAABB(areaAABB, zOffset, "thick");
+                                AABBRenderer.renderAABB(unitArea, zOffset, "filled");
+                            }
+
+                            // ---------- 命中后的业务处理（完全内联展开） ----------
+                            // 使用预声明的局部变量，减少内存分配
+
+                            // --- 命中计数与上下文填充 ---
+                            bullet.hitCount++;
+                            bullet.附加层伤害计算 = 0;
+                            bullet.命中对象 = hitTarget;
+
+                            // --- 闪避/命中状态（使用预声明变量） ---
+                            dodgeState = (bullet.伤害类型 == "真伤") ? "未躲闪" :
+                                Dodge.calculateDodgeState(
+                                    hitTarget,
+                                    Dodge.calcDodgeResult(shooter, hitTarget, bullet.命中率),
+                                    bullet
+                                );
+
+                            // --- 击中时触发函数（内联条件判断） ---
+                            if (bullet.击中时触发函数) bullet.击中时触发函数();
+
+                            // --- 计算伤害（使用预声明变量） ---
+                            damageResult = Damage.calculateDamage(
+                                bullet, shooter, hitTarget, collisionResult.overlapRatio, dodgeState
                             );
 
-                        // --- 击中时触发函数（内联条件判断） ---
-                        if (bullet.击中时触发函数) bullet.击中时触发函数();
+                            // --- 事件分发（使用预声明的dispatcher变量） ---
+                            targetDispatcher = hitTarget.dispatcher;
+                            targetDispatcher.publish("hit", hitTarget, shooter, bullet, collisionResult, damageResult);
 
-                        // --- 计算伤害（使用预声明变量） ---
-                        damageResult = Damage.calculateDamage(
-                            bullet, shooter, hitTarget, collisionResult.overlapRatio, dodgeState
-                        );
-
-                        // --- 事件分发（使用预声明的dispatcher变量） ---
-                        targetDispatcher = hitTarget.dispatcher;
-                        targetDispatcher.publish("hit", hitTarget, shooter, bullet, collisionResult, damageResult);
-
-                        // --- 死亡判定（内联展开） ---
-                        if (hitTarget.hp <= 0) {
-                            // 直接使用预计算的布尔值判断事件名
-                            targetDispatcher.publish(isNormalKill ? "kill" : "death", hitTarget);
-                            shooter.dispatcher.publish("enemyKilled", hitTarget, bullet);
-                        }
-
-                        // --- 表现触发（缓存坐标值） ---
-                        targetX = hitTarget._x;
-                        targetY = hitTarget._y;
-                        damageResult.triggerDisplay(targetX, targetY);
-
-                        // --- 终止意图：近战硬直 或 非穿刺 命中即"消失" ---
-                        if (!isPierce) {  // 非穿透
-                            if (shouldStun) {  // 应该硬直
-                                shooter.硬直(shooter.man, stunTime);  // 使用缓存的硬直时间
+                            // --- 死亡判定（内联展开） ---
+                            if (hitTarget.hp <= 0) {
+                                // 直接使用预计算的布尔值判断事件名
+                                targetDispatcher.publish(isNormalKill ? "kill" : "death", hitTarget);
+                                shooter.dispatcher.publish("enemyKilled", hitTarget, bullet);
                             }
-                            killFlags |= (REASON_UNIT_HIT | MODE_VANISH);  // 使用缓存的常量
+
+                            // --- 表现触发（缓存坐标值） ---
+                            targetX = hitTarget._x;
+                            targetY = hitTarget._y;
+                            damageResult.triggerDisplay(targetX, targetY);
+
+                            // --- 终止意图：近战硬直 或 非穿刺 命中即"消失" ---
+                            if (!isPierce) {  // 非穿透
+                                if (shouldStun) {  // 应该硬直
+                                    shooter.硬直(shooter.man, stunTime);  // 使用缓存的硬直时间
+                                }
+                                killFlags |= (REASON_UNIT_HIT | MODE_VANISH);  // 使用缓存的常量
+                            }
+                        }
+                        
+                        // 穿刺上限：设置终止标志并结束循环
+                        if (bullet.pierceLimit && bullet.pierceLimit < bullet.hitCount) {
+                            killFlags |= PIERCE_LIMIT_REMOVE;
+                            break;
                         }
                     }
                     
-                    // 穿刺上限：设置终止标志并结束循环
-                    if (bullet.pierceLimit && bullet.pierceLimit < bullet.hitCount) {
-                        killFlags |= PIERCE_LIMIT_REMOVE;
-                        break;
-                    }
-                }
-                
                     // 命中后效果（一次性）
                     if (bullet.hitCount > 0 && bullet.shouldGeneratePostHitEffect) {
                         FX.Effect(bullet.击中后子弹的效果, bullet._x, bullet._y, shooter._xscale);
