@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/暗器/十字螺旋手里剑中转" itemID="68e4e5f8-00002063" linkageExportForAS="true" linkageIdentifier="十字螺旋手里剑中转" lastModified="1759988592" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/暗器/十字螺旋手里剑中转" itemID="68e4e5f8-00002063" linkageExportForAS="true" linkageIdentifier="十字螺旋手里剑中转" lastModified="1759992282" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="十字螺旋手里剑中转" currentFrame="1">
+    <DOMTimeline name="十字螺旋手里剑中转">
       <layers>
         <DOMLayer name="Labels Layer" color="#F31BF0">
           <frames>
@@ -58,6 +58,7 @@ if(力量投射 == undefined)
 子弹属性.shootZ = Z轴坐标;
 子弹属性.发射者 = 发射者名;
 子弹属性.暴击 = this.暴击;
+_root.发布消息(this.暴击);
 _root.子弹区域shoot传递(子弹属性);
 
 stop();
