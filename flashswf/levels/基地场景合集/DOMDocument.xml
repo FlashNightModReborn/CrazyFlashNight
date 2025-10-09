@@ -9,6 +9,8 @@
           <DOMFolderItem name="3.防具/0.素材" itemID="689c79aa-000043e1"/>
           <DOMFolderItem name="3.防具/01.精致A兵" itemID="689c7981-000043d6"/>
           <DOMFolderItem name="3.防具/01.精致A兵/未命名文件夹 1" itemID="6569f52c-000002d8"/>
+          <DOMFolderItem name="5.参考装备" itemID="68e76779-00000afd"/>
+          <DOMFolderItem name="5.参考装备/3.牛仔套装" itemID="68e76779-00000afe"/>
           <DOMFolderItem name="Accessories" itemID="689c53a5-00005c31"/>
           <DOMFolderItem name="Accessories/Others" itemID="689c53a5-00005c32"/>
           <DOMFolderItem name="Accessories/Others/Images" itemID="689c53a5-00005c33"/>
@@ -61,7 +63,7 @@
           <DOMFolderItem name="弹药系列/通用" itemID="689c4dc2-00003eb0"/>
           <DOMFolderItem name="地图" itemID="668a9fac-00004fc9"/>
           <DOMFolderItem name="防撞车" itemID="66fa5c8b-000008d1"/>
-          <DOMFolderItem name="房间摆件" itemID="66328e0c-00001565"/>
+          <DOMFolderItem name="房间摆件" itemID="66328e0c-00001565" isExpanded="true"/>
           <DOMFolderItem name="房间摆件/乐器" itemID="66328ec2-0000158b"/>
           <DOMFolderItem name="房间摆件/乐器/话筒" itemID="66329217-000015cd"/>
           <DOMFolderItem name="房间摆件/乐器/吉他" itemID="66328e9c-0000157c"/>
@@ -117,6 +119,7 @@
           <Include href="3.防具/01.精致A兵/未命名文件夹 1/Symbol 1462.xml" itemIcon="1" loadImmediate="false" itemID="6569f446-00000217" lastModified="1755085315"/>
           <Include href="3.防具/01.精致A兵/未命名文件夹 1/Symbol 1464.xml" itemIcon="1" loadImmediate="false" itemID="6569f446-00000219" lastModified="1701451022"/>
           <Include href="3.防具/01.精致A兵/未命名文件夹 1/Symbol 1472.xml" itemIcon="1" loadImmediate="false" itemID="6569f446-00000220" lastModified="1701451054"/>
+          <Include href="5.参考装备/3.牛仔套装/摆件牛仔帽.xml" loadImmediate="false" itemID="68e7676c-00000af3" lastModified="1759995759"/>
           <Include href="Ammunitions &amp;#038&amp;#035038 Magazines/Ammunitions/12.7 × 99mm .50 BMG/12.7 × 99mm .50 BMG.xml" itemIcon="1" loadImmediate="false" itemID="6688f486-00000fa4" lastModified="1582075391"/>
           <Include href="Ammunitions &amp;#038&amp;#035038 Magazines/Ammunitions/12.7 × 99mm .50 BMG/12.7 × 99mm .50 BMG Bullet.xml" itemIcon="1" loadImmediate="false" itemID="6688f486-00000fa5" lastModified="1598666588"/>
           <Include href="Ammunitions &amp;#038&amp;#035038 Magazines/Ammunitions/12.7 × 99mm .50 BMG/12.7 × 99mm .50 BMG Case.xml" itemIcon="1" loadImmediate="false" itemID="6688f486-00000fa6" lastModified="1582075395"/>
@@ -952,20 +955,26 @@
           <Include href="地图/基地门口.xml" itemID="668aa11b-00005252" lastModified="1749711814"/>
           <Include href="地图/健身房.xml" itemID="668aa068-0000512a" lastModified="1749711627"/>
           <Include href="地图/溶洞.xml" itemID="668aa0c1-000051a2" lastModified="1749711656"/>
-          <Include href="地图/宿舍房间.xml" itemID="668a9fda-0000503f" lastModified="1759992127"/>
+          <Include href="地图/宿舍房间.xml" itemID="668a9fda-0000503f" lastModified="1759996256"/>
           <Include href="地图/停机坪.xml" itemID="668aa0dc-000051de" lastModified="1756650519"/>
           <Include href="地图/武器库.xml" itemID="668aa006-0000507c" lastModified="1755086586"/>
           <Include href="地图/医务室.xml" itemID="668aa0bc-000051a1" lastModified="1749711735"/>
           <Include href="地图/佣兵酒吧.xml" itemID="668aa09a-00005167" lastModified="1749711706"/>
           <Include href="防撞车/元件 1.xml" loadImmediate="false" itemID="636b8402-000002db" lastModified="1667990569"/>
           <Include href="防撞车/元件 7.xml" loadImmediate="false" itemID="5f0571d2-00000219" lastModified="1594192357"/>
+          <Include href="房间摆件/摆件白无常面具.xml" loadImmediate="false" itemID="68e76574-00000ab2" lastModified="1759995413"/>
           <Include href="房间摆件/摆件茶壶.xml" loadImmediate="false" itemID="663347f0-000017f6" lastModified="1714636784"/>
+          <Include href="房间摆件/摆件翅虎飞刀.xml" loadImmediate="false" itemID="68e763a8-000033e1" lastModified="1759994792"/>
+          <Include href="房间摆件/摆件翅虎飞刀堆.xml" itemID="68e7642c-000033ef" lastModified="1759994924"/>
           <Include href="房间摆件/摆件初始床.xml" loadImmediate="false" itemID="66363eaa-00000d76" lastModified="1714831225"/>
           <Include href="房间摆件/摆件初始梯子.xml" loadImmediate="false" itemID="66363ec7-00000dc5" lastModified="1714831047"/>
           <Include href="房间摆件/摆件床垫.xml" loadImmediate="false" itemID="66348582-00002c3f" lastModified="1714718082"/>
           <Include href="房间摆件/摆件黑铁剑.xml" loadImmediate="false" itemID="66329c51-0000285e" lastModified="1714592849"/>
+          <Include href="房间摆件/摆件黑无常面具.xml" loadImmediate="false" itemID="68e76591-00000aba" lastModified="1759995281"/>
+          <Include href="房间摆件/摆件火凤流星锤.xml" loadImmediate="false" itemID="68e76277-000033d5" lastModified="1759994487"/>
           <Include href="房间摆件/摆件精制床.xml" loadImmediate="false" itemID="66363da2-00000d0b" lastModified="1720344989"/>
           <Include href="房间摆件/摆件精制梯子.xml" loadImmediate="false" itemID="66363c00-00000cbb" lastModified="1714830336"/>
+          <Include href="房间摆件/摆件军阀帽子.xml" loadImmediate="false" itemID="68e7616e-000033cf" lastModified="1759994277"/>
           <Include href="房间摆件/摆件砍刀.xml" loadImmediate="false" itemID="6634a042-000034bc" lastModified="1714724931"/>
           <Include href="房间摆件/摆件空调.xml" loadImmediate="false" itemID="6633494e-00001846" lastModified="1714637135"/>
           <Include href="房间摆件/摆件忍者佩剑.xml" loadImmediate="false" itemID="663298da-0000215c" lastModified="1714591962"/>
@@ -994,11 +1003,12 @@
           <Include href="房间摆件/十文字大剑/十文字摆件.xml" loadImmediate="false" itemID="66329745-00002142" lastModified="1714592200"/>
           <Include href="房间摆件/睡觉-高级床.xml" itemIcon="0" loadImmediate="false" itemID="66503816-000010db" lastModified="1716535982"/>
           <Include href="房间摆件/睡觉-普通床.xml" itemIcon="0" loadImmediate="false" itemID="66503821-000010e7" lastModified="1716536184"/>
+          <Include href="房间摆件/温彻斯特摆件.xml" loadImmediate="false" itemID="68e768c0-00000b08" lastModified="1759996108"/>
           <Include href="健身房沙袋.xml" loadImmediate="false" itemID="65a79007-00000b58" lastModified="1754674564"/>
           <Include href="任务接取提示.xml" itemID="68920f7c-0000053e" lastModified="1759510713"/>
           <Include href="素材/突击步枪/AK47.xml" loadImmediate="false" itemID="5e2d97e3-000002e4" lastModified="1580047353"/>
           <Include href="素材/突击步枪/弹匣/7.62×39mm×30(AK47).xml" loadImmediate="false" itemID="5e2d9965-000002e9" lastModified="1580046693"/>
-          <Include href="素材库-基地场景.xml" itemID="67877067-00002014" lastModified="1746453357"/>
+          <Include href="素材库-基地场景.xml" itemID="67877067-00002014" lastModified="1759995615"/>
           <Include href="梯子1.xml" loadImmediate="false" itemID="67ed053a-00000733" lastModified="1743587297"/>
           <Include href="梯子2.xml" loadImmediate="false" itemID="67ed0cd9-00000ec1" lastModified="1743588724"/>
           <Include href="无AS链接/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005be" lastModified="1720533000"/>
@@ -1311,6 +1321,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3329375" publishTime="1759995699"/>
+          <PublishItem publishSize="3324333" publishTime="1759992137"/>
           <PublishItem publishSize="3043399" publishTime="1759490171"/>
           <PublishItem publishSize="3221238" publishTime="1756646640"/>
           <PublishItem publishSize="3221238" publishTime="1756644522"/>
@@ -1329,7 +1341,5 @@
           <PublishItem publishSize="3313129" publishTime="1755085593"/>
           <PublishItem publishSize="3311572" publishTime="1755085408"/>
           <PublishItem publishSize="3307435" publishTime="1755084851"/>
-          <PublishItem publishSize="3307436" publishTime="1755084720"/>
-          <PublishItem publishSize="3307444" publishTime="1755084627"/>
      </publishHistory>
 </DOMDocument>
