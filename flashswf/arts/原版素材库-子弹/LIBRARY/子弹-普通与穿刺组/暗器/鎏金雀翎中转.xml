@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/暗器/鎏金雀翎中转" itemID="68e4f2e0-000020c3" linkageExportForAS="true" linkageIdentifier="鎏金雀翎中转" lastModified="1759835141" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/暗器/鎏金雀翎中转" itemID="68e4f2e0-000020c3" linkageExportForAS="true" linkageIdentifier="鎏金雀翎中转" lastModified="1759988717" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="鎏金雀翎中转" currentFrame="1">
       <layers>
@@ -57,6 +57,7 @@ if(力量投射 == undefined)
 子弹属性.shootY = this._y;
 子弹属性.shootZ = Z轴坐标;
 子弹属性.发射者 = 发射者名;
+子弹属性.暴击 = this.暴击;
 _root.子弹区域shoot传递(子弹属性);
 
 stop();
