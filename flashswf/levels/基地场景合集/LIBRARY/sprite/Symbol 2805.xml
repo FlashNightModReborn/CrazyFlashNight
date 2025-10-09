@@ -1,10 +1,22 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2805" itemID="6597607e-00000d88" lastModified="1704196122">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2805" itemID="6597607e-00000d88" lastModified="1760002858">
   <timeline>
-    <DOMTimeline name="Symbol 2805">
+    <DOMTimeline name="Symbol 2805" currentFrame="7">
       <layers>
-        <DOMLayer name="Layer 1" color="#CBD6D1">
+        <DOMLayer name="Layer 1" color="#CBD6D1" locked="true">
           <frames>
-            <DOMFrame index="0" duration="48" keyMode="9728">
+            <DOMFrame index="0" duration="48" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2804" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.150238037109375" b="-0.218704223632813" c="-0.218704223632813" d="0.150238037109375" tx="52.25" ty="62.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2804" symbolType="graphic" loop="loop">
                   <matrix>
@@ -20,9 +32,9 @@
         </DOMLayer>
         <DOMLayer name="Layer 2" color="#94E732">
           <frames>
-            <DOMFrame index="0" duration="4" keyMode="9728">
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2803" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2803" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.150238037109375" b="-0.218704223632813" c="-0.218704223632813" d="0.150238037109375" tx="72.9" ty="59.05"/>
                   </matrix>
@@ -32,7 +44,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" keyMode="9728">
+            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2803" symbolType="graphic" loop="loop">
                   <matrix>
@@ -44,7 +56,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="4" keyMode="9728">
+            <DOMFrame index="8" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2803" symbolType="graphic" loop="loop">
                   <matrix>
@@ -56,9 +68,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="4" keyMode="9728">
+            <DOMFrame index="12" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2803" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2803" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.20123291015625" b="-0.172592163085938" c="-0.172592163085938" d="0.20123291015625" tx="71.55" ty="53.25"/>
                   </matrix>
@@ -68,7 +80,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="16" duration="4" keyMode="9728">
+            <DOMFrame index="16" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2803" symbolType="graphic" loop="loop">
                   <matrix>
@@ -80,7 +92,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="20" duration="4" keyMode="9728">
+            <DOMFrame index="20" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2803" symbolType="graphic" loop="loop">
                   <matrix>
@@ -92,7 +104,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" duration="4" keyMode="9728">
+            <DOMFrame index="24" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2803" symbolType="graphic" loop="loop">
                   <matrix>
@@ -104,7 +116,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="28" duration="4" keyMode="9728">
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2803" symbolType="graphic" loop="loop">
                   <matrix>
@@ -116,7 +128,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="9728">
+            <DOMFrame index="32" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2803" symbolType="graphic" loop="loop">
                   <matrix>
@@ -128,7 +140,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" duration="4" keyMode="9728">
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2803" symbolType="graphic" loop="loop">
                   <matrix>
@@ -140,7 +152,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="4" keyMode="9728">
+            <DOMFrame index="40" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2803" symbolType="graphic" loop="loop">
                   <matrix>
@@ -152,7 +164,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="44" duration="4" keyMode="9728">
+            <DOMFrame index="44" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2803" symbolType="graphic" loop="loop">
                   <matrix>
@@ -164,13 +176,25 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2803" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.150238037109375" b="-0.218704223632813" c="-0.218704223632813" d="0.150238037109375" tx="72.9" ty="59.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 3" color="#DA7B72">
           <frames>
-            <DOMFrame index="0" duration="4" keyMode="9728">
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2802" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2802" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.258590698242188" b="-0.0674285888671875" c="-0.0674285888671875" d="0.258590698242188" tx="78.1" ty="35.9"/>
                   </matrix>
@@ -180,7 +204,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" keyMode="9728">
+            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2802" symbolType="graphic" loop="loop">
                   <matrix>
@@ -192,7 +216,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="4" keyMode="9728">
+            <DOMFrame index="8" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2802" symbolType="graphic" loop="loop">
                   <matrix>
@@ -204,9 +228,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="4" keyMode="9728">
+            <DOMFrame index="12" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2802" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2802" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.26141357421875" b="-0.0515899658203125" c="-0.0515899658203125" d="0.26141357421875" tx="77.1" ty="29.15"/>
                   </matrix>
@@ -216,7 +240,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="16" duration="4" keyMode="9728">
+            <DOMFrame index="16" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2802" symbolType="graphic" loop="loop">
                   <matrix>
@@ -228,7 +252,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="20" duration="4" keyMode="9728">
+            <DOMFrame index="20" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2802" symbolType="graphic" loop="loop">
                   <matrix>
@@ -240,7 +264,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" duration="4" keyMode="9728">
+            <DOMFrame index="24" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2802" symbolType="graphic" loop="loop">
                   <matrix>
@@ -252,7 +276,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="28" duration="4" keyMode="9728">
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2802" symbolType="graphic" loop="loop">
                   <matrix>
@@ -264,7 +288,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="9728">
+            <DOMFrame index="32" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2802" symbolType="graphic" loop="loop">
                   <matrix>
@@ -276,7 +300,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" duration="4" keyMode="9728">
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2802" symbolType="graphic" loop="loop">
                   <matrix>
@@ -288,7 +312,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="4" keyMode="9728">
+            <DOMFrame index="40" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2802" symbolType="graphic" loop="loop">
                   <matrix>
@@ -300,7 +324,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="44" duration="4" keyMode="9728">
+            <DOMFrame index="44" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2802" symbolType="graphic" loop="loop">
                   <matrix>
@@ -312,13 +336,25 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2802" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.258590698242188" b="-0.0674285888671875" c="-0.0674285888671875" d="0.258590698242188" tx="78.1" ty="35.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 4" color="#85E2D2">
           <frames>
-            <DOMFrame index="0" duration="4" keyMode="9728">
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2793" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2793" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.193511962890625" b="0.185531616210938" c="0.185531616210938" d="0.193511962890625" tx="37.85" ty="105.85"/>
                   </matrix>
@@ -328,7 +364,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" keyMode="9728">
+            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2793" symbolType="graphic" loop="loop">
                   <matrix>
@@ -340,7 +376,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="4" keyMode="9728">
+            <DOMFrame index="8" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2793" symbolType="graphic" loop="loop">
                   <matrix>
@@ -352,9 +388,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="4" keyMode="9728">
+            <DOMFrame index="12" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2793" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2793" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.204483032226563" b="0.173416137695313" c="0.173416137695313" d="0.204483032226563" tx="40.9" ty="104.25"/>
                   </matrix>
@@ -364,16 +400,16 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="16" duration="32" keyMode="9728">
+            <DOMFrame index="16" duration="32" keyMode="15872">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 5" color="#0ED4D0">
           <frames>
-            <DOMFrame index="0" duration="4" keyMode="9728">
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2794" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.249801635742188" b="-0.0975494384765625" c="-0.0975494384765625" d="0.249801635742188" tx="51.2" ty="80.3"/>
                   </matrix>
@@ -383,7 +419,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" keyMode="9728">
+            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
                   <matrix>
@@ -395,7 +431,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="4" keyMode="9728">
+            <DOMFrame index="8" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
                   <matrix>
@@ -407,9 +443,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="4" keyMode="9728">
+            <DOMFrame index="12" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2794" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.2652587890625" b="-0.04119873046875" c="-0.04119873046875" d="0.2652587890625" tx="48.1" ty="76.85"/>
                   </matrix>
@@ -419,7 +455,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="16" duration="4" keyMode="9728">
+            <DOMFrame index="16" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
                   <matrix>
@@ -431,7 +467,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="20" duration="4" keyMode="9728">
+            <DOMFrame index="20" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
                   <matrix>
@@ -443,7 +479,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" duration="4" keyMode="9728">
+            <DOMFrame index="24" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
                   <matrix>
@@ -455,7 +491,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="28" duration="4" keyMode="9728">
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
                   <matrix>
@@ -467,7 +503,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="9728">
+            <DOMFrame index="32" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
                   <matrix>
@@ -479,7 +515,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" duration="4" keyMode="9728">
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
                   <matrix>
@@ -491,7 +527,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="4" keyMode="9728">
+            <DOMFrame index="40" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
                   <matrix>
@@ -503,7 +539,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="44" duration="4" keyMode="9728">
+            <DOMFrame index="44" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
                   <matrix>
@@ -515,13 +551,25 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.249801635742188" b="-0.0975494384765625" c="-0.0975494384765625" d="0.249801635742188" tx="51.2" ty="80.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 6" color="#B464C1">
           <frames>
-            <DOMFrame index="0" duration="4" keyMode="9728">
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2801" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2801" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0188446044921875" b="-0.2674560546875" c="-0.2674560546875" d="-0.0188446044921875" tx="73.3" ty="83.4"/>
                   </matrix>
@@ -531,7 +579,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" keyMode="9728">
+            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2801" symbolType="graphic" loop="loop">
                   <matrix>
@@ -543,7 +591,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="4" keyMode="9728">
+            <DOMFrame index="8" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2801" symbolType="graphic" loop="loop">
                   <matrix>
@@ -555,9 +603,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="4" keyMode="9728">
+            <DOMFrame index="12" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2801" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2801" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.032958984375" b="-0.266448974609375" c="-0.266448974609375" d="-0.032958984375" tx="69.85" ty="84.5"/>
                   </matrix>
@@ -567,7 +615,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="16" duration="4" keyMode="9728">
+            <DOMFrame index="16" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2801" symbolType="graphic" loop="loop">
                   <matrix>
@@ -579,7 +627,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="20" duration="4" keyMode="9728">
+            <DOMFrame index="20" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2801" symbolType="graphic" loop="loop">
                   <matrix>
@@ -591,7 +639,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" duration="4" keyMode="9728">
+            <DOMFrame index="24" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2801" symbolType="graphic" loop="loop">
                   <matrix>
@@ -603,7 +651,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="28" duration="4" keyMode="9728">
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2801" symbolType="graphic" loop="loop">
                   <matrix>
@@ -615,7 +663,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="9728">
+            <DOMFrame index="32" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2801" symbolType="graphic" loop="loop">
                   <matrix>
@@ -627,7 +675,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" duration="4" keyMode="9728">
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2801" symbolType="graphic" loop="loop">
                   <matrix>
@@ -639,7 +687,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="4" keyMode="9728">
+            <DOMFrame index="40" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2801" symbolType="graphic" loop="loop">
                   <matrix>
@@ -651,7 +699,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="44" duration="4" keyMode="9728">
+            <DOMFrame index="44" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2801" symbolType="graphic" loop="loop">
                   <matrix>
@@ -663,11 +711,35 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2801" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0188446044921875" b="-0.2674560546875" c="-0.2674560546875" d="-0.0188446044921875" tx="73.3" ty="83.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#E2EBA5">
+        <DOMLayer name="Layer 7" color="#E2EBA5" locked="true">
           <frames>
-            <DOMFrame index="0" duration="48" keyMode="9728">
+            <DOMFrame index="0" duration="48" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2800" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="40.8" ty="-199.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2800" symbolType="graphic" loop="loop">
                   <matrix>
@@ -683,9 +755,9 @@
         </DOMLayer>
         <DOMLayer name="Layer 8" color="#665DFD">
           <frames>
-            <DOMFrame index="0" duration="4" keyMode="9728">
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2799" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2799" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.202621459960938" b="-0.176315307617188" c="-0.176315307617188" d="0.202621459960938" tx="81.95" ty="12.4"/>
                   </matrix>
@@ -695,7 +767,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" keyMode="9728">
+            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2799" symbolType="graphic" loop="loop">
                   <matrix>
@@ -707,7 +779,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="4" keyMode="9728">
+            <DOMFrame index="8" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2799" symbolType="graphic" loop="loop">
                   <matrix>
@@ -719,9 +791,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="4" keyMode="9728">
+            <DOMFrame index="12" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2799" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2799" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.2679443359375" b="0.018798828125" c="0.018798828125" d="0.2679443359375" tx="64.35" ty="2.4"/>
                   </matrix>
@@ -731,7 +803,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="16" duration="4" keyMode="9728">
+            <DOMFrame index="16" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2799" symbolType="graphic" loop="loop">
                   <matrix>
@@ -743,7 +815,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="20" duration="4" keyMode="9728">
+            <DOMFrame index="20" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2799" symbolType="graphic" loop="loop">
                   <matrix>
@@ -755,7 +827,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" duration="4" keyMode="9728">
+            <DOMFrame index="24" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2799" symbolType="graphic" loop="loop">
                   <matrix>
@@ -767,7 +839,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="28" duration="4" keyMode="9728">
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2799" symbolType="graphic" loop="loop">
                   <matrix>
@@ -779,7 +851,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="9728">
+            <DOMFrame index="32" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2799" symbolType="graphic" loop="loop">
                   <matrix>
@@ -791,7 +863,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" duration="4" keyMode="9728">
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2799" symbolType="graphic" loop="loop">
                   <matrix>
@@ -803,7 +875,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="4" keyMode="9728">
+            <DOMFrame index="40" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2799" symbolType="graphic" loop="loop">
                   <matrix>
@@ -815,7 +887,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="44" duration="4" keyMode="9728">
+            <DOMFrame index="44" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2799" symbolType="graphic" loop="loop">
                   <matrix>
@@ -827,13 +899,25 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2799" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.202621459960938" b="-0.176315307617188" c="-0.176315307617188" d="0.202621459960938" tx="81.95" ty="12.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 9" color="#4D61EF">
           <frames>
-            <DOMFrame index="0" duration="4" keyMode="9728">
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2798" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2798" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.248367309570313" b="-0.103973388671875" c="-0.103973388671875" d="0.248367309570313" tx="81.9" ty="21.2"/>
                   </matrix>
@@ -843,7 +927,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" keyMode="9728">
+            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2798" symbolType="graphic" loop="loop">
                   <matrix>
@@ -855,7 +939,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="4" keyMode="9728">
+            <DOMFrame index="8" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2798" symbolType="graphic" loop="loop">
                   <matrix>
@@ -867,9 +951,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="4" keyMode="9728">
+            <DOMFrame index="12" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2798" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2798" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.268753051757813" b="0.0045623779296875" c="0.0045623779296875" d="0.268753051757813" tx="74.35" ty="13.25"/>
                   </matrix>
@@ -879,7 +963,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="16" duration="4" keyMode="9728">
+            <DOMFrame index="16" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2798" symbolType="graphic" loop="loop">
                   <matrix>
@@ -891,7 +975,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="20" duration="4" keyMode="9728">
+            <DOMFrame index="20" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2798" symbolType="graphic" loop="loop">
                   <matrix>
@@ -903,7 +987,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" duration="4" keyMode="9728">
+            <DOMFrame index="24" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2798" symbolType="graphic" loop="loop">
                   <matrix>
@@ -915,7 +999,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="28" duration="4" keyMode="9728">
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2798" symbolType="graphic" loop="loop">
                   <matrix>
@@ -927,7 +1011,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="9728">
+            <DOMFrame index="32" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2798" symbolType="graphic" loop="loop">
                   <matrix>
@@ -939,7 +1023,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" duration="4" keyMode="9728">
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2798" symbolType="graphic" loop="loop">
                   <matrix>
@@ -951,7 +1035,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="4" keyMode="9728">
+            <DOMFrame index="40" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2798" symbolType="graphic" loop="loop">
                   <matrix>
@@ -963,7 +1047,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="44" duration="4" keyMode="9728">
+            <DOMFrame index="44" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2798" symbolType="graphic" loop="loop">
                   <matrix>
@@ -975,11 +1059,35 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2798" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.248367309570313" b="-0.103973388671875" c="-0.103973388671875" d="0.248367309570313" tx="81.9" ty="21.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#A9C1DD">
+        <DOMLayer name="Layer 10" color="#A9C1DD" locked="true">
           <frames>
-            <DOMFrame index="0" duration="48" keyMode="9728">
+            <DOMFrame index="0" duration="48" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2797" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.247802734375" b="0.093109130859375" c="0.093109130859375" d="-0.247802734375" tx="39.65" ty="0.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2797" symbolType="graphic" loop="loop">
                   <matrix>
@@ -995,9 +1103,9 @@
         </DOMLayer>
         <DOMLayer name="Layer 11" color="#B3864E">
           <frames>
-            <DOMFrame index="0" duration="4" keyMode="9728">
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2796" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2796" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.246017456054688" b="0.0976715087890625" c="0.0976715087890625" d="-0.246017456054688" tx="30.55" ty="18.75"/>
                   </matrix>
@@ -1007,7 +1115,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" keyMode="9728">
+            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2796" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1019,7 +1127,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="4" keyMode="9728">
+            <DOMFrame index="8" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2796" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1031,9 +1139,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="4" keyMode="9728">
+            <DOMFrame index="12" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2796" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2796" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.249038696289063" b="0.0886993408203125" c="0.0886993408203125" d="-0.249038696289063" tx="31.3" ty="19.15"/>
                   </matrix>
@@ -1043,7 +1151,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="16" duration="4" keyMode="9728">
+            <DOMFrame index="16" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2796" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1055,7 +1163,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="20" duration="4" keyMode="9728">
+            <DOMFrame index="20" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2796" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1067,7 +1175,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" duration="8" keyMode="9728">
+            <DOMFrame index="24" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2796" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1079,7 +1187,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="9728">
+            <DOMFrame index="32" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2796" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1091,7 +1199,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" duration="4" keyMode="9728">
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2796" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1103,7 +1211,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="4" keyMode="9728">
+            <DOMFrame index="40" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2796" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1115,7 +1223,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="44" duration="4" keyMode="9728">
+            <DOMFrame index="44" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2796" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1127,13 +1235,25 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2796" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.246017456054688" b="0.0976715087890625" c="0.0976715087890625" d="-0.246017456054688" tx="30.55" ty="18.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 12" color="#B6BF8C">
           <frames>
-            <DOMFrame index="0" duration="4" keyMode="9728">
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2795" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2795" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.1732177734375" b="-0.203292846679688" c="-0.203292846679688" d="-0.1732177734375" tx="49.75" ty="34.75"/>
                   </matrix>
@@ -1143,7 +1263,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" keyMode="9728">
+            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2795" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1155,7 +1275,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="4" keyMode="9728">
+            <DOMFrame index="8" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2795" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1167,9 +1287,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="4" keyMode="9728">
+            <DOMFrame index="12" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2795" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2795" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.199356079101563" b="-0.1761474609375" c="-0.1761474609375" d="-0.199356079101563" tx="47.9" ty="37.35"/>
                   </matrix>
@@ -1179,7 +1299,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="16" duration="4" keyMode="9728">
+            <DOMFrame index="16" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2795" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1191,7 +1311,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="20" duration="4" keyMode="9728">
+            <DOMFrame index="20" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2795" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1203,7 +1323,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" duration="4" keyMode="9728">
+            <DOMFrame index="24" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2795" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1215,7 +1335,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="28" duration="4" keyMode="9728">
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2795" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1227,7 +1347,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="9728">
+            <DOMFrame index="32" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2795" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1239,7 +1359,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" duration="4" keyMode="9728">
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2795" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1251,7 +1371,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="4" keyMode="9728">
+            <DOMFrame index="40" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2795" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1263,7 +1383,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="44" duration="4" keyMode="9728">
+            <DOMFrame index="44" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2795" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1275,14 +1395,26 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2795" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.1732177734375" b="-0.203292846679688" c="-0.203292846679688" d="-0.1732177734375" tx="49.75" ty="34.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 13" color="#54C19B">
+        <DOMLayer name="Layer 13" color="#54C19B" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="16" keyMode="9728">
+            <DOMFrame index="0" duration="16" keyMode="15872">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="16" duration="4" keyMode="9728">
+            <DOMFrame index="16" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2793" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1294,7 +1426,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="20" duration="4" keyMode="9728">
+            <DOMFrame index="20" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2793" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1306,7 +1438,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" duration="4" keyMode="9728">
+            <DOMFrame index="24" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2793" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1318,7 +1450,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="28" duration="4" keyMode="9728">
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2793" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1330,7 +1462,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="9728">
+            <DOMFrame index="32" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2793" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1342,7 +1474,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" duration="4" keyMode="9728">
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2793" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1354,7 +1486,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="4" keyMode="9728">
+            <DOMFrame index="40" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2793" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1366,7 +1498,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="44" duration="4" keyMode="9728">
+            <DOMFrame index="44" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2793" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1378,13 +1510,25 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2793" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.193511962890625" b="0.185531616210938" c="0.185531616210938" d="0.193511962890625" tx="37.85" ty="105.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 14" color="#669891">
           <frames>
-            <DOMFrame index="0" duration="12" keyMode="9728">
+            <DOMFrame index="0" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2794" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.257354736328125" b="-0.074066162109375" c="-0.074066162109375" d="0.257354736328125" tx="67.1" ty="100.4"/>
                   </matrix>
@@ -1394,9 +1538,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="4" keyMode="9728">
+            <DOMFrame index="12" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2794" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.265213012695313" b="-0.03973388671875" c="-0.03973388671875" d="0.265213012695313" tx="63.2" ty="99.15"/>
                   </matrix>
@@ -1406,7 +1550,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="16" duration="4" keyMode="9728">
+            <DOMFrame index="16" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1418,7 +1562,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="20" duration="4" keyMode="9728">
+            <DOMFrame index="20" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1430,7 +1574,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" duration="4" keyMode="9728">
+            <DOMFrame index="24" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1442,7 +1586,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="28" duration="4" keyMode="9728">
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1454,7 +1598,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="9728">
+            <DOMFrame index="32" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1466,7 +1610,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" duration="4" keyMode="9728">
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1478,7 +1622,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="4" keyMode="9728">
+            <DOMFrame index="40" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1490,7 +1634,19 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="44" duration="4" keyMode="9728">
+            <DOMFrame index="44" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.257354736328125" b="-0.074066162109375" c="-0.074066162109375" d="0.257354736328125" tx="67.1" ty="100.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2794" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1504,9 +1660,21 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 15" color="#5EB69D">
+        <DOMLayer name="Layer 15" color="#5EB69D" locked="true">
           <frames>
-            <DOMFrame index="0" duration="48" keyMode="9728">
+            <DOMFrame index="0" duration="48" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2793" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.207321166992188" b="0.169342041015625" c="0.169342041015625" d="0.207321166992188" tx="56.35" ty="125.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2793" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1522,9 +1690,9 @@
         </DOMLayer>
         <DOMLayer name="Layer 16" color="#E758A0">
           <frames>
-            <DOMFrame index="0" duration="12" keyMode="9728">
+            <DOMFrame index="0" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2792" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2792" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.263656616210938" b="0.04803466796875" c="0.04803466796875" d="0.263656616210938" tx="61.55" ty="70.3"/>
                   </matrix>
@@ -1534,9 +1702,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="4" keyMode="9728">
+            <DOMFrame index="12" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2792" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2792" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.25933837890625" b="0.0689697265625" c="0.0689697265625" d="0.25933837890625" tx="55.15" ty="70.05"/>
                   </matrix>
@@ -1546,7 +1714,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="16" duration="4" keyMode="9728">
+            <DOMFrame index="16" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2792" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1558,7 +1726,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="20" duration="4" keyMode="9728">
+            <DOMFrame index="20" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2792" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1570,7 +1738,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" duration="4" keyMode="9728">
+            <DOMFrame index="24" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2792" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1582,7 +1750,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="28" duration="4" keyMode="9728">
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2792" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1594,7 +1762,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="9728">
+            <DOMFrame index="32" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2792" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1606,7 +1774,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" duration="4" keyMode="9728">
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2792" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1618,7 +1786,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="4" keyMode="9728">
+            <DOMFrame index="40" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2792" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1630,7 +1798,19 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="44" duration="4" keyMode="9728">
+            <DOMFrame index="44" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2792" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.263656616210938" b="0.04803466796875" c="0.04803466796875" d="0.263656616210938" tx="61.55" ty="70.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2792" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1646,9 +1826,9 @@
         </DOMLayer>
         <DOMLayer name="Layer 17" color="#DD7563">
           <frames>
-            <DOMFrame index="0" duration="4" keyMode="9728">
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2791" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2791" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.260543823242188" b="0.0689239501953125" c="0.0689239501953125" d="0.260543823242188" tx="71.6" ty="58.45"/>
                   </matrix>
@@ -1658,7 +1838,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="8" keyMode="9728">
+            <DOMFrame index="4" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2791" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1670,9 +1850,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="4" keyMode="9728">
+            <DOMFrame index="12" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2791" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2791" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.26800537109375" b="0.0270538330078125" c="0.0270538330078125" d="0.26800537109375" tx="71.3" ty="60.45"/>
                   </matrix>
@@ -1682,7 +1862,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="16" duration="4" keyMode="9728">
+            <DOMFrame index="16" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2791" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1694,7 +1874,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="20" duration="4" keyMode="9728">
+            <DOMFrame index="20" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2791" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1706,7 +1886,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" duration="4" keyMode="9728">
+            <DOMFrame index="24" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2791" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1718,7 +1898,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="28" duration="4" keyMode="9728">
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2791" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1730,7 +1910,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="9728">
+            <DOMFrame index="32" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2791" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1742,7 +1922,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" duration="4" keyMode="9728">
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2791" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1754,7 +1934,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="4" keyMode="9728">
+            <DOMFrame index="40" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2791" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1766,7 +1946,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="44" duration="4" keyMode="9728">
+            <DOMFrame index="44" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2791" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1778,13 +1958,25 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2791" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.260543823242188" b="0.0689239501953125" c="0.0689239501953125" d="0.260543823242188" tx="71.6" ty="58.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 18" color="#DB86CC">
           <frames>
-            <DOMFrame index="0" duration="4" keyMode="9728">
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2790" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2790" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.26641845703125" b="0.0412750244140625" c="0.0412750244140625" d="0.26641845703125" tx="64" ty="40.6"/>
                   </matrix>
@@ -1794,7 +1986,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="4" keyMode="9728">
+            <DOMFrame index="4" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2790" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1806,7 +1998,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="4" keyMode="9728">
+            <DOMFrame index="8" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2790" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1818,9 +2010,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="12" duration="4" keyMode="9728">
+            <DOMFrame index="12" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 2790" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2790" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.259292602539063" b="-0.0724029541015625" c="-0.0724029541015625" d="0.259292602539063" tx="73.6" ty="45.95"/>
                   </matrix>
@@ -1830,7 +2022,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="16" duration="4" keyMode="9728">
+            <DOMFrame index="16" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2790" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1842,7 +2034,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="20" duration="4" keyMode="9728">
+            <DOMFrame index="20" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2790" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1854,7 +2046,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="24" duration="4" keyMode="9728">
+            <DOMFrame index="24" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2790" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1866,7 +2058,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="28" duration="4" keyMode="9728">
+            <DOMFrame index="28" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2790" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1878,7 +2070,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="4" keyMode="9728">
+            <DOMFrame index="32" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2790" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1890,7 +2082,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" duration="4" keyMode="9728">
+            <DOMFrame index="36" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2790" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1902,7 +2094,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="4" keyMode="9728">
+            <DOMFrame index="40" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2790" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1914,7 +2106,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="44" duration="4" keyMode="9728">
+            <DOMFrame index="44" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 2790" symbolType="graphic" loop="loop">
                   <matrix>
@@ -1926,11 +2118,35 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2790" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.26641845703125" b="0.0412750244140625" c="0.0412750244140625" d="0.26641845703125" tx="64" ty="40.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 19" color="#51E3E9" current="true" isSelected="true">
+        <DOMLayer name="Layer 19" color="#51E3E9" locked="true">
           <frames>
-            <DOMFrame index="0" duration="48" keyMode="9728">
+            <DOMFrame index="0" duration="48" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 476" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.296829223632813" d="0.160293579101563" tx="47.5" ty="144"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 476" symbolType="graphic" loop="loop">
                   <matrix>
