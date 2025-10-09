@@ -65,24 +65,24 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="1" strokeStyle="4" edges="!-181 -344|81 -492!81 -492|463 -492"/>
-                    <Edge fillStyle1="5" strokeStyle="4" edges="!463 -492|463 226!463 226|289 492"/>
-                    <Edge fillStyle0="2" fillStyle1="5" strokeStyle="4" edges="!289 492|297 -344"/>
-                    <Edge fillStyle0="1" fillStyle1="5" strokeStyle="4" edges="!297 -344|463 -492"/>
                     <Edge fillStyle0="6" fillStyle1="5" strokeStyle="1" edges="!323 -322|323 292!323 292[403 206 443 120!443 120[466 -147 443 -432!443 -432|323 -322"/>
+                    <Edge fillStyle0="1" fillStyle1="5" strokeStyle="4" edges="!297 -344|463 -492"/>
+                    <Edge fillStyle1="5" strokeStyle="4" edges="!463 -492|463 226!463 226|289 492"/>
+                    <Edge fillStyle1="2" strokeStyle="4" edges="!289 492|-181 490!-181 490|-181 470"/>
+                    <Edge fillStyle1="3" strokeStyle="4" edges="!-181 470|-391 240"/>
+                    <Edge fillStyle1="3" strokeStyle="5" edges="!-391 240|-463 220!-463 220|-463 -118"/>
+                    <Edge fillStyle1="4" strokeStyle="5" edges="!-463 -118|-339 -216!-339 -216|-294 -216"/>
+                    <Edge fillStyle1="3" strokeStyle="4" edges="!-294 -216|-181 -320"/>
+                    <Edge fillStyle1="2" strokeStyle="4" edges="!-181 -320|-181 -344"/>
+                    <Edge fillStyle1="1" strokeStyle="4" edges="!-181 -344|81 -492!81 -492|463 -492"/>
+                    <Edge fillStyle0="4" fillStyle1="3" strokeStyle="4" edges="!-391 -126|-294 -216"/>
+                    <Edge fillStyle0="4" fillStyle1="3" strokeStyle="5" edges="!-463 -118|-391 -126"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="4" edges="!-391 -126|-391 240"/>
                     <Edge fillStyle0="3" fillStyle1="5" strokeStyle="2" edges="!428 196|431 218!431 218|439 227!439 227|447 218!447 218|450 196!450 196|447 174!447 174|439 165!439 165|431 174!431 174|428 196"/>
                     <Edge fillStyle0="3" fillStyle1="5" strokeStyle="3" edges="!310 354|315 381!315 381|325 392!325 392|336 381!336 381|340 354!340 354|336 327!336 327|325 316!325 316[319 316 315 327!315 327|310 354"/>
-                    <Edge fillStyle0="4" fillStyle1="3" strokeStyle="5" edges="!-463 -118|-391 -126"/>
-                    <Edge fillStyle0="4" fillStyle1="3" strokeStyle="4" edges="!-391 -126|-294 -216"/>
-                    <Edge fillStyle1="3" strokeStyle="4" edges="!-294 -216|-181 -320"/>
-                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="4" edges="!-181 -320|-181 470"/>
-                    <Edge fillStyle1="3" strokeStyle="4" edges="!-181 470|-391 240"/>
-                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="4" edges="!-391 240|-391 -126"/>
-                    <Edge fillStyle1="2" strokeStyle="4" edges="!-181 -320|-181 -344"/>
                     <Edge fillStyle0="1" fillStyle1="2" strokeStyle="4" edges="!-181 -344|297 -344"/>
-                    <Edge fillStyle1="4" strokeStyle="5" edges="!-463 -118|-339 -216!-339 -216|-294 -216"/>
-                    <Edge fillStyle1="3" strokeStyle="5" edges="!-391 240|-463 220!-463 220|-463 -118"/>
-                    <Edge fillStyle1="2" strokeStyle="4" edges="!289 492|-181 490!-181 490|-181 470"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="4" edges="!-181 -320|-181 470"/>
+                    <Edge fillStyle0="2" fillStyle1="5" strokeStyle="4" edges="!289 492|297 -344"/>
                   </edges>
                 </DOMShape>
               </elements>
