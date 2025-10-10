@@ -2579,13 +2579,13 @@
                 <Title>假肢店老板</Title>
                 <Char>假肢仙人</Char>
                 <Text>假肢最近打折，伙计。门口别杵着，进来挑件能挡子弹的。</Text>
-            </SubDialogue>            
+            </SubDialogue>
             <SubDialogue id="1">
                 <Name>假肢仙人</Name>
                 <Title>假肢店老板</Title>
                 <Char>假肢仙人</Char>
                 <Text>嗯？……原生肢体，还挺完整，有点可惜。</Text>
-            </SubDialogue>            
+            </SubDialogue>
             <SubDialogue id="2">
                 <Name>假肢仙人</Name>
                 <Title>假肢店老板</Title>
@@ -2743,13 +2743,13 @@
                 <Name>翅虎</Name>
                 <Title>堂主</Title>
                 <Char>翅虎</Char>
-                <Text>虽然A兵团的医疗技术同样顶尖，但若论产量，毋庸置疑还是我们黑铁会更胜一筹。</Text>
+                <Text>风向有变，刀可暂收。教主欣赏强者，黑铁会对强者向来是不吝啬资源的。</Text>
             </SubDialogue>
             <SubDialogue id="1">
                 <Name>翅虎</Name>
                 <Title>堂主</Title>
                 <Char>翅虎</Char>
-                <Text>你这样的稀世强者，我们黑铁会向来是不吝啬资源的。</Text>
+                <Text>与强者为敌，非上策。阁下的价值，远不止于一场厮杀。教主英明，能化干戈为玉帛。</Text>
             </SubDialogue>
         </Dialogue>
         <Dialogue id="1">
@@ -2757,7 +2757,19 @@
                 <Name>翅虎</Name>
                 <Title>堂主</Title>
                 <Char>翅虎</Char>
-                <Text>你还挺讨人喜欢的，真希望每次见面都如这次一般和平。</Text>
+                <Text>明路千条，暗道万千，情报如网，我在中枢结线。</Text>
+            </SubDialogue>    
+            <SubDialogue id="1">
+                <Name>翅虎</Name>
+                <Title>堂主</Title>
+                <Char>翅虎</Char>
+                <Text>能见到教主的人不多，能活着走出来的更少。</Text>
+            </SubDialogue>            
+            <SubDialogue id="2">
+                <Name>翅虎</Name>
+                <Title>堂主</Title>
+                <Char>翅虎</Char>
+                <Text>这份和平只是局间停子，你身上未明之处，我会跟进。</Text>
             </SubDialogue>
         </Dialogue>
         <Dialogue id="2">
@@ -2765,7 +2777,19 @@
                 <Name>翅虎</Name>
                 <Title>堂主</Title>
                 <Char>翅虎</Char>
-                <Text>没有必要的话我才不想和你打，要是我们之间能以朋友的身份相处多好。</Text>
+                <Text>其实比起打打杀杀，我更喜欢喝茶聊天。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>翅虎</Name>
+                <Title>堂主</Title>
+                <Char>翅虎</Char>
+                <Text>教主的中道之策很有道理。太极端的人我见过不少,如今大多不在了。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>翅虎</Name>
+                <Title>堂主</Title>
+                <Char>翅虎</Char>
+                <Text>不要看火凤那副样子，她只是……过于纯粹。炽热，纯粹，没有任何杂念。</Text>
             </SubDialogue>
         </Dialogue>
     </Dialogues>
@@ -2776,13 +2800,19 @@
                 <Name>火凤</Name>
                 <Title>堂主</Title>
                 <Char>火凤</Char>
-                <Text>胆敢在黑铁会的地盘闹事,我火凤堂的赤旌可不是摆设!</Text>
+                <Text>此地在黑铁会护下。守秩序，莫挑事；挑了事，我就挑你。我火凤堂的赤旌可不是摆设!</Text>
             </SubDialogue>
             <SubDialogue id="1">
                 <Name>火凤</Name>
                 <Title>堂主</Title>
                 <Char>火凤</Char>
-                <Text>教主的意志就是我的意志,黑铁会的秩序由我来守护,胆敢违逆者——杀无赦!</Text>
+                <Text>教主的意志就是我的意志,黑铁会的秩序由我来守护。胆敢违逆者——杀无赦!</Text>
+            </SubDialogue>            
+            <SubDialogue id="2">
+                <Name>火凤</Name>
+                <Title>堂主</Title>
+                <Char>火凤</Char>
+                <Text>教主赐我以火，我便为他焚尽天下！</Text>
             </SubDialogue>
         </Dialogue>
         <Dialogue id="1">
@@ -2790,7 +2820,19 @@
                 <Name>火凤</Name>
                 <Title>堂主</Title>
                 <Char>火凤</Char>
-                <Text>你很强,但别指望我会像翅虎那样对你客气。我只听命于教主一人!</Text>
+                <Text>黑龙之力确是刚猛，我亦敬他勇武。但力无缰，便成祸，只有教主能驾驭这等烈火！</Text>
+            </SubDialogue>            
+            <SubDialogue id="1">
+                <Name>火凤</Name>
+                <Title>堂主</Title>
+                <Char>火凤</Char>
+                <Text>我只听教主之令，我的烈焰只为教主的意志而燃。进则燎原，止则按刀，杀尽一切违逆之人！</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>火凤</Name>
+                <Title>堂主</Title>
+                <Char>火凤</Char>
+                <Text>烧尽一切阻碍！火焰净此腐城——赤旌在此，违者皆焚！</Text>
             </SubDialogue>
         </Dialogue>
         <Dialogue id="2">
@@ -2799,6 +2841,18 @@
                 <Title>堂主</Title>
                 <Char>火凤</Char>
                 <Text>教主待我恩重如山,这条命早已是他的。若有人胆敢侮辱教主,我必让他生不如死!</Text>
+            </SubDialogue>        
+            <SubDialogue id="1">
+                <Name>火凤</Name>
+                <Title>堂主</Title>
+                <Char>火凤</Char>
+                <Text>是教主将我从灰烬中拾起，赐予我新生与烈焰。无他，我早已是枯骨。我的全部，都为他而燃！</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>火凤</Name>
+                <Title>堂主</Title>
+                <Char>火凤</Char>
+                <Text>天下只两类——听教主令的，和该死的！</Text>
             </SubDialogue>
         </Dialogue>
     </Dialogues>
@@ -2809,9 +2863,15 @@
                 <Name>黑龙</Name>
                 <Title>堂主</Title>
                 <Char>黑龙</Char>
-                <Text>……我已经很久没遇见过强悍的对手了，近期以来，小子，你是头一个。</Text>
+                <Text>……我已经很久没遇见过强悍的对手了，这段日子里，小子，你是头一个。</Text>
             </SubDialogue>
             <SubDialogue id="1">
+                <Name>黑龙</Name>
+                <Title>堂主</Title>
+                <Char>黑龙</Char>
+                <Text>你这身体经过了千锤百炼，是个好材料。比我工坊里那些凡铁强多了。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
                 <Name>黑龙</Name>
                 <Title>堂主</Title>
                 <Char>黑龙</Char>
@@ -2824,6 +2884,20 @@
                 <Title>堂主</Title>
                 <Char>黑龙</Char>
                 <Text>想再打一场？随时都行！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>黑龙</Name>
+                <Title>堂主</Title>
+                <Char>黑龙</Char>
+                <Text>长兄之令即为天。你若遵规矩，我便按规矩办。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>黑龙</Name>
+                <Title>堂主</Title>
+                <Char>黑龙</Char>
+                <Text>我这儿缺扛鼎的肩膀，干完再说拳头的事。</Text>
             </SubDialogue>
         </Dialogue>
     </Dialogues>
@@ -2849,27 +2923,27 @@
                 <Title>教主</Title>
                 <Char>黑铁</Char>
                 <Text>孤之剑在你手，便代孤行。拔剑有度，斩于应斩。</Text>
-            </SubDialogue>    
+            </SubDialogue>
             <SubDialogue id="1">
                 <Name>黑铁</Name>
                 <Title>教主</Title>
                 <Char>黑铁</Char>
                 <Text>非天命错置，乃器识相逢。汝之锋，孤已认可。</Text>
-                </SubDialogue>
+            </SubDialogue>
             <SubDialogue id="2">
                 <Name>黑铁</Name>
                 <Title>教主</Title>
                 <Char>黑铁</Char>
                 <Text>前路多难，或有一日，并肩而战。此言，孤先记下。</Text>
             </SubDialogue>
-        </Dialogue>  
+        </Dialogue>
         <Dialogue id="2">
             <SubDialogue id="0">
                 <Name>黑铁</Name>
                 <Title>教主</Title>
                 <Char>黑铁</Char>
                 <Text>会行分封，堂坛护法，各守一面。礼军并举，政教同纲。</Text>
-            </SubDialogue>    
+            </SubDialogue>
             <SubDialogue id="1">
                 <Name>黑铁</Name>
                 <Title>教主</Title>
@@ -2882,14 +2956,14 @@
                 <Char>黑铁</Char>
                 <Text>或拒尽新器，或滥用新器。孤皆曾镇压、流放。孤镇二极，取其中道。</Text>
             </SubDialogue>
-        </Dialogue>  
+        </Dialogue>
         <Dialogue id="3">
             <SubDialogue id="0">
                 <Name>黑铁</Name>
                 <Title>教主</Title>
                 <Char>黑铁</Char>
                 <Text>改元不废旧号之岁名。记年以示政意，非徒饰辞。</Text>
-            </SubDialogue>    
+            </SubDialogue>
             <SubDialogue id="1">
                 <Name>黑铁</Name>
                 <Title>教主</Title>
@@ -2901,8 +2975,8 @@
                 <Title>教主</Title>
                 <Char>黑铁</Char>
                 <Text>夜观天象，以六爻推之。忌，则止兵；止，则民安。</Text>
-            </SubDialogue>        
-        </Dialogue>    
+            </SubDialogue>
+        </Dialogue>
         <Dialogue id="4">
             <SubDialogue id="0">
                 <Name>黑铁</Name>
@@ -2922,7 +2996,7 @@
                 <Char>黑铁</Char>
                 <Text>佣兵气短，唯利是图。A兵团强而善权，多以利合，难以久固。不可轻侮，亦非不可制。</Text>
             </SubDialogue>
-        </Dialogue> 
+        </Dialogue>
         <Dialogue id="5">
             <SubDialogue id="0">
                 <Name>黑铁</Name>
