@@ -1,7 +1,7 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#333333" width="1024" height="576" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" viewAngle3D="88.2079048186946" nextSceneIdentifier="2" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="2.音效文件夹" itemID="68368bd3-000028d2"/>
-          <DOMFolderItem name="2.音效文件夹/爆炸" itemID="68368bd3-000028d3"/>
+          <DOMFolderItem name="2.音效文件夹/爆炸" itemID="68368bd3-000028d3" isExpanded="true"/>
           <DOMFolderItem name="3.位图相关" itemID="6690e84b-000017e9"/>
           <DOMFolderItem name="3.音效相关" itemID="6690f591-00003200"/>
           <DOMFolderItem name="弹壳" itemID="68368c1d-0000293f"/>
@@ -12,7 +12,7 @@
           <DOMFolderItem name="诺亚" itemID="6551e7c0-00001580"/>
           <DOMFolderItem name="其他" itemID="656cb4b0-0000042a"/>
           <DOMFolderItem name="其他武器" itemID="6551e8df-000015b7"/>
-          <DOMFolderItem name="手雷" itemID="689365e6-00002ce7" isExpanded="true"/>
+          <DOMFolderItem name="手雷" itemID="689365e6-00002ce7"/>
           <DOMFolderItem name="手雷/BBPLAYER炸弹" itemID="66d5f180-00001b06"/>
           <DOMFolderItem name="手雷/鞭炮" itemID="66a5e01d-000014f1"/>
           <DOMFolderItem name="手雷/地瓜手雷" itemID="6896ec0b-00003d51"/>
@@ -29,17 +29,17 @@
           <DOMFolderItem name="特效-血液组" itemID="669d3970-00001798"/>
           <DOMFolderItem name="未分类子弹或特效" itemID="669d39d9-000017a4"/>
           <DOMFolderItem name="无AS链接" itemID="6690f257-00002761"/>
-          <DOMFolderItem name="无AS链接/不知道用在了哪的特效" itemID="669d3934-0000178b" isExpanded="true"/>
-          <DOMFolderItem name="无AS链接/不知道用在了哪的特效/1.特效文件夹" itemID="6692cad4-000036c0" isExpanded="true"/>
+          <DOMFolderItem name="无AS链接/不知道用在了哪的特效" itemID="669d3934-0000178b"/>
+          <DOMFolderItem name="无AS链接/不知道用在了哪的特效/1.特效文件夹" itemID="6692cad4-000036c0"/>
           <DOMFolderItem name="无AS链接/不知道用在了哪的特效/陨星坠地" itemID="6554d2de-0000309e" isExpanded="true"/>
           <DOMFolderItem name="无AS链接/不知道用在了哪的特效/陨星坠地/未命名文件夹 1" itemID="654f0342-00002948" isExpanded="true"/>
           <DOMFolderItem name="无AS链接/气功弹（和爆炸）素材" itemID="669d393b-0000178c"/>
           <DOMFolderItem name="子弹-持续组" itemID="669d3984-0000179c"/>
           <DOMFolderItem name="子弹-近战子弹专享座位" itemID="669d3aec-000017c1"/>
           <DOMFolderItem name="子弹-炮弹与爆炸组" itemID="669d34e9-0000177b"/>
-          <DOMFolderItem name="子弹-普通与穿刺组" itemID="669d349c-00001757" isExpanded="true"/>
-          <DOMFolderItem name="子弹-普通与穿刺组/暗器" itemID="68e4ed93-000020b3" isExpanded="true"/>
-          <DOMFolderItem name="子弹-气功组" itemID="669d3a53-000017b3" isExpanded="true"/>
+          <DOMFolderItem name="子弹-普通与穿刺组" itemID="669d349c-00001757"/>
+          <DOMFolderItem name="子弹-普通与穿刺组/暗器" itemID="68e4ed93-000020b3"/>
+          <DOMFolderItem name="子弹-气功组" itemID="669d3a53-000017b3"/>
           <DOMFolderItem name="子弹-特殊组" itemID="669d3a9d-000017bc"/>
           <DOMFolderItem name="自瞄准星特效" itemID="67139c16-00000684"/>
      </folders>
@@ -59,11 +59,11 @@
           <DOMBitmapItem name="3.位图相关/bitmap353.png" itemID="668e7c1a-0000024d" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap353.png" sourceLastImported="1720613914" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap353.png" bitmapDataHRef="M 93 1721575215.dat" frameRight="2120" frameBottom="2640"/>
           <DOMBitmapItem name="3.位图相关/bitmap355.png" itemID="668e7c1a-00000252" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap355.png" sourceLastImported="1720613914" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap355.png" bitmapDataHRef="M 94 1721575215.dat" frameRight="5320" frameBottom="4100"/>
           <DOMBitmapItem name="3.位图相关/bitmap357.png" itemID="668e7c1a-00000257" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap357.png" sourceLastImported="1720613914" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap357.png" bitmapDataHRef="M 95 1721575215.dat" frameRight="3400" frameBottom="3260"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4711.png" itemID="668e7c1c-0000050e" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap4711.png" sourceLastImported="1720613916" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4711.png" bitmapDataHRef="M 1 1721575215.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="3.位图相关/bitmap4711.png" itemID="668e7c1c-0000050e" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap4711.png" sourceLastImported="1720613916" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4711.png" bitmapDataHRef="M 1 1721575215.dat" frameRight="4800" frameBottom="4800"/>
           <DOMBitmapItem name="3.位图相关/bitmap4713.png" itemID="668e7c1c-00000518" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap4713.png" sourceLastImported="1720613916" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4713.png" bitmapDataHRef="M 2 1721575215.dat" frameRight="4800" frameBottom="4800"/>
           <DOMBitmapItem name="3.位图相关/bitmap4730.png" itemID="668e7c1c-00000531" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap4730.png" sourceLastImported="1720613916" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4730.png" bitmapDataHRef="M 78 1721575215.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="3.位图相关/bitmap4731.png" itemID="668e7c1c-00000536" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap4731.png" sourceLastImported="1720613916" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4731.png" bitmapDataHRef="M 79 1721575215.dat" frameRight="3940" frameBottom="2220"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4732.png" itemID="668e7c1c-0000053b" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap4732.png" sourceLastImported="1720613916" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4732.png" bitmapDataHRef="M 80 1721575215.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="3.位图相关/bitmap4732.png" itemID="668e7c1c-0000053b" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap4732.png" sourceLastImported="1720613916" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4732.png" bitmapDataHRef="M 80 1721575215.dat" frameRight="7320" frameBottom="5740"/>
           <DOMBitmapItem name="3.位图相关/bitmap4735.png" itemID="668e7c1c-0000054a" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap4735.png" sourceLastImported="1720613917" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4735.png" bitmapDataHRef="M 64 1721575215.dat" frameRight="9560" frameBottom="5600"/>
           <DOMBitmapItem name="3.位图相关/bitmap4736.png" itemID="668e7c1d-0000054f" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap4736.png" sourceLastImported="1720613917" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4736.png" bitmapDataHRef="M 65 1721575215.dat" frameRight="12000" frameBottom="8960"/>
           <DOMBitmapItem name="3.位图相关/bitmap4737.png" itemID="668e7c1d-00000554" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap4737.png" sourceLastImported="1720613917" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4737.png" bitmapDataHRef="M 66 1721575215.dat" frameRight="14160" frameBottom="8280"/>
