@@ -81,7 +81,15 @@
       "Bash(echo:*)",
       "Bash(ls:*)",
       "Bash(awk:*)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(git count-objects:*)",
+      "Bash(git rev-list:*)",
+      "Bash(git cat-file:*)",
+      "Bash(sort:*)",
+      "Bash(git gc:*)",
+      "Bash(git verify-pack:*)",
+      "Read(//c/**)",
+      "Bash(do echo \"Found: $file\")"
     ],
     "deny": [],
     "ask": []
