@@ -10,18 +10,25 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Progre
      * @return Boolean 如果满足要求返回true，否则返回false并移除目标
      */
     public static function validate(target:MovieClip):Boolean {
+        // 显式转换为数值类型，防止 XML 解析产生的字符串隐患
+        var minProgress:Number = Number(target.最小主线进度);
+        var maxProgress:Number = Number(target.最大主线进度);
+        var currentProgress:Number = Number(_root.主线任务进度);
+
+        // _root.发布消息(_root.主线任务进度, currentProgress, " vs ", target.最小主线进度,minProgress, " - ", target.最大主线进度, maxProgress, currentProgress < minProgress, " | ", currentProgress > maxProgress);
+
         // 检查最小主线进度要求
-        if (!isNaN(target.最小主线进度) && _root.主线任务进度 < target.最小主线进度) {
+        if (!isNaN(minProgress) && currentProgress < minProgress) {
             target.removeMovieClip();
             return false;
         }
-        
+
         // 检查最大主线进度限制
-        if (!isNaN(target.最大主线进度) && _root.主线任务进度 > target.最大主线进度) {
+        if (!isNaN(maxProgress) && currentProgress > maxProgress) {
             target.removeMovieClip();
             return false;
         }
-        
+
         return true;
     }
     
@@ -31,6 +38,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Progre
      * @return Boolean 如果有进度限制返回true
      */
     public static function hasProgressLimits(target:MovieClip):Boolean {
-        return !isNaN(target.最小主线进度) || !isNaN(target.最大主线进度);
+        return !isNaN(Number(target.最小主线进度)) || !isNaN(Number(target.最大主线进度));
     }
 }
