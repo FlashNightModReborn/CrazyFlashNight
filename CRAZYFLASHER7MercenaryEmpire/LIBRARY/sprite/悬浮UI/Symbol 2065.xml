@@ -114,8 +114,9 @@ on (release) {
 		_root[eval("each")].removeMovieClip();
 	}
 	*/
-	_root.gotoAndStop("离开界面");
-	//_root.gotoAndStop("封面");
+	// _root.gotoAndStop("离开界面");
+	// _root.gotoAndStop("封面");
+  _root.gotoAndStop("steam");
 
 }
 on (press) {
