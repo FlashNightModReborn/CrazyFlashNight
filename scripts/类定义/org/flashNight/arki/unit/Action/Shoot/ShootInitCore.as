@@ -221,13 +221,21 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             stateManager.updateState();
 
             var rMP:Number = that[remainingMagProp];
-            
-            // 使用状态管理器检查是否需要换弹
-            if (stateManager.needsReload(config.handPrefix, rMP)) {
-                // 检查是否需要开始换弹
-                if ((rMP > 0) || _root.控制目标 != parentRef._name) {
+
+            // 获取当前手的弹夹状态（直接检查射击次数是否超过弹匣容量）
+            var magazineCapName:String = weaponType + "弹匣容量";
+            var currentShot:Number = parentRef[weaponType].value.shot;
+            var currentHandIsEmpty:Boolean = currentShot >= parentRef[magazineCapName];
+
+            // 双枪模式下的换弹逻辑：
+            // 1. 如果当前手弹夹空了且有剩余弹匣 → 触发换弹
+            // 2. 如果当前手弹夹空了但无剩余弹匣 → 静默返回，不射击
+            // 3. 如果当前手弹夹未空 → 继续射击流程
+            if (currentHandIsEmpty) {
+                if (rMP > 0 || _root.控制目标 != parentRef._name) {
                     that.开始换弹();
                 }
+                // 弹夹已空，无论是否有弹匣都不能射击
                 return;
             }
             
