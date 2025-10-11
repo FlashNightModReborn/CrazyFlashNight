@@ -158,7 +158,9 @@ class org.flashNight.arki.scene.WaveSpawner {
         _root.帧计时器.添加单次任务(function():Void {
             _root.无限过图计时器.刷新计时器(计时器状态);
         }, 100);
-        
+
+        // 显示剩余敌人数标签
+        _root.d_剩余敌人数._visible = true;
 
         // 对于本轮要生成的出生点，记录其生成所需时长
         var hideSpawnPoints = {};
@@ -243,6 +245,12 @@ class org.flashNight.arki.scene.WaveSpawner {
             startWave();
         }else{
             isFinished = true;
+            // 只在波次较多时显示结束消息
+            if(totalWave >= 3){
+                var finishMessage:String = _root.获得翻译("所有波次结束");
+                _root.最上层发布文字提示(finishMessage);
+            }
+            _root.d_剩余敌人数._visible = false;
             stageManager.clearStage();
         }
     }
