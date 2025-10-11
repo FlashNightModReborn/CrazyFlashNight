@@ -289,4 +289,19 @@ EventBus.getInstance().subscribe("SceneChanged", function() {
 	var bus:EventBus = EventBus.getInstance();
 	var 光照等级 = this.获得当前光照等级();
 	bus.publish("WeatherTimeRateUpdated", 光照等级);
+
+	// 防御性兜底：确保场景中已存在的单位也能同步天气状态
+	// 这解决了单位初始化顺序可能早于WeatherTimeRateUpdated事件发布的问题
+	var gameworld:MovieClip = _root.gameworld;
+	if(gameworld) {
+		for(var each in gameworld) {
+			var unit:MovieClip = gameworld[each];
+			if(unit && unit.hp > 0) {
+				var ic:MovieClip = unit.新版人物文字信息 || unit.人物文字信息;
+				if(ic) {
+					ic._alpha = this.人物信息透明度;
+				}
+			}
+		}
+	}
 }, _root.天气系统); // 地图变动时，重新初始化子弹池
