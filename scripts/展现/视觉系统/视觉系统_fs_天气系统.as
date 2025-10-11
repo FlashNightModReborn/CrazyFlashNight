@@ -256,7 +256,15 @@ _root.天气系统.设置当前天气 = function()
             this.经验时间倍率 = 1;
             this.人物信息透明度 = 100;
 
-            // _root.发布消息("白天切换")
+            // 白天切换时也发布事件，确保所有单位同步更新
+            // 解决竞态条件：避免在切换时刻初始化的单位使用错误的透明度
+            if(!_root.gameworld.__updatedWeatherTimeRate) {
+                bus.publish("WeatherTimeRateUpdated", 光照等级);
+                // 设置 `__updatedWeatherTimeRate` 为不可枚举
+                _root.gameworld.__updatedWeatherTimeRate = true;
+                _global.ASSetPropFlags(_root.gameworld, ["__updatedWeatherTimeRate"], 1, false);
+            }
+
         }
     }
 
@@ -312,7 +320,7 @@ EventBus.getInstance().subscribe("WeatherTimeRateUpdated", function(光照等级
     this.经验时间倍率 = Interpolatior.linear(光照等级, 0, this.时间倍率启动等级, this.经验时间最大倍率, 1);
     this.人物信息透明度 = Interpolatior.linear(光照等级, 0, this.时间倍率启动等级, 0, 100);
 
-    // _root.发布消息(this.金币时间倍率, this.经验时间倍率, this.人物信息透明度)
+    // _root.发布消息(光照等级, this.时间倍率启动等级, this.金币时间倍率, this.经验时间倍率, this.人物信息透明度)
 }, _root.天气系统);
 
 EventBus.getInstance().subscribe("SceneChanged", function() {
