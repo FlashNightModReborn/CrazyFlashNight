@@ -132,7 +132,7 @@ _root.自动存盘 = function(){
             _root.存盘标志 = 1;
             // 存盘重连次数 = 0;
             _root.存盘动画.gotoAndPlay("存储成功");
-            _root.发布消息("游戏服务器储存成功！");
+            _root.发布消息("游戏本地储存成功！");
         }else{
             _root.存盘标志 = 1;
             _root.存盘动画.gotoAndPlay("存储成功");

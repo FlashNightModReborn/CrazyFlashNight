@@ -105,7 +105,7 @@ on(rollOut){
 }
 on (release) {
 	gotoAndStop(1);
-	fscommand("quit");
+	// fscommand("quit");
 	_root.exitlogin();
 	_root.停止在线检测();
 	/*
