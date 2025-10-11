@@ -64,6 +64,8 @@ _root.装备生命周期函数.镜之虎彻周期 = function(reflector:Object, p
                 var myPoint = {x:this._x,y:this._y};
                 _parent.localToGlobal(myPoint);
                 _root.gameworld.globalToLocal(myPoint);
+                myPoint.x = Math.max(_root.Xmin, Math.min(_root.Xmax, myPoint.x));
+                myPoint.y = Math.max(_root.Ymin, Math.min(_root.Ymax, myPoint.y));
                 声音 = "";
                 霰弹值 = 1;
                 子弹散射度 = 0;
