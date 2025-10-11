@@ -161,23 +161,25 @@ _root.cheatCode = function(作弊码){
 		}
 	}else if(作弊码.indexOf("#level:")>-1){
 		执行代码  = 作弊码.split("#level:")[1].split(" ").join("");
-		
+
 		_root.等级 = Number(执行代码);
 		_root.经验值 = _root.根据等级得升级所需经验(_root.等级-1);
 		_root.升级需要经验值 = _root.根据等级得升级所需经验(_root.等级);
+		_root.上次升级需要经验值 = _root.等级 > 1 ? _root.根据等级得升级所需经验(_root.等级 - 1) : 0;
 		_root.玩家信息界面.刷新经验值显示();
 		_root.最上层发布文字提示("当前等级变更为："+_root.等级+",经验值变更为："+_root.经验值+"-切换场景生效");
-		
+
 	}else if(作弊码.substring(0,2)==".."){
 		执行代码  = 作弊码.split("..")[1].split(" ").join("");
 		if(!isNaN(Number(执行代码))){
 			_root.等级 = Number(执行代码);
 			_root.经验值 = _root.根据等级得升级所需经验(_root.等级-1);
 			_root.升级需要经验值 = _root.根据等级得升级所需经验(_root.等级);
+			_root.上次升级需要经验值 = _root.等级 > 1 ? _root.根据等级得升级所需经验(_root.等级 - 1) : 0;
 			_root.玩家信息界面.刷新经验值显示();
 			_root.最上层发布文字提示("当前等级变更为："+_root.等级+",经验值变更为："+_root.经验值+"-切换场景生效");
 		}
-		
+
 	}
 	//_root.发布消息(作弊码.substring(0,2));
 }

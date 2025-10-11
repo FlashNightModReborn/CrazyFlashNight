@@ -174,4 +174,15 @@ _root.UI系统.经济面板刷新 = function(面板:MovieClip, 变量:String, cu
 _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
   _root.UI系统.金钱刷新(_root["金钱"], undefined);   // 无 override 时同样可工作
   _root.UI系统.虚拟币刷新(_root["虚拟币"], undefined);
+
+  // 防御性兜底：确保等级经验值阈值已设置，并刷新UI
+  if(!isNaN(_root.等级) && _root.等级 > 0){
+    if(isNaN(_root.升级需要经验值) || isNaN(_root.上次升级需要经验值)){
+      _root.升级需要经验值 = _root.根据等级得升级所需经验(_root.等级);
+      _root.上次升级需要经验值 = _root.等级 > 1 ? _root.根据等级得升级所需经验(_root.等级 - 1) : 0;
+    }
+    if(_root.玩家信息界面 && _root.玩家信息界面.刷新经验值显示){
+      _root.玩家信息界面.刷新经验值显示();
+    }
+  }
 }, null);
