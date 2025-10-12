@@ -78,10 +78,22 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
                 icon.highlights = [_root.物品栏界面[use]];
             }
             // 如果来源是背包则高亮物品栏强化界面
-            if(this.collection === _root.物品栏.背包 & (type == "武器" || type == "防具")){
+            if(this.collection === _root.物品栏.背包 && (type == "武器" || type == "防具")){
                 var 装备强化界面 = _root.物品栏界面.装备强化界面;
-                if(装备强化界面 != null && 装备强化界面.当前物品 == null){
-                    装备强化界面.进入强化界面标志.gotoAndStop(2);
+                if(装备强化界面 != null){
+                    // 如果没有当前物品，高亮进入强化界面标志
+                    if(装备强化界面.当前物品 == null){
+                        装备强化界面.进入强化界面标志.gotoAndStop(2);
+                    }
+                    // 如果有当前物品且在强化度转换界面，检查是否可以高亮转换图标
+                    else if(装备强化界面.强化度转换物品图标 != null){
+                        var 当前装备类型 = 装备强化界面.当前物品.getData().use;
+                        // 类型匹配且不是同一件装备
+                        if(当前装备类型 == use && this.item !== 装备强化界面.当前物品){
+                            if(!icon.highlights) icon.highlights = [];
+                            icon.highlights.push(装备强化界面.强化度转换物品图标);
+                        }
+                    }
                 }
             }
         }else if(use == "药剂"){
@@ -170,9 +182,17 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
         // 强化界面
         if(this.collection === _root.物品栏.背包 && (itemData.type === "武器" || itemData.type === "防具")){
             var 装备强化界面 = _root.物品栏界面.装备强化界面;
-            if(装备强化界面 != null && 装备强化界面.进入强化界面标志.area.hitTest(xmouse, ymouse)){
-                装备强化界面.刷新强化物品(this.item, this.index, this, this.collection);
-                return;
+            if(装备强化界面 != null){
+                // 检测进入强化界面标志
+                if(装备强化界面.进入强化界面标志.area.hitTest(xmouse, ymouse)){
+                    装备强化界面.刷新强化物品(this.item, this.index, this, this.collection);
+                    return;
+                }
+                // 检测强化度转换物品图标
+                if(装备强化界面.强化度转换物品图标 != null && 装备强化界面.强化度转换物品图标.area.hitTest(xmouse, ymouse)){
+                    装备强化界面.添加强化度转换物品(this.item, this.index, this, this.collection);
+                    return;
+                }
             }
         }
     }

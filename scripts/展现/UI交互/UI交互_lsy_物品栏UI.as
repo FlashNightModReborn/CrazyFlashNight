@@ -600,6 +600,7 @@ _root.物品UI函数.初始化强化界面 = function(UI:MovieClip){
 	UI.执行强化装备 = this.执行强化装备;
 
 	UI.刷新强化度转换界面 = this.刷新强化度转换界面;
+	UI.添加强化度转换物品 = this.添加强化度转换物品;
 	UI.执行强化度转换 = this.执行强化度转换;
 
 	UI.初始化插件改装界面 = this.初始化插件改装界面;
@@ -764,14 +765,84 @@ _root.物品UI函数.执行强化装备 = function(){
 
 
 _root.物品UI函数.刷新强化度转换界面 = function(){
-	var panel = this;
+	// 清空强化度转换物品相关数据
+	if(this.强化度转换物品栏 != null){
+		this.强化度转换物品栏.getDispatcher().unsubscribe("ItemRemoved", _root.物品UI函数.检查强化度转换物品是否移动);
+	}
 	this.强化度转换物品 = null;
 	this.强化度转换物品栏 = null;
-	this.强化度转换物品图标.itemIcon = new ItemIcon(this.强化度转换物品图标, null, null);
+	this.强化度转换物品格 = null;
+	this.强化度转换物品图标原始图标 = null;  // 清空原始图标引用
+	this.强化度转换物品图标.itemIcon.init(null, null);
+	this.强化度转换名字文本.text = "";
+}
+
+_root.物品UI函数.添加强化度转换物品 = function(item, index, itemIcon, inventory){
+	// 检查是否已有转换物品
+	if(this.强化度转换物品 != null) return;
+
+	// 检查类型是否匹配
+	var 当前物品类型 = this.当前物品.getData().use;
+	var 转换物品类型 = item.getData().use;
+	if(当前物品类型 != 转换物品类型){
+		_root.发布消息("只能在相同类型的装备之间转换强化度！");
+		return;
+	}
+
+	// 检查是否为同一件物品
+	if(inventory === this.当前物品栏 && index === this.当前物品格){
+		_root.发布消息("不能选择同一件装备！");
+		return;
+	}
+
+	// 设置强化度转换物品
+	this.强化度转换物品 = item;
+	this.强化度转换物品格 = index;
+	this.强化度转换物品图标原始图标 = itemIcon;  // 保存原始图标引用
+	this.强化度转换物品栏 = inventory;
+	this.强化度转换物品图标.itemIcon.init(item.name, item);
+
+	// 订阅物品移除事件
+	inventory.getDispatcher().subscribe("ItemRemoved", _root.物品UI函数.检查强化度转换物品是否移动, this);
+
+	// 显示转换物品信息
+	var itemData = item.getData();
+	this.强化度转换名字文本.text = itemData.displayname + " +" + item.value.level;
+
+	_root.播放音效("9mmclip2.wav");
+}
+
+_root.物品UI函数.检查强化度转换物品是否移动 = function(inventory, index){
+	if(this.强化度转换物品格 == index){
+		this.刷新强化度转换界面();
+	}
 }
 
 _root.物品UI函数.执行强化度转换 = function(){
-	//
+	if(this.强化度转换物品 == null){
+		_root.发布消息("请先放入要转换的装备！");
+		return;
+	}
+
+	// 交换强化度
+	var 临时等级 = this.当前物品.value.level;
+	this.当前物品.value.level = this.强化度转换物品.value.level;
+	this.强化度转换物品.value.level = 临时等级;
+
+	// 刷新所有相关图标显示
+	this.当前物品图标.refreshValue();  // 刷新当前物品在背包中的图标
+	this.强化物品图标.itemIcon.refreshValue();  // 刷新强化界面左边的大图标
+	this.强化度转换物品图标.itemIcon.refreshValue();  // 刷新强化度转换界面右边的大图标
+	if(this.强化度转换物品图标原始图标){  // 刷新转换物品在背包中的图标
+		this.强化度转换物品图标原始图标.refreshValue();
+	}
+
+	_root.播放音效("9mmclip2.wav");
+	_root.最上层发布文字提示("强化度转换成功！");
+
+	// 清理并返回默认界面
+	this.刷新强化度转换界面();
+	this.gotoAndStop("默认");
 }
 
 
