@@ -4,8 +4,9 @@ import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.TooltipDataSelector;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.component.Damage.*;
+import org.flashNight.gesh.object.ObjectUtil;
 
-import org.flashNight.naki.Sort.QuickSort;
+import org.flashNight.naki.Sort.InsertionSort;
 
 /**
  * 注释文本构建器类
@@ -259,6 +260,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
 
     if (data.magicdefence) {
       for (var key in data.magicdefence) {
+        if (ObjectUtil.isInternalKey(key)) continue; // 跳过内部字段（如 __dictUID）
         var displayName = (key == "基础" ? "能量" : key);
         var val = data.magicdefence[key];
         if (val != undefined && Number(val) != 0) result.push(displayName, "抗性：", val, "<BR>");
@@ -404,6 +406,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   public static function quickBuildMagicDefence(magicdefence:Object):String{
     var mdList = [];
     for(var key in magicdefence) {
+      if (ObjectUtil.isInternalKey(key)) continue; // 跳过内部字段（如 __dictUID）
       var mdName = (key === "基础" ? "能量" : key);
       var value = magicdefence[key];
       if (value) mdList.push(mdName + ": " + value);
@@ -422,7 +425,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     var sortFunc = function(keyA, keyB){
       return priorities[keyA] - priorities[keyB];
     }
-    return QuickSort.adaptiveSort(list, sortFunc);
+    return InsertionSort.sort(list, sortFunc);
   }
 
 
