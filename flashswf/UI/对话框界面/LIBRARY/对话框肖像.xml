@@ -206,8 +206,10 @@
 	var 控制对象 = _root.gameworld[_root.控制目标];
 	this.发型 = _root.发型;
 	this.脸型 = _root.脸型;
-	var 头部装备数据 = _root.getItemData(装备栏.getNameString("头部装备"));
+	var 头部装备数据 = _root.getItemData(控制对象.头部装备.name);
 	if (头部装备数据.helmet) this.发型 = "";
+	
+	// _root.发布消息(控制对象.头部装备.name, 头部装备数据.helmet, this.发型);
 	//
 	if (控制对象.hasDressup === true)
 	{
@@ -231,9 +233,9 @@
 	else
 	{
 		头部装备 = 头部装备数据.data;
-		var 上装装备 = _root.getItemData(装备栏.getNameString("上装装备")).data;
-		var 手部装备 = _root.getItemData(装备栏.getNameString("手部装备")).data;
-		var 下装装备 = _root.getItemData(装备栏.getNameString("下装装备")).data;
+		var 上装装备 = _root.getItemData(控制对象.上装装备.name).data;
+		var 手部装备 = _root.getItemData(控制对象.手部装备.name).data;
+		var 下装装备 = _root.getItemData(控制对象.下装装备.name).data;
 		面具 = 头部装备.dressup;
 		身体 = 性别 + 上装装备.dressup + "身体";
 		上臂 = 性别 + 上装装备.dressup + "上臂";
@@ -245,11 +247,11 @@
 		左大腿 = 性别 + 下装装备.dressup + "左大腿";
 		右大腿 = 性别 + 下装装备.dressup + "右大腿";
 		小腿 = 性别 + 下装装备.dressup + "小腿";
-		脚 = _root.getItemData(装备栏.getNameString("脚部装备")).data.dressup;
-		刀 = _root.getItemData(装备栏.getNameString("刀")).data.dressup;
-		长枪 = _root.getItemData(装备栏.getNameString("长枪")).data.dressup;
-		手枪 = _root.getItemData(装备栏.getNameString("手枪")).data.dressup;
-		手枪2 = _root.getItemData(装备栏.getNameString("手枪2")).data.dressup;
+		脚 = _root.getItemData(控制对象.脚部装备.name).data.dressup;
+		刀 = _root.getItemData(控制对象.刀.name).data.dressup;
+		长枪 = _root.getItemData(控制对象.长枪.name).data.dressup;
+		手枪 = _root.getItemData(控制对象.手枪.name).data.dressup;
+		手枪2 = _root.getItemData(控制对象.手枪2.name).data.dressup;
 	}
 	//
 	_parent.aa.text = _parent._parent.人物表情;
