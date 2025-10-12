@@ -256,7 +256,15 @@ _root.天气系统.设置当前天气 = function()
             this.经验时间倍率 = 1;
             this.人物信息透明度 = 100;
 
-            // _root.发布消息("白天切换")
+            // 白天切换时也发布事件，确保所有单位同步更新
+            // 解决竞态条件：避免在切换时刻初始化的单位使用错误的透明度
+            if(!_root.gameworld.__updatedWeatherTimeRate) {
+                bus.publish("WeatherTimeRateUpdated", 光照等级);
+                // 设置 `__updatedWeatherTimeRate` 为不可枚举
+                _root.gameworld.__updatedWeatherTimeRate = true;
+                _global.ASSetPropFlags(_root.gameworld, ["__updatedWeatherTimeRate"], 1, false);
+            }
+
         }
     }
 
@@ -273,6 +281,36 @@ _root.天气系统.设置当前天气 = function()
     // }
 };
 
+/**
+ * 防御性刷新：刷新场景中所有单位的天气相关状态（如信息框透明度）
+ * 用于场景切换时确保所有单位同步天气状态
+ * 解决单位初始化顺序可能早于天气事件发布的问题
+ *
+ * @return Number 返回刷新的单位数量
+ */
+_root.天气系统.防御性刷新场景单位天气状态 = function():Number {
+    var gameworld:MovieClip = _root.gameworld;
+    if(!gameworld) {
+        return 0;
+    }
+
+    var 刷新计数 = 0;
+    var 人物信息透明度 = this.人物信息透明度;
+
+    for(var each in gameworld) {
+        var unit:MovieClip = gameworld[each];
+        if(unit && unit.hp > 0) {
+            var ic:MovieClip = unit.新版人物文字信息 || unit.人物文字信息;
+            if(ic) {
+                ic._alpha = 人物信息透明度;
+                刷新计数++;
+            }
+        }
+    }
+
+    return 刷新计数;
+};
+
 
 EventBus.getInstance().subscribe("WeatherUpdated", _root.天气系统.设置当前天气, _root.天气系统);
 
@@ -282,11 +320,15 @@ EventBus.getInstance().subscribe("WeatherTimeRateUpdated", function(光照等级
     this.经验时间倍率 = Interpolatior.linear(光照等级, 0, this.时间倍率启动等级, this.经验时间最大倍率, 1);
     this.人物信息透明度 = Interpolatior.linear(光照等级, 0, this.时间倍率启动等级, 0, 100);
 
-    // _root.发布消息(this.金币时间倍率, this.经验时间倍率, this.人物信息透明度)
+    // _root.发布消息(光照等级, this.时间倍率启动等级, this.金币时间倍率, this.经验时间倍率, this.人物信息透明度)
 }, _root.天气系统);
 
 EventBus.getInstance().subscribe("SceneChanged", function() {
 	var bus:EventBus = EventBus.getInstance();
 	var 光照等级 = this.获得当前光照等级();
 	bus.publish("WeatherTimeRateUpdated", 光照等级);
+
+	// 防御性兜底：确保场景中已存在的单位也能同步天气状态
+	// 这解决了单位初始化顺序可能早于WeatherTimeRateUpdated事件发布的问题
+	this.防御性刷新场景单位天气状态();
 }, _root.天气系统); // 地图变动时，重新初始化子弹池

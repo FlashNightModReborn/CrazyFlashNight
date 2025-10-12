@@ -62,13 +62,13 @@ _root.UI系统.韧性刷新显示 = function()
     this.frame = Math.max(1, frameCount + 1 - Math.floor(poiseNumber * frameCount)); // 控制韧性动画
 }
 
-_root.UI系统.经验刷新显示 = function() 
+_root.UI系统.经验刷新显示 = function()
 {
     // 验证经验值数据
     if (isNaN(_root.经验值) || isNaN(_root.升级需要经验值) || isNaN(_root.上次升级需要经验值)) return;
 
     // _root.发布消息("经验值", _root.经验值, _root.升级需要经验值, _root.上次升级需要经验值); // 发布经验值消息
-    
+
     // 计算经验值进度
     var a = Math.floor((_root.升级需要经验值 - _root.经验值) / (_root.升级需要经验值 - _root.上次升级需要经验值) * 100);
 
@@ -78,17 +78,44 @@ _root.UI系统.经验刷新显示 = function()
         // this.gotoAndStop(a); // 控制经验条动画
         this.frame = a; // 存储当前帧数
     }
-    
+
     // 显示经验百分比
     this.经验百分比.text = Math.floor((_root.经验值 / _root.升级需要经验值) * 100) + "%";
 
     // _root.发布消息("经验百分比.text", 经验百分比.text); // 发布经验值消息
-    
+
     // 格式化当前等级为三位数，前面补零
     var 格式化当前等级 = StringUtils.padStart(String(_root.等级), 3, "0");
 
     // _root.发布消息("格式化当前等级", 格式化当前等级); // 发布经验值消息
     this.玩家等级.text = 格式化当前等级;
+}
+
+/**
+ * 防御性刷新：确保等级经验值阈值已设置并刷新UI
+ * 用于防止加载顺序问题导致UI显示默认值（如999）
+ *
+ * @return Boolean 如果成功刷新返回true，否则返回false
+ */
+_root.UI系统.防御性刷新等级经验 = function():Boolean {
+    // 验证等级数据有效性
+    if(isNaN(_root.等级) || _root.等级 <= 0) {
+        return false;
+    }
+
+    // 检查并设置缺失的阈值
+    if(isNaN(_root.升级需要经验值) || isNaN(_root.上次升级需要经验值)) {
+        _root.升级需要经验值 = _root.根据等级得升级所需经验(_root.等级);
+        _root.上次升级需要经验值 = _root.等级 > 1 ? _root.根据等级得升级所需经验(_root.等级 - 1) : 0;
+    }
+
+    // 触发UI刷新
+    if(_root.玩家信息界面 && _root.玩家信息界面.刷新经验值显示) {
+        _root.玩家信息界面.刷新经验值显示();
+        return true;
+    }
+
+    return false;
 }
 
 _root.UI系统.初始化玩家信息界面 = function() 

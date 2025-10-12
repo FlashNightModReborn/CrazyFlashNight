@@ -24,7 +24,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
     public static function initializeUnit(target:MovieClip):Void {
         // 排除从非gameworld召唤出的单位
         if(target._parent !== _root.gameworld) return;
-        
+
         ComponentInitializer.initialize(target);
         ParameterInitializer.initialize(target);
         EventInitializer.initialize(target);
@@ -33,9 +33,16 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         DisplayNameInitializer.initialize(target);
 
         TargetCacheUpdater.addUnit(target);
-        
+
         ExtraPropertyInitializer.initialize(target);
         BuffManagerInitializer.initialize(target);
+
+        /*
+        // 防御性调用：确保所有组件准备就绪后立即同步信息框透明度状态
+        // 补充 EventInitializer 中可能过早的天气同步调用
+        var wtfunc:Function = WeatherUpdater.getUpdater();
+        wtfunc.call(target);
+        */
     }
 
     /**
