@@ -1,12 +1,12 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2.冷兵器相关/烈焰斩马刀/刀-烈焰斩马刀" itemID="68d25e71-00000d9b" linkageExportForAS="true" linkageIdentifier="刀-烈焰斩马刀" lastModified="1758617201">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2.冷兵器相关/烈焰斩马刀/刀-烈焰斩马刀" itemID="68d25e71-00000d9b" linkageExportForAS="true" linkageIdentifier="刀-烈焰斩马刀" lastModified="1760279030">
   <timeline>
     <DOMTimeline name="刀-烈焰斩马刀">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="烈焰斩马刀发光纹路" name="发光纹路" blendMode="add" centerPoint3DX="-0.95" centerPoint3DY="197.9">
+                <DOMSymbolInstance libraryItemName="烈焰斩马刀发光纹路" name="发光纹路" blendMode="add" centerPoint3DX="-0.95" centerPoint3DY="197.9" isVisible="false">
                   <matrix>
                     <Matrix a="1.03805541992188" d="1.03805541992188" tx="-22.35" ty="45.2"/>
                   </matrix>
@@ -18,7 +18,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#BBEF72" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 1" color="#BBEF72" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
