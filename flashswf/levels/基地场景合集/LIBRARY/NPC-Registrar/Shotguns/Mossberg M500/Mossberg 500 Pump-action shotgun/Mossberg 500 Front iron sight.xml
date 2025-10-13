@@ -37,11 +37,11 @@
                   </strokes>
                   <edges>
                     <Edge fillStyle0="1" strokeStyle="1" edges="!13 36|0 42!0 42|0 52!0 52|102 52!102 52|102 36!102 36|93 36"/>
-                    <Edge fillStyle0="3" strokeStyle="1" edges="!93 36|93 25!93 25|82 25"/>
-                    <Edge fillStyle0="2" strokeStyle="1" edges="!82 25|82 7!82 7|74 0!74 0[65 11 50 15!50 15|50 25"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!93 36|13 36"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!13 36|37 25!37 25|50 25"/>
                     <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!50 25|82 25"/>
-                    <Edge fillStyle0="3" strokeStyle="1" edges="!50 25|37 25!37 25|13 36"/>
-                    <Edge fillStyle0="3" fillStyle1="1" edges="!13 36|93 36"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!82 25|82 7!82 7|74 0!74 0[65 11 50 15!50 15|50 25"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!93 36|93 25!93 25|82 25"/>
                     <Edge cubics="!102 52(;102,52 102,36 102,36q102 52 102 36);"/>
                     <Edge cubics="!0 42(;0,42 0,52 0,52q0 42 0 52);"/>
                     <Edge cubics="!102 36(;102,36 93,36 93,36q102 36 93 36);"/>
