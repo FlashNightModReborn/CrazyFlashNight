@@ -107,24 +107,24 @@ class org.flashNight.arki.item.EquipmentUtil{
         tierKeyToNameDict = {};
         tierNameToMaterialDict = {};
         tierMaterialToNameDict = {};
-        for(var tierName in tierNameToKeyDict){
-            var tierKey = tierNameToKeyDict[tierName];
-            var mat = tierToMaterialDict[tierKey];
+        for(var tierName:String in tierNameToKeyDict){
+            var tierKey:String = tierNameToKeyDict[tierName];
+            var mat:String = tierToMaterialDict[tierKey];
             tierKeyToNameDict[tierKey] = tierName;
             tierNameToMaterialDict[tierName] = mat;
             tierMaterialToNameDict[mat] = tierName;
         }
         materialToTierDict = {};
-        for(var tierKey in tierToMaterialDict){
+        for(var tierKey:String in tierToMaterialDict){
             materialToTierDict[tierToMaterialDict[tierKey]] = tierKey;
         }
 
         if(modData.length <= 0) return;
 
         //
-        var dict = {};
-        var list = [];
-        var useLists = {
+        var dict:Object = {};
+        var list:Array = [];
+        var useLists:Object = {
             头部装备: [],
             上装装备: [],
             手部装备: [],
@@ -136,30 +136,30 @@ class org.flashNight.arki.item.EquipmentUtil{
             刀: []
         };
 
-        for(var i=0; i<modData.length; i++){
-            var mod = modData[i];
-            var name = mod.name;
+        for(var i:Number = 0; i < modData.length; i++){
+            var mod:Object = modData[i];
+            var name:String = mod.name;
             //
-            var useArr = mod.use.split(",");
-            for(var useIndex=0; useIndex < useArr.length; useIndex++){
-                var useKey = useArr[useIndex];
+            var useArr:Array = mod.use.split(",");
+            for(var useIndex:Number = 0; useIndex < useArr.length; useIndex++){
+                var useKey:String = useArr[useIndex];
                 if(useLists[useKey]){
                     useLists[useKey].push(name);
                 }
             }
             if(mod.weapontype){
-                var typeArr = mod.weapontype.split(",");
+                var typeArr:Array = mod.weapontype.split(",");
                 if(typeArr.length > 0){
-                    var wdict = {};
-                    for(var typeIndex = 0; typeIndex < typeArr.length; typeIndex++){
+                    var wdict:Object = {};
+                    for(var typeIndex:Number = 0; typeIndex < typeArr.length; typeIndex++){
                         wdict[typeArr[typeIndex]] = true;
                     }
                     mod.weapontypeDict = wdict;
                 }
             }
             // 调整百分比区的值为小数
-            var percentage = mod.stats.percentage;
-            for(var key in percentage){
+            var percentage:Object = mod.stats.percentage;
+            for(var key:String in percentage){
                 percentage[key] *= 0.01;
             }
 
@@ -187,10 +187,10 @@ class org.flashNight.arki.item.EquipmentUtil{
     * 查找所有可用的进阶材料
     */
     public static function getAvailableTierMaterials(item:BaseItem):Array{
-        var rawItemData = ItemUtil.getRawItemData(item.name);
-        var list = [];
-        for(var i=0; i<tierDataList.length; i++){
-            var tierKey = tierDataList[i];
+        var rawItemData:Object = ItemUtil.getRawItemData(item.name);
+        var list:Array = [];
+        for(var i:Number = 0; i < tierDataList.length; i++){
+            var tierKey:String = tierDataList[i];
             if(rawItemData[tierKey]) list.push(tierToMaterialDict[tierKey]);
         }
         if(list.length === 0){
@@ -205,8 +205,8 @@ class org.flashNight.arki.item.EquipmentUtil{
     * 查找进阶插件是否能合法装备
     */
     public static function isTierMaterialAvailable(item:BaseItem, matName:String):Boolean{
-        var rawItemData = ItemUtil.getRawItemData(item.name);
-        var tierKey = materialToTierDict[matName];
+        var rawItemData:Object = ItemUtil.getRawItemData(item.name);
+        var tierKey:String = materialToTierDict[matName];
         if(rawItemData[tierKey]) return true;
         if(rawItemData.type === "防具" && rawItemData.use !== "颈部装备" && rawItemData.data.level < 10){
             if(tierKey === "data_2" || tierKey === "data_3" || tierKey === "data_4") return true;
@@ -220,16 +220,16 @@ class org.flashNight.arki.item.EquipmentUtil{
     * 查找所有可用的配件材料
     */
     public static function getAvailableModMaterials(item:BaseItem):Array{
-        var rawItemData = ItemUtil.getRawItemData(item.name);
-        var list = [];
-        var mods = item.value.mods;
+        var rawItemData:Object = ItemUtil.getRawItemData(item.name);
+        var list:Array = [];
+        var mods:Array = item.value.mods;
 
         // 查找长枪类装备是否有导轨
-        var hasRail = false;
+        var hasRail:Boolean = false;
         if(rawItemData.use === "长枪"){
             if(rawItemData.weapontype === "突击步枪") hasRail = true;
             else{
-                for(var i=0; i<mods.length; i++){
+                for(var i:Number = 0; i < mods.length; i++){
                     if(mods[i] === "战术导轨" || mods[i] === "战术鱼骨零件"){
                         hasRail = true;
                         break;
@@ -238,11 +238,11 @@ class org.flashNight.arki.item.EquipmentUtil{
             }
         }
 
-        var useList = modUseLists[rawItemData.use];
-        for(var i=0; i < useList.length; i++){
-            var modName = useList[i];
-            var modData = modDict[modName];
-            var weapontypeDict = modData.weapontypeDict;
+        var useList:Array = modUseLists[rawItemData.use];
+        for(var i:Number = 0; i < useList.length; i++){
+            var modName:String = useList[i];
+            var modData:Object = modDict[modName];
+            var weapontypeDict:Object = modData.weapontypeDict;
             if(!weapontypeDict){
                 list.push(modName);
             }else if(weapontypeDict[rawItemData.weapontype]){
@@ -258,14 +258,14 @@ class org.flashNight.arki.item.EquipmentUtil{
     * 查找配件插件是否能合法装备
     */
     public static function isModMaterialAvailable(item:BaseItem, itemData:Object, matName:String):Number{
-        var mods = item.value.mods;
-        var modData = modDict[matName];
+        var mods:Array = item.value.mods;
+        var modData:Object = modDict[matName];
         if(!modData) return 0;
 
-        var modslot = itemData.data.modslot;
-        var len = mods.length;
+        var modslot:Number = itemData.data.modslot;
+        var len:Number = mods.length;
         if(len > 0 && len >= modslot) return -1; // 槽位已满
-        for(var i=0; i<len; i++){
+        for(var i:Number = 0; i < len; i++){
             if(mods[i] === matName) return -2; // 已装备同名配件
         }
         //
@@ -294,16 +294,16 @@ class org.flashNight.arki.item.EquipmentUtil{
     */
     public static function calculateData(item:BaseItem, itemData:Object):Void{
         var data:Object = itemData.data;
-        var value = item.value;
-        var level = value.level;
+        var value:Object = item.value;
+        var level:Number = value.level;
 
         var operators:Object = propertyOperators; // 三种算子
 
         // 获取对应的多阶数据，若不存在则使用默认数据覆盖
         if(value.tier){
-            var tierKey = tierNameToKeyDict[value.tier];
+            var tierKey:String = tierNameToKeyDict[value.tier];
             if(tierKey){
-                var tierData = itemData[tierKey];
+                var tierData:Object = itemData[tierKey];
                 if(tierData){
                     operators.override(data, tierData);
                     itemData[tierKey] = null;
@@ -318,19 +318,19 @@ class org.flashNight.arki.item.EquipmentUtil{
 
         if(level < 2 && value.mods.length <= 0) return; // 若没有强化和插件则提前返回
 
-        var adder = {};
-        var multiplier;
-        var overrider = {};
-        var capper = {};  // 新增：收集所有配件的cap数据
-        var skill;
+        var adder:Object = {};
+        var multiplier:Object;
+        var overrider:Object = {};
+        var capper:Object = {};  // 新增：收集所有配件的cap数据
+        var skill:Object;
 
         // 保存基础属性的副本（用于cap计算变化量）
-        var baseData = ObjectUtil.clone(data);
+        var baseData:Object = ObjectUtil.clone(data);
 
         // 计算强化加成
         if(level > 1){
             if(level > 13) level = 13;
-            var levelMultiplier = levelStatList[level];
+            var levelMultiplier:Number = levelStatList[level];
             multiplier = {
                 power: levelMultiplier,
                 defence: levelMultiplier,
@@ -347,13 +347,13 @@ class org.flashNight.arki.item.EquipmentUtil{
         }
 
         // 计算插件加成
-        for(var i = 0; i < value.mods.length; i++){
-            var modInfo = modDict[value.mods[i]];
+        for(var i:Number = 0; i < value.mods.length; i++){
+            var modInfo:Object = modDict[value.mods[i]];
             if(modInfo){
-                var overrideStat = modInfo.stats.override;
-                var percentageStat = modInfo.stats.percentage;
-                var flatStat = modInfo.stats.flat;
-                var capStat = modInfo.stats.cap;  // 新增：读取cap数据
+                var overrideStat:Object = modInfo.stats.override;
+                var percentageStat:Object = modInfo.stats.percentage;
+                var flatStat:Object = modInfo.stats.flat;
+                var capStat:Object = modInfo.stats.cap;  // 新增：读取cap数据
                 // 应用对应的加成
                 if(flatStat) operators.add(adder, flatStat, 0);
                 if(percentageStat) operators.add(multiplier, percentageStat, 1);
@@ -390,7 +390,7 @@ class org.flashNight.arki.item.EquipmentUtil{
     */
     public static function addProperty(prop:Object, addProp:Object, initValue:Number):Void {
         for (var key:String in addProp) {
-            var addVal = addProp[key];
+            var addVal:Number = addProp[key];
             if(isNaN(addVal)) continue;
             if (prop[key]) {
                 prop[key] += addVal;
@@ -410,7 +410,7 @@ class org.flashNight.arki.item.EquipmentUtil{
     * @param multiProp 用于相乘的属性对象。
     */
     public static function multiplyProperty(prop:Object, multiProp:Object):Void {
-        var dpd = decimalPropDict; // 需要保留一位小数的键
+        var dpd:Object = decimalPropDict; // 需要保留一位小数的键
 
         for (var key:String in multiProp) {
             var a:Number = prop[key];
@@ -464,16 +464,16 @@ class org.flashNight.arki.item.EquipmentUtil{
         if(!capProp) return;
 
         for (var key:String in capProp) {
-            var capValue = capProp[key];
+            var capValue:Number = capProp[key];
             if(capValue == undefined || capValue == 0) continue;
 
-            var currentVal = prop[key];
+            var currentVal:Number = prop[key];
             if(currentVal == undefined) continue;
 
             if (baseProp && baseProp[key] != undefined) {
                 // 基于基础值计算变化量
-                var baseVal = baseProp[key];
-                var change = currentVal - baseVal;
+                var baseVal:Number = baseProp[key];
+                var change:Number = currentVal - baseVal;
 
                 // 调试日志（需要时取消注释）
                 // _root.服务器.发布服务器消息("[Cap调试] " + key + ": 基础=" + baseVal + ", 当前=" + currentVal + ", 变化=" + change + ", 上限=" + capValue);
@@ -502,7 +502,7 @@ class org.flashNight.arki.item.EquipmentUtil{
                     }
                 } else if (capValue < 0) {
                     // 负数cap = 最小值下限（绝对值）
-                    var minValue = -capValue;  // 转换为正数
+                    var minValue:Number = -capValue;  // 转换为正数
                     if (currentVal < minValue) {
                         // _root.服务器.发布服务器消息("[Cap生效] " + key + " 绝对值下限被限制: " + currentVal + " -> " + minValue);
                         prop[key] = minValue;
