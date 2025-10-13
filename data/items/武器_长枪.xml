@@ -1319,7 +1319,7 @@ AWM原来以狩猎为主，后来普及军事层面，采用旋转后拉式枪�
     <description>来自反恐行动超级巨炮！甚至可以用史上最强来称呼它！疯狂的轰炸，威力绝伦！</description>
     <data>
       <level>40</level>
-      <weight>27</weight>
+      <weight>21</weight>
       <dressup>枪-长枪-轰天巨炮</dressup>
       <capacity>20</capacity>
       <split>1</split>
@@ -1332,7 +1332,7 @@ AWM原来以狩猎为主，后来普及军事层面，采用旋转后拉式枪�
       <bullethit>空中爆炸1</bullethit>
       <clipname>火箭弹弹药</clipname>
       <bulletsize>30</bulletsize>
-      <power>395</power>
+      <power>700</power>
       <impact>0</impact>
     </data>
   </item>
@@ -1361,7 +1361,7 @@ AWM原来以狩猎为主，后来普及军事层面，采用旋转后拉式枪�
       <bullethit>空中爆炸1</bullethit>
       <clipname>榴弹弹药</clipname>
       <bulletsize>50</bulletsize>
-      <power>1115</power>
+      <power>2500</power>
       <impact>0</impact>
     </data>
   </item>
@@ -2798,12 +2798,12 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     由SWE国的波佛斯反装甲公司于1946年研发，虽然卡尔·古斯塔夫所发射的大部分弹药是以传统无后座力原理炮弹操作，但现代的炮弹往往会加装后燃助推器，让它从技术而言变成一具火箭弹发射器。</description>
     <data>
       <level>15</level>
-      <weight>6</weight>
+      <weight>5</weight>
       <dressup>枪-长枪-M3 Rocket Launcher</dressup>
       <capacity>2</capacity>
       <split>1</split>
       <diffusion>8</diffusion>
-      <interval>1000</interval>
+      <interval>300</interval>
       <velocity>20</velocity>
       <bullet>火箭弹</bullet>
       <sound>re_GL_M3rocket.wav</sound>
@@ -2811,7 +2811,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <bullethit>火花</bullethit>
       <clipname>火箭弹弹药</clipname>
       <bulletsize>50</bulletsize>
-      <power>3000</power>
+      <power>3100</power>
       <impact>0</impact>
     </data>
   </item>
@@ -3231,12 +3231,12 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     <description>暂无</description>
     <data>
       <level>22</level>
-      <weight>8</weight>
+      <weight>5</weight>
       <dressup>枪-长枪-M202火箭发射器</dressup>
       <capacity>4</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
-      <interval>800</interval>
+      <interval>220</interval>
       <singleshoot>true</singleshoot>
       <velocity>20</velocity>
       <bullet>火箭弹</bullet>
@@ -3570,13 +3570,13 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
 发射器备弹充沛且具备急促射能力，能发射巡飞弹弹幕灵活应对海量敌人，抑或是强大单体。然而由于巡飞弹价格非常低廉，追踪追尾与锁定性能都有所牺牲，可谓是相当意义上的妥协产物了</description>
     <data>
       <level>45</level>
-      <weight>16</weight>
+      <weight>12</weight>
       <modslot>0</modslot>
       <dressup>枪-长枪-战术版FIM92</dressup>
       <capacity>8</capacity>
       <split>3</split>
       <diffusion>10</diffusion>
-      <interval>750</interval>
+      <interval>300</interval>
       <singleshoot>true</singleshoot>
       <velocity>20</velocity>
       <bullet>小型导弹</bullet>
@@ -3585,7 +3585,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <bullethit>火花</bullethit>
       <clipname>导弹弹药</clipname>
       <bulletsize>30</bulletsize>
-      <power>1500</power>
+      <power>1700</power>
       <impact>0</impact>
     </data>
   </item>
