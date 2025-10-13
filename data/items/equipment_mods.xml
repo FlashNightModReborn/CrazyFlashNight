@@ -6,7 +6,7 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <flat>
-                <defence>8</defence>
+                <defence>10</defence>
             </flat>
         </stats>
     </mod>
@@ -45,7 +45,7 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <flat>
-                <defence>18</defence>
+                <defence>20</defence>
                 <weight>2</weight>
             </flat>
         </stats>
@@ -60,7 +60,7 @@
         <use>长枪,手枪</use>
         <stats>
             <flat>
-                <power>7</power>
+                <power>8</power>
             </flat>
         </stats>
     </mod>
@@ -71,7 +71,7 @@
         <use>长枪,手枪</use>
         <stats>
             <override>
-                <criticalhit>10</criticalhit>
+                <criticalhit>20</criticalhit>
             </override>
         </stats>
     </mod>
@@ -93,7 +93,7 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <percentage>
-                <defence>8</defence>
+                <defence>9</defence>
             </percentage>
         </stats>
     </mod>
@@ -102,10 +102,10 @@
         <use>手枪,长枪</use>
         <stats>
             <override>
-                <criticalhit>25</criticalhit>
+                <criticalhit>30</criticalhit>
             </override>
             <flat>
-                <accuracy>-25</accuracy>
+                <accuracy>-15</accuracy>
             </flat>
         </stats>
     </mod>
@@ -136,7 +136,7 @@
         <use>刀</use>
         <stats>
             <percentage>
-                <power>8</power>
+                <power>9</power>
             </percentage>
         </stats>
     </mod>
@@ -145,7 +145,7 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <flat>
-                <defence>35</defence>
+                <defence>40</defence>
                 <weight>4</weight>
             </flat>
         </stats>
@@ -158,7 +158,7 @@
                 <magicdefence>
                     <冷>5</冷>
                     <热>5</热>
-                    <电>8</电>
+                    <电>10</电>
                 </magicdefence>
             </override>
             <flat>
@@ -182,7 +182,7 @@
         <stats>
             <override>
                 <magicdefence>
-                    <蚀>8</蚀>
+                    <蚀>10</蚀>
                 </magicdefence>
             </override>
             <percentage>
@@ -195,7 +195,7 @@
         <use>长枪,手枪</use>
         <stats>
             <flat>
-                <accuracy>20</accuracy>
+                <accuracy>25</accuracy>
             </flat>
         </stats>
     </mod>
@@ -205,7 +205,7 @@
         <stats>
             <percentage>
                 <power>3</power>
-                <defence>5</defence>
+                <defence>6</defence>
             </percentage>
         </stats>
     </mod>
@@ -215,7 +215,7 @@
         <stats>
             <override>
                 <magicdefence>
-                    <冲>8</冲>
+                    <冲>12</冲>
                 </magicdefence>
             </override>
         </stats>
@@ -225,7 +225,7 @@
         <use>长枪,手枪</use>
         <stats>
             <percentage>
-                <power>30</power>
+                <power>9</power>
             </percentage>
         </stats>
     </mod>
@@ -239,7 +239,7 @@
                 </magicdefence>
             </override>
             <flat>
-                <defence>30</defence>
+                <defence>35</defence>
                 <weight>2</weight>
             </flat>
         </stats>
@@ -250,7 +250,7 @@
         <use>上装装备,下装装备,手部装备</use>
         <stats>
             <flat>
-                <punch>12</punch>
+                <punch>15</punch>
                 <weight>-1</weight>
             </flat>
         </stats>
@@ -260,9 +260,9 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <percentage>
-                <defence>15</defence>
-                <hp>10</hp>
-                <mp>10</mp>
+                <defence>20</defence>
+                <hp>15</hp>
+                <mp>15</mp>
             </percentage>
         </stats>
     </mod>
@@ -280,7 +280,7 @@
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
             <flat>
-                <evasion>20</evasion>
+                <evasion>35</evasion>
             </flat>
         </stats>
     </mod>
@@ -294,7 +294,7 @@
                 <power>25</power>
             </percentage>
             <flat>
-                <weight>2</weight>
+                <weight>3</weight>
             </flat>
         </stats>
     </mod>
@@ -319,7 +319,7 @@
                 <criticalhit>满血暴击</criticalhit>
             </override>
             <flat>
-                <accuracy>25</accuracy>
+                <accuracy>30</accuracy>
             </flat>
         </stats>
     </mod>
@@ -340,8 +340,8 @@
         <use>长枪,手枪</use>
         <stats>
             <flat>
-                <accuracy>20</accuracy>
-                <bulletsize>5</bulletsize>
+                <accuracy>35</accuracy>
+                <bulletsize>10</bulletsize>
             </flat>
         </stats>
     </mod>
@@ -350,7 +350,7 @@
         <use>长枪,手枪</use>
         <stats>
             <percentage>
-                <capacity>15</capacity>
+                <capacity>20</capacity>
             </percentage>
             <cap>
                 <capacity>50</capacity>
@@ -395,7 +395,8 @@
         <tag>枪口</tag>
         <stats>
             <percentage>
-                <diffusion>-40</diffusion>
+                <diffusion>-50</diffusion>
+                <velocity>15</velocity>
             </percentage>
         </stats>
     </mod>
