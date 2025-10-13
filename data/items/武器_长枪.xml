@@ -1806,7 +1806,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <capacity>1</capacity>
       <split>1</split>
       <diffusion>1</diffusion>
-      <interval>300</interval>
+      <interval>800</interval>
       <velocity>100</velocity>
       <bullet>天使虫</bullet>
       <sound>RE_tama29.wav</sound>
@@ -3256,7 +3256,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     <icon>白火铳</icon>
     <type>武器</type>
     <use>长枪</use>
-    <price>85000</price>
+    <price>125000</price>
     <description>复古外形融入A兵团的全新科技，打造出一发致敌的暴力霰弹。
     虽然AndyLaw固执地将其称为火铳，但若从结构上判断，确是燧发枪无疑。</description>
     <data>
@@ -3264,9 +3264,9 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <weight>5</weight>
       <dressup>枪-长枪-白火铳</dressup>
       <capacity>1</capacity>
-      <split>13</split>
+      <split>11</split>
       <diffusion>15</diffusion>
-      <interval>1000</interval>
+      <interval>800</interval>
       <singleshoot>true</singleshoot>
       <velocity>35</velocity>
       <bullet>横向联弹-加强普通子弹</bullet>
@@ -3276,7 +3276,7 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <bullethit>火花</bullethit>
       <clipname>00号鹿弹</clipname>
       <bulletsize>35</bulletsize>
-      <power>900</power>
+      <power>700</power>
       <impact>5</impact>
     </data>
     <data_ice>
@@ -3287,7 +3287,8 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <muzzle>枪火</muzzle>
       <bullethit>冰汽</bullethit>
       <clipname>能量电池</clipname>
-      <power>1740</power>
+      <power>1700</power>
+      <split>13</split>
       <damagetype>魔法</damagetype>
       <magictype>冷</magictype>
     </data_ice>
@@ -3298,7 +3299,8 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <bulletrename>烈焰子弹</bulletrename>
       <bullethit>烈焰火花</bullethit>
       <clipname>能量电池</clipname>
-      <power>1740</power>
+      <power>1700</power>
+      <split>13</split>
       <damagetype>魔法</damagetype>
       <magictype>热</magictype>
     </data_fire>
@@ -3540,9 +3542,9 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
       <weight>10</weight>
       <dressup>枪-长枪-双管白火铳</dressup>
       <capacity>2</capacity>
-      <split>15</split>
+      <split>13</split>
       <diffusion>12</diffusion>
-      <interval>300</interval>
+      <interval>550</interval>
       <singleshoot>true</singleshoot>
       <velocity>39</velocity>
       <bullet>横向联弹-加强普通子弹</bullet>
@@ -4236,7 +4238,7 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
       <capacity>1</capacity>
       <split>8</split>
       <diffusion>16</diffusion>
-      <interval>1000</interval>
+      <interval>800</interval>
       <velocity>50</velocity>
       <bullet>横向联弹-普通子弹</bullet>
       <bulletrename>普通子弹</bulletrename>
@@ -4265,7 +4267,7 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
       <capacity>1</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
-      <interval>1000</interval>
+      <interval>800</interval>
       <velocity>50</velocity>
       <bullet>普通子弹</bullet>
       <sound>singleshot.wav</sound>
@@ -6093,7 +6095,7 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
       <capacity>1</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
-      <interval>122</interval>
+      <interval>800</interval>
       <singleshoot>true</singleshoot>
       <velocity>30</velocity>
       <bullet>重型火箭弹</bullet>
