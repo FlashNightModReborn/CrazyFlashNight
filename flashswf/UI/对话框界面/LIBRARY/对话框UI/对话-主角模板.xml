@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框UI/对话-主角模板" itemID="662fd6a4-00000c50" lastModified="1756142806" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框UI/对话-主角模板" itemID="662fd6a4-00000c50" lastModified="1760360601" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="对话-主角模板" currentFrame="1">
+    <DOMTimeline name="对话-主角模板" currentFrame="2">
       <layers>
         <DOMLayer name="Labels Layer" color="#5D68BC">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -78,21 +78,25 @@ gotoAndStop(性别);]]></script>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.aa.text = _parent._parent.人物表情;
-this.man.头.头.基本款.gotoAndStop(_parent._parent.人物表情);]]></script>
+                <script><![CDATA[var 人物表情 = _parent._parent.人物表情;
+_parent.aa.text = 人物表情;
+this.man.头.头.基本款.gotoAndStop(人物表情);
+this.man.头.头.装扮.gotoAndStop(人物表情);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.aa.text = _parent._parent.人物表情;
-this.man.头.头.基本款.gotoAndStop(_parent._parent.人物表情);]]></script>
+                <script><![CDATA[var 人物表情 = _parent._parent.人物表情;
+_parent.aa.text = 人物表情;
+this.man.头.头.基本款.gotoAndStop(人物表情);
+this.man.头.头.装扮.gotoAndStop(人物表情);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#8F66E5" current="true" isSelected="true">
+        <DOMLayer name="Layer 2" color="#8F66E5">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -119,7 +123,7 @@ this.man.头.头.基本款.gotoAndStop(_parent._parent.人物表情);]]></script
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1170" name="man" selected="true" centerPoint3DX="86.7" centerPoint3DY="200.7">
+                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1170" name="man" centerPoint3DX="86.7" centerPoint3DY="200.7">
                   <matrix>
                     <Matrix tx="-22.9" ty="-37.55"/>
                   </matrix>

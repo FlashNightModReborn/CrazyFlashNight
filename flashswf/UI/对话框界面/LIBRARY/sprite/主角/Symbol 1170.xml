@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/主角/Symbol 1170" itemID="6597607e-00000895" lastModified="1757945229">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/主角/Symbol 1170" itemID="6597607e-00000895" lastModified="1760360203">
   <timeline>
     <DOMTimeline name="Symbol 1170">
       <layers>
@@ -192,11 +192,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#FE8A68">
+        <DOMLayer name="Layer 11" color="#FE8A68" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1144" name="头" centerPoint3DX="73.65" centerPoint3DY="-81.65">
+                <DOMSymbolInstance libraryItemName="sprite/主角/对话框专用男主角头" name="头" selected="true" centerPoint3DX="73.65" centerPoint3DY="-81.65">
                   <matrix>
                     <Matrix a="0.66314697265625" b="0.0933837890625" c="-0.0933837890625" d="0.66314697265625" tx="44.4" ty="-119.35"/>
                   </matrix>
@@ -306,11 +306,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 17" color="#3EBCFC" current="true" isSelected="true">
+        <DOMLayer name="Layer 17" color="#3EBCFC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1115" selected="true" centerPoint3DX="81.4" centerPoint3DY="42.8">
+                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1115" centerPoint3DX="81.4" centerPoint3DY="42.8">
                   <matrix>
                     <Matrix a="0.63177490234375" b="-0.0608978271484375" c="0.0608978271484375" d="0.63177490234375" tx="63.95" ty="-12.85"/>
                   </matrix>
@@ -329,7 +329,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1111" selected="true" centerPoint3DX="86.6" centerPoint3DY="-15.25">
+                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1111" centerPoint3DX="86.6" centerPoint3DY="-15.25">
                   <matrix>
                     <Matrix a="0.630950927734375" b="0.06170654296875" c="-0.06170654296875" d="0.630950927734375" tx="67.75" ty="-83.9"/>
                   </matrix>

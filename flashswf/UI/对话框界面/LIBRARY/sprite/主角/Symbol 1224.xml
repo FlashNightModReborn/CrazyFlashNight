@@ -192,11 +192,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#95A892">
+        <DOMLayer name="Layer 11" color="#95A892" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1199" name="头" centerPoint3DX="74.7" centerPoint3DY="-83.1">
+                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1199" name="头" selected="true" centerPoint3DX="74.7" centerPoint3DY="-83.1">
                   <matrix>
                     <Matrix a="0.71612548828125" b="0.102737426757813" c="-0.102737426757813" d="0.71612548828125" tx="43.2" ty="-124.35"/>
                   </matrix>
@@ -325,11 +325,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 18" color="#7F56AE" current="true" isSelected="true">
+        <DOMLayer name="Layer 18" color="#7F56AE">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1174" selected="true" centerPoint3DX="83.3" centerPoint3DY="-31.1">
+                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1174" centerPoint3DX="83.3" centerPoint3DY="-31.1">
                   <matrix>
                     <Matrix a="0.633712768554688" b="0.0180511474609375" c="-0.0180511474609375" d="0.633712768554688" tx="64.85" ty="-88.85"/>
                   </matrix>

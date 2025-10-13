@@ -40,19 +40,18 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
+                    <Edge strokeStyle="1" edges="!4800 80|4800 160"/>
                     <Edge fillStyle1="2" strokeStyle="1" edges="!4800 0|4800 80"/>
-                    <Edge strokeStyle="1" edges="!4800 80|4800 160!2400 80|2400 160"/>
                     <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!2400 0|2400 80"/>
                     <Edge fillStyle0="2" edges="!2400 80|4800 80"/>
-                    <Edge strokeStyle="1" edges="!1200 80|1200 160"/>
+                    <Edge strokeStyle="1" edges="!2400 80|2400 160"/>
                     <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!1200 80|1200 0"/>
                     <Edge fillStyle0="1" edges="!1200 0|0 0"/>
                     <Edge fillStyle0="1" strokeStyle="1" edges="!0 0|0 80"/>
                     <Edge fillStyle0="1" edges="!0 80|1200 80"/>
-                    <Edge strokeStyle="1" edges="!0 80|0 160"/>
-                    <Edge fillStyle1="3" edges="!1200 0|2400 0"/>
+                    <Edge strokeStyle="1" edges="!1200 80|1200 160!0 80|0 160"/>
+                    <Edge fillStyle1="3" edges="!2400 80|1200 80!1200 0|2400 0"/>
                     <Edge fillStyle1="2" edges="!2400 0|4800 0"/>
-                    <Edge fillStyle1="3" edges="!2400 80|1200 80"/>
                     <Edge cubics="!4800 0(;4800,0 4800,80 4800,80q4800 0 4800 80);"/>
                     <Edge cubics="!4800 80(;4800,80 4800,160 4800,160q4800 80 4800 160);"/>
                     <Edge cubics="!2400 0(;2400,0 2400,80 2400,80q2400 0 2400 80);"/>

@@ -916,7 +916,7 @@ _root.物品UI函数.初始化插件改装界面 = function(){
 	var info = {
 		startindex: 0, 
 		startdepth: 0, 
-		row: 3, 
+		row: 5, 
 		col: 6, 
 		padding: 28,
 		unloadCallback: function(){
@@ -979,7 +979,7 @@ _root.物品UI函数.刷新插件信息 = function(){
 	}
 
 	this.材料物品格._visible = false;
-	for(var iconIndex=0; iconIndex<18; iconIndex++){
+	for(var iconIndex=0; iconIndex<this.材料选择图标列表.length; iconIndex++){
 		var icon = this.材料选择图标列表[iconIndex].itemIcon;
 		icon.unlock();
 		icon.init(null,null);
@@ -1019,7 +1019,7 @@ _root.物品UI函数.选择槽位_进阶 = function(){
 		}
 	}
 
-	for(iconIndex; iconIndex<18; iconIndex++){
+	for(iconIndex; iconIndex<this.材料选择图标列表.length; iconIndex++){
 		var icon = this.材料选择图标列表[iconIndex].itemIcon;
 		icon.unlock();
 		icon.init(null,null);
@@ -1082,7 +1082,7 @@ _root.物品UI函数.选择槽位_配件 = function(){
 		}
 	}
 
-	for(iconIndex; iconIndex<18; iconIndex++){
+	for(iconIndex; iconIndex<this.材料选择图标列表.length; iconIndex++){
 		var icon = this.材料选择图标列表[iconIndex].itemIcon;
 		icon.unlock();
 		icon.init(null,null);

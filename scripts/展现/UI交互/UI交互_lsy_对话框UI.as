@@ -266,6 +266,7 @@ _root.对话框UI.刷新立绘 = function(){
     肖像.肖像.stop();
     肖像.肖像.gotoAndStop(人物表情);
     肖像.肖像.man.头.头.基本款.gotoAndStop(人物表情);
+    肖像.肖像.man.头.头.装扮.gotoAndStop(人物表情);
 
     // ——应用滤镜（目标可改为 肖像.肖像，视你的美术层级而定）
     var styleStr:String = (this.滤镜风格 != undefined) ? this.滤镜风格 : this.当前滤镜风格;
