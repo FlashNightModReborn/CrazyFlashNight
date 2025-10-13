@@ -206,7 +206,21 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         if (isNaN(capacity)) capacity = 0;
         
         var magazineCapacity = isNotMultiShot ? splitValue : 1;
-        if (capacity > 0) result.push("弹夹容量：", (capacity * magazineCapacity), "<BR>");
+
+        // 处理弹夹容量显示（考虑magazineCapacity乘数）
+        if (capacity > 0) {
+          if (magazineCapacity > 1) {
+            // 有magazineCapacity乘数（点射武器）
+            // 需要临时创建对象来正确显示乘数后的容量
+            var tempData = {capacity: data.capacity * magazineCapacity};
+            var tempEquipData = equipData ? {capacity: equipData.capacity * magazineCapacity} : null;
+            TooltipFormatter.upgradeLine(result, tempData, tempEquipData, "capacity", "弹夹容量", null);
+          } else {
+            // 普通武器，直接使用upgradeLine
+            TooltipFormatter.upgradeLine(result, data, equipData, "capacity", "弹夹容量", null);
+          }
+        }
+
         TooltipFormatter.upgradeLine(result, data, equipData, "power", "子弹威力", null);
         if (splitValue > 1) result.push(isNotMultiShot ? "点射弹数：" : "弹丸数量：", splitValue, "<BR>");
         
