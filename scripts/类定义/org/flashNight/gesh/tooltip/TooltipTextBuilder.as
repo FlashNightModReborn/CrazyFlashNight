@@ -244,10 +244,12 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     TooltipFormatter.upgradeLine(result, data, equipData, "knifepower", null, null);
     TooltipFormatter.upgradeLine(result, data, equipData, "gunpower", null, null);
 
-    if (data.criticalhit) {
-      result.push(quickBuildCriticalHit(data.criticalhit));
+    // 使用最终计算后的数据显示暴击（如果有mod或强化，则使用equipData）
+    var critData = equipData ? equipData : data;
+    if (critData.criticalhit) {
+      result.push(quickBuildCriticalHit(critData.criticalhit));
     }
-    
+
     TooltipFormatter.upgradeLine(result, data, equipData, "accuracy", null, TooltipConstants.SUF_PERCENT);
     TooltipFormatter.upgradeLine(result, data, equipData, "evasion", null, TooltipConstants.SUF_PERCENT);
     TooltipFormatter.upgradeLine(result, data, equipData, "toughness", null, TooltipConstants.SUF_PERCENT);
@@ -259,24 +261,27 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     TooltipFormatter.upgradeLine(result, data, equipData, "rout", null, TooltipConstants.SUF_PERCENT);
     TooltipFormatter.upgradeLine(result, data, equipData, "slay", null, TooltipConstants.SUF_BLOOD);
 
-    if (data.damagetype) {
-      if (data.damagetype == "魔法" && data.magictype) {
-        TooltipFormatter.colorLine(result, TooltipConstants.COL_DMG, "伤害属性：" + data.magictype);
-      } else if (data.damagetype == "破击" && data.magictype) {
-        if (MagicDamageTypes.isMagicDamageType(data.magictype))
-          TooltipFormatter.colorLine(result, TooltipConstants.COL_BREAK_LIGHT, "附加伤害：" + data.magictype);
+    // 使用最终计算后的数据显示伤害类型（如果有mod或强化，则使用equipData）
+    var finalData = equipData ? equipData : data;
+    if (finalData.damagetype) {
+      if (finalData.damagetype == "魔法" && finalData.magictype) {
+        TooltipFormatter.colorLine(result, TooltipConstants.COL_DMG, "伤害属性：" + finalData.magictype);
+      } else if (finalData.damagetype == "破击" && finalData.magictype) {
+        if (MagicDamageTypes.isMagicDamageType(finalData.magictype))
+          TooltipFormatter.colorLine(result, TooltipConstants.COL_BREAK_LIGHT, "附加伤害：" + finalData.magictype);
         else
-          TooltipFormatter.colorLine(result, TooltipConstants.COL_BREAK_MAIN, "破击类型：" + data.magictype);
+          TooltipFormatter.colorLine(result, TooltipConstants.COL_BREAK_MAIN, "破击类型：" + finalData.magictype);
       } else {
-        TooltipFormatter.colorLine(result, TooltipConstants.COL_DMG, "伤害类型：" + (data.damagetype == "魔法" ? "能量" : data.damagetype));
+        TooltipFormatter.colorLine(result, TooltipConstants.COL_DMG, "伤害类型：" + (finalData.damagetype == "魔法" ? "能量" : finalData.damagetype));
       }
     }
 
-    if (data.magicdefence) {
-      for (var key in data.magicdefence) {
+    // 使用最终计算后的数据显示魔法抗性（如果有mod或强化，则使用equipData）
+    if (finalData.magicdefence) {
+      for (var key in finalData.magicdefence) {
         if (ObjectUtil.isInternalKey(key)) continue; // 跳过内部字段（如 __dictUID）
         var displayName = (key == "基础" ? "能量" : key);
-        var val = data.magicdefence[key];
+        var val = finalData.magicdefence[key];
         if (val != undefined && Number(val) != 0) result.push(displayName, "抗性：", val, "<BR>");
       }
     }
