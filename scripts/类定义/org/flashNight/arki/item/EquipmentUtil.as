@@ -401,7 +401,8 @@ class org.flashNight.arki.item.EquipmentUtil{
     }
 
     /**
-    * 输入2个存放装备属性的Object对象，将后者每个属性的值对前者相乘，并去尾取整。
+    * 输入2个存放装备属性的Object对象，将后者每个属性的值对前者相乘，并四舍五入，远离原点取整。
+    * 不校验浮点数的精度，对于非常小的浮点数可能会有误差，但边界行为对装备数值来说可接受
     * 如果键在两个Object中都存在，则值相乘，然后通过位运算去除小数位；
     * 如果键只在后一个Object中存在，不作处理。
     *
@@ -409,13 +410,32 @@ class org.flashNight.arki.item.EquipmentUtil{
     * @param multiProp 用于相乘的属性对象。
     */
     public static function multiplyProperty(prop:Object, multiProp:Object):Void {
-        var dpd = decimalPropDict;
+        var dpd = decimalPropDict; // 需要保留一位小数的键
+
         for (var key:String in multiProp) {
-            var val = prop[key] * multiProp[key];
-            // 判断val是否为非0数字
-            if (val) {
-                prop[key] = dpd[key] ? ((val * 10) >> 0) * 0.1 : val >> 0;
-            }
+            var a:Number = prop[key];
+            var b:Number = multiProp[key];
+            var val:Number = a * b;
+
+            // 保持原语义：val 为 0/NaN/undefined 时不写回
+            if (!val) continue;
+
+            // 一条路径搞定整数/一位小数
+            var dec:Boolean = dpd[key];             // 是否保留一位小数
+            var scale:Number = dec ? 10 : 1;        // 放大倍数
+            var t:Number = val * scale;
+
+            // 0.5 远离 0：正数 +0.5，负数 -0.5
+            t += (t >= 0) ? 0.5 : -0.5;
+
+            // 位运算转 int32，向0截断
+            var n:Number = (t | 0);
+
+            // 写回（小数则缩回）
+            prop[key] = dec ? (n * 0.1) : n;
+
+            // 如要消掉 -0，可解开下一行
+            // if (prop[key] == 0) prop[key] = 0;
         }
     }
 
