@@ -10,7 +10,7 @@ _root.装备生命周期函数.GM6_LYNX初始化 = function(ref, param) {
     ref.basicReward = (param.basicReward != undefined) ? param.basicReward : 1; // 基础奖励
     ref.eliteReward = (param.eliteReward != undefined) ? param.eliteReward : 3; // 精英奖励
     ref.bossReward = (param.bossReward != undefined) ? param.bossReward : 5; // 首领奖励
-    ref.rewarMax = (param.rewarMax != undefined) ? param.rewarMax : 5; // 最大奖励
+    ref.rewarMax = actor["长枪弹匣容量"] || param.rewarMax || 5; // 最大奖励 - 从装备动态读取弹匣容量(支持扩容弹匣等插件)
 
     // ---- 帧区间 ----
     ref.OPEN_START = (param.openStart != undefined) ? param.openStart : 1;
