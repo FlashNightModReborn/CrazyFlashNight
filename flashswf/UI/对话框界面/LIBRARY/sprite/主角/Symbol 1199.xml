@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/主角/Symbol 1199" itemID="6597607e-000008ac" lastModified="1704196122">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/主角/Symbol 1199" itemID="6597607e-000008ac" lastModified="1760360367">
   <timeline>
     <DOMTimeline name="Symbol 1199">
       <layers>
@@ -14,16 +14,16 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_parent._parent._parent.脸型 != undefined)
-   {
-      this.基本款._visible = 0;
-      this.attachMovie(_parent._parent._parent.脸型,"装扮",this.getNextHighestDepth());
-   }
-   this.attachMovie(_parent._parent._parent.发型,"装扮2",this.getNextHighestDepth());
-   this.attachMovie(_parent._parent._parent.面具,"装扮3",this.getNextHighestDepth());
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	if (_parent._parent._parent.脸型 != undefined)
+	{
+		this.基本款._visible = 0;
+		var 脸型 = this.attachMovie(_parent._parent._parent.脸型, "装扮", this.getNextHighestDepth());
+		脸型.gotoAndStop(this.基本款._currentframe);
+	}
+	this.attachMovie(_parent._parent._parent.发型,"装扮2",this.getNextHighestDepth());
+	this.attachMovie(_parent._parent._parent.面具,"装扮3",this.getNextHighestDepth());
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>

@@ -468,7 +468,6 @@
           <Include href="sprite/主角/Symbol 1134.xml" loadImmediate="false" itemID="6597607e-0000087c" lastModified="1721322316"/>
           <Include href="sprite/主角/Symbol 1135.xml" loadImmediate="false" itemID="6597607e-0000087d" lastModified="1704196122"/>
           <Include href="sprite/主角/Symbol 1143.xml" loadImmediate="false" itemID="6597607e-00000880" lastModified="1721322316"/>
-          <Include href="sprite/主角/Symbol 1144.xml" loadImmediate="false" itemID="6597607e-00000881" lastModified="1704196122"/>
           <Include href="sprite/主角/Symbol 1147.xml" loadImmediate="false" itemID="6597607e-00000883" lastModified="1721322316"/>
           <Include href="sprite/主角/Symbol 1148.xml" loadImmediate="false" itemID="6597607e-00000884" lastModified="1704196122"/>
           <Include href="sprite/主角/Symbol 1151.xml" loadImmediate="false" itemID="6597607e-00000886" lastModified="1721322316"/>
@@ -482,7 +481,7 @@
           <Include href="sprite/主角/Symbol 1165.xml" loadImmediate="false" itemID="6597607e-00000891" lastModified="1704196122"/>
           <Include href="sprite/主角/Symbol 1168.xml" loadImmediate="false" itemID="6597607e-00000893" lastModified="1721322316"/>
           <Include href="sprite/主角/Symbol 1169.xml" loadImmediate="false" itemID="6597607e-00000894" lastModified="1704196122"/>
-          <Include href="sprite/主角/Symbol 1170.xml" loadImmediate="false" itemID="6597607e-00000895" lastModified="1757945229"/>
+          <Include href="sprite/主角/Symbol 1170.xml" loadImmediate="false" itemID="6597607e-00000895" lastModified="1760360203"/>
           <Include href="sprite/主角/Symbol 1173.xml" loadImmediate="false" itemID="6597607e-00000898" lastModified="1704196122"/>
           <Include href="sprite/主角/Symbol 1174.xml" loadImmediate="false" itemID="6597607e-00000899" lastModified="1704196122"/>
           <Include href="sprite/主角/Symbol 1177.xml" loadImmediate="false" itemID="6597607e-0000089c" lastModified="1704196122"/>
@@ -494,7 +493,7 @@
           <Include href="sprite/主角/Symbol 1189.xml" loadImmediate="false" itemID="6597607e-000008a6" lastModified="1704196122"/>
           <Include href="sprite/主角/Symbol 1190.xml" loadImmediate="false" itemID="6597607e-000008a7" lastModified="1704196122"/>
           <Include href="sprite/主角/Symbol 1198.xml" loadImmediate="false" itemID="6597607e-000008ab" lastModified="1704196122"/>
-          <Include href="sprite/主角/Symbol 1199.xml" loadImmediate="false" itemID="6597607e-000008ac" lastModified="1704196122"/>
+          <Include href="sprite/主角/Symbol 1199.xml" loadImmediate="false" itemID="6597607e-000008ac" lastModified="1760360367"/>
           <Include href="sprite/主角/Symbol 1202.xml" loadImmediate="false" itemID="6597607e-000008ae" lastModified="1704196122"/>
           <Include href="sprite/主角/Symbol 1203.xml" loadImmediate="false" itemID="6597607e-000008af" lastModified="1704196122"/>
           <Include href="sprite/主角/Symbol 1206.xml" loadImmediate="false" itemID="6597607e-000008b1" lastModified="1704196122"/>
@@ -509,6 +508,7 @@
           <Include href="sprite/主角/Symbol 1223.xml" loadImmediate="false" itemID="6597607e-000008bf" lastModified="1704196122"/>
           <Include href="sprite/主角/Symbol 1224.xml" loadImmediate="false" itemID="6597607e-000008c0" lastModified="1757944865"/>
           <Include href="sprite/主角/刀-新手刀.xml" itemID="668d6e6c-000033bf" lastModified="1720544876"/>
+          <Include href="sprite/主角/对话框专用男主角头.xml" loadImmediate="false" itemID="68ecf70b-000010dc" lastModified="1760360351"/>
           <Include href="sprite/主角/男变装-基本脸型.xml" itemID="66994b35-00001144" lastModified="1729250143"/>
           <Include href="sprite/主角/男变装-裸体脚.xml" itemID="66994b35-00001146" lastModified="1720444691"/>
           <Include href="sprite/主角/男变装-裸体屁股.xml" itemID="66994b35-00001147" lastModified="1720444689"/>
@@ -615,7 +615,7 @@
           <Include href="对话框UI/对话-无人机.xml" itemIcon="1" loadImmediate="false" itemID="659fe1c2-00001e97" lastModified="1704976834"/>
           <Include href="对话框UI/对话-舞女.xml" itemIcon="1" loadImmediate="false" itemID="659fe173-00001e64" lastModified="1717920038"/>
           <Include href="对话框UI/对话-小F.xml" itemIcon="1" loadImmediate="false" itemID="659fe248-00001f63" lastModified="1704976968"/>
-          <Include href="对话框UI/对话-主角模板.xml" loadImmediate="false" itemID="662fd6a4-00000c50" lastModified="1756142806"/>
+          <Include href="对话框UI/对话-主角模板.xml" loadImmediate="false" itemID="662fd6a4-00000c50" lastModified="1760360601"/>
           <Include href="对话框UI/黑铁会外交部长-部件/外交部长-脑袋.xml" loadImmediate="false" itemID="666080e1-000004db" lastModified="1717600548"/>
           <Include href="对话框UI/黑铁会外交部长-部件/外交部长-上身.xml" loadImmediate="false" itemID="666080e1-000004da" lastModified="1751332216"/>
           <Include href="对话框UI/黑铁会外交部长-部件/外交部长-右大臂.xml" loadImmediate="false" itemID="665ac856-00000dca" lastModified="1717255030"/>
@@ -859,7 +859,7 @@
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
           <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1756644772"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1758395989"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1760360583"/>
           <Include href="发型/Symbol 799.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000814" lastModified="1710653981"/>
           <Include href="歌留多/歌留多胯.xml" loadImmediate="false" itemID="67096725-00000045" lastModified="1728669954"/>
           <Include href="歌留多/歌留多身体.xml" loadImmediate="false" itemID="67095275-0000000f" lastModified="1728665563"/>
@@ -1317,6 +1317,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="686160" publishTime="1760360378"/>
+          <PublishItem publishSize="686097" publishTime="1760359752"/>
           <PublishItem publishSize="686090" publishTime="1757944892"/>
           <PublishItem publishSize="685102" publishTime="1756645812"/>
           <PublishItem publishSize="691809" publishTime="1756644916"/>
@@ -1335,7 +1337,5 @@
           <PublishItem publishSize="930525" publishTime="1751479845"/>
           <PublishItem publishSize="5351402" publishTime="1751013797"/>
           <PublishItem publishSize="3523653" publishTime="1751010699"/>
-          <PublishItem publishSize="3353064" publishTime="1749173425"/>
-          <PublishItem publishSize="3317333" publishTime="1749084698"/>
      </publishHistory>
 </DOMDocument>
