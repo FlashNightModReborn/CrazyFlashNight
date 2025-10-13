@@ -354,6 +354,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     var percentage = stats.percentage;
     var flat = stats.flat;
     var override = stats.override;
+    var cap = stats.cap;
     if(percentage){
       var sortedList = getSortedAttrList(percentage);
       for(var i = 0; i < sortedList.length; i++){
@@ -373,6 +374,24 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       for(var i = 0; i < sortedList.length; i++){
         var key = sortedList[i];
         TooltipFormatter.statLine(result, "override", key, override[key], null);
+      }
+    }
+    // 显示cap上限
+    if(cap){
+      var sortedList = getSortedAttrList(cap);
+      for(var i = 0; i < sortedList.length; i++){
+        var key = sortedList[i];
+        var capValue = cap[key];
+        var label = TooltipConstants.PROPERTY_DICT[key];
+        if(!label) label = key;
+
+        if(capValue > 0){
+          // 正数cap = 增益上限
+          result.push("<FONT COLOR='" + TooltipConstants.COL_INFO + "'>", label, " 增益上限: +", capValue, "</FONT><BR>");
+        }else if(capValue < 0){
+          // 负数cap = 减益下限
+          result.push("<FONT COLOR='" + TooltipConstants.COL_INFO + "'>", label, " 减益下限: ", capValue, "</FONT><BR>");
+        }
       }
     }
     // 查找criticalhit和magicdefence
