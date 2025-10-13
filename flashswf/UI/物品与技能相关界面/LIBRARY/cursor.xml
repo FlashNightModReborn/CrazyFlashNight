@@ -69,7 +69,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" keyMode="15872">
+            <DOMFrame index="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="cursor2" symbolType="graphic" loop="loop">
                   <transformationPoint>
@@ -169,7 +169,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="3" keyMode="15872">
+            <DOMFrame index="9" duration="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="curosr1" symbolType="graphic" loop="loop">
                   <transformationPoint>
@@ -184,9 +184,6 @@
             <DOMFrame index="12" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
                 <DOMSymbolInstance libraryItemName="curosr1" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="1.00001525878906" d="1.00001525878906"/>
-                  </matrix>
                   <transformationPoint>
                     <Point x="19.5" y="19.5"/>
                   </transformationPoint>
@@ -235,7 +232,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" keyMode="15872">
+            <DOMFrame index="31" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -265,7 +262,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!250 -250|250 250!250 250|-250 250!-250 250|-250 -250!-250 -250|250 -250"/>
+                    <Edge fillStyle1="1" edges="!250 250|-250 250!-250 250|-250 -250!-250 -250|250 -250!250 -250|250 250"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -279,7 +276,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!250 250|-250 250!-250 250|-250 -250!-250 -250|250 -250!250 -250|250 250"/>
+                    <Edge fillStyle1="1" edges="!250 -250|250 250!250 250|-250 250!-250 250|-250 -250!-250 -250|250 -250"/>
                   </edges>
                 </DOMShape>
               </elements>
