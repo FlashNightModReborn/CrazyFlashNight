@@ -52,7 +52,13 @@ class org.flashNight.gesh.tooltip.TooltipFormatter {
       buf.push(" (覆盖" + base + ")<BR>");
     }else{
       var enhance = final - base;
-      var sign = enhance < 0 ? "-" : "+";
+      var sign:String;
+      if(enhance < 0) {
+        enhance = -enhance;
+        sign = " - ";
+      } else {
+        sign = " + ";
+      }
       buf.push(" (", base, sign, enhance, ")<BR>");
     }
   }

@@ -206,7 +206,21 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         if (isNaN(capacity)) capacity = 0;
         
         var magazineCapacity = isNotMultiShot ? splitValue : 1;
-        if (capacity > 0) result.push("弹夹容量：", (capacity * magazineCapacity), "<BR>");
+
+        // 处理弹夹容量显示（考虑magazineCapacity乘数）
+        if (capacity > 0) {
+          if (magazineCapacity > 1) {
+            // 有magazineCapacity乘数（点射武器）
+            // 需要临时创建对象来正确显示乘数后的容量
+            var tempData = {capacity: data.capacity * magazineCapacity};
+            var tempEquipData = equipData ? {capacity: equipData.capacity * magazineCapacity} : null;
+            TooltipFormatter.upgradeLine(result, tempData, tempEquipData, "capacity", "弹夹容量", null);
+          } else {
+            // 普通武器，直接使用upgradeLine
+            TooltipFormatter.upgradeLine(result, data, equipData, "capacity", "弹夹容量", null);
+          }
+        }
+
         TooltipFormatter.upgradeLine(result, data, equipData, "power", "子弹威力", null);
         if (splitValue > 1) result.push(isNotMultiShot ? "点射弹数：" : "弹丸数量：", splitValue, "<BR>");
         
@@ -354,6 +368,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     var percentage = stats.percentage;
     var flat = stats.flat;
     var override = stats.override;
+    var cap = stats.cap;
     if(percentage){
       var sortedList = getSortedAttrList(percentage);
       for(var i = 0; i < sortedList.length; i++){
@@ -373,6 +388,24 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       for(var i = 0; i < sortedList.length; i++){
         var key = sortedList[i];
         TooltipFormatter.statLine(result, "override", key, override[key], null);
+      }
+    }
+    // 显示cap上限
+    if(cap){
+      var sortedList = getSortedAttrList(cap);
+      for(var i = 0; i < sortedList.length; i++){
+        var key = sortedList[i];
+        var capValue = cap[key];
+        var label = TooltipConstants.PROPERTY_DICT[key];
+        if(!label) label = key;
+
+        if(capValue > 0){
+          // 正数cap = 增益上限
+          result.push("<FONT COLOR='" + TooltipConstants.COL_INFO + "'>", label, " 增益上限: +", capValue, "</FONT><BR>");
+        }else if(capValue < 0){
+          // 负数cap = 减益下限
+          result.push("<FONT COLOR='" + TooltipConstants.COL_INFO + "'>", label, " 减益下限: ", capValue, "</FONT><BR>");
+        }
       }
     }
     // 查找criticalhit和magicdefence

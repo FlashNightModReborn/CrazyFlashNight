@@ -1,7 +1,18 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!--已用ID：[1, 311, 312, 313, 314, 315, 316, 317, 318, 319, 327, 352, 372, 373, 374, 375, 380, 381, 382, 383, 2911, 2912, 2913, 20019, 20020, 20021, 20022, 20033]
-预留ID区间：17001-17300-->
+预留ID区间：17002-17300-->
 <root>
+  <item>
+    <id>17001</id>
+    <name>Blue的纸条</name>
+    <displayname>Blue的纸条</displayname>
+    <icon>废城资料</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>10</price>
+    <maxvalue>1</maxvalue>
+    <description>Blue关于废城任务进度的简单报告，可以凭此批示来协调任务安排。</description>
+  </item>
   <item>
     <id>1</id>
     <name>资料</name>

@@ -60,7 +60,8 @@
                 "金币#2000",
                 "经验值#2000",
                 "普通hp药剂#5",
-                "普通mp药剂#5"
+                "普通mp药剂#5",
+                "Blue的纸条#1"
             ],
             
             "chain":"废城#3"
@@ -69,6 +70,7 @@
             "id": 60004,
             "title": "$SIDE_TITLE_60004",
             "description": "$SIDE_DESCRIPTION_60004",
+            "announcement":"可继续进行主线任务“女性组织？”",
 
             "get_requirements": [60003],
             "get_conversation": "$SIDE_GET_60004",

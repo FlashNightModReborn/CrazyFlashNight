@@ -1306,7 +1306,7 @@
     "$MAIN_FINISH_25": [  
     ],
     "$MAIN_TITLE_26": "女性组织？",
-    "$MAIN_DESCRIPTION_26": "找King谈谈。",
+    "$MAIN_DESCRIPTION_26": "找King谈谈。需完成Blue的任务“保护仪器”，获得Blue的纸条。",
     "$MAIN_GET_26": [
         {
             "name": "Andy Law",
@@ -1379,6 +1379,18 @@
             "title": "东区最强战士",
             "char": "Andy Law#微笑",
             "text": "这就是佣兵风格。顺便，搞清楚为什么摇滚公园要背叛吧，这对我们了解堕落城形势很重要。你去找king，她会教你怎么做的。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#",
+            "text": "哦，对了，根据之前的安排，废城那边也有任务可能需要你的协助，具体可以问问Blue。如果那边更紧急的话，摇滚公园可以先等一等。"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#",
+            "text": "这也是佣兵的准则之一，不要盲目开启新战线。如果双线作战，万一耽误了一边可不好。"
         }
     ],
     "$MAIN_FINISH_26": [  
@@ -1387,22 +1399,22 @@
             "title": "BPK战队-左前锋",
             "char": "king",
             "text": "别急，之前不是说废城你还有任务吗？我问问Blue，你也可以再去问问。"
-        },
-        {
-            "name": "Boy",
-            "title": "BPK战队-队长",
-            "char": "boy",
-            "text": "没错，如果双线作战，万一耽误了一边可不好。"
         }
     ],
     "$MAIN_TITLE_27": "狂野的玫瑰",
     "$MAIN_DESCRIPTION_27": "通关简单难度“堕落城-摇滚公园”后，找King谈谈。",
     "$MAIN_GET_27": [
         {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "King姐，Blue哥已经批了条子了。"
+        },
+        {
             "name": "King",
             "title": "BPK战队-左前锋",
             "char": "king#微笑",
-            "text": "好，Blue说急事已经没了，那你先来这边。摇滚公园是吧？"
+            "text": "我看看。好，那你先来这边。摇滚公园是吧？"
         },
         {
             "name": "King",

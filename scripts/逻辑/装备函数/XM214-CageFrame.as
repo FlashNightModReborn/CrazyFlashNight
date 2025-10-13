@@ -15,9 +15,9 @@ _root.装备生命周期函数.XM214初始化 = function(ref:Object, param:Objec
     
     // 射击增量参数
     ref.shotgunIncrement = param.shotgunIncrement || 1; // 每次射击霰弹值增量
-    
-    // 弹药系统参数
-    ref.maxBulletCapacity = param.maxBulletCapacity || 360; // 最大子弹容量
+
+    // 弹药系统参数 - 从装备动态读取弹匣容量(支持扩容弹匣等插件)
+    ref.maxBulletCapacity = target["长枪弹匣容量"] || param.maxBulletCapacity || 360; // 最大子弹容量
     
     // 武器属性配置
     ref.weaponAttributeValue = param.weaponAttributeValue || 150; // 武器属性值
