@@ -90,7 +90,8 @@ class org.flashNight.arki.item.EquipmentUtil{
     public static var propertyOperators:Object = {
         add: addProperty,
         multiply: multiplyProperty,
-        override: overrideProperty
+        override: overrideProperty,
+        applyCap: applyCapProperty
     }
 
     public static var modDict:Object;
@@ -320,7 +321,11 @@ class org.flashNight.arki.item.EquipmentUtil{
         var adder = {};
         var multiplier;
         var overrider = {};
+        var capper = {};  // 新增：收集所有配件的cap数据
         var skill;
+
+        // 保存基础属性的副本（用于cap计算变化量）
+        var baseData = ObjectUtil.clone(data);
 
         // 计算强化加成
         if(level > 1){
@@ -348,10 +353,12 @@ class org.flashNight.arki.item.EquipmentUtil{
                 var overrideStat = modInfo.stats.override;
                 var percentageStat = modInfo.stats.percentage;
                 var flatStat = modInfo.stats.flat;
+                var capStat = modInfo.stats.cap;  // 新增：读取cap数据
                 // 应用对应的加成
                 if(flatStat) operators.add(adder, flatStat, 0);
                 if(percentageStat) operators.add(multiplier, percentageStat, 1);
                 if(overrideStat) operators.override(overrider, overrideStat);
+                if(capStat) operators.add(capper, capStat, 0);  // 新增：累加cap（多个配件的cap会叠加）
                 // 查找战技
                 if(!skill && modInfo.skill){
                     skill = modInfo.skill;
@@ -359,10 +366,11 @@ class org.flashNight.arki.item.EquipmentUtil{
             }
         }
 
-        // 以百分比加成-固定加成-覆盖的顺序应用所有加成
+        // 以百分比加成-固定加成-覆盖-上限过滤的顺序应用所有加成
         operators.multiply(data, multiplier);
         operators.add(data, adder, 0);
         operators.override(data, ObjectUtil.clone(overrider)); // 最终覆盖操作前进行一次深拷贝
+        operators.applyCap(data, capper, baseData);  // 新增：最后应用cap限制
 
         // 替换战技
         if(skill){
@@ -421,6 +429,66 @@ class org.flashNight.arki.item.EquipmentUtil{
         if(!overProp) return;
         for (var key:String in overProp) {
             prop[key] = overProp[key];
+        }
+    }
+
+    /**
+    * 应用属性上限过滤。对最终计算结果应用上限约束。
+    * 正数cap表示属性的最大值（上限），负数cap表示属性的最小值（下限，绝对值）。
+    *
+    * @param prop 要被限制的属性对象。
+    * @param capProp 上限配置对象。
+    * @param baseProp 基础属性对象（用于计算变化量）。如果为null，则直接限制绝对值。
+    */
+    public static function applyCapProperty(prop:Object, capProp:Object, baseProp:Object):Void {
+        if(!capProp) return;
+
+        for (var key:String in capProp) {
+            var capValue = capProp[key];
+            if(capValue == undefined || capValue == 0) continue;
+
+            var currentVal = prop[key];
+            if(currentVal == undefined) continue;
+
+            if (baseProp && baseProp[key] != undefined) {
+                // 基于基础值计算变化量
+                var baseVal = baseProp[key];
+                var change = currentVal - baseVal;
+
+                // 调试日志（需要时取消注释）
+                // _root.服务器.发布服务器消息("[Cap调试] " + key + ": 基础=" + baseVal + ", 当前=" + currentVal + ", 变化=" + change + ", 上限=" + capValue);
+
+                if (capValue > 0) {
+                    // 正数cap = 增益上限（最多增加capValue）
+                    if (change > capValue) {
+                        // _root.服务器.发布服务器消息("[Cap生效] " + key + " 增益被限制: " + change + " -> " + capValue);
+                        prop[key] = baseVal + capValue;
+                    }
+                } else if (capValue < 0) {
+                    // 负数cap = 减益下限（最多减少|capValue|）
+                    if (change < capValue) {
+                        // _root.服务器.发布服务器消息("[Cap生效] " + key + " 减益被限制: " + change + " -> " + capValue);
+                        prop[key] = baseVal + capValue;  // capValue本身是负数
+                    }
+                }
+            } else {
+                // 没有基础值，直接限制绝对值
+                // _root.服务器.发布服务器消息("[Cap调试] " + key + ": 无基础值, 当前=" + currentVal + ", 上限=" + capValue);
+                if (capValue > 0) {
+                    // 正数cap = 最大值上限
+                    if (currentVal > capValue) {
+                        // _root.服务器.发布服务器消息("[Cap生效] " + key + " 绝对值被限制: " + currentVal + " -> " + capValue);
+                        prop[key] = capValue;
+                    }
+                } else if (capValue < 0) {
+                    // 负数cap = 最小值下限（绝对值）
+                    var minValue = -capValue;  // 转换为正数
+                    if (currentVal < minValue) {
+                        // _root.服务器.发布服务器消息("[Cap生效] " + key + " 绝对值下限被限制: " + currentVal + " -> " + minValue);
+                        prop[key] = minValue;
+                    }
+                }
+            }
         }
     }
 }

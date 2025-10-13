@@ -65,7 +65,7 @@
         </stats>
     </mod>
     <!-- 中级材料 -->
-     <!-- 还差一个可充锂电池 -->
+    <!-- 还差一个可充锂电池 -->
     <mod>
         <name>小型液晶屏</name>
         <use>长枪,手枪</use>
@@ -291,7 +291,7 @@
         <stats>
             <percentage>
                 <!-- <interval>-10</interval>这里也是待定 减射击间隔不管在代码还是平衡上都是极度危险的设计 -->
-                 <power>25</power>
+                <power>25</power>
             </percentage>
             <flat>
                 <weight>2</weight>
@@ -352,6 +352,9 @@
             <percentage>
                 <capacity>15</capacity>
             </percentage>
+            <cap>
+                <capacity>50</capacity>
+            </cap>
         </stats>
     </mod>
     <mod>
