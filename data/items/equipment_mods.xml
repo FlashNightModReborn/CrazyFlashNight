@@ -368,12 +368,24 @@
             </percentage>
         </stats>
     </mod>
-    <!-- <mod>
+    <mod>
         <name>非栓式机构</name>
         <use>长枪,手枪</use>
         <stats>
+            <flat>
+                <capacity>1</capacity>
+                <weight>2</weight>
+            </flat>
+            <percentage>
+                <capacity>10</capacity>
+                <power>-35</power>
+            </percentage>
+            <cap>
+                <capacity>3</capacity>
+            </cap>
         </stats>
-    </mod> 所以这到底是什么东西啊.jpg 等描述更新之后再填数值吧 -->
+        <description>巴别塔计划的技术遗产，基于可编程气体动力学矩阵的跨平台循环转换模块。提升弹仓容量但显著降低单发威力，适合狙击武器与发射器。</description>
+    </mod>
 
     <!-- 后面可能实装的新插件举例 -->
     <mod>
