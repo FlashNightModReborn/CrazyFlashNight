@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-联合大学" itemID="66e7946e-00000497" linkageExportForAS="true" linkageIdentifier="地图-联合大学" lastModified="1749722023" lastUniqueIdentifier="77">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-联合大学" itemID="66e7946e-00000497" linkageExportForAS="true" linkageIdentifier="地图-联合大学" lastModified="1760457132" lastUniqueIdentifier="78">
   <timeline>
     <DOMTimeline name="地图-联合大学">
       <layers>
@@ -14,7 +14,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="出生地" color="#FF800A" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="出生地" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -39,7 +39,28 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="门" color="#9933CC" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="提示箭头" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地图元件/提示箭头" centerPoint3DX="1183.2" centerPoint3DY="529.55">
+                  <matrix>
+                    <Matrix d="0.563629150390625" tx="1156.35" ty="513.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27" y="27.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+		this._visible = 1;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="门" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -77,12 +98,29 @@ onClipEvent(load){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/门" name="门3" centerPoint3DX="1267.55" centerPoint3DY="675.7">
+                  <matrix>
+                    <Matrix a="15.2307891845703" d="1.14991760253906" tx="1185.6" ty="536.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.5" y="-19.95"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   切换场景("","地图-大学内部","",_root.上键);
+}
+onClipEvent(load){
+   是否从门加载主角 = true;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="NPC" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="Tomboy" color="#A91BDC" parentLayerIndex="3" locked="true" autoNamed="false">
+        <DOMLayer name="NPC" color="#9933CC" locked="true" autoNamed="false" open="false" layerType="folder"/>
+        <DOMLayer name="Tomboy" color="#A91BDC" parentLayerIndex="4" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -109,7 +147,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="球棒少年" color="#FF800A" parentLayerIndex="3" locked="true" autoNamed="false">
+        <DOMLayer name="球棒少年" color="#FF800A" parentLayerIndex="4" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -167,7 +205,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="背景" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

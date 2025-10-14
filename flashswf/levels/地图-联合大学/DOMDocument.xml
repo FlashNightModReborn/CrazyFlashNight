@@ -128,7 +128,7 @@
           <Include href="UI重构/商店相关/npc商店名称UI.xml" loadImmediate="false" itemID="668a5bba-000008f1" lastModified="1720795931"/>
           <Include href="UI重构/商店相关/npc商店名称框.xml" loadImmediate="false" itemID="668a5ba5-000008ed" lastModified="1720349306"/>
           <Include href="UI重构/商店相关/购物图标UI.xml" loadImmediate="false" itemID="668a7428-00000c8d" lastModified="1720349737"/>
-          <Include href="背景图.xml" loadImmediate="false" itemID="66f2a082-00000a2a" lastModified="1737186896"/>
+          <Include href="背景图.xml" loadImmediate="false" itemID="66f2a082-00000a2a" lastModified="1760456951"/>
           <Include href="待整理防具相关汇总/Symbol 804.xml" itemID="668e7c1e-0000078d" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/男变装-bob自由火箭皮鞋特别款.xml" loadImmediate="false" itemID="66e7d59c-00002268" lastModified="1726469830"/>
           <Include href="待整理防具相关汇总/男变装-黑色X蒙面.xml" itemID="66e7d313-000021fc" lastModified="1726473864"/>
@@ -141,9 +141,10 @@
           <Include href="待整理防具相关汇总/男变装-黑色校服裤子右大腿.xml" loadImmediate="false" itemID="66e7d2b5-000021eb" lastModified="1726469989"/>
           <Include href="待整理防具相关汇总/男变装-黑色校服裤子左大腿.xml" loadImmediate="false" itemID="66e7d2af-000021ea" lastModified="1726469990"/>
           <Include href="地板.xml" loadImmediate="false" itemID="66e6d0e9-000003ef" lastModified="1726402793"/>
-          <Include href="地图-联合大学.xml" itemID="66e7946e-00000497" lastModified="1749722023"/>
+          <Include href="地图-联合大学.xml" itemID="66e7946e-00000497" lastModified="1760457132"/>
           <Include href="地图碰撞箱.xml" loadImmediate="false" itemID="67d7e377-000019cf" lastModified="1749722015"/>
           <Include href="地图元件/deadbody.xml" loadImmediate="false" itemID="666e9ef0-000003cc" lastModified="1727182776"/>
+          <Include href="地图元件/提示箭头.xml" loadImmediate="false" itemID="660d39b9-00001fe8" lastModified="1759674980"/>
           <Include href="地图元件/效果.xml" loadImmediate="false" itemID="666ea047-000003ea" lastModified="1718526023"/>
           <Include href="地图元件/子弹区域.xml" loadImmediate="false" itemID="666ea01c-000003e3" lastModified="1718525981"/>
           <Include href="冷兵/钝器/棒球棒/棒球棒.xml" itemIcon="1" loadImmediate="false" itemID="660f7d90-000019bc" lastModified="1712291609"/>
@@ -534,6 +535,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="314304" publishTime="1760457064"/>
           <PublishItem publishSize="314976" publishTime="1747279137"/>
           <PublishItem publishSize="314941" publishTime="1742201739"/>
           <PublishItem publishSize="315094" publishTime="1737186685"/>
@@ -553,6 +555,5 @@
           <PublishItem publishSize="535254" publishTime="1727181508"/>
           <PublishItem publishSize="535251" publishTime="1727181111"/>
           <PublishItem publishSize="535116" publishTime="1727181080"/>
-          <PublishItem publishSize="535258" publishTime="1727179661"/>
      </publishHistory>
 </DOMDocument>
