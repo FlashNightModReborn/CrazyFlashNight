@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-体育老师/组件/身体" itemID="67d993db-000003fd" symbolType="graphic" lastModified="1760462682" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-体育老师/组件/身体" itemID="67d993db-000003fd" symbolType="graphic" lastModified="1760466279" lastUniqueIdentifier="4">
   <timeline>
     <DOMTimeline name="身体">
       <layers>
@@ -1238,6 +1238,13 @@
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor color="#723F25"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
                   </strokes>
                   <edges>
                     <Edge fillStyle0="6" strokeStyle="1" edges="
@@ -1247,7 +1254,7 @@
                     <Edge fillStyle0="5" strokeStyle="1" edges="
 !1787 -19[1627 -82 1500 -76!1500 -76[1358 -72 1253 13!1253 13[1185 67 1136 151"/>
                     <Edge fillStyle0="5" fillStyle1="6" edges="
-!1136 151[#3E5.1D 868 1018 1136!1018 1136[911 961 238 1075"/>
+!1136 151[#422.06 #229.8C 1030.5 814.5!1030.5 814.5[#3F0.D7 #3FA.77 1018 1136!1018 1136[911 961 238 1075"/>
                     <Edge fillStyle0="5" strokeStyle="1" edges="
 !238 1075[97 1120 57 1165"/>
                     <Edge fillStyle0="5" edges="
@@ -1315,6 +1322,8 @@
 !640 1289|431 1274!266 1267|133 1260"/>
                     <Edge fillStyle0="4" fillStyle1="5" edges="
 !34 1442[169 1447 425 1524!425 1524[680 1599 710 1588!710 1588[574 1494 508 1478!508 1478[439 1460 355 1442!355 1442[270 1422 34 1442"/>
+                    <Edge fillStyle0="5" fillStyle1="5" strokeStyle="2" edges="
+!1591 661[#600.08 #321.FA 1242 1062"/>
                     <Edge fillStyle1="2" edges="
 !2245 2419[2268 2422 2291 2424!2291 2424[2223 2448 2195 2447!2195 2447[1736 2478 1712 2483!1712 2483[1684 2488 1237 2444!1237 2444[1577 2508 1587 2546!1587 2546[1597 2582 1649 2603!1649 2603[1701 2620 1694 2671!1694 2671[1685 2721 1638
  2845!1638 2845[1591 2966 1114 2928!1114 2928[1051 2919 940 2880!940 2880[868 2855 883 2906!883 2906[854 2874 857 2848!857 2848[866 2627 878 2598!878 2598[889 2569 949 2519!949 2519[1010 2467 1107 2465!1107 2465[1154 2463 1237 2444!1237
