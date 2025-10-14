@@ -856,14 +856,15 @@
         <MinIllumination>4</MinIllumination>
         <BGM>Hip To Be Square</BGM>
     </Environment>
+	    <Environment>
         <BackgroundURL>地图-大学内部</BackgroundURL>
         <Alignment>true</Alignment>
         <Xmin>50</Xmin>
-        <Xmax>2270</Xmax>
-        <Ymin>470</Ymin>
-        <Ymax>1000</Ymax>
-        <Width>2200</Width>
-        <Height>1200</Height>
+        <Xmax>1350</Xmax>
+        <Ymin>500</Ymin>
+        <Ymax>750</Ymax>
+        <Width>1400</Width>
+        <Height>770</Height>
         <Horizon>20</Horizon>
         <Skybox>
             <url>大学楼栋.swf</url>

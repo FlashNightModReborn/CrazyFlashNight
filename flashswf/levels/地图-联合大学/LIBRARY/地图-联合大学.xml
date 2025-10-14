@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-联合大学" itemID="66e7946e-00000497" linkageExportForAS="true" linkageIdentifier="地图-联合大学" lastModified="1760457132" lastUniqueIdentifier="78">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-联合大学" itemID="66e7946e-00000497" linkageExportForAS="true" linkageIdentifier="地图-联合大学" lastModified="1760459323" lastUniqueIdentifier="78">
   <timeline>
     <DOMTimeline name="地图-联合大学">
       <layers>
@@ -60,7 +60,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="门" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="门" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -98,7 +98,7 @@ onClipEvent(load){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/门" name="门3" centerPoint3DX="1267.55" centerPoint3DY="675.7">
+                <DOMSymbolInstance libraryItemName="sprite/门" name="门3" selected="true" centerPoint3DX="1267.55" centerPoint3DY="675.7">
                   <matrix>
                     <Matrix a="15.2307891845703" d="1.14991760253906" tx="1185.6" ty="536.6"/>
                   </matrix>
@@ -107,7 +107,7 @@ onClipEvent(load){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(enterFrame){
-   切换场景("","地图-大学内部","",_root.上键);
+   切换场景("出生地","地图-大学内部","",_root.上键);
 }
 onClipEvent(load){
    是否从门加载主角 = true;
@@ -205,7 +205,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="背景" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
