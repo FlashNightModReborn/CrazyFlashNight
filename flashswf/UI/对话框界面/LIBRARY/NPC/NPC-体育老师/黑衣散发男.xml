@@ -1,0 +1,172 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-体育老师/黑衣散发男" itemID="67d87d45-000005e2" lastModified="1760463020" lastUniqueIdentifier="15">
+  <timeline>
+    <DOMTimeline name="黑衣散发男">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix tx="-716.7" ty="-16.95"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.1466064453125" d="0.0596771240234375" tx="840.8" ty="660.8"/>
+                        </matrix>
+                        <GradientEntry alpha="0.8" ratio="0"/>
+                        <GradientEntry alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!15131 12530[15829 12246 16817 12246!16817 12246[17805 12246 18502 12530!18502 12530[19201 12815 19201 13217!19201 13217[19201 13619 18502 13903!18502 13903[17805 14187 16817 14187!16817 14187[15829 14187 15131 13903!15131 13903[14434
+ 13619 14434 13217!14434 13217[14434 12815 15131 12530"/>
+                    <Edge cubics="!14434 13217(;14434,12949 14666,12720 15131,12530q14434 13217Q14434 12815q15131 12530);"/>
+                    <Edge cubics="!15131 13903(;14666,13714 14434,13485 14434,13217q15131 13903Q14434 13619q14434 13217);"/>
+                    <Edge cubics="!18502 12530(;18968,12720 19201,12949 19201,13217q18502 12530Q19201 12815q19201 13217);"/>
+                    <Edge cubics="!16817 12246(;17476,12246 18037,12341 18502,12530q16817 12246Q17805 12246q18502 12530);"/>
+                    <Edge cubics="!18502 13903(;18037,14092 17476,14187 16817,14187q18502 13903Q17805 14187q16817 14187);"/>
+                    <Edge cubics="!19201 13217(;19201,13485 18968,13714 18502,13903q19201 13217Q19201 13619q18502 13903);"/>
+                    <Edge cubics="!15131 12530(;15596,12341 16158,12246 16817,12246q15131 12530Q15829 12246q16817 12246);"/>
+                    <Edge cubics="!16817 14187(;16158,14187 15596,14092 15131,13903q16817 14187Q15829 14187q15131 13903);"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/上臂" name="基本款" centerPoint3DX="207.85" centerPoint3DY="245.3">
+                  <matrix>
+                    <Matrix a="1.0450439453125" b="0.0251312255859375" c="-0.02508544921875" d="1.04275512695313" tx="185.25" ty="174.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.85" y="-53.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/左小臂" centerPoint3DX="191.8" centerPoint3DY="279.2">
+                  <matrix>
+                    <Matrix a="0.959304809570313" b="0.0236663818359375" c="-0.023681640625" d="0.959320068359375" tx="165.2" ty="217.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.15" y="17.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/左手 复制" name="基本款" centerPoint3DX="208.65" centerPoint3DY="375.85">
+                  <matrix>
+                    <Matrix a="0.429107666015625" b="0.857040405273438" c="-0.857040405273438" d="0.429107666015625" tx="214.25" ty="341"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/右脚" centerPoint3DX="70.65" centerPoint3DY="632.5">
+                  <matrix>
+                    <Matrix a="1.0499267578125" d="1.04997253417969" tx="33.45" ty="599.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.2" y="31.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/右小腿" centerPoint3DX="72.45" centerPoint3DY="528.25">
+                  <matrix>
+                    <Matrix a="1.04998779296875" d="1.10246276855469" tx="38.2" ty="441.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.6" y="78.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/左脚" centerPoint3DX="179.4" centerPoint3DY="614.05">
+                  <matrix>
+                    <Matrix a="1.0499267578125" d="1.04997253417969" tx="135.95" ty="582.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.4" y="29.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/左小腿" centerPoint3DX="160.6" centerPoint3DY="528.5">
+                  <matrix>
+                    <Matrix a="0.96197509765625" d="1.10246276855469" tx="136" ty="451.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.6" y="70"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/左大腿" centerPoint3DX="170.8" centerPoint3DY="368.95">
+                  <matrix>
+                    <Matrix d="1.04998779296875" tx="138.75" ty="268.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.05" y="95.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/右大腿" centerPoint3DX="112.9" centerPoint3DY="375.7">
+                  <matrix>
+                    <Matrix a="0.998641967773438" b="0.052093505859375" c="-0.0546875" d="1.04855346679688" tx="77.05" ty="265.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.55" y="18.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/身体" centerPoint3DX="129.15" centerPoint3DY="162.05">
+                  <matrix>
+                    <Matrix a="-0.89996337890625" b="0.0243682861328125" d="1.0499267578125" tx="205.55" ty="46.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="57.85" y="186.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/上臂" name="基本款" centerPoint3DX="62.05" centerPoint3DY="247.5">
+                  <matrix>
+                    <Matrix a="0.99676513671875" b="0.314437866210938" c="-0.313751220703125" d="0.994598388671875" tx="59.75" ty="173.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.8" y="-53.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/右小臂" centerPoint3DX="41.1" centerPoint3DY="269.6">
+                  <matrix>
+                    <Matrix a="1.14048767089844" b="0.164840698242188" c="-0.15423583984375" d="1.083251953125" tx="13.55" ty="192.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="26.45" y="29.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/右手 复制" name="基本款" centerPoint3DX="50.05" centerPoint3DY="397.2">
+                  <matrix>
+                    <Matrix a="0.346817016601563" b="0.987045288085938" c="-0.990280151367188" d="0.347900390625" tx="61.1" ty="360.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/头" centerPoint3DX="142.85" centerPoint3DY="45.65">
+                  <matrix>
+                    <Matrix a="1.04759216308594" d="1.10272216796875" tx="105.45" ty="-5.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.1" y="80.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/屁股" centerPoint3DX="142.3" centerPoint3DY="288.7">
+                  <matrix>
+                    <Matrix a="-0.847152709960938" d="0.901962280273438" tx="195.2" ty="255.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62.25" y="38.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

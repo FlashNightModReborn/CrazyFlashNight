@@ -11,6 +11,7 @@
           <DOMFolderItem name="Itinerant/人物素材" itemID="6661dab9-00000f31"/>
           <DOMFolderItem name="Itinerant/武器素材" itemID="669a5d20-00000a23"/>
           <DOMFolderItem name="lochan" itemID="66e1bc59-00000cf1"/>
+          <DOMFolderItem name="NPC" itemID="68ee9351-000066d6" isExpanded="true"/>
           <DOMFolderItem name="NPC-Registrar" itemID="68b445d9-00002e34"/>
           <DOMFolderItem name="NPC-Registrar/Accessories" itemID="6688d96c-00002327"/>
           <DOMFolderItem name="NPC-Registrar/Accessories/Stocks" itemID="5fb81d21-000012df"/>
@@ -20,6 +21,9 @@
           <DOMFolderItem name="NPC-Registrar/Shotguns/Mossberg M500" itemID="68b435cf-000026c7"/>
           <DOMFolderItem name="NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun" itemID="68b435cf-000026c8"/>
           <DOMFolderItem name="NPC-Registrar/组件" itemID="68b435cf-000026db"/>
+          <DOMFolderItem name="NPC/NPC-体育老师" itemID="68ee9351-000066d7" isExpanded="true"/>
+          <DOMFolderItem name="NPC/NPC-体育老师/杂项" itemID="67d993db-000003db"/>
+          <DOMFolderItem name="NPC/NPC-体育老师/组件" itemID="67d87d4c-00000600"/>
           <DOMFolderItem name="Pins" itemID="5fb81d21-000012d3"/>
           <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
           <DOMFolderItem name="sound" itemID="6652e52e-00000bd5"/>
@@ -32,7 +36,7 @@
           <DOMFolderItem name="ts-npc" itemID="66ad200c-00000fee"/>
           <DOMFolderItem name="待整理防具相关汇总" itemID="67331ffe-00000756"/>
           <DOMFolderItem name="动画" itemID="65f7e940-00000bc1"/>
-          <DOMFolderItem name="对话框UI" itemID="66346c29-000015d9" isExpanded="true"/>
+          <DOMFolderItem name="对话框UI" itemID="66346c29-000015d9"/>
           <DOMFolderItem name="对话框UI/Lee" itemID="66bdc806-00000970"/>
           <DOMFolderItem name="对话框UI/黑铁会外交部长-部件" itemID="666080e1-000004d3"/>
           <DOMFolderItem name="对话框UI/杰克霜精" itemID="65f801a0-00000b66"/>
@@ -223,6 +227,29 @@
           <Include href="NPC-Registrar/组件/腰带.xml" itemIcon="1" loadImmediate="false" itemID="68b41184-0000198e" lastModified="1756631428"/>
           <Include href="NPC-Registrar/组件/衣服.xml" itemIcon="1" loadImmediate="false" itemID="68b43294-00001af8" lastModified="1756639892"/>
           <Include href="NPC-Registrar/组件/子弹.xml" loadImmediate="false" itemID="68b4192f-000019a9" lastModified="1756633619"/>
+          <Include href="NPC/NPC-体育老师/黑衣散发男.xml" loadImmediate="false" itemID="67d87d45-000005e2" lastModified="1760463020"/>
+          <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1_133 复制.xml" loadImmediate="false" itemID="68ee84c8-000062d0" lastModified="1760462024"/>
+          <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_3_66 复制.xml" loadImmediate="false" itemID="68ee84c8-000062ce" lastModified="1760462024"/>
+          <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_3_67 复制.xml" loadImmediate="false" itemID="68ee84c8-000062cd" lastModified="1760462024"/>
+          <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_3_69 复制.xml" loadImmediate="false" itemID="68ee84c8-000062d4" lastModified="1760462024"/>
+          <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_4_51 复制.xml" loadImmediate="false" itemID="68ee84c8-000062d3" lastModified="1760462024"/>
+          <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_5_44 复制 2.xml" loadImmediate="false" itemID="68ee84c8-000062d2" lastModified="1760462024"/>
+          <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_7_29 复制.xml" loadImmediate="false" itemID="68ee84c8-000062cf" lastModified="1760462024"/>
+          <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_308 复制.xml" loadImmediate="false" itemID="68ee84c8-000062d1" lastModified="1760462024"/>
+          <Include href="NPC/NPC-体育老师/组件/屁股.xml" loadImmediate="false" itemID="67d7d8a1-000011bc" lastModified="1742204514"/>
+          <Include href="NPC/NPC-体育老师/组件/上臂.xml" loadImmediate="false" itemID="67d86cc1-00000334" lastModified="1760462972"/>
+          <Include href="NPC/NPC-体育老师/组件/身体.xml" itemIcon="1" loadImmediate="false" itemID="67d993db-000003fd" lastModified="1760462682"/>
+          <Include href="NPC/NPC-体育老师/组件/头.xml" loadImmediate="false" itemID="67d87d84-000006e9" lastModified="1742373096"/>
+          <Include href="NPC/NPC-体育老师/组件/右大腿.xml" loadImmediate="false" itemID="67d993db-000003fc" lastModified="1742206093"/>
+          <Include href="NPC/NPC-体育老师/组件/右脚.xml" loadImmediate="false" itemID="67d993db-000003f7" lastModified="1742204586"/>
+          <Include href="NPC/NPC-体育老师/组件/右手 复制.xml" loadImmediate="false" itemID="67d86cbe-00000333" lastModified="1742236862"/>
+          <Include href="NPC/NPC-体育老师/组件/右小臂.xml" loadImmediate="false" itemID="67d87d84-000006e8" lastModified="1742237078"/>
+          <Include href="NPC/NPC-体育老师/组件/右小腿.xml" loadImmediate="false" itemID="67d993db-000003f8" lastModified="1742206302"/>
+          <Include href="NPC/NPC-体育老师/组件/左大腿.xml" loadImmediate="false" itemID="67d993db-000003fb" lastModified="1742204559"/>
+          <Include href="NPC/NPC-体育老师/组件/左脚.xml" loadImmediate="false" itemID="67d993db-000003f9" lastModified="1742204578"/>
+          <Include href="NPC/NPC-体育老师/组件/左手 复制.xml" loadImmediate="false" itemID="67d86cbb-00000332" lastModified="1742236859"/>
+          <Include href="NPC/NPC-体育老师/组件/左小臂.xml" loadImmediate="false" itemID="67d87d84-000006d8" lastModified="1742236614"/>
+          <Include href="NPC/NPC-体育老师/组件/左小腿.xml" loadImmediate="false" itemID="67d993db-000003fa" lastModified="1742204570"/>
           <Include href="NPCAK74M.xml" loadImmediate="false" itemID="6842337c-00001118" lastModified="1749169020"/>
           <Include href="NPC士兵头.xml" loadImmediate="false" itemID="68423429-00001123" lastModified="1749169193"/>
           <Include href="NPC头像空容器.xml" loadImmediate="false" itemID="6871ec97-000008c6" lastModified="1752296601"/>
@@ -859,7 +886,7 @@
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
           <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1756644772"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1760360583"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1760465926"/>
           <Include href="发型/Symbol 799.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000814" lastModified="1710653981"/>
           <Include href="歌留多/歌留多胯.xml" loadImmediate="false" itemID="67096725-00000045" lastModified="1728669954"/>
           <Include href="歌留多/歌留多身体.xml" loadImmediate="false" itemID="67095275-0000000f" lastModified="1728665563"/>
@@ -946,7 +973,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="对话框界面" name="对话框界面" selected="true" centerPoint3DX="351.4" centerPoint3DY="367.95">
+                                        <DOMSymbolInstance libraryItemName="对话框界面" name="对话框界面" centerPoint3DX="351.4" centerPoint3DY="367.95">
                                              <transformationPoint>
                                                   <Point/>
                                              </transformationPoint>
@@ -960,7 +987,7 @@
 ]]></script>
                                              </Actionscript>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="对话框副本" centerPoint3DX="407.4" centerPoint3DY="1028.7">
+                                        <DOMSymbolInstance libraryItemName="对话框副本" selected="true" centerPoint3DX="407.4" centerPoint3DY="1028.7">
                                              <matrix>
                                                   <Matrix tx="56" ty="660.75"/>
                                              </matrix>
