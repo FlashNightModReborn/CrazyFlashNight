@@ -862,8 +862,8 @@
         <Xmax>2270</Xmax>
         <Ymin>470</Ymin>
         <Ymax>1000</Ymax>
-        <Width>2270</Width>
-        <Height>1000</Height>
+        <Width>2200</Width>
+        <Height>1200</Height>
         <Horizon>20</Horizon>
         <Skybox>
             <url>大学楼栋.swf</url>
@@ -873,21 +873,5 @@
             <url>大学远山天空.swf</url>
             <SpeedRate>8</SpeedRate>
         </Skybox>
-        <Collision>
-            <Point>0,460</Point>
-            <Point>0,500</Point>
-            <Point>815,500</Point>
-            <Point>835,525</Point>
-            <Point>980,525</Point>
-            <Point>1013,500</Point>
-            <Point>1500,500</Point>
-            <Point>1500,460</Point>
-        </Collision>
-        <Collision>
-            <Point>2110,460</Point>
-            <Point>2280,460</Point>
-            <Point>2280,535</Point>
-            <Point>2190,535</Point>
-        </Collision>
         <BGM>Dialtone</BGM>
 </EnvironmentSettings>
