@@ -396,6 +396,17 @@ _root.新建角色 = function(){
 _root.删除存盘 = function(){
     var mysave = SharedObject.getLocal(_root.savePath);
     mysave.clear();
+
+    // 清理内存中的全局数据,防止新角色继承旧角色数据
+    _root.主角技能表 = [];
+    _root.初始化主角技能表();
+    _root.主角被动技能 = {};
+
+    // 清理其他可能残留的数据
+    _root.物品栏 = _root.存档系统.初始化物品栏();
+    _root.收集品栏 = _root.存档系统.初始化收集品栏();
+    _root.同伴数据 = [];
+    _root.同伴数 = 0;
 }
 
 _root.存盘名 = "test";

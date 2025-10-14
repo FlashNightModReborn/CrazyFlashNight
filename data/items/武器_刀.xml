@@ -1,6 +1,181 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!--已用ID：[392, 393, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425, 426, 427, 428, 429, 430, 431, 445, 453, 472, 498, 499, 519, 523, 563, 564, 565, 595, 608, 609, 620, 622, 626, 630, 631, 632, 634, 635, 636, 637, 638, 639, 640, 641, 649, 650, 651, 652, 657, 676, 681, 685, 689, 690, 702, 703, 749, 799, 800, 832, 845, 846, 847, 848, 852, 853, 854, 855, 857, 900, 1501, 1502, 1503, 1504, 1505, 1506, 1509, 1510, 1511, 1512, 1513, 1514, 1515, 1516, 1517, 1518, 1519, 1520, 1525, 1554, 1555, 1556, 1557, 1558, 1559, 1560, 1561, 5002, 5500, 5509, 5510, 6000, 6009, 6010, 6011, 6012, 6013, 6014, 6015, 6016, 6028, 6029, 6061, 6062, 6069, 6070, 8010, 8011, 8029, 8030, 8031, 8032, 9001, 12018, 12020, 12118, 12120, 13007, 13013, 22000]
-预留ID区间：17306-17500--><root>
+预留ID区间：17312-17500--><root>
+  <item>
+    <id>17311</id>
+    <name>精钢锏</name>
+    <displayname>精钢锏</displayname>
+    <icon>精钢锏</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <price>70000</price>
+    <skill>
+      <skillname>凶斩</skillname>
+      <description>手持该武器时可以使用凶斩。</description>
+      <cd>8000</cd>
+      <mp>30</mp>
+    </skill>
+    <description>整体很刻意的保持了古风质感，大约是出自堕落城黑铁会或是联合大学的工匠。
+虽然是量产货，但无论是美观还是实用程度都属上乘，也因此价格相对偏高。</description>
+    <data>
+      <level>18</level>
+      <weight>7</weight>
+      <dressup>刀-精钢锏</dressup>
+      <power>200</power>
+      <hp>0</hp>
+      <mp>0</mp>
+      <defence>0</defence>
+      <criticalhit>10</criticalhit>
+      <evasion>10</evasion>
+    </data>
+  </item>
+  <item>
+    <id>17310</id>
+    <name>古制砍刀</name>
+    <displayname>古制砍刀</displayname>
+    <icon>古制砍刀</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>刀剑</actiontype>
+    <price>100000</price>
+    <skill>
+      <skillname>瞬步斩</skillname>
+      <description>手持该武器时可以使用瞬步斩。</description>
+      <cd>8000</cd>
+      <mp>30</mp>
+    </skill>
+    <description>整体很刻意的保持了古风质感，大约是出自堕落城黑铁会或是联合大学的工匠。
+虽然是量产货，但无论是美观还是实用程度都属上乘，也因此价格相对偏高。</description>
+    <data>
+      <level>16</level>
+      <weight>2</weight>
+      <dressup>刀-古制砍刀</dressup>
+      <power>200</power>
+      <hp>0</hp>
+      <mp>0</mp>
+      <defence>0</defence>
+      <criticalhit>10</criticalhit>
+    </data>
+  </item>
+  <item>
+    <id>17309</id>
+    <name>玄铁重剑</name>
+    <displayname>玄铁重剑</displayname>
+    <icon>玄铁重剑</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <price>244000</price>
+    <skill>
+      <skillname>凶斩</skillname>
+      <description>手持该武器时可以使用凶斩。</description>
+      <cd>8000</cd>
+      <mp>30</mp>
+    </skill>
+    <description>黑铁会与联合大学的高级订制武器，双方的工业合作产物，锋芒如新淬。
+剑身材料使用了极为特殊的融合金属，有着远超寻常钢铁数倍的密度，异常沉重，也因此有着开碑裂石的威能。</description>
+    <data>
+      <level>39</level>
+      <weight>30</weight>
+      <dressup>刀-玄铁重剑</dressup>
+      <power>570</power>
+      <hp>0</hp>
+      <mp>0</mp>
+      <defence>0</defence>
+      <damagetype>破击</damagetype>
+      <magictype>巨体</magictype>
+      <criticalhit>20</criticalhit>
+      <evasion>30</evasion>
+    </data>
+  </item>
+  <item>
+    <id>17308</id>
+    <name>炎玉剑</name>
+    <displayname>炎玉剑</displayname>
+    <icon>炎玉剑</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>刀剑</actiontype>
+    <price>370000</price>
+    <skill>
+      <skillname>追踪五连</skillname>
+      <description>手持该武器可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人。战技启动时，按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
+      <cd>7000</cd>
+      <mp>50</mp>
+    </skill>
+    <description>黑铁会与联合大学的高级订制武器，双方的工业合作产物，锋芒如新淬。
+剑身材料像是使用了特殊的玉石与工业钢铁的融合金属，雅致古朴的外形受到权高位重的人士喜爱。
+看似普通的锋刃，却蕴含着作为前文明时代工业结晶的微型熔断装置；因此只需轻触，便能燃烧血肉。</description>
+    <data>
+      <level>37</level>
+      <weight>3</weight>
+      <dressup>刀-炎玉剑</dressup>
+      <power>300</power>
+      <hp>0</hp>
+      <mp>0</mp>
+      <defence>0</defence>
+      <damagetype>魔法</damagetype>
+      <magictype>热</magictype>
+    </data>
+  </item>
+  <item>
+    <id>17307</id>
+    <name>寒玉剑</name>
+    <displayname>寒玉剑</displayname>
+    <icon>寒玉剑</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>刀剑</actiontype>
+    <price>370000</price>
+    <skill>
+      <skillname>追踪五连</skillname>
+      <description>手持该武器可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人。战技启动时，按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
+      <cd>7000</cd>
+      <mp>50</mp>
+    </skill>
+    <description>黑铁会与联合大学的高级订制武器，双方的工业合作产物，锋芒如新淬。
+剑身材料像是使用了特殊的玉石与工业钢铁的融合金属，雅致古朴的外形受到权高位重的人士喜爱。
+看似普通的锋刃，却蕴含着作为前文明时代工业结晶的微型冷冻装置；因此只需轻触，便能冻结血肉。</description>
+    <data>
+      <level>37</level>
+      <weight>3</weight>
+      <dressup>刀-寒玉剑</dressup>
+      <power>300</power>
+      <hp>0</hp>
+      <mp>0</mp>
+      <defence>0</defence>
+      <damagetype>魔法</damagetype>
+      <magictype>冷</magictype>
+    </data>
+  </item>
+  <item>
+    <id>17306</id>
+    <name>玉碧毒剑</name>
+    <displayname>玉碧毒剑</displayname>
+    <icon>玉碧毒剑</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>刀剑</actiontype>
+    <price>280000</price>
+    <skill>
+      <skillname>瞬步斩</skillname>
+      <description>手持该武器时可以使用瞬步斩。</description>
+      <cd>8000</cd>
+      <mp>30</mp>
+    </skill>
+    <description>黑铁会与联合大学的高级订制武器，双方的工业合作产物，锋芒如新淬。
+剑身材料像是使用了特殊的暗色玉石与工业钢铁的融合金属，光是凝视就有着令人不适的威胁感。
+看似普通的锋刃，却蕴含着作为前文明时代工业结晶的可控纳米毒素；因此只需轻触，便能腐蚀血肉。</description>
+    <data>
+      <level>35</level>
+      <weight>4</weight>
+      <dressup>刀-玉碧毒剑</dressup>
+      <power>200</power>
+      <hp>0</hp>
+      <mp>0</mp>
+      <defence>0</defence>
+      <poison>150</poison>
+    </data>
+  </item>
   <item>
     <id>17305</id>
     <name>雷铁斩斧</name>
@@ -2966,9 +3141,11 @@
       <power>360</power>
       <hp>0</hp>
       <mp>0</mp>
-      <defence>240</defence>
+      <defence>180</defence>
       <damagetype>破击</damagetype>
       <magictype>巨体</magictype>
+      <criticalhit>20</criticalhit>
+      <evasion>60</evasion>
     </data>
   </item>
   <item>
@@ -3596,22 +3773,24 @@
     <type>武器</type>
     <use>刀</use>
     <actiontype>长柄</actiontype>
-    <price>240000</price>
+    <price>117000</price>
     <skill>
       <skillname>回旋斩击</skillname>
       <description>手持该武器时可以使用回旋斩击。</description>
       <cd>7000</cd>
       <mp>40</mp>
     </skill>
-    <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
+    <description>杆身坚木打造，深褐如古战场焦土。三戈银亮似寒月，下嵌锐矛。钩啄劈刺，用法百变。</description>
     <data>
-      <level>36</level>
-      <weight>15</weight>
+      <level>30</level>
+      <weight>3</weight>
       <dressup>刀-三戈戟一型</dressup>
-      <power>500</power>
+      <power>300</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
+      <criticalhit>15</criticalhit>
+      <evasion>15</evasion>
     </data>
   </item>
   <item>
@@ -3622,22 +3801,24 @@
     <type>武器</type>
     <use>刀</use>
     <actiontype>长柄</actiontype>
-    <price>240000</price>
+    <price>200000</price>
     <skill>
       <skillname>回旋斩击</skillname>
       <description>手持该武器时可以使用回旋斩击。</description>
       <cd>7000</cd>
       <mp>40</mp>
     </skill>
-    <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
+    <description>黑杆沉凝，金戈矛尖如熔金铸就，熠熠生辉。三戈错落，挥扫间带破风声，突刺时似能穿甲裂盾，乃勇武者征战胜器。</description>
     <data>
-      <level>36</level>
-      <weight>15</weight>
+      <level>32</level>
+      <weight>3</weight>
       <dressup>刀-三戈戟二型</dressup>
-      <power>500</power>
+      <power>385</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
+      <criticalhit>15</criticalhit>
+      <evasion>15</evasion>
     </data>
   </item>
   <item>
@@ -3648,22 +3829,23 @@
     <type>武器</type>
     <use>刀</use>
     <actiontype>长柄</actiontype>
-    <price>240000</price>
+    <price>117000</price>
     <skill>
       <skillname>回旋斩击</skillname>
       <description>手持该武器时可以使用回旋斩击。</description>
       <cd>7000</cd>
       <mp>40</mp>
     </skill>
-    <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
+    <description>杆长且沉，如磐岩般坚实，刀身宽阔，刃弯若钩月，锋锐处寒芒隐现，透着森冷之气。刀首作凤嘴之形，古朴的翠色点缀其上。</description>
     <data>
-      <level>36</level>
-      <weight>15</weight>
+      <level>30</level>
+      <weight>10</weight>
       <dressup>刀-凤嘴刀</dressup>
-      <power>500</power>
+      <power>330</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
+      <criticalhit>10</criticalhit>
     </data>
   </item>
   <item>
@@ -3674,22 +3856,24 @@
     <type>武器</type>
     <use>刀</use>
     <actiontype>长枪</actiontype>
-    <price>240000</price>
+    <price>200000</price>
     <skill>
       <skillname>突刺</skillname>
       <description>手持该武器时可以使用突刺。</description>
       <cd>7000</cd>
       <mp>40</mp>
     </skill>
-    <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
+    <description>它曾是冷兵器时代骑兵的王者之器，修长坚韧的槊杆与锋利沉重的剑刃完美结合。在秩序崩塌的世界里，马槊凭借其出色的穿刺力，能轻易洞穿畸变怪物的躯体；挥舞时，又可借助长度与重量，横扫大片的敌兵。
+既是杀伐的利器，也是幸存者在绝望末日中，对往昔文明与力量的一种倔强传承。</description>
     <data>
-      <level>36</level>
-      <weight>15</weight>
+      <level>32</level>
+      <weight>10</weight>
       <dressup>刀-马槊</dressup>
-      <power>500</power>
+      <power>420</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
+      <criticalhit>10</criticalhit>
     </data>
   </item>
   <item>
@@ -3707,15 +3891,17 @@
       <cd>7000</cd>
       <mp>40</mp>
     </skill>
-    <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
+    <description>刀身有三尖，侧边附两刃，造型凌厉。长柄设计便于操控，能在劈、砍、刺等多种攻击动作中切换，兼具长兵器的威慑力与刀具的锐利，常出现在神话传说与古代战场相关的描绘里，是力量与勇武的象征。</description>
     <data>
       <level>36</level>
-      <weight>15</weight>
+      <weight>12</weight>
       <dressup>刀-三尖两刃刀</dressup>
-      <power>500</power>
+      <power>480</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
+      <criticalhit>15</criticalhit>
+      <evasion>15</evasion>
     </data>
   </item>
   <item>
@@ -3745,6 +3931,8 @@
       <mp>0</mp>
       <damagetype>破击</damagetype>
       <magictype>巨体</magictype>
+      <criticalhit>25</criticalhit>
+      <evasion>-50</evasion>
     </data>
   </item>
   <item>
@@ -3852,22 +4040,24 @@
     <type>武器</type>
     <use>刀</use>
     <actiontype>长枪</actiontype>
-    <price>240000</price>
+    <price>225000</price>
     <skill>
-      <skillname>回旋斩击</skillname>
-      <description>手持该武器时可以使用回旋斩击。</description>
+      <skillname>突刺</skillname>
+      <description>手持该武器时可以使用突刺。</description>
       <cd>7000</cd>
       <mp>40</mp>
     </skill>
-    <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
+    <description>于往昔烽火不休的三国乱世，方天画戟曾为其中最强的武将所执。
+工匠根据传说，仿制了那把武器，此形制两侧刀刃较窄，也可作长枪使用。</description>
     <data>
       <level>36</level>
-      <weight>15</weight>
+      <weight>10</weight>
       <dressup>刀-方天画戟一型</dressup>
-      <power>500</power>
+      <power>480</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
+      <evasion>30</evasion>
     </data>
   </item>
   <item>
@@ -3877,23 +4067,25 @@
     <icon>方天画戟二型</icon>
     <type>武器</type>
     <use>刀</use>
-    <actiontype>长枪</actiontype>
-    <price>240000</price>
+    <actiontype>狂野</actiontype>
+    <price>225000</price>
     <skill>
-      <skillname>回旋斩击</skillname>
-      <description>手持该武器时可以使用回旋斩击。</description>
+      <skillname>狼跳</skillname>
+      <description>手持该武器时可以使用狼跳。</description>
       <cd>7000</cd>
       <mp>40</mp>
     </skill>
-    <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
+    <description>于往昔烽火不休的三国乱世，方天画戟曾为其中最强的武将所执。
+工匠根据传说，仿制了那把武器，此形制两侧刀刃宽大，适宜大开大合。</description>
     <data>
       <level>36</level>
-      <weight>15</weight>
+      <weight>14</weight>
       <dressup>刀-方天画戟二型</dressup>
-      <power>500</power>
+      <power>490</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
+      <criticalhit>15</criticalhit>
     </data>
   </item>
   <item>
@@ -3903,25 +4095,29 @@
     <icon>寒天画戟</icon>
     <type>武器</type>
     <use>刀</use>
-    <actiontype>长枪</actiontype>
-    <price>240000</price>
+    <actiontype>长柄</actiontype>
+    <price>420000</price>
     <skill>
-      <skillname>回旋斩击</skillname>
-      <description>手持该武器时可以使用回旋斩击。</description>
+      <skillname>破坏殆尽</skillname>
+      <description>手持该武器时可以使用破坏殆尽。</description>
       <cd>7000</cd>
       <mp>40</mp>
     </skill>
-    <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
+    <description>黑铁会与联合大学的高级订制武器，双方的工业合作产物，锋芒如新淬。
+戟杆由某家倒闭军工企业的实验性合金锻造，缠覆的金丝虽蒙尘，却仍泛着金属特有的细闪。
+戟头取的是旧世界航天级合金，刀刃之中尚凝着永冻层的冷光。</description>
     <data>
-      <level>36</level>
-      <weight>15</weight>
+      <level>42</level>
+      <weight>16</weight>
       <dressup>刀-寒天画戟</dressup>
-      <power>500</power>
+      <power>350</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
       <damagetype>魔法</damagetype>
       <magictype>冷</magictype>
+      <criticalhit>20</criticalhit>
+      <evasion>30</evasion>
     </data>
   </item>
   <item>
@@ -3932,22 +4128,23 @@
     <type>武器</type>
     <use>刀</use>
     <actiontype>长枪</actiontype>
-    <price>240000</price>
+    <price>120000</price>
     <skill>
       <skillname>突刺</skillname>
       <description>手持该武器时可以使用突刺。</description>
       <cd>7000</cd>
       <mp>40</mp>
     </skill>
-    <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
+    <description>杆身漆黑如夜，矛首造型独特，弯曲似蛇身，尖锐的矛头闪烁着冰冷的寒光，矛尖处的倒钩如蛇齿般狰狞。凭借其独特的弯曲构造，可灵活地勾拉、穿刺，令敌人防不胜防。</description>
     <data>
-      <level>36</level>
-      <weight>15</weight>
+      <level>31</level>
+      <weight>6</weight>
       <dressup>刀-蛇矛一型</dressup>
-      <power>500</power>
+      <power>330</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
+      <evasion>10</evasion>
     </data>
   </item>
   <item>
@@ -3957,23 +4154,24 @@
     <icon>蛇矛二型</icon>
     <type>武器</type>
     <use>刀</use>
-    <actiontype>长枪</actiontype>
+    <actiontype>长柄</actiontype>
     <price>240000</price>
     <skill>
-      <skillname>突刺</skillname>
-      <description>手持该武器时可以使用突刺。</description>
+      <skillname>回旋斩击</skillname>
+      <description>手持该武器时可以使用回旋斩击。</description>
       <cd>7000</cd>
       <mp>40</mp>
     </skill>
-    <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
+    <description>杆身呈古朴的棕褐色，似承载着岁月的厚重。矛刃泛着金属特有的光泽，刃身的弧度精妙，既利于挥砍，又便于突刺。在末日纷争中，它是习武者手中的夺命利器，舞动如灵蛇出洞，能在寒光闪烁之间轻易撕开敌人的防线。</description>
     <data>
-      <level>36</level>
-      <weight>15</weight>
+      <level>34</level>
+      <weight>10</weight>
       <dressup>刀-蛇矛二型</dressup>
-      <power>500</power>
+      <power>455</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
+      <evasion>10</evasion>
     </data>
   </item>
   <item>
@@ -3984,23 +4182,26 @@
     <type>武器</type>
     <use>刀</use>
     <actiontype>长枪</actiontype>
-    <price>240000</price>
+    <price>300000</price>
     <skill>
       <skillname>突刺</skillname>
       <description>手持该武器时可以使用突刺。</description>
       <cd>7000</cd>
       <mp>40</mp>
     </skill>
-    <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
+    <description>在末日废土的荒芜与混乱中，剧毒蛇矛宛如死神的请柬。
+矛杆由变异丛林深处的坚木制成，深沉的墨绿色仿佛凝聚着丛林里终年不散的瘴气。其表面粗糙却坚实，握在手中，能感受到自然岁月与末世工业的厚重质感。
+看似普通的金属锋刃，却蕴含着作为前文明时代工业结晶的可控纳米毒素；因此只需轻触，便能腐蚀血肉。</description>
     <data>
-      <level>36</level>
-      <weight>15</weight>
+      <level>38</level>
+      <weight>8</weight>
       <dressup>刀-剧毒蛇矛</dressup>
-      <power>500</power>
+      <power>245</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
       <poison>150</poison>
+      <criticalhit>10</criticalhit>
     </data>
   </item>
   <item>
@@ -4011,22 +4212,25 @@
     <type>武器</type>
     <use>刀</use>
     <actiontype>狂野</actiontype>
-    <price>240000</price>
+    <price>225000</price>
     <skill>
       <skillname>回旋裂地</skillname>
       <description>手持该武器时可以使用回旋裂地。</description>
       <cd>7000</cd>
       <mp>40</mp>
     </skill>
-    <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
+    <description>修长的棒身，末端是布满尖锐狼牙刺的沉重棒头。挥舞时，凭借其重量与尖刺，能给敌人造成猛烈且带穿刺伤害的打击，既可用作钝器砸击，尖刺又能增强破甲与撕裂效果，在战场等场景中，是能给对手带来巨大心理压力与实质伤害的利器。
+	然而，由于重心过于诡谲，使用这把武器招架敌人攻击时总是难以得心应手。</description>
     <data>
       <level>36</level>
-      <weight>15</weight>
+      <weight>18</weight>
       <dressup>刀-狼牙长棒</dressup>
       <power>500</power>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
+      <criticalhit>25</criticalhit>
+      <evasion>-50</evasion>
     </data>
   </item>
   <item>
