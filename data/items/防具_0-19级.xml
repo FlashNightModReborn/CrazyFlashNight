@@ -3,6 +3,46 @@
 ID已倒序排序，在最上方新增新物品即可，使用最新id，同时可修改注释
 预留ID区间：15004-15300--><root>
   <item>
+    <id>8511</id>
+    <name>呲牙小丑面具</name>
+    <displayname>呲牙小丑面具</displayname>
+    <icon>呲牙小丑面具</icon>
+    <type>防具</type>
+    <use>头部装备</use>
+    <price>28600</price>
+    <description>塑料制的小丑面具，至少看上去是。
+	似乎适合戴着来劈柴。
+	</description>
+    <data>
+      <level>11</level>
+      <weight>10</weight>
+      <dressup>男变装-呲牙小丑面具</dressup>
+      <hp>25</hp>
+      <damage>55</damage>
+      <defence>60</defence>
+    </data>
+  </item>
+    <item>
+    <id>8510</id>
+    <name>龅牙小丑面具</name>
+    <displayname>龅牙小丑面具</displayname>
+    <icon>龅牙小丑面具</icon>
+    <type>防具</type>
+    <use>头部装备</use>
+    <price>26000</price>
+    <description>一个小丑面具，看似如此。
+	不知道为什么，戴上这个的人会做出奇妙的举动。
+	包括但不限于：用头打飞矿泉水瓶，赤裸上半身跳舞，把红酒倒自己身上。</description>
+    <data>
+      <level>10</level>
+      <weight>1</weight>
+      <dressup>男变装-龅牙小丑面具</dressup>
+      <hp>5</hp>
+      <gunpower>30</gunpower>
+      <defence>20</defence>
+    </data>
+  </item>
+  <item>
     <id>2617</id>
     <name>铁桶</name>
     <displayname>铁桶</displayname>
