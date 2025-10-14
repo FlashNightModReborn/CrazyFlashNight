@@ -69,7 +69,7 @@
           <DOMBitmapItem name="技能相关/图标素材/QQ截图20240130020129.png" itemID="65b7e860-00002247" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/QQ截图20240130020129.png" sourceLastImported="1706551291" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/QQ截图20240130020129.png" bitmapDataHRef="M 50 1740550143.dat" frameRight="14400" frameBottom="14400"/>
           <DOMBitmapItem name="技能相关/图标素材/QQ截图20240720173147 (1).png" itemID="669b84f0-00000521" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/QQ截图20240720173147 (1).png" sourceLastImported="1721468130" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/QQ截图20240720173147 (1).png" bitmapDataHRef="M 40 1740550143.dat" frameRight="3820" frameBottom="3820"/>
           <DOMBitmapItem name="消耗道具相关/各种图素材等/QQ图片20240114125757.jpg" itemID="65a369e5-000004a4" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/消耗道具相关/各种图素材等/QQ图片20240114125757.jpg" sourceLastImported="1705208239" quality="50" href="消耗道具相关/各种图素材等/QQ图片20240114125757.jpg" bitmapDataHRef="M 26 1740497968.dat" frameRight="10240" frameBottom="5760" isJPEG="true"/>
-          <DOMBitmapItem name="生活用品/020/u=1702814204,2418538836&amp;gp=22" itemID="46ef6b23-00000012" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" sourceLastImported="1190084491" quality="50" href="生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" bitmapDataHRef="M 1 1748966260.dat" frameRight="2780" frameBottom="2780" isJPEG="true"/>
+          <DOMBitmapItem name="生活用品/020/u=1702814204,2418538836&amp;gp=22" itemID="46ef6b23-00000012" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" sourceLastImported="1190084491" originalCompressionType="lossless" quality="50" href="生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" bitmapDataHRef="M 1 1748966260.dat" frameRight="2780" frameBottom="2780"/>
           <DOMBitmapItem name="技能相关/图标素材/位图 100" itemID="65e0a7bb-00002180" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/位图 100" sourceLastImported="1709221819" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/位图 100" bitmapDataHRef="M 41 1740550143.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="技能相关/图标素材/位图 103" itemID="663fa15d-00000e62" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/位图 103" sourceLastImported="1715446109" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/位图 103" bitmapDataHRef="M 42 1740550143.dat" frameRight="3940" frameBottom="3940"/>
           <DOMBitmapItem name="技能相关/图标素材/位图 104" itemID="663fa1fd-00000e72" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/技能相关/图标素材/位图 104" sourceLastImported="1715446269" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/位图 104" bitmapDataHRef="M 43 1740550143.dat" frameRight="2940" frameBottom="2940"/>
@@ -192,7 +192,7 @@
           <Include href="材料相关/材料元件/粘土图标.xml" loadImmediate="false" itemID="66ebbfb6-00000d53" lastModified="1726726070"/>
           <Include href="材料相关/图标-Andy套装碎片.xml" itemID="66adbcd2-0000184e" lastModified="1722662100"/>
           <Include href="材料相关/图标-KM型消声器.xml" itemID="66adbcde-00001853" lastModified="1756950835"/>
-          <Include href="材料相关/图标-M203榴弹发射器.xml" itemID="68b739f6-000008af" lastModified="1756955224"/>
+          <Include href="材料相关/图标-M203榴弹发射器.xml" itemID="68b739f6-000008af" lastModified="1760411801"/>
           <Include href="材料相关/图标-爆炸僵尸样本.xml" itemID="66adbcba-00001849" lastModified="1722662086"/>
           <Include href="材料相关/图标-冰魄矿石.xml" itemID="66adbcf7-0000185b" lastModified="1722662142"/>
           <Include href="材料相关/图标-冰雪之心线索文件.xml" itemID="66adbc70-0000183e" lastModified="1722662000"/>
@@ -284,6 +284,8 @@
           <Include href="材料相关/图标-王水.xml" itemID="66eab60b-00000d19" lastModified="1731932548"/>
           <Include href="材料相关/图标-未知金属.xml" itemID="66adb910-000017e5" lastModified="1723123406"/>
           <Include href="材料相关/图标-无人机残骸.xml" itemID="66adb90b-000017e4" lastModified="1722661131"/>
+          <Include href="材料相关/图标-下挂霰弹枪.xml" itemID="68edd017-00000641" lastModified="1760415848"/>
+          <Include href="材料相关/图标-霰弹枪口收束器.xml" itemID="68edf040-00000658" lastModified="1760424064"/>
           <Include href="材料相关/图标-小型液晶屏.xml" itemID="66adb8fa-000017e3" lastModified="1756949372"/>
           <Include href="材料相关/图标-辛火草.xml" itemID="66adb8f6-000017e2" lastModified="1723124640"/>
           <Include href="材料相关/图标-锌棒.xml" itemID="66e97e3e-000012cb" lastModified="1731932533"/>
@@ -553,7 +555,7 @@
           <Include href="食材相关/猪肉.xml" itemIcon="1" loadImmediate="false" itemID="67bdc63d-000000de" lastModified="1740490301"/>
           <Include href="食材相关/竹笋.xml" loadImmediate="false" itemID="6814918b-0000039e" lastModified="1746178443"/>
           <Include href="食材相关/柱侯酱.xml" loadImmediate="false" itemID="6814612e-000005fb" lastModified="1746166062"/>
-          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1758983759"/>
+          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1760424007"/>
           <Include href="图标-方舟碎片.xml" itemID="66adbe1b-0000187e" lastModified="1722662433"/>
           <Include href="图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="666e7c83-00000d39" lastModified="1718516867"/>
           <Include href="未命名文件夹 1/Symbol 34.xml" itemIcon="1" loadImmediate="false" itemID="664c57d7-0000029e" lastModified="1740222009"/>
@@ -1143,6 +1145,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3603268" publishTime="1760424394"/>
           <PublishItem publishSize="3588603" publishTime="1758988252"/>
           <PublishItem publishSize="3588603" publishTime="1758988204"/>
           <PublishItem publishSize="3588603" publishTime="1758984433"/>
@@ -1162,6 +1165,5 @@
           <PublishItem publishSize="3425598" publishTime="1756949421"/>
           <PublishItem publishSize="3408885" publishTime="1756890867"/>
           <PublishItem publishSize="3409011" publishTime="1756890735"/>
-          <PublishItem publishSize="3397322" publishTime="1756889600"/>
      </publishHistory>
 </DOMDocument>
