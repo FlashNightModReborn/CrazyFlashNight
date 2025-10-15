@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/图标-月之碎片" itemID="66adb8a7-000017d4" linkageExportForAS="true" linkageIdentifier="图标-月之碎片" lastModified="1722661031">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/图标-月之碎片" itemID="66adb8a7-000017d4" linkageExportForAS="true" linkageIdentifier="图标-月之碎片" lastModified="1760513264">
   <timeline>
     <DOMTimeline name="图标-月之碎片">
       <layers>
@@ -12,11 +12,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#8277D3" current="true" isSelected="true">
+        <DOMLayer name="Layer 1" color="#8277D3">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4483" selected="true" centerPoint3DX="15.45" centerPoint3DY="17.85">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4483" centerPoint3DX="15.45" centerPoint3DY="17.85">
                   <matrix>
                     <Matrix a="0.636871337890625" d="0.636871337890625" tx="-0.45" ty="-0.05"/>
                   </matrix>
@@ -61,14 +61,17 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#A85FE2">
+        <DOMLayer name="Layer 3" color="#A85FE2" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4308" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4308" selected="true" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.11" tintColor="#CC00FF"/>
+                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

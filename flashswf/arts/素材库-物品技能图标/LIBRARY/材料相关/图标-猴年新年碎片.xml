@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/图标-猴年新年碎片" itemID="66adbb7f-00001825" linkageExportForAS="true" linkageIdentifier="图标-猴年新年碎片" lastModified="1722661805">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/图标-猴年新年碎片" itemID="66adbb7f-00001825" linkageExportForAS="true" linkageIdentifier="图标-猴年新年碎片" lastModified="1760513314">
   <timeline>
-    <DOMTimeline name="图标-猴年新年碎片" currentFrame="1">
+    <DOMTimeline name="图标-猴年新年碎片">
       <layers>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -16,7 +16,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4569" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4569" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -47,14 +47,17 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#8DDBCB">
+        <DOMLayer name="Layer 3" color="#8DDBCB" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4308" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4308" selected="true" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.11" tintColor="#CC00FF"/>
+                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

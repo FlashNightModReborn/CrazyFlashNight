@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/图标-国庆纪念币" itemID="66adbf49-000018ac" linkageExportForAS="true" linkageIdentifier="图标-国庆纪念币" lastModified="1722662742">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/图标-国庆纪念币" itemID="66adbf49-000018ac" linkageExportForAS="true" linkageIdentifier="图标-国庆纪念币" lastModified="1760513297">
   <timeline>
-    <DOMTimeline name="图标-国庆纪念币" currentFrame="1">
+    <DOMTimeline name="图标-国庆纪念币">
       <layers>
         <DOMLayer name="图层 3" color="#FF800A">
           <frames>
@@ -25,7 +25,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#9E4D9C" current="true" isSelected="true">
+        <DOMLayer name="Layer 2" color="#9E4D9C">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -87,7 +87,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#9C20FF">
+        <DOMLayer name="Layer 3" color="#9C20FF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -95,6 +95,9 @@
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.11" tintColor="#CC00FF"/>
+                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

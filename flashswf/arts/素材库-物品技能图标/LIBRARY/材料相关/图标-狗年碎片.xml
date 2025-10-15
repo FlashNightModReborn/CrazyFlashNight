@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/图标-狗年碎片" itemID="66adbf33-000018a7" linkageExportForAS="true" linkageIdentifier="图标-狗年碎片" lastModified="1722662712">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/图标-狗年碎片" itemID="66adbf33-000018a7" linkageExportForAS="true" linkageIdentifier="图标-狗年碎片" lastModified="1760513340">
   <timeline>
     <DOMTimeline name="图标-狗年碎片">
       <layers>
@@ -65,7 +65,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#F0357D" current="true" isSelected="true">
+        <DOMLayer name="Layer 2" color="#F0357D">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -78,7 +78,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#C5794F">
+        <DOMLayer name="Layer 3" color="#C5794F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -86,6 +86,9 @@
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.11" tintColor="#CC00FF"/>
+                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

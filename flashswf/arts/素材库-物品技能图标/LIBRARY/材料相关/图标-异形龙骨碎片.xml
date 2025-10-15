@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/图标-异形龙骨碎片" itemID="66adb8ab-000017d6" linkageExportForAS="true" linkageIdentifier="图标-异形龙骨碎片" lastModified="1722661045">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/图标-异形龙骨碎片" itemID="66adb8ab-000017d6" linkageExportForAS="true" linkageIdentifier="图标-异形龙骨碎片" lastModified="1760513228">
   <timeline>
     <DOMTimeline name="图标-异形龙骨碎片">
       <layers>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -53,16 +53,16 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#FAC2D3">
+        <DOMLayer name="Layer 3" color="#FAC2D3" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4308" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4308" selected="true" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                   <color>
-                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="153" greenOffset="102"/>
+                    <Color tintMultiplier="0.11" tintColor="#CC00FF"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
