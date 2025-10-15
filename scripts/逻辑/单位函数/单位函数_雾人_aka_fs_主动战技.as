@@ -65,7 +65,7 @@ _root.主动战技函数.长枪.发射榴弹 = {初始化: function(自机) {
     自机.副武器子弹散射度 = skill.diffusion && skill.diffusion > 0 ? Number(skill.diffusion) : 0;
     自机.副武器子弹速度 = skill.velocity && skill.velocity > 0 ? Number(skill.velocity) : 25;
     自机.副武器子弹Z轴攻击范围 = skill.range && skill.range > 0 ? Number(skill.range) : 50;
-    自机.副武器子弹击倒率 = skill.range && skill.range > 0 ? Number(skill.range) : 0.01;
+    自机.副武器子弹击倒率 = skill.impact && skill.impact > 0 ? Number(skill.impact) : 0.01;
 },
         释放许可判定: function(自机) {
             if (自机.当前弹夹副武器已发射数 >= 自机.副武器可发射数)

@@ -401,6 +401,32 @@
         </stats>
     </mod>
     <mod>
+        <name>下挂霰弹枪</name>
+        <use>长枪</use>
+        <weapontype>突击步枪</weapontype>
+        <stats>
+            <flat>
+                <weight>1</weight>
+            </flat>
+        </stats>
+        <skill>
+            <skillname>发射榴弹</skillname>
+            <description>持枪瞄准时使用下挂的霰弹枪发射霰弹，可装填3发，换弹后重新装填，需消耗12号霰弹弹药。</description>
+            <cd>1000</cd>
+            <mp>0</mp>
+            <power>200</power>
+            <bulletsize>3</bulletsize>
+            <clipname>12号霰弹弹药</clipname>
+            <bullet>横向联弹-普通子弹</bullet>
+            <sound>re_shotgun_swanoff.wav</sound>
+            <split>10</split>
+            <diffusion>13</diffusion>
+            <velocity>22</velocity>
+            <range>50</range>
+            <impact>8</impact>
+        </skill>
+    </mod>
+    <mod>
         <name>M203榴弹发射器</name>
         <use>长枪</use>
         <weapontype>突击步枪</weapontype>
@@ -423,6 +449,32 @@
             <diffusion>10</diffusion>
             <velocity>20</velocity>
             <impact>10</impact>
+        </skill>
+    </mod>
+        <mod>
+        <name>下挂微型导弹发射器</name>
+        <use>长枪</use>
+        <weapontype>突击步枪</weapontype>
+        <stats>
+            <flat>
+                <weight>3</weight>
+            </flat>
+        </stats>
+        <skill>
+            <skillname>发射榴弹</skillname>
+            <description>持枪瞄准时使用微型能量导弹发射系统，可装填4发，换弹后重新装填，消耗能量电池。</description>
+            <cd>1000</cd>
+            <mp>0</mp>
+            <power>2000</power>
+            <bulletsize>4</bulletsize>
+            <clipname>能量电池</clipname>
+            <bullet>横向拖尾追踪联弹-普通无壳子弹</bullet>
+            <sound>m4a1_unsil-2.wav</sound>
+            <split>4</split>
+            <diffusion>15</diffusion>
+            <velocity>25</velocity>
+            <range>50</range>
+            <impact>8</impact>
         </skill>
     </mod>
     <mod>
