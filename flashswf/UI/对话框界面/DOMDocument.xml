@@ -58,10 +58,17 @@
           <DOMFolderItem name="对话框UI/袁望surveyor" itemID="66532e8b-0000050a"/>
           <DOMFolderItem name="发型" itemID="68423071-00000b24"/>
           <DOMFolderItem name="歌留多" itemID="670d0c79-000005fd"/>
+          <DOMFolderItem name="红衣背头男" itemID="68ef8ce3-00006729"/>
+          <DOMFolderItem name="红衣背头男/组件" itemID="68ef8ce3-0000672a"/>
           <DOMFolderItem name="混沌系列素材包" itemID="6601614d-00000ea9"/>
           <DOMFolderItem name="混沌系列素材包/世莉架头像素材" itemID="660ce468-00000ed4"/>
           <DOMFolderItem name="混沌系列素材包/尾上世莉架" itemID="6601614d-00000eaa" isExpanded="true"/>
           <DOMFolderItem name="混沌系列素材包/尾上世莉架/人物组件" itemID="6601614d-00000eab"/>
+          <DOMFolderItem name="剑道社长" itemID="68ef7f3e-00006700"/>
+          <DOMFolderItem name="剑道社长/组件" itemID="68ef7f3e-00006701"/>
+          <DOMFolderItem name="教导主任" itemID="68ef8c89-0000671a"/>
+          <DOMFolderItem name="教导主任/杂项" itemID="67d87d84-000006b1"/>
+          <DOMFolderItem name="教导主任/组件" itemID="68ef8ce3-0000672c"/>
           <DOMFolderItem name="冷兵" itemID="67331ffe-00000751"/>
           <DOMFolderItem name="冷兵/钝器" itemID="67331ffe-00000752"/>
           <DOMFolderItem name="冷兵/钝器/棒球棒" itemID="67331ffe-00000753"/>
@@ -236,7 +243,6 @@
           <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_5_44 复制 2.xml" loadImmediate="false" itemID="68ee84c8-000062d2" lastModified="1760462024"/>
           <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_7_29 复制.xml" loadImmediate="false" itemID="68ee84c8-000062cf" lastModified="1760462024"/>
           <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_308 复制.xml" loadImmediate="false" itemID="68ee84c8-000062d1" lastModified="1760462024"/>
-          <Include href="NPC/NPC-体育老师/组件/屁股.xml" loadImmediate="false" itemID="67d7d8a1-000011bc" lastModified="1742204514"/>
           <Include href="NPC/NPC-体育老师/组件/上臂.xml" loadImmediate="false" itemID="67d86cc1-00000334" lastModified="1760462972"/>
           <Include href="NPC/NPC-体育老师/组件/身体.xml" itemIcon="1" loadImmediate="false" itemID="67d993db-000003fd" lastModified="1760466279"/>
           <Include href="NPC/NPC-体育老师/组件/头.xml" loadImmediate="false" itemID="67d87d84-000006e9" lastModified="1742373096"/>
@@ -886,7 +892,7 @@
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
           <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1756644772"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1760466164"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1760530856"/>
           <Include href="发型/Symbol 799.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000814" lastModified="1710653981"/>
           <Include href="歌留多/歌留多胯.xml" loadImmediate="false" itemID="67096725-00000045" lastModified="1728669954"/>
           <Include href="歌留多/歌留多身体.xml" loadImmediate="false" itemID="67095275-0000000f" lastModified="1728665563"/>
@@ -907,6 +913,7 @@
           <Include href="歌留多/歌留多左大腿.xml" loadImmediate="false" itemID="67096491-00000038" lastModified="1728704308"/>
           <Include href="歌留多/歌留多左小臂.xml" loadImmediate="false" itemID="67096488-00000035" lastModified="1728668808"/>
           <Include href="歌留多/髅髅宫歌留多.xml" loadImmediate="false" itemID="6709f658-00000196" lastModified="1728706670"/>
+          <Include href="红衣背头男/组件/屁股.xml" loadImmediate="false" itemID="67d7d8a1-000011bc" lastModified="1742204514"/>
           <Include href="混沌系列素材包/世莉架头像素材/立绘 表情.xml" loadImmediate="false" itemID="660141a5-0000073a" lastModified="1711358373"/>
           <Include href="混沌系列素材包/世莉架头像素材/立绘 发型.xml" loadImmediate="false" itemID="660141cf-0000073f" lastModified="1711360141"/>
           <Include href="混沌系列素材包/世莉架头像素材/立绘表情.xml" loadImmediate="false" itemID="66014203-00000745" lastModified="1711358467"/>
@@ -931,6 +938,31 @@
           <Include href="机械臂1.xml" loadImmediate="false" itemID="67683af3-000001b5" lastModified="1734884083"/>
           <Include href="机械爪背面.xml" loadImmediate="false" itemID="67683d4f-00000346" lastModified="1734884699"/>
           <Include href="机械爪正面.xml" loadImmediate="false" itemID="67683d69-0000034e" lastModified="1734884713"/>
+          <Include href="剑道社长/组件/刀.xml" itemIcon="1" loadImmediate="false" itemID="67da8a4d-00004f8a" lastModified="1760526574"/>
+          <Include href="剑道社长/组件/刀鞘.xml" itemIcon="1" loadImmediate="false" itemID="67da8a4b-00004f89" lastModified="1742375499"/>
+          <Include href="剑道社长/组件/屁股.xml" loadImmediate="false" itemID="67da6e9d-00003960" lastModified="1742369964"/>
+          <Include href="剑道社长/组件/上臂.xml" itemIcon="1" loadImmediate="false" itemID="67da7c2e-00004f12" lastModified="1742372034"/>
+          <Include href="剑道社长/组件/身体.xml" itemIcon="1" loadImmediate="false" itemID="67da7c29-00004f11" lastModified="1760529289"/>
+          <Include href="剑道社长/组件/头.xml" loadImmediate="false" itemID="67da7eac-00004f20" lastModified="1760528894"/>
+          <Include href="剑道社长/组件/右手.xml" itemIcon="1" loadImmediate="false" itemID="67da85fd-00004f49" lastModified="1742374397"/>
+          <Include href="剑道社长/组件/右下臂.xml" loadImmediate="false" itemID="67da7d3f-00004f1b" lastModified="1742374186"/>
+          <Include href="剑道社长/组件/左手.xml" itemIcon="1" loadImmediate="false" itemID="67da85fa-00004f48" lastModified="1742374394"/>
+          <Include href="剑道社长/组件/左下臂.xml" loadImmediate="false" itemID="67da7d2f-00004f16" lastModified="1742372826"/>
+          <Include href="教导主任/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1_133 复制.xml" loadImmediate="false" itemID="68ef8ce3-00006738" lastModified="1760529635"/>
+          <Include href="教导主任/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_3_69 复制.xml" loadImmediate="false" itemID="68ef8ce3-0000673c" lastModified="1760529635"/>
+          <Include href="教导主任/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_4_51 复制.xml" loadImmediate="false" itemID="68ef8ce3-0000673b" lastModified="1760529635"/>
+          <Include href="教导主任/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_5_44 复制 2.xml" loadImmediate="false" itemID="68ef8ce3-0000673a" lastModified="1760529635"/>
+          <Include href="教导主任/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_7_29 复制.xml" loadImmediate="false" itemID="68ef8ce3-00006737" lastModified="1760529635"/>
+          <Include href="教导主任/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_308 复制.xml" loadImmediate="false" itemID="68ef8ce3-00006739" lastModified="1760529635"/>
+          <Include href="教导主任/组件/发型-染色.xml" loadImmediate="false" itemID="67d985d5-000002a0" lastModified="1742322495"/>
+          <Include href="教导主任/组件/发型-原色.xml" loadImmediate="false" itemID="67d985ab-0000029e" lastModified="1742322505"/>
+          <Include href="教导主任/组件/上臂.xml" loadImmediate="false" itemID="67d96343-000001c3" lastModified="1742305134"/>
+          <Include href="教导主任/组件/身体.xml" itemIcon="1" loadImmediate="false" itemID="67d87d84-000006e1" lastModified="1742306480"/>
+          <Include href="教导主任/组件/头.xml" loadImmediate="false" itemID="67d7ec6c-00001278" lastModified="1742325555"/>
+          <Include href="教导主任/组件/右手.xml" loadImmediate="false" itemID="67d9633e-000001c2" lastModified="1742305611"/>
+          <Include href="教导主任/组件/右下臂.xml" loadImmediate="false" itemID="67d96327-000001bf" lastModified="1742305673"/>
+          <Include href="教导主任/组件/左手.xml" loadImmediate="false" itemID="67d9633a-000001c1" lastModified="1742305750"/>
+          <Include href="教导主任/组件/左下臂.xml" loadImmediate="false" itemID="67d9634a-000001c5" lastModified="1742305713"/>
           <Include href="砍刀.xml" loadImmediate="false" itemID="66099719-0000407b" lastModified="1717253609"/>
           <Include href="冷兵/钝器/棒球棒/棒球棒.xml" itemIcon="1" loadImmediate="false" itemID="660f7d90-000019bc" lastModified="1712291609"/>
           <Include href="冷兵/钝器/棒球棒/棒球棍末端.xml" loadImmediate="false" itemID="64b91170-00001168" lastModified="1690285773"/>
@@ -1344,6 +1376,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="723175" publishTime="1760529310"/>
+          <PublishItem publishSize="708051" publishTime="1760466391"/>
           <PublishItem publishSize="708016" publishTime="1760466035"/>
           <PublishItem publishSize="686160" publishTime="1760360378"/>
           <PublishItem publishSize="686097" publishTime="1760359752"/>
@@ -1362,7 +1396,5 @@
           <PublishItem publishSize="928688" publishTime="1751512429"/>
           <PublishItem publishSize="928708" publishTime="1751512015"/>
           <PublishItem publishSize="930521" publishTime="1751479899"/>
-          <PublishItem publishSize="930525" publishTime="1751479845"/>
-          <PublishItem publishSize="5351402" publishTime="1751013797"/>
      </publishHistory>
 </DOMDocument>

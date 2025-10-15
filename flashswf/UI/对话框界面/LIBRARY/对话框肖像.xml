@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1760466164" lastUniqueIdentifier="229">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1760530856" lastUniqueIdentifier="242">
   <timeline>
-    <DOMTimeline name="对话框肖像" currentFrame="281">
+    <DOMTimeline name="对话框肖像" currentFrame="299">
       <layers>
         <DOMLayer name="Labels Layer" color="#FC2986">
           <frames>
@@ -127,14 +127,17 @@
             <DOMFrame index="280" duration="8" name="体育老师" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="288" keyMode="9728">
+            <DOMFrame index="288" duration="8" name="剑道社长" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="296" duration="8" name="教导主任" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Script Layer" color="#F7F5D9">
           <frames>
-            <DOMFrame index="0" duration="289" keyMode="9728">
+            <DOMFrame index="0" duration="304" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
 ]]></script>
@@ -145,7 +148,7 @@
         </DOMLayer>
         <DOMLayer name="Layer 3" color="#17EED4" locked="true" outline="true" useOutlineView="true" layerType="mask">
           <frames>
-            <DOMFrame index="0" duration="289" keyMode="9728">
+            <DOMFrame index="0" duration="304" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -6023,9 +6026,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="280" duration="9" keyMode="9728">
+            <DOMFrame index="280" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/屁股" centerPoint3DX="70.25" centerPoint3DY="187.25">
+                <DOMSymbolInstance libraryItemName="红衣背头男/组件/屁股" centerPoint3DX="70.25" centerPoint3DY="187.25">
                   <matrix>
                     <Matrix a="-0.947341918945313" d="1.00863647460938" tx="129.35" ty="150.35"/>
                   </matrix>
@@ -6095,6 +6098,253 @@
                   </matrix>
                   <transformationPoint>
                     <Point x="31.2" y="80.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="288" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="剑道社长/组件/左手" symbolType="graphic" centerPoint3DX="208.5" centerPoint3DY="46.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.06512451171875" b="0.994125366210938" c="1.11111450195313" d="0.072784423828125" tx="208.35" ty="46.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="剑道社长/组件/上臂" symbolType="graphic" centerPoint3DX="116.6" centerPoint3DY="7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.685379028320313" b="-0.135879516601563" c="-0.135879516601563" d="0.685379028320313" tx="155.3" ty="-56.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="26.45" y="34.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="剑道社长/组件/左下臂">
+                  <matrix>
+                    <Matrix a="0.0699310302734375" b="-1.06744384765625" c="1.06744384765625" d="0.0699310302734375" tx="106.9" ty="79.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.15" y="14.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="剑道社长/组件/刀" symbolType="graphic" centerPoint3DX="73.35" centerPoint3DY="142.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.303787231445313" b="1.24575805664063" c="-1.24575805664063" d="-0.303787231445313" tx="74.3" ty="142"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="剑道社长/组件/刀鞘" symbolType="graphic" centerPoint3DX="23.6" centerPoint3DY="172.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.281936645507813" b="1.25076293945313" c="-1.25076293945313" d="-0.281936645507813" tx="23.9" ty="172.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-77.8" y="-68.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="剑道社长/组件/屁股" centerPoint3DX="76.05" centerPoint3DY="128.9">
+                  <matrix>
+                    <Matrix a="1.15267944335938" d="1.01902770996094" tx="74.2" ty="130"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.65" y="-1.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="剑道社长/组件/身体" symbolType="graphic" centerPoint3DX="62.9" centerPoint3DY="13.3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.698760986328125" d="0.73583984375" tx="-13.5" ty="-113.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="106.6" y="181.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="剑道社长/组件/上臂" symbolType="graphic" centerPoint3DX="4.65" centerPoint3DY="2.85" loop="loop">
+                  <matrix>
+                    <Matrix a="0.697830200195313" b="0.035980224609375" c="-0.035980224609375" d="0.697830200195313" tx="-17.65" ty="-67.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="48" y="17.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="剑道社长/组件/右手" symbolType="graphic" centerPoint3DX="-2.95" centerPoint3DY="156.1" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.01406860351563" b="-0.051239013671875" c="-0.0566558837890625" d="1.12075805664063" tx="-3.35" ty="155.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.5" y="-10.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="剑道社长/组件/右下臂">
+                  <matrix>
+                    <Matrix a="1.05360412597656" b="0.18524169921875" c="-0.18524169921875" d="1.05360412597656" tx="-19.55" ty="41"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.85" y="49.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="剑道社长/组件/头" centerPoint3DX="70.05" centerPoint3DY="-130.4">
+                  <matrix>
+                    <Matrix a="1.06976318359375" d="1.06976318359375" tx="22.2" ty="-180.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.8" y="46.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#F4DCD3"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#D7A99D"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="
+!4499 591|4445 595!4445 595|4347 635!4347 635|4347 670"/>
+                        <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
+!4347 670|4406 638"/>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="
+!4345 689|4304 666!4304 666|4174 617!4174 617[4156 641 4148 664!4148 664|4144 680!4144 680|4142 707"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="
+!4142 707[4195 761 4315 766!4315 766[4295 707 4356 696"/>
+                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
+!4356 696|4345 689"/>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="
+!4347 670|4345 689"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="
+!4576 660[4555 722 4492 739!4492 739[4440 752 4411 711!4411 711[4363 677 4428 632!4428 632|4499 591"/>
+                        <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
+!4356 696|4390 732!4390 732[4410 767 4459 788!4459 788[4506 777 4534 761"/>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="
+!4534 761[4594 726 4577 665!4577 665|4576 660!4186 794[4201 869 4247 857!4247 857|4282 850"/>
+                        <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
+!4282 850|4335 839!4335 839[4301 827 4280 800!4280 800|4186 794"/>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="
+!4142 707[4143 727 4151 745!4151 745[4162 770 4186 794!4345 970|4281 988!4281 988[4233 1003 4248 1040!4248 1040[4262 1082 4314 1080!4314 1080|4408 1073"/>
+                        <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
+!4408 1073[4473 1061 4528 1057"/>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="
+!4528 1057[4562 1053 4582 1038"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="
+!4582 1038[4454 1057 4461 1002!4461 1002[4443 954 4527 946!4527 946[4557 930 4592 957"/>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="
+!4592 957|4575 929!4575 929[4564 913 4546 914"/>
+                        <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
+!4546 914|4518 919!4518 919|4345 970"/>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="
+!4282 850[4203 884 4226 932!4226 932[4248 979 4345 970"/>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="
+!4576 660[4558 598 4499 591!4572 893[4602 865 4590 827!4590 827|4579 796"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="
+!4579 796[4507 795 4516 811!4516 811[4524 840 4455 873!4455 873[4423 881 4458 909!4458 909[4486 918 4519 901!4519 901|4572 893"/>
+                        <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
+!4459 788[4507 811 4473 842!4473 842[4436 871 4335 839"/>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="
+!4579 796[4560 756 4534 761!4546 914|4572 893"/>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="
+!4582 1038|4596 1022!4596 1022[4612 998 4592 957"/>
+                        <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
+!4470 1176|4524 1162"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="
+!4570 1176|4532 1174!4532 1174[4539 1143 4504 1143!4504 1143[4484 1099 4520 1085!4520 1085[4560 1079 4571 1056"/>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="
+!4571 1056|4528 1057!4470 1176|4468 1186!4468 1186[4468 1200 4484 1208!4484 1208[4541 1195 4570 1176"/>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="
+!4570 1176[4603 1154 4600 1122!4600 1122[4595 1060 4571 1056"/>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="
+!4408 1073|4304 1097!4304 1097|4294 1101!4294 1101[4276 1112 4280 1140!4280 1140[4281 1148 4284 1155!4284 1155[4298 1178 4348 1181!4348 1181[4416 1184 4470 1176"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="296" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="教导主任/组件/上臂" centerPoint3DX="103.85" centerPoint3DY="81.65">
+                  <matrix>
+                    <Matrix a="1.24751281738281" b="-0.151611328125" d="1.24751281738281" tx="104.25" ty="81.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.5" y="-46.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="教导主任/组件/左手" centerPoint3DX="126" centerPoint3DY="266.95">
+                  <matrix>
+                    <Matrix a="0.175262451171875" b="0.65301513671875" c="-0.782516479492188" d="0.210037231445313" tx="123.5" ty="269.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4" y="-4.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="教导主任/组件/左下臂" centerPoint3DX="108.5" centerPoint3DY="193.55">
+                  <matrix>
+                    <Matrix a="1.22927856445313" b="-0.212448120117188" c="0.212448120117188" d="1.22927856445313" tx="112.5" ty="194.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.55" y="-40.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="红衣背头男/组件/屁股">
+                  <matrix>
+                    <Matrix a="-0.876129150390625" d="0.904800415039063" tx="104.9" ty="178.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62.05" y="38.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="教导主任/组件/身体" centerPoint3DX="38.95" centerPoint3DY="55.6">
+                  <matrix>
+                    <Matrix a="-1.12275695800781" d="1.30982971191406" tx="134.4" ty="-86.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="57.85" y="187"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="教导主任/组件/上臂" centerPoint3DX="-35.2" centerPoint3DY="80.35">
+                  <matrix>
+                    <Matrix a="1.20501708984375" b="0.322845458984375" c="-0.322845458984375" d="1.20501708984375" tx="-35.35" ty="80.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.35" y="-46.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="教导主任/组件/右手" centerPoint3DX="-47.85" centerPoint3DY="288.1">
+                  <matrix>
+                    <Matrix a="0.207290649414063" b="0.783233642578125" c="-0.783233642578125" d="0.207290649414063" tx="-46.8" ty="283.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="教导主任/组件/右下臂" centerPoint3DX="-53.9" centerPoint3DY="197.5">
+                  <matrix>
+                    <Matrix a="1.24755859375" d="1.24755859375" tx="-51.5" ty="195.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.5" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="教导主任/组件/头" centerPoint3DX="58.15" centerPoint3DY="-68.55">
+                  <matrix>
+                    <Matrix a="1.14532470703125" d="1.14532470703125" tx="10.5" ty="-117.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="39.95" y="31.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
