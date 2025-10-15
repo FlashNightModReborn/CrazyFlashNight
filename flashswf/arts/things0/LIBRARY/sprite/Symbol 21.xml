@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="Symbol 21">
       <layers>
-        <DOMLayer name="Layer 1" color="#E3C645" current="true" isSelected="true">
+        <DOMLayer name="Layer_1" color="#E3C645" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -13,21 +13,6 @@
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	var 自机 = _parent._parent._parent;
-	var 装扮 = _root.装备引用配置.配置装扮(this, 自机.左下臂, "装扮", "左下臂_引用");
-	if (装扮)
-	{
-		this.基本款._visible = false;
-	}
-	else if (自机.性别 == "女")
-	{
-		_root.装备引用配置.配置装扮(this,"女变装-裸体左下臂","装扮","左下臂_引用");
-		this.基本款._visible = false;
-	}
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

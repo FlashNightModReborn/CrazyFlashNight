@@ -1,0 +1,27 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角肢体素材/刀-副手" itemID="68ee4b77-0000073e" lastModified="1760548208" lastUniqueIdentifier="17">
+  <timeline>
+    <DOMTimeline name="刀-副手">
+      <layers>
+        <DOMLayer name="Layer_1" color="#A947D3" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 12" name="刀" selected="true" centerPoint3DX="38.35" centerPoint3DY="299.2">
+                  <matrix>
+                    <Matrix tx="1.8" ty="97.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="100" contrast="95"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
