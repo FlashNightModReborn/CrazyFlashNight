@@ -71,11 +71,6 @@ class org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler {
         // 若子弹有垂直击退速度，则恢复动画播放并处理相关状态
         if (bullet.垂直击退速度 > 0) {
             hitTarget.man.play();
-            // 安全地取消硬直:同时清除硬直定时器和标志
-            if (hitTarget.knockStiffID != null) {
-                _root.EnhancedCooldownWheel.I().removeTask(hitTarget.knockStiffID);
-                hitTarget.knockStiffID = null;
-            }
             hitTarget.硬直中 = false;
             // _root.fly(hitTarget, bullet.垂直击退速度, 0);
             var flyspeed = hitTarget.起跳速度 - bullet.垂直击退速度;
