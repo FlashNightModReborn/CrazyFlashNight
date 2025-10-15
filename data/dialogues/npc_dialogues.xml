@@ -1219,13 +1219,13 @@
         <Dialogue id="0">
             <SubDialogue id="0">
                 <Name>体育老师</Name>
-                <Title>教师</Title>
+                <Title>教职工</Title>
                 <Char>体育老师</Char>
                 <Text>如果说一定要在洗脑他人的巨型邪教，屠杀难民的牲畜，不自量力的独立团体，鬼祟的神秘机构，有点底线的佣兵团体里面选同盟的话……</Text>
             </SubDialogue>
             <SubDialogue id="1">
                 <Name>体育老师</Name>
-                <Title>教师</Title>
+                <Title>教职工</Title>
                 <Char>体育老师</Char>
                 <Text>还是最后一个相对没那么糟糕吧？正常的人应该都会这么想吧？</Text>
             </SubDialogue>
@@ -1233,13 +1233,13 @@
         <Dialogue id="1">
             <SubDialogue id="0">
                 <Name>体育老师</Name>
-                <Title>教师</Title>
+                <Title>教职工</Title>
                 <Char>体育老师</Char>
                 <Text>末日以前虽然治安也糟糕，但还不算糟糕透顶。那时候我教学生打太极拳养生就能混口饭吃，而现在不费心思教真功夫，马上这些学生就全部死光光。你说，这是什么世道？</Text>
             </SubDialogue>
             <SubDialogue id="1">
                 <Name>体育老师</Name>
-                <Title>教师</Title>
+                <Title>教职工</Title>
                 <Char>体育老师</Char>
                 <Text>好怀念啊，以前让学生操场跑几圈练练广播体操拍拍皮球就宣布自由活动，然后自己也乐得清闲的日子。</Text>
             </SubDialogue>
@@ -1247,13 +1247,13 @@
         <Dialogue id="2">
             <SubDialogue id="0">
                 <Name>体育老师</Name>
-                <Title>教师</Title>
+                <Title>教职工</Title>
                 <Char>体育老师</Char>
                 <Text>赤手空拳打架算是我比较擅长的领域，之前一个子弹都打不穿的硬气功大师指点过我，再加上我本来也挺能打的，徒手格斗，这个学校应该没人能打赢我。</Text>
             </SubDialogue>
             <SubDialogue id="1">
                 <Name>体育老师</Name>
-                <Title>教师</Title>
+                <Title>教职工</Title>
                 <Char>体育老师</Char>
                 <Text>那个宗师听说现在在A兵团当教练，现在我们也算半个同行哈哈，有机会的话真想再见见他。</Text>
             </SubDialogue>
@@ -1261,7 +1261,7 @@
         <Dialogue id="3">
             <SubDialogue id="0">
                 <Name>体育老师</Name>
-                <Title>教师</Title>
+                <Title>教职工</Title>
                 <Char>体育老师#严肃</Char>
                 <Text>锻炼身体，努力要有，科技也要有，仅靠自然锻炼就想让腹肌能够挡住刀枪子弹，未免太过痴人说梦。听过一句话么？徒手和持械之间存在着一堵高墙！</Text>
             </SubDialogue>
@@ -1269,13 +1269,13 @@
         <Dialogue id="4">
             <SubDialogue id="0">
                 <Name>体育老师</Name>
-                <Title>教师</Title>
+                <Title>教职工</Title>
                 <Char>体育老师</Char>
                 <Text>末日以前你玩过电脑上的格斗游戏吗？对于格斗新手而言，一直放气功波，等对方近身之后再升龙拳打飞，之后继续放波，循环往复就是最简单最容易战胜其他新手的手段。</Text>
             </SubDialogue>
             <SubDialogue id="1">
                 <Name>体育老师</Name>
-                <Title>教师</Title>
+                <Title>教职工</Title>
                 <Char>体育老师</Char>
                 <Text>说到这也是匪夷所思，上次我亲眼见到A兵团制服的人打出了耀眼的蓝色气波，这究竟是科技还是武功啊。</Text>
             </SubDialogue>
@@ -1283,13 +1283,13 @@
         <Dialogue id="5">
             <SubDialogue id="0">
                 <Name>体育老师</Name>
-                <Title>教师</Title>
+                <Title>教职工</Title>
                 <Char>体育老师</Char>
                 <Text>我的身体里面有努力的汗水，强化肌肉的针剂，增加骨骼密度的药丸，还有无穷无尽的蛋白粉和超难吃的健身餐。</Text>
             </SubDialogue>
             <SubDialogue id="1">
                 <Name>体育老师</Name>
-                <Title>教师</Title>
+                <Title>教职工</Title>
                 <Char>体育老师</Char>
                 <Text>……现下连那些健身餐都已经是奢侈了，反倒是吃的药和扎的药相对容易搞到手。</Text>
             </SubDialogue>
@@ -1297,9 +1297,108 @@
         <Dialogue id="6">
             <SubDialogue id="0">
                 <Name>体育老师</Name>
-                <Title>教师</Title>
+                <Title>教职工</Title>
                 <Char>体育老师</Char>
                 <Text>我的强大毫无疑问是科技比重更多。但是，缺少锻炼只靠科技提升的人相当缺乏对自己身体的认知和掌控能力，这种人在堕落城的盗贼里面比比皆是，块头再大也只是徒增碰撞箱的药水沙包，我一只手就能打十个。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>剑道社长</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>剑道社长</Name>
+                <Title>学长</Title>
+                <Char>剑道社长</Char>
+                <Text>黑铁会有数不清的双刀死士，战斗时候全然不顾性命。然而若是单对单，我亲自培养的社员们绝对胜券在握。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>剑道社长</Name>
+                <Title>学长</Title>
+                <Char>剑道社长</Char>
+                <Text>只是...战争终究不是阵前独斗。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>剑道社长</Name>
+                <Title>学长</Title>
+                <Char>剑道社长</Char>
+                <Text>你见过黑铁会深处的禁卫吗？人均高两米以上，五头肩宽的重甲士兵。他们被誉为黑铁的重锤。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>剑道社长</Name>
+                <Title>学长</Title>
+                <Char>剑道社长</Char>
+                <Text>如果和他们产生冲突，哪怕只是其中一个士兵的冲锋也足以将十数名的普通学生掀翻在地，生机断绝。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>剑道社长</Name>
+                <Title>学长</Title>
+                <Char>剑道社长</Char>
+                <Text>虽然费劲，但我的刀刃能够斩断那面铁盾，斩断那身盔甲，斩断那些石柱粗的身躯。单挑比武，胜算在我。</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>剑道社长</Name>
+                <Title>学长</Title>
+                <Char>剑道社长</Char>
+                <Text>然而，那种家伙是成群结队出没的存在。虽然有些地位，却终究只是连堂主都不算的小角色...而学校可能在我之上的人，恐怕也只有那几位了吧。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>剑道社长</Name>
+                <Title>学长</Title>
+                <Char>剑道社长</Char>
+                <Text>我曾经见过黑铁一面，但我甚至没能看清他，他的一举一动都像是幻影虚像。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>剑道社长</Name>
+                <Title>学长</Title>
+                <Char>剑道社长</Char>
+                <Text>说来惭愧，我第一次对自己的刀刃能否碰到对方的武器，对于能否刀剑相交这件事产生了怀疑。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>剑道社长</Name>
+                <Title>学长</Title>
+                <Char>剑道社长</Char>
+                <Text>仅仅数秒，我就确定了他位于这个时代的武人顶点。是站在巅峰的少数几人之一。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>剑道社长</Name>
+                <Title>学长</Title>
+                <Char>剑道社长</Char>
+                <Text>A兵团强者如云不假，但一群无规无矩的佣兵团体，比起有着广大平民与武者信奉的强凝聚力宗教，只怕是…</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="4">
+            <SubDialogue id="0">
+                <Name>剑道社长</Name>
+                <Title>学长</Title>
+                <Char>剑道社长</Char>
+                <Text>黑铁会掌握的医疗资源在各大势力里面堪称第一，因此大多爱惜生命的堕落城强者，都会选择加入黑铁会。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>剑道社长</Name>
+                <Title>学长</Title>
+                <Char>剑道社长</Char>
+                <Text>至于我待在学校的原因？很简单，我是尘都大学的学生，剑道社的社长。我会保护学校的所有人，如果做不到，就保护学校里面愿意跟随我的人。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="5">
+            <SubDialogue id="0">
+                <Name>剑道社长</Name>
+                <Title>学长</Title>
+                <Char>剑道社长</Char>
+                <Text>脸上的疤痕，一道是一个满嘴不知所云的疯子砍的，一道是之前与黑铁会交锋时留下的。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>剑道社长</Name>
+                <Title>学长</Title>
+                <Char>剑道社长</Char>
+                <Text>当时只见到了一柄飞刀，但并没看清出手者究竟是谁。</Text>
             </SubDialogue>
         </Dialogue>
     </Dialogues>
@@ -1333,6 +1432,59 @@
                 <Title>线人</Title>
                 <Char>宝石线人</Char>
                 <Text>接受我的委托吧，狠狠揍那群军阀一顿！</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>教导主任</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>教导主任</Name>
+                <Title>教职工</Title>
+                <Char>教导主任</Char>
+                <Text>依靠医疗资源拿着原始人武器坐吃山空的黑铁会，以其庞大的体量和信众缩在堕落城，依靠暗杀，巷战，堆死士等行径屡屡战胜了拥有热兵器的外敌。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>教导主任</Name>
+                <Title>教职工</Title>
+                <Char>教导主任</Char>
+                <Text>真好奇啊，如果爆发全面战争，黑铁会医疗资源的再生产到底能撑到什么时候。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>教导主任</Name>
+                <Title>教职工</Title>
+                <Char>教导主任</Char>
+                <Text>再坏的秩序也好过没有秩序。即便是高压统治，也总存在着林立的，真正的规则和秩序。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>教导主任</Name>
+                <Title>教职工</Title>
+                <Char>教导主任</Char>
+                <Text>统一会替代分裂，稳定的治安或是矫枉过正的治安，会逐渐取代白天的势力火并，宵禁也或多或少地阻截来自夜间的暗杀。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>教导主任</Name>
+                <Title>教职工</Title>
+                <Char>教导主任</Char>
+                <Text>只会玩弄雕虫小技蛊惑人心的封建皇帝；依靠个人武力个人英雄主义短暂凝聚的散兵游勇，疯狂科学家搭配恐怖分子组成的目标不明的地下党，究竟是如何能和有着明确现代体制的军队相比？</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>教导主任</Name>
+                <Title>教职工</Title>
+                <Char>教导主任</Char>
+                <Text>唉，能教育出支持那些东西的学生，也实在是我们这些教育工作者教导无方。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>体育老师</Name>
+                <Title>教职工</Title>
+                <Char>体育老师#严肃</Char>
+                <Text>革命军屠杀难民？又有几个人是在远方的大荒漠亲眼所见，而非以讹传讹？手无寸铁是难民，手里有枪，大行掳掠的土匪也可以是难民。那究竟是剿灭匪患还是屠杀难民？传言不可尽信。</Text>
             </SubDialogue>
         </Dialogue>
     </Dialogues>
