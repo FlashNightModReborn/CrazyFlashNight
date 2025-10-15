@@ -2,6 +2,66 @@
 <!--已用ID：[251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 276, 278, 279, 280, 281, 282, 283, 284, 285, 288, 289, 292, 294, 295, 296, 298, 299, 300, 301, 304, 306, 308, 394, 395, 444, 451, 452, 459, 460, 520, 524, 566, 567, 619, 627, 633, 647, 648, 686, 687, 691, 701, 711, 715, 752, 753, 754, 755, 899, 1523, 1524, 1701, 2596, 2608, 3201, 5001, 5701, 5702, 6001, 6003, 6004, 6005, 6006, 6007, 6017, 6023, 6030, 6031, 6033, 6063, 6071, 6073, 6074, 6075, 6076, 6077, 8002, 8003, 8005, 8007, 8009, 8024, 8025, 8028, 8033, 8042, 9002, 12002, 12004, 12006, 12008, 12010, 12014, 12024, 12026, 12032, 12034, 12036, 12102, 12104, 12106, 12108, 12110, 12114, 12124, 12126, 12132, 12134, 12136, 13000, 13001, 13004, 13005, 13006, 13010, 13011, 13016, 22001, 22002, 22004, 22005, 22006, 22007, 22008]
 预留ID区间：17703-17900-->
 <root>
+  <item weapontype="霰弹枪">
+    <id>8302</id>
+    <name>雷明登870急速型</name>
+    <displayname>雷明登870急速马格南</displayname>
+    <icon>雷明登870急速型</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>93600</price>
+    <description>雷明登870急速型与马格南型的混合型号，结合了急速型防滑面和护木设计，发射强大的马格南霰弹。</description>
+    <data>
+      <level>15</level>
+      <weight>8</weight>
+      <dressup>枪-长枪-雷明登870急速型</dressup>
+      <capacity>6</capacity>
+      <split>4</split>
+      <diffusion>7</diffusion>
+      <interval>550</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>45</velocity>
+      <bullet>横向联弹-普通子弹</bullet>
+      <bulletrename>普通子弹</bulletrename>
+      <sound>re_shotgun_m870.wav</sound>
+      <muzzle>霰弹枪枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>12号霰弹弹药</clipname>
+      <bulletsize>30</bulletsize>
+      <power>500</power>
+      <impact>10</impact>
+    </data>
+  </item>
+  <item weapontype="霰弹枪">
+    <id>8301</id>
+    <name>雷明登870警用型</name>
+    <displayname>雷明登870警用型</displayname>
+    <icon>雷明登870警用型</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>93600</price>
+    <description>雷明登870的警用变体，常在各类丧尸电影中作为警察的武器使用。威力强劲，一击制敌。</description>
+    <data>
+      <level>15</level>
+      <weight>4</weight>
+      <dressup>枪-长枪-雷明登870警用型</dressup>
+      <capacity>5</capacity>
+      <split>8</split>
+      <diffusion>10</diffusion>
+      <interval>1500</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>30</velocity>
+      <bullet>横向联弹-普通子弹</bullet>
+      <bulletrename>普通子弹</bulletrename>
+      <sound>re_shotgun_m870.wav</sound>
+      <muzzle>霰弹枪枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>12号霰弹弹药</clipname>
+      <bulletsize>30</bulletsize>
+      <power>560</power>
+      <impact>8</impact>
+    </data>
+  </item>
   <item weapontype="压制机枪">
     <id>17702</id>
     <name>XM556-Preview</name>
