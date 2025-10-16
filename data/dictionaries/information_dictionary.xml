@@ -345,8 +345,16 @@ Boy通常在A兵团内部负责谍报和部分外交事务，显而易见的原�
         </Information>
     </Item>
     <Item>
-        <Name>浮士德的情报书</Name>
+        <Name>Blue的纸条</Name>
         <Index>10</Index>
+        <Information>
+            <Value>1</Value>
+            <Text>“废城环线的仪器已回收完毕，紧急任务告一段落。如果需要人力调配，请自行安排……是这么写的吧？——Blue”</Text>
+        </Information>
+    </Item>
+    <Item>
+        <Name>浮士德的情报书</Name>
+        <Index>11</Index>
         <Information>
             <Value>1</Value>
             <Text>这份情报书由塑料封装，表面有血迹被擦除的痕迹，内部有一张写满无法辨认符号的白纸。
@@ -355,7 +363,7 @@ Boy通常在A兵团内部负责谍报和部分外交事务，显而易见的原�
     </Item>
     <Item>
         <Name>牛仔的情报书</Name>
-        <Index>11</Index>
+        <Index>12</Index>
         <Information>
             <Value>1</Value>
             <Text>这份情报书由皮革封装，里面没有纸质文件，只有一块被层层包装的半透明方形片状物。
@@ -364,7 +372,7 @@ Boy通常在A兵团内部负责谍报和部分外交事务，显而易见的原�
     </Item>
     <Item>
         <Name>硬化僵尸情报</Name>
-        <Index>12</Index>
+        <Index>13</Index>
         <Information>
             <Value>1</Value>
             <Text>实际上，早在3xf公司进行人体实验时，技术人员便发现，操纵人脑的病毒并不总是奏效：如果它们没能突破部分人大脑的保护屏障，就只能在肌肉和有限的大脑功能层面干扰被实验者，而后者还能保存一定的智慧。至少就堕落城的硬化丧尸来说，其本身就是上述案例之一。
@@ -378,7 +386,7 @@ Boy通常在A兵团内部负责谍报和部分外交事务，显而易见的原�
     </Item>
     <Item>
         <Name>《黑铁书》</Name>
-        <Index>13</Index>
+        <Index>14</Index>
         <Information>
             <Value>1</Value>
             <Text>天命篇
@@ -1652,13 +1660,4 @@ ERROR。只有我是ERROR。
             </Text>
         </Information>
     </Item>
-    <Item>
-        <Name>Blue的纸条</Name>
-        <Index>75</Index>
-        <Information>
-            <Value>1</Value>
-            <Text>“废城环线的仪器已回收完毕，紧急任务告一段落。如果需要人力调配，请自行安排……是这么写的吧？——Blue”</Text>
-        </Information>
-    </Item>
-
 </root>
