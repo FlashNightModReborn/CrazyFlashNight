@@ -306,8 +306,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 // 目前存在未定位的僵尸子弹成因
                 // 引入更强的边界清理以防万一
                 
-                this.removeMovieClip();
-                return false;
+                this.击中地图 = true;
             }
 
 
