@@ -762,20 +762,29 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     // ---- 空窗口快判：O(1)时间复杂度，避免无效循环开销 ----
                     if (startIndex >= len || Rb < unitLeftKeys[startIndex]) {
 
+                        // 【僵尸子弹防御】优先检查边界标志，防止隧穿出地图的子弹逃逸
+                        // 背景：高速子弹可能隧穿出地图边界，此时shouldDestroy中的
+                        // collisionLayer.hitTest会失效（边界外返回false），导致子弹永久存活
+                        // 修复：在空窗口阶段强制检查击中地图标志，确保边界外子弹被及时销毁
+                        if (bullet.击中地图) {
+                            // 标记销毁意图，交给统一收尾处理
+                            wantDestroy = true;
+                            killFlags |= MODE_VANISH;
+                            startIndex = len;
+                        }
                         // 【极快路径】无销毁需求 → 维持旧逻辑，最快早退
-                        if (!bullet.shouldDestroy(bullet)) {
+                        else if (!bullet.shouldDestroy(bullet)) {
                             bullet.updateMovement(bullet);
                             __commitDeferScatter(bullet);
                             continue;
                         }
-
-                        // 【需要销毁】不在这里做释放/FX/移除，只声明“终止意图”，交给单出口收尾
-                        wantDestroy = true;
-
-                        // 与统一收尾规则保持一致
-                        killFlags |= MODE_VANISH;
-                        // 跳过单位循环（但不 continue），让流程落到统一尾部
-                        startIndex = len;
+                        // 【需要销毁】不在这里做释放/FX/移除，只声明"终止意图"，交给单出口收尾
+                        else {
+                            wantDestroy = true;
+                            killFlags |= MODE_VANISH;
+                            // 跳过单位循环（但不 continue），让流程落到统一尾部
+                            startIndex = len;
+                        }
                     }
                     // ---- 击中后效果标志：确保命中时能正确触发效果 ----
                     bullet.shouldGeneratePostHitEffect = true;
