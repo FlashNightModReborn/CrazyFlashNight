@@ -441,16 +441,50 @@ class org.flashNight.arki.item.ItemUtil{
                 if(情报.getValue(name) < value) return null;
                 list.情报[name] = value;
             }else{
+                /*
+                 * 背包和药剂栏物品检查
+                 *
+                 * 【Bug修复说明】
+                 * 物品重构后，装备和非装备物品的 value 字段含义不同：
+                 * - 装备物品：value 是 Object {level: 强化等级, ...}
+                 * - 非装备物品：value 是 Number（数量）
+                 *
+                 * 在合成系统中，"K5项链#13" 会被解析为 {name: "K5项链", value: 13}
+                 * 这里的 13 是数字，表示需要的强化等级。
+                 *
+                 * 【原Bug原因】
+                 * 旧代码没有正确分离装备和非装备的判断逻辑，导致：
+                 * 1. 当装备强化等级不足时（如+1 < +13）
+                 * 2. 会跳过第一个if，执行到 value -= bagItem.value
+                 * 3. 计算 13 - {level:1} 得到 NaN
+                 * 4. 最后检查 if(value > 0)，但 NaN > 0 为 false
+                 * 5. 函数不会返回null，导致检查错误通过！
+                 *
+                 * 【修复方案】
+                 * 1. 对装备物品单独处理，强化等级不足时直接 continue
+                 * 2. 避免执行 value -= bagItem.value 导致 NaN
+                 * 3. 最终检查改为 if(isNaN(value) || value > 0) 防止 NaN 绕过检查
+                 */
                 var indexArr = 背包.getIndexes();
                 for(var arri:Number = 0; arri < indexArr.length; arri++){
                     var index = indexArr[arri];
                     var bagItem = 背包.getItem(index);
                     if(name != bagItem.name) continue;
-                    if(isEquipment(name) && bagItem.value.level >= value){
-                        list.背包[index] = value;
-                        value = 0;
-                        break;
+
+                    // 装备物品：检查强化等级（value 是 Object）
+                    if(isEquipment(name)){
+                        if(bagItem.value.level >= value){
+                            // 强化等级满足需求，记录此装备
+                            list.背包[index] = value;
+                            value = 0;
+                            break;
+                        }
+                        // 强化等级不够，继续查找其他格子
+                        // 关键：必须 continue，否则会执行后面的数量计算导致 NaN
+                        continue;
                     }
+
+                    // 非装备物品：检查数量（value 是 Number）
                     if(bagItem.value >= value){
                         list.背包[index] = value;
                         value = 0;
@@ -459,7 +493,7 @@ class org.flashNight.arki.item.ItemUtil{
                     list.背包[index] = bagItem.value;
                     value -= bagItem.value;
                 }
-                
+
                 var drugindexArr:Array = 药剂栏.getIndexes();
                 // var drugArr:Array = 药剂栏.getItemArray();
                 for(var j = 0; j < drugindexArr.length; j++){
@@ -475,7 +509,10 @@ class org.flashNight.arki.item.ItemUtil{
                     list.药剂栏[index] = drugItem.value;
                     value -= drugItem.value;
                 }
-                if(value > 0) return null;
+
+                // 检查是否还有剩余需求未满足
+                // 关键：使用 isNaN 防止 NaN 导致的误判（NaN > 0 为 false）
+                if(isNaN(value) || value > 0) return null;
             }
         }
         return list;
