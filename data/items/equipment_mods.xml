@@ -419,14 +419,14 @@
             <description>持枪瞄准时使用下挂的霰弹枪发射霰弹，可装填3发，换弹后重新装填，需消耗12号霰弹弹药。</description>
             <cd>1000</cd>
             <mp>0</mp>
-            <power>150</power>
+            <power>80</power>
             <bulletsize>3</bulletsize>
             <clipname>12号霰弹弹药</clipname>
             <bullet>横向联弹-普通子弹</bullet>
             <sound>re_shotgun_swanoff.wav</sound>
-            <split>10</split>
+            <split>7</split>
             <diffusion>13</diffusion>
-            <velocity>22</velocity>
+            <velocity>25</velocity>
             <range>50</range>
             <impact>8</impact>
         </skill>
@@ -445,7 +445,7 @@
             <description>持枪瞄准时使用下挂的M203榴弹发射器射击一发榴弹，换弹后可再次发射，需消耗榴弹弹药。</description>
             <cd>1000</cd>
             <mp>0</mp>
-            <power>2500</power>
+            <power>3000</power>
             <bulletsize>1</bulletsize>
             <clipname>榴弹弹药</clipname>
             <bullet>榴弹</bullet>
@@ -498,7 +498,7 @@
             <cd>1000</cd>
             <mp>0</mp>
             <power>5000</power>
-            <bulletsize>4</bulletsize>
+            <bulletsize>1</bulletsize>
             <clipname>能量电池</clipname>
             <bullet>追踪铁血飞弹</bullet>
             <sound>m4a1_unsil-2.wav</sound>
