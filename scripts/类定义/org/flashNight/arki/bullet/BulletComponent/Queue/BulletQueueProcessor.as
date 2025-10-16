@@ -532,7 +532,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var Rb:Number;                      // 子弹右边界
         var skipUnits:Boolean;              // 是否跳过单位碰撞检测
         var isUpdatePolygon:Boolean;        // 多边形碰撞器是否已更新
-        
+        var needsDeferScatter:Boolean;      // 是否需要影子记账（仅联弹子弹）
+
         var wantDestroy:Boolean;            // 早退销毁路径控制
 
         // ---- 消弹状态变量 ----
@@ -745,7 +746,11 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 // 阶段2：子弹 vs 单位碰撞检测
                 // ================================================================
                 if (!skipUnits) {
-                    __initDeferScatter(bullet);
+                    // ---- 影子记账优化：仅对联弹子弹启用（零额外开销for非联弹） ----
+                    needsDeferScatter = (flags & FLAG_CHAIN) != 0;
+                    if (needsDeferScatter) {
+                        __initDeferScatter(bullet);
+                    }
                     // ---- 扫描线算法：双指针优化的碰撞检测窗口计算 ----
                         queryLeft = Lb;        // 使用已缓存的子弹左边界
                     // 推进扫描线：跳过所有右边界小于子弹左边界的目标
@@ -775,7 +780,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         // 【极快路径】无销毁需求 → 维持旧逻辑，最快早退
                         else if (!bullet.shouldDestroy(bullet)) {
                             bullet.updateMovement(bullet);
-                            __commitDeferScatter(bullet);
+                            if (needsDeferScatter) {
+                                __commitDeferScatter(bullet);
+                            }
                             continue;
                         }
                         // 【需要销毁】不在这里做释放/FX/移除，只声明"终止意图"，交给单出口收尾
@@ -914,7 +921,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     if (bullet.hitCount > 0 && bullet.shouldGeneratePostHitEffect) {
                         FX.Effect(bullet.击中后子弹的效果, bullet._x, bullet._y, shooter._xscale);
                     }
-                    __commitDeferScatter(bullet);
+                    // ---- 影子记账提交：仅对已初始化的联弹子弹 ----
+                    if (needsDeferScatter) {
+                        __commitDeferScatter(bullet);
+                    }
                 } // end if (!skipUnits)
 
                 // 与原实现一致：执行段末尾做一次位移更新
