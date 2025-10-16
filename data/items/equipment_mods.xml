@@ -215,9 +215,12 @@
         <stats>
             <override>
                 <magicdefence>
-                    <冲>12</冲>
+                    <冲>10</冲>
                 </magicdefence>
             </override>
+            <percentage>
+                <punch>5</punch>
+            </percentage>
         </stats>
     </mod>
     <mod>
@@ -239,7 +242,9 @@
                 </magicdefence>
             </override>
             <flat>
-                <defence>35</defence>
+                <hp>10</hp>
+                <mp>10</mp>
+                <defence>30</defence>
                 <weight>2</weight>
             </flat>
         </stats>
