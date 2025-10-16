@@ -10,7 +10,45 @@ import org.flashNight.naki.Sort.QuickSort;
 
 /*
  * ItemUtil 静态类，存储物品数据与物品工具函数
- * 
+ *
+ * ========================================
+ * 待修复问题列表 (2025-01-17)
+ * ========================================
+ *
+ * 【高优先级】
+ * 1. BaseItem.create() 硬编码等级上限问题
+ *    - 位置：BaseItem.as:37
+ *    - 问题：__value > 13 ? {level: 1} : {level: __value}
+ *    - 影响：强化等级超过13的装备会被错误重置为+1
+ *    - 建议：改为从 EquipmentUtil.levelStatList.length 动态获取等级上限
+ *
+ * 2. ItemCollection.getValue() 类型混淆风险
+ *    - 位置：ItemCollection.as:30-34
+ *    - 问题：返回值可能是 Number（非装备）或 Object（装备），调用方无法区分
+ *    - 风险：对返回值进行数值计算时可能产生 NaN
+ *    - 建议：分拆为 getItemQuantity() 和 getEquipmentData() 两个方法
+ *
+ * 【中等优先级】
+ * 3. ArrayInventory.getTotal() 隐含类型假设
+ *    - 位置：ArrayInventory.as:179-188
+ *    - 问题：使用 isNaN() 隐含区分装备/非装备，缺乏显式检查
+ *    - 建议：添加 typeof item.value === 'number' 的显式类型检查
+ *
+ * 4. ItemSortUtil.isStackable() 空值检查不完整
+ *    - 位置：ItemSortUtil.as:180-186
+ *    - 问题：未检查 null/undefined，可能导致误判
+ *    - 建议：添加 !== null && !== undefined 检查
+ *
+ * 5. 改造系统类型验证缺失
+ *    - 位置：UI交互_无名氏_改造系统.as:42-50
+ *    - 问题：假设改装清单物品 value 必为 Number，但缺乏验证
+ *    - 建议：添加类型检查确保安全
+ *
+ * 【已完成】
+ * ✓ ItemUtil.contain() 装备强化等级判断bug（已修复，见444-515行）
+ * ✓ Inventory.addValue() 添加使用约定文档（已添加详细注释）
+ *
+ * ========================================
  */
 
 class org.flashNight.arki.item.ItemUtil{
