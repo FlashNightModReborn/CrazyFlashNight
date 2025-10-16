@@ -983,7 +983,6 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         }
         var initialValue:Number = (bullet.霰弹值 != undefined) ? Number(bullet.霰弹值) : 0;
         bullet.__dfScatterBase = initialValue;
-        bullet.__dfScatterShadow = initialValue;
         bullet.__dfScatterPending = 0;
     }
 
@@ -994,18 +993,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var baseValue:Number = (bullet.__dfScatterBase != undefined) ? Number(bullet.__dfScatterBase) : NaN;
         var pending:Number = (bullet.__dfScatterPending != undefined) ? Number(bullet.__dfScatterPending) : 0;
         if (!isNaN(baseValue) && pending > 0) {
-            var currentValue:Number = (bullet.霰弹值 != undefined) ? Number(bullet.霰弹值) : baseValue;
             var nextValue:Number = baseValue - pending;
             if (nextValue < 0) {
                 nextValue = 0;
             }
-            if (isNaN(currentValue)) {
-                currentValue = baseValue;
-            }
-            bullet.霰弹值 = (currentValue < nextValue) ? currentValue : nextValue;
+            bullet.霰弹值 = nextValue;
         }
         delete bullet.__dfScatterBase;
-        delete bullet.__dfScatterShadow;
         delete bullet.__dfScatterPending;
     }
     // ------------------------------------------------------------------------

@@ -97,15 +97,13 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
         var hasDeferredSnapshot:Boolean = (bullet.__dfScatterBase != undefined);
 
         // 获取霰弹值（根据是否有影子记账选择数据源）
-        var currentScatter:Number, scatterBase:Number, scatterShadow:Number, scatterForCalc:Number;
+        var currentScatter:Number, scatterBase:Number, scatterForCalc:Number;
 
         if (hasDeferredSnapshot && isNormalNonTransparent) {
             // 影子记账模式：BulletQueueProcessor已保证数据有效
             scatterBase = bullet.__dfScatterBase;
-            scatterShadow = bullet.__dfScatterShadow;
-            // scatterForCalc = (scatterBase + scatterShadow) * 0.5;
             scatterForCalc = scatterBase;
-            
+
         } else {
             // 直接模式：使用当前霰弹值
             currentScatter = bullet.霰弹值 || 0;
@@ -124,21 +122,26 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
         var ceilC:Number = (C > (C >> 0)) ? (C >> 0) + 1 : (C >> 0);
 
         // 计算实际消耗
-        var availableScatter:Number = (hasDeferredSnapshot && isNormalNonTransparent) ? scatterShadow : currentScatter;
+        var availableScatter:Number;
+        if (hasDeferredSnapshot && isNormalNonTransparent) {
+            // 影子记账模式：从基准值减去已累计的消耗
+            availableScatter = scatterBase - (bullet.__dfScatterPending || 0);
+            if (availableScatter < 0) availableScatter = 0;
+        } else {
+            availableScatter = currentScatter;
+        }
         var actualScatterUsed:Number = availableScatter < ceilC ? availableScatter : ceilC;
 
         // 向上取整避免0段
         if (actualScatterUsed < 1) actualScatterUsed = 1;
 
-        // _root.发布消息(scatterBase, scatterShadow, scatterForCalc, actualScatterUsed);
-
         // 更新霰弹值
         if (hasDeferredSnapshot && isNormalNonTransparent) {
-            // 影子记账更新
+            // 影子记账更新：累加消耗并计算剩余值
             bullet.__dfScatterPending = (bullet.__dfScatterPending || 0) + actualScatterUsed;
-            bullet.__dfScatterShadow = scatterShadow - actualScatterUsed;
-            if (bullet.__dfScatterShadow < 0) bullet.__dfScatterShadow = 0;
-            result.finalScatterValue = bullet.__dfScatterShadow;
+            var remaining:Number = scatterBase - bullet.__dfScatterPending;
+            if (remaining < 0) remaining = 0;
+            result.finalScatterValue = remaining;
         } else if (isNormalNonTransparent) {
             // 直接更新
             bullet.霰弹值 = currentScatter - actualScatterUsed;
