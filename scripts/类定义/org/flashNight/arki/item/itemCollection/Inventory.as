@@ -31,11 +31,37 @@ class org.flashNight.arki.item.itemCollection.Inventory extends ItemCollection{
         return list;
     }
     
-    //改变物品value
+    /**
+     * 改变物品value - 仅适用于非装备类物品
+     *
+     * 重要约定（Convention over Configuration）：
+     * 本函数仅用于数量型物品（value为Number），不适用于装备类物品（value为Object）！
+     *
+     * 适用场景：
+     * - 消耗品数量增减（如：药水、材料、货币）
+     * - 可堆叠物品的数量变化
+     *
+     * 禁止场景：
+     * - 装备类物品的任何操作（装备的value是Object，包含level等属性）
+     * - 如需替换装备，应使用 remove() + add() 组合
+     *
+     * 设计理由：
+     * 1. 性能优化：避免运行时类型检查，减少性能开销
+     * 2. 约定优先：通过明确的使用约定替代防御性编程
+     * 3. 调用安全：当前所有调用点均符合此约定（已验证）
+     *
+     * 警告：
+     * 如果对装备类物品调用此函数，会导致：
+     * - item.value(Object) + value(Number) = 字符串拼接或undefined行为
+     * - 可能破坏装备数据结构
+     *
+     * @param key 物品栏位置键
+     * @param value 要增减的数量（正数增加，负数减少）
+     */
     public function addValue(key:String,value:Number):Void{
         if(isNaN(value)) return;
         var item = items[key];
-        item.value += value;
+        item.value += value;  // 注意：此处假定item.value为Number类型
         if(item.value <= 0) remove(key);
         else if(hasDispatcher()) dispatcher.publish("ItemValueChanged", this, key); // 发布ItemValueChanged事件
     }
