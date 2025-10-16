@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/手雷攻击" itemID="66a5d6cd-00000693" lastModified="1760549211" lastUniqueIdentifier="331">
   <timeline>
-    <DOMTimeline name="手雷攻击" currentFrame="42">
+    <DOMTimeline name="手雷攻击" currentFrame="49">
       <layers>
-        <DOMLayer name="Labels Layer" color="#85C892" current="true" isSelected="true">
+        <DOMLayer name="Labels Layer" color="#85C892">
           <frames>
             <DOMFrame index="0" duration="3" name="高抛" labelType="name" keyMode="9728">
               <elements/>
@@ -309,7 +309,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -1974,7 +1974,7 @@ else
                     <Point x="-0.05" y="0.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 135" centerPoint3DX="255.3" centerPoint3DY="-107.15">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 135" selected="true" centerPoint3DX="255.3" centerPoint3DY="-107.15">
                   <matrix>
                     <Matrix a="-0.0092315673828125" b="0.956771850585938" c="-0.956771850585938" d="-0.0092315673828125" tx="288.35" ty="-97.2"/>
                   </matrix>
@@ -9407,7 +9407,7 @@ else
             </DOMFrame>
             <DOMFrame index="24" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="232.15" centerPoint3DY="181">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="232.15" centerPoint3DY="181">
                   <matrix>
                     <Matrix a="0.707168579101563" b="-0.480484008789063" c="0.480484008789063" d="0.707168579101563" tx="169.8" ty="135"/>
                   </matrix>
@@ -9729,7 +9729,7 @@ else
             </DOMFrame>
             <DOMFrame index="24" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="271.95" centerPoint3DY="216.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="271.95" centerPoint3DY="216.6">
                   <matrix>
                     <Matrix a="0.623001098632813" b="-0.584365844726563" c="0.584365844726563" d="0.623001098632813" tx="221.55" ty="221.2"/>
                   </matrix>
