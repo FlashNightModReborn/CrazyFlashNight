@@ -861,7 +861,7 @@
         <Alignment>true</Alignment>
         <Xmin>50</Xmin>
         <Xmax>1350</Xmax>
-        <Ymin>480</Ymin>
+        <Ymin>450</Ymin>
         <Ymax>750</Ymax>
         <Width>1400</Width>
         <Height>770</Height>
@@ -874,5 +874,16 @@
             <url>大学远山天空.swf</url>
             <SpeedRate>8</SpeedRate>
         </Skybox>
+        <BGM>Dialtone</BGM>
+    </Environment>
+	    <Environment>
+        <BackgroundURL>地图-教学楼内部</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1150</Xmax>
+        <Ymin>250</Ymin>
+        <Ymax>500</Ymax>
+        <Width>1200</Width>
+        <Height>535</Height>
         <BGM>Dialtone</BGM>
 </EnvironmentSettings>
