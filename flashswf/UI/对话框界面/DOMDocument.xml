@@ -21,6 +21,8 @@
           <DOMFolderItem name="NPC-Registrar/Shotguns/Mossberg M500" itemID="68b435cf-000026c7"/>
           <DOMFolderItem name="NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun" itemID="68b435cf-000026c8"/>
           <DOMFolderItem name="NPC-Registrar/组件" itemID="68b435cf-000026db"/>
+          <DOMFolderItem name="NPC/NPC-工匠Vanshuther" itemID="68f27e82-000039f7"/>
+          <DOMFolderItem name="NPC/NPC-工匠Vanshuther/素材" itemID="68f27e82-000039f8"/>
           <DOMFolderItem name="NPC/NPC-体育老师" itemID="68ee9351-000066d7" isExpanded="true"/>
           <DOMFolderItem name="NPC/NPC-体育老师/杂项" itemID="67d993db-000003db"/>
           <DOMFolderItem name="NPC/NPC-体育老师/组件" itemID="67d87d4c-00000600"/>
@@ -234,6 +236,15 @@
           <Include href="NPC-Registrar/组件/腰带.xml" itemIcon="1" loadImmediate="false" itemID="68b41184-0000198e" lastModified="1756631428"/>
           <Include href="NPC-Registrar/组件/衣服.xml" itemIcon="1" loadImmediate="false" itemID="68b43294-00001af8" lastModified="1756639892"/>
           <Include href="NPC-Registrar/组件/子弹.xml" loadImmediate="false" itemID="68b4192f-000019a9" lastModified="1756633619"/>
+          <Include href="NPC/NPC-工匠Vanshuther/素材/屁股.xml" loadImmediate="false" itemID="68f27046-000033a5" lastModified="1760718918"/>
+          <Include href="NPC/NPC-工匠Vanshuther/素材/上臂.xml" loadImmediate="false" itemID="68f27070-000033a8" lastModified="1760718960"/>
+          <Include href="NPC/NPC-工匠Vanshuther/素材/身体.xml" loadImmediate="false" itemID="68f27066-000033a7" lastModified="1760722571"/>
+          <Include href="NPC/NPC-工匠Vanshuther/素材/手里.xml" loadImmediate="false" itemID="68f270dc-000033b0" lastModified="1760719659"/>
+          <Include href="NPC/NPC-工匠Vanshuther/素材/手外.xml" loadImmediate="false" itemID="68f270df-000033b1" lastModified="1760719071"/>
+          <Include href="NPC/NPC-工匠Vanshuther/素材/头.xml" loadImmediate="false" itemID="68f26bdd-00002f75" lastModified="1760722766"/>
+          <Include href="NPC/NPC-工匠Vanshuther/素材/五官.xml" loadImmediate="false" itemID="68f26bd6-00002f73" lastModified="1760719056"/>
+          <Include href="NPC/NPC-工匠Vanshuther/素材/下臂右.xml" loadImmediate="false" itemID="68f270b4-000033ab" lastModified="1760719028"/>
+          <Include href="NPC/NPC-工匠Vanshuther/素材/下臂左.xml" loadImmediate="false" itemID="68f270bb-000033ac" lastModified="1760719035"/>
           <Include href="NPC/NPC-体育老师/黑衣散发男.xml" loadImmediate="false" itemID="67d87d45-000005e2" lastModified="1760463020"/>
           <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1_133 复制.xml" loadImmediate="false" itemID="68ee84c8-000062d0" lastModified="1760462024"/>
           <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_3_66 复制.xml" loadImmediate="false" itemID="68ee84c8-000062ce" lastModified="1760462024"/>
@@ -243,6 +254,7 @@
           <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_5_44 复制 2.xml" loadImmediate="false" itemID="68ee84c8-000062d2" lastModified="1760462024"/>
           <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_7_29 复制.xml" loadImmediate="false" itemID="68ee84c8-000062cf" lastModified="1760462024"/>
           <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_308 复制.xml" loadImmediate="false" itemID="68ee84c8-000062d1" lastModified="1760462024"/>
+          <Include href="NPC/NPC-体育老师/组件/屁股.xml" loadImmediate="false" itemID="68f27e1f-000039ed" lastModified="1760722463"/>
           <Include href="NPC/NPC-体育老师/组件/上臂.xml" loadImmediate="false" itemID="67d86cc1-00000334" lastModified="1760462972"/>
           <Include href="NPC/NPC-体育老师/组件/身体.xml" itemIcon="1" loadImmediate="false" itemID="67d993db-000003fd" lastModified="1760466279"/>
           <Include href="NPC/NPC-体育老师/组件/头.xml" loadImmediate="false" itemID="67d87d84-000006e9" lastModified="1742373096"/>
@@ -892,7 +904,7 @@
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
           <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1756644772"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1760530856"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1760724430"/>
           <Include href="发型/Symbol 799.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000814" lastModified="1710653981"/>
           <Include href="歌留多/歌留多胯.xml" loadImmediate="false" itemID="67096725-00000045" lastModified="1728669954"/>
           <Include href="歌留多/歌留多身体.xml" loadImmediate="false" itemID="67095275-0000000f" lastModified="1728665563"/>
@@ -1376,6 +1388,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="747853" publishTime="1760724287"/>
+          <PublishItem publishSize="747825" publishTime="1760724042"/>
           <PublishItem publishSize="723175" publishTime="1760529310"/>
           <PublishItem publishSize="708051" publishTime="1760466391"/>
           <PublishItem publishSize="708016" publishTime="1760466035"/>
@@ -1394,7 +1408,5 @@
           <PublishItem publishSize="741490" publishTime="1752129281"/>
           <PublishItem publishSize="928665" publishTime="1751513314"/>
           <PublishItem publishSize="928688" publishTime="1751512429"/>
-          <PublishItem publishSize="928708" publishTime="1751512015"/>
-          <PublishItem publishSize="930521" publishTime="1751479899"/>
      </publishHistory>
 </DOMDocument>
