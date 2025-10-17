@@ -2,6 +2,7 @@
 import org.flashNight.naki.Interpolation.*;
 import org.flashNight.gesh.xml.LoadXml.WeatherSystemConfigLoader;
 import org.flashNight.arki.component.Effect.*;
+import org.flashNight.gesh.number.NumberUtil;
 
 _root.天气系统 = {};
 //_root.开启昼夜系统 = true;
@@ -316,8 +317,16 @@ EventBus.getInstance().subscribe("WeatherUpdated", _root.天气系统.设置当�
 
 EventBus.getInstance().subscribe("WeatherTimeRateUpdated", function(光照等级) {
     // _root.发布消息("WeatherTimeRateUpdated:" + 光照等级)
-    this.金币时间倍率 = Interpolatior.linear(光照等级, 0, this.时间倍率启动等级, this.金币时间最大倍率, 1);
-    this.经验时间倍率 = Interpolatior.linear(光照等级, 0, this.时间倍率启动等级, this.经验时间最大倍率, 1);
+    this.金币时间倍率 = NumberUtil.clamp(
+        Interpolatior.linear(光照等级, 0, this.时间倍率启动等级, this.金币时间最大倍率, 1),
+        1,
+        this.金币时间最大倍率
+    );
+    this.经验时间倍率 = NumberUtil.clamp(
+        Interpolatior.linear(光照等级, 0, this.时间倍率启动等级, this.经验时间最大倍率, 1),
+        1,
+        this.经验时间最大倍率
+    );
     this.人物信息透明度 = Interpolatior.linear(光照等级, 0, this.时间倍率启动等级, 0, 100);
 
     // _root.发布消息(光照等级, this.时间倍率启动等级, this.金币时间倍率, this.经验时间倍率, this.人物信息透明度)
