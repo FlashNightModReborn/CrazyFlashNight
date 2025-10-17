@@ -392,6 +392,8 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       var sortedList = getSortedAttrList(override);
       for(var i = 0; i < sortedList.length; i++){
         var key = sortedList[i];
+        // 跳过 damagetype 和 magictype，这些需要组合显示
+        if(key == "damagetype" || key == "magictype") continue;
         TooltipFormatter.statLine(result, "override", key, override[key], null);
       }
     }
@@ -419,6 +421,19 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     }
     if(override.magicdefence){
       result.push(quickBuildMagicDefence(override.magicdefence));
+    }
+    // 显示伤害类型和破击类型（与 buildEquipmentStats 保持一致）
+    if(override.damagetype){
+      if(override.damagetype == "魔法" && override.magictype){
+        TooltipFormatter.colorLine(result, TooltipConstants.COL_DMG, "伤害属性：" + override.magictype);
+      }else if(override.damagetype == "破击" && override.magictype){
+        if(MagicDamageTypes.isMagicDamageType(override.magictype))
+          TooltipFormatter.colorLine(result, TooltipConstants.COL_BREAK_LIGHT, "附加伤害：" + override.magictype);
+        else
+          TooltipFormatter.colorLine(result, TooltipConstants.COL_BREAK_MAIN, "破击类型：" + override.magictype);
+      }else{
+        TooltipFormatter.colorLine(result, TooltipConstants.COL_DMG, "伤害类型：" + (override.damagetype == "魔法" ? "能量" : override.damagetype));
+      }
     }
     if(modData.skill){
       result = result.concat(buildSkillInfo(modData.skill));
