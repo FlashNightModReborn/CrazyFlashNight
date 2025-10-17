@@ -34,7 +34,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.AggroEve
         // 真正落地赋值
         sender.攻击目标 = newAggro;
 
-        // _root.发布消息(sender, "仇恨目标已设置为：" + newAggro, newTarget.element);
+        // _root.发布消息(sender, "仇恨目标已设置为：" , newAggro);
 
         // 可以在这里添加额外的逻辑，比如UI更新、音效播放等
         // 例如：notifyUIOfAggroChange(sender, newTarget);
@@ -56,12 +56,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.AggroEve
         var newAggro:String  = "无";
 
         // 若无变化则早退，避免无意义写入与广播
+
+        // _root.发布消息(sender, "仇恨目标已清除", prevAggro);
         if (prevAggro === newAggro) return;
 
         // 真正落地赋值
-        sender.攻击目标 = "无";
-
-        // 可以在这里添加额外的逻辑，比如UI更新、音效播放等
-        // 例如：notifyUIOfAggroClear(sender);
+        sender.攻击目标 = newAggro;
     }
 }

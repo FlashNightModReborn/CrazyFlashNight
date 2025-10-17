@@ -79,7 +79,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         //search target
         var self = data.self;
         var chaseTarget = self.攻击目标;
-        if (!chaseTarget || chaseTarget == "无"){
+        if (!chaseTarget || chaseTarget == "无" ){
             // 在1到威胁阈值中选取一个随机值，通过该威胁值索敌
             var threshold = self.threatThreshold > 1 ? LinearCongruentialEngine.instance.randomIntegerStrict(1, self.threatThreshold) : self.threatThreshold;
             // 使用新的智能搜索方法，自动过滤地图元件并降级搜索
@@ -92,10 +92,14 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         }else{
             data.target = _root.gameworld[chaseTarget];
         }
-        if (data.target && data.target.hp <= 0){
+        // 检查目标是否有效（已被删除或死亡），使用 !(hp > 0) 可同时处理 undefined/NaN/<=0 的情况
+        if (!(data.target.hp > 0)){
             data.target = null;
-            self.dispatcher.publish("aggroClear", self);
+            self.dispatcher.publish("aggroClear", self);  // aggroClear 事件会自动设置 攻击目标 = "无"
+            // _root.发布消息(self._name, " 原攻击目标无效，已清除");
         }
+
+        // _root.发布消息(self._name, " 思考结果：", (data.target ? data.target._name : "无目标"));
         
         // 状态转移逻辑
         var newstate:String;
