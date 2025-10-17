@@ -259,12 +259,19 @@ _root.敌人函数.移动钝感硬直 = _root.主角函数.移动钝感硬直;
 
 
 _root.敌人函数.随机掉钱 = function() {
-    if (!this.不掉钱 && random(_root.打怪掉钱机率) === 0) {
+    // 使用 LinearCongruentialEngine 的 randomCheck 方法进行概率检查
+    // randomCheck(n) 等价于 random(n) === 0，但性能更好
+    if (!this.不掉钱 && LinearCongruentialEngine.instance.randomCheck(_root.打怪掉钱机率)) {
         var 金币时间倍率 = _root.天气系统.金币时间倍率;
         //_root.发布消息("金币时间倍率" + 金币时间倍率);
         var 昼夜爆金币 = this.hp满血值 * 金币时间倍率 / 5;
 
-        _root.pickupItemManager.createCollectible("金钱", random(昼夜爆金币), this._x, this._y, true);
+        // 使用 random 方法生成随机金币数量
+        // 注意: random(n) 返回 [0, n-1] 的整数，所以需要 +1 来避免0值
+        var 金币数量 = LinearCongruentialEngine.instance.random(昼夜爆金币) + 1;
+
+        // _root.发布消息(金币时间倍率, 昼夜爆金币, 金币数量);
+        _root.pickupItemManager.createCollectible("金钱", 金币数量, this._x, this._y, true);
     }
 };
 
@@ -390,11 +397,13 @@ _root.敌人函数.掉落物品 = function(item) {
             }
         }
     }
-    var 数量 = item.最小数量 + random(item.最大数量 - item.最小数量 + 1);
+    // 使用 LinearCongruentialEngine 的 randomInteger 方法生成指定范围的随机整数
+    var 数量 = LinearCongruentialEngine.instance.randomInteger(item.最小数量, item.最大数量);
     if (item.总数 < 数量)
         数量 = item.总数;
     item.总数 -= 数量;
-    var yoffset = random(21) - 10;
+    // 使用 randomOffset 方法生成 Y 轴偏移量,范围为 [-10, 10]
+    var yoffset = LinearCongruentialEngine.instance.randomOffset(10);
     _root.pickupItemManager.createCollectible(item.名字, 数量, this._x, this._y + yoffset, true);
 }
 
@@ -635,7 +644,8 @@ _root.初始化敌人模板 = function() {
     this._yscale = 身高转换值;
     myxscale = this._xscale;
     this.Z轴坐标 = this._y;
-    this.swapDepths(this._y + random(10));
+    // 使用 LinearCongruentialEngine 的 random 方法生成 [0, 9] 的随机偏移
+    this.swapDepths(this._y + LinearCongruentialEngine.instance.random(10));
 
     var areaHeight:Number = this.area._height * this._yscale;
     areaHeight = !isNaN(areaHeight) ? areaHeight : 136;
@@ -761,7 +771,8 @@ _root.敌人二级函数.计算攻击角度 = function(最大角度) {
     var 水平距离 = _root.gameworld[_parent.攻击目标]._x - _parent._x;
     水平距离 = _parent.方向 === "左" ? -水平距离 : 水平距离;
     if (水平距离 <= 0) {
-        return 2 * Math.random() * 最大角度 - 最大角度;
+        // 使用 LinearCongruentialEngine 的 randomFloatOffset 方法生成 [-最大角度, 最大角度] 的随机角度
+        return LinearCongruentialEngine.instance.randomFloatOffset(最大角度);
     }
     var 垂直距离 = _root.gameworld[_parent.攻击目标].Z轴坐标 - _parent.Z轴坐标;
     var 角度 = Math.atan(垂直距离 / 水平距离) / Math.PI * 180;
