@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="代码/Symbol 1487" itemID="6577f78a-00001228" lastModified="1731781912">
   <timeline>
-    <DOMTimeline name="Symbol 1487" currentFrame="16">
+    <DOMTimeline name="Symbol 1487" currentFrame="14">
       <layers>
         <DOMLayer name="Labels Layer" color="#2BF2B1">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#76FFD1">
+        <DOMLayer name="Script Layer" color="#76FFD1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
@@ -291,7 +291,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手" color="#009999" parentLayerIndex="17" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="左手" color="#009999" parentLayerIndex="17" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements>

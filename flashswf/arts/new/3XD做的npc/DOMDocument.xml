@@ -19,7 +19,7 @@
           <DOMFolderItem name="刀狙少女/未命名文件夹 1/怪物通用模板/血条与名称" itemID="65ae670e-000036fc" isExpanded="true"/>
           <DOMFolderItem name="刀狙少女/未命名文件夹 1/黑铁精英敌人" itemID="656c028d-000003db" isExpanded="true"/>
           <DOMFolderItem name="刀狙少女/未命名文件夹 1/黑铁精英敌人/重锤" itemID="656c026d-000003d8" isExpanded="true"/>
-          <DOMFolderItem name="防爆服僵尸" itemID="671dc7cd-00000974"/>
+          <DOMFolderItem name="防爆服僵尸" itemID="671dc7cd-00000974" isExpanded="true"/>
           <DOMFolderItem name="防爆服僵尸/代码层" itemID="671dc7e0-0000097b" isExpanded="true"/>
           <DOMFolderItem name="防爆服僵尸/代码层/怪物通用模板" itemID="671dc806-00000aea" isExpanded="true"/>
           <DOMFolderItem name="防爆服僵尸/代码层/怪物通用模板/area框" itemID="671dc806-00000aeb" isExpanded="true"/>
@@ -90,7 +90,7 @@
           <DOMFolderItem name="劫掠少女/基础部件/部件2/头1" itemID="663dc41b-000002b1" isExpanded="true"/>
           <DOMFolderItem name="劫掠少女/基础部件/部件3" itemID="663e2429-0000084a"/>
           <DOMFolderItem name="美洲狮异形" itemID="68b2e2fb-000010cf"/>
-          <DOMFolderItem name="徘徊者异形" itemID="68b2e308-000011ae" isExpanded="true"/>
+          <DOMFolderItem name="徘徊者异形" itemID="68b2e308-000011ae"/>
           <DOMFolderItem name="徘徊者异形/单独动作" itemID="68ac44e6-00000276"/>
           <DOMFolderItem name="徘徊者异形/好像是血" itemID="68ac4514-0000027a"/>
           <DOMFolderItem name="徘徊者异形/徘徊者身体素材" itemID="68ac4404-00000255"/>
@@ -120,7 +120,7 @@
           <DOMFolderItem name="特警僵尸/做的动画/身体/军阀人物1/其他" itemID="6707c7ad-00001510"/>
           <DOMFolderItem name="特警僵尸/做的动画/身体/军阀人物1/人物身体的部件" itemID="6709e6f0-00000181"/>
           <DOMFolderItem name="特警僵尸/做的动画/重复项目文件夹" itemID="671dbd38-000002ef"/>
-          <DOMFolderItem name="吐酸者异形" itemID="68b2e367-00001665" isExpanded="true"/>
+          <DOMFolderItem name="吐酸者异形" itemID="68b2e367-00001665"/>
           <DOMFolderItem name="未命名文件夹 1" itemID="663f2163-00000148"/>
           <DOMFolderItem name="重复项目文件夹" itemID="68566cdf-00000e7a"/>
      </folders>
@@ -306,15 +306,15 @@
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="65ae694d-0000373f" lastModified="1705929037"/>
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/area框/索敌框载体.xml" loadImmediate="false" itemID="65ae6931-0000373d" lastModified="1705929009"/>
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/死亡消失元件/Symbol 39.xml" loadImmediate="false" itemID="6570b322-000003ec" lastModified="1701884437"/>
-          <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="65ae68fb-00003739" lastModified="1705928955"/>
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="65ae68f0-00003738" lastModified="1705929134"/>
+          <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="65ae68fb-00003739" lastModified="1705928955"/>
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="65ae6c3a-000037f7" lastModified="1705929879"/>
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-000003e2" lastModified="1701884437"/>
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="6570b322-000003e3" lastModified="1701884437"/>
           <Include href="刀狙少女/未命名文件夹 1/怪物通用模板/血条与名称/新版血条位置示意.xml" loadImmediate="false" itemID="662fbc4c-0000294f" lastModified="1714404428"/>
           <Include href="刀狙少女/未命名文件夹 1/黑铁精英敌人/重锤/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="65689e04-0000008e" lastModified="1700337299"/>
           <Include href="刀狙少女/未命名文件夹 1/黑铁精英敌人/重锤/Symbol 23.xml" loadImmediate="false" itemID="65689e04-0000008f" lastModified="1701582054"/>
-          <Include href="防爆服僵尸/代码层/敌人-防爆服僵尸.xml" itemID="671dc7f1-0000097d" lastModified="1751450189"/>
+          <Include href="防爆服僵尸/代码层/敌人-防爆服僵尸.xml" itemID="671dc7f1-0000097d" lastModified="1760717703"/>
           <Include href="防爆服僵尸/代码层/怪物通用模板/area框/hitbox-area框载体.xml" loadImmediate="false" itemID="671dc806-00000b70" lastModified="1705929059"/>
           <Include href="防爆服僵尸/代码层/怪物通用模板/area框/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="671dc806-00000b1a" lastModified="1700337299"/>
           <Include href="防爆服僵尸/代码层/怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="671dc806-00000b67" lastModified="1705929037"/>
@@ -973,7 +973,7 @@
           <Include href="绳索.xml" itemIcon="1" loadImmediate="false" itemID="67ea7145-00000696" lastModified="1743417670"/>
           <Include href="思考标签（与旧思考块）/拾取思考块（弃用）.xml" loadImmediate="false" itemID="67e51b53-00000f3c" lastModified="1743067987"/>
           <Include href="思考标签（与旧思考块）/思考标签.xml" loadImmediate="false" itemID="67e50bd8-00000c0a" lastModified="1743064061"/>
-          <Include href="特警僵尸/代码层/敌人-特警僵尸.xml" itemID="671dbe5f-00000783" lastModified="1751450146"/>
+          <Include href="特警僵尸/代码层/敌人-特警僵尸.xml" itemID="671dbe5f-00000783" lastModified="1760717696"/>
           <Include href="特警僵尸/代码层/怪物通用模板/area框/hitbox-area框载体.xml" loadImmediate="false" itemID="671dc7ff-00000a61" lastModified="1705929059"/>
           <Include href="特警僵尸/代码层/怪物通用模板/area框/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="671dc7ff-00000a3c" lastModified="1700337299"/>
           <Include href="特警僵尸/代码层/怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="671dc7ff-00000a58" lastModified="1705929037"/>
@@ -1523,6 +1523,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1668660" publishTime="1760717596"/>
           <PublishItem publishSize="1668633" publishTime="1759893235" publishDebug="true"/>
           <PublishItem publishSize="1667518" publishTime="1756574765"/>
           <PublishItem publishSize="1667450" publishTime="1756574644"/>
@@ -1542,6 +1543,5 @@
           <PublishItem publishSize="810957" publishTime="1743506832"/>
           <PublishItem publishSize="802550" publishTime="1743068429"/>
           <PublishItem publishSize="802545" publishTime="1743068383"/>
-          <PublishItem publishSize="803080" publishTime="1743068037"/>
      </publishHistory>
 </DOMDocument>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="代码/敌人-柜员女僵尸" itemID="65e9c27a-000011a8" linkageExportForAS="true" linkageIdentifier="敌人-柜员女僵尸" lastModified="1749524035" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="代码/敌人-柜员女僵尸" itemID="65e9c27a-000011a8" linkageExportForAS="true" linkageIdentifier="敌人-柜员女僵尸" lastModified="1760718047" lastUniqueIdentifier="6">
   <timeline>
-    <DOMTimeline name="敌人-柜员女僵尸" currentFrame="21" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;18&lt;/guideline&gt;&lt;guideline direction="v"&gt;-28&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="敌人-柜员女僵尸" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;18&lt;/guideline&gt;&lt;guideline direction="v"&gt;-28&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#B147BB" locked="true">
           <frames>
@@ -84,7 +84,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#DFE800" locked="true">
+        <DOMLayer name="Script Layer" color="#DFE800" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -119,7 +119,8 @@ hp_max = 900;
 };
 初始化敌人模板 = _root.初始化敌人模板;
 初始化敌人模板();
-]]></script>
+
+配置音效("僵尸");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -309,7 +310,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#33E57D" current="true" isSelected="true">
+        <DOMLayer name="Layer 9" color="#33E57D">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>

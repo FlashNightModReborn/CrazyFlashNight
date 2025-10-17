@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防爆服僵尸/代码层/敌人-防爆服僵尸" itemID="671dc7f1-0000097d" linkageExportForAS="true" linkageIdentifier="敌人-防爆服僵尸" lastModified="1751450189" lastUniqueIdentifier="47">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防爆服僵尸/代码层/敌人-防爆服僵尸" itemID="671dc7f1-0000097d" linkageExportForAS="true" linkageIdentifier="敌人-防爆服僵尸" lastModified="1760717703" lastUniqueIdentifier="47">
   <timeline>
     <DOMTimeline name="敌人-防爆服僵尸" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-28&lt;/guideline&gt;&lt;guideline direction="h"&gt;10&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#A4EFED" locked="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="代码层" color="#A4EFED" locked="true" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -144,17 +144,10 @@ x轴保持距离 = 100;
 斩杀技能随机数 = 斩杀技能库.length;
 
 
-男_攻击呐喊_库 = ["11_kda_a_1-22.wav","23_kda_sy_1-22.wav","01_kyn_a_2-22.wav","25_kyo_sb-22.wav","20_kyn_h_9-22.wav"];
-女_攻击呐喊_库 = ["01_kin_a_1-22.wav","02_kin_a_2-22.wav","03_kin_a_3-22.wav","19_kin_nage-22.wav"];
-男_中招呐喊_库 = ["男-主角-0.wav","男-主角-1.wav","男-主角-2.wav","主角中招0.wav","主角中招1.wav","主角中招2.wav"];
-女_中招呐喊_库 = ["05_kin_d_1-22.wav","06_kin_d_2-22.wav","07_kin_d_3-22.wav","08_kin_d_4-22.wav"];
-男_击倒呐喊_库 = ["08_kyo_d_f-22.wav","07_ben_d_f-22.wav","06_cla_d_f-22.wav","04_and_df1-22.wav"];
-女_击倒呐喊_库 = ["女02.wav","09_kin_d_f-22.wav"];
-
-
 初始化敌人模板 = _root.初始化敌人模板;
 初始化敌人模板();
-]]></script>
+
+配置音效("僵尸");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -489,7 +482,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物层" color="#EECCB6" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="人物层" color="#EECCB6" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
