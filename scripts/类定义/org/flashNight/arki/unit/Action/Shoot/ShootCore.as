@@ -134,6 +134,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             // 调用具体射击方法，并将结果缓存
             var shootBulletAttrKey:String = config.shootBulletAttrKey;
             var bulletAttr:Object = man[shootBulletAttrKey];
+            // _root.发布消息(bulletAttr.子弹种类, bulletAttr.击中地图)
             core[shootStateName] = core[shootMethodName](gunRef, bulletAttr);
 
             // 更新弹匣剩余子弹数量
