@@ -263,18 +263,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
 
     // 使用最终计算后的数据显示伤害类型（如果有mod或强化，则使用equipData）
     var finalData = equipData ? equipData : data;
-    if (finalData.damagetype) {
-      if (finalData.damagetype == "魔法" && finalData.magictype) {
-        TooltipFormatter.colorLine(result, TooltipConstants.COL_DMG, "伤害属性：" + finalData.magictype);
-      } else if (finalData.damagetype == "破击" && finalData.magictype) {
-        if (MagicDamageTypes.isMagicDamageType(finalData.magictype))
-          TooltipFormatter.colorLine(result, TooltipConstants.COL_BREAK_LIGHT, "附加伤害：" + finalData.magictype);
-        else
-          TooltipFormatter.colorLine(result, TooltipConstants.COL_BREAK_MAIN, "破击类型：" + finalData.magictype);
-      } else {
-        TooltipFormatter.colorLine(result, TooltipConstants.COL_DMG, "伤害类型：" + (finalData.damagetype == "魔法" ? "能量" : finalData.damagetype));
-      }
-    }
+    quickBuildDamageType(result, finalData);
 
     // 使用最终计算后的数据显示魔法抗性（如果有mod或强化，则使用equipData）
     if (finalData.magicdefence) {
@@ -423,18 +412,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       result.push(quickBuildMagicDefence(override.magicdefence));
     }
     // 显示伤害类型和破击类型（与 buildEquipmentStats 保持一致）
-    if(override.damagetype){
-      if(override.damagetype == "魔法" && override.magictype){
-        TooltipFormatter.colorLine(result, TooltipConstants.COL_DMG, "伤害属性：" + override.magictype);
-      }else if(override.damagetype == "破击" && override.magictype){
-        if(MagicDamageTypes.isMagicDamageType(override.magictype))
-          TooltipFormatter.colorLine(result, TooltipConstants.COL_BREAK_LIGHT, "附加伤害：" + override.magictype);
-        else
-          TooltipFormatter.colorLine(result, TooltipConstants.COL_BREAK_MAIN, "破击类型：" + override.magictype);
-      }else{
-        TooltipFormatter.colorLine(result, TooltipConstants.COL_DMG, "伤害类型：" + (override.damagetype == "魔法" ? "能量" : override.damagetype));
-      }
-    }
+    quickBuildDamageType(result, override);
     if(modData.skill){
       result = result.concat(buildSkillInfo(modData.skill));
     }
@@ -448,9 +426,9 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
 
   // === 快速打印暴击数据 ===
   public static function quickBuildCriticalHit(criticalhit):String{
-    if (!isNaN(Number(criticalhit))) 
+    if (!isNaN(Number(criticalhit)))
       return "<FONT COLOR='" + TooltipConstants.COL_CRIT + "'>暴击：</FONT><FONT COLOR='" + TooltipConstants.COL_CRIT + "'>" + criticalhit + TooltipConstants.SUF_PERCENT + "概率造成1.5倍伤害</FONT><BR>";
-    else if (criticalhit === "满血暴击") 
+    else if (criticalhit === "满血暴击")
         return "<FONT COLOR='" + TooltipConstants.COL_CRIT + "'>暴击：对满血敌人造成1.5倍伤害</FONT><BR>";
     return "";
   }
@@ -466,6 +444,22 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     }
     if(mdList.length > 0) return "抗性 -> " + mdList.join(", ") + "<BR>";
     return "";
+  }
+
+  // === 快速打印伤害类型和破击类型 ===
+  public static function quickBuildDamageType(buf:Array, data:Object):Void{
+    if(!data.damagetype) return;
+
+    if(data.damagetype == "魔法" && data.magictype){
+      TooltipFormatter.colorLine(buf, TooltipConstants.COL_DMG, "伤害属性：" + data.magictype);
+    }else if(data.damagetype == "破击" && data.magictype){
+      if(MagicDamageTypes.isMagicDamageType(data.magictype))
+        TooltipFormatter.colorLine(buf, TooltipConstants.COL_BREAK_LIGHT, "附加伤害：" + data.magictype);
+      else
+        TooltipFormatter.colorLine(buf, TooltipConstants.COL_BREAK_MAIN, "破击类型：" + data.magictype);
+    }else{
+      TooltipFormatter.colorLine(buf, TooltipConstants.COL_DMG, "伤害类型：" + (data.damagetype == "魔法" ? "能量" : data.damagetype));
+    }
   }
 
 
