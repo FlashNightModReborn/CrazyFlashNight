@@ -140,7 +140,8 @@ _root.敌人ai函数.攻击 = function(x轴攻击范围, y轴攻击范围, x轴�
 			_parent.方向改变("右");
 		}
 		_parent.状态改变(_parent.攻击模式 + "攻击");
-		if (攻击对象.hp <= 0)
+		// 使用 !(hp > 0) 可同时处理 undefined/NaN/<=0 的情况
+		if (!(攻击对象.hp > 0))
 		{
 			_parent.dispatcher.publish("aggroClear", _parent);
 		}
@@ -148,11 +149,12 @@ _root.敌人ai函数.攻击 = function(x轴攻击范围, y轴攻击范围, x轴�
 }
 
 _root.敌人ai函数.寻找攻击目标 = function() {
-    // 如果没有攻击目标，或者当前目标已死亡，则寻找新目标
-    if (_parent.攻击目标 === "无" || (_parent.攻击目标 !== "无" && _root.gameworld[_parent.攻击目标].hp <= 0)) {
+    // 如果没有攻击目标，或者当前目标已死亡/被删除，则寻找新目标
+    // 使用 !(hp > 0) 可同时处理 undefined/NaN/<=0 的情况
+    if (_parent.攻击目标 === "无" || (_parent.攻击目标 !== "无" && !(_root.gameworld[_parent.攻击目标].hp > 0))) {
         // 直接使用TargetCacheManager的findNearestEnemy方法查找X轴上最近的敌人
         var enemy = TargetCacheManager.findNearestEnemy(_parent, 5);
-        
+
         // 设置攻击目标
         if (enemy) {
             _parent.dispatcher.publish("aggroSet", _parent, enemy);

@@ -63,6 +63,12 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
             return;
         }
         data.updateSelf(); // 更新自身坐标
+
+        // 检查目标是否有效（已被删除或死亡），hp > 0 取反可同时处理 undefined/NaN/<=0 的情况
+        if(data.target != null && !(data.target.hp > 0)){
+            data.target = null;
+        }
+
         //search target
         var newstate:String = null;
         var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
@@ -127,6 +133,14 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
     // 移动
     public function walk():Void {
         var sm = this.superMachine;
+
+        // 检查目标是否有效，无效则切换到思考状态重新寻找目标
+        if(data.target != null && !(data.target.hp > 0)){
+            data.target = null;
+            this.superMachine.ChangeState("Thinking");
+            return;
+        }
+
         // 判定帧：每 4 次（若想每 5 次，把下面两处 4 改成 5，并改成 % 5 判定）
         var onDecisionTick:Boolean = ((sm.actionCount & 3) == 0);
 
