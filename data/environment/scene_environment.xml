@@ -893,8 +893,28 @@
         <Xmin>50</Xmin>
         <Xmax>1150</Xmax>
         <Ymin>250</Ymin>
-        <Ymax>500</Ymax>
+        <Ymax>580</Ymax>
         <Width>1200</Width>
-        <Height>535</Height>
+        <Height>600</Height>
+        <Collision>
+            <Point>18,250</Point>
+            <Point>305,250</Point>
+            <Point>305,293</Point>
+            <Point>18,293</Point>
+        </Collision>
+        <Collision>
+            <Point>655,253</Point>
+            <Point>1190,253</Point>
+            <Point>1190,575</Point>
+            <Point>800,575</Point>
+            <Point>800,500</Point>
+            <Point>850,450</Point>
+        </Collision>
+        <Collision>
+            <Point>18,480</Point>
+            <Point>465,480</Point>
+            <Point>510,575</Point>
+            <Point>18,575</Point>
+        </Collision>
         <BGM>Dialtone</BGM>
 </EnvironmentSettings>
