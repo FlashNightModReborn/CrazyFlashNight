@@ -919,4 +919,27 @@
             <Point>18,585</Point>
         </Collision>
         <BGM>Dialtone</BGM>
+    </Environment>
+	    <Environment>
+        <BackgroundURL>地图-教学楼办公室</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1150</Xmax>
+        <Ymin>250</Ymin>
+        <Ymax>580</Ymax>
+        <Width>1200</Width>
+        <Height>600</Height>
+        <Collision>
+            <Point>480,230</Point>
+            <Point>1190,230</Point>
+            <Point>1190,270</Point>
+            <Point>480,270</Point>
+        </Collision>
+        <Collision>
+            <Point>800,240</Point>
+            <Point>1190,240</Point>
+            <Point>1190,375</Point>
+            <Point>800,375</Point>
+        </Collision>
+        <BGM>Dialtone</BGM>
 </EnvironmentSettings>
