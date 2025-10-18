@@ -89,6 +89,27 @@ _root.任务栏UI函数.打印任务对话 = function(taskText){
 
 //UI逻辑相关函数
 _root.任务栏UI函数.显示任务明细 = function(index){
+	// 检查任务是否存在
+	if(!_root.tasks_to_do[index]){
+		this.任务标题 = "";
+		this.任务信息.clearDescription();
+		// 清空关卡需求显示
+		var 关卡需求图标 = this.关卡需求.关卡需求图标;
+		关卡需求图标.stageName.htmlText = "";
+		关卡需求图标.关卡难度标志._visible = false;
+		关卡需求图标.完成标志._visible = false;
+		// 清空物品需求显示
+		var 物品需求图标 = this.物品需求.物品需求图标;
+		物品需求图标.itemType.text = "";
+		物品需求图标.物品展示框.itemInfo = "";
+		物品需求图标.完成标志._visible = false;
+		// 清空奖励显示
+		this.任务奖励.rewards = [];
+		this.任务奖励.refresh();
+		// 清空提交NPC
+		this.提交NPC界面.finish_npc = "";
+		return;
+	}
 	var taskData = TaskUtil.getTaskData(_root.tasks_to_do[index].id);
 	this.任务标题 = _root.getTaskText(taskData.title);
 	this.任务详情.refresh();
