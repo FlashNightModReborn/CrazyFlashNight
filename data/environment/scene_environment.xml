@@ -866,6 +866,7 @@
         <Width>1400</Width>
         <Height>770</Height>
         <Horizon>20</Horizon>
+        <SpaceCondition>室内</SpaceCondition>
         <Skybox>
             <url>大学楼栋.swf</url>
             <SpeedRate>4</SpeedRate>
@@ -885,6 +886,9 @@
         <Ymax>500</Ymax>
         <Width>1200</Width>
         <Height>535</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>6</MinIllumination>
         <BGM>Dialtone</BGM>
     </Environment>
 	    <Environment>
@@ -896,6 +900,9 @@
         <Ymax>580</Ymax>
         <Width>1200</Width>
         <Height>600</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>6</MinIllumination>
         <Collision>
             <Point>18,250</Point>
             <Point>305,250</Point>
@@ -929,6 +936,9 @@
         <Ymax>580</Ymax>
         <Width>1200</Width>
         <Height>600</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>6</MinIllumination>
         <Collision>
             <Point>480,230</Point>
             <Point>1190,230</Point>
@@ -942,4 +952,5 @@
             <Point>800,375</Point>
         </Collision>
         <BGM>Dialtone</BGM>
+    </Environment>
 </EnvironmentSettings>
