@@ -21,9 +21,12 @@
           <DOMFolderItem name="NPC-Registrar/Shotguns/Mossberg M500" itemID="68b435cf-000026c7"/>
           <DOMFolderItem name="NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun" itemID="68b435cf-000026c8"/>
           <DOMFolderItem name="NPC-Registrar/组件" itemID="68b435cf-000026db"/>
+          <DOMFolderItem name="NPC/NPC-程铮" itemID="68f4e96e-00006656"/>
+          <DOMFolderItem name="NPC/NPC-程铮/杂项" itemID="67d805c4-000014f5"/>
+          <DOMFolderItem name="NPC/NPC-程铮/组件" itemID="68f4e950-00006620"/>
           <DOMFolderItem name="NPC/NPC-工匠Vanshuther" itemID="68f27e82-000039f7"/>
           <DOMFolderItem name="NPC/NPC-工匠Vanshuther/素材" itemID="68f27e82-000039f8"/>
-          <DOMFolderItem name="NPC/NPC-体育老师" itemID="68ee9351-000066d7" isExpanded="true"/>
+          <DOMFolderItem name="NPC/NPC-体育老师" itemID="68ee9351-000066d7"/>
           <DOMFolderItem name="NPC/NPC-体育老师/杂项" itemID="67d993db-000003db"/>
           <DOMFolderItem name="NPC/NPC-体育老师/组件" itemID="67d87d4c-00000600"/>
           <DOMFolderItem name="Pins" itemID="5fb81d21-000012d3"/>
@@ -60,8 +63,6 @@
           <DOMFolderItem name="对话框UI/袁望surveyor" itemID="66532e8b-0000050a"/>
           <DOMFolderItem name="发型" itemID="68423071-00000b24"/>
           <DOMFolderItem name="歌留多" itemID="670d0c79-000005fd"/>
-          <DOMFolderItem name="红衣背头男" itemID="68ef8ce3-00006729"/>
-          <DOMFolderItem name="红衣背头男/组件" itemID="68ef8ce3-0000672a"/>
           <DOMFolderItem name="混沌系列素材包" itemID="6601614d-00000ea9"/>
           <DOMFolderItem name="混沌系列素材包/世莉架头像素材" itemID="660ce468-00000ed4"/>
           <DOMFolderItem name="混沌系列素材包/尾上世莉架" itemID="6601614d-00000eaa" isExpanded="true"/>
@@ -236,6 +237,54 @@
           <Include href="NPC-Registrar/组件/腰带.xml" itemIcon="1" loadImmediate="false" itemID="68b41184-0000198e" lastModified="1756631428"/>
           <Include href="NPC-Registrar/组件/衣服.xml" itemIcon="1" loadImmediate="false" itemID="68b43294-00001af8" lastModified="1756639892"/>
           <Include href="NPC-Registrar/组件/子弹.xml" loadImmediate="false" itemID="68b4192f-000019a9" lastModified="1756633619"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1_4.xml" loadImmediate="false" itemID="68f4e559-00006172" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1_5.xml" loadImmediate="false" itemID="68f4e559-0000617a" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1_6.xml" loadImmediate="false" itemID="68f4e559-00006187" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1_133 复制.xml" loadImmediate="false" itemID="68f4e559-00006169" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_2_4.xml" loadImmediate="false" itemID="68f4e559-00006179" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_2_5.xml" loadImmediate="false" itemID="68f4e559-00006186" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_3_3.xml" loadImmediate="false" itemID="68f4e559-00006185" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_3_69 复制.xml" loadImmediate="false" itemID="68f4e559-0000616d" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_4_1.xml" loadImmediate="false" itemID="68f4e559-00006184" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_4_51 复制.xml" loadImmediate="false" itemID="68f4e559-0000616c" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_5_3.xml" loadImmediate="false" itemID="68f4e559-00006183" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_5_44 复制 2.xml" loadImmediate="false" itemID="68f4e559-0000616b" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_6_1.xml" loadImmediate="false" itemID="68f4e559-00006182" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_7_2.xml" loadImmediate="false" itemID="68f4e559-00006181" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_7_29 复制.xml" loadImmediate="false" itemID="68f4e559-00006168" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_8_1.xml" loadImmediate="false" itemID="68f4e559-00006180" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_9_0.xml" loadImmediate="false" itemID="68f4e559-0000617f" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_10_0.xml" loadImmediate="false" itemID="68f4e559-0000617e" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_11_0.xml" loadImmediate="false" itemID="68f4e559-0000617d" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_12_0.xml" loadImmediate="false" itemID="68f4e559-0000617c" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_13_0.xml" loadImmediate="false" itemID="68f4e559-00006178" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_15.xml" loadImmediate="false" itemID="68f4e559-00006173" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_16.xml" loadImmediate="false" itemID="68f4e559-0000617b" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_17.xml" loadImmediate="false" itemID="68f4e559-00006188" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_26.xml" loadImmediate="false" itemID="68f4e559-00006177" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_29.xml" loadImmediate="false" itemID="68f4e559-00006176" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_36.xml" loadImmediate="false" itemID="68f4e559-00006175" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_39.xml" loadImmediate="false" itemID="68f4e559-00006174" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_42.xml" loadImmediate="false" itemID="68f4e559-00006171" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_46.xml" loadImmediate="false" itemID="68f4e559-00006170" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_48.xml" loadImmediate="false" itemID="68f4e559-0000616f" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_306 复制.xml" loadImmediate="false" itemID="68f4e559-0000616e" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_308 复制.xml" loadImmediate="false" itemID="68f4e559-0000616a" lastModified="1760879961"/>
+          <Include href="NPC/NPC-程铮/组件/屁股.xml" loadImmediate="false" itemID="67d7d8a1-000011bc" lastModified="1742204514"/>
+          <Include href="NPC/NPC-程铮/组件/身体.xml" itemIcon="1" loadImmediate="false" itemID="67d805bc-000014f4" lastModified="1742231425"/>
+          <Include href="NPC/NPC-程铮/组件/身体-衣服.xml" loadImmediate="false" itemID="67d7ee32-000012a7" lastModified="1760881176"/>
+          <Include href="NPC/NPC-程铮/组件/头.xml" loadImmediate="false" itemID="67d993db-000003e3" lastModified="1742373182"/>
+          <Include href="NPC/NPC-程铮/组件/头发.xml" loadImmediate="false" itemID="67d7ef03-000012c9" lastModified="1742204675"/>
+          <Include href="NPC/NPC-程铮/组件/右大臂.xml" loadImmediate="false" itemID="67d7ee00-0000129f" lastModified="1760881151"/>
+          <Include href="NPC/NPC-程铮/组件/右大腿.xml" loadImmediate="false" itemID="67d7ee8a-000012ab" lastModified="1742206093"/>
+          <Include href="NPC/NPC-程铮/组件/右手.xml" loadImmediate="false" itemID="67d85875-000001a5" lastModified="1742231669"/>
+          <Include href="NPC/NPC-程铮/组件/右小臂.xml" loadImmediate="false" itemID="67d7e2bf-00001244" lastModified="1742231448"/>
+          <Include href="NPC/NPC-程铮/组件/右小臂-衣袖.xml" loadImmediate="false" itemID="67d7edaf-00001297" lastModified="1742204335"/>
+          <Include href="NPC/NPC-程铮/组件/左大臂.xml" loadImmediate="false" itemID="67d7ee05-000012a3" lastModified="1742204421"/>
+          <Include href="NPC/NPC-程铮/组件/左大腿.xml" loadImmediate="false" itemID="67d7ee8f-000012af" lastModified="1742204559"/>
+          <Include href="NPC/NPC-程铮/组件/左手.xml" loadImmediate="false" itemID="67d85878-000001a6" lastModified="1742231672"/>
+          <Include href="NPC/NPC-程铮/组件/左小臂.xml" loadImmediate="false" itemID="67d7e4a8-0000124a" lastModified="1742231455"/>
+          <Include href="NPC/NPC-程铮/组件/左小臂-衣袖.xml" loadImmediate="false" itemID="67d7edf3-0000129b" lastModified="1742204403"/>
           <Include href="NPC/NPC-工匠Vanshuther/素材/屁股.xml" loadImmediate="false" itemID="68f27046-000033a5" lastModified="1760718918"/>
           <Include href="NPC/NPC-工匠Vanshuther/素材/上臂.xml" loadImmediate="false" itemID="68f27070-000033a8" lastModified="1760718960"/>
           <Include href="NPC/NPC-工匠Vanshuther/素材/身体.xml" loadImmediate="false" itemID="68f27066-000033a7" lastModified="1760722571"/>
@@ -903,8 +952,8 @@
           <Include href="对话框UI/袁望surveyor/左上臂.xml" loadImmediate="false" itemID="658e9304-000001cc" lastModified="1703844269"/>
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
-          <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1760725338"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1760724430"/>
+          <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1760880911"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1760881413"/>
           <Include href="发型/Symbol 799.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000814" lastModified="1710653981"/>
           <Include href="歌留多/歌留多胯.xml" loadImmediate="false" itemID="67096725-00000045" lastModified="1728669954"/>
           <Include href="歌留多/歌留多身体.xml" loadImmediate="false" itemID="67095275-0000000f" lastModified="1728665563"/>
@@ -925,7 +974,6 @@
           <Include href="歌留多/歌留多左大腿.xml" loadImmediate="false" itemID="67096491-00000038" lastModified="1728704308"/>
           <Include href="歌留多/歌留多左小臂.xml" loadImmediate="false" itemID="67096488-00000035" lastModified="1728668808"/>
           <Include href="歌留多/髅髅宫歌留多.xml" loadImmediate="false" itemID="6709f658-00000196" lastModified="1728706670"/>
-          <Include href="红衣背头男/组件/屁股.xml" loadImmediate="false" itemID="67d7d8a1-000011bc" lastModified="1742204514"/>
           <Include href="混沌系列素材包/世莉架头像素材/立绘 表情.xml" loadImmediate="false" itemID="660141a5-0000073a" lastModified="1711358373"/>
           <Include href="混沌系列素材包/世莉架头像素材/立绘 发型.xml" loadImmediate="false" itemID="660141cf-0000073f" lastModified="1711360141"/>
           <Include href="混沌系列素材包/世莉架头像素材/立绘表情.xml" loadImmediate="false" itemID="66014203-00000745" lastModified="1711358467"/>
