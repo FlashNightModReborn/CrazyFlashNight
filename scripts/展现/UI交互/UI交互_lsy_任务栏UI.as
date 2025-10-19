@@ -91,8 +91,21 @@ _root.任务栏UI函数.打印任务对话 = function(taskText){
 _root.任务栏UI函数.显示任务明细 = function(index){
 	// 检查任务是否存在
 	if(!_root.tasks_to_do[index]){
-		this.任务标题 = "";
-		this.任务信息.clearDescription();
+		// 获取当前主线进度，显示对应的引导信息
+		var 主线进度 = _root.task_chains_progress.主线 || 0;
+		var guide = TaskUtil.getProgressGuide(主线进度);
+
+		if(guide){
+			// 显示引导信息
+			this.任务标题 = guide.title;
+			this.任务信息.clearDescription();
+			this.任务信息.typeDescription(guide.description);
+		}else{
+			// 没有引导数据时的默认处理
+			this.任务标题 = "";
+			this.任务信息.clearDescription();
+		}
+
 		// 清空关卡需求显示
 		var 关卡需求图标 = this.关卡需求.关卡需求图标;
 		关卡需求图标.stageName.htmlText = "";

@@ -15,6 +15,9 @@ class org.flashNight.arki.task.TaskUtil{
 
     public static var specialRequirements:Object;
 
+    // 任务进度引导数据
+    public static var progress_guides:Object;
+
 
     public static function getTaskData(index){
         return ObjectUtil.clone(tasks[index]);
@@ -87,5 +90,33 @@ class org.flashNight.arki.task.TaskUtil{
         if(items == null) return true;
         var itemArray = ItemUtil.getRequirementFromTask(items);
         return ItemUtil.contain(itemArray) != null;
+    }
+
+    /**
+     * 获取指定进度的引导数据
+     * @param progress 主线任务进度
+     * @return Object 引导数据对象，包含 title 和 description，如果不存在则返回 null
+     */
+    public static function getProgressGuide(progress:Number):Object {
+        if(progress_guides == null) return null;
+        return progress_guides[progress];
+    }
+
+    /**
+     * 解析引导数据并存储
+     * @param rawGuideData 原始引导数据
+     */
+    public static function ParseGuideData(rawGuideData):Void {
+        progress_guides = new Object();
+        if(rawGuideData == null || rawGuideData.guides == null) {
+            trace("TaskUtil: 引导数据为空或格式不正确");
+            return;
+        }
+        var guides = rawGuideData.guides;
+        for(var i = 0; i < guides.length; i++){
+            var guide = guides[i];
+            progress_guides[guide.progress] = guide;
+        }
+        trace("TaskUtil: 成功加载 " + guides.length + " 条进度引导数据");
     }
 }
