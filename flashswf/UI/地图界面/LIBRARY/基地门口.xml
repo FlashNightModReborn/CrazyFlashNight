@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="基地门口" itemID="67496fc9-0000046c" symbolType="graphic" lastModified="1735607189" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="基地门口" currentFrame="1">
+    <DOMTimeline name="基地门口">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -22,7 +22,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="元件 2" centerPoint3DX="1341.45" centerPoint3DY="479.95" exportAsBitmap="true">
+                <DOMSymbolInstance libraryItemName="元件 2" selected="true" centerPoint3DX="1341.45" centerPoint3DY="479.95" exportAsBitmap="true">
                   <transformationPoint>
                     <Point x="1341.45" y="479.85"/>
                   </transformationPoint>
