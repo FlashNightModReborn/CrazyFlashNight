@@ -1,5 +1,6 @@
 ﻿import org.flashNight.gesh.object.*;
 import org.flashNight.arki.item.itemCollection.*;
+import org.flashNight.neur.Event.*;
 
 _root.存档系统 = new Object();
 _root.存档系统.latest_version = "2.7";
@@ -387,6 +388,17 @@ _root.新建角色 = function(){
     //
     _root.soundEffectManager.stopBGM();
     // _root.淡出动画.淡出跳转帧("教学关卡");
+
+    // 修复教学关卡初始化问题：
+    // 1. 设置新出生标志，避免转场景数据传递逻辑混乱
+    _root.新出生 = false;
+
+    // 2. 手动触发SceneReady事件，确保ZoomController和单位缓存系统正确初始化
+    // 这解决了新建角色进入教学关卡时，运镜失效、无法命中敌人、AI异常的问题
+    _root.帧计时器.添加单次任务(function() {
+        EventBus.instance.publish("SceneReady");
+    }, 30); // 延迟3帧确保gameworld和主角已加载完成
+
     _root.载入关卡数据("无限过图", "data/stages/特殊/教学关卡.xml");
     _root.场景进入位置名 = "出生地";
     _root.淡出动画.淡出跳转帧("wuxianguotu_1");
