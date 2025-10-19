@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-联合大学" itemID="66e7946e-00000497" linkageExportForAS="true" linkageIdentifier="地图-联合大学" lastModified="1760459323" lastUniqueIdentifier="78">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-联合大学" itemID="66e7946e-00000497" linkageExportForAS="true" linkageIdentifier="地图-联合大学" lastModified="1760889270" lastUniqueIdentifier="79">
   <timeline>
     <DOMTimeline name="地图-联合大学">
       <layers>
@@ -60,7 +60,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="门" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="门" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -98,9 +98,9 @@ onClipEvent(load){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/门" name="门3" selected="true" centerPoint3DX="1267.55" centerPoint3DY="675.7">
+                <DOMSymbolInstance libraryItemName="sprite/门" name="门3" centerPoint3DX="1267.55" centerPoint3DY="675.7">
                   <matrix>
-                    <Matrix a="15.2307891845703" d="1.14991760253906" tx="1185.6" ty="536.6"/>
+                    <Matrix a="15.2307739257813" d="1.14990234375" tx="1185.6" ty="536.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-10.5" y="-19.95"/>
@@ -119,7 +119,14 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="NPC" color="#9933CC" locked="true" autoNamed="false" open="false" layerType="folder"/>
+        <DOMLayer name="NPC" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="图层 2" color="#9933CC" parentLayerIndex="4">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="Tomboy" color="#A91BDC" parentLayerIndex="4" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
@@ -147,7 +154,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="球棒少年" color="#FF800A" parentLayerIndex="4" locked="true" autoNamed="false">
+        <DOMLayer name="球棒少年" color="#FF800A" parentLayerIndex="4" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -184,6 +191,24 @@ onClipEvent(load){
 	性别 = "男";
 	方向 = "右";
 	商店 = "简易护具出售";
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/npc购买装置" selected="true" centerPoint3DX="1438.25" centerPoint3DY="410.8">
+                  <matrix>
+                    <Matrix tx="1414.75" ty="427.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.5" y="-16.85"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	名字 = "武器订购系统";
+	身高 = 175;
+	性别 = "女";
+	方向 = "右";
+	商店 = "冷兵器出售";
 	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>

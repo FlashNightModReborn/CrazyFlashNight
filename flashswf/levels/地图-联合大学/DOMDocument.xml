@@ -21,6 +21,9 @@
           <DOMFolderItem name="06.涂鸦" itemID="66e6e294-00000d00"/>
           <DOMFolderItem name="07.植物" itemID="66e6cb11-0000039a"/>
           <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
+          <DOMFolderItem name="NPC" itemID="68f50bd3-0000076c"/>
+          <DOMFolderItem name="NPC/NPC-工匠Vanshuther" itemID="68f50bd3-0000076d"/>
+          <DOMFolderItem name="NPC/NPC-工匠Vanshuther/素材" itemID="68f50bd3-0000076f"/>
           <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
           <DOMFolderItem name="sprite" itemID="66e79513-0000053f"/>
           <DOMFolderItem name="UI重构" itemID="674090be-0000041c"/>
@@ -42,6 +45,7 @@
           <DOMFolderItem name="新地图素材/假小子机枪手/新建画布1.svg/Layer 1" itemID="657c797d-0000013a"/>
           <DOMFolderItem name="新地图素材/假小子机枪手/新建画布2.svg" itemID="657c79aa-00000140"/>
           <DOMFolderItem name="新地图素材/假小子机枪手/新建画布2.svg/Layer 1" itemID="657c79aa-00000141"/>
+          <DOMFolderItem name="重复项目文件夹" itemID="68f5101a-00000b40"/>
      </folders>
      <media>
           <DOMBitmapItem name="1K-stone_floor_2-displacement.jpg" itemID="66e6c909-0000032c" sourceExternalFilepath="./LIBRARY/1K-stone_floor_2-displacement.jpg" sourceLastImported="1553540260" externalFileCRC32="5707395" externalFileSize="600020" allowSmoothing="true" quality="50" href="1K-stone_floor_2-displacement.jpg" bitmapDataHRef="M 1 1726400777.dat" frameRight="20480" frameBottom="20480" isJPEG="true"/>
@@ -111,6 +115,11 @@
           <Include href="07.植物/植物-树-1.xml" loadImmediate="false" itemID="66c1cdf5-00000d8e" lastModified="1723977205"/>
           <Include href="button/Symbol 51820.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000c70" lastModified="1704196122"/>
           <Include href="deadbody.xml" loadImmediate="false" itemID="66d0920e-000012a2" lastModified="1749721664"/>
+          <Include href="NPC/NPC-工匠Vanshuther/后发.xml" loadImmediate="false" itemID="68f50a6a-00000766" lastModified="1760889450"/>
+          <Include href="NPC/NPC-工匠Vanshuther/素材/上臂.xml" loadImmediate="false" itemID="68f27070-000033a8" lastModified="1760718960"/>
+          <Include href="NPC/NPC-工匠Vanshuther/素材/身体.xml" loadImmediate="false" itemID="68f27066-000033a7" lastModified="1760722571"/>
+          <Include href="NPC/NPC-工匠Vanshuther/素材/头.xml" loadImmediate="false" itemID="68f26bdd-00002f75" lastModified="1760725587"/>
+          <Include href="NPC/NPC-工匠Vanshuther/素材/五官.xml" loadImmediate="false" itemID="68f26bd6-00002f73" lastModified="1760725631"/>
           <Include href="shape/Symbol 39.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000974" lastModified="1726470742"/>
           <Include href="shape/Symbol 473.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a4" lastModified="1704196122"/>
           <Include href="shape/Symbol 2386.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b38" lastModified="1704196122"/>
@@ -141,7 +150,7 @@
           <Include href="待整理防具相关汇总/男变装-黑色校服裤子右大腿.xml" loadImmediate="false" itemID="66e7d2b5-000021eb" lastModified="1726469989"/>
           <Include href="待整理防具相关汇总/男变装-黑色校服裤子左大腿.xml" loadImmediate="false" itemID="66e7d2af-000021ea" lastModified="1726469990"/>
           <Include href="地板.xml" loadImmediate="false" itemID="66e6d0e9-000003ef" lastModified="1726402793"/>
-          <Include href="地图-联合大学.xml" itemID="66e7946e-00000497" lastModified="1760459323"/>
+          <Include href="地图-联合大学.xml" itemID="66e7946e-00000497" lastModified="1760889270"/>
           <Include href="地图碰撞箱.xml" loadImmediate="false" itemID="67d7e377-000019cf" lastModified="1749722015"/>
           <Include href="地图元件/deadbody.xml" loadImmediate="false" itemID="666e9ef0-000003cc" lastModified="1727182776"/>
           <Include href="地图元件/提示箭头.xml" loadImmediate="false" itemID="660d39b9-00001fe8" lastModified="1759674980"/>
@@ -149,6 +158,7 @@
           <Include href="地图元件/子弹区域.xml" loadImmediate="false" itemID="666ea01c-000003e3" lastModified="1718525981"/>
           <Include href="冷兵/钝器/棒球棒/棒球棒.xml" itemIcon="1" loadImmediate="false" itemID="660f7d90-000019bc" lastModified="1712291609"/>
           <Include href="冷兵/钝器/棒球棒/棒球棍末端.xml" loadImmediate="false" itemID="64b91170-00001168" lastModified="1690285773"/>
+          <Include href="屏幕动画.xml" loadImmediate="false" itemID="68f51074-00000b55" lastModified="1760891068"/>
           <Include href="其他武器/Symbol 5567.xml" itemIcon="1" loadImmediate="false" itemID="6551e7a2-00001483" lastModified="1726475356"/>
           <Include href="无AS链接/Symbol 787.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000780" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 1207.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000088d" lastModified="1726472197"/>
@@ -158,8 +168,10 @@
           <Include href="无AS链接/Symbol 1323.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000008e2" lastModified="1726474233"/>
           <Include href="无AS链接/Symbol 1331.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000008e7" lastModified="1726474056"/>
           <Include href="无AS链接/Symbol 1337.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000008eb" lastModified="1726474977"/>
+          <Include href="无人机待机动画.xml" loadImmediate="false" itemID="68f5104a-00000b45" lastModified="1760890975"/>
           <Include href="效果.xml" loadImmediate="false" itemID="66d09260-000012ac" lastModified="1724944992"/>
           <Include href="新地图素材/npcTomboy.xml" loadImmediate="false" itemID="65b64089-00002d5a" lastModified="1726472012"/>
+          <Include href="新地图素材/npc购买装置.xml" loadImmediate="false" itemID="68f5097a-000002c7" lastModified="1760890996"/>
           <Include href="新地图素材/npc黑仔.xml" loadImmediate="false" itemID="66e7ecc5-00003b8b" lastModified="1732285226"/>
           <Include href="新地图素材/npc球棒少年.xml" loadImmediate="false" itemID="66e7db97-00002a20" lastModified="1726472024"/>
           <Include href="新地图素材/Tomboy.xml" loadImmediate="false" itemID="65b6438a-00003913" lastModified="1726466683"/>
@@ -196,6 +208,7 @@
           <Include href="新地图素材/假小子机枪手/元件 1.xml" loadImmediate="false" itemID="657c7a33-0000014a" lastModified="1702656641"/>
           <Include href="新地图素材/球棒少年.xml" loadImmediate="false" itemID="66e7dacd-00002795" lastModified="1726472531"/>
           <Include href="远山-1.xml" loadImmediate="false" itemID="66e70ae8-00000ec3" lastModified="1726417641"/>
+          <Include href="重复项目文件夹/无人机 副本 2.xml" loadImmediate="false" itemID="6856cb45-000008d1" lastModified="1750411733"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -535,6 +548,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="324959" publishTime="1760890745"/>
+          <PublishItem publishSize="324953" publishTime="1760890583"/>
           <PublishItem publishSize="314676" publishTime="1760458031"/>
           <PublishItem publishSize="314664" publishTime="1760457146"/>
           <PublishItem publishSize="314304" publishTime="1760457064"/>
@@ -553,7 +568,5 @@
           <PublishItem publishSize="535254" publishTime="1727182525"/>
           <PublishItem publishSize="535241" publishTime="1727182447"/>
           <PublishItem publishSize="535258" publishTime="1727182233"/>
-          <PublishItem publishSize="535241" publishTime="1727182208"/>
-          <PublishItem publishSize="535254" publishTime="1727181508"/>
      </publishHistory>
 </DOMDocument>
