@@ -3,6 +3,67 @@
 ID已倒序排序，在最上方新增新物品即可，使用最新id，同时可修改注释
 预留ID区间：15304-15600-->
 <root>
+      <item>
+    <id>8525</id>
+    <name>黑铁大叔目镜头装</name>
+    <displayname>黑铁行刑者头装</displayname>
+    <icon>黑铁大叔目镜头装</icon>
+    <type>防具</type>
+    <use>头部装备</use>
+    <price>52000</price>
+    <description>黑铁行刑者的标准配置，铁下巴和目镜。
+&lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，有低级别的夜视效果，开启亮度等级为0~2。</description>
+    <data>
+      <level>20</level>
+      <weight>2</weight>
+      <dressup>男变装-黑铁大叔目镜头装</dressup>
+      <hp>50</hp>
+      <mp>25</mp>
+      <damage>30</damage>
+      <knifepower>30</knifepower>
+      <defence>135</defence>
+    </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>红外夜视仪初始化</initRoutines>
+          <initParam>
+            <visual>夜视仪</visual>
+            <min>0</min>
+            <max>2</max>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>红外夜视仪周期</cycleRoutines>
+          <cycleParam>
+            <visual>夜视仪</visual>
+            <min>0</min>
+            <max>4</max>
+          </cycleParam>
+        </cycle>
+      </attr_0>
+    </lifecycle>
+  </item>
+    <item>
+    <id>8524</id>
+    <name>黑铁大叔头装</name>
+    <displayname>黑铁行刑者下颚护具</displayname>
+    <icon>黑铁大叔头装</icon>
+    <type>防具</type>
+    <use>头部装备</use>
+    <price>32500</price>
+    <description>黑铁行刑者们使用的下颚护具，俗称铁下巴。虽然看着老土，却也实实在在地降低了黑铁行刑者群体被击中下巴一击KO的概率。</description>
+    <data>
+      <level>20</level>
+      <weight>1</weight>
+      <dressup>男变装-黑铁大叔头装</dressup>
+      <hp>0</hp>
+      <mp>0</mp>
+      <damage>10</damage>
+      <knifepower>15</knifepower>
+      <defence>125</defence>
+    </data>
+  </item>
   <item>
     <id>8517</id>
     <name>诺亚镇暴服脚</name>
