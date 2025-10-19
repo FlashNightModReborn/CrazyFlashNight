@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/04.猩红色系/猩红攻势/随机组合/猩红攻势" itemID="6546498f-000004e8" linkageExportForAS="true" linkageIdentifier="猩红攻势" lastModified="1710856237">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/04.猩红色系/猩红攻势/随机组合/猩红攻势" itemID="6546498f-000004e8" linkageExportForAS="true" linkageIdentifier="猩红攻势" lastModified="1760839378">
   <timeline>
-    <DOMTimeline name="猩红攻势">
+    <DOMTimeline name="猩红攻势" currentFrame="22">
       <layers>
         <DOMLayer name="Labels Layer" color="#83C998">
           <frames>
@@ -440,15 +440,15 @@ gotoAndPlay("a" + random(3));
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 0" color="#908283" current="true" isSelected="true">
+        <DOMLayer name="Sound Layer 0" color="#908283">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="31" keyMode="9728" soundName="1.特效文件夹/04.猩红色系/猩红攻势/随机组合/sound2385.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="1" duration="31" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("僵尸巨斧_2.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
@@ -458,23 +458,23 @@ gotoAndPlay("a" + random(3));
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="12" duration="20" keyMode="9728" soundName="1.特效文件夹/04.猩红色系/猩红攻势/随机组合/sound2384.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="12" duration="20" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("僵尸巨斧_2.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 2" color="#A947D3">
+        <DOMLayer name="Sound Layer 2" color="#A947D3" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="22" duration="10" keyMode="9728" soundName="1.特效文件夹/04.猩红色系/猩红攻势/随机组合/sound2385.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="22" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("僵尸巨斧_3.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
