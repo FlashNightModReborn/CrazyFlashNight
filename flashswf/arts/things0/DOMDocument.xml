@@ -1080,7 +1080,7 @@
           <Include href="sprite/Symbol 2016.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000080a" lastModified="1702098593"/>
           <Include href="sprite/Symbol 2017.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000080b" lastModified="1702098593"/>
           <Include href="sprite/Symbol 2019.xml" loadImmediate="false" itemID="6577efbc-0000080c" lastModified="1706255914"/>
-          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1760548827"/>
+          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1760885907"/>
           <Include href="sprite/持械待机.xml" loadImmediate="false" itemID="6693d49e-00000af1" lastModified="1720966607"/>
           <Include href="sprite/丑陋无比的连按方向奔跑键控.xml" loadImmediate="false" itemID="66587e46-00000645" lastModified="1742889188"/>
           <Include href="sprite/大地震.xml" itemID="668be732-00000660" lastModified="1749127630"/>
@@ -1365,7 +1365,7 @@
           <Include href="组合拳幻影4‘.xml" loadImmediate="false" itemID="674dba4f-00000597" lastModified="1733147216"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="1" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;465&lt;/guideline&gt;&lt;guideline direction="v"&gt;338&lt;/guideline&gt;&lt;guideline direction="v"&gt;220&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" currentFrame="19" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;465&lt;/guideline&gt;&lt;guideline direction="v"&gt;338&lt;/guideline&gt;&lt;guideline direction="v"&gt;220&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Layer 1" color="#DEEE3E" current="true" isSelected="true">
                          <frames>
@@ -1386,7 +1386,7 @@
                               </DOMFrame>
                               <DOMFrame index="1" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/兵器攻击" centerPoint3DX="340.9" centerPoint3DY="149.6">
+                                        <DOMSymbolInstance libraryItemName="sprite/兵器攻击" selected="true" centerPoint3DX="340.9" centerPoint3DY="149.6">
                                              <matrix>
                                                   <Matrix tx="438.4" ty="111.55"/>
                                              </matrix>
