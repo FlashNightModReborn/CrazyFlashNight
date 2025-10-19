@@ -1,6 +1,119 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!--已用ID：[392, 393, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425, 426, 427, 428, 429, 430, 431, 445, 453, 472, 498, 499, 519, 523, 563, 564, 565, 595, 608, 609, 620, 622, 626, 630, 631, 632, 634, 635, 636, 637, 638, 639, 640, 641, 649, 650, 651, 652, 657, 676, 681, 685, 689, 690, 702, 703, 749, 799, 800, 832, 845, 846, 847, 848, 852, 853, 854, 855, 857, 900, 1501, 1502, 1503, 1504, 1505, 1506, 1509, 1510, 1511, 1512, 1513, 1514, 1515, 1516, 1517, 1518, 1519, 1520, 1525, 1554, 1555, 1556, 1557, 1558, 1559, 1560, 1561, 5002, 5500, 5509, 5510, 6000, 6009, 6010, 6011, 6012, 6013, 6014, 6015, 6016, 6028, 6029, 6061, 6062, 6069, 6070, 8010, 8011, 8029, 8030, 8031, 8032, 9001, 12018, 12020, 12118, 12120, 13007, 13013, 22000]
-预留ID区间：17324-17500--><root>
+预留ID区间：17327-17500--><root>
+  <item>
+    <id>17326</id>
+    <name>冰锋翼枪</name>
+    <displayname>冰锋翼枪</displayname>
+    <icon>冰锋翼枪</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>长枪</actiontype>
+    <price>420000</price>
+    <skill>
+      <skillname>突刺</skillname>
+      <description>手持该武器时可以使用突刺。</description>
+      <cd>7000</cd>
+      <mp>40</mp>
+    </skill>
+    <description>联合大学的最上等的订制武器之一，锋芒似新淬。
+枪杆由某家倒闭军工企业的实验性合金锻造，缠覆的金丝虽蒙尘，却仍泛着金属特有的细闪。
+枪头之中凝着永冻层的冷光，可在挥刺之间发散冰晶。</description>
+    <data>
+      <level>42</level>
+      <weight>6</weight>
+      <dressup>刀-冰锋翼枪</dressup>
+      <power>420</power>
+      <criticalhit>15</criticalhit>
+      <evasion>10</evasion>
+      <slay>10</slay>
+    </data>
+  </item>
+  <item>
+    <id>17325</id>
+    <name>青龙偃月刀</name>
+    <displayname>青龙偃月刀</displayname>
+    <icon>青龙偃月刀</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>长枪</actiontype>
+    <skill>
+      <skillname>回旋斩击</skillname>
+      <description>手持该武器时可以使用回旋斩击。</description>
+      <cd>8000</cd>
+      <mp>50</mp>
+    </skill>
+    <price>480000</price>
+    <description>联合大学的最上等的订制武器之一。仿照传说中武圣的武器形制所制造。
+青翠的锋刃内蕴含着作为前文明时代工业结晶的微型分解装置；因此只需轻触，便能使目标溃烂。</description>
+    <data>
+      <level>42</level>
+      <weight>18</weight>
+      <dressup>刀-青龙偃月刀</dressup>
+      <power>520</power>
+      <defence>0</defence>
+      <rout>0.10</rout>
+      <slay>10</slay>
+      <criticalhit>10</criticalhit>
+    </data>
+  </item>
+  <item>
+    <id>17324</id>
+    <name>斩血乱刃戟</name>
+    <displayname>斩血乱刃戟</displayname>
+    <icon>斩血乱刃戟</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>长枪</actiontype>
+    <skill>
+      <skillname>破坏殆尽</skillname>
+      <description>手持该武器时可以使用破坏殆尽。</description>
+      <cd>8000</cd>
+      <mp>50</mp>
+    </skill>
+    <price>500000</price>
+    <description>联合大学的最上等的订制武器之一。长柄尖端附有极不规则的刀刃，所过之处能够汲取部分物质作为能量补给使用者。
+猩红的锋刃内蕴含着作为前文明时代工业结晶的微型分解装置；因此只需轻触，便能使目标溃烂。</description>
+    <data>
+      <level>43</level>
+      <weight>6</weight>
+      <dressup>刀-斩血乱刃戟</dressup>
+      <power>500</power>
+      <defence>0</defence>
+      <rout>0.10</rout>
+      <evasion>10</evasion>
+      <vampirism>10</vampirism>
+      <criticalhit>10</criticalhit>
+    </data>
+  </item>
+  <item>
+    <id>17323</id>
+    <name>血能源刃</name>
+    <displayname>血能源刃</displayname>
+    <icon>血能源刃</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>刀剑</actiontype>
+    <skill>
+      <skillname>追踪五连</skillname>
+      <description>手持该武器可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人。战技启动时，按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
+      <cd>8000</cd>
+      <mp>30</mp>
+    </skill>
+    <price>480000</price>
+    <description>联合大学的最上等的订制武器之一，握柄内满载着鲜红色的不明液体。刀刃所过之处能够汲取部分物质作为能量补给使用者。
+猩红的锋刃内蕴含着作为前文明时代工业结晶的微型分解装置；因此只需轻触，便能使目标溃烂。</description>
+    <data>
+      <level>41</level>
+      <weight>3</weight>
+      <dressup>刀-血能源刃</dressup>
+      <power>485</power>
+      <defence>0</defence>
+      <rout>0.15</rout>
+      <vampirism>15</vampirism>
+      <criticalhit>15</criticalhit>
+    </data>
+  </item>
   <item>
     <id>17322</id>
     <name>血瀑大剑</name>
