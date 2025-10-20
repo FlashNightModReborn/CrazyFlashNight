@@ -899,10 +899,10 @@
         <BackgroundURL>地图-教学楼内部</BackgroundURL>
         <Alignment>true</Alignment>
         <Xmin>50</Xmin>
-        <Xmax>1150</Xmax>
+        <Xmax>1550</Xmax>
         <Ymin>250</Ymin>
         <Ymax>500</Ymax>
-        <Width>1200</Width>
+        <Width>1600</Width>
         <Height>535</Height>
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
@@ -971,4 +971,17 @@
         </Collision>
         <BGM>Dialtone</BGM>
     </Environment>
+	    <Environment>
+        <BackgroundURL>地图-剑道社</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1150</Xmax>
+        <Ymin>250</Ymin>
+        <Ymax>585</Ymax>
+        <Width>1200</Width>
+        <Height>600</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>6</MinIllumination>
+        <BGM>Dialtone</BGM>
 </EnvironmentSettings>
