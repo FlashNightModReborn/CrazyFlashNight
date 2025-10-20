@@ -616,7 +616,22 @@ _root.物品UI函数.初始化强化界面 = function(UI:MovieClip){
 }
 
 _root.物品UI函数.刷新强化物品 = function(item, index, itemIcon, inventory){
-	if(this.当前物品 != null) return;
+	// 支持热切换：如果已有物品，先清理旧物品的事件监听
+	if(this.当前物品 != null){
+		// 取消旧物品的ItemRemoved监听
+		if(this.当前物品栏 != null){
+			this.当前物品栏.getDispatcher().unsubscribe("ItemRemoved", _root.物品UI函数.检查强化物品是否移动);
+		}
+		// 恢复旧物品图标的透明度（如果还存在）
+		if(this.当前物品图标 != null && this.当前物品图标.icon != null){
+			this.当前物品图标.icon._alpha = 100;
+		}
+		// 清空强化度转换界面的物品（切换主装备时重置转换界面）
+		if(this.强化度转换物品 != null){
+			this.刷新强化度转换界面();
+		}
+	}
+
 	this.gotoAndStop("默认");
 	this.当前物品 = item;
 	this.当前物品格 = index;
@@ -626,6 +641,11 @@ _root.物品UI函数.刷新强化物品 = function(item, index, itemIcon, invent
 	this.强化物品图标.itemIcon.RollOver = function(){
 		// 空
 	};
+
+	// 刷新默认界面（显示新装备信息）
+	this.刷新默认界面();
+
+	// 订阅新物品的ItemRemoved事件
 	inventory.getDispatcher().subscribe("ItemRemoved", _root.物品UI函数.检查强化物品是否移动, this);
 }
 

@@ -81,12 +81,11 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
             if(this.collection === _root.物品栏.背包 && (type == "武器" || type == "防具")){
                 var 装备强化界面 = _root.物品栏界面.装备强化界面;
                 if(装备强化界面 != null){
-                    // 如果没有当前物品，高亮进入强化界面标志
-                    if(装备强化界面.当前物品 == null){
-                        装备强化界面.进入强化界面标志.gotoAndStop(2);
-                    }
+                    // 始终高亮进入强化界面标志（支持热切换装备）
+                    装备强化界面.进入强化界面标志.gotoAndStop(2);
+
                     // 如果有当前物品且在强化度转换界面，检查是否可以高亮转换图标
-                    else if(装备强化界面.强化度转换物品图标 != null){
+                    if(装备强化界面.当前物品 != null && 装备强化界面.强化度转换物品图标 != null){
                         var 当前装备类型 = 装备强化界面.当前物品.getData().use;
                         // 类型匹配且不是同一件装备
                         if(当前装备类型 == use && this.item !== 装备强化界面.当前物品){

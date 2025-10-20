@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版装备强化界面" itemID="68a01bda-000002a7" lastModified="1760360658" lastUniqueIdentifier="52">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版装备强化界面" itemID="68a01bda-000002a7" lastModified="1760960641" lastUniqueIdentifier="54">
   <timeline>
-    <DOMTimeline name="新版装备强化界面" currentFrame="33">
+    <DOMTimeline name="新版装备强化界面">
       <layers>
         <DOMLayer name="label" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
@@ -192,7 +192,7 @@ this.刷新默认界面();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="cursor" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="cursor" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements/>
@@ -654,9 +654,9 @@ this.刷新默认界面();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="6" keyMode="9728">
+            <DOMFrame index="0" duration="37" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="新强化界面/进入强化界面标志" name="进入强化界面标志" centerPoint3DX="250.35" centerPoint3DY="316.25">
                   <matrix>
@@ -667,6 +667,13 @@ this.刷新默认界面();]]></script>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
             </DOMFrame>
             <DOMFrame index="6" duration="31" keyMode="9728">
               <elements>
