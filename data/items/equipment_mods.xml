@@ -101,7 +101,7 @@
         <stats>
             <flat>
                 <hp>5</hp>
-                <weight>0.5</weight>
+                <weight>0.2</weight>
             </flat>
             <percentage>
                 <defence>9</defence>
@@ -201,14 +201,15 @@
         <stats>
             <override>
                 <magicdefence>
-                    <蚀>10</蚀>
+                    <蚀>5</蚀>
+                    <毒>5</毒>
                 </magicdefence>
             </override>
             <percentage>
                 <weight>-20</weight>
             </percentage>
         </stats>
-        <description>轻质复合材料，提供腐蚀抗性并减轻装备重量。</description>
+        <description>轻质复合材料，提供毒素与腐蚀抗性并减轻装备重量。</description>
     </mod>
     <mod>
         <name>透镜</name>

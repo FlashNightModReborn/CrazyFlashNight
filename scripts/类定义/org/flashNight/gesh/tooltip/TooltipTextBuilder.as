@@ -266,12 +266,61 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     quickBuildDamageType(result, finalData);
 
     // 使用最终计算后的数据显示魔法抗性（如果有mod或强化，则使用equipData）
-    if (finalData.magicdefence) {
-      for (var key in finalData.magicdefence) {
-        if (ObjectUtil.isInternalKey(key)) continue; // 跳过内部字段（如 __dictUID）
+    // 收集所有需要显示的抗性类型（基础数据和最终数据的并集）
+    if (finalData.magicdefence || data.magicdefence) {
+      var resistanceTypes = {};
+      if (data.magicdefence) {
+        for (var key in data.magicdefence) {
+          if (ObjectUtil.isInternalKey(key)) continue;
+          resistanceTypes[key] = true;
+        }
+      }
+      if (finalData.magicdefence) {
+        for (var key in finalData.magicdefence) {
+          if (ObjectUtil.isInternalKey(key)) continue;
+          resistanceTypes[key] = true;
+        }
+      }
+
+      // 对每个抗性类型显示变化前后的值（类似 upgradeLine 的逻辑）
+      for (var key in resistanceTypes) {
+        var baseResist = (data.magicdefence && data.magicdefence[key]) ? data.magicdefence[key] : null;
+        var finalResist = (finalData.magicdefence && finalData.magicdefence[key]) ? finalData.magicdefence[key] : null;
+
+        // 如果两者都没有值或都为0，跳过
+        if ((baseResist == null || Number(baseResist) == 0) && (finalResist == null || Number(finalResist) == 0)) continue;
+
         var displayName = (key == "基础" ? "能量" : key);
-        var val = finalData.magicdefence[key];
-        if (val != undefined && Number(val) != 0) result.push(displayName, "抗性：", val, "<BR>");
+        var label = displayName + "抗性";
+
+        // 若没有实际装备数值或实际数值与原始数值相等，则打印原始数值
+        if (!equipData || finalResist == baseResist || finalResist == null) {
+          if (baseResist != null && Number(baseResist) != 0) {
+            result.push(label, "：", baseResist, "<BR>");
+          }
+        } else {
+          // 有变化，显示变化前后的值
+          if (finalResist != null && Number(finalResist) != 0) {
+            result.push(label, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalResist, "</FONT>");
+            if (baseResist == null) baseResist = 0;
+            // 若属性为数字，则额外打印增幅值
+            var baseNum = Number(baseResist);
+            var finalNum = Number(finalResist);
+            if (isNaN(finalNum) || isNaN(baseNum)) {
+              result.push(" (覆盖", baseResist, ")<BR>");
+            } else {
+              var enhance = finalNum - baseNum;
+              var sign:String;
+              if (enhance < 0) {
+                enhance = -enhance;
+                sign = " - ";
+              } else {
+                sign = " + ";
+              }
+              result.push(" (", baseResist, sign, enhance, ")<BR>");
+            }
+          }
+        }
       }
     }
 
