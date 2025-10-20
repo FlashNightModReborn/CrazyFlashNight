@@ -126,7 +126,7 @@
           <Include href="互动提示/锁定.xml" itemIcon="1" loadImmediate="false" itemID="68791a37-0000050c" lastModified="1752768565"/>
           <Include href="排序图标.xml" loadImmediate="false" itemID="67b3f97f-0000074c" lastModified="1739869240"/>
           <Include href="强化转换旋转动画.xml" loadImmediate="false" itemID="68f6447b-000035a4" lastModified="1760970263"/>
-          <Include href="强化转换旋转图标.xml" loadImmediate="false" itemID="68f64468-0000359f" lastModified="1760973067"/>
+          <Include href="强化转换旋转图标.xml" loadImmediate="false" itemID="68f64468-0000359f" lastModified="1760974299"/>
           <Include href="情报信息界面.xml" loadImmediate="false" itemID="677e2699-00000a04" lastModified="1752512113"/>
           <Include href="物品栏/滚动槽.xml" loadImmediate="false" itemID="677cd93a-0000091a" lastModified="1736246336"/>
           <Include href="物品栏/旧版物品图标.xml" loadImmediate="false" itemID="676c593f-00001682" lastModified="1749286271"/>
@@ -138,7 +138,7 @@
           <Include href="新版商店界面.xml" itemID="676cf8b9-00000359" lastModified="1752753966"/>
           <Include href="新版通用勾选框.xml" loadImmediate="false" itemID="677d58e7-00000cb8" lastModified="1736268332"/>
           <Include href="新版物品栏界面.xml" itemID="67699dcd-00000abf" lastModified="1758443684"/>
-          <Include href="新版装备强化界面.xml" loadImmediate="false" itemID="68a01bda-000002a7" lastModified="1760972929"/>
+          <Include href="新版装备强化界面.xml" loadImmediate="false" itemID="68a01bda-000002a7" lastModified="1760974292"/>
           <Include href="新强化界面/槽位选择按钮.xml" itemIcon="0" loadImmediate="false" itemID="68d1894d-000002b9" lastModified="1758966946"/>
           <Include href="新强化界面/槽位选择动画.xml" loadImmediate="false" itemID="68d18941-000002b7" lastModified="1758562625"/>
           <Include href="新强化界面/槽位选择加号.xml" itemIcon="1" loadImmediate="false" itemID="68d1893d-000002b6" lastModified="1758562621"/>
@@ -581,6 +581,7 @@
                     <SolidSwatchItem color="#D6D6D6" brightness="201"/>
                     <SolidSwatchItem color="#3B3B39" hue="40" saturation="4" brightness="55"/>
                     <SolidSwatchItem color="#121211" hue="40" saturation="7" brightness="17"/>
+                    <SolidSwatchItem color="#333333" alpha="0.0980392156862745" brightness="48"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -648,6 +649,18 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="61187" publishTime="1760974095"/>
+          <PublishItem publishSize="61184" publishTime="1760974076"/>
+          <PublishItem publishSize="61180" publishTime="1760974003"/>
+          <PublishItem publishSize="60636" publishTime="1760973893"/>
+          <PublishItem publishSize="60636" publishTime="1760973881"/>
+          <PublishItem publishSize="60616" publishTime="1760973837"/>
+          <PublishItem publishSize="60634" publishTime="1760973754"/>
+          <PublishItem publishSize="60639" publishTime="1760973669"/>
+          <PublishItem publishSize="60641" publishTime="1760973655"/>
+          <PublishItem publishSize="60306" publishTime="1760973367"/>
+          <PublishItem publishSize="60309" publishTime="1760973296"/>
+          <PublishItem publishSize="60293" publishTime="1760973076"/>
           <PublishItem publishSize="60393" publishTime="1760972935"/>
           <PublishItem publishSize="60393" publishTime="1760972914"/>
           <PublishItem publishSize="60364" publishTime="1760972720"/>
@@ -656,17 +669,5 @@
           <PublishItem publishSize="60349" publishTime="1760972383"/>
           <PublishItem publishSize="60340" publishTime="1760972255"/>
           <PublishItem publishSize="60392" publishTime="1760972125"/>
-          <PublishItem publishSize="60387" publishTime="1760972059"/>
-          <PublishItem publishSize="60458" publishTime="1760971992"/>
-          <PublishItem publishSize="60442" publishTime="1760971905"/>
-          <PublishItem publishSize="60344" publishTime="1760971740"/>
-          <PublishItem publishSize="60371" publishTime="1760971577"/>
-          <PublishItem publishSize="60370" publishTime="1760971489"/>
-          <PublishItem publishSize="60342" publishTime="1760971343"/>
-          <PublishItem publishSize="60339" publishTime="1760971272"/>
-          <PublishItem publishSize="60331" publishTime="1760971246"/>
-          <PublishItem publishSize="60331" publishTime="1760971208"/>
-          <PublishItem publishSize="60329" publishTime="1760971100"/>
-          <PublishItem publishSize="60132" publishTime="1760970686"/>
      </publishHistory>
 </DOMDocument>

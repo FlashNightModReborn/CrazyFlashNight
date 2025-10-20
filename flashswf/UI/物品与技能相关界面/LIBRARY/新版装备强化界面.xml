@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版装备强化界面" itemID="68a01bda-000002a7" lastModified="1760972929" lastUniqueIdentifier="65">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版装备强化界面" itemID="68a01bda-000002a7" lastModified="1760974292" lastUniqueIdentifier="66">
   <timeline>
     <DOMTimeline name="新版装备强化界面" currentFrame="23" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;50&lt;/guideline&gt;&lt;guideline direction="h"&gt;74&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -179,6 +179,33 @@ this.刷新默认界面();]]></script>
                   </textRuns>
                 </DOMDynamicText>
               </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="强化度转换名字文本" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="强化度转换名字文本" fontRenderingMode="device" width="165.45" height="18.45" isSelectable="false" renderAsHTML="true">
+                  <matrix>
+                    <Matrix tx="19.45" ty="107.3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="14" bitmapSize="280" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="8" keyMode="9728">
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -584,19 +611,6 @@ this.刷新默认界面();]]></script>
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText name="强化度转换名字文本" fontRenderingMode="device" width="165.45" height="18.45" isSelectable="false" renderAsHTML="true">
-                  <matrix>
-                    <Matrix tx="19.05" ty="107.3"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="14" bitmapSize="280" face="MicrosoftYaHei" fillColor="#999999"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMDynamicText>
               </elements>
             </DOMFrame>
           </frames>
@@ -699,9 +713,9 @@ this.刷新默认界面();]]></script>
             </DOMFrame>
             <DOMFrame index="20" duration="17" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="强化转换旋转图标" blendMode="lighten" centerPoint3DX="89.2" centerPoint3DY="60.45">
+                <DOMSymbolInstance libraryItemName="强化转换旋转图标" centerPoint3DX="89.45" centerPoint3DY="60.45">
                   <matrix>
-                    <Matrix a="0" b="-1.34193420410156" c="-1.34193420410156" d="0" tx="101.95" ty="73.95"/>
+                    <Matrix a="0" b="-1.34193420410156" c="-1.34193420410156" d="0" tx="102.2" ty="73.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
