@@ -116,7 +116,7 @@
           <Include href="NPC/NPC-工匠Vanshuther/素材/身体.xml" loadImmediate="false" itemID="68f27066-000033a7" lastModified="1760722571"/>
           <Include href="NPC/NPC-工匠Vanshuther/素材/头.xml" loadImmediate="false" itemID="68f26bdd-00002f75" lastModified="1760725587"/>
           <Include href="NPC/NPC-工匠Vanshuther/素材/五官.xml" loadImmediate="false" itemID="68f26bd6-00002f73" lastModified="1760725631"/>
-          <Include href="NPC/NPC-购买装置/npc购买装置.xml" loadImmediate="false" itemID="68f5097a-000002c7" lastModified="1760890996"/>
+          <Include href="NPC/NPC-购买装置/npc购买装置.xml" loadImmediate="false" itemID="68f5097a-000002c7" lastModified="1760961474"/>
           <Include href="NPC/NPC-购买装置/素材/屏幕动画.xml" loadImmediate="false" itemID="68f51074-00000b55" lastModified="1760891068"/>
           <Include href="NPC/NPC-购买装置/素材/无人机.xml" loadImmediate="false" itemID="68f616b6-000002e6" lastModified="1760961209"/>
           <Include href="NPC/NPC-购买装置/无人机待机动画.xml" loadImmediate="false" itemID="68f5104a-00000b45" lastModified="1760960586"/>
@@ -210,7 +210,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="地图-联合大学" centerPoint3DX="3263.65" centerPoint3DY="475.45">
+                                        <DOMSymbolInstance libraryItemName="地图-联合大学" selected="true" centerPoint3DX="3263.65" centerPoint3DY="475.45">
                                              <transformationPoint>
                                                   <Point x="3263.65" y="475.45"/>
                                              </transformationPoint>
@@ -541,6 +541,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="335568" publishTime="1760961251"/>
           <PublishItem publishSize="335587" publishTime="1760961223"/>
           <PublishItem publishSize="324959" publishTime="1760890745"/>
           <PublishItem publishSize="324953" publishTime="1760890583"/>
@@ -560,6 +561,5 @@
           <PublishItem publishSize="533927" publishTime="1731754449"/>
           <PublishItem publishSize="535261" publishTime="1727182779"/>
           <PublishItem publishSize="535254" publishTime="1727182525"/>
-          <PublishItem publishSize="535241" publishTime="1727182447"/>
      </publishHistory>
 </DOMDocument>

@@ -158,7 +158,7 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-Bat/NPC-Bat" selected="true" centerPoint3DX="469.65" centerPoint3DY="386.35">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-Bat/NPC-Bat" centerPoint3DX="469.65" centerPoint3DY="386.35">
                   <matrix>
                     <Matrix tx="450.45" ty="390.8"/>
                   </matrix>
@@ -195,7 +195,7 @@ onClipEvent(load){
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-购买装置/npc购买装置" centerPoint3DX="1438.25" centerPoint3DY="410.8">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-购买装置/npc购买装置" selected="true" centerPoint3DX="1438.25" centerPoint3DY="410.8">
                   <matrix>
                     <Matrix tx="1414.75" ty="427.65"/>
                   </matrix>

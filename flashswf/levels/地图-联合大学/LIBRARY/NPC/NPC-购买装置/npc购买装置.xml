@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-购买装置/npc购买装置" itemID="68f5097a-000002c7" lastModified="1760890996" lastUniqueIdentifier="32">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-购买装置/npc购买装置" itemID="68f5097a-000002c7" lastModified="1760961474" lastUniqueIdentifier="32">
   <timeline>
     <DOMTimeline name="npc购买装置">
       <layers>
@@ -227,15 +227,15 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-购买装置/无人机待机动画" centerPoint3DX="102.05" centerPoint3DY="-85.65">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-购买装置/无人机待机动画" selected="true" centerPoint3DX="36.8" centerPoint3DY="-135.6">
                   <matrix>
-                    <Matrix tx="51.15" ty="-99.05"/>
+                    <Matrix tx="-14.1" ty="-149"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="50.9" y="13.4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-购买装置/素材/屏幕动画" selected="true" centerPoint3DX="29.95" centerPoint3DY="-48.15">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-购买装置/素材/屏幕动画" centerPoint3DX="29.95" centerPoint3DY="-48.15">
                   <matrix>
                     <Matrix tx="-5.35" ty="-67.35"/>
                   </matrix>
