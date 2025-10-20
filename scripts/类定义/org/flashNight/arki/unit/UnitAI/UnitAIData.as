@@ -84,6 +84,7 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
         this.right = self.方向 === "右";
         this.left = self.方向 === "左";
         this.standby = self.待机 ? true : false;
+        // _root.发布消息(self._name, this.standby, self.待机)
     }
     
     public function updateTarget():Void{
