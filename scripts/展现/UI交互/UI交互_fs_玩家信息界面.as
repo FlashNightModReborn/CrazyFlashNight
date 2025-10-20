@@ -75,7 +75,7 @@ _root.UI系统.经验刷新显示 = function()
     // _root.发布消息("a", a); // 发布经验值消息
     if (a <= 100 && a > 0)
     {
-        // this.gotoAndStop(a); // 控制经验条动画
+        this.gotoAndStop(a); // 控制经验条动画
         this.frame = a; // 存储当前帧数
     }
 
