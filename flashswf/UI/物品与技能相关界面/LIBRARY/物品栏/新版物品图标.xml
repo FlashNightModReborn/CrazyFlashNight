@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="新版物品图标">
       <layers>
-        <DOMLayer name="Labels Layer" color="#4DC4D9">
+        <DOMLayer name="Labels Layer" color="#4DC4D9" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -62,11 +62,11 @@ if(this.图标壳.图标)this.图标壳.基本款._visible = false;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="互动提示" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="互动提示" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="互动提示/互动提示" name="互动提示" selected="true">
+                <DOMSymbolInstance libraryItemName="互动提示/互动提示" name="互动提示">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

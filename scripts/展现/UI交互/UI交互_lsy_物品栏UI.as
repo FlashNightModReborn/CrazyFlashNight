@@ -657,9 +657,12 @@ _root.物品UI函数.刷新默认界面 = function(){
 
 	this.当前物品显示名字 = itemData.displayname;
 	this.名字文本.htmlText = "<B>" + (tier ? "[" + tier + "]" : "" ) + this.当前物品显示名字;
+
+	/*
 	if(item.value.level > 1){
 		this.名字文本.htmlText += " +" + item.value.level;
 	}
+	*/
 	this.名字文本.htmlText += "</B>";
 
 	var modslot = itemData.data.modslot;
@@ -835,8 +838,8 @@ _root.物品UI函数.添加强化度转换物品 = function(item, index, itemIco
 
 	// 显示转换物品信息
 	var itemData = item.getData();
-	this.强化度转换名字文本.text = itemData.displayname + " +" + item.value.level;
-
+	// this.强化度转换名字文本.text = itemData.displayname + " +" + item.value.level;
+	this.强化度转换名字文本.text = itemData.displayname;
 	_root.播放音效("9mmclip2.wav");
 }
 

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版装备强化界面" itemID="68a01bda-000002a7" lastModified="1760960641" lastUniqueIdentifier="54">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版装备强化界面" itemID="68a01bda-000002a7" lastModified="1760972929" lastUniqueIdentifier="65">
   <timeline>
-    <DOMTimeline name="新版装备强化界面">
+    <DOMTimeline name="新版装备强化界面" currentFrame="23" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;50&lt;/guideline&gt;&lt;guideline direction="h"&gt;74&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="label" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
@@ -59,7 +59,7 @@ this.刷新默认界面();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文字" color="#FF4FFF" autoNamed="false" visible="false">
+        <DOMLayer name="文字" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -68,7 +68,7 @@ this.刷新默认界面();]]></script>
               <elements>
                 <DOMDynamicText name="插件文本" fontRenderingMode="device" width="164.95" height="46.5" isSelectable="false">
                   <matrix>
-                    <Matrix tx="17" ty="172"/>
+                    <Matrix tx="17" ty="227.9"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -85,7 +85,7 @@ this.刷新默认界面();]]></script>
               <elements>
                 <DOMStaticText fontRenderingMode="standard" width="127.45" height="15.55" isSelectable="false">
                   <matrix>
-                    <Matrix tx="62" ty="47"/>
+                    <Matrix tx="71" ty="48.4"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -104,7 +104,7 @@ this.刷新默认界面();]]></script>
                 </DOMStaticText>
                 <DOMDynamicText name="强化上限文字" fontRenderingMode="device" width="49.95" height="15.55" isSelectable="false">
                   <matrix>
-                    <Matrix tx="67" ty="67"/>
+                    <Matrix tx="73" ty="68.4"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -117,7 +117,7 @@ this.刷新默认界面();]]></script>
                 </DOMDynamicText>
                 <DOMDynamicText name="目标强化等级文字" fontRenderingMode="device" width="76.5" height="15.55" isSelectable="false">
                   <matrix>
-                    <Matrix tx="61.5" ty="97"/>
+                    <Matrix tx="61.5" ty="104.65"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -130,8 +130,11 @@ this.刷新默认界面();]]></script>
                 </DOMDynamicText>
                 <DOMDynamicText name="强化详情文字" fontRenderingMode="device" width="167" height="175.5" isSelectable="false" renderAsHTML="true" lineType="multiline">
                   <matrix>
-                    <Matrix tx="15" ty="122"/>
+                    <Matrix d="0.9208984375" tx="15" ty="128.95"/>
                   </matrix>
+                  <transformationPoint>
+                    <Point x="83.5" y="87.75"/>
+                  </transformationPoint>
                   <textRuns>
                     <DOMTextRun>
                       <characters></characters>
@@ -147,7 +150,7 @@ this.刷新默认界面();]]></script>
               <elements>
                 <DOMDynamicText name="强化度转换描述文本" fontRenderingMode="device" width="169.5" height="68.2" isSelectable="false" lineType="multiline">
                   <matrix>
-                    <Matrix tx="14" ty="132"/>
+                    <Matrix tx="14" ty="144"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -158,24 +161,11 @@ this.刷新默认界面();]]></script>
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText name="强化度转换名字文本" fontRenderingMode="device" width="169.5" height="15.55" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="14" ty="102"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMDynamicText>
               </elements>
             </DOMFrame>
             <DOMFrame index="29" duration="8" keyMode="9728">
               <elements>
-                <DOMDynamicText name="插件描述文本" selected="true" fontRenderingMode="device" width="169.5" height="120.85" isSelectable="false" lineType="multiline">
+                <DOMDynamicText name="插件描述文本" fontRenderingMode="device" width="169.5" height="120.85" isSelectable="false" lineType="multiline">
                   <matrix>
                     <Matrix tx="14" ty="162"/>
                   </matrix>
@@ -233,7 +223,7 @@ this.刷新默认界面();]]></script>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="新强化界面/强化度转换按钮" name="强化度转换按钮" symbolType="button">
                   <matrix>
-                    <Matrix tx="80" ty="78"/>
+                    <Matrix tx="80" ty="80"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="35" y="9.1"/>
@@ -246,7 +236,7 @@ this.刷新默认界面();]]></script>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="新强化界面/进阶按钮" name="插件改装按钮" symbolType="button">
                   <matrix>
-                    <Matrix tx="80" ty="240"/>
+                    <Matrix tx="80" ty="112"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="35" y="9.1"/>
@@ -257,9 +247,23 @@ this.刷新默认界面();]]></script>
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="73.95" centerPoint3DY="111">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="73.95" centerPoint3DY="152.1">
                   <matrix>
-                    <Matrix a="0.886749267578125" tx="10" ty="110"/>
+                    <Matrix a="0.886749267578125" tx="10" ty="151.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="73.95" centerPoint3DY="207.1">
+                  <matrix>
+                    <Matrix a="0.886749267578125" tx="10" ty="206.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -277,7 +281,7 @@ this.刷新默认界面();]]></script>
               <elements>
                 <DOMSymbolInstance libraryItemName="button/Symbol 1750" name="btn2" symbolType="button">
                   <matrix>
-                    <Matrix tx="152.4" ty="105.5"/>
+                    <Matrix tx="152.4" ty="112.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -290,7 +294,7 @@ this.刷新默认界面();]]></script>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="button/Symbol 1751" name="btn1" symbolType="button">
                   <matrix>
-                    <Matrix a="-1" tx="47.9" ty="105.5"/>
+                    <Matrix a="-1" tx="47.9" ty="112.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -303,7 +307,7 @@ this.刷新默认界面();]]></script>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="button/Symbol 1755" name="btn3" symbolType="button">
                   <matrix>
-                    <Matrix tx="174.95" ty="105.5"/>
+                    <Matrix tx="174.95" ty="112.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -316,7 +320,7 @@ this.刷新默认界面();]]></script>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="button/Symbol 1756" name="btn0" symbolType="button">
                   <matrix>
-                    <Matrix a="-1" tx="25.4" ty="105.5"/>
+                    <Matrix a="-1" tx="25.4" ty="112.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -452,33 +456,33 @@ this.刷新默认界面();]]></script>
             </DOMFrame>
             <DOMFrame index="6" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="进阶图标" centerPoint3DX="42.3" centerPoint3DY="154.15">
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="进阶图标" centerPoint3DX="42.3" centerPoint3DY="195.25">
                   <matrix>
-                    <Matrix tx="29" ty="140"/>
+                    <Matrix tx="29" ty="181.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="配件图标1" centerPoint3DX="77.3" centerPoint3DY="154.15">
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="配件图标1" centerPoint3DX="108.2" centerPoint3DY="195.25">
                   <matrix>
-                    <Matrix tx="64" ty="140"/>
+                    <Matrix tx="94.9" ty="181.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="配件图标2" centerPoint3DX="105.3" centerPoint3DY="154.15">
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="配件图标2" centerPoint3DX="136.2" centerPoint3DY="195.25">
                   <matrix>
-                    <Matrix tx="92" ty="140"/>
+                    <Matrix tx="122.9" ty="181.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="配件图标3" centerPoint3DX="133.3" centerPoint3DY="154.15">
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="配件图标3" centerPoint3DX="164.2" centerPoint3DY="195.25">
                   <matrix>
-                    <Matrix tx="120" ty="140"/>
+                    <Matrix tx="150.9" ty="181.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -491,9 +495,9 @@ this.刷新默认界面();]]></script>
             </DOMFrame>
             <DOMFrame index="20" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="强化度转换物品图标" centerPoint3DX="179.95" centerPoint3DY="91.2">
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="强化度转换物品图标" centerPoint3DX="185.1" centerPoint3DY="99.75">
                   <matrix>
-                    <Matrix a="1.5" d="1.49819946289063" tx="160" ty="70"/>
+                    <Matrix a="1.77645874023438" d="1.7742919921875" tx="161.75" ty="74.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -559,9 +563,9 @@ this.刷新默认界面();]]></script>
             </DOMFrame>
             <DOMFrame index="6" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="强化物品图标" centerPoint3DX="54.95" centerPoint3DY="95.05">
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="强化物品图标" centerPoint3DX="62.2" centerPoint3DY="99.3">
                   <matrix>
-                    <Matrix a="1.5" d="1.49819946289063" tx="35" ty="73.85"/>
+                    <Matrix a="1.77241516113281" d="1.77029418945313" tx="38.8" ty="74.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -580,6 +584,19 @@ this.刷新默认界面();]]></script>
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
+                <DOMDynamicText name="强化度转换名字文本" fontRenderingMode="device" width="165.45" height="18.45" isSelectable="false" renderAsHTML="true">
+                  <matrix>
+                    <Matrix tx="19.05" ty="107.3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="14" bitmapSize="280" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
               </elements>
             </DOMFrame>
           </frames>
@@ -591,17 +608,17 @@ this.刷新默认界面();]]></script>
             </DOMFrame>
             <DOMFrame index="6" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/装备图标框" name="进阶图标框" centerPoint3DX="29" centerPoint3DY="140">
+                <DOMSymbolInstance libraryItemName="shape/装备图标框" name="进阶图标框" centerPoint3DX="29" centerPoint3DY="181.1">
                   <matrix>
-                    <Matrix tx="29" ty="140"/>
+                    <Matrix tx="29" ty="181.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="新强化界面/配件物品格 1*n" name="配件物品格" centerPoint3DX="64" centerPoint3DY="140">
+                <DOMSymbolInstance libraryItemName="新强化界面/配件物品格 1*n" name="配件物品格" centerPoint3DX="94.9" centerPoint3DY="181.1">
                   <matrix>
-                    <Matrix tx="50" ty="126"/>
+                    <Matrix tx="80.9" ty="167.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -616,7 +633,7 @@ this.刷新默认界面();]]></script>
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/装备图标框" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.497314453125" d="1.497314453125" tx="160" ty="70"/>
+                    <Matrix a="1.77325439453125" d="1.77325439453125" tx="161.75" ty="74.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -654,7 +671,64 @@ this.刷新默认界面();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="6" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#3B3B39"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!582 3624|860 3350!860 3350|860 3342!860 3342|300 3342!300 3342|582 3624!300 3342|300 3902!300 3902|582 3624!582 3624|860 3902!860 3902|860 3350!300 3902|860 3902"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="强化转换旋转图标" blendMode="lighten" centerPoint3DX="89.2" centerPoint3DY="60.45">
+                  <matrix>
+                    <Matrix a="0" b="-1.34193420410156" c="-1.34193420410156" d="0" tx="101.95" ty="73.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="73.95" centerPoint3DY="134.1">
+                  <matrix>
+                    <Matrix a="0.886749267578125" tx="10" ty="133.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="37" keyMode="9728">
               <elements>
@@ -692,7 +766,7 @@ this.刷新默认界面();]]></script>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="shape/装备图标框" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.497314453125" d="1.497314453125" tx="35" ty="73.85"/>
+                    <Matrix a="1.76924133300781" d="1.76924133300781" tx="38.8" ty="74.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
