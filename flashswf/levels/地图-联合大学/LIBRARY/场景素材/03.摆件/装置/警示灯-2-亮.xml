@@ -1,0 +1,99 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/03.摆件/装置/警示灯-2-亮" itemID="66c9b280-00001f79" lastModified="1724494464">
+  <timeline>
+    <DOMTimeline name="警示灯-2-亮">
+      <layers>
+        <DOMLayer name="Layer_1" color="#C6D294">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="场景素材/03.摆件/装置/警示灯-2-灯芯" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="15.6" ty="12.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redOffset="107" blueOffset="-255" greenOffset="117"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_1" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#534B48"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#3E3432"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!531 458[513 473 485 486!485 486[433 509 367 516"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!367 516|328 583"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!328 583[444 580 528 540!528 540[576 516 599 488"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!599 488[618 463 618 435!618 435[618 374 528 331!528 331[437 287 309 288!309 288[181 287 90 331!90 331[-1 374 0 435!0 435[-1 496 89 539"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!89 539|119 475"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!119 475|158 493"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!158 493|234 513"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!234 513|201 574"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!201 574|260 581"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!260 581|328 583"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!119 475[70 446 70 409!70 409[70 363 141 331!141 331[212 299 313 299!313 299[413 299 485 331!485 331[556 363 556 409!556 409[556 435 531 458"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!531 458|599 488"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!260 581|287 518"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!287 518|234 513"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!287 518|367 516"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!134 557|201 574"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!89 539|90 540!90 540|134 557"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!134 557|158 493"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_2" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.12396240234375" d="0.12396240234375" tx="14.9" ty="12.35"/>
+                        </matrix>
+                        <GradientEntry color="#FFCC00" alpha="0.482352941176471" ratio="0"/>
+                        <GradientEntry color="#FFCC00" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1714 -1169[2300 -583 2300 247!2300 247[2300 1076 1714 1662!1714 1662[1128 2249 298 2249!298 2249[-531 2249 -1118 1662!-1118 1662[-1704 1076 -1704 246!-1704 246[-1704 -583 -1118 -1169!-1118 -1169[-531 -1755 298 -1755!298 -1755[1128 -1755
+ 1714 -1169"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

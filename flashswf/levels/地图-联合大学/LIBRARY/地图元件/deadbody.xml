@@ -1,25 +1,10 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图元件/deadbody" itemID="666e9ef0-000003cc" lastModified="1727182776">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图元件/deadbody" itemID="66d0920e-000012a2" lastModified="1749721664">
   <timeline>
     <DOMTimeline name="deadbody">
       <layers>
-        <DOMLayer name="Script Layer" color="#DADCC0" current="true" isSelected="true">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[layers = [];
-loop = 0;
-while (loop < 3)
-{
-	layers[loop] = new flash.display.BitmapData(2880, 1000, true, 13421772);
-	this.attachBitmap(layers[loop],this.getNextHighestDepth());
-	loop++;
-}
-
-stop();
-
-_root.贴背景图();
-]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>

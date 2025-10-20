@@ -1,0 +1,64 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景素材/03.摆件/管道/管道斜-1" itemID="66c1f51a-000011f5" lastModified="1723987226">
+  <timeline>
+    <DOMTimeline name="管道斜-1">
+      <layers>
+        <DOMLayer name="Layer_1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#8C7D78"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#342E2E"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.0091552734375" b="0.0158233642578125" c="-0.029510498046875" d="-0.0170745849609375" tx="63" ty="60.05"/>
+                        </matrix>
+                        <GradientEntry color="#1A1819" ratio="0"/>
+                        <GradientEntry color="#342E2E" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0170135498046875" b="-0.0170135498046875" c="0.0218353271484375" d="0.0218353271484375" tx="26.5" ty="27.3"/>
+                        </matrix>
+                        <GradientEntry color="#342E30" ratio="0"/>
+                        <GradientEntry color="#91847E" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.8">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!1738 716|1675 644!1675 644[1501 469 1268 439"/>
+                    <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="!1268 439|1166 432!1166 432|1048 441!1048 441[824 476 657 644!657 644[482 820 452 1055!452 1055[445 1104 446 1157!446 1157[445 1246 464 1327"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!464 1327[506 1509 639 1651"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!639 1651[491 1461 492 1210!492 1210[491 1127 508 1050!508 1050[550 851 702 698!702 698[851 548 1044 504!1044 504[1124 486 1212 486!1212 486[1510 486 1721 698!1721 698|1738 716"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!639 1651|702 1722!702 1722[913 1934 1212 1934!1212 1934[1510 1934 1721 1722!1721 1722[1932 1510 1932 1210!1932 1210[1932 922 1738 716"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!1192 624|1215 623!1215 623[1459 623 1631 796!1631 796[1804 970 1804 1215!1804 1215[1804 1460 1631 1634!1631 1634[1459 1807 1215 1807!1215 1807[971 1807 799 1634!799 1634[627 1460 627 1215!627 1215|628 1178"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!628 1178[633 1087 663 1007!663 1007[705 891 799 796!799 796[891 704 1003 661!1003 661[1091 627 1192 624"/>
+                    <Edge fillStyle0="4" strokeStyle="1" edges="!1268 439|954 120!954 120[768 -15 566 2!566 2[348 21 184 178!184 178[20 334 4 531!4 531[-12 728 42 819!42 819[96 910 115 929!115 929|464 1327"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!1192 624[1117 1135 628 1178"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

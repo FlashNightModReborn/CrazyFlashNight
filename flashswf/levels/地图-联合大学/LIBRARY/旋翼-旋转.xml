@@ -1,0 +1,30 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="旋翼-旋转" itemID="68f6218b-000002a8" lastModified="1760960952" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="旋翼-旋转" currentFrame="29">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="motion" motionTweenRotate="clockwise" motionTweenRotateTimes="3" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旋翼" centerPoint3DX="138.75" centerPoint3DY="138.7">
+                  <transformationPoint>
+                    <Point x="138.75" y="138.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旋翼" centerPoint3DX="138.75" centerPoint3DY="138.7">
+                  <transformationPoint>
+                    <Point x="138.75" y="138.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

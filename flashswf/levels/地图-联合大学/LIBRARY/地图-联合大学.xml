@@ -18,7 +18,7 @@ _root.配置场景环境信息();]]></script>
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/场景门" name="出生地" centerPoint3DX="251.5" centerPoint3DY="606.15">
+                <DOMSymbolInstance libraryItemName="地图元件/场景门" name="出生地" centerPoint3DX="251.5" centerPoint3DY="606.15">
                   <matrix>
                     <Matrix a="6.61459350585938" d="2.1082763671875" tx="238.9" ty="582.2"/>
                   </matrix>
@@ -64,7 +64,7 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/门" name="门2" centerPoint3DX="65" centerPoint3DY="871.85">
+                <DOMSymbolInstance libraryItemName="地图元件/门" name="门2" centerPoint3DX="65" centerPoint3DY="871.85">
                   <matrix>
                     <Matrix a="3.7288818359375" d="18.3116607666016" tx="54.5" ty="851.9"/>
                   </matrix>
@@ -81,7 +81,7 @@ onClipEvent(load){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/门" name="门1" centerPoint3DX="2246.95" centerPoint3DY="871.85">
+                <DOMSymbolInstance libraryItemName="地图元件/门" name="门1" centerPoint3DX="2246.95" centerPoint3DY="871.85">
                   <matrix>
                     <Matrix a="3.7288818359375" d="18.3116607666016" tx="2236.45" ty="851.9"/>
                   </matrix>
@@ -98,7 +98,7 @@ onClipEvent(load){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/门" name="门3" centerPoint3DX="1267.55" centerPoint3DY="675.7">
+                <DOMSymbolInstance libraryItemName="地图元件/门" name="门3" centerPoint3DX="1267.55" centerPoint3DY="675.7">
                   <matrix>
                     <Matrix a="15.2307739257813" d="1.14990234375" tx="1185.6" ty="536.6"/>
                   </matrix>
@@ -131,7 +131,7 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新地图素材/npcTomboy" centerPoint3DX="982.35" centerPoint3DY="524.45">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-Tomboy/NPC-Tomboy" centerPoint3DX="982.35" centerPoint3DY="524.45">
                   <matrix>
                     <Matrix tx="922.75" ty="447.45"/>
                   </matrix>
@@ -158,7 +158,7 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新地图素材/npc球棒少年" centerPoint3DX="469.65" centerPoint3DY="386.35">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-Bat/NPC-Bat" selected="true" centerPoint3DX="469.65" centerPoint3DY="386.35">
                   <matrix>
                     <Matrix tx="450.45" ty="390.8"/>
                   </matrix>
@@ -176,7 +176,7 @@ onClipEvent(load){
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="新地图素材/npc黑仔" centerPoint3DX="326.95" centerPoint3DY="413.85">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-黑仔/npc黑仔" centerPoint3DX="326.95" centerPoint3DY="413.85">
                   <matrix>
                     <Matrix tx="309.5" ty="421.65"/>
                   </matrix>
@@ -195,7 +195,7 @@ onClipEvent(load){
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="新地图素材/npc购买装置" selected="true" centerPoint3DX="1438.25" centerPoint3DY="410.8">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-购买装置/npc购买装置" centerPoint3DX="1438.25" centerPoint3DY="410.8">
                   <matrix>
                     <Matrix tx="1414.75" ty="427.65"/>
                   </matrix>
@@ -221,7 +221,7 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="deadbody" name="deadbody">
+                <DOMSymbolInstance libraryItemName="地图元件/deadbody" name="deadbody">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

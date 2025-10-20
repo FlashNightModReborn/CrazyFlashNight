@@ -1,0 +1,253 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-购买装置/npc购买装置" itemID="68f5097a-000002c7" lastModified="1760890996" lastUniqueIdentifier="32">
+  <timeline>
+    <DOMTimeline name="npc购买装置">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#A5949C" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" name="描边" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#C29BBA" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 非主角外观刷新()
+{
+}
+击中效果 = "飙血";
+身高转换值 = _root.身高百分比转换(this.身高);
+this._xscale = 身高转换值;
+this._yscale = 身高转换值;
+if(方向 == "左")
+{
+   this._xscale = - 身高转换值;
+   this.文字信息._xscale = - 身高转换值;
+}
+                ]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+Z轴坐标 = this._y;
+                ]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay(2);
+                ]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/商店相关/npc商店名称UI" centerPoint3DX="43.95" centerPoint3DY="-116.4">
+                  <matrix>
+                    <Matrix a="0.91375732421875" d="0.91375732421875" tx="43.35" ty="-116.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-56.45" y="9.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="信息" color="#656FE8" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/信息" name="文字信息" centerPoint3DX="81.95" centerPoint3DY="-56.8">
+                  <matrix>
+                    <Matrix tx="29.95" ty="-80.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="按钮" color="#A8C7CD" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="用处不明/Symbol 51820" symbolType="button" centerPoint3DX="29.95" centerPoint3DY="1.6">
+                  <matrix>
+                    <Matrix a="5.06024169921875" d="6.0089111328125" tx="29.95" ty="0.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.85"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+   _root.是否达成任务检测();
+}
+on(release){
+   _root.是否达成任务检测();
+   if(_root.点击npc后检测任务(名字, this) == "路过")
+   {
+      _root.NPC功能菜单._visible = 1;
+      _root.NPC功能菜单._x = _root._xmouse;
+      _root.NPC功能菜单._y = _root._ymouse;
+      _root.NPC功能菜单.当前NPC = this._name;
+      _root.NPC功能菜单.刷新显示();
+   }
+}
+on(rollOver){
+   gotoAndStop("描边");
+}
+on(rollOut){
+   gotoAndPlay(1);
+}
+                    ]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="屏幕遮罩" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0196533203125" c="-0.0211181640625" d="0" tx="29.95" ty="-48.1"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry color="#0099CC" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!1263 -616|-64 -616!-64 -616|-64 -1308!-64 -1308|1263 -1308!1263 -1308|1263 -616"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="人物" color="#4FFFFF" parentLayerIndex="5" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMSymbolInstance libraryItemName="NPC/NPC-工匠Vanshuther/后发" centerPoint3DX="29.95" centerPoint3DY="-24.55">
+                      <matrix>
+                        <Matrix a="0.162551879882813" d="0.162551879882813" tx="7.95" ty="-54.4"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="135.35" y="183"/>
+                      </transformationPoint>
+                      <color>
+                        <Color tintMultiplier="0.39" tintColor="#00FFFF"/>
+                      </color>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="NPC/NPC-工匠Vanshuther/素材/上臂" centerPoint3DX="40.7" centerPoint3DY="-21.15">
+                      <matrix>
+                        <Matrix a="0.250946044921875" b="-0.0131988525390625" c="0.0131988525390625" d="0.250946044921875" tx="40.3" ty="-21.65"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="-0.2" y="-48.85"/>
+                      </transformationPoint>
+                      <color>
+                        <Color tintMultiplier="0.39" tintColor="#00FFFF"/>
+                      </color>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="NPC/NPC-工匠Vanshuther/素材/身体" centerPoint3DX="31.05" centerPoint3DY="-19.7">
+                      <matrix>
+                        <Matrix a="0.25128173828125" d="0.25128173828125" tx="29.2" ty="-20.05"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point/>
+                      </transformationPoint>
+                      <color>
+                        <Color tintMultiplier="0.39" tintColor="#00FFFF"/>
+                      </color>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="NPC/NPC-工匠Vanshuther/素材/上臂" centerPoint3DX="17.7" centerPoint3DY="-19.7">
+                      <matrix>
+                        <Matrix a="0.249313354492188" b="0.0314178466796875" c="-0.0314178466796875" d="0.249313354492188" tx="17.7" ty="-20.8"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="-1.95" y="-39.25"/>
+                      </transformationPoint>
+                      <color>
+                        <Color tintMultiplier="0.39" tintColor="#00FFFF"/>
+                      </color>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="NPC/NPC-工匠Vanshuther/素材/头" centerPoint3DX="29.95" centerPoint3DY="-45.85">
+                      <matrix>
+                        <Matrix a="-0.09344482421875" d="0.09344482421875" tx="39.2" ty="-61.35"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="1.05" y="0.55"/>
+                      </transformationPoint>
+                      <color>
+                        <Color tintMultiplier="0.39" tintColor="#00FFFF"/>
+                      </color>
+                    </DOMSymbolInstance>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="素材" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-购买装置/无人机待机动画" centerPoint3DX="102.05" centerPoint3DY="-85.65">
+                  <matrix>
+                    <Matrix tx="51.15" ty="-99.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.9" y="13.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-购买装置/素材/屏幕动画" selected="true" centerPoint3DX="29.95" centerPoint3DY="-48.15">
+                  <matrix>
+                    <Matrix tx="-5.35" ty="-67.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.3" y="19.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
