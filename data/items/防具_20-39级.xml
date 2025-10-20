@@ -3,7 +3,28 @@
 ID已倒序排序，在最上方新增新物品即可，使用最新id，同时可修改注释
 预留ID区间：15304-15600-->
 <root>
-      <item>
+   <item>
+    <id>8531</id>
+    <name>黑铁刺客目镜头装</name>
+    <displayname>黑铁刺客目镜护面</displayname>
+    <icon>黑铁刺客目镜头装</icon>
+    <type>防具</type>
+    <use>头部装备</use>
+    <price>83200</price>
+    <description>黑铁会刺客装备，加装热感应仪器。</description>
+    <data>
+      <level>20</level>
+      <weight>2</weight>
+      <dressup>男变装-黑铁刺客目镜头装</dressup>
+      <hp>15</hp>
+      <mp>25</mp>
+      <damage>25</damage>
+      <knifepower>60</knifepower>
+      <defence>65</defence>
+      <evasion>5</evasion>
+    </data>
+  </item>
+  <item>
     <id>8525</id>
     <name>黑铁大叔目镜头装</name>
     <displayname>黑铁行刑者头装</displayname>
