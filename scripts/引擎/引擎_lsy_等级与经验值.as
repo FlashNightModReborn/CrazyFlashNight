@@ -68,18 +68,33 @@ _root.主角是否升级 = function(当前等级, 当前经验值)
 {
 	if (isNaN(当前经验值) || isNaN(当前等级) || 当前等级 >= _root.等级限制) return;
 
-	_root.升级需要经验值 = 根据等级得升级所需经验(当前等级);
-	_root.上次升级需要经验值 = _root.等级 > 1 ? 根据等级得升级所需经验(当前等级 - 1) : 0;
-	_root.玩家信息界面.刷新经验值显示();
+	var 是否升级 = false;
+	var 是否完成全部升级 = false;
 
-	if (_root.升级需要经验值 <= 当前经验值)
+	// 使用while循环支持连续升级（修复一次只能升1级的问题）
+	while (!是否完成全部升级)
 	{
-		_root.玩家信息界面.主角经验值显示界面.frame = 100;
-		_root.等级++;
-		_root.技能点数 += _root.根据等级计算获得技能点(_root.等级);
+		_root.升级需要经验值 = _root.根据等级得升级所需经验(_root.等级);
+		_root.上次升级需要经验值 = _root.等级 > 1 ? _root.根据等级得升级所需经验(_root.等级 - 1) : 0;
+		_root.玩家信息界面.刷新经验值显示();
 
-		var 控制对象 = TargetCacheManager.findHero();
+		if (_root.升级需要经验值 <= 当前经验值 && _root.等级 < _root.等级限制)
+		{
+			_root.玩家信息界面.主角经验值显示界面.frame = 100;
+			_root.等级++;
+			_root.技能点数 += _root.根据等级计算获得技能点(_root.等级);
+			// _root.聊天窗.传言("勤奋的" + _root.玩家称号 + _root.角色名 + "升到了" + _root.等级 + "级！");
+			是否升级 = true;
+		}
+		else
+		{
+			是否完成全部升级 = true;
+		}
+	}
+
+	if (是否升级) {
 		_root.身价 = _root.基础身价值 * _root.等级;
+		var 控制对象 = TargetCacheManager.findHero();
 		控制对象.等级 = _root.等级;
 		控制对象.根据等级初始数值(_root.等级);
 		控制对象.hp = 控制对象.hp满血值;
@@ -87,7 +102,6 @@ _root.主角是否升级 = function(当前等级, 当前经验值)
 		_root.玩家信息界面.刷新hp显示();
 		_root.玩家信息界面.刷新mp显示();
 		EffectSystem.Effect("升级动画",控制对象._x,控制对象._y,100);
-		// _root.聊天窗.传言("勤奋的" + _root.玩家称号 + _root.角色名 + "升到了" + _root.等级 + "级！");
 		_root.自动存盘();
 	}
 }

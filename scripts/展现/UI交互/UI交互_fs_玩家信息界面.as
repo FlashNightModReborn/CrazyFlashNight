@@ -69,18 +69,25 @@ _root.UI系统.经验刷新显示 = function()
 
     // _root.发布消息("经验值", _root.经验值, _root.升级需要经验值, _root.上次升级需要经验值); // 发布经验值消息
 
-    // 计算经验值进度
-    var a = Math.floor((_root.升级需要经验值 - _root.经验值) / (_root.升级需要经验值 - _root.上次升级需要经验值) * 100);
+    // 计算本级经验区间（防御性处理除零）
+    var denom:Number = _root.升级需要经验值 - _root.上次升级需要经验值;
+    if (isNaN(denom) || denom <= 0) denom = 1;
 
-    // _root.发布消息("a", a); // 发布经验值消息
-    if (a <= 100 && a > 0)
-    {
-        this.gotoAndStop(a); // 控制经验条动画
-        this.frame = a; // 存储当前帧数
-    }
+    // 计算本级进度百分比（已完成的百分比）
+    var progressPercent:Number = Math.floor(((_root.经验值 - _root.上次升级需要经验值) / denom) * 100);
+    if (isNaN(progressPercent)) progressPercent = 0;
+    progressPercent = Math.max(0, Math.min(100, progressPercent));
 
-    // 显示经验百分比
-    this.经验百分比.text = Math.floor((_root.经验值 / _root.升级需要经验值) * 100) + "%";
+    // 计算剩余百分比（保持经验条"逆向填充"风格，与HP/MP条一致）
+    var remainPercent:Number = 100 - progressPercent;
+    remainPercent = Math.max(1, Math.min(100, remainPercent));
+
+    // 更新经验条帧（使用剩余百分比，保持逆向填充视觉效果）
+    this.gotoAndStop(remainPercent);
+    this.frame = remainPercent;
+
+    // 显示经验百分比文本（使用进度百分比）
+    this.经验百分比.text = progressPercent + "%";
 
     // _root.发布消息("经验百分比.text", 经验百分比.text); // 发布经验值消息
 
