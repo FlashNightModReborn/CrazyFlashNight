@@ -9,6 +9,7 @@
                 <defence>10</defence>
             </flat>
         </stats>
+        <description>耐用的防护布料，增加装备防御力。</description>
     </mod>
     <mod>
         <name>上色涂料</name>
@@ -20,6 +21,7 @@
                 </magicdefence>
             </override>
         </stats>
+        <description>功能性涂层，提供热能防护。</description>
     </mod>
     <mod>
         <name>弹簧</name>
@@ -29,6 +31,7 @@
                 <power>5</power>
             </percentage>
         </stats>
+        <description>机械结构核心部件，提升枪械威力。</description>
     </mod>
     <mod>
         <name>增效剂</name>
@@ -39,6 +42,7 @@
                 <damage>2</damage>
             </percentage>
         </stats>
+        <description>表面强化药剂，全面提升装备性能。</description>
     </mod>
     <mod>
         <name>可塑式钢板</name>
@@ -49,6 +53,7 @@
                 <weight>2</weight>
             </flat>
         </stats>
+        <description>高性能预制标准件，提升一定防御力，但会增加重量。</description>
     </mod>
     <mod>
         <name>战术导轨</name>
@@ -63,6 +68,7 @@
                 <power>8</power>
             </flat>
         </stats>
+        <description>标准化紧固件，增强枪械结构稳定性。</description>
     </mod>
     <!-- 中级材料 -->
     <!-- 还差一个可充锂电池 -->
@@ -74,6 +80,7 @@
                 <criticalhit>20</criticalhit>
             </override>
         </stats>
+        <description>电子显示组件，提供信息显示，增加暴击率。</description>
     </mod>
     <mod>
         <name>战术背带</name>
@@ -95,10 +102,12 @@
             <flat>
                 <hp>5</hp>
                 <weight>0.5</weight>
+            </flat>
             <percentage>
                 <defence>9</defence>
             </percentage>
         </stats>
+        <description>复合防护材料，增加生命值与防御力。</description>
     </mod>
     <mod>
         <name>烈性火药</name>
@@ -111,6 +120,7 @@
                 <accuracy>-15</accuracy>
             </flat>
         </stats>
+        <description>高能量火药，大幅提升暴击率，但会降低精准度。</description>
     </mod>
     <mod>
         <name>生物催化剂</name>
@@ -122,6 +132,7 @@
                 <!-- 瞎填的，展示一下override怎么用 -->
             </override>
         </stats>
+        <description>生化改造材料，将武器伤害转化为生化破击类型。</description>
     </mod>
     <mod>
         <name>护手</name>
@@ -133,6 +144,7 @@
             <cd>10000</cd>
             <mp>40</mp>
         </skill>
+        <description>近战防护部件，赋予武器弧光斩技能。</description>
     </mod>
     <mod>
         <name>石英磨刀石</name>
@@ -142,6 +154,7 @@
                 <power>9</power>
             </percentage>
         </stats>
+        <description>精密打磨工具，锋利化刀刃，提升近战威力。</description>
     </mod>
     <mod>
         <name>不锈钢材</name>
@@ -152,6 +165,7 @@
                 <weight>4</weight>
             </flat>
         </stats>
+        <description>高强度钢铁材料，显著提升防御力，但会大幅增加重量。</description>
     </mod>
     <mod>
         <name>高耐力橡胶</name>
@@ -168,6 +182,7 @@
                 <toughness>5</toughness>
             </flat>
         </stats>
+        <description>弹性体聚合物，提供冷热电抗性与韧性。</description>
     </mod>
     <mod>
         <name>强化金属管</name>
@@ -178,6 +193,7 @@
                 <velocity>10</velocity>
             </percentage>
         </stats>
+        <description>经二次强化处理的高膛压枪管部件，提升威力与弹速。</description>
     </mod>
     <mod>
         <name>复合式军用塑料</name>
@@ -192,6 +208,7 @@
                 <weight>-20</weight>
             </percentage>
         </stats>
+        <description>轻质复合材料，提供腐蚀抗性并减轻装备重量。</description>
     </mod>
     <mod>
         <name>透镜</name>
@@ -201,6 +218,7 @@
                 <accuracy>25</accuracy>
             </flat>
         </stats>
+        <description>精密光学元件，大幅提升瞄准精度。</description>
     </mod>
     <mod>
         <name>高强度合金</name>
@@ -211,6 +229,7 @@
                 <defence>6</defence>
             </percentage>
         </stats>
+        <description>多相强化材料，提升装备攻防性能。</description>
     </mod>
     <mod>
         <name>强力胶</name>
@@ -225,6 +244,7 @@
                 <punch>5</punch>
             </percentage>
         </stats>
+        <description>高分子粘结剂，提供冲击抗性与韧性。</description>
     </mod>
     <mod>
         <name>枪械内构强化套件</name>
@@ -234,6 +254,7 @@
                 <power>9</power>
             </percentage>
         </stats>
+        <description>模块化改造组件，全面强化枪械内部结构。</description>
     </mod>
     <mod>
         <name>高级木料</name>
@@ -251,6 +272,7 @@
                 <weight>2</weight>
             </flat>
         </stats>
+        <description>复合木质材料，增加生命、魔法与防御，但降低热抗。</description>
     </mod>
     <!-- 高级材料 -->
     <mod>
@@ -262,6 +284,7 @@
                 <weight>-1</weight>
             </flat>
         </stats>
+        <description>超规格线性作动单元，大幅增加近战冲击力并减轻重量。</description>
     </mod>
     <mod>
         <name>碳纤维布料</name>
@@ -273,6 +296,7 @@
                 <mp>15</mp>
             </percentage>
         </stats>
+        <description>高模量工程基材，全面提升装备的生命、精力与防御。</description>
     </mod>
     <mod>
         <name>电脑芯片</name>
@@ -282,6 +306,7 @@
                 <level>-3</level>
             </flat>
         </stats>
+        <description>现场可编程系统模块，降低装备等级限制。</description>
     </mod>
     <mod>
         <name>传感器</name>
@@ -291,6 +316,7 @@
                 <evasion>35</evasion>
             </flat>
         </stats>
+        <description>多模敏感阵列，提供战术数据支持，大幅提升闪避能力。</description>
     </mod>
     <mod>
         <name>水冷机构</name>
@@ -305,6 +331,7 @@
                 <weight>3</weight>
             </flat>
         </stats>
+        <description>模块化温控系统，专为机枪设计，显著提升威力。</description>
     </mod>
     <mod>
         <name>战术鱼骨零件</name>
@@ -330,6 +357,7 @@
                 <accuracy>30</accuracy>
             </flat>
         </stats>
+        <description>AI辅助瞄具，对满血敌人造成暴击伤害，并提高精准度。</description>
     </mod>
     <!-- <mod>
         <name>KM型消声器</name>
@@ -352,6 +380,7 @@
                 <bulletsize>10</bulletsize>
             </flat>
         </stats>
+        <description>军规激光器，提供精确瞄准辅助，提升精准度与弹药尺寸。</description>
     </mod>
     <mod>
         <name>加长弹匣</name>
@@ -364,6 +393,7 @@
                 <capacity>50</capacity>
             </cap>
         </stats>
+        <description>扩容供弹系统，增加弹匣容量。</description>
     </mod>
     <mod>
         <name>战术握把</name>
@@ -375,6 +405,7 @@
                 <power>20</power>
             </percentage>
         </stats>
+        <description>人机工学握把，降低扩散并提升威力，适用于步枪和冲锋枪。</description>
     </mod>
     <mod>
         <name>非栓式机构</name>
@@ -407,6 +438,7 @@
                 <velocity>15</velocity>
             </percentage>
         </stats>
+        <description>动态收束装置，大幅降低霰弹扩散并提升弹速。</description>
     </mod>
     <mod>
         <name>下挂霰弹枪</name>
@@ -433,6 +465,7 @@
             <range>50</range>
             <impact>8</impact>
         </skill>
+        <description>短管泵动霰弹，提供近距离火力支援。</description>
     </mod>
     <mod>
         <name>M203榴弹发射器</name>
@@ -458,6 +491,7 @@
             <velocity>20</velocity>
             <impact>10</impact>
         </skill>
+        <description>下挂榴弹模块，提供爆炸性火力支援。</description>
     </mod>
     <mod>
         <name>下挂微型导弹发射器</name>
@@ -484,6 +518,7 @@
             <range>50</range>
             <impact>8</impact>
         </skill>
+        <description>四联腔导弹系统，提供高精度范围打击能力。</description>
     </mod>
     <mod>
         <name>下挂铁血肩炮</name>
@@ -511,6 +546,7 @@
             <range>50</range>
             <impact>1</impact>
         </skill>
+        <description>等离子投射装置，发射追踪电浆弹，提高装备等级需求。</description>
     </mod>
     <mod>
         <name>纳米执行单元</name>
@@ -523,5 +559,6 @@
                 <gunpower>8</gunpower>
             </percentage>
         </stats>
+        <description>可编程分子机器集群，全面提升装备伤害输出能力。</description>
     </mod>
 </root>
