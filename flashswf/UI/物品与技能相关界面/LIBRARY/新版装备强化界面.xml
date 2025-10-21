@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版装备强化界面" itemID="68a01bda-000002a7" lastModified="1761029960" lastUniqueIdentifier="68">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版装备强化界面" itemID="68a01bda-000002a7" lastModified="1761039992" lastUniqueIdentifier="68">
   <timeline>
-    <DOMTimeline name="新版装备强化界面" currentFrame="15" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;50&lt;/guideline&gt;&lt;guideline direction="h"&gt;74&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="新版装备强化界面" currentFrame="33" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;50&lt;/guideline&gt;&lt;guideline direction="h"&gt;74&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="label" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
@@ -59,7 +59,7 @@ this.刷新默认界面();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文字" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="文字" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -184,6 +184,19 @@ this.刷新默认界面();]]></script>
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
+                <DOMSymbolInstance libraryItemName="新强化界面/移除插件按钮" name="移除插件按钮" symbolType="button">
+                  <matrix>
+                    <Matrix tx="109.95" ty="49.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35" y="9.1"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (press) {
+	this.一键卸下所有配件();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
@@ -234,7 +247,7 @@ this.刷新默认界面();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="按钮" color="#808080" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="按钮" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -605,6 +618,19 @@ this.刷新默认界面();]]></script>
                 <DOMDynamicText name="名字文本" fontRenderingMode="device" width="165.45" height="18.45" isSelectable="false" renderAsHTML="true">
                   <matrix>
                     <Matrix tx="17" ty="22"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="14" bitmapSize="280" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText fontRenderingMode="device" width="100" height="18.45" isSelectable="false" renderAsHTML="true" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="-85.45" ty="72.2"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>

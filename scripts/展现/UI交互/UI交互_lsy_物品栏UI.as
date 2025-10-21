@@ -692,6 +692,7 @@ _root.物品UI函数.初始化强化界面 = function(UI:MovieClip){
 	UI.选择槽位_配件 = this.选择槽位_配件;
 	UI.执行安装配件 = this.执行安装配件;
 	UI.执行卸下配件 = this.执行卸下配件;
+	UI.一键卸下所有配件 = this.一键卸下所有配件;
 
 	UI.gotoAndStop("空");
 }
@@ -1119,8 +1120,16 @@ _root.物品UI函数.初始化插件改装界面 = function(){
 
 
 _root.物品UI函数.刷新插件信息 = function(){
-	this.选中的槽位 = 0;
+	// _root.发布消息("选中的槽位", this.选中的槽位);
+	if(!this.选中的槽位) this.选中的槽位 = 0;
+	if(this.cursor._currentLabel == "选中") {
 
+		this.cursor.gotoAndPlay("消失");
+		this.cursor._currentLabel = "消失";
+	}
+
+	this.进阶图标框._visible = true;
+	this.插件描述文本._visible = true;
 	var item = this.当前物品;
 	var itemData = item.getData();
 
@@ -1173,6 +1182,18 @@ _root.物品UI函数.刷新插件信息 = function(){
 		icon.unlock();
 		icon.init(null,null);
 	}
+
+	// 智能自动选择槽位：空位 > 普通插件 > 进阶插件
+	if(this.enableMod){
+		// 优先选择空的配件槽
+		this.选择槽位_配件();
+		this.槽位选择按钮_配件._visible = true;
+	} else if(this.enableTier){
+		// 配件槽满了，选择进阶槽
+		this.选择槽位_进阶();
+		this.槽位选择按钮_进阶._visible = true;
+	}
+	// 否则保持未选择状态（选中的槽位 = 0）
 }
 
 _root.物品UI函数.选择槽位_进阶 = function(){
@@ -1181,6 +1202,7 @@ _root.物品UI函数.选择槽位_进阶 = function(){
 	this.槽位选择按钮_进阶._visible = false;
 	this.材料物品格._visible = true;
 	this.cursor.gotoAndPlay("选中");
+	this.cursor._currentLabel = "选中";
 	this.cursor._x = this.槽位选择按钮_进阶._x;
 	this.cursor._y = this.槽位选择按钮_进阶._y;
 	this.槽位选择按钮_配件._visible = this.enableMod;
@@ -1232,9 +1254,11 @@ _root.物品UI函数.执行进阶 = function(matName:String){
 			// 完成
 			_root.播放音效("9mmclip2.wav");
 			this.cursor.gotoAndPlay("消失");
+			this.cursor._currentLabel = "消失";
 		}else{
 			_root.发布消息("材料不足！")
 			this.cursor.gotoAndStop("空");
+			this.cursor._currentLabel = "空";
 		}
 		this.刷新插件信息();
 	}
@@ -1247,6 +1271,7 @@ _root.物品UI函数.选择槽位_配件 = function(){
 	this.槽位选择按钮_配件._visible = false;
 	this.材料物品格._visible = true;
 	this.cursor.gotoAndPlay("选中");
+	this.cursor._currentLabel = "选中";
 	this.cursor._x = this.槽位选择按钮_配件._x;
 	this.cursor._y = this.槽位选择按钮_配件._y;
 	this.槽位选择按钮_进阶._visible = this.enableTier;
@@ -1292,9 +1317,11 @@ _root.物品UI函数.执行安装配件 = function(matName:String){
 			// 完成
 			_root.播放音效("9mmclip2.wav");
 			this.cursor.gotoAndPlay("消失");
+			this.cursor._currentLabel = "消失";
 		}else{
 			_root.发布消息("材料不足！")
 			this.cursor.gotoAndStop("空");
+			this.cursor._currentLabel = "空";
 		}
 		this.刷新插件信息();
 	}
@@ -1332,8 +1359,46 @@ _root.物品UI函数.执行卸下配件 = function(matName:String){
 
 		// 完成
 		this.cursor.gotoAndPlay("消失");
+		this.cursor._currentLabel = "消失";
 		this.刷新插件信息();
 	}
+}
+
+/**
+ * 一键卸下所有配件（仅卸载配件槽mods，不影响进阶tier）
+ * 将当前装备上的所有配件卸载并返还到材料栏
+ */
+_root.物品UI函数.一键卸下所有配件 = function(){
+	var item = this.当前物品;
+	if(!item || !item.value.mods || item.value.mods.length == 0){
+		_root.发布消息("当前装备没有已安装的配件！");
+		return false;
+	}
+
+	var mods = item.value.mods;
+	var 卸载数量 = mods.length;
+
+	// 将所有配件返还到材料栏
+	var arr = [];
+	for(var i = 0; i < mods.length; i++){
+		arr.push({name: mods[i], value: 1});
+	}
+	ItemUtil.acquire(arr);
+
+	// 清空配件槽（进阶插件tier不受影响）
+	item.value.mods = [];
+
+	// 刷新可安装的配件列表
+	this.配件材料列表 = EquipmentUtil.getAvailableModMaterials(item);
+
+	// 刷新界面显示
+	this.刷新插件信息();
+
+	// 音效和提示
+	_root.播放音效("9mmclip2.wav");
+	// _root.最上层发布文字提示("已卸下 " + 卸载数量 + " 个配件");
+
+	return true;
 }
 
 

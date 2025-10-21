@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="cursor" currentFrame="31">
       <layers>
-        <DOMLayer name="label" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="label" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -40,7 +40,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="cursor2" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="cursor2" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -262,7 +262,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!250 -250|250 250!250 250|-250 250!-250 250|-250 -250!-250 -250|250 -250"/>
+                    <Edge fillStyle1="1" edges="!250 250|-250 250!-250 250|-250 -250!-250 -250|250 -250!250 -250|250 250"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -276,7 +276,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!250 250|-250 250!-250 250|-250 -250!-250 -250|250 -250!250 -250|250 250"/>
+                    <Edge fillStyle1="1" edges="!250 -250|250 250!250 250|-250 250!-250 250|-250 -250!-250 -250|250 -250"/>
                   </edges>
                 </DOMShape>
               </elements>
