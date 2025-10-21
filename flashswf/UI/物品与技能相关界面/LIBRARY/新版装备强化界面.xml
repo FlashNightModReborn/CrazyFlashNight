@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版装备强化界面" itemID="68a01bda-000002a7" lastModified="1761018286" lastUniqueIdentifier="66">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版装备强化界面" itemID="68a01bda-000002a7" lastModified="1761029960" lastUniqueIdentifier="68">
   <timeline>
-    <DOMTimeline name="新版装备强化界面" currentFrame="23" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;50&lt;/guideline&gt;&lt;guideline direction="h"&gt;74&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="新版装备强化界面" currentFrame="15" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;50&lt;/guideline&gt;&lt;guideline direction="h"&gt;74&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="label" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
@@ -89,7 +89,7 @@ this.刷新默认界面();]]></script>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>现阶段的强化度上限：</characters>
+                      <characters>当前强化上限：</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -104,7 +104,7 @@ this.刷新默认界面();]]></script>
                 </DOMStaticText>
                 <DOMDynamicText name="强化上限文字" fontRenderingMode="device" width="49.95" height="15.55" isSelectable="false">
                   <matrix>
-                    <Matrix tx="73" ty="68.4"/>
+                    <Matrix tx="153.2" ty="49.4"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -115,9 +115,9 @@ this.刷新默认界面();]]></script>
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText name="目标强化等级文字" fontRenderingMode="device" width="76.5" height="15.55" isSelectable="false">
+                <DOMDynamicText name="目标强化等级文字" fontRenderingMode="device" width="18.7" height="15.55" isSelectable="false">
                   <matrix>
-                    <Matrix tx="61.5" ty="104.65"/>
+                    <Matrix tx="116.65" ty="79.4"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -128,9 +128,9 @@ this.刷新默认界面();]]></script>
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText name="强化详情文字" fontRenderingMode="device" width="167" height="175.5" isSelectable="false" renderAsHTML="true" lineType="multiline">
+                <DOMDynamicText name="强化详情文字" fontRenderingMode="device" width="167" height="187.5" isSelectable="false" renderAsHTML="true" lineType="multiline">
                   <matrix>
-                    <Matrix d="0.9208984375" tx="15" ty="128.95"/>
+                    <Matrix d="0.9208984375" tx="15" ty="119.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="83.5" y="87.75"/>
@@ -154,7 +154,13 @@ this.刷新默认界面();]]></script>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>同类型的装备可以交换强化度。&#xD;</characters>
+                      <characters>同类型的装备可以交换强化度。</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>&#xD;</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="justify" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -228,7 +234,7 @@ this.刷新默认界面();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="按钮" color="#808080" autoNamed="false">
+        <DOMLayer name="按钮" color="#808080" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -308,7 +314,7 @@ this.刷新默认界面();]]></script>
               <elements>
                 <DOMSymbolInstance libraryItemName="button/Symbol 1750" name="btn2" symbolType="button">
                   <matrix>
-                    <Matrix tx="152.4" ty="112.85"/>
+                    <Matrix tx="150.5" ty="86.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -321,7 +327,7 @@ this.刷新默认界面();]]></script>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="button/Symbol 1751" name="btn1" symbolType="button">
                   <matrix>
-                    <Matrix a="-1" tx="47.9" ty="112.85"/>
+                    <Matrix a="-1" tx="104.55" ty="86.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -334,7 +340,7 @@ this.刷新默认界面();]]></script>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="button/Symbol 1755" name="btn3" symbolType="button">
                   <matrix>
-                    <Matrix tx="174.95" ty="112.85"/>
+                    <Matrix tx="173.05" ty="86.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -347,7 +353,7 @@ this.刷新默认界面();]]></script>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="button/Symbol 1756" name="btn0" symbolType="button">
                   <matrix>
-                    <Matrix a="-1" tx="25.4" ty="112.85"/>
+                    <Matrix a="-1" tx="82.05" ty="86.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -389,6 +395,20 @@ this.刷新默认界面();]]></script>
                   <filters>
                     <BevelFilter blurX="1" blurY="1" distance="2" highlightColor="#FFFFCC" shadowColor="#333333"/>
                   </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="73.95" centerPoint3DY="109.75">
+                  <matrix>
+                    <Matrix a="0.886749267578125" tx="10" ty="108.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -687,7 +707,7 @@ this.刷新默认界面();]]></script>
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!582 3624|300 3342!300 3342|300 3902!300 3902|582 3624!860 3350|582 3624!582 3624|860 3902!860 3902|860 3350!860 3350|860 3342!860 3342|300 3342!300 3902|860 3902"/>
+                    <Edge strokeStyle="1" edges="!582 3624|300 3342!300 3342|300 3902!300 3902|582 3624!582 3624|860 3350!860 3350|860 3342!860 3342|300 3342!582 3624|860 3902!860 3902|860 3350!300 3902|860 3902"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -729,7 +749,7 @@ this.刷新默认界面();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 5" color="#4FFFFF" current="true" isSelected="true">
+        <DOMLayer name="图层 5" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements/>

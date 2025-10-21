@@ -8,6 +8,87 @@ import org.flashNight.arki.item.itemCollection.*;
 //新版物品栏
 _root.物品UI函数 = new Object();
 
+// === 强化面板状态保持系统（简化版）===
+/**
+ * 强化面板状态对象 - 只保存帧号
+ * 用于在热切换装备时保留当前操作子项（强化/强化度转换/插件改装等）
+ */
+_root.物品UI函数.强化面板状态 = {
+	lastFrame: null  // 上一次所在帧号
+};
+
+/**
+ * 绑定强化面板实例，自动跟踪帧变化
+ * @param {MovieClip} panel 强化面板MC实例
+ */
+_root.物品UI函数.强化面板_注册 = function(panel:MovieClip):Void {
+	if (!panel) return;
+	var self = _root.物品UI函数;
+
+	// 初始化lastFrame
+	if (self.强化面板状态.lastFrame == null) {
+		self.强化面板状态.lastFrame = panel._currentframe;
+	}
+
+	// 记录当前帧，用于检测变化
+	panel.__enhance__last = panel._currentframe;
+
+	// 监听帧变化
+	panel.onEnterFrame = function():Void {
+		if (this.__enhance__last != this._currentframe) {
+			self.强化面板状态.lastFrame = this._currentframe;
+			this.__enhance__last = this._currentframe;
+		}
+	};
+
+	// 面板卸载时保存状态
+	panel.onUnload = function():Void {
+		self.强化面板状态.lastFrame = this._currentframe;
+	};
+};
+
+/**
+ * 主动保存（在热切换前显式调用）
+ * @param {MovieClip} panel 强化面板MC实例
+ */
+_root.物品UI函数.强化面板_保存 = function(panel:MovieClip):Void {
+	if (!panel) return;
+	_root.物品UI函数.强化面板状态.lastFrame = panel._currentframe;
+};
+
+/**
+ * 恢复状态（在刷新/重建面板之后调用）
+ * @param {MovieClip} panel 强化面板MC实例
+ */
+_root.物品UI函数.强化面板_恢复 = function(panel:MovieClip):Void {
+	if (!panel) return;
+	var lastFrame = _root.物品UI函数.强化面板状态.lastFrame;
+
+	// 用帧号恢复，确保在有效范围内
+	if (!isNaN(lastFrame) && lastFrame > 0 && lastFrame <= panel._totalframes) {
+		panel.gotoAndStop(lastFrame);
+
+		// 手动调用对应帧的初始化函数，刷新业务数据
+		// 因为gotoAndStop到当前已在的帧时，帧脚本不会重新执行
+		if (lastFrame >= 6 && lastFrame <= 11) {
+			// "默认" 帧 (6-11)
+			panel.刷新默认界面();
+		} else if (lastFrame >= 12 && lastFrame <= 19) {
+			// "强化装备" 帧 (12-19)
+			panel.刷新强化装备界面();
+		} else if (lastFrame >= 20 && lastFrame <= 28) {
+			// "强化度转换" 帧 (20-28)
+			panel.初始化强化度转换界面();
+		} else if (lastFrame >= 29 && lastFrame <= 36) {
+			// "插件改装" 帧 (29-36)
+			panel.初始化插件改装界面();
+		}
+	} else {
+		// 兜底：回到第1帧
+		panel.gotoAndStop(1);
+	}
+};
+
 _root.物品UI函数.背包 = new Object();
 _root.物品UI函数.装备栏 = new Object();
 _root.物品UI函数.药剂栏 = new Object();
@@ -616,8 +697,14 @@ _root.物品UI函数.初始化强化界面 = function(UI:MovieClip){
 }
 
 _root.物品UI函数.刷新强化物品 = function(item, index, itemIcon, inventory){
-	// 支持热切换：如果已有物品，先清理旧物品的事件监听
-	if(this.当前物品 != null){
+	// 判断是否为热切换（已有物品）还是首次加载（无物品）
+	var isFirstLoad = (this.当前物品 == null);
+
+	// 支持热切换：如果已有物品，先清理旧物品的事件监听并保存状态
+	if(!isFirstLoad){
+		// 保存当前面板状态（帧号）
+		_root.物品UI函数.强化面板_保存(this);
+
 		// 取消旧物品的ItemRemoved监听
 		if(this.当前物品栏 != null){
 			this.当前物品栏.getDispatcher().unsubscribe("ItemRemoved", _root.物品UI函数.检查强化物品是否移动);
@@ -632,7 +719,12 @@ _root.物品UI函数.刷新强化物品 = function(item, index, itemIcon, invent
 		}
 	}
 
-	this.gotoAndStop("默认");
+	// 只在首次加载时跳转到默认帧，热切换时不跳（由恢复函数处理）
+	if(isFirstLoad){
+		this.gotoAndStop("默认");
+	}
+
+	// 设置新物品数据
 	this.当前物品 = item;
 	this.当前物品格 = index;
 	this.当前物品图标 = itemIcon;
@@ -645,8 +737,14 @@ _root.物品UI函数.刷新强化物品 = function(item, index, itemIcon, invent
 		_root.注释结束();
 	};
 
-	// 刷新默认界面（显示新装备信息）
+	// 刷新默认界面数据（更新装备信息显示）
 	this.刷新默认界面();
+
+	// 注册面板并在热切换时恢复状态
+	_root.物品UI函数.强化面板_注册(this);
+	if(!isFirstLoad){
+		_root.物品UI函数.强化面板_恢复(this);
+	}
 
 	// 订阅新物品的ItemRemoved事件
 	inventory.getDispatcher().subscribe("ItemRemoved", _root.物品UI函数.检查强化物品是否移动, this);
@@ -768,7 +866,8 @@ _root.物品UI函数.计算强化装备等级 = function(目标等级){
 		强化石节省个数 += Math.ceil((1 - 强化石倍率) * (i - 1) * (i - 1) * (i - 1));
 	}
 	//
-	this.目标强化等级文字.text = "强化到" + 目标等级 + "级";
+	// this.目标强化等级文字.text = "强化到" + 目标等级 + "级";
+	this.目标强化等级文字.text = 目标等级;
 	var color = 强化石持有数 >= 强化石需要个数 ? "#33FF33" : "#FF3333";
 	this.强化详情文字.htmlText = "需要强化石： <FONT COLOR='" + color + "'>" + 强化石需要个数 + " / " + 强化石持有数 + "<FONT><BR>";
 	if(强化石节省个数 > 0) this.强化详情文字.htmlText += "铁匠被动技能已节省 " + 强化石节省个数 + " 个<BR>";
@@ -784,7 +883,12 @@ _root.物品UI函数.执行强化装备 = function(){
 		_root.最上层发布文字提示(this.强化物品图标.itemIcon.itemData.displayname + " 成功强化到 +" + this.目标强化等级);
 		this.当前物品图标.refreshValue();
 		this.强化物品图标.itemIcon.refreshValue();
-		this.gotoAndStop("默认");
+
+		// 重新刷新强化界面，重新计算下一级的目标等级和所需材料
+		// 如果已达到强化上限，会自动隐藏按钮
+		this.刷新强化装备界面();
+
+		// this.gotoAndStop("默认");
 	}else{
 		_root.发布消息("强化石不足！");
 	}

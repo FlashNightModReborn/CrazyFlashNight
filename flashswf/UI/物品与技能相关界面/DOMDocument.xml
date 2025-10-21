@@ -138,7 +138,7 @@
           <Include href="新版商店界面.xml" itemID="676cf8b9-00000359" lastModified="1752753966"/>
           <Include href="新版通用勾选框.xml" loadImmediate="false" itemID="677d58e7-00000cb8" lastModified="1736268332"/>
           <Include href="新版物品栏界面.xml" itemID="67699dcd-00000abf" lastModified="1758443684"/>
-          <Include href="新版装备强化界面.xml" loadImmediate="false" itemID="68a01bda-000002a7" lastModified="1761018286"/>
+          <Include href="新版装备强化界面.xml" loadImmediate="false" itemID="68a01bda-000002a7" lastModified="1761029960"/>
           <Include href="新强化界面/槽位选择按钮.xml" itemIcon="0" loadImmediate="false" itemID="68d1894d-000002b9" lastModified="1758966946"/>
           <Include href="新强化界面/槽位选择动画.xml" loadImmediate="false" itemID="68d18941-000002b7" lastModified="1758562625"/>
           <Include href="新强化界面/槽位选择加号.xml" itemIcon="1" loadImmediate="false" itemID="68d1893d-000002b6" lastModified="1758562621"/>
@@ -581,7 +581,7 @@
                     <SolidSwatchItem color="#D6D6D6" brightness="201"/>
                     <SolidSwatchItem color="#3B3B39" hue="40" saturation="4" brightness="55"/>
                     <SolidSwatchItem color="#121211" hue="40" saturation="7" brightness="17"/>
-                    <SolidSwatchItem color="#333333" alpha="0.0941176470588235" brightness="48"/>
+                    <SolidSwatchItem color="#333333" alpha="0.0901960784313725" brightness="48"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -649,6 +649,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="61386" publishTime="1761029997"/>
           <PublishItem publishSize="62698" publishTime="1761018305"/>
           <PublishItem publishSize="62697" publishTime="1761018029"/>
           <PublishItem publishSize="62764" publishTime="1761017748"/>
@@ -668,6 +669,5 @@
           <PublishItem publishSize="60665" publishTime="1761013191"/>
           <PublishItem publishSize="61187" publishTime="1760974095"/>
           <PublishItem publishSize="61184" publishTime="1760974076"/>
-          <PublishItem publishSize="61180" publishTime="1760974003"/>
      </publishHistory>
 </DOMDocument>
