@@ -639,7 +639,10 @@ _root.物品UI函数.刷新强化物品 = function(item, index, itemIcon, invent
 	this.当前物品栏 = inventory;
 	this.强化物品图标.itemIcon = new ItemIcon(this.强化物品图标, item.name, item);
 	this.强化物品图标.itemIcon.RollOver = function(){
-		// 空
+		_root.物品图标注释(this.name, this.value, this.item);
+	};
+	this.强化物品图标.itemIcon.RollOut = function(){
+		_root.注释结束();
 	};
 
 	// 刷新默认界面（显示新装备信息）
@@ -789,8 +792,31 @@ _root.物品UI函数.执行强化装备 = function(){
 
 
 _root.物品UI函数.初始化强化度转换界面 = function(){
+	var panel = this;
 	// 创建强化度转换物品图标的ItemIcon实例（每次进入都重新创建以确保实例存在）
 	this.强化度转换物品图标.itemIcon = new ItemIcon(this.强化度转换物品图标, null, null);
+	// 设置tooltip显示（确保鼠标悬停时显示物品信息）
+	this.强化度转换物品图标.itemIcon.RollOver = function(){
+		// 如果有物品，显示tooltip和卸下提示
+		if(this.name){
+			_root.物品图标注释(this.name, this.value, this.item);
+			this.icon.互动提示.gotoAndPlay("卸下");
+		}
+	};
+	this.强化度转换物品图标.itemIcon.RollOut = function(){
+		_root.注释结束();
+		this.icon.互动提示.gotoAndStop("空");
+	};
+	this.强化度转换物品图标.itemIcon.Press = function(){
+		// 点击时卸载转换物品
+		if(this.name){
+			this.icon.互动提示.gotoAndStop("空");
+			panel.刷新强化度转换界面();
+			_root.播放音效("9mmclip2.wav");
+		}
+	};
+	// 初始化默认描述文本
+	this.强化度转换描述文本.text = "同类型的装备可以交换强化度。";
 	// 清空转换物品数据（防止上次遗留数据）
 	this.刷新强化度转换界面();
 }
@@ -805,7 +831,11 @@ _root.物品UI函数.刷新强化度转换界面 = function(){
 	this.强化度转换物品格 = null;
 	this.强化度转换物品图标原始图标 = null;  // 清空原始图标引用
 	this.强化度转换物品图标.itemIcon.init(null, null);
-	this.强化度转换名字文本.text = "";
+	this.强化度转换名字文本.text = "将需转强化的装备拖至右框";
+	// 重置描述文本为默认值
+	this.强化度转换描述文本.text = "同类型的装备可以交换强化度。";
+	this.强化度按钮背景._visible = true;
+	this.强化执行按钮._visible = false;
 }
 
 _root.物品UI函数.添加强化度转换物品 = function(item, index, itemIcon, inventory){
@@ -832,14 +862,34 @@ _root.物品UI函数.添加强化度转换物品 = function(item, index, itemIco
 	this.强化度转换物品图标原始图标 = itemIcon;  // 保存原始图标引用
 	this.强化度转换物品栏 = inventory;
 	this.强化度转换物品图标.itemIcon.init(item.name, item);
+	this.强化度按钮背景._visible = false;
+	this.强化执行按钮._visible = true;
 
 	// 订阅物品移除事件
 	inventory.getDispatcher().subscribe("ItemRemoved", _root.物品UI函数.检查强化度转换物品是否移动, this);
 
-	// 显示转换物品信息
+	// 显示转换物品信息（名字文本）
 	var itemData = item.getData();
-	// this.强化度转换名字文本.text = itemData.displayname + " +" + item.value.level;
 	this.强化度转换名字文本.text = itemData.displayname;
+
+	// 更新描述文本，显示详细的转换信息
+	var 当前等级 = this.当前物品.value.level;
+	var 转换等级 = item.value.level;
+	var 当前名称 = this.当前物品显示名字;
+	var 转换名称 = itemData.displayname;
+
+	var 描述文本 = "";
+	描述文本 += "点击齿轮图标,互换强化度。\n\n";
+
+	if(当前等级 == 转换等级){
+		描述文本 += "<FONT COLOR='#999999'>两件装备强化度相同，转换无实际效果。</FONT>";
+	}else if(当前等级 < 转换等级){
+		描述文本 += "<FONT COLOR='#33FF33'>左侧装备强化度 + " + (转换等级 - 当前等级) + " 级。</FONT>";
+	}else{
+		描述文本 += "<FONT COLOR='#FF9933'>左侧装备强化度 - " + (当前等级 - 转换等级) + " 级。</FONT>";
+	}
+
+	this.强化度转换描述文本.htmlText = 描述文本;
 	_root.播放音效("9mmclip2.wav");
 }
 
@@ -886,6 +936,12 @@ _root.物品UI函数.初始化插件改装界面 = function(){
 	this.槽位选择按钮_配件._visible = false;
 
 	this.改装图标_进阶.itemIcon = new ItemIcon(this.改装图标_进阶, null, null);
+	this.改装图标_进阶.itemIcon.RollOver = function(){
+		_root.物品图标注释(this.name, this.value, this.item);
+	};
+	this.改装图标_进阶.itemIcon.RollOut = function(){
+		_root.注释结束();
+	};
 	this.改装图标_进阶.itemIcon.Press = function(){
 		panel.选择槽位_进阶();
 	};
@@ -894,9 +950,15 @@ _root.物品UI函数.初始化插件改装界面 = function(){
 	for(var i=0; i<3; i++){
 		modslotMCs[i].itemIcon = new ItemIcon(modslotMCs[i], null, null);
 		modslotMCs[i].itemIcon.RollOver = function(){
+			// 先显示物品tooltip
+			_root.物品图标注释(this.name, this.value, this.item);
+			// 再显示互动提示
 			this.icon.互动提示.gotoAndPlay("卸下");
 		};
 		modslotMCs[i].itemIcon.RollOut = function(){
+			// 关闭tooltip
+			_root.注释结束();
+			// 隐藏互动提示
 			this.icon.互动提示.gotoAndStop("空");
 		};
 		modslotMCs[i].itemIcon.Press = function(){
