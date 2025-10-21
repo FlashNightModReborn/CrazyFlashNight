@@ -124,7 +124,7 @@
     </mod>
     <mod>
         <name>生物催化剂</name>
-        <use>刀,手枪,长枪</use>
+        <use>刀,手枪,长枪,手部装备</use>
         <stats>
             <override>
                 <damagetype>破击</damagetype>
@@ -561,5 +561,17 @@
             </percentage>
         </stats>
         <description>可编程分子机器集群，全面提升装备伤害输出能力。</description>
+    </mod>
+    <!-- 其他材料 -->
+    <mod>
+        <name>毒素样本</name>
+        <use>刀,手枪,长枪,手部装备</use>
+        <stats>
+            <override>
+                <damagetype>破击</damagetype>
+                <magictype>毒</magictype>
+            </override>
+        </stats>
+        <description>生物毒素，为武器额外附着少量毒属性附加伤害。</description>
     </mod>
 </root>
