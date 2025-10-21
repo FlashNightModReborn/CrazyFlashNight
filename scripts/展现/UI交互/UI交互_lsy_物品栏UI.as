@@ -1244,13 +1244,23 @@ _root.物品UI函数.执行进阶 = function(matName:String){
 		if(ItemUtil.singleSubmit(matName, 1)){
 			var tierName = EquipmentUtil.tierMaterialToNameDict[matName];
 			item.value.tier = tierName;
-			
+
 			// 重置物品名称
 			this.名字文本.htmlText = "<B>" + (tierName ? "[" + tierName + "]" : "" ) + this.当前物品显示名字;
 			if(item.value.level > 1){
 				this.名字文本.htmlText += " +" + item.value.level;
 			}
 			this.名字文本.htmlText += "</B>";
+
+			// 刷新图标（进阶会改变图标外观）
+			// 刷新背包中的物品图标
+			if(this.当前物品图标 != null){
+				this.当前物品图标.init();
+			}
+			// 刷新强化界面左侧的大图标
+			if(this.强化物品图标 && this.强化物品图标.itemIcon){
+				this.强化物品图标.itemIcon.init(item.name, item);
+			}
 
 			// 完成
 			_root.播放音效("9mmclip2.wav");
