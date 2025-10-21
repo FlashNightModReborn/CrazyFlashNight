@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧" itemID="66d719e1-00004984" linkageExportForAS="true" linkageIdentifier="烈火燃烧" lastModified="1760876643" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧" itemID="66d719e1-00004984" linkageExportForAS="true" linkageIdentifier="烈火燃烧" lastModified="1761060242" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="烈火燃烧" currentFrame="1">
       <layers>
@@ -17,7 +17,8 @@ this._rotation = 0;]]></script>
             <DOMFrame index="1" duration="44" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[/*this.伤害类型 = "魔法";
-this.魔法伤害属性 = "热";*/]]></script>
+this.魔法伤害属性 = "热";*/
+_root.播放音效("火焰持续.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

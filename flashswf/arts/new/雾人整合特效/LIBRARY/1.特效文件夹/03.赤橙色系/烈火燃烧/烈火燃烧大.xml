@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧大" itemID="68d92edd-00000995" linkageExportForAS="true" linkageIdentifier="烈火燃烧大" lastModified="1759063884" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧大" itemID="68d92edd-00000995" linkageExportForAS="true" linkageIdentifier="烈火燃烧大" lastModified="1761060285" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="烈火燃烧大">
+    <DOMTimeline name="烈火燃烧大" currentFrame="1">
       <layers>
-        <DOMLayer name="代码&amp;判定" color="#9933CC" autoNamed="false">
+        <DOMLayer name="代码&amp;判定" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -17,7 +17,9 @@ this._rotation = 0;]]></script>
             <DOMFrame index="1" duration="63" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[/*this.伤害类型 = "魔法";
-this.魔法伤害属性 = "热";*/]]></script>
+this.魔法伤害属性 = "热";*/
+
+_root.播放音效("火焰持续.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -29,7 +31,7 @@ this.魔法伤害属性 = "热";*/]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码&amp;判定" color="#4FFF4F" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="代码&amp;判定" color="#4FFF4F" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
