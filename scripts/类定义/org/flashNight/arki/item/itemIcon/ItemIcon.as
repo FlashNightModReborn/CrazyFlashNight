@@ -42,7 +42,13 @@ class org.flashNight.arki.item.itemIcon.ItemIcon{
             leveltext._visible = false;
             icon.满级框._visible = false;
         }else{
-            this.itemData = ItemUtil.getItemData(this.name);
+            // 如果 item 是 BaseItem 对象（有 getData 方法），使用 getData() 以应用涂装等数据覆盖
+            // 否则，使用 ItemUtil.getItemData() 获取原始数据
+            if(_item.getData != undefined && ItemUtil.isEquipment(this.name)){
+                this.itemData = _item.getData();
+            }else{
+                this.itemData = ItemUtil.getItemData(this.name);
+            }
             this.icon.gotoAndStop("默认图标");
             this.icon.互动提示.gotoAndStop(this.locked ? "锁定" : "空");
             refreshValue();

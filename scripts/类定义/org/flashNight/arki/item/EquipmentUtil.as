@@ -305,7 +305,18 @@ class org.flashNight.arki.item.EquipmentUtil{
             if(tierKey){
                 var tierData:Object = itemData[tierKey];
                 if(tierData){
+                    // 覆盖 data 内的属性
                     operators.override(data, tierData);
+
+                    // 覆盖顶层属性（icon, displayname, description, skill）
+                    // 支持涂装数据自定义图标、显示名称、描述和技能
+                    if(tierData.icon !== undefined) {
+                        itemData.icon = tierData.icon;
+                    }
+                    if(tierData.displayname !== undefined) itemData.displayname = tierData.displayname;
+                    if(tierData.description !== undefined) itemData.description = tierData.description;
+                    if(tierData.skill !== undefined) itemData.skill = ObjectUtil.clone(tierData.skill);
+
                     itemData[tierKey] = null;
                 }else{
                     tierData = defaultTierDataDict[value.tier];

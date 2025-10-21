@@ -157,17 +157,19 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
    * - 处理布局
    * - 拼接文本内容
    * - 调用渲染方法
-   * 
+   *
    * @param enable:Boolean 是否启用显示
    * @param name:String 物品名称
    * @param value:Object 物品数值对象
    * @param introString:String 预先拼好的简介面板文本（简介头 + 装备段）
    * @param extraString:String 额外显示的文本（可选；用于把短描述并入简介面板）
+   * @param itemData:Object 物品数据对象（可选，用于支持涂装图标覆盖）
    */
-  public static function renderItemIcon(enable:Boolean, name:String, value:Object, introString:String, extraString:String):Void {
+  public static function renderItemIcon(enable:Boolean, name:String, value:Object, introString:String, extraString:String, itemData:Object):Void {
     if (enable) {
-      var data:Object = ItemUtil.getItemData(name);
-      
+      // 如果传入了 itemData（已应用涂装覆盖），使用它；否则获取原始数据
+      var data:Object = itemData ? itemData : ItemUtil.getItemData(name);
+
       // 交给布局模块决定尺寸与偏移
       var target:MovieClip = TooltipBridge.getIconTarget();
       var background:MovieClip = TooltipBridge.getIntroBackground();
@@ -183,7 +185,7 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
 
       // 调用通用图标核心函数
       TooltipLayout.renderIconTooltip(true, data.icon, introduction, stringWidth, data.type);
-      
+
       // 立刻把整体容器根据"简介背景"的实际边界回弹到屏幕可视区
       TooltipBridge.clampContainerByBg(background, 8);
     } else {
@@ -196,18 +198,19 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
    * - 根据内容长度智能选择显示策略
    * - 长内容：分离显示（主框体+图标面板）
    * - 短内容：合并显示（仅图标面板）
-   * 
+   *
    * @param name:String 物品名称
    * @param value:Object 物品数值对象
    * @param descriptionText:String 主要描述内容
    * @param introText:String 简介面板内容
    * @param options:Object 可选配置参数 { totalMultiplier:Number, descDivisor:Number }
+   * @param itemData:Object 物品数据对象（可选，用于支持涂装图标覆盖）
    */
-  public static function renderItemTooltipSmart(name:String, value:Object, descriptionText:String, introText:String, options:Object):Void {
+  public static function renderItemTooltipSmart(name:String, value:Object, descriptionText:String, introText:String, options:Object, itemData:Object):Void {
     // 获取配置参数（支持自定义，有默认值）
     var totalMultiplier:Number = (options && options.totalMultiplier) ? options.totalMultiplier : TooltipConstants.SMART_TOTAL_MULTIPLIER;
     var descDivisor:Number = (options && options.descDivisor) ? options.descDivisor : TooltipConstants.SMART_DESC_DIVISOR;
-    
+
     // 智能长度判断（使用 htmlLengthScore 更准确评估）
     var threshold:Number = TooltipConstants.SPLIT_THRESHOLD;
     var descLength:Number = StringUtils.htmlLengthScore(descriptionText, null);
@@ -220,11 +223,11 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
       // 长内容策略：分离显示
       var calculatedWidth:Number = TooltipLayout.estimateWidth(descriptionText);
       TooltipLayout.showTooltip(calculatedWidth, descriptionText);
-      renderItemIcon(true, name, value, introText, null);
+      renderItemIcon(true, name, value, introText, null, itemData);
     } else {
       // 短内容策略：合并显示
-      renderItemIcon(true, name, value, introText, descriptionText);
-      
+      renderItemIcon(true, name, value, introText, descriptionText, itemData);
+
       // 隐藏主框体
       TooltipBridge.setTextContent("main", "");
       TooltipBridge.setVisibility("main", false);

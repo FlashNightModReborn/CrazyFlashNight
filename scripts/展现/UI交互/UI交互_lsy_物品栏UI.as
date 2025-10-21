@@ -973,15 +973,16 @@ _root.物品UI函数.添加强化度转换物品 = function(item, index, itemIco
 	// 订阅物品移除事件
 	inventory.getDispatcher().subscribe("ItemRemoved", _root.物品UI函数.检查强化度转换物品是否移动, this);
 
-	// 显示转换物品信息（名字文本）
+	// 显示转换物品信息（名字文本，带进阶前缀）
 	var itemData = item.getData();
-	this.强化度转换名字文本.text = itemData.displayname;
+	var tier = item.value.tier;
+	this.强化度转换名字文本.text = (tier ? "[" + tier + "]" : "") + itemData.displayname;
 
 	// 更新描述文本，显示详细的转换信息
 	var 当前等级 = this.当前物品.value.level;
 	var 转换等级 = item.value.level;
 	var 当前名称 = this.当前物品显示名字;
-	var 转换名称 = itemData.displayname;
+	var 转换名称 = (tier ? "[" + tier + "]" : "") + itemData.displayname;
 
 	var 描述文本 = "";
 	描述文本 += "点击齿轮图标,互换强化度。\n\n";
@@ -989,9 +990,9 @@ _root.物品UI函数.添加强化度转换物品 = function(item, index, itemIco
 	if(当前等级 == 转换等级){
 		描述文本 += "<FONT COLOR='#999999'>两件装备强化度相同，转换无实际效果。</FONT>";
 	}else if(当前等级 < 转换等级){
-		描述文本 += "<FONT COLOR='#33FF33'>左侧装备强化度 + " + (转换等级 - 当前等级) + " 级。</FONT>";
+		描述文本 += "<FONT COLOR='#33FF33'>左侧装备强化度提升 " + (转换等级 - 当前等级) + " 级。</FONT>";
 	}else{
-		描述文本 += "<FONT COLOR='#FF9933'>左侧装备强化度 - " + (当前等级 - 转换等级) + " 级。</FONT>";
+		描述文本 += "<FONT COLOR='#FF9933'>左侧装备强化度下降 " + (当前等级 - 转换等级) + " 级。</FONT>";
 	}
 
 	this.强化度转换描述文本.htmlText = 描述文本;
