@@ -10,13 +10,9 @@ import org.flashNight.gesh.string.*;
 _root.物品图标注释 = function(name, value, baseItem) {
     var 强化等级:Number = (value.level > 0) ? value.level : 1;
 
-    // 如果 baseItem 存在且是装备物品，使用 getData() 以应用涂装等数据覆盖
-    if(typeof baseItem === "object" && baseItem.getData != undefined && ItemUtil.isEquipment(name)){
-        var itemData:Object = baseItem.getData();
-    }else{
-        var itemData:Object = ItemUtil.getItemData(name);
-        baseItem = null;
-    }
+    // 始终使用基础数据来生成简介内容（以正确显示属性增益）
+    var itemData:Object = ItemUtil.getItemData(name);
+    if(typeof baseItem !== "object") baseItem = null;
 
     // 1) 基础段描述（不含简介头与装备属性）
     var 描述文本:String = TooltipComposer.generateItemDescriptionText(itemData);
@@ -27,8 +23,14 @@ _root.物品图标注释 = function(name, value, baseItem) {
     // _root.服务器.发布服务器消息("描述文本:" + StringUtils.htmlToPlainTextFast(描述文本));
     // _root.服务器.发布服务器消息("简介文本:" + StringUtils.htmlToPlainTextFast(简介文本));
 
-    // 3) 使用智能显示算法自动优化长短内容，传递 itemData 以支持涂装图标覆盖
-    TooltipComposer.renderItemTooltipSmart(name, value, 描述文本, 简介文本, null, itemData);
+    // 3) 获取用于图标显示的数据（如果 baseItem 存在且是装备物品，使用 getData() 以应用涂装覆盖）
+    var iconData:Object = null;
+    if(baseItem && baseItem.getData != undefined && ItemUtil.isEquipment(name)){
+        iconData = baseItem.getData();
+    }
+
+    // 4) 使用智能显示算法自动优化长短内容，传递 iconData 以支持涂装图标覆盖
+    TooltipComposer.renderItemTooltipSmart(name, value, 描述文本, 简介文本, null, iconData);
 };
 
 
