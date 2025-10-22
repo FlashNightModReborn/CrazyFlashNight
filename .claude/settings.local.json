@@ -89,7 +89,8 @@
       "Bash(git gc:*)",
       "Bash(git verify-pack:*)",
       "Read(//c/**)",
-      "Bash(do echo \"Found: $file\")"
+      "Bash(do echo \"Found: $file\")",
+      "Bash(wc:*)"
     ],
     "deny": [],
     "ask": []
