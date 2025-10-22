@@ -1379,11 +1379,17 @@ _root.主角函数.按键检测 = function(按键, ai使用率) {
 //死亡检测
 _root.主角函数.死亡检测 = function() {
     if (this.hp <= 0) {
-        // _root.发布消息("角色 " + this._name + " 死亡");
-        this.man.stop();
+        _root.服务器.发布服务器消息("角色 " + this._name + " 死亡");
+
+        // 只在已经进入血腥死状态时才停止man动画
+        // 避免在击倒/倒地状态时停止，导致后续切换到血腥死时无法播放动画
+        if (this.状态 === "血腥死") {
+            this.man.stop();
+        }
+
         if (已加经验值 != true)
             击倒呐喊();
-            // _root.发布消息("角色 " + this._name + " 死亡播放完毕");
+            // _root.服务器.发布服务器消息("角色 " + this._name + " 死亡播放完毕");
         if (this._name === _root.控制目标) {
             _root.关卡结束界面.询问复活();
         }
@@ -1408,20 +1414,26 @@ _root.主角函数.死亡检测 = function() {
             已删除 = true;
         }
         if (已加经验值 != true) {
-            // _root.发布消息("角色 " + this._name + " 死亡计算经验 " , 是否为敌人, 是否为敌人 == null);
+            _root.服务器.发布服务器消息("角色 " + this._name + " 死亡计算经验 " , 是否为敌人, 是否为敌人 == null);
             if (UnitUtil.isEnemy(this)) {
-                // _root.发布消息("角色 " + this._name + " 死亡是敌人");
+                // _root.服务器.发布服务器消息("角色 " + this._name + " 死亡是敌人");
                 if (是否为敌人 === true) {
                     _root.敌人死亡计数++;
                     _root.gameworld[产生源].僵尸型敌人场上实际人数--;
                     _root.gameworld[产生源].僵尸型敌人总个数--;
-                    // _root.发布消息("角色 " + this._name + " 死亡敌人数量统计");
+                    // _root.服务器.发布服务器消息("角色 " + this._name + " 死亡敌人数量统计");
                 }
                 计算经验值();
                 this.新版人物文字信息._visible = false;
                 _root.add2map(this, 2);
                 this.removeMovieClip();
-                // _root.发布消息("角色 " + this._name + " 死亡删除完毕");
+                // _root.服务器.发布服务器消息("角色 " + this._name + " 死亡删除完毕");
+            } else {
+                // 处理友军单位（既不是佣兵也不是敌人）
+                this.新版人物文字信息._visible = false;
+                _root.add2map(this, 2);
+                this.removeMovieClip();
+                // _root.服务器.发布服务器消息("角色 " + this._name + " 友军死亡删除完毕");
             }
         }
     }
