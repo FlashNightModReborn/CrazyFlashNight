@@ -322,7 +322,7 @@
     <mod>
         <name>水冷机构</name>
         <use>长枪,手枪</use>
-        <weapontype>机枪,压制机枪</weapontype>
+        <weapontype>机枪,压制机枪,近战,压制近战</weapontype>
         <stats>
             <percentage>
                 <!-- <interval>-10</interval>这里也是待定 减射击间隔不管在代码还是平衡上都是极度危险的设计 -->
@@ -332,7 +332,22 @@
                 <weight>3</weight>
             </flat>
         </stats>
-        <description>模块化温控系统，专为机枪设计，显著提升威力。</description>
+        <description>模块化温控系统，专为机枪与近战机械设计，显著提升威力。</description>
+    </mod>
+    <mod>
+        <name>传动装置</name>
+        <use>长枪,手枪</use>
+        <weapontype>近战,压制近战</weapontype>
+        <stats>
+            <percentage>
+                <power>10</power>
+            </percentage>
+            <flat>
+                <weight>1</weight>
+                <power>15</power>
+            </flat>
+        </stats>
+        <description>机械能接口模块，智能功率分配，专为近战机械设计，显著提升威力。</description>
     </mod>
     <mod>
         <name>战术鱼骨零件</name>
@@ -403,7 +418,7 @@
         <stats>
             <percentage>
                 <diffusion>-20</diffusion>
-                <power>20</power>
+                <power>13</power>
             </percentage>
         </stats>
         <description>人机工学握把，降低扩散并提升威力，适用于步枪和冲锋枪。</description>
