@@ -1,0 +1,86 @@
+================================================================================
+ADVANCED DUPLICATE ANALYSIS
+================================================================================
+
+Step 1: Collecting reference symbols...
+  Found 19 reference symbols
+
+Step 2: Collecting all other symbols...
+  Found 1239 other symbols
+
+================================================================================
+Analysis 1: EXACT CONTENT MATCHES
+================================================================================
+
+Found exact content matches for 1 reference symbol(s):
+
+[Symbol 3.xml] (Size: 2504 bytes)
+  Hash: 23d308d965d3d7a7bff2963c86227bff
+  1 exact match(es):
+    - 余烬小队\余烬剑痴\Symbol 3.xml (2511 bytes)
+
+================================================================================
+Analysis 2: SYMBOLS WITH SAME NAME (Potential duplicates)
+================================================================================
+
+Found 6 reference symbol(s) with same name elsewhere:
+
+[Symbol 3.xml]
+  Reference: 主角肢体素材/Symbol 3.xml (2504 bytes)
+  Found 2 file(s) with same name:
+    - sprite\Symbol 3.xml
+      Size: 2534 bytes (+30 bytes)
+      Content: DIFFERENT CONTENT
+    - 余烬小队\余烬剑痴\Symbol 3.xml
+      Size: 2511 bytes (+7 bytes)
+      Content: EXACT MATCH
+
+[Symbol 6.xml]
+  Reference: 主角肢体素材/Symbol 6.xml (853 bytes)
+  Found 1 file(s) with same name:
+    - 余烬小队\余烬剑痴\Symbol 6.xml
+      Size: 844 bytes (-9 bytes)
+      Content: DIFFERENT CONTENT
+
+[刀.xml]
+  Reference: 主角肢体素材/刀.xml (1318 bytes)
+  Found 1 file(s) with same name:
+    - 余烬小队\余烬剑痴\刀.xml
+      Size: 1325 bytes (+7 bytes)
+      Content: DIFFERENT CONTENT
+
+[手枪.xml]
+  Reference: 主角肢体素材/手枪.xml (1339 bytes)
+  Found 1 file(s) with same name:
+    - 余烬小队\余烬剑痴\手枪.xml
+      Size: 1346 bytes (+7 bytes)
+      Content: DIFFERENT CONTENT
+
+[手枪2.xml]
+  Reference: 主角肢体素材/手枪2.xml (1241 bytes)
+  Found 1 file(s) with same name:
+    - 余烬小队\余烬剑痴\手枪2.xml
+      Size: 1248 bytes (+7 bytes)
+      Content: DIFFERENT CONTENT
+
+[长枪.xml]
+  Reference: 主角肢体素材/长枪.xml (1340 bytes)
+  Found 1 file(s) with same name:
+    - 余烬小队\余烬剑痴\长枪.xml
+      Size: 1347 bytes (+7 bytes)
+      Content: DIFFERENT CONTENT
+
+================================================================================
+Analysis 3: SIZE-BASED SIMILARITY (within 10% size difference)
+================================================================================
+
+Found potentially similar symbols for 19 reference(s):
+
+================================================================================
+SUMMARY
+================================================================================
+Total reference symbols: 19
+Total other symbols scanned: 1239
+Exact content matches: 1
+Same-name duplicates: 7
+Size-similar symbols: 1314

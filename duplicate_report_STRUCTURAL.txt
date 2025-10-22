@@ -1,0 +1,159 @@
+================================================================================
+STRUCTURAL DUPLICATE ANALYSIS
+Comparing structured visual content (ignoring scripts)
+================================================================================
+
+Step 1: Analyzing reference symbols...
+  Analyzed 19 reference symbols
+
+Step 2: Scanning entire LIBRARY...
+  Scanned 1239 other symbols
+
+================================================================================
+STRUCTURAL DUPLICATE REPORT
+================================================================================
+
+Found structural duplicates for 15 reference symbol(s)
+Total duplicate files: 16
+
+Duplicates by folder:
+  余烬小队\余烬剑痴: 15 duplicate(s)
+  sprite: 1 duplicate(s)
+
+--------------------------------------------------------------------------------
+DETAILED LIST:
+--------------------------------------------------------------------------------
+
+[Symbol 3.xml]
+  Reference: 主角肢体素材/Symbol 3.xml
+  Size: 2504 bytes
+  Structure Hash: d5998230211e809b7cfd31cce0f5aec9
+  Structural duplicates found: 1
+    -> 余烬小队\余烬剑痴\Symbol 3.xml
+       Size: 2511 bytes (+7 bytes)
+
+[Symbol 6.xml]
+  Reference: 主角肢体素材/Symbol 6.xml
+  Size: 853 bytes
+  Structure Hash: 9133ae5b3f8b2b971aca31899369cfbc
+  Structural duplicates found: 2
+    -> sprite\Symbol 939.xml
+       Size: 849 bytes (-4 bytes)
+    -> 余烬小队\余烬剑痴\Symbol 6.xml
+       Size: 844 bytes (-9 bytes)
+
+[上臂.xml]
+  Reference: 主角肢体素材/上臂.xml
+  Size: 1500 bytes
+  Structure Hash: a4d01239567fd5f91564a175d9059018
+  Structural duplicates found: 1
+    -> 余烬小队\余烬剑痴\Symbol 17.xml
+       Size: 1539 bytes (+39 bytes)
+
+[刀.xml]
+  Reference: 主角肢体素材/刀.xml
+  Size: 1318 bytes
+  Structure Hash: 70f470877b07bd1a8b351130442c7865
+  Structural duplicates found: 1
+    -> 余烬小队\余烬剑痴\刀.xml
+       Size: 1325 bytes (+7 bytes)
+
+[右大腿.xml]
+  Reference: 主角肢体素材/右大腿.xml
+  Size: 1519 bytes
+  Structure Hash: 056412611ad5451bcbfd004331e46a6e
+  Structural duplicates found: 1
+    -> 余烬小队\余烬剑痴\Symbol 62.xml
+       Size: 1552 bytes (+33 bytes)
+
+[右手.xml]
+  Reference: 主角肢体素材/右手.xml
+  Size: 1494 bytes
+  Structure Hash: 81c30c45ed9d2c69659d2ab8a2dc59d8
+  Structural duplicates found: 1
+    -> 余烬小队\余烬剑痴\Symbol 71.xml
+       Size: 1533 bytes (+39 bytes)
+
+[头.xml]
+  Reference: 主角肢体素材/头.xml
+  Size: 1901 bytes
+  Structure Hash: 72f808c88bf61100a7cf36a49d0be595
+  Structural duplicates found: 1
+    -> 余烬小队\余烬剑痴\Symbol 46.xml
+       Size: 1946 bytes (+45 bytes)
+
+[小腿.xml]
+  Reference: 主角肢体素材/小腿.xml
+  Size: 1499 bytes
+  Structure Hash: b541c60a7be4890b0a18691b79666350
+  Structural duplicates found: 1
+    -> 余烬小队\余烬剑痴\Symbol 58.xml
+       Size: 1538 bytes (+39 bytes)
+
+[屁股.xml]
+  Reference: 主角肢体素材/屁股.xml
+  Size: 1500 bytes
+  Structure Hash: 9a60c23dabf18a4abc156331a7859f95
+  Structural duplicates found: 1
+    -> 余烬小队\余烬剑痴\Symbol 50.xml
+       Size: 1539 bytes (+39 bytes)
+
+[左下臂.xml]
+  Reference: 主角肢体素材/左下臂.xml
+  Size: 1516 bytes
+  Structure Hash: 14e5593f589391337466429914af2ca0
+  Structural duplicates found: 1
+    -> 余烬小队\余烬剑痴\Symbol 67.xml
+       Size: 1549 bytes (+33 bytes)
+
+[左大腿.xml]
+  Reference: 主角肢体素材/左大腿.xml
+  Size: 1518 bytes
+  Structure Hash: e7d389ae3086a3cade840b17e1bba9ae
+  Structural duplicates found: 1
+    -> 余烬小队\余烬剑痴\Symbol 33.xml
+       Size: 1551 bytes (+33 bytes)
+
+[手枪.xml]
+  Reference: 主角肢体素材/手枪.xml
+  Size: 1339 bytes
+  Structure Hash: 62dde071c1e358571f9cb582004cc43f
+  Structural duplicates found: 1
+    -> 余烬小队\余烬剑痴\手枪.xml
+       Size: 1346 bytes (+7 bytes)
+
+[手枪2.xml]
+  Reference: 主角肢体素材/手枪2.xml
+  Size: 1241 bytes
+  Structure Hash: d608a8fcc2b2d8e9a17cdfa2ac049248
+  Structural duplicates found: 1
+    -> 余烬小队\余烬剑痴\手枪2.xml
+       Size: 1248 bytes (+7 bytes)
+
+[脚.xml]
+  Reference: 主角肢体素材/脚.xml
+  Size: 1478 bytes
+  Structure Hash: 885b242a97f4397090bbbd7494001003
+  Structural duplicates found: 1
+    -> 余烬小队\余烬剑痴\Symbol 54.xml
+       Size: 1523 bytes (+45 bytes)
+
+[长枪.xml]
+  Reference: 主角肢体素材/长枪.xml
+  Size: 1340 bytes
+  Structure Hash: 06b69c102079af5870463ae6af8ff5e8
+  Structural duplicates found: 1
+    -> 余烬小队\余烬剑痴\长枪.xml
+       Size: 1347 bytes (+7 bytes)
+
+================================================================================
+SUMMARY
+================================================================================
+Reference symbols: 19
+Other symbols scanned: 1239
+Reference symbols with structural duplicates: 15
+Total duplicate files found: 16
+Total size of duplicates: 23,740 bytes (23.2 KB)
+
+NOTE: This analysis ignores ActionScript code differences.
+Symbols with identical visual structure but different scripts are considered duplicates.

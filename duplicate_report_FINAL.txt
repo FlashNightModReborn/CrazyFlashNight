@@ -1,0 +1,149 @@
+================================================================================
+FINAL DUPLICATE ANALYSIS
+Comparing visual content (ignoring all metadata)
+================================================================================
+
+Collecting reference symbols from: 主角肢体素材
+  Found 19 reference symbols
+
+Scanning entire LIBRARY for visual duplicates...
+  Scanned 1239 other symbols
+
+================================================================================
+DUPLICATE SYMBOLS REPORT
+================================================================================
+
+Found visual duplicates for 14 reference symbol(s)
+Total duplicate files: 14
+
+Duplicates by folder:
+  余烬小队\余烬剑痴: 14 duplicate(s)
+
+--------------------------------------------------------------------------------
+DETAILED LIST:
+--------------------------------------------------------------------------------
+
+[Symbol 3.xml]
+  Reference: 主角肢体素材/Symbol 3.xml
+  Size: 2504 bytes
+  Hash: 8212aaeda44c0c3e95a6b522cf02f11d
+  Visual duplicates found: 1
+    ✗ 余烬小队\余烬剑痴\Symbol 3.xml
+      Size: 2511 bytes (+7 bytes)
+
+[上臂.xml]
+  Reference: 主角肢体素材/上臂.xml
+  Size: 1500 bytes
+  Hash: cd797bcc37175a1f16716be2e7d9810f
+  Visual duplicates found: 1
+    ✗ 余烬小队\余烬剑痴\Symbol 17.xml
+      Size: 1539 bytes (+39 bytes)
+
+[刀.xml]
+  Reference: 主角肢体素材/刀.xml
+  Size: 1318 bytes
+  Hash: 889fed77848fd6e91c6abfa81d40deab
+  Visual duplicates found: 1
+    ✗ 余烬小队\余烬剑痴\刀.xml
+      Size: 1325 bytes (+7 bytes)
+
+[右大腿.xml]
+  Reference: 主角肢体素材/右大腿.xml
+  Size: 1519 bytes
+  Hash: d1724a940bd89f3dbb13563b95ac76b0
+  Visual duplicates found: 1
+    ✗ 余烬小队\余烬剑痴\Symbol 62.xml
+      Size: 1552 bytes (+33 bytes)
+
+[右手.xml]
+  Reference: 主角肢体素材/右手.xml
+  Size: 1494 bytes
+  Hash: b613c133b4efdc8c328b8d55fd3f4b59
+  Visual duplicates found: 1
+    ✗ 余烬小队\余烬剑痴\Symbol 71.xml
+      Size: 1533 bytes (+39 bytes)
+
+[头.xml]
+  Reference: 主角肢体素材/头.xml
+  Size: 1901 bytes
+  Hash: 93dc8932176c4f9924ec2b3d30a21498
+  Visual duplicates found: 1
+    ✗ 余烬小队\余烬剑痴\Symbol 46.xml
+      Size: 1946 bytes (+45 bytes)
+
+[小腿.xml]
+  Reference: 主角肢体素材/小腿.xml
+  Size: 1499 bytes
+  Hash: 1c297bc9b85d6e46d537b68d0afc2c66
+  Visual duplicates found: 1
+    ✗ 余烬小队\余烬剑痴\Symbol 58.xml
+      Size: 1538 bytes (+39 bytes)
+
+[屁股.xml]
+  Reference: 主角肢体素材/屁股.xml
+  Size: 1500 bytes
+  Hash: 40c92bbe8778f2763a2ff3c0e4471833
+  Visual duplicates found: 1
+    ✗ 余烬小队\余烬剑痴\Symbol 50.xml
+      Size: 1539 bytes (+39 bytes)
+
+[左下臂.xml]
+  Reference: 主角肢体素材/左下臂.xml
+  Size: 1516 bytes
+  Hash: 546462fd8d17ff6661074c56166ad93d
+  Visual duplicates found: 1
+    ✗ 余烬小队\余烬剑痴\Symbol 67.xml
+      Size: 1549 bytes (+33 bytes)
+
+[左大腿.xml]
+  Reference: 主角肢体素材/左大腿.xml
+  Size: 1518 bytes
+  Hash: f17aa2430f634d368675de4af0636dd5
+  Visual duplicates found: 1
+    ✗ 余烬小队\余烬剑痴\Symbol 33.xml
+      Size: 1551 bytes (+33 bytes)
+
+[手枪.xml]
+  Reference: 主角肢体素材/手枪.xml
+  Size: 1339 bytes
+  Hash: 6e90b545a5bb0cf80055b2be9a2d179d
+  Visual duplicates found: 1
+    ✗ 余烬小队\余烬剑痴\手枪.xml
+      Size: 1346 bytes (+7 bytes)
+
+[手枪2.xml]
+  Reference: 主角肢体素材/手枪2.xml
+  Size: 1241 bytes
+  Hash: 57c9804321f4a70a072abb0d7de67e91
+  Visual duplicates found: 1
+    ✗ 余烬小队\余烬剑痴\手枪2.xml
+      Size: 1248 bytes (+7 bytes)
+
+[脚.xml]
+  Reference: 主角肢体素材/脚.xml
+  Size: 1478 bytes
+  Hash: 47e8975c478a6670c98b2595d42fd9c8
+  Visual duplicates found: 1
+    ✗ 余烬小队\余烬剑痴\Symbol 54.xml
+      Size: 1523 bytes (+45 bytes)
+
+[长枪.xml]
+  Reference: 主角肢体素材/长枪.xml
+  Size: 1340 bytes
+  Hash: fa13a28755a54cf14324519d6f9c94d0
+  Visual duplicates found: 1
+    ✗ 余烬小队\余烬剑痴\长枪.xml
+      Size: 1347 bytes (+7 bytes)
+
+================================================================================
+SUMMARY
+================================================================================
+Reference symbols: 19
+Other symbols scanned: 1239
+Reference symbols with duplicates: 14
+Total duplicate files found: 14
+Total size of duplicate files: 22,047 bytes (21.5 KB)
+
+RECOMMENDATION:
+These duplicate symbols should be consolidated to use the reference
+symbols from '主角肢体素材' folder to reduce file size and maintain consistency.
