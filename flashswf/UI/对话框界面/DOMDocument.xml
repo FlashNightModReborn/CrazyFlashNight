@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="1024" height="576" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="88.2079048186946" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="1024" height="576" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" viewAngle3D="88.2079048186946" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="3.防具" itemID="66f580e8-0000216c"/>
           <DOMFolderItem name="3.防具/10.军阀系列" itemID="66f580e8-0000216d" isExpanded="true"/>
@@ -24,6 +24,10 @@
           <DOMFolderItem name="NPC/NPC-程铮" itemID="68f4e96e-00006656"/>
           <DOMFolderItem name="NPC/NPC-程铮/杂项" itemID="67d805c4-000014f5"/>
           <DOMFolderItem name="NPC/NPC-程铮/组件" itemID="68f4e950-00006620"/>
+          <DOMFolderItem name="NPC/NPC-冯佑权" itemID="68f82ffe-0000082d"/>
+          <DOMFolderItem name="NPC/NPC-冯佑权/组件" itemID="67da65a9-00002fbd"/>
+          <DOMFolderItem name="NPC/NPC-冯佑权/组件/武器" itemID="67da6758-0000300c"/>
+          <DOMFolderItem name="NPC/NPC-冯佑权/组件/衣袍" itemID="67da6760-00003011"/>
           <DOMFolderItem name="NPC/NPC-工匠Vanshuther" itemID="68f27e82-000039f7"/>
           <DOMFolderItem name="NPC/NPC-工匠Vanshuther/素材" itemID="68f27e82-000039f8"/>
           <DOMFolderItem name="NPC/NPC-体育老师" itemID="68ee9351-000066d7"/>
@@ -285,6 +289,29 @@
           <Include href="NPC/NPC-程铮/组件/左手.xml" loadImmediate="false" itemID="67d85878-000001a6" lastModified="1742231672"/>
           <Include href="NPC/NPC-程铮/组件/左小臂.xml" loadImmediate="false" itemID="67d7e4a8-0000124a" lastModified="1742231455"/>
           <Include href="NPC/NPC-程铮/组件/左小臂-衣袖.xml" loadImmediate="false" itemID="67d7edf3-0000129b" lastModified="1742204403"/>
+          <Include href="NPC/NPC-冯佑权/冯佑权.xml" loadImmediate="false" itemID="68f82fdd-00000808" lastModified="1761095645"/>
+          <Include href="NPC/NPC-冯佑权/组件/马尾.xml" loadImmediate="false" itemID="67da67aa-0000301c" lastModified="1742366634"/>
+          <Include href="NPC/NPC-冯佑权/组件/身体.xml" loadImmediate="false" itemID="67d9c559-00001752" lastModified="1760777785"/>
+          <Include href="NPC/NPC-冯佑权/组件/头.xml" loadImmediate="false" itemID="67d9c621-0000175b" lastModified="1761096775"/>
+          <Include href="NPC/NPC-冯佑权/组件/武器/打刀.xml" loadImmediate="false" itemID="67da6226-00002845" lastModified="1742365222"/>
+          <Include href="NPC/NPC-冯佑权/组件/武器/刀鞘.xml" loadImmediate="false" itemID="67da622b-0000284a" lastModified="1742365227"/>
+          <Include href="NPC/NPC-冯佑权/组件/衣袍-右上.xml" loadImmediate="false" itemID="67da67c0-00003021" lastModified="1742366656"/>
+          <Include href="NPC/NPC-冯佑权/组件/衣袍-右下.xml" loadImmediate="false" itemID="67da67cc-00003026" lastModified="1742366668"/>
+          <Include href="NPC/NPC-冯佑权/组件/衣袍-左上.xml" loadImmediate="false" itemID="67da678a-00003014" lastModified="1742366602"/>
+          <Include href="NPC/NPC-冯佑权/组件/衣袍-左下.xml" loadImmediate="false" itemID="67da678e-00003018" lastModified="1742366606"/>
+          <Include href="NPC/NPC-冯佑权/组件/衣袍/衣袍-后.xml" loadImmediate="false" itemID="67da6695-00002ff4" lastModified="1742366358"/>
+          <Include href="NPC/NPC-冯佑权/组件/衣袍/衣袍-右上.xml" loadImmediate="false" itemID="67da66b2-00002ff8" lastModified="1760777639"/>
+          <Include href="NPC/NPC-冯佑权/组件/衣袍/衣袍-右下.xml" loadImmediate="false" itemID="67da66b7-00002ffc" lastModified="1742366511"/>
+          <Include href="NPC/NPC-冯佑权/组件/衣袍/衣袍-左上.xml" loadImmediate="false" itemID="67da66d5-00003000" lastModified="1742366421"/>
+          <Include href="NPC/NPC-冯佑权/组件/衣袍/衣袍-左下.xml" loadImmediate="false" itemID="67da66da-00003004" lastModified="1742366426"/>
+          <Include href="NPC/NPC-冯佑权/组件/右大腿.xml" loadImmediate="false" itemID="67da6646-00002fdc" lastModified="1742366278"/>
+          <Include href="NPC/NPC-冯佑权/组件/右脚.xml" loadImmediate="false" itemID="67da666f-00002ff0" lastModified="1742366319"/>
+          <Include href="NPC/NPC-冯佑权/组件/右手.xml" itemIcon="1" loadImmediate="false" itemID="67da65ad-00002fbf" lastModified="1742366125"/>
+          <Include href="NPC/NPC-冯佑权/组件/右小腿.xml" loadImmediate="false" itemID="67da664c-00002fe0" lastModified="1742366284"/>
+          <Include href="NPC/NPC-冯佑权/组件/左大腿.xml" loadImmediate="false" itemID="67da6654-00002fe4" lastModified="1761094255"/>
+          <Include href="NPC/NPC-冯佑权/组件/左脚.xml" loadImmediate="false" itemID="67da666a-00002fec" lastModified="1742366314"/>
+          <Include href="NPC/NPC-冯佑权/组件/左手.xml" loadImmediate="false" itemID="67da65cb-00002fc1" lastModified="1742366160"/>
+          <Include href="NPC/NPC-冯佑权/组件/左小腿.xml" loadImmediate="false" itemID="67da6658-00002fe8" lastModified="1742366297"/>
           <Include href="NPC/NPC-工匠Vanshuther/后发.xml" loadImmediate="false" itemID="68f50a6a-00000766" lastModified="1760889450"/>
           <Include href="NPC/NPC-工匠Vanshuther/素材/屁股.xml" loadImmediate="false" itemID="68f27046-000033a5" lastModified="1760718918"/>
           <Include href="NPC/NPC-工匠Vanshuther/素材/上臂.xml" loadImmediate="false" itemID="68f27070-000033a8" lastModified="1760718960"/>
@@ -954,7 +981,7 @@
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
           <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1760889353"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1760889783"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1761096467"/>
           <Include href="发型/Symbol 799.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000814" lastModified="1710653981"/>
           <Include href="歌留多/歌留多胯.xml" loadImmediate="false" itemID="67096725-00000045" lastModified="1728669954"/>
           <Include href="歌留多/歌留多身体.xml" loadImmediate="false" itemID="67095275-0000000f" lastModified="1728665563"/>
@@ -1437,6 +1464,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="784480" publishTime="1761096316"/>
           <PublishItem publishSize="765309" publishTime="1760881425"/>
           <PublishItem publishSize="747854" publishTime="1760724438"/>
           <PublishItem publishSize="747853" publishTime="1760724287"/>
@@ -1456,6 +1484,5 @@
           <PublishItem publishSize="682338" publishTime="1755954076"/>
           <PublishItem publishSize="682842" publishTime="1752295700"/>
           <PublishItem publishSize="741490" publishTime="1752129363"/>
-          <PublishItem publishSize="741490" publishTime="1752129281"/>
      </publishHistory>
 </DOMDocument>

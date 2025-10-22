@@ -1,0 +1,241 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-冯佑权/冯佑权" itemID="68f82fdd-00000808" lastModified="1761095645" lastUniqueIdentifier="21">
+  <timeline>
+    <DOMTimeline name="冯佑权">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/马尾" centerPoint3DX="200.75" centerPoint3DY="102.5">
+                  <matrix>
+                    <Matrix a="1.0999755859375" d="1.0999755859375" tx="170.8" ty="44.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.25" y="53.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/衣袍/衣袍-后">
+                  <matrix>
+                    <Matrix d="0.932449340820313" tx="119.55" ty="290.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="102.65" y="107.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix d="0.932449340820313" tx="-455.05" ty="15.45"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.13134765625" d="0.050689697265625" tx="685.35" ty="635.45"/>
+                        </matrix>
+                        <GradientEntry alpha="0.8" ratio="0"/>
+                        <GradientEntry alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!15218 13294[14593 13535 13708 13535!13708 13535[12823 13535 12197 13294!12197 13294[11573 13052 11573 12711!11573 12711[11573 12369 12197 12127!12197 12127[12823 11886 13708 11886!13708 11886[14593 11886 15218 12127!15218 12127[15844
+ 12369 15844 12711!15844 12711[15844 13052 15218 13294"/>
+                    <Edge cubics="!11573 12711(;11573,12483 11781,12288 12197,12127q11573 12711Q11573 12369q12197 12127);"/>
+                    <Edge cubics="!12197 13294(;11781,13133 11573,12938 11573,12711q12197 13294Q11573 13052q11573 12711);"/>
+                    <Edge cubics="!15218 12127(;15635,12288 15844,12483 15844,12711q15218 12127Q15844 12369q15844 12711);"/>
+                    <Edge cubics="!13708 11886(;14298,11886 14801,11966 15218,12127q13708 11886Q14593 11886q15218 12127);"/>
+                    <Edge cubics="!15218 13294(;14801,13454 14298,13535 13708,13535q15218 13294Q14593 13535q13708 13535);"/>
+                    <Edge cubics="!15844 12711(;15844,12938 15635,13133 15218,13294q15844 12711Q15844 13052q15218 13294);"/>
+                    <Edge cubics="!12197 12127(;12614,11966 13118,11886 13708,11886q12197 12127Q12823 11886q13708 11886);"/>
+                    <Edge cubics="!13708 13535(;13118,13535 12614,13454 12197,13294q13708 13535Q12823 13535q12197 13294);"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/武器/打刀" centerPoint3DX="436.7" centerPoint3DY="388.25">
+                  <matrix>
+                    <Matrix a="0.965927124023438" b="-0.252578735351563" c="0.2587890625" d="0.9427490234375" tx="275.55" ty="304.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="61.2" y="66.85"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter contrast="30"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/左手" centerPoint3DX="339.85" centerPoint3DY="344.25">
+                  <matrix>
+                    <Matrix a="0.20391845703125" b="0.72064208984375" c="-0.772857666015625" d="0.190139770507813" tx="339.4" ty="344.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.9" y="-0.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="-0.847152709960938" d="0.841033935546875" tx="601.3" ty="13"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#040404"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!7606 6368[8077 6487 8679 6408!8679 6408[#2440.39 #18B8.1 9392.5 6445.5!9392.5 6445.5[#2520.B #19A2.C8 9553 6747.5!9553 6747.5[#2581.67 #1B14.49 9590 7016!9590 7016[#253D.21 #1D13.5B 9115 7654.5!9115 7654.5[#21F8.DA #1EB9.BD 8146 7806
+!8146 7806[#1DAB.2A #1E42.2E 7322 7495!7322 7495[7061 7026 7099 6638!7099 6638[7136 6249 7606 6368"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/左脚">
+                  <matrix>
+                    <Matrix d="0.932449340820313" tx="237.5" ty="561.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="37.05" y="26.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/右脚">
+                  <matrix>
+                    <Matrix d="0.932449340820313" tx="149.7" ty="575.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="36.75" y="29.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/右小腿">
+                  <matrix>
+                    <Matrix d="0.932449340820313" tx="151.5" ty="431.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.15" y="84.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/左小腿">
+                  <matrix>
+                    <Matrix d="0.932449340820313" tx="240.4" ty="430.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="26.45" y="79"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/衣袍-左上">
+                  <matrix>
+                    <Matrix d="0.932449340820313" tx="277.85" ty="143.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.2" y="68.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/衣袍-左下">
+                  <matrix>
+                    <Matrix d="0.932449340820313" tx="272.05" ty="230.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.85" y="69.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/左大腿" centerPoint3DX="275.4" centerPoint3DY="373.4">
+                  <matrix>
+                    <Matrix d="0.932449340820313" tx="245.3" ty="290.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.1" y="88.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/右大腿">
+                  <matrix>
+                    <Matrix d="0.932449340820313" tx="180.15" ty="282.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.15" y="95.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/身体">
+                  <matrix>
+                    <Matrix d="0.932449340820313" tx="176.95" ty="126.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="65.35" y="95.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/头" centerPoint3DX="259.6" centerPoint3DY="88.75">
+                  <matrix>
+                    <Matrix a="1.15496826171875" d="1.15496826171875" tx="170.8" ty="30.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.1" y="56.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/衣袍/衣袍-右上">
+                  <matrix>
+                    <Matrix d="0.932449340820313" tx="168.7" ty="133.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="34.45" y="92.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/衣袍/衣袍-右下">
+                  <matrix>
+                    <Matrix d="0.932449340820313" tx="93.85" ty="297"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="74.95" y="118.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/武器/刀鞘" centerPoint3DX="107.65" centerPoint3DY="311.2">
+                  <matrix>
+                    <Matrix a="0.98468017578125" b="-0.170013427734375" c="0.1741943359375" d="0.961044311523438" ty="229.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="91.4" y="101.25"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="-25" hue="-160"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/右手" symbolType="graphic" centerPoint3DX="170.45" centerPoint3DY="357.5" loop="loop">
+                  <matrix>
+                    <Matrix a="0.14581298828125" b="0.779678344726563" c="-0.885299682617188" d="0.143966674804688" tx="170.55" ty="361.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/衣袍/衣袍-左上">
+                  <matrix>
+                    <Matrix d="0.932449340820313" tx="279.8" ty="138.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.15" y="87.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/衣袍/衣袍-左下">
+                  <matrix>
+                    <Matrix d="0.932449340820313" tx="283.65" ty="298.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.35" y="108.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/衣袍-右上">
+                  <matrix>
+                    <Matrix d="0.932449340820313" tx="128.85" ty="141.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.55" y="66.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-冯佑权/组件/衣袍-右下" centerPoint3DX="151.75" centerPoint3DY="301.9">
+                  <matrix>
+                    <Matrix d="0.932449340820313" tx="107.35" ty="233.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.4" y="73.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
