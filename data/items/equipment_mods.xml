@@ -176,12 +176,11 @@
                 <magicdefence>
                     <冷>5</冷>
                     <热>5</热>
-                    <波>5</波>
                     <电>10</电>
                 </magicdefence>
             </override>
             <flat>
-                <toughness>5</toughness>
+                <toughness>10</toughness>
             </flat>
         </stats>
         <description>弹性体聚合物，提供冷热电抗性与韧性。</description>
@@ -205,6 +204,7 @@
                 <magicdefence>
                     <蚀>10</蚀>
                     <毒>5</毒>
+                    <波>5</波>
                 </magicdefence>
             </override>
             <percentage>
@@ -244,7 +244,7 @@
                 </magicdefence>
             </override>
             <percentage>
-                <punch>5</punch>
+                <punch>6</punch>
             </percentage>
         </stats>
         <description>高分子粘结剂，提供冲击抗性与韧性。</description>
