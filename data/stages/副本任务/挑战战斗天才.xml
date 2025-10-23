@@ -32,6 +32,15 @@
                         <Interval>300</Interval>
                         <Quantity>1</Quantity>
                         <Level>100</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>成长的勋章</名字>
+                                <概率>100</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                                <最小逆向等级>10</最小逆向等级>
+                            </掉落物>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

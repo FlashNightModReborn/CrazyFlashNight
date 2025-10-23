@@ -589,4 +589,14 @@
         </stats>
         <description>生物毒素，为武器额外附着少量毒属性附加伤害。</description>
     </mod>
+    <mod>
+        <name>成长的勋章</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备,颈部装备,刀,手枪,长枪</use>
+        <stats>
+            <flat>
+                <level>-10</level>
+            </flat>
+        </stats>
+        <description>强者的证明，降低装备等级限制。</description>
+    </mod>
 </root>
