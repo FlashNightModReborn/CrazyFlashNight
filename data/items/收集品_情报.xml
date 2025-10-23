@@ -1,9 +1,53 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<!--已用ID：[1, 311, 312, 313, 314, 315, 316, 317, 318, 319, 327, 352, 372, 373, 374, 375, 380, 381, 382, 383, 2911, 2912, 2913, 20019, 20020, 20021, 20022, 20033]
-预留ID区间：17002-17300-->
+<?xml version="1.0" encoding="UTF-8"?>
+<!--已用ID：[17001, 17002, 17003, 17004, 17005, 17006, 17007, 17008, 17009, 17010, 17011, 17012, 17013, 17014, 17015, 17016, 17017, 17018, 17019, 17020, 17021, 17022, 17023, 17024, 17025, 17026, 17027, 17028, 17029, 17030, 17031, 17032, 17033, 17034, 17035, 17036, 17037, 17038, 17039, 17040, 17041, 17042, 17043, 17044]
+预留ID区间：17001-17327-->
 <root>
   <item>
     <id>17001</id>
+    <name>基础家常菜配方</name>
+    <displayname>基础家常菜配方</displayname>
+    <icon>烹饪指南</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>0</price>
+    <maxvalue>1</maxvalue>
+    <description>记录了基础家常菜的制作方法。</description>
+  </item>
+  <item>
+    <id>17002</id>
+    <name>初级家常菜配方</name>
+    <displayname>初级家常菜配方</displayname>
+    <icon>烹饪指南</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>0</price>
+    <maxvalue>1</maxvalue>
+    <description>记录了初级家常菜的制作方法。</description>
+  </item>
+  <item>
+    <id>17003</id>
+    <name>酒泡氤氲</name>
+    <displayname>酒泡氤氲</displayname>
+    <icon>酒泡氤氲</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>0</price>
+    <maxvalue>2</maxvalue>
+    <description>基于实用的农业出口政策，A兵团的酒吧通常提供相对劣质的自酿酒，于是发酵的气泡往往伴随脏话冒出，又弥散在酒吧里。当然，如果你愿意倾听，酒气之间也会有一些有价值的东西···</description>
+  </item>
+  <item>
+    <id>17004</id>
+    <name>幻层残响</name>
+    <displayname>幻层残响</displayname>
+    <icon>幻层残响</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>0</price>
+    <maxvalue>15</maxvalue>
+    <description>末日之后，旧世界的数据网络碎片依然在废墟中的服务器节点间流转。解码这些残响，就是触摸这个破碎世界仍在跳动的数字脉搏。</description>
+  </item>
+  <item>
+    <id>17005</id>
     <name>Blue的纸条</name>
     <displayname>Blue的纸条</displayname>
     <icon>废城资料</icon>
@@ -14,7 +58,7 @@
     <description>Blue关于废城任务进度的简单报告，可以凭此批示来协调任务安排。</description>
   </item>
   <item>
-    <id>1</id>
+    <id>17006</id>
     <name>资料</name>
     <displayname>资料</displayname>
     <icon>废城资料</icon>
@@ -25,221 +69,7 @@
     <description>关于废城中钻头与僵尸的资料，其中一部分关键信息被加密了。</description>
   </item>
   <item>
-    <id>311</id>
-    <name>浮士德的情报书</name>
-    <displayname>浮士德的情报书</displayname>
-    <icon>浮士德的情报书</icon>
-    <type>收集品</type>
-    <use>情报</use>
-    <price>5000</price>
-    <maxvalue>1</maxvalue>
-    <description>情报书记载了大量重要信息，掌握它们的野心家往往更有可能获取主动权。
-游荡在堕落城的浮士德兄弟以迅猛的刀法和强大的火力压制闻名。他们的组合是坚不可摧的——人们往往这么认为。然而，只要你击败了其中之一···</description>
-  </item>
-  <item>
-    <id>312</id>
-    <name>牛仔的情报书</name>
-    <displayname>牛仔的情报书</displayname>
-    <icon>牛仔的情报书</icon>
-    <type>收集品</type>
-    <use>情报</use>
-    <price>5000</price>
-    <maxvalue>1</maxvalue>
-    <description>情报书记载了大量重要信息，掌握它们的野心家往往更有可能获取主动权。
-将军倒台后，牛仔收拢了军阀残部，在荒野重新站住脚跟。手持枪械，身揣炸药的牛仔是无数试图挑战军阀威严的战士的噩梦。不过，据说牛仔有一个护士模样的情人。</description>
-  </item>
-  <item>
-    <id>313</id>
-    <name>黑铁会的秘密情报书</name>
-    <displayname>黑铁会的秘密情报书</displayname>
-    <icon>黑铁会的秘密情报书</icon>
-    <type>收集品</type>
-    <use>情报</use>
-    <price>3000</price>
-    <maxvalue>1</maxvalue>
-    <description>情报书记载了大量重要信息，掌握它们的野心家往往更有可能获取主动权。
-黑铁会保有的绝密资料，据知情人士透露，这之中很可能记载了有关“&lt;font color="#ff00ff"&gt;诺亚方舟&lt;/font&gt;”的信息。</description>
-  </item>
-  <item>
-    <id>314</id>
-    <name>黑铁会信物</name>
-    <displayname>黑铁会信物</displayname>
-    <icon>黑铁会信物</icon>
-    <type>收集品</type>
-    <use>情报</use>
-    <price>4000</price>
-    <maxvalue>1</maxvalue>
-    <description>黑铁会内部会通过信物快速传递消息，不过也因此，外人可以利用这个规则渗透黑铁会。但能统治堕落城如此之久的黑铁会，又岂能是随随便便渗透的？</description>
-  </item>
-  <item>
-    <id>315</id>
-    <name>翅虎堂徽章</name>
-    <displayname>翅虎堂徽章</displayname>
-    <icon>翅虎堂徽章</icon>
-    <type>收集品</type>
-    <use>情报</use>
-    <price>2000</price>
-    <maxvalue>3</maxvalue>
-    <description>黑铁会的徽章与令牌体系保证了全会上下的高组织度。</description>
-  </item>
-  <item>
-    <id>316</id>
-    <name>火凤堂徽章</name>
-    <displayname>火凤堂徽章</displayname>
-    <icon>火凤堂徽章</icon>
-    <type>收集品</type>
-    <use>情报</use>
-    <price>2000</price>
-    <maxvalue>2</maxvalue>
-    <description>黑铁会的徽章与令牌体系保证了全会上下的高组织度。</description>
-  </item>
-  <item>
-    <id>317</id>
-    <name>黑龙堂徽章</name>
-    <displayname>黑龙堂徽章</displayname>
-    <icon>黑龙堂徽章</icon>
-    <type>收集品</type>
-    <use>情报</use>
-    <price>2000</price>
-    <maxvalue>1</maxvalue>
-    <description>黑铁会的徽章与令牌体系保证了全会上下的高组织度。</description>
-  </item>
-  <item>
-    <id>318</id>
-    <name>翅虎令</name>
-    <displayname>翅虎令</displayname>
-    <icon>翅虎令</icon>
-    <type>收集品</type>
-    <use>情报</use>
-    <price>5000</price>
-    <maxvalue>2</maxvalue>
-    <description>上面记录了翅虎堂相关的部分任务内容。</description>
-  </item>
-  <item>
-    <id>319</id>
-    <name>火凤令</name>
-    <displayname>火凤令</displayname>
-    <icon>火凤令</icon>
-    <type>收集品</type>
-    <use>情报</use>
-    <price>5000</price>
-    <maxvalue>2</maxvalue>
-    <description>上面记录了火凤堂相关的部分内容，但不全面。</description>
-  </item>
-  <item>
-    <id>327</id>
-    <name>黑龙令</name>
-    <displayname>黑龙令</displayname>
-    <icon>黑龙令</icon>
-    <type>收集品</type>
-    <use>情报</use>
-    <price>5000</price>
-    <maxvalue>2</maxvalue>
-    <description>上面记录了黑龙堂相关的部分任务内容。黑龙令牌的大小要超过其他两个堂口令牌的大小，但对于那些黑龙堂的壮汉来说，这并不算什么。</description>
-  </item>
-  <item>
-    <id>372</id>
-    <name>镜之虎彻制作图纸</name>
-    <displayname>镜之虎彻制作图纸</displayname>
-    <icon>制作图纸默认</icon>
-    <type>收集品</type>
-    <use>情报</use>
-    <price>10000</price>
-    <maxvalue>1</maxvalue>
-    <description>记录了镜之虎彻的制作方法</description>
-  </item>
-  <item>
-    <id>373</id>
-    <name>加强版MP7制作图纸</name>
-    <displayname>加强版MP7制作图纸</displayname>
-    <icon>制作图纸默认</icon>
-    <type>收集品</type>
-    <use>情报</use>
-    <price>10000</price>
-    <maxvalue>1</maxvalue>
-    <description>记录了加强版MP7的制作方法</description>
-  </item>
-  <item>
-    <id>374</id>
-    <name>双管白火铳制作图纸</name>
-    <displayname>双管白火铳制作图纸</displayname>
-    <icon>制作图纸默认</icon>
-    <type>收集品</type>
-    <use>情报</use>
-    <price>10000</price>
-    <maxvalue>1</maxvalue>
-    <description>记录了双管白火铳的制作方法</description>
-  </item>
-  <item>
-    <id>375</id>
-    <name>A兵团制式套装改造图纸</name>
-    <displayname>A兵团制式套装改造图纸</displayname>
-    <icon>制作图纸默认</icon>
-    <type>收集品</type>
-    <use>情报</use>
-    <price>30000</price>
-    <maxvalue>1</maxvalue>
-    <description>记录了A兵团精致战术套装与项链的制作方法。图纸后面附了一张小F的笔记。</description>
-  </item>
-  <item>
-    <id>380</id>
-    <name>地铁站通关证明</name>
-    <displayname>废城基础资料集</displayname>
-    <icon>地铁站通关证明</icon>
-    <type>收集品</type>
-    <use>情报</use>
-    <price>2000</price>
-    <maxvalue>100</maxvalue>
-    <description>收集散落在废城各处的资料，整理得来的废城资料集。</description>
-  </item>
-  <item>
-    <id>381</id>
-    <name>摇滚公园通关证明</name>
-    <displayname>摇滚公园基础资料集</displayname>
-    <icon>摇滚公园通关证明</icon>
-    <type>收集品</type>
-    <use>情报</use>
-    <price>3000</price>
-    <maxvalue>100</maxvalue>
-    <description>从堕落城纷繁复杂的情报堆里获取到的摇滚公园资料集。</description>
-    <description1 />
-  </item>
-  <item>
-    <id>382</id>
-    <name>军阀前线基地通关证明</name>
-    <displayname>军阀基础资料集</displayname>
-    <icon>军阀前线基地通关证明</icon>
-    <type>收集品</type>
-    <use>情报</use>
-    <price>5000</price>
-    <maxvalue>100</maxvalue>
-    <description>荒漠中由尸体与腐臭“传颂”的军阀资料集。</description>
-  </item>
-  <item>
-    <id>383</id>
-    <name>兵工厂备份硬盘</name>
-    <displayname>兵工厂备份硬盘</displayname>
-    <icon>兵工厂备份硬盘</icon>
-    <type>收集品</type>
-    <use>情报</use>
-    <price>20000</price>
-    <maxvalue>1</maxvalue>
-    <description>从诺亚前线基地兵工厂中枢内发现的硬盘。</description>
-  </item>
-  <item>
-    <id>352</id>
-    <name>方舟秘钥</name>
-    <displayname>方舟秘钥</displayname>
-    <icon>方舟秘钥</icon>
-    <type>收集品</type>
-    <use>情报</use>
-    <weight>1</weight>
-    <price>40000</price>
-    <maxvalue>1</maxvalue>
-    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
-  </item>
-  <item>
-    <id>2909</id>
+    <id>17007</id>
     <name>特制委托书</name>
     <displayname>特制委托书</displayname>
     <icon>特制委托书</icon>
@@ -251,7 +81,7 @@
 拥有该情报后可在黑市商店购买【镭射瞄准具】。</description>
   </item>
   <item>
-    <id>2911</id>
+    <id>17008</id>
     <name>关于通缉令1</name>
     <displayname>关于通缉令 #1</displayname>
     <icon>关于通缉令1</icon>
@@ -263,7 +93,7 @@
 拥有该情报后可在黑市商店购买【战术握把】。</description>
   </item>
   <item>
-    <id>2912</id>
+    <id>17009</id>
     <name>关于通缉令2</name>
     <displayname>关于通缉令 #2</displayname>
     <icon>关于通缉令2</icon>
@@ -274,7 +104,7 @@
     <description>从浮士德的情报书中解析得到。似乎是一份文件的后半部分，内含对通缉犯的观察记录。撰写者的署名是Nyx。</description>
   </item>
   <item>
-    <id>2913</id>
+    <id>17010</id>
     <name>关于诺亚方舟</name>
     <displayname>关于诺亚方舟</displayname>
     <icon>诺亚档案图标</icon>
@@ -285,7 +115,154 @@
     <description>从牛仔的情报书中解析得到。牛仔整合了来自军阀的部分“诺亚方舟”相关的资料，并提出了自己的推测。</description>
   </item>
   <item>
-    <id>20019</id>
+    <id>17011</id>
+    <name>翅虎堂徽章</name>
+    <displayname>翅虎堂徽章</displayname>
+    <icon>翅虎堂徽章</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>2000</price>
+    <maxvalue>3</maxvalue>
+    <description>黑铁会的徽章与令牌体系保证了全会上下的高组织度。</description>
+  </item>
+  <item>
+    <id>17012</id>
+    <name>火凤堂徽章</name>
+    <displayname>火凤堂徽章</displayname>
+    <icon>火凤堂徽章</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>2000</price>
+    <maxvalue>2</maxvalue>
+    <description>黑铁会的徽章与令牌体系保证了全会上下的高组织度。</description>
+  </item>
+  <item>
+    <id>17013</id>
+    <name>黑龙堂徽章</name>
+    <displayname>黑龙堂徽章</displayname>
+    <icon>黑龙堂徽章</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>2000</price>
+    <maxvalue>1</maxvalue>
+    <description>黑铁会的徽章与令牌体系保证了全会上下的高组织度。</description>
+  </item>
+  <item>
+    <id>17014</id>
+    <name>地铁站通关证明</name>
+    <displayname>废城基础资料集</displayname>
+    <icon>地铁站通关证明</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>2000</price>
+    <maxvalue>100</maxvalue>
+    <description>收集散落在废城各处的资料，整理得来的废城资料集。</description>
+  </item>
+  <item>
+    <id>17015</id>
+    <name>黑铁会的秘密情报书</name>
+    <displayname>黑铁会的秘密情报书</displayname>
+    <icon>黑铁会的秘密情报书</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>3000</price>
+    <maxvalue>1</maxvalue>
+    <description>情报书记载了大量重要信息，掌握它们的野心家往往更有可能获取主动权。
+黑铁会保有的绝密资料，据知情人士透露，这之中很可能记载了有关“&lt;font color="#ff00ff"&gt;诺亚方舟&lt;/font&gt;”的信息。</description>
+  </item>
+  <item>
+    <id>17016</id>
+    <name>摇滚公园通关证明</name>
+    <displayname>摇滚公园基础资料集</displayname>
+    <icon>摇滚公园通关证明</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>3000</price>
+    <maxvalue>100</maxvalue>
+    <description>从堕落城纷繁复杂的情报堆里获取到的摇滚公园资料集。</description>
+    <description1 />
+  </item>
+  <item>
+    <id>17017</id>
+    <name>黑铁会信物</name>
+    <displayname>黑铁会信物</displayname>
+    <icon>黑铁会信物</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>4000</price>
+    <maxvalue>1</maxvalue>
+    <description>黑铁会内部会通过信物快速传递消息，不过也因此，外人可以利用这个规则渗透黑铁会。但能统治堕落城如此之久的黑铁会，又岂能是随随便便渗透的？</description>
+  </item>
+  <item>
+    <id>17018</id>
+    <name>浮士德的情报书</name>
+    <displayname>浮士德的情报书</displayname>
+    <icon>浮士德的情报书</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>5000</price>
+    <maxvalue>1</maxvalue>
+    <description>情报书记载了大量重要信息，掌握它们的野心家往往更有可能获取主动权。
+游荡在堕落城的浮士德兄弟以迅猛的刀法和强大的火力压制闻名。他们的组合是坚不可摧的——人们往往这么认为。然而，只要你击败了其中之一···</description>
+  </item>
+  <item>
+    <id>17019</id>
+    <name>牛仔的情报书</name>
+    <displayname>牛仔的情报书</displayname>
+    <icon>牛仔的情报书</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>5000</price>
+    <maxvalue>1</maxvalue>
+    <description>情报书记载了大量重要信息，掌握它们的野心家往往更有可能获取主动权。
+将军倒台后，牛仔收拢了军阀残部，在荒野重新站住脚跟。手持枪械，身揣炸药的牛仔是无数试图挑战军阀威严的战士的噩梦。不过，据说牛仔有一个护士模样的情人。</description>
+  </item>
+  <item>
+    <id>17020</id>
+    <name>翅虎令</name>
+    <displayname>翅虎令</displayname>
+    <icon>翅虎令</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>5000</price>
+    <maxvalue>2</maxvalue>
+    <description>上面记录了翅虎堂相关的部分任务内容。</description>
+  </item>
+  <item>
+    <id>17021</id>
+    <name>火凤令</name>
+    <displayname>火凤令</displayname>
+    <icon>火凤令</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>5000</price>
+    <maxvalue>2</maxvalue>
+    <description>上面记录了火凤堂相关的部分内容，但不全面。</description>
+  </item>
+  <item>
+    <id>17022</id>
+    <name>黑龙令</name>
+    <displayname>黑龙令</displayname>
+    <icon>黑龙令</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>5000</price>
+    <maxvalue>2</maxvalue>
+    <description>上面记录了黑龙堂相关的部分任务内容。黑龙令牌的大小要超过其他两个堂口令牌的大小，但对于那些黑龙堂的壮汉来说，这并不算什么。</description>
+  </item>
+  <item>
+    <id>17023</id>
+    <name>军阀前线基地通关证明</name>
+    <displayname>军阀基础资料集</displayname>
+    <icon>军阀前线基地通关证明</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>5000</price>
+    <maxvalue>100</maxvalue>
+    <description>荒漠中由尸体与腐臭“传颂”的军阀资料集。</description>
+  </item>
+  <item>
+    <id>17024</id>
     <name>酒保线报：黑铁会崛起于乡间</name>
     <displayname>酒保线报：黑铁会崛起于乡间</displayname>
     <icon>黑铁会档案图标</icon>
@@ -296,7 +273,7 @@
     <description>酒保总能提供有用的信息···</description>
   </item>
   <item>
-    <id>20020</id>
+    <id>17025</id>
     <name>硬化僵尸情报</name>
     <displayname>硬化僵尸情报</displayname>
     <icon>硬化僵尸情报</icon>
@@ -307,7 +284,7 @@
     <description>记载了硬化僵尸的情报。</description>
   </item>
   <item>
-    <id>20021</id>
+    <id>17026</id>
     <name>酒保线报：军阀内部形势</name>
     <displayname>酒保线报：军阀内部形势</displayname>
     <icon>军阀档案图标</icon>
@@ -316,144 +293,133 @@
     <price>5000</price>
     <maxvalue>2</maxvalue>
     <description>酒保总能提供有用的信息···</description>
-  </item>  
-  <item>
-      <id>20022</id>
-      <name>学校与摇滚敌对的缘由？</name>
-      <displayname>学校与摇滚敌对的缘由？</displayname>
-      <icon>报纸1</icon>
-      <type>收集品</type>
-      <use>情报</use>
-      <price>5000</price>
-      <maxvalue>1</maxvalue>
-      <description>《政治构造视角》特刊</description>
-  </item>  
-  <item>
-      <id>20023</id>
-      <name>从宝石线人视角一窥新经济野望</name>
-      <displayname>从宝石线人视角一窥新经济野望</displayname>
-      <icon>报纸1</icon>
-      <type>收集品</type>
-      <use>情报</use>
-      <price>5000</price>
-      <maxvalue>1</maxvalue>
-      <description>《政治构造视角》特刊</description>
-  </item>  
-  <item>
-      <id>20024</id>
-      <name>黑铁会中的另类保守</name>
-      <displayname>黑铁会中的另类保守</displayname>
-      <icon>报纸1</icon>
-      <type>收集品</type>
-      <use>情报</use>
-      <price>5000</price>
-      <maxvalue>1</maxvalue>
-      <description>《政治构造视角》特刊</description>
-  </item>  
-  <item>
-      <id>20025</id>
-      <name>对前治安官的采访</name>
-      <displayname>对前治安官的采访</displayname>
-      <icon>报纸1</icon>
-      <type>收集品</type>
-      <use>情报</use>
-      <price>5000</price>
-      <maxvalue>1</maxvalue>
-      <description>尘都临时政府的内部资料</description>
-  </item>  
-  <item>
-      <id>20026</id>
-      <name>《黑铁书》</name>
-      <displayname>《黑铁书》</displayname>
-      <icon>《黑铁书》</icon>
-      <type>收集品</type>
-      <use>情报</use>
-      <price>5000</price>
-      <maxvalue>7</maxvalue>
-      <description>黑铁会内部的官方历史教科书。你懂的，经学。</description>
   </item>
   <item>
-      <id>20027</id>
-      <name>Andy档案</name>
-      <displayname>Andy档案</displayname>
-      <icon></icon>
-      <type>收集品</type>
-      <use>情报</use>
-      <price>5000</price>
-      <maxvalue>1</maxvalue>
-      <description>A兵团高层的档案。</description>
-  </item>
-  <item>
-      <id>20028</id>
-      <name>BPK档案</name>
-      <displayname>BPK档案</displayname>
-      <icon></icon>
-      <type>收集品</type>
-      <use>情报</use>
-      <price>5000</price>
-      <maxvalue>1</maxvalue>
-      <description>A兵团高层的档案。</description>
-  </item>
-  <item>
-      <id>20029</id>
-      <name>Blue档案</name>
-      <displayname>Blue档案</displayname>
-      <icon></icon>
-      <type>收集品</type>
-      <use>情报</use>
-      <price>5000</price>
-      <maxvalue>1</maxvalue>
-      <description>A兵团高层的档案。</description>
-  </item>
-  <item>
-      <id>20030</id>
-      <name>堕落城假肢市场动荡</name>
-      <displayname>堕落城假肢市场动荡</displayname>
-      <icon>报纸2</icon>
-      <type>收集品</type>
-      <use>情报</use>
-      <price>5000</price>
-      <maxvalue>1</maxvalue>
-      <description>堕落城假肢市场动荡：政治紧张与派系冲突引发价格飙升——《堕落城每日哨兵报》的专题报道。</description>
-  </item>
-  <item>
-      <id>20031</id>
-      <name>堕落城净水材料供应告急</name>
-      <displayname>堕落城净水材料供应告急</displayname>
-      <icon>报纸2</icon>
-      <type>收集品</type>
-      <use>情报</use>
-      <price>5000</price>
-      <maxvalue>1</maxvalue>
-      <description>堕落城净水材料供应告急，外部势力疑借机渗透——《堕落城每日哨兵报》的专题报道。</description>
-  </item>
-  <item>
-      <id>20032</id>
-      <name>知识灯塔风雨飘摇</name>
-      <displayname>知识灯塔风雨飘摇</displayname>
-      <icon>报纸2</icon>
-      <type>收集品</type>
-      <use>情报</use>
-      <price>5000</price>
-      <maxvalue>1</maxvalue>
-      <description>知识灯塔风雨飘摇：堕落城联合大学派系林立，外部势力角力加剧——《堕落城每日哨兵报》的专题报道。</description>
-  </item>
-  <item>
-    <id>20033</id>
-    <name>基础家常菜配方</name>
-    <displayname>基础家常菜配方</displayname>
-    <icon>烹饪指南</icon>
+    <id>17027</id>
+    <name>学校与摇滚敌对的缘由？</name>
+    <displayname>学校与摇滚敌对的缘由？</displayname>
+    <icon>报纸1</icon>
     <type>收集品</type>
     <use>情报</use>
-    <price>0</price>
+    <price>5000</price>
     <maxvalue>1</maxvalue>
-    <description>记录了基础家常菜的制作方法。</description>
+    <description>《政治构造视角》特刊</description>
   </item>
   <item>
-    <id>20034</id>
+    <id>17028</id>
+    <name>从宝石线人视角一窥新经济野望</name>
+    <displayname>从宝石线人视角一窥新经济野望</displayname>
+    <icon>报纸1</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>5000</price>
+    <maxvalue>1</maxvalue>
+    <description>《政治构造视角》特刊</description>
+  </item>
+  <item>
+    <id>17029</id>
+    <name>黑铁会中的另类保守</name>
+    <displayname>黑铁会中的另类保守</displayname>
+    <icon>报纸1</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>5000</price>
+    <maxvalue>1</maxvalue>
+    <description>《政治构造视角》特刊</description>
+  </item>
+  <item>
+    <id>17030</id>
+    <name>对前治安官的采访</name>
+    <displayname>对前治安官的采访</displayname>
+    <icon>报纸1</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>5000</price>
+    <maxvalue>1</maxvalue>
+    <description>尘都临时政府的内部资料</description>
+  </item>
+  <item>
+    <id>17031</id>
+    <name>《黑铁书》</name>
+    <displayname>《黑铁书》</displayname>
+    <icon>《黑铁书》</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>5000</price>
+    <maxvalue>7</maxvalue>
+    <description>黑铁会内部的官方历史教科书。你懂的，经学。</description>
+  </item>
+  <item>
+    <id>17032</id>
+    <name>Andy档案</name>
+    <displayname>Andy档案</displayname>
+    <icon />
+    <type>收集品</type>
+    <use>情报</use>
+    <price>5000</price>
+    <maxvalue>1</maxvalue>
+    <description>A兵团高层的档案。</description>
+  </item>
+  <item>
+    <id>17033</id>
+    <name>BPK档案</name>
+    <displayname>BPK档案</displayname>
+    <icon />
+    <type>收集品</type>
+    <use>情报</use>
+    <price>5000</price>
+    <maxvalue>1</maxvalue>
+    <description>A兵团高层的档案。</description>
+  </item>
+  <item>
+    <id>17034</id>
+    <name>Blue档案</name>
+    <displayname>Blue档案</displayname>
+    <icon />
+    <type>收集品</type>
+    <use>情报</use>
+    <price>5000</price>
+    <maxvalue>1</maxvalue>
+    <description>A兵团高层的档案。</description>
+  </item>
+  <item>
+    <id>17035</id>
+    <name>堕落城假肢市场动荡</name>
+    <displayname>堕落城假肢市场动荡</displayname>
+    <icon>报纸2</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>5000</price>
+    <maxvalue>1</maxvalue>
+    <description>堕落城假肢市场动荡：政治紧张与派系冲突引发价格飙升——《堕落城每日哨兵报》的专题报道。</description>
+  </item>
+  <item>
+    <id>17036</id>
+    <name>堕落城净水材料供应告急</name>
+    <displayname>堕落城净水材料供应告急</displayname>
+    <icon>报纸2</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>5000</price>
+    <maxvalue>1</maxvalue>
+    <description>堕落城净水材料供应告急，外部势力疑借机渗透——《堕落城每日哨兵报》的专题报道。</description>
+  </item>
+  <item>
+    <id>17037</id>
+    <name>知识灯塔风雨飘摇</name>
+    <displayname>知识灯塔风雨飘摇</displayname>
+    <icon>报纸2</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>5000</price>
+    <maxvalue>1</maxvalue>
+    <description>知识灯塔风雨飘摇：堕落城联合大学派系林立，外部势力角力加剧——《堕落城每日哨兵报》的专题报道。</description>
+  </item>
+  <item>
+    <id>17038</id>
     <name>ECHO-034的加密日志</name>
     <displayname>ECHO-034的加密日志</displayname>
-    <icon></icon>
+    <icon />
     <type>收集品</type>
     <use>情报</use>
     <price>5000</price>
@@ -461,36 +427,70 @@
     <description>游离在失控之城中，区块链的自白与自焚。</description>
   </item>
   <item>
-    <id>20035</id>
-    <name>初级家常菜配方</name>
-    <displayname>初级家常菜配方</displayname>
-    <icon>烹饪指南</icon>
+    <id>17039</id>
+    <name>镜之虎彻制作图纸</name>
+    <displayname>镜之虎彻制作图纸</displayname>
+    <icon>制作图纸默认</icon>
     <type>收集品</type>
     <use>情报</use>
-    <price>0</price>
+    <price>10000</price>
     <maxvalue>1</maxvalue>
-    <description>记录了初级家常菜的制作方法。</description>
+    <description>记录了镜之虎彻的制作方法</description>
   </item>
   <item>
-    <id>20036</id>
-    <name>酒泡氤氲</name>
-    <displayname>酒泡氤氲</displayname>
-    <icon>酒泡氤氲</icon>
+    <id>17040</id>
+    <name>加强版MP7制作图纸</name>
+    <displayname>加强版MP7制作图纸</displayname>
+    <icon>制作图纸默认</icon>
     <type>收集品</type>
     <use>情报</use>
-    <price>0</price>
-    <maxvalue>2</maxvalue>
-    <description>基于实用的农业出口政策，A兵团的酒吧通常提供相对劣质的自酿酒，于是发酵的气泡往往伴随脏话冒出，又弥散在酒吧里。当然，如果你愿意倾听，酒气之间也会有一些有价值的东西···</description>
-  </item>  
+    <price>10000</price>
+    <maxvalue>1</maxvalue>
+    <description>记录了加强版MP7的制作方法</description>
+  </item>
   <item>
-    <id>20037</id>
-    <name>幻层残响</name>
-    <displayname>幻层残响</displayname>
-    <icon>幻层残响</icon>
+    <id>17041</id>
+    <name>双管白火铳制作图纸</name>
+    <displayname>双管白火铳制作图纸</displayname>
+    <icon>制作图纸默认</icon>
     <type>收集品</type>
     <use>情报</use>
-    <price>0</price>
-    <maxvalue>15</maxvalue>
-    <description>末日之后，旧世界的数据网络碎片依然在废墟中的服务器节点间流转。解码这些残响，就是触摸这个破碎世界仍在跳动的数字脉搏。</description>
+    <price>10000</price>
+    <maxvalue>1</maxvalue>
+    <description>记录了双管白火铳的制作方法</description>
+  </item>
+  <item>
+    <id>17042</id>
+    <name>兵工厂备份硬盘</name>
+    <displayname>兵工厂备份硬盘</displayname>
+    <icon>兵工厂备份硬盘</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>20000</price>
+    <maxvalue>1</maxvalue>
+    <description>从诺亚前线基地兵工厂中枢内发现的硬盘。</description>
+  </item>
+  <item>
+    <id>17043</id>
+    <name>A兵团制式套装改造图纸</name>
+    <displayname>A兵团制式套装改造图纸</displayname>
+    <icon>制作图纸默认</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <price>30000</price>
+    <maxvalue>1</maxvalue>
+    <description>记录了A兵团精致战术套装与项链的制作方法。图纸后面附了一张小F的笔记。</description>
+  </item>
+  <item>
+    <id>17044</id>
+    <name>方舟秘钥</name>
+    <displayname>方舟秘钥</displayname>
+    <icon>方舟秘钥</icon>
+    <type>收集品</type>
+    <use>情报</use>
+    <weight>1</weight>
+    <price>40000</price>
+    <maxvalue>1</maxvalue>
+    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
   </item>
 </root>

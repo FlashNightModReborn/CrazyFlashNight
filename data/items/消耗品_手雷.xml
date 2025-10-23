@@ -1,650 +1,9 @@
-﻿<?xml version='1.0' encoding='UTF-8'?>
-<!--已用ID：[4, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 41, 42, 43, 44, 45, 46, 47, 143, 437, 438, 471, 517, 569, 579, 580, 581, 582, 583, 653, 833, 1553, 1702, 2517, 22011]
-预留ID区间： 18611-18700 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!--已用ID：[19101, 19102, 19103, 19104, 19105, 19106, 19107, 19108, 19109, 19110, 19111, 19112, 19113, 19114, 19115, 19116, 19117, 19118, 19119, 19120, 19121, 19122, 19123, 19124, 19125, 19126, 19127, 19128, 19129, 19130, 19131, 19132, 19133, 19134, 19135, 19136, 19137, 19138, 19139, 19140, 19141, 19142, 19143, 19144, 19145, 19146, 19147, 19148, 19149, 19150]
+预留ID区间：19101-19300-->
 <root>
   <item>
-    <id>18610</id>
-    <name>鎏金雀翎</name>
-    <displayname>鎏金雀翎</displayname>
-    <icon>鎏金雀翎</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>1000</price>
-    <description>手感较为沉重的暗器，在力量强大的人手中，有着足以一击毙命的威能。
-作为产自黑铁会的暗器，与手雷等爆炸物不同的是，暗器的威力基本取决于发射者本身的力道，因此在不同人手上威力也各不相同。</description>
-    <data>
-      <level>35</level>
-      <weight>1</weight>
-      <dressup>手雷-鎏金雀翎</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>1</diffusion>
-      <interval>10</interval>
-      <velocity>36</velocity>
-      <bullet>鎏金雀翎中转</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>鎏金雀翎</clipname>
-      <bulletsize>50</bulletsize>
-      <power>500</power>
-      <impact>1</impact>
-      <criticalhit>满血暴击</criticalhit>
-    </data>
-  </item>
-  <item>
-    <id>18609</id>
-    <name>寒铁镖</name>
-    <displayname>寒铁镖</displayname>
-    <icon>寒铁镖</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>600</price>
-    <description>三发一组，被刺中后有如寒冰附骨。圆孔的设计使其便于携带，也便于在极端情况下贴身械斗使用，广受杀手刺客们青睐。
-作为产自黑铁会的暗器，与手雷等爆炸物不同的是，暗器的威力基本取决于发射者本身的力道，因此在不同人手上威力也各不相同。</description>
-    <data>
-      <level>35</level>
-      <weight>0.1</weight>
-      <dressup>手雷-寒铁镖</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>1</diffusion>
-      <interval>10</interval>
-      <velocity>40</velocity>
-      <bullet>寒铁镖中转</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>寒铁镖</clipname>
-      <bulletsize>50</bulletsize>
-      <power>240</power>
-      <impact>1</impact>
-      <damagetype>魔法</damagetype>
-      <magictype>冷</magictype>
-      <criticalhit>15</criticalhit>
-    </data>
-  </item>
-  <item>
-    <id>18608</id>
-    <name>十字螺旋手里剑</name>
-    <displayname>十字螺旋手里剑</displayname>
-    <icon>十字螺旋手里剑</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>150</price>
-    <description>三发一组，采用了东洋风格的设计，危险的设计风格以至于需要有经验者使用。
-作为产自黑铁会的暗器，与手雷等爆炸物不同的是，暗器的威力基本取决于发射者本身的力道，因此在不同人手上威力也各不相同。</description>
-    <data>
-      <level>30</level>
-      <weight>0.1</weight>
-      <dressup>手雷-十字螺旋手里剑</dressup>
-      <capacity>1</capacity>
-      <split>3</split>
-      <diffusion>6</diffusion>
-      <interval>10</interval>
-      <velocity>40</velocity>
-      <bullet>十字螺旋手里剑中转</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>十字螺旋手里剑</clipname>
-      <bulletsize>50</bulletsize>
-      <power>150</power>
-      <impact>1</impact>
-      <criticalhit>15</criticalhit>
-    </data>
-  </item>
-  <item>
-    <id>18607</id>
-    <name>翼炎钉针</name>
-    <displayname>翼炎钉针</displayname>
-    <icon>翼炎钉针</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>600</price>
-    <description>三根一组，穿透力强，被刺中后有如火焰附骨。
-作为产自黑铁会的暗器，与手雷等爆炸物不同的是，暗器的威力基本取决于发射者本身的力道，因此在不同人手上威力也各不相同。</description>
-    <data>
-      <level>35</level>
-      <weight>0.01</weight>
-      <dressup>手雷-翼炎钉针</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>1</diffusion>
-      <interval>10</interval>
-      <velocity>50</velocity>
-      <bullet>翼炎钉针中转</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>翼炎钉针</clipname>
-      <bulletsize>50</bulletsize>
-      <power>100</power>
-      <impact>1</impact>
-      <damagetype>魔法</damagetype>
-      <magictype>热</magictype>
-    </data>
-  </item>
-  <item>
-    <id>18606</id>
-    <name>战术核弹手雷</name>
-    <displayname>战术核弹手雷</displayname>
-    <icon>战术核弹手雷</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>100000</price>
-    <description>末日前秘密研制的单兵战术核弹，尖端科技的加持下使得步兵也能装配并实战使用。原本配套的高精度单兵发射器已无法修复，但弹头仍然可以利用。该弹头极度危险，对使用者要求极高，使用时请确保操作符合规范。
-爆炸时可同时对敌方和友方造成伤害，少量冲击力伤害无法被彻底减免。</description>
-    <data>
-      <level>50</level>
-      <weight>20</weight>
-      <dressup>手雷-战术核弹手雷</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>3</diffusion>
-      <interval>10</interval>
-      <velocity>18</velocity>
-      <bullet>战术核弹手雷</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>战术核弹手雷</clipname>
-      <bulletsize>50</bulletsize>
-      <power>100000</power>
-      <impact>1</impact>
-      <accuracy>200</accuracy>
-    </data>
-  </item>
-  <item>
-    <id>18605</id>
-    <name>BBPLAYER手雷</name>
-    <displayname>BBPLAYER手雷</displayname>
-    <icon>BBPLAYER手雷</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>10000</price>
-    <description>来源神秘的手雷。尽管攻击范围较小，但伤害可观。</description>
-    <data>
-      <level>35</level>
-      <weight>1</weight>
-      <dressup>手雷-BBPLAYER炸弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>3</diffusion>
-      <interval>10</interval>
-      <velocity>23</velocity>
-      <bullet>BBPLAYER手雷</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>BBPLAYER手雷</clipname>
-      <bulletsize>50</bulletsize>
-      <power>10000</power>
-      <impact>1</impact>
-    </data>
-  </item>
-  <item>
-    <id>18603</id>
-    <name>燃烧弹</name>
-    <displayname>燃烧弹</displayname>
-    <icon>燃烧弹</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>3500</price>
-    <description>较为危险的投掷物，尽管控制了威力，但仍然是有效的武器。可造成热属性的附加伤害。</description>
-    <data>
-      <level>20</level>
-      <weight>20</weight>
-      <dressup>手雷-燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>3</diffusion>
-      <interval>10</interval>
-      <velocity>20</velocity>
-      <bullet>燃烧弹手雷</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>燃烧弹</clipname>
-      <bulletsize>50</bulletsize>
-      <power>3500</power>
-      <impact>2</impact>
-      <damagetype>破击</damagetype>
-      <magictype>热</magictype>
-    </data>
-  </item>
-  <item>
-    <id>18602</id>
-    <name>高爆手雷</name>
-    <displayname>高爆手雷</displayname>
-    <icon>高爆手雷</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>6000</price>
-    <description>高爆手雷，兼具威力与范围。</description>
-    <data>
-      <level>25</level>
-      <weight>1</weight>
-      <dressup>手雷-高爆手雷</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>3</diffusion>
-      <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>高爆手雷</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>高爆手雷</clipname>
-      <bulletsize>50</bulletsize>
-      <power>6000</power>
-      <impact>1</impact>
-    </data>
-  </item>
-  <item>
-    <id>18601</id>
-    <name>砖</name>
-    <displayname>砖</displayname>
-    <icon>砖</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>50</price>
-    <description>在随处可见的房屋废墟附近，突然遇见丧尸，这是末日下幸存者最无奈，也是最后的武器了。可以投掷。</description>
-    <data>
-      <level>1</level>
-      <weight>1</weight>
-      <dressup>手雷-砖</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>3</diffusion>
-      <interval>10</interval>
-      <velocity>22</velocity>
-      <bullet>砖</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>砖</clipname>
-      <bulletsize>50</bulletsize>
-      <power>70</power>
-      <impact>1</impact>
-    </data>
-  </item>
-  <item>
-    <id>4</id>
-    <name>普通手雷</name>
-    <displayname>普通手雷</displayname>
-    <icon>普通手雷</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>1000</price>
-    <description>拉环手雷，不要小瞧它的威力···</description>
-    <data>
-      <level>1</level>
-      <weight>1</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>3</diffusion>
-      <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>普通手雷</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>普通手雷</clipname>
-      <bulletsize>50</bulletsize>
-      <power>1000</power>
-      <impact>1</impact>
-    </data>
-  </item>
-  <item>
-    <id>25</id>
-    <name>压缩胶囊之李小龙</name>
-    <displayname>实体投影之李小龙</displayname>
-    <icon>压缩胶囊之李小龙</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>1</price>
-    <description>映射出&lt;font color="#ffff00"&gt;李小龙&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
-    某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中的&lt;font color="#ffff00"&gt;李小龙&lt;/font&gt;记录至投影仪中转手卖出高价，此物因此得以传播；尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。</description>
-    <data>
-      <level>20</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>压缩胶囊之李小龙</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>压缩胶囊之李小龙</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>26</id>
-    <name>压缩胶囊之驯化僵尸</name>
-    <displayname>实体投影之驯化僵尸</displayname>
-    <icon>压缩胶囊之驯化僵尸</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>1000</price>
-    <description>映射出&lt;font color="#b22222"&gt;僵尸&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
-    末日的压抑摧毁了许多人的心智，幸存者们的精神状态倘若放在末日之前，恐怕大都难以评为健全；然而，在抗抑郁药也成了奢侈品的当下，有人会选择驯化&lt;font color="#b22222"&gt;僵尸&lt;/font&gt;以作为宠物。而此物正是出自那些人之手，然而，无论作为宠物还是辅助战斗的工具。此物都难称合格，但请记住：一分钱，一分货。</description>
-    <data>
-      <level>1</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>压缩胶囊之驯化僵尸</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>压缩胶囊之驯化僵尸</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>27</id>
-    <name>压缩胶囊之盗贼</name>
-    <displayname>实体投影之盗贼</displayname>
-    <icon>压缩胶囊之盗贼</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>4000</price>
-    <description>映射出&lt;font color="#D3D3D3"&gt;降兵&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
-    末日的压抑摧毁了许多人的心智，幸存者们的精神状态倘若放在末日之前，恐怕大都难以评为健全；虽然多数人购买敌方&lt;font color="#D3D3D3"&gt;降兵&lt;/font&gt;通常是为了辅助战斗或用作苦力，但也有人通过购买敌方俘虏作为渠道发泄情绪又或是解决生理问题。战斗力低下的他们，究竟又是哪种用途更受欢迎呢？    </description>
-    <data>
-      <level>1</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>压缩胶囊之盗贼</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>压缩胶囊之盗贼</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>28</id>
-    <name>压缩胶囊之军阀</name>
-    <displayname>实体投影之军阀</displayname>
-    <icon>压缩胶囊之军阀</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>6000</price>
-    <description>映射出&lt;font color="#ffffe0"&gt;降兵&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
-    在荒漠中生存且接受军事训练的&lt;font color="#ffffe0"&gt;军阀&lt;/font&gt;士兵，即便战败受俘，也仍然拥有着超越城区大部分乌合之众们的耐力和武力。</description>
-    <data>
-      <level>10</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>压缩胶囊之军阀</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>压缩胶囊之军阀</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>29</id>
-    <name>压缩胶囊之boss大僵尸</name>
-    <displayname>实体投影之巨斧大僵尸</displayname>
-    <icon>压缩胶囊之boss大僵尸</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>15000</price>
-    <description>映射出&lt;font color="#b22222"&gt;巨斧僵尸&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
-    某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中的&lt;font color="#b22222"&gt;诡异僵尸&lt;/font&gt;记录至投影仪中转手卖出高价，此物因此得以传播；虽然身形高大可怖，但看起来并非不可战胜。若能将之击破，大约就能称得上是“僵尸克星”了吧。</description>
-    <data>
-      <level>10</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>压缩胶囊之boss大僵尸</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>压缩胶囊之boss大僵尸</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>30</id>
-    <name>压缩胶囊之摇滚公园</name>
-    <displayname>实体投影之摇滚公园</displayname>
-    <icon>压缩胶囊之摇滚公园</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>20000</price>
-    <description>映射出&lt;font color="#ff0000"&gt;摇&lt;/font&gt;&lt;font color="#00ffff"&gt;滚&lt;/font&gt;&lt;font color="#ffff00"&gt;公&lt;/font&gt;&lt;font color="#D3D3D3"&gt;园&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
-    某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中的&lt;font color="#ff0000"&gt;姐&lt;/font&gt;&lt;font color="#00ffff"&gt;妹&lt;/font&gt;&lt;font color="#ffff00"&gt;花&lt;/font&gt;记录至投影仪中转手卖出高价，此物因此得以传播；尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。</description>
-    <data>
-      <level>12</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>压缩胶囊之摇滚公园</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>压缩胶囊之摇滚公园</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>31</id>
-    <name>压缩胶囊之A兵团士兵</name>
-    <displayname>实体投影之A兵团士兵</displayname>
-    <icon>压缩胶囊之A兵团士兵</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>8000</price>
-    <description>映射出&lt;font color="#ff0000"&gt;A兵团士兵&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
-    由于无论是记录自身还是A兵团内其他士兵都并不算是难事，再加上&lt;font color="#ff0000"&gt;A兵团士兵&lt;/font&gt;出色的战斗力使得泛用性极高，因此作为A兵团内所有流通的投影仪中最为普及的款式。</description>
-    <data>
-      <level>10</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>压缩胶囊之A兵团士兵</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>压缩胶囊之A兵团士兵</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>32</id>
-    <name>压缩胶囊之硬化僵尸</name>
-    <displayname>实体投影之硬化僵尸</displayname>
-    <icon>压缩胶囊之硬化僵尸</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>1</price>
-    <description>映射出&lt;font color="#b22222"&gt;硬化僵尸&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
-    某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中防御力极高的&lt;font color="#b22222"&gt;巨物&lt;/font&gt;记录至投影仪中转手卖出高价，此物因此得以传播；尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。
-    作为身形高大可怖的肉山，硬拼到底实为愚人之举，观察且静待时机方为上策。</description>
-    <data>
-      <level>20</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>压缩胶囊之硬化僵尸</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>压缩胶囊之硬化僵尸</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>33</id>
-    <name>压缩胶囊之61套士兵</name>
-    <displayname>实体投影之61套士兵</displayname>
-    <icon>压缩胶囊之61套士兵</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>36000</price>
-    <description>映射出&lt;font color="#3cb371"&gt;61装甲士兵&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
-    在A兵团发展之初，61式装甲几乎代表着战无不胜；虽然视野拓宽的当下周围强敌林立，但&lt;font color="#3cb371"&gt;61装甲士兵&lt;/font&gt;仍是精英中的精英，在不计成本的前提下，他们通常作为&lt;font color="#ff0000"&gt;A兵团士兵&lt;/font&gt;的上位替代。</description>
-    <data>
-      <level>20</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>压缩胶囊之61套士兵</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>压缩胶囊之61套士兵</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>34</id>
-    <name>材料盒子</name>
-    <displayname>材料盒子</displayname>
-    <icon>材料盒子</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>10</price>
-    <description>可以爆出任意材料的神奇盒子(装备手雷处使用并且领取)。这玩意明明是网游套路的产物，为什么在单机版还有？</description>
-    <data>
-      <level>1</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>30</velocity>
-      <bullet>材料盒子</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>材料盒子</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>35</id>
-    <name>红包</name>
-    <displayname>红包</displayname>
-    <icon>红包</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>500</price>
-    <description>可以从长辈手中爆出金币和材料。</description>
-    <data>
-      <level>1</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>50</velocity>
-      <bullet>红包</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>红包</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>36</id>
-    <name>福袋</name>
-    <displayname>福袋</displayname>
-    <icon>福袋</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>99999</price>
-    <description>网游套路之一，你别太在乎它。</description>
-    <data>
-      <level>1</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>10</velocity>
-      <bullet>福袋</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>福袋</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>37</id>
+    <id>19101</id>
     <name>新手礼包</name>
     <displayname>新手礼包</displayname>
     <icon>新手礼包</icon>
@@ -662,9 +21,9 @@
       <interval>10</interval>
       <velocity>30</velocity>
       <bullet>新手礼包</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
+      <sound />
+      <muzzle />
+      <bullethit />
       <clipname>新手礼包</clipname>
       <bulletsize>25</bulletsize>
       <power>100</power>
@@ -672,119 +31,7 @@
     </data>
   </item>
   <item>
-    <id>38</id>
-    <name>大礼包</name>
-    <displayname>大礼包</displayname>
-    <icon>大礼包</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>1</price>
-    <description>这玩意还没移除？</description>
-    <data>
-      <level>1</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>30</velocity>
-      <bullet>大礼包</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>大礼包</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>39</id>
-    <name>鞭炮</name>
-    <displayname>鞭炮</displayname>
-    <icon>鞭炮</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>100</price>
-    <description>爆！</description>
-    <data>
-      <level>0</level>
-      <weight>0.5</weight>
-      <dressup>手雷-鞭炮</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>3</diffusion>
-      <interval>10</interval>
-      <velocity>40</velocity>
-      <bullet>鞭炮</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>鞭炮</clipname>
-      <bulletsize>10</bulletsize>
-      <power>100</power>
-      <impact>1</impact>
-    </data>
-  </item>
-  <item>
-    <id>41</id>
-    <name>强化石小盒</name>
-    <displayname>强化石小盒</displayname>
-    <icon>强化石小盒</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>10000</price>
-    <description>装有50颗强化石(装备手雷处使用并且领取)</description>
-    <data>
-      <level>0</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>30</velocity>
-      <bullet>强化石小盒</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>强化石小盒</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>42</id>
-    <name>强化石大盒</name>
-    <displayname>强化石大盒</displayname>
-    <icon>强化石大盒</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>10000</price>
-    <description>装有200颗强化石(装备手雷处使用并且领取)</description>
-    <data>
-      <level>0</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>30</velocity>
-      <bullet>强化石大盒</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>强化石大盒</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>43</id>
+    <id>19102</id>
     <name>pig套装包</name>
     <displayname>pig套装包</displayname>
     <icon>pig套装包</icon>
@@ -802,9 +49,9 @@
       <interval>10</interval>
       <velocity>30</velocity>
       <bullet>pig套装包</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
+      <sound />
+      <muzzle />
+      <bullethit />
       <clipname>pig套装包</clipname>
       <bulletsize>25</bulletsize>
       <power>100</power>
@@ -812,126 +59,7 @@
     </data>
   </item>
   <item>
-    <id>44</id>
-    <name>压缩胶囊之武士铁血</name>
-    <displayname>实体投影之武士铁血</displayname>
-    <icon>压缩胶囊之武士铁血</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>1</price>
-    <description>映射出&lt;font color="#ff6c29"&gt;武士铁血&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
-    某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中技艺精湛的&lt;font color="#ff6c29"&gt;外星武士&lt;/font&gt;记录至投影仪中转手卖出高价，此物因此得以传播；尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。
-    据说，这位异邦武者的家乡，有着足以歼灭星球的科技。</description>
-    <data>
-      <level>20</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>压缩胶囊之武士铁血</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>压缩胶囊之武士铁血</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>45</id>
-    <name>压缩胶囊之魔女</name>
-    <displayname>实体投影之魔女</displayname>
-    <icon>压缩胶囊之魔女</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>1</price>
-    <description>映射出&lt;font color="#ffc0cb"&gt;魔女&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
-    某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中容貌绝美的&lt;font color="#ffc0cb"&gt;白发女子&lt;/font&gt;记录至投影仪中转手卖出高价，此物因此得以传播；尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。
-    无论是闭月羞花的美貌，还是浮于空中那沉鱼落雁般的身姿，又或是地面升起的氤氲紫晶；都与这阴森晦暗的末日格格不入。</description>
-    <data>
-      <level>20</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>压缩胶囊之魔女</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>压缩胶囊之魔女</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>46</id>
-    <name>压缩胶囊之浮士德</name>
-    <displayname>实体投影之浮士德</displayname>
-    <icon>压缩胶囊之浮士德</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>1</price>
-    <description>映射出浮&lt;font color="#000000"&gt;士&lt;/font&gt;德&lt;font color="#000000"&gt;兄&lt;/font&gt;弟实体投影的一次性投影仪，仅在一定范围内生效
-    某位不知名的强者曾与他们战斗，虽然胜负未知，但其将那场战斗记忆中举止吊诡的二&lt;font color="#000000"&gt;人&lt;/font&gt;组记录至投影仪中转手卖出高价，此物因此得以传播；尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。
-    变戏法是变戏法，练武功是练武功。这个二&lt;font color="#000000"&gt;人&lt;/font&gt;组虽将他们结合，但以其攻势之狠辣来看，死的却怕是来犯之人。这倒也是件奇事。</description>
-    <data>
-      <level>20</level>
-      <weight>1</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>压缩胶囊之浮士德</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>压缩胶囊之浮士德</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>47</id>
-    <name>压缩胶囊之牛仔</name>
-    <displayname>实体投影之牛仔</displayname>
-    <icon>压缩胶囊之牛仔</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>1</price>
-    <description>映射出&lt;font color="#fffacd"&gt;牛仔&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。
-    某位不知名的强者曾与他们战斗，虽然胜负未知，但其将那场战斗记忆中身形潇洒的&lt;font color="#fffacd"&gt;牛仔&lt;/font&gt;记录至投影仪中转手卖出高价，此物因此得以传播；谁能想到，这个&lt;font color="#fffacd"&gt;牛仔&lt;/font&gt;被打飞的那一刻，迎接敌人的却是那漫天的炸药和即将到来的死期呢？</description>
-    <data>
-      <level>20</level>
-      <weight>1</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>压缩胶囊之牛仔</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>压缩胶囊之牛仔</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>143</id>
+    <id>19103</id>
     <name>战宠灵石大盒</name>
     <displayname>战宠灵石大盒</displayname>
     <icon>战宠灵石大盒</icon>
@@ -949,9 +77,9 @@
       <interval>10</interval>
       <velocity>30</velocity>
       <bullet>战宠灵石大盒</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
+      <sound />
+      <muzzle />
+      <bullethit />
       <clipname>战宠灵石大盒</clipname>
       <bulletsize>25</bulletsize>
       <power>100</power>
@@ -959,7 +87,7 @@
     </data>
   </item>
   <item>
-    <id>437</id>
+    <id>19104</id>
     <name>感恩节礼包</name>
     <displayname>感恩节礼包</displayname>
     <icon>感恩节礼包</icon>
@@ -967,7 +95,7 @@
     <use>手雷</use>
     <price>1</price>
     <description>回馈新老玩家，装备手雷处使用。
-    笑死，你游戏呢？</description>
+笑死，你游戏呢？</description>
     <data>
       <level>0</level>
       <weight>8</weight>
@@ -978,9 +106,9 @@
       <interval>10</interval>
       <velocity>30</velocity>
       <bullet>感恩节礼包</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
+      <sound />
+      <muzzle />
+      <bullethit />
       <clipname>感恩节礼包</clipname>
       <bulletsize>25</bulletsize>
       <power>100</power>
@@ -988,7 +116,7 @@
     </data>
   </item>
   <item>
-    <id>438</id>
+    <id>19105</id>
     <name>92套装盒子</name>
     <displayname>92套装盒子</displayname>
     <icon>92套装盒子</icon>
@@ -1006,9 +134,9 @@
       <interval>10</interval>
       <velocity>30</velocity>
       <bullet>92套装盒子</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
+      <sound />
+      <muzzle />
+      <bullethit />
       <clipname>92套装盒子</clipname>
       <bulletsize>25</bulletsize>
       <power>100</power>
@@ -1016,7 +144,7 @@
     </data>
   </item>
   <item>
-    <id>471</id>
+    <id>19106</id>
     <name>普通K点装备盒子</name>
     <displayname>普通K点装备盒子</displayname>
     <icon>普通K点装备盒子</icon>
@@ -1034,9 +162,9 @@
       <interval>10</interval>
       <velocity>30</velocity>
       <bullet>普通K点装备盒子</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
+      <sound />
+      <muzzle />
+      <bullethit />
       <clipname>普通K点装备盒子</clipname>
       <bulletsize>25</bulletsize>
       <power>100</power>
@@ -1044,7 +172,7 @@
     </data>
   </item>
   <item>
-    <id>517</id>
+    <id>19107</id>
     <name>回馈大礼包</name>
     <displayname>回馈大礼包</displayname>
     <icon>回馈大礼包</icon>
@@ -1062,9 +190,9 @@
       <interval>10</interval>
       <velocity>30</velocity>
       <bullet>回馈大礼包</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
+      <sound />
+      <muzzle />
+      <bullethit />
       <clipname>回馈大礼包</clipname>
       <bulletsize>25</bulletsize>
       <power>100</power>
@@ -1072,7 +200,7 @@
     </data>
   </item>
   <item>
-    <id>569</id>
+    <id>19108</id>
     <name>the girl套装包</name>
     <displayname>the girl套装包</displayname>
     <icon>the girl套装包</icon>
@@ -1090,9 +218,9 @@
       <interval>10</interval>
       <velocity>30</velocity>
       <bullet>the girl套装包</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
+      <sound />
+      <muzzle />
+      <bullethit />
       <clipname>the girl套装包</clipname>
       <bulletsize>25</bulletsize>
       <power>100</power>
@@ -1100,265 +228,91 @@
     </data>
   </item>
   <item>
-    <id>579</id>
-    <name>压缩胶囊之赤虎</name>
-    <displayname>实体投影之翅虎</displayname>
-    <icon>压缩胶囊之赤虎</icon>
+    <id>19109</id>
+    <name>鞭炮</name>
+    <displayname>鞭炮</displayname>
+    <icon>鞭炮</icon>
     <type>消耗品</type>
     <use>手雷</use>
-    <price>1</price>
-    <description>映射出&lt;font color="#000000"&gt;翅虎&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。
-    某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中身影迅捷的&lt;font color="#000000"&gt;小个子&lt;/font&gt;记录至投影仪中转手卖出高价，此物因此得以传播；在末日中以飞刀和步法作为攻击手段的人通常都会沦为废城的&lt;font color="#b22222"&gt;活尸&lt;/font&gt;，而这个&lt;font color="#000000"&gt;白发小子&lt;/font&gt;例外，其技艺的精湛有目共睹。</description>
+    <price>100</price>
+    <description>爆！</description>
     <data>
-      <level>24</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>压缩胶囊之赤虎</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>压缩胶囊之赤虎</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>580</id>
-    <name>压缩胶囊之火凤</name>
-    <displayname>实体投影之火凤</displayname>
-    <icon>压缩胶囊之火凤</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>1</price>
-    <description>映射出&lt;font color="#000000"&gt;火凤&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。
-    某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中舞动流星的&lt;font color="#000000"&gt;粉发女子&lt;/font&gt;记录至投影仪中转手卖出高价，此物因此得以传播；暴露且性感的服装，以及砸碎因前者愣神的脑袋的暴力；无论是麦色的性感身躯还是那舞动流星锤前进的华丽技巧，都相当危险且赏心悦目。</description>
-    <data>
-      <level>24</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>压缩胶囊之火凤</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>压缩胶囊之火凤</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>581</id>
-    <name>压缩胶囊之黑龙</name>
-    <displayname>实体投影之黑龙</displayname>
-    <icon>压缩胶囊之黑龙</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>1</price>
-    <description>映射出&lt;font color="#000000"&gt;黑龙&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。
-    某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中的&lt;font color="#000000"&gt;重铠战马与重骑兵&lt;/font&gt;记录至投影仪中转手卖出高价，此物因此得以传播；马蹄声接近又远去，草原上飞驰的骑兵踏着土地。然而，&lt;font color="#000000"&gt;全身重甲的骑士胯着防护住个个角落的骏马&lt;/font&gt;，踏在黑龙堂的地毯上，又或者踏在末世中的废墟上，发出的震地声再没有草地上的那般柔和。</description>
-    <data>
-      <level>28</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>压缩胶囊之黑龙</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>压缩胶囊之黑龙</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>582</id>
-    <name>压缩胶囊之黑铁</name>
-    <displayname>实体投影之黑铁</displayname>
-    <icon>压缩胶囊之黑铁</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>1</price>
-    <description>映射出&lt;font color="#000000"&gt;黑铁&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。
-    某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中的唐装剑侠记录至投影仪中转手卖出高价，此物因此得以传播；&lt;font color="#000000"&gt;身形高大却瘦削的剑客&lt;/font&gt;，凌厉的攻势与毫无破绽的技巧，能将剑气具象化的武功造诣。世所罕见的强者，当下的时代顶点之一。</description>
-    <data>
-      <level>30</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>压缩胶囊之黑铁</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>压缩胶囊之黑铁</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>583</id>
-    <name>压缩胶囊之兽王</name>
-    <displayname>实体投影之兽王</displayname>
-    <icon>压缩胶囊之兽王</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>1</price>
-    <description>映射出&lt;font color="#ff00ff"&gt;兽王&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。
-    某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中的斗笠武者记录至投影仪中转手卖出高价，此物因此得以传播；&lt;font color="#ff00ff"&gt;身形高大壮硕头戴斗笠的高手&lt;/font&gt;，力量，技巧，或是速度均已登峰造极，武功造诣已然臻至化境。
-    世所罕见的&lt;font color="#ff00ff"&gt;强者&lt;/font&gt;，当下的时代顶点之一。</description>
-    <data>
-      <level>40</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>压缩胶囊之兽王</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>压缩胶囊之兽王</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>653</id>
-    <name>谜之胶囊</name>
-    <displayname>谜之胶囊</displayname>
-    <icon>谜之胶囊</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>8000</price>
-    <description>映射出一个百宝箱影像的实体投影仪，仅在一定范围内生效。不知道为什么，和这个百宝箱真的可以进行交易。</description>
-    <data>
-      <level>1</level>
-      <weight>8</weight>
-      <dressup>手雷-自制燃烧弹</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>10</diffusion>
-      <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>谜之胶囊</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>谜之胶囊</clipname>
-      <bulletsize>25</bulletsize>
-      <power>100</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>833</id>
-    <name>上海人形</name>
-    <displayname>上海人形</displayname>
-    <icon>上海人形</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>5000</price>
-    <description>人偶师小姐的礼物····还是不要放在床头比较好。</description>
-    <data>
-      <level>1</level>
-      <weight>10</weight>
-      <dressup>手雷-上海人形</dressup>
-      <capacity>1</capacity>
-      <split>1</split>
-      <diffusion>5</diffusion>
-      <interval>10</interval>
-      <velocity>40</velocity>
-      <bullet>上海人形</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>上海人形</clipname>
-      <bulletsize>25</bulletsize>
-      <power>10000</power>
-      <impact>100</impact>
-    </data>
-  </item>
-  <item>
-    <id>2517</id>
-    <name>地瓜手雷</name>
-    <displayname>地瓜手雷</displayname>
-    <icon>地瓜手雷</icon>
-    <type>消耗品</type>
-    <use>手雷</use>
-    <price>3000</price>
-    <description>破片手雷，爆炸范围更大</description>
-    <data>
-      <level>15</level>
-      <weight>1</weight>
-      <dressup>手雷-地瓜手雷</dressup>
+      <level>0</level>
+      <weight>0.5</weight>
+      <dressup>手雷-鞭炮</dressup>
       <capacity>1</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
       <interval>10</interval>
-      <velocity>25</velocity>
-      <bullet>地瓜手雷</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>地瓜手雷</clipname>
-      <bulletsize>50</bulletsize>
-      <power>3000</power>
+      <velocity>40</velocity>
+      <bullet>鞭炮</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>鞭炮</clipname>
+      <bulletsize>10</bulletsize>
+      <power>100</power>
       <impact>1</impact>
     </data>
   </item>
   <item>
-    <id>22011</id>
-    <name>导弹信标</name>
-    <displayname>导弹信标</displayname>
-    <icon>导弹信标</icon>
+    <id>19110</id>
+    <name>强化石小盒</name>
+    <displayname>强化石小盒</displayname>
+    <icon>强化石小盒</icon>
     <type>消耗品</type>
     <use>手雷</use>
-    <price>8000</price>
-    <description>投掷出即可发送坐标信息，让基地发送导弹支援。</description>
+    <price>10000</price>
+    <description>装有50颗强化石(装备手雷处使用并且领取)</description>
     <data>
-      <level>30</level>
-      <weight>1</weight>
-      <dressup>手雷-自制信标</dressup>
+      <level>0</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
       <capacity>1</capacity>
       <split>1</split>
       <diffusion>10</diffusion>
       <interval>10</interval>
-      <velocity>10</velocity>
-      <bullet>导弹信标</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
-      <clipname>导弹信标</clipname>
-      <bulletsize>50</bulletsize>
-      <power>8000</power>
-      <impact>0</impact>
+      <velocity>30</velocity>
+      <bullet>强化石小盒</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>强化石小盒</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
     </data>
   </item>
   <item>
-    <id>1553</id>
+    <id>19111</id>
+    <name>强化石大盒</name>
+    <displayname>强化石大盒</displayname>
+    <icon>强化石大盒</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>10000</price>
+    <description>装有200颗强化石(装备手雷处使用并且领取)</description>
+    <data>
+      <level>0</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>30</velocity>
+      <bullet>强化石大盒</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>强化石大盒</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19112</id>
     <name>屎块</name>
     <displayname>屎块</displayname>
     <icon>屎块</icon>
@@ -1378,8 +332,8 @@
       <interval>10</interval>
       <velocity>25</velocity>
       <bullet>屎块</bullet>
-      <sound/>
-      <muzzle/>
+      <sound />
+      <muzzle />
       <bullethit>屎花</bullethit>
       <clipname>屎块</clipname>
       <bulletsize>10</bulletsize>
@@ -1390,7 +344,176 @@
     </data>
   </item>
   <item>
-    <id>1702</id>
+    <id>19113</id>
+    <name>大礼包</name>
+    <displayname>大礼包</displayname>
+    <icon>大礼包</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>1</price>
+    <description>这玩意还没移除？</description>
+    <data>
+      <level>1</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>30</velocity>
+      <bullet>大礼包</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>大礼包</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19114</id>
+    <name>材料盒子</name>
+    <displayname>材料盒子</displayname>
+    <icon>材料盒子</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>10</price>
+    <description>可以爆出任意材料的神奇盒子(装备手雷处使用并且领取)。这玩意明明是网游套路的产物，为什么在单机版还有？</description>
+    <data>
+      <level>1</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>30</velocity>
+      <bullet>材料盒子</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>材料盒子</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19115</id>
+    <name>砖</name>
+    <displayname>砖</displayname>
+    <icon>砖</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>50</price>
+    <description>在随处可见的房屋废墟附近，突然遇见丧尸，这是末日下幸存者最无奈，也是最后的武器了。可以投掷。</description>
+    <data>
+      <level>1</level>
+      <weight>1</weight>
+      <dressup>手雷-砖</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>10</interval>
+      <velocity>22</velocity>
+      <bullet>砖</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>砖</clipname>
+      <bulletsize>50</bulletsize>
+      <power>70</power>
+      <impact>1</impact>
+    </data>
+  </item>
+  <item>
+    <id>19116</id>
+    <name>红包</name>
+    <displayname>红包</displayname>
+    <icon>红包</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>500</price>
+    <description>可以从长辈手中爆出金币和材料。</description>
+    <data>
+      <level>1</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>50</velocity>
+      <bullet>红包</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>红包</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19117</id>
+    <name>普通手雷</name>
+    <displayname>普通手雷</displayname>
+    <icon>普通手雷</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>1000</price>
+    <description>拉环手雷，不要小瞧它的威力···</description>
+    <data>
+      <level>1</level>
+      <weight>1</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>普通手雷</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>普通手雷</clipname>
+      <bulletsize>50</bulletsize>
+      <power>1000</power>
+      <impact>1</impact>
+    </data>
+  </item>
+  <item>
+    <id>19118</id>
+    <name>压缩胶囊之驯化僵尸</name>
+    <displayname>实体投影之驯化僵尸</displayname>
+    <icon>压缩胶囊之驯化僵尸</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>1000</price>
+    <description>映射出&lt;font color="#b22222"&gt;僵尸&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
+末日的压抑摧毁了许多人的心智，幸存者们的精神状态倘若放在末日之前，恐怕大都难以评为健全；然而，在抗抑郁药也成了奢侈品的当下，有人会选择驯化&lt;font color="#b22222"&gt;僵尸&lt;/font&gt;以作为宠物。而此物正是出自那些人之手，然而，无论作为宠物还是辅助战斗的工具。此物都难称合格，但请记住：一分钱，一分货。</description>
+    <data>
+      <level>1</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>压缩胶囊之驯化僵尸</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>压缩胶囊之驯化僵尸</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19119</id>
     <name>M24手榴弹</name>
     <displayname>M24手榴弹</displayname>
     <icon>M24手榴弹</icon>
@@ -1408,9 +531,9 @@
       <interval>10</interval>
       <velocity>10</velocity>
       <bullet>M24手榴弹</bullet>
-      <sound/>
-      <muzzle/>
-      <bullethit/>
+      <sound />
+      <muzzle />
+      <bullethit />
       <clipname>M24手榴弹</clipname>
       <bulletsize>50</bulletsize>
       <power>1000</power>
@@ -1418,7 +541,7 @@
     </data>
   </item>
   <item>
-    <id>8049</id>
+    <id>19120</id>
     <name>满是划痕的手雷</name>
     <displayname>满是划痕的手雷</displayname>
     <icon>普通手雷</icon>
@@ -1446,6 +569,883 @@
       <bulletsize>50</bulletsize>
       <power>1000</power>
       <impact>1</impact>
+    </data>
+  </item>
+  <item>
+    <id>19121</id>
+    <name>压缩胶囊之盗贼</name>
+    <displayname>实体投影之盗贼</displayname>
+    <icon>压缩胶囊之盗贼</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>4000</price>
+    <description>映射出&lt;font color="#D3D3D3"&gt;降兵&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
+末日的压抑摧毁了许多人的心智，幸存者们的精神状态倘若放在末日之前，恐怕大都难以评为健全；虽然多数人购买敌方&lt;font color="#D3D3D3"&gt;降兵&lt;/font&gt;通常是为了辅助战斗或用作苦力，但也有人通过购买敌方俘虏作为渠道发泄情绪又或是解决生理问题。战斗力低下的他们，究竟又是哪种用途更受欢迎呢？    </description>
+    <data>
+      <level>1</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>压缩胶囊之盗贼</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>压缩胶囊之盗贼</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19122</id>
+    <name>上海人形</name>
+    <displayname>上海人形</displayname>
+    <icon>上海人形</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>5000</price>
+    <description>人偶师小姐的礼物····还是不要放在床头比较好。</description>
+    <data>
+      <level>1</level>
+      <weight>10</weight>
+      <dressup>手雷-上海人形</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>5</diffusion>
+      <interval>10</interval>
+      <velocity>40</velocity>
+      <bullet>上海人形</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>上海人形</clipname>
+      <bulletsize>25</bulletsize>
+      <power>10000</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19123</id>
+    <name>谜之胶囊</name>
+    <displayname>谜之胶囊</displayname>
+    <icon>谜之胶囊</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>8000</price>
+    <description>映射出一个百宝箱影像的实体投影仪，仅在一定范围内生效。不知道为什么，和这个百宝箱真的可以进行交易。</description>
+    <data>
+      <level>1</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>谜之胶囊</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>谜之胶囊</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19124</id>
+    <name>福袋</name>
+    <displayname>福袋</displayname>
+    <icon>福袋</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>99999</price>
+    <description>网游套路之一，你别太在乎它。</description>
+    <data>
+      <level>1</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>10</velocity>
+      <bullet>福袋</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>福袋</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19125</id>
+    <name>压缩胶囊之军阀</name>
+    <displayname>实体投影之军阀</displayname>
+    <icon>压缩胶囊之军阀</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>6000</price>
+    <description>映射出&lt;font color="#ffffe0"&gt;降兵&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
+在荒漠中生存且接受军事训练的&lt;font color="#ffffe0"&gt;军阀&lt;/font&gt;士兵，即便战败受俘，也仍然拥有着超越城区大部分乌合之众们的耐力和武力。</description>
+    <data>
+      <level>10</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>压缩胶囊之军阀</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>压缩胶囊之军阀</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19126</id>
+    <name>压缩胶囊之A兵团士兵</name>
+    <displayname>实体投影之A兵团士兵</displayname>
+    <icon>压缩胶囊之A兵团士兵</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>8000</price>
+    <description>映射出&lt;font color="#ff0000"&gt;A兵团士兵&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
+由于无论是记录自身还是A兵团内其他士兵都并不算是难事，再加上&lt;font color="#ff0000"&gt;A兵团士兵&lt;/font&gt;出色的战斗力使得泛用性极高，因此作为A兵团内所有流通的投影仪中最为普及的款式。</description>
+    <data>
+      <level>10</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>压缩胶囊之A兵团士兵</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>压缩胶囊之A兵团士兵</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19127</id>
+    <name>压缩胶囊之boss大僵尸</name>
+    <displayname>实体投影之巨斧大僵尸</displayname>
+    <icon>压缩胶囊之boss大僵尸</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>15000</price>
+    <description>映射出&lt;font color="#b22222"&gt;巨斧僵尸&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
+某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中的&lt;font color="#b22222"&gt;诡异僵尸&lt;/font&gt;记录至投影仪中转手卖出高价，此物因此得以传播；虽然身形高大可怖，但看起来并非不可战胜。若能将之击破，大约就能称得上是“僵尸克星”了吧。</description>
+    <data>
+      <level>10</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>压缩胶囊之boss大僵尸</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>压缩胶囊之boss大僵尸</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19128</id>
+    <name>压缩胶囊之摇滚公园</name>
+    <displayname>实体投影之摇滚公园</displayname>
+    <icon>压缩胶囊之摇滚公园</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>20000</price>
+    <description>映射出&lt;font color="#ff0000"&gt;摇&lt;/font&gt;&lt;font color="#00ffff"&gt;滚&lt;/font&gt;&lt;font color="#ffff00"&gt;公&lt;/font&gt;&lt;font color="#D3D3D3"&gt;园&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
+某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中的&lt;font color="#ff0000"&gt;姐&lt;/font&gt;&lt;font color="#00ffff"&gt;妹&lt;/font&gt;&lt;font color="#ffff00"&gt;花&lt;/font&gt;记录至投影仪中转手卖出高价，此物因此得以传播；尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。</description>
+    <data>
+      <level>12</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>压缩胶囊之摇滚公园</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>压缩胶囊之摇滚公园</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19129</id>
+    <name>地瓜手雷</name>
+    <displayname>地瓜手雷</displayname>
+    <icon>地瓜手雷</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>3000</price>
+    <description>破片手雷，爆炸范围更大</description>
+    <data>
+      <level>15</level>
+      <weight>1</weight>
+      <dressup>手雷-地瓜手雷</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>地瓜手雷</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>地瓜手雷</clipname>
+      <bulletsize>50</bulletsize>
+      <power>3000</power>
+      <impact>1</impact>
+    </data>
+  </item>
+  <item>
+    <id>19130</id>
+    <name>压缩胶囊之李小龙</name>
+    <displayname>实体投影之李小龙</displayname>
+    <icon>压缩胶囊之李小龙</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>1</price>
+    <description>映射出&lt;font color="#ffff00"&gt;李小龙&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
+某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中的&lt;font color="#ffff00"&gt;李小龙&lt;/font&gt;记录至投影仪中转手卖出高价，此物因此得以传播；尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。</description>
+    <data>
+      <level>20</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>压缩胶囊之李小龙</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>压缩胶囊之李小龙</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19131</id>
+    <name>压缩胶囊之硬化僵尸</name>
+    <displayname>实体投影之硬化僵尸</displayname>
+    <icon>压缩胶囊之硬化僵尸</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>1</price>
+    <description>映射出&lt;font color="#b22222"&gt;硬化僵尸&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
+某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中防御力极高的&lt;font color="#b22222"&gt;巨物&lt;/font&gt;记录至投影仪中转手卖出高价，此物因此得以传播；尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。
+作为身形高大可怖的肉山，硬拼到底实为愚人之举，观察且静待时机方为上策。</description>
+    <data>
+      <level>20</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>压缩胶囊之硬化僵尸</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>压缩胶囊之硬化僵尸</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19132</id>
+    <name>压缩胶囊之武士铁血</name>
+    <displayname>实体投影之武士铁血</displayname>
+    <icon>压缩胶囊之武士铁血</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>1</price>
+    <description>映射出&lt;font color="#ff6c29"&gt;武士铁血&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
+某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中技艺精湛的&lt;font color="#ff6c29"&gt;外星武士&lt;/font&gt;记录至投影仪中转手卖出高价，此物因此得以传播；尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。
+据说，这位异邦武者的家乡，有着足以歼灭星球的科技。</description>
+    <data>
+      <level>20</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>压缩胶囊之武士铁血</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>压缩胶囊之武士铁血</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19133</id>
+    <name>压缩胶囊之魔女</name>
+    <displayname>实体投影之魔女</displayname>
+    <icon>压缩胶囊之魔女</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>1</price>
+    <description>映射出&lt;font color="#ffc0cb"&gt;魔女&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
+某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中容貌绝美的&lt;font color="#ffc0cb"&gt;白发女子&lt;/font&gt;记录至投影仪中转手卖出高价，此物因此得以传播；尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。
+无论是闭月羞花的美貌，还是浮于空中那沉鱼落雁般的身姿，又或是地面升起的氤氲紫晶；都与这阴森晦暗的末日格格不入。</description>
+    <data>
+      <level>20</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>压缩胶囊之魔女</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>压缩胶囊之魔女</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19134</id>
+    <name>压缩胶囊之浮士德</name>
+    <displayname>实体投影之浮士德</displayname>
+    <icon>压缩胶囊之浮士德</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>1</price>
+    <description>映射出浮&lt;font color="#000000"&gt;士&lt;/font&gt;德&lt;font color="#000000"&gt;兄&lt;/font&gt;弟实体投影的一次性投影仪，仅在一定范围内生效
+某位不知名的强者曾与他们战斗，虽然胜负未知，但其将那场战斗记忆中举止吊诡的二&lt;font color="#000000"&gt;人&lt;/font&gt;组记录至投影仪中转手卖出高价，此物因此得以传播；尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。
+变戏法是变戏法，练武功是练武功。这个二&lt;font color="#000000"&gt;人&lt;/font&gt;组虽将他们结合，但以其攻势之狠辣来看，死的却怕是来犯之人。这倒也是件奇事。</description>
+    <data>
+      <level>20</level>
+      <weight>1</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>压缩胶囊之浮士德</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>压缩胶囊之浮士德</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19135</id>
+    <name>压缩胶囊之牛仔</name>
+    <displayname>实体投影之牛仔</displayname>
+    <icon>压缩胶囊之牛仔</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>1</price>
+    <description>映射出&lt;font color="#fffacd"&gt;牛仔&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。
+某位不知名的强者曾与他们战斗，虽然胜负未知，但其将那场战斗记忆中身形潇洒的&lt;font color="#fffacd"&gt;牛仔&lt;/font&gt;记录至投影仪中转手卖出高价，此物因此得以传播；谁能想到，这个&lt;font color="#fffacd"&gt;牛仔&lt;/font&gt;被打飞的那一刻，迎接敌人的却是那漫天的炸药和即将到来的死期呢？</description>
+    <data>
+      <level>20</level>
+      <weight>1</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>压缩胶囊之牛仔</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>压缩胶囊之牛仔</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19136</id>
+    <name>燃烧弹</name>
+    <displayname>燃烧弹</displayname>
+    <icon>燃烧弹</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>3500</price>
+    <description>较为危险的投掷物，尽管控制了威力，但仍然是有效的武器。可造成热属性的附加伤害。</description>
+    <data>
+      <level>20</level>
+      <weight>20</weight>
+      <dressup>手雷-燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>10</interval>
+      <velocity>20</velocity>
+      <bullet>燃烧弹手雷</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>燃烧弹</clipname>
+      <bulletsize>50</bulletsize>
+      <power>3500</power>
+      <impact>2</impact>
+      <damagetype>破击</damagetype>
+      <magictype>热</magictype>
+    </data>
+  </item>
+  <item>
+    <id>19137</id>
+    <name>压缩胶囊之61套士兵</name>
+    <displayname>实体投影之61套士兵</displayname>
+    <icon>压缩胶囊之61套士兵</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>36000</price>
+    <description>映射出&lt;font color="#3cb371"&gt;61装甲士兵&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。
+在A兵团发展之初，61式装甲几乎代表着战无不胜；虽然视野拓宽的当下周围强敌林立，但&lt;font color="#3cb371"&gt;61装甲士兵&lt;/font&gt;仍是精英中的精英，在不计成本的前提下，他们通常作为&lt;font color="#ff0000"&gt;A兵团士兵&lt;/font&gt;的上位替代。</description>
+    <data>
+      <level>20</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>压缩胶囊之61套士兵</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>压缩胶囊之61套士兵</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19138</id>
+    <name>压缩胶囊之赤虎</name>
+    <displayname>实体投影之翅虎</displayname>
+    <icon>压缩胶囊之赤虎</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>1</price>
+    <description>映射出&lt;font color="#000000"&gt;翅虎&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。
+某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中身影迅捷的&lt;font color="#000000"&gt;小个子&lt;/font&gt;记录至投影仪中转手卖出高价，此物因此得以传播；在末日中以飞刀和步法作为攻击手段的人通常都会沦为废城的&lt;font color="#b22222"&gt;活尸&lt;/font&gt;，而这个&lt;font color="#000000"&gt;白发小子&lt;/font&gt;例外，其技艺的精湛有目共睹。</description>
+    <data>
+      <level>24</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>压缩胶囊之赤虎</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>压缩胶囊之赤虎</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19139</id>
+    <name>压缩胶囊之火凤</name>
+    <displayname>实体投影之火凤</displayname>
+    <icon>压缩胶囊之火凤</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>1</price>
+    <description>映射出&lt;font color="#000000"&gt;火凤&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。
+某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中舞动流星的&lt;font color="#000000"&gt;粉发女子&lt;/font&gt;记录至投影仪中转手卖出高价，此物因此得以传播；暴露且性感的服装，以及砸碎因前者愣神的脑袋的暴力；无论是麦色的性感身躯还是那舞动流星锤前进的华丽技巧，都相当危险且赏心悦目。</description>
+    <data>
+      <level>24</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>压缩胶囊之火凤</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>压缩胶囊之火凤</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19140</id>
+    <name>高爆手雷</name>
+    <displayname>高爆手雷</displayname>
+    <icon>高爆手雷</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>6000</price>
+    <description>高爆手雷，兼具威力与范围。</description>
+    <data>
+      <level>25</level>
+      <weight>1</weight>
+      <dressup>手雷-高爆手雷</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>高爆手雷</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>高爆手雷</clipname>
+      <bulletsize>50</bulletsize>
+      <power>6000</power>
+      <impact>1</impact>
+    </data>
+  </item>
+  <item>
+    <id>19141</id>
+    <name>压缩胶囊之黑龙</name>
+    <displayname>实体投影之黑龙</displayname>
+    <icon>压缩胶囊之黑龙</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>1</price>
+    <description>映射出&lt;font color="#000000"&gt;黑龙&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。
+某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中的&lt;font color="#000000"&gt;重铠战马与重骑兵&lt;/font&gt;记录至投影仪中转手卖出高价，此物因此得以传播；马蹄声接近又远去，草原上飞驰的骑兵踏着土地。然而，&lt;font color="#000000"&gt;全身重甲的骑士胯着防护住个个角落的骏马&lt;/font&gt;，踏在黑龙堂的地毯上，又或者踏在末世中的废墟上，发出的震地声再没有草地上的那般柔和。</description>
+    <data>
+      <level>28</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>压缩胶囊之黑龙</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>压缩胶囊之黑龙</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19142</id>
+    <name>压缩胶囊之黑铁</name>
+    <displayname>实体投影之黑铁</displayname>
+    <icon>压缩胶囊之黑铁</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>1</price>
+    <description>映射出&lt;font color="#000000"&gt;黑铁&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。
+某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中的唐装剑侠记录至投影仪中转手卖出高价，此物因此得以传播；&lt;font color="#000000"&gt;身形高大却瘦削的剑客&lt;/font&gt;，凌厉的攻势与毫无破绽的技巧，能将剑气具象化的武功造诣。世所罕见的强者，当下的时代顶点之一。</description>
+    <data>
+      <level>30</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>压缩胶囊之黑铁</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>压缩胶囊之黑铁</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19143</id>
+    <name>十字螺旋手里剑</name>
+    <displayname>十字螺旋手里剑</displayname>
+    <icon>十字螺旋手里剑</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>150</price>
+    <description>三发一组，采用了东洋风格的设计，危险的设计风格以至于需要有经验者使用。
+作为产自黑铁会的暗器，与手雷等爆炸物不同的是，暗器的威力基本取决于发射者本身的力道，因此在不同人手上威力也各不相同。</description>
+    <data>
+      <level>30</level>
+      <weight>0.1</weight>
+      <dressup>手雷-十字螺旋手里剑</dressup>
+      <capacity>1</capacity>
+      <split>3</split>
+      <diffusion>6</diffusion>
+      <interval>10</interval>
+      <velocity>40</velocity>
+      <bullet>十字螺旋手里剑中转</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>十字螺旋手里剑</clipname>
+      <bulletsize>50</bulletsize>
+      <power>150</power>
+      <impact>1</impact>
+      <criticalhit>15</criticalhit>
+    </data>
+  </item>
+  <item>
+    <id>19144</id>
+    <name>导弹信标</name>
+    <displayname>导弹信标</displayname>
+    <icon>导弹信标</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>8000</price>
+    <description>投掷出即可发送坐标信息，让基地发送导弹支援。</description>
+    <data>
+      <level>30</level>
+      <weight>1</weight>
+      <dressup>手雷-自制信标</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>10</velocity>
+      <bullet>导弹信标</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>导弹信标</clipname>
+      <bulletsize>50</bulletsize>
+      <power>8000</power>
+      <impact>0</impact>
+    </data>
+  </item>
+  <item>
+    <id>19145</id>
+    <name>寒铁镖</name>
+    <displayname>寒铁镖</displayname>
+    <icon>寒铁镖</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>600</price>
+    <description>三发一组，被刺中后有如寒冰附骨。圆孔的设计使其便于携带，也便于在极端情况下贴身械斗使用，广受杀手刺客们青睐。
+作为产自黑铁会的暗器，与手雷等爆炸物不同的是，暗器的威力基本取决于发射者本身的力道，因此在不同人手上威力也各不相同。</description>
+    <data>
+      <level>35</level>
+      <weight>0.1</weight>
+      <dressup>手雷-寒铁镖</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>1</diffusion>
+      <interval>10</interval>
+      <velocity>40</velocity>
+      <bullet>寒铁镖中转</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>寒铁镖</clipname>
+      <bulletsize>50</bulletsize>
+      <power>240</power>
+      <impact>1</impact>
+      <damagetype>魔法</damagetype>
+      <magictype>冷</magictype>
+      <criticalhit>15</criticalhit>
+    </data>
+  </item>
+  <item>
+    <id>19146</id>
+    <name>翼炎钉针</name>
+    <displayname>翼炎钉针</displayname>
+    <icon>翼炎钉针</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>600</price>
+    <description>三根一组，穿透力强，被刺中后有如火焰附骨。
+作为产自黑铁会的暗器，与手雷等爆炸物不同的是，暗器的威力基本取决于发射者本身的力道，因此在不同人手上威力也各不相同。</description>
+    <data>
+      <level>35</level>
+      <weight>0.01</weight>
+      <dressup>手雷-翼炎钉针</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>1</diffusion>
+      <interval>10</interval>
+      <velocity>50</velocity>
+      <bullet>翼炎钉针中转</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>翼炎钉针</clipname>
+      <bulletsize>50</bulletsize>
+      <power>100</power>
+      <impact>1</impact>
+      <damagetype>魔法</damagetype>
+      <magictype>热</magictype>
+    </data>
+  </item>
+  <item>
+    <id>19147</id>
+    <name>鎏金雀翎</name>
+    <displayname>鎏金雀翎</displayname>
+    <icon>鎏金雀翎</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>1000</price>
+    <description>手感较为沉重的暗器，在力量强大的人手中，有着足以一击毙命的威能。
+作为产自黑铁会的暗器，与手雷等爆炸物不同的是，暗器的威力基本取决于发射者本身的力道，因此在不同人手上威力也各不相同。</description>
+    <data>
+      <level>35</level>
+      <weight>1</weight>
+      <dressup>手雷-鎏金雀翎</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>1</diffusion>
+      <interval>10</interval>
+      <velocity>36</velocity>
+      <bullet>鎏金雀翎中转</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>鎏金雀翎</clipname>
+      <bulletsize>50</bulletsize>
+      <power>500</power>
+      <impact>1</impact>
+      <criticalhit>满血暴击</criticalhit>
+    </data>
+  </item>
+  <item>
+    <id>19148</id>
+    <name>BBPLAYER手雷</name>
+    <displayname>BBPLAYER手雷</displayname>
+    <icon>BBPLAYER手雷</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>10000</price>
+    <description>来源神秘的手雷。尽管攻击范围较小，但伤害可观。</description>
+    <data>
+      <level>35</level>
+      <weight>1</weight>
+      <dressup>手雷-BBPLAYER炸弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>10</interval>
+      <velocity>23</velocity>
+      <bullet>BBPLAYER手雷</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>BBPLAYER手雷</clipname>
+      <bulletsize>50</bulletsize>
+      <power>10000</power>
+      <impact>1</impact>
+    </data>
+  </item>
+  <item>
+    <id>19149</id>
+    <name>压缩胶囊之兽王</name>
+    <displayname>实体投影之兽王</displayname>
+    <icon>压缩胶囊之兽王</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>1</price>
+    <description>映射出&lt;font color="#ff00ff"&gt;兽王&lt;/font&gt;实体投影的一次性投影仪，仅在一定范围内生效。尽管数据被多次复制，但映射强者的高昂成本依然令此物的价格居高不下。
+某位不知名的强者曾与其战斗，虽然胜负未知，但其将那场战斗记忆中的斗笠武者记录至投影仪中转手卖出高价，此物因此得以传播；&lt;font color="#ff00ff"&gt;身形高大壮硕头戴斗笠的高手&lt;/font&gt;，力量，技巧，或是速度均已登峰造极，武功造诣已然臻至化境。
+世所罕见的&lt;font color="#ff00ff"&gt;强者&lt;/font&gt;，当下的时代顶点之一。</description>
+    <data>
+      <level>40</level>
+      <weight>8</weight>
+      <dressup>手雷-自制燃烧弹</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>压缩胶囊之兽王</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>压缩胶囊之兽王</clipname>
+      <bulletsize>25</bulletsize>
+      <power>100</power>
+      <impact>100</impact>
+    </data>
+  </item>
+  <item>
+    <id>19150</id>
+    <name>战术核弹手雷</name>
+    <displayname>战术核弹手雷</displayname>
+    <icon>战术核弹手雷</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>100000</price>
+    <description>末日前秘密研制的单兵战术核弹，尖端科技的加持下使得步兵也能装配并实战使用。原本配套的高精度单兵发射器已无法修复，但弹头仍然可以利用。该弹头极度危险，对使用者要求极高，使用时请确保操作符合规范。
+爆炸时可同时对敌方和友方造成伤害，少量冲击力伤害无法被彻底减免。</description>
+    <data>
+      <level>50</level>
+      <weight>20</weight>
+      <dressup>手雷-战术核弹手雷</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>10</interval>
+      <velocity>18</velocity>
+      <bullet>战术核弹手雷</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>战术核弹手雷</clipname>
+      <bulletsize>50</bulletsize>
+      <power>100000</power>
+      <impact>1</impact>
+      <accuracy>200</accuracy>
     </data>
   </item>
 </root>

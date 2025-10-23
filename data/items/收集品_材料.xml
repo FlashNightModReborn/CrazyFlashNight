@@ -1,9 +1,16 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<!--已用ID：[11, 40, 50, 122, 127, 131, 277, 309, 310, 320, 321, 322, 323, 324, 325, 326, 328, 329, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 353, 354, 355, 356, 357, 358, 359, 365, 366, 367, 368, 369, 370, 371, 384, 385, 386, 387, 388, 389, 390, 391, 473, 474, 475, 476, 477, 478, 479, 518, 521, 561, 570, 577, 594, 596, 610, 611, 613]
-预留ID区间：16201-17000-->
+<!--已用ID：[16201, 16202, 16203, 16204, 16205, 16206, 16207, 16208, 16209, 16210, 16211, 16212, 16213, 16214, 16215, 16216, 16217, 16218, 16219, 16220, 16221, 16222, 16223, 16224, 16225, 16226, 16227, 16228, 16229, 16230, 16231, 16232, 16233, 16234, 16235, 16236, 16237, 16238, 16239, 16240, 16241, 16242, 16243, 16244, 16245, 16246, 16247, 16248, 16249, 16250, 16251, 16252, 16253, 16254, 16255, 16256, 16257, 16258, 16259, 16260, 16261, 16262, 16263, 16264, 16265, 16266, 16267, 16268, 16269, 16270, 16271, 16272, 16273, 16274, 16275, 16301, 16302, 16303, 16304, 16305, 16306, 16307, 16308, 16309, 16401, 16402, 16403, 16404, 16405, 16406, 16407, 16408, 16409, 16410, 16411, 16412, 16413, 16414, 16415, 16416, 16417, 16418, 16419, 16420, 16501, 16502, 16503, 16504, 16505, 16506, 16507, 16508, 16509, 16510, 16511, 16512, 16513, 16514, 16515, 16516, 16601]
+预留ID区间：16201-17000
+
+ID分配规则（区间明显分开）：
+  其他材料（碎片、特殊收集品）: 16201-16300 (使用 75 个)
+  低级材料（含二阶）: 16301-16400 (使用 9 个)
+  中等材料（含三阶）: 16401-16500 (使用 20 个)
+  高等材料（含四阶）: 16501-16600 (使用 16 个)
+  特殊材料: 16601-16700 (使用 1 个)-->
 <root>
   <item>
-    <id>2011</id>
+    <id>16201</id>
     <name>神铁碎片</name>
     <displayname>神铁碎片</displayname>
     <icon>神铁碎片</icon>
@@ -13,7 +20,7 @@
     <description>“那是大禹治水之时，定江海浅深的一个定子。是一块神铁，能中何用？”</description>
   </item>
   <item>
-    <id>2010</id>
+    <id>16202</id>
     <name>大圣遗物：意见欲</name>
     <displayname>大圣遗物：意见欲</displayname>
     <icon>大圣遗物：意见欲</icon>
@@ -23,7 +30,7 @@
     <description>大圣精魄所化之根器</description>
   </item>
   <item>
-    <id>2009</id>
+    <id>16203</id>
     <name>大圣遗物：身本忧</name>
     <displayname>大圣遗物：身本忧</displayname>
     <icon>大圣遗物：身本忧</icon>
@@ -33,7 +40,7 @@
     <description>大圣精魄所化之根器</description>
   </item>
   <item>
-    <id>2008</id>
+    <id>16204</id>
     <name>大圣遗物：舌尝思</name>
     <displayname>大圣遗物：舌尝思</displayname>
     <icon>大圣遗物：舌尝思</icon>
@@ -43,7 +50,7 @@
     <description>大圣精魄所化之根器</description>
   </item>
   <item>
-    <id>2007</id>
+    <id>16205</id>
     <name>大圣遗物：鼻嗅爱</name>
     <displayname>大圣遗物：鼻嗅爱</displayname>
     <icon>大圣遗物：鼻嗅爱</icon>
@@ -53,7 +60,7 @@
     <description>大圣精魄所化之根器</description>
   </item>
   <item>
-    <id>2006</id>
+    <id>16206</id>
     <name>大圣遗物：耳听怒</name>
     <displayname>大圣遗物：耳听怒</displayname>
     <icon>大圣遗物：耳听怒</icon>
@@ -63,7 +70,7 @@
     <description>大圣精魄所化之根器</description>
   </item>
   <item>
-    <id>2005</id>
+    <id>16207</id>
     <name>大圣遗物：眼看喜</name>
     <displayname>大圣遗物：眼看喜</displayname>
     <icon>大圣遗物：眼看喜</icon>
@@ -73,27 +80,7 @@
     <description>大圣精魄所化之根器</description>
   </item>
   <item>
-    <id>11</id>
-    <name>复活币</name>
-    <displayname>复活币</displayname>
-    <icon>复活币</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>500</price>
-    <description>消耗1个进行一次复活。</description>
-  </item>
-  <item>
-    <id>40</id>
-    <name>强化石</name>
-    <displayname>强化石</displayname>
-    <icon>强化石</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>100</price>
-    <description>可用于强化装备，增强实力</description>
-  </item>
-  <item>
-    <id>50</id>
+    <id>16208</id>
     <name>Andy套装碎片</name>
     <displayname>Andy套装碎片</displayname>
     <icon>Andy套装碎片</icon>
@@ -103,27 +90,7 @@
     <description>你想穿Andy套装，少了这个碎片可不行。但现在看来也无所谓了。</description>
   </item>
   <item>
-    <id>122</id>
-    <name>月之碎片</name>
-    <displayname>月之碎片</displayname>
-    <icon>月之碎片</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>10000</price>
-    <description>活动专属，用于合成秋月</description>
-  </item>
-  <item>
-    <id>127</id>
-    <name>国庆纪念币</name>
-    <displayname>国庆纪念币</displayname>
-    <icon>国庆纪念币</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>10000</price>
-    <description>活动专属，用于合成黄金QBZ</description>
-  </item>
-  <item>
-    <id>131</id>
+    <id>16209</id>
     <name>战宠灵石</name>
     <displayname>战宠灵石</displayname>
     <icon>战宠灵石</icon>
@@ -133,747 +100,7 @@
     <description>战宠灵石用于宠物升级</description>
   </item>
   <item>
-    <id>277</id>
-    <name>圣诞糖果</name>
-    <displayname>圣诞糖果</displayname>
-    <icon>圣诞糖果</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>10000</price>
-    <description>圣诞节来临，收集糖果换装备了哦</description>
-  </item>
-  <item>
-    <id>309</id>
-    <name>蓝晶</name>
-    <displayname>蓝晶</displayname>
-    <icon>蓝晶</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
-  </item>
-  <item>
-    <id>310</id>
-    <name>冰魄矿石</name>
-    <displayname>冰魄矿石</displayname>
-    <icon>冰魄矿石</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>10000</price>
-    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
-  </item>
-  <item>
-    <id>320</id>
-    <name>军用帆布</name>
-    <displayname>军用帆布</displayname>
-    <icon>军用帆布</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>用于改装的低级材料。
-军用帆布耐用廉价，阻燃防霉，是搭建临时建筑的优秀材料。末世之中的聪明人会意识到军用帆布的多重优势。
-它不仅能用来加固帐篷、简易栅栏等基础设施，还能用来修补装备、遮蔽视线、制作防护装置等。
-也因此成为了一种相对“稳定”的交换媒介。</description>
-  </item>
-  <item>
-    <id>321</id>
-    <name>上色涂料</name>
-    <displayname>上色涂料</displayname>
-    <icon>上色涂料</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>用于改装的低级材料。
-为装备上色是必需的：赋予表面色彩，便于敌我识别。
-涂料配方还能提供防火、抗菌、耐磨及物理/热防护等额外功能，增强装备在恶劣环境下的性能与耐久度。
-在末世，恰当的涂装不仅关乎生存，有时也承载着使用者对特定身份的认同或过往经历的印记。</description>
-  </item>
-  <item>
-    <id>322</id>
-    <name>弹簧</name>
-    <displayname>弹簧</displayname>
-    <icon>弹簧</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>用于改装的低级材料。
-基于胡克定律利用弹性形变储存和释放能量，是机械结构中的核心部件，广泛用于枪械以及各种自制装备中。
-末世后，弹簧作为收集品，经常因频繁使用和环境恶劣而磨损，需定期更换和修复。
-合适尺寸的弹簧更是珍贵资源。</description>
-  </item>
-  <item>
-    <id>323</id>
-    <name>增效剂</name>
-    <displayname>增效剂</displayname>
-    <icon>增效剂</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>用于改装的低级材料。
-一类能附加表面涂层的强化药剂总称，广泛应用于各种表面处理工艺，增强其耐磨性、抗腐蚀性和强度。
-部分增效剂甚至具备自修复和自适应能力，可以在遭受损伤后自动修复表面微裂纹，恢复原有的结构强度。
-现在主要用在护甲与兵器的强化提升上</description>
-  </item>
-  <item>
-    <id>324</id>
-    <name>可塑式钢板</name>
-    <displayname>可塑式钢板</displayname>
-    <icon>可塑式钢板</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>用于改装的低级材料。
-战前大规模生产的高性能预制标准件，采用纳米粉末颗粒工艺将晶体结构改性为类奥氏体相。
-工艺上几乎没有限制，只需要简单的热处理即可迅速达到所需的机械性能和形状稳定性。
-易于获取，加工便捷，机械师们永远不会嫌它们多的。</description>
-  </item>
-  <item>
-    <id>325</id>
-    <name>战术导轨</name>
-    <displayname>战术导轨</displayname>
-    <icon>战术导轨</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>用于改装的低级材料。
-这种模块化的接口系统基于New Optimized Adaptable Harmonization 协议。
-允许快速、精准地安装各种战术配件，并最大限度地兼容各类旧有导轨标准。
-虽然其起源不明，但不妨碍它成为幸存者间的事实标准。</description>
-  </item>
-  <item>
-    <id>326</id>
-    <name>螺丝套件</name>
-    <displayname>螺丝套件</displayname>
-    <icon>螺丝套件</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>用于改装的低级材料。
-广泛应用于机械连接中的标准化紧固件，能在高频振动、温度波动和外力冲击下提供稳固连接。
-长期使用后，磨损、疲劳及环境因素将导致紧固性能逐步衰减，其失效先兆包括：预紧力降低、界面微动、异响增加。
-规范强制周期更换，执行视资源权衡。</description>
-  </item>
-  <item>
-    <id>328</id>
-    <name>僵尸血液样本</name>
-    <displayname>僵尸血液样本</displayname>
-    <icon>僵尸血液样本</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>4000</price>
-    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
-  </item>
-  <item>
-    <id>329</id>
-    <name>未知金属</name>
-    <displayname>未知金属</displayname>
-    <icon>未知金属</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>5000</price>
-    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
-  </item>
-  <item>
-    <id>331</id>
-    <name>试验材料</name>
-    <displayname>试验材料</displayname>
-    <icon>试验材料</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <weight>1</weight>
-    <price>4000</price>
-    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
-  </item>
-  <item>
-    <id>332</id>
-    <name>可充锂电池</name>
-    <displayname>可充锂电池</displayname>
-    <icon>可充锂电池</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>6000</price>
-    <description>用于改装的中等材料。
-基于锂离子在正负极间可逆嵌入脱嵌的电化学反应，能量密度高、循环寿命长、倍率性能好，是电气设备的理想电源。
-在末日降临带来的emp风暴中，少量锂电池没有因此损毁，因而在末日中极其抢手。
-据说联合大学在回收和修复损坏的电池单体及电路板。</description>
-  </item>
-  <item>
-    <id>333</id>
-    <name>小型液晶屏</name>
-    <displayname>小型液晶屏</displayname>
-    <icon>小型液晶屏</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>6000</price>
-    <description>用于改装的中等材料。
-末日前走入千家万户的液晶屏大多因为灾难而损坏，电子产业的消失也使得液晶屏无法再大规模生产。
-尽管如此，液晶屏的核心部件——如显示控制板、背光源、连接线等，依然具有重要的可利用价值。
-来收集并且拆解他们吧，这就是最新世代的电子扭蛋游戏。</description>
-  </item>
-  <item>
-    <id>334</id>
-    <name>战术背带</name>
-    <displayname>战术背带</displayname>
-    <icon>战术背带</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>6000</price>
-    <description>用于改装的中等材料。
-模块化装备接口的战场适应性改造样本。通过材料替代与结构拓扑优化实现去工业化生产。
-战前采用航天级钛合金框架与选择性激光熔融技术，专为特种作战定制。
-现利用汽车安全带与金属残件即可通过热压-缝纫复合工艺重构。</description>
-  </item>
-  <item>
-    <id>335</id>
-    <name>防沙皮革</name>
-    <displayname>防沙皮革</displayname>
-    <icon>防沙皮革</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>6000</price>
-    <description>用于改装的中等材料。
-现存72%为统合生产批号，灰色事件后转为民用配额，沙漠防护装备改造基材，末日后的稀缺改装资源。
-碳化硅/自修复聚合物复合结构（含锆镀膜残余）能够有效阻隔细微砂砾侵蚀并减少沙暴摩擦电荷积累。
-某些幸存者发现该材料能够通过XMAS-12-25弹道防护基准测试。</description>
-  </item>
-  <item>
-    <id>336</id>
-    <name>烈性火药</name>
-    <displayname>烈性火药</displayname>
-    <icon>烈性火药</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>6000</price>
-    <description>用于改装的中等材料。
-原材料来源广泛，通过爆轰参数整定工艺，将异构化含能材料调配成标准化输出的烈性火药单元。
-能在手工作坊环境下，通过可控爆轰波诱导枪管金属发生相变。
-也可以用于制造弹药，但子弹可没好枪稀缺。</description>
-  </item>
-  <item>
-    <id>337</id>
-    <name>生物催化剂</name>
-    <displayname>生物催化剂</displayname>
-    <icon>生物催化剂</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>6000</price>
-    <description>用于改装的中等材料。
-能极大程度降低反应能量门槛，让许多在末世条件下难以实现的化学改造变得可行。
-固定化酶载体虽具理论半衰期，但随着热力学熵增，构象漂移依旧让催化活性呈对数衰减。
-联合大学的周报显示，变异菌株比研究生早8小时适应黑暗环境。</description>
-  </item>
-  <item>
-    <id>338</id>
-    <name>护手</name>
-    <displayname>护手</displayname>
-    <icon>护手</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>6000</price>
-    <description>用于改装的中等材料。
-贴合掌形的护手能优化握持控制，提高换势速率，并在劈、刺、格挡中提供精准反馈。
-末世之中，标准化制式护手早已消失，取而代之的是战士们因地制宜的改造产物。
-维护周期终止于使用者生物信号消失后氧化层形成阶段。</description>
-  </item>
-  <item>
-    <id>339</id>
-    <name>石英磨刀石</name>
-    <displayname>石英磨刀石</displayname>
-    <icon>石英磨刀石</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>6000</price>
-    <description>用于改装的中等材料。
-文明崩溃后，标准化高精度磨刀石几近绝迹，其空缺由手工筛选与拼配的残存工艺填补。
-不同目数的石英磨刀石分别用于各阶段加工：低目数用于粗磨修型，高目数专注于精磨抛光。
-每套磨具的粒度分布谱线，都是匠人独有的工艺指纹。</description>
-  </item>
-  <item>
-    <id>340</id>
-    <name>不锈钢材</name>
-    <displayname>不锈钢材</displayname>
-    <icon>不锈钢材</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>6000</price>
-    <description>用于改装的中等材料。
-曾是撑起文明穹顶的钢铁骨架，屈服强度始终高于文明重建的迫切指数。
-现今只能从废墟中搜寻到一些残留的废钢，尝试重新冶炼和锻造的过程复杂且耗时。
-炼成则钢，炼金成账单。</description>
-  </item>
-  <item>
-    <id>341</id>
-    <name>高耐力橡胶</name>
-    <displayname>高耐力橡胶</displayname>
-    <icon>高耐力橡胶</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>6000</price>
-    <description>用于改装的中等材料。
-机械、载具与装备的关键柔性部件来源，广泛用于轮胎、履带、密封件与各类缓冲结构。
-这种历经末世严苛环境考验的弹性体聚合物，即使经历了严重的热氧老化，依然能在极端温差和磨损下保持结构完整性。
-经热氧老化逆转工艺，可以勉强恢复部分性能。</description>
-  </item>
-  <item>
-    <id>342</id>
-    <name>强化金属管</name>
-    <displayname>强化金属管</displayname>
-    <icon>强化金属管</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>6000</price>
-    <description>用于改装的中等材料。
-回收自旧日设备，无全新供应。经过某种未公开的新兴工艺二次强化处理以提升屈服强度和抗疲劳极限。
-是构建高负载液压或支撑结构的必需品，也是机械师用来制造高膛压武器的核心部件。
-最终是性能的爆发，还是生命的消逝，取决于它，也取决于使用者。</description>
-  </item>
-  <item>
-    <id>343</id>
-    <name>复合式军用塑料</name>
-    <displayname>复合式军用塑料</displayname>
-    <icon>复合式军用塑料</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>6000</price>
-    <description>用于改装的中等材料。
-由多种聚合物基体与纤维/颗粒增强相复合而成，具备预设的轻质、高强、耐腐蚀以及可接受的冲击韧性。
-从步枪护木到无人机框架，从防弹插板到便携式通讯设备外壳，这种材料忠实地记录了人类将一切事物武器化的天赋。
-这或许是下一代文明能找到的，关于人类最持久的时空胶囊。</description>
-  </item>
-  <item>
-    <id>344</id>
-    <name>透镜</name>
-    <displayname>透镜</displayname>
-    <icon>透镜</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>6000</price>
-    <description>用于改装的中等材料。
-利用材料折射率差异对光线进行汇聚或发散的精密光学元件，常被用于武器瞄准镜、侦察设备或简易聚能装置。
-末世中，完好无瑕的透镜比幸存者的希望还稀缺，机械师们的手艺决定了使用者究竟是在窥探目标，还是在提前预览自己的终点。
-清晰的视野？那不过是死亡的另一种滤镜。</description>
-  </item>
-  <item>
-    <id>345</id>
-    <name>高强度合金</name>
-    <displayname>高强度合金</displayname>
-    <icon>高强度合金</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>6000</price>
-    <description>用于改装的中等材料。
-回收自战前高应力部件——工业框架、装甲底盘、机械残骸的关节节点，其设计初衷即为抵抗结构性破坏。
-由多相组织与析出相强化构成，原始性能优异，但经历末世高温冲刷与粗暴重铸后，成分比与晶粒走向已难以溯源。
-内部残余应力已是既定事实，让冲击成了统计学幻觉。</description>
-  </item>
-  <item>
-    <id>346</id>
-    <name>强力胶</name>
-    <displayname>强力胶</displayname>
-    <icon>强力胶</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>6000</price>
-    <description>用于改装的中等材料。
-高分子粘结剂的统称，依靠链间缠结、氢键与范德华力完成异质材料间的强制耦合。
-在缺乏精密机加工设备的末世，它是将工业废墟的分子碎片强制重塑为功能性实体的关键介质。
-忠诚度仅限于当前分子键的稳定，持久性？一个高分子笑话。</description>
-  </item>
-  <item>
-    <id>347</id>
-    <name>枪械内构强化套件</name>
-    <displayname>枪械内构强化套件</displayname>
-    <icon>枪械内构强化套件</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>6000</price>
-    <description>用于改装的中等材料。
-模块化的内部改造组件，通过替换关键受力部件、植入能量管线与反馈回路，构建一套集成化的运作控制结构。
-依托末世技术接口，这些更新令老旧装备获得与时代脱节的杀伤力，其运作精度与响应速率达到令人不安的高度。
-这个时代，会思考的不一定是人，有时甚至不是活物。</description>
-  </item>
-  <item>
-    <id>348</id>
-    <name>高级木料</name>
-    <displayname>高级木料</displayname>
-    <icon>高级木料</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>6000</price>
-    <description>用于改装的中等材料。
-旧时代的生态木材，经解构、重压与聚合物填充形成的复合木料。可持续设计的噱头，高强度废土应用的硬材。
-通过分子层面的重塑与压缩，其制造工艺将木质纤维的物理潜能压榨至极限，赋予其近乎钢铁的硬度和可疑的弹道防护效能。
-为绿色未来而生，却只对现在的物理定律负责。</description>
-  </item>
-  <item>
-    <id>349</id>
-    <name>爆炸僵尸样本</name>
-    <displayname>爆炸僵尸样本</displayname>
-    <icon>爆炸僵尸样本</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <weight>1</weight>
-    <price>4000</price>
-    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
-  </item>
-  <item>
-    <id>350</id>
-    <name>尸母标本</name>
-    <displayname>尸母标本</displayname>
-    <icon>尸母标本</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>4000</price>
-    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
-  </item>
-  <item>
-    <id>351</id>
-    <name>诺亚机枪</name>
-    <displayname>诺亚机枪</displayname>
-    <icon>诺亚机枪</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <weight>1</weight>
-    <price>4000</price>
-    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
-  </item>
-  <item>
-    <id>353</id>
-    <name>研究文件</name>
-    <displayname>研究文件</displayname>
-    <icon>研究文件</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <weight>1</weight>
-    <price>4000</price>
-    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
-  </item>
-  <item>
-    <id>354</id>
-    <name>动力液压杆</name>
-    <displayname>动力液压杆</displayname>
-    <icon>动力液压杆</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>50000</price>
-    <description>用于改装的高等材料。
-由强化合金与超高压流体精密封装的线性作动单元，一种将输入能量转化为可控超常推拉力的废土罕有组件。
-将流体压力转化为超规格推力，驱动武器在战场瞬息完成构型切换，并强硬吸收重型弹药对结构的破坏性冲击。
-向量无方向歧视，阈值无道德判断——液压系统只关心压强，崩坏交由人类承担。</description>
-  </item>
-  <item>
-    <id>355</id>
-    <name>碳纤维布料</name>
-    <displayname>碳纤维布料</displayname>
-    <icon>碳纤维布料</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>50000</price>
-    <description>用于改装的高等材料。
-由高模量碳素纤维束精密编织而成的工程结构基材。以极致的比强度与比模量，承担轻量化高应力结构的载荷。
-表层常经等离子体活化与化学接枝处理，便于与柔性导电层复合，构建可嵌入感测、控制、数据流转的装备神经。
-结构完美，化学惰性，对定义其价值的文明崩解无动于衷。</description>
-  </item>
-  <item>
-    <id>356</id>
-    <name>电脑芯片</name>
-    <displayname>电脑芯片</displayname>
-    <icon>电脑芯片</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>50000</price>
-    <description>用于改装的高等材料。
-封装在抗干扰合金壳体内的现场可编程门阵列系统模块，具备高性能可重构处理与多协议接口能力。
-其核心资源池于军用级物理安防与多层级加密协议验证后，允许系统强制接驳并驱动近乎所有个人级设备接口。
-设计理念已不可考据，只剩使用说明在区块链中反复自我更新。</description>
-  </item>
-  <item>
-    <id>357</id>
-    <name>传感器</name>
-    <displayname>传感器</displayname>
-    <icon>传感器</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>50000</price>
-    <description>用于改装的高等材料。
-负责采集并精密量化微幅光热声振等物理扰动，生成处理单元可解逻辑信号流的硬件前端。
-多模敏感阵列同步执行模数转换及数据封装，以通用协议送往主控链路，以支撑战术决策闭环。
-致命威胁下精度即解释权，系统基于误差完成最终的现实构建。</description>
-  </item>
-  <item>
-    <id>358</id>
-    <name>传动装置</name>
-    <displayname>传动装置</displayname>
-    <icon>传动装置</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>50000</price>
-    <description>用于改装的高等材料。
-巴别塔时期标准化的可重构机械能接口模块，集成智能功率分配与多协议接口。
-其设计意图是抹平一切动力差异，理论上能解析任意输入，强制匹配目标输出，并实时自适应负载。
-但复杂的系统总有复杂的崩溃方式。</description>
-  </item>
-  <item>
-    <id>359</id>
-    <name>水冷机构</name>
-    <displayname>水冷机构</displayname>
-    <icon>水冷机构</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>50000</price>
-    <description>用于改装的高等材料。
-WP企业统一供应统合东区的模块化温控系统，依靠微通道与相变技术实现极端工况下的稳定控温。
-其精密部件未按抗战损或低维护环境设计，但所设冗余结构在计划失效后维持了核心功能的持续运作。
-设计寿命之外的长存被视作天网工程学的成功案例。</description>
-  </item>
-  <item>
-    <id>365</id>
-    <name>突击型光学瞄具</name>
-    <displayname>突击型光学瞄具</displayname>
-    <icon>突击型光学瞄具</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>50000</price>
-    <description>用于改装的高等材料。
-集成多传感器融合、AI辅助目标识别及半自主跟踪系统，专为高速突击接战设计。
-制造商破产后认证及密钥体系崩溃，其核心AI与高级功能长期处于锁定状态，仅作为性能增强型常规瞄具被使用。
-研究院专员仍在尝试将固件移植伪装成升级。</description>
-  </item>
-  <item>
-    <id>366</id>
-    <name>战术鱼骨零件</name>
-    <displayname>战术鱼骨零件</displayname>
-    <icon>战术鱼骨零件</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>50000</price>
-    <description>用于改装的高等材料。
-作为早期NOAH协议的激进扩展，理论上支持向下兼容所有历史标准。
-集成神经链路控制、能源微通道与自适应纳米接口阵列，支持模块化热插拔与多协议自适应。
-标准只剩下能接上就算成功。</description>
-  </item>
-  <item>
-    <id>367</id>
-    <name>KM型消声器</name>
-    <displayname>KM型消声器</displayname>
-    <icon>KM型消声器</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>50000</price>
-    <description>用于改装的高等材料。
-基于赫尔姆霍兹共振腔与迷宫式涡流导向结构，削峰展宽枪口压力波并压低声焰与红外特征。
-原型基于Visto Industrial社的精密制品，原为某特种部队的特殊渗透作战任务定制。
-战前的密封件与加密配件预期已失效，现多以兼容件与 NOAH 接口改装再生。</description>
-  </item>
-  <item>
-    <id>368</id>
-    <name>镭射瞄准具</name>
-    <displayname>镭射瞄准具</displayname>
-    <icon>镭射瞄准具</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>50000</price>
-    <description>用于改装的高等材料。
-军规衍生型半导体激光器，配合陀螺稳定与零位微调，集成数据总线姿态补偿回路，动态零位校准。
-原生支持 IR/可见双模，逾越DRM付费墙需云端密钥——而云端已成辐射尘埃。
-锁定时延即交火成本，而解锁许可永远404。</description>
-  </item>
-  <item>
-    <id>369</id>
-    <name>加长弹匣</name>
-    <displayname>加长弹匣</displayname>
-    <icon>加长弹匣</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>50000</price>
-    <description>用于改装的高等材料。
-双鼓并行进给与分流导弹舌结合恒力弹簧卷带与干膜润滑，显著提升装填容量并压缩换弹窗口。
-长时压簧负载导致供弹机构疲劳与时序失控，故采用火力支援位集中配发，纳入编号化共享资产的维保循环。
-序号比子弹更珍贵——前者终将回收，后者归于损耗。</description>
-  </item>
-  <item>
-    <id>370</id>
-    <name>战术握把</name>
-    <displayname>战术握把</displayname>
-    <icon>战术握把</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>50000</price>
-    <description>用于改装的高等材料。
-人机工程学垂直/倾斜双角度设计，玻纤增强聚合物内嵌记忆金属骨架，热致回弹维持握型稳定。
-握痕记录使用履历，磨损预示最后一握，高保真人机接口将战术意图无损传递，细节控制即战术优势。
-握把如战友：磨损可以预见，背叛无法预料。</description>
-  </item>
-  <item>
-    <id>371</id>
-    <name>非栓式机构</name>
-    <displayname>非栓式机构</displayname>
-    <icon>非栓式机构</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>50000</price>
-    <description>用于改装的高等材料。
-巴别塔计划的技术遗产，基于可编程气体动力学矩阵的跨平台循环转换模块，赋予管状平台全自动循环能力。
-以自持控制回路接管机械链并覆写工作时序，无微码库则退化为启发式曲线，故障集中于闭锁失败与应力疲劳。
-统一接口，统合失控路径。</description>
-  </item>
-  <item>
-    <id>384</id>
-    <name>剑圣碎片</name>
-    <displayname>剑圣碎片</displayname>
-    <icon>剑圣碎片</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <weight>1</weight>
-    <price>10000</price>
-    <description>用于合成剑圣套装</description>
-  </item>
-  <item>
-    <id>385</id>
-    <name>方舟卫士样本</name>
-    <displayname>方舟卫士样本</displayname>
-    <icon>方舟卫士样本</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
-  </item>
-  <item>
-    <id>386</id>
-    <name>诺亚枪械碎片</name>
-    <displayname>诺亚枪械碎片</displayname>
-    <icon>诺亚枪械碎片</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
-  </item>
-  <item>
-    <id>387</id>
-    <name>诺亚僵尸证明</name>
-    <displayname>诺亚僵尸证明</displayname>
-    <icon>诺亚僵尸证明</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
-  </item>
-  <item>
-    <id>388</id>
-    <name>无人机残骸</name>
-    <displayname>无人机残骸</displayname>
-    <icon>无人机残骸</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
-  </item>
-  <item>
-    <id>389</id>
-    <name>冰雪之心线索文件</name>
-    <displayname>冰雪之心线索文件</displayname>
-    <icon>冰雪之心线索文件</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
-  </item>
-  <item>
-    <id>390</id>
-    <name>诺亚医疗器械</name>
-    <displayname>诺亚医疗器械</displayname>
-    <icon>诺亚医疗器械</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
-  </item>
-  <item>
-    <id>391</id>
-    <name>诺亚雪山山顶情报</name>
-    <displayname>诺亚雪山山顶情报</displayname>
-    <icon>诺亚雪山山顶情报</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
-  </item>
-  <item>
-    <id>473</id>
-    <name>烈炎矿石</name>
-    <displayname>烈炎矿石</displayname>
-    <icon>烈炎矿石</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>4000</price>
-    <description>产自于火山中的稀有矿石</description>
-  </item>
-  <item>
-    <id>474</id>
-    <name>残破的枪械</name>
-    <displayname>残破的枪械</displayname>
-    <icon>残破的枪械</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>3000</price>
-    <description>掺有烈炎矿石的枪械</description>
-  </item>
-  <item>
-    <id>475</id>
-    <name>秘钥A</name>
-    <displayname>秘钥A</displayname>
-    <icon>秘钥A</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>5000</price>
-    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
-  </item>
-  <item>
-    <id>476</id>
-    <name>秘钥B</name>
-    <displayname>秘钥B</displayname>
-    <icon>秘钥B</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <weight>1</weight>
-    <price>5000</price>
-    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
-  </item>
-  <item>
-    <id>477</id>
-    <name>秘钥C</name>
-    <displayname>秘钥C</displayname>
-    <icon>秘钥C</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <weight>1</weight>
-    <price>5000</price>
-    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
-  </item>
-  <item>
-    <id>478</id>
-    <name>辛火草</name>
-    <displayname>辛火草</displayname>
-    <icon>辛火草</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <weight>1</weight>
-    <price>3000</price>
-    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
-  </item>
-  <item>
-    <id>479</id>
-    <name>毒素样本</name>
-    <displayname>毒素样本</displayname>
-    <icon>毒素样本</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <weight>1</weight>
-    <price>3000</price>
-    <description>来源不明的毒素样本。</description>
-  </item>
-  <item>
-    <id>518</id>
+    <id>16210</id>
     <name>羊年新年碎片</name>
     <displayname>羊年新年碎片</displayname>
     <icon>羊年新年碎片</icon>
@@ -883,7 +110,7 @@ WP企业统一供应统合东区的模块化温控系统，依靠微通道与相
     <description>羊年新年合成绝版限量项链材料</description>
   </item>
   <item>
-    <id>521</id>
+    <id>16211</id>
     <name>猴年新年碎片</name>
     <displayname>猴年新年碎片</displayname>
     <icon>猴年新年碎片</icon>
@@ -893,7 +120,7 @@ WP企业统一供应统合东区的模块化温控系统，依靠微通道与相
     <description>猴年新年合成绝版限量项链材料</description>
   </item>
   <item>
-    <id>568</id>
+    <id>16212</id>
     <name>觉醒晶体</name>
     <displayname>觉醒晶体</displayname>
     <icon>觉醒晶体</icon>
@@ -904,7 +131,7 @@ WP企业统一供应统合东区的模块化温控系统，依靠微通道与相
     <description>用于觉醒技能消耗使用！</description>
   </item>
   <item>
-    <id>570</id>
+    <id>16213</id>
     <name>鸡年碎片</name>
     <displayname>鸡年碎片</displayname>
     <icon>鸡年碎片</icon>
@@ -914,7 +141,7 @@ WP企业统一供应统合东区的模块化温控系统，依靠微通道与相
     <description>鸡年合成绝版限量项链材料</description>
   </item>
   <item>
-    <id>577</id>
+    <id>16214</id>
     <name>狗年碎片</name>
     <displayname>狗年碎片</displayname>
     <icon>狗年碎片</icon>
@@ -924,7 +151,7 @@ WP企业统一供应统合东区的模块化温控系统，依靠微通道与相
     <description>狗年合成绝版限量项链材料</description>
   </item>
   <item>
-    <id>596</id>
+    <id>16215</id>
     <name>猪年碎片</name>
     <displayname>猪年碎片</displayname>
     <icon>猪年碎片</icon>
@@ -934,7 +161,7 @@ WP企业统一供应统合东区的模块化温控系统，依靠微通道与相
     <description>猪年合成绝版限量项链材料</description>
   </item>
   <item>
-    <id>611</id>
+    <id>16216</id>
     <name>鼠年碎片</name>
     <displayname>鼠年碎片</displayname>
     <icon>鼠年碎片</icon>
@@ -944,27 +171,7 @@ WP企业统一供应统合东区的模块化温控系统，依靠微通道与相
     <description>鼠年合成绝版限量项链材料</description>
   </item>
   <item>
-    <id>561</id>
-    <name>异形龙骨碎片</name>
-    <displayname>异形龙骨碎片</displayname>
-    <icon>异形龙骨碎片</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>从外星异形身上获取的碎片，十分罕见，异形地图每次都可获得！</description>
-  </item>
-  <item>
-    <id>594</id>
-    <name>兽王碎片</name>
-    <displayname>兽王碎片</displayname>
-    <icon>兽王碎片</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>6000</price>
-    <description>合成&lt;font color="#ff00ff"&gt;兽王套装&lt;/font&gt;必备材料，来自&lt;font color="#ff00ff"&gt;兽王&lt;/font&gt;</description>
-  </item>
-  <item>
-    <id>610</id>
+    <id>16217</id>
     <name>方舟碎片</name>
     <displayname>方舟碎片</displayname>
     <icon>方舟碎片</icon>
@@ -974,215 +181,17 @@ WP企业统一供应统合东区的模块化温控系统，依靠微通道与相
     <description>从方舟决战中获得非常珍贵的金属。</description>
   </item>
   <item>
-    <id>613</id>
-    <name>远古碎片</name>
-    <displayname>远古碎片</displayname>
-    <icon>远古碎片</icon>
+    <id>16218</id>
+    <name>强化石</name>
+    <displayname>强化石</displayname>
+    <icon>强化石</icon>
     <type>收集品</type>
     <use>材料</use>
-    <price>15000</price>
-    <description>来自外星的材料，可把装备远古化属性大幅增加</description>
+    <price>100</price>
+    <description>可用于强化装备，增强实力</description>
   </item>
   <item>
-    <id>20001</id>
-    <name>锌棒</name>
-    <displayname>锌棒</displayname>
-    <icon>锌棒</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>3000</price>
-    <description>用于建筑与炼金的材料。
-    锌被广泛用于金属镀层防锈、建筑工艺与化学生产工作中。</description>
-  </item>
-  <item>
-    <id>20002</id>
-    <name>砒霜</name>
-    <displayname>砒霜</displayname>
-    <icon>砒霜</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>5000</price>
-    <description>用于炼金的材料。
-    三氧化二砷，即砒霜，是参与金属冶炼的重要药剂。尽管可以被用于农药制作和医疗，但其剧毒性不容忽视。</description>
-  </item>
-  <item>
-    <id>20003</id>
-    <name>铝粉</name>
-    <displayname>铝粉</displayname>
-    <icon>铝粉</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>3000</price>
-    <description>用于建筑、炼金与合成的材料。
-    铝粉是重要的工业制品，其在化学领域内可以充当燃料添加剂、金属填充剂，同时又可以参与混凝土制作，并在电子领域起到重要作用。</description>
-  </item>
-  <item>
-    <id>20004</id>
-    <name>蜡</name>
-    <displayname>蜡</displayname>
-    <icon>蜡</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>用于炼金与合成的材料。
-    蜡具有防锈与润滑的作用，在日用品中非常常见。</description>
-  </item>
-  <item>
-    <id>20005</id>
-    <name>醋</name>
-    <displayname>醋</displayname>
-    <icon>醋</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>用于炼金与烹饪的材料。
-    醋酸是良好的化学溶剂，并且可以用于烹饪调味。</description>
-  </item>
-  <item>
-    <id>20006</id>
-    <name>硫酸盐</name>
-    <displayname>硫酸盐</displayname>
-    <icon>硫酸盐</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>2000</price>
-    <description>用于炼金、建筑与合成的材料。
-    硫酸盐是一类由金属离子与硫酸根离子组成的化合物的统称，随金属阳离子种类不同，硫酸盐在化肥、冶炼、建筑、工艺等方面的作用也有所不同。</description>
-  </item>
-  <item>
-    <id>20007</id>
-    <name>明矾</name>
-    <displayname>明矾</displayname>
-    <icon>明矾</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>2000</price>
-    <description>用于炼金的材料。
-    十二水合硫酸铝钾，即明矾，是用于净水与合成缓冲剂的材料。</description>
-  </item>
-  <item>
-    <id>20008</id>
-    <name>汞合金</name>
-    <displayname>汞合金</displayname>
-    <icon>汞合金</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>2000</price>
-    <description>用于炼金、合成的材料。
-    汞合金，也称汞齐，是常用的合金添加剂，在医疗、电子领域有所应用。</description>
-  </item>
-  <item>
-    <id>20009</id>
-    <name>硼砂</name>
-    <displayname>硼砂</displayname>
-    <icon>硼砂</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>2000</price>
-    <description>用于炼金、建筑和合成的材料。
-    硼砂常用于玻璃制造、农业施肥与材料合成领域。</description>
-  </item>
-  <item>
-    <id>20010</id>
-    <name>黄铜</name>
-    <displayname>黄铜</displayname>
-    <icon>黄铜</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>2000</price>
-    <description>用于炼金的材料。
-    黄铜是由铜、锌以及其他金属组成的合金，在建筑与机械制作领域具有重要作用。</description>
-  </item>
-  <item>
-    <id>20011</id>
-    <name>王水</name>
-    <displayname>王水</displayname>
-    <icon>王水</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>5000</price>
-    <description>用于炼金的材料。
-    由浓盐酸与浓硝酸按3：1体积混合得到的试剂，常用于金属冶炼。</description>
-  </item>
-  <item>
-    <id>20012</id>
-    <name>玻璃</name>
-    <displayname>玻璃</displayname>
-    <icon>玻璃</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>2000</price>
-    <description>用于建筑的材料。
-    玻璃被广泛用于建筑领域中，是最重要的建筑材料之一。</description>
-  </item>
-  <item>
-    <id>20013</id>
-    <name>精油</name>
-    <displayname>精油</displayname>
-    <icon>精油</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>2000</price>
-    <description>用于合成与烹饪的材料。
-    精油是一类从香料植物或泌香动物中提取而来的，加工得到的挥发性香味物质。精油具有杀菌消毒、熏香、调味的作用。</description>
-  </item>
-  <item>
-    <id>20014</id>
-    <name>粘土</name>
-    <displayname>粘土</displayname>
-    <icon>粘土</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>用于建筑的材料。
-    粘土是具有黏性的，粒度较小的土壤。粘土是制作陶瓷、仪器耐高温材料的重要原料。</description>
-  </item>
-  <item>
-    <id>20015</id>
-    <name>铅</name>
-    <displayname>铅</displayname>
-    <icon>铅</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>4000</price>
-    <description>用于建筑、强化与合成的材料。
-    铅常用于电子元件制作与建筑领域，并具有较强的抗辐射能力。</description>
-  </item>
-  <item>
-    <id>20016</id>
-    <name>碱液</name>
-    <displayname>碱液</displayname>
-    <icon>碱液</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>3000</price>
-    <description>用于合成与炼金的材料。
-    碱液具有强腐蚀性，常用于化学反应。</description>
-  </item>
-  <item>
-    <id>20017</id>
-    <name>石灰</name>
-    <displayname>石灰</displayname>
-    <icon>石灰</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>1000</price>
-    <description>用于建筑的材料。
-    石灰以氧化钙为主要成分，是重要的建筑材料。</description>
-  </item>
-  <item>
-    <id>20018</id>
-    <name>硫磺</name>
-    <displayname>硫磺</displayname>
-    <icon>硫磺</icon>
-    <type>收集品</type>
-    <use>材料</use>
-    <price>2000</price>
-    <description>用于合成与炼金的材料。
-    硫磺常用于农药等杀菌药物的制作。</description>
-  </item>
-  <item>
-    <id>1541</id>
+    <id>16219</id>
     <name>浮士德装备碎片</name>
     <displayname>浮士德装备碎片</displayname>
     <icon>浮士德装备碎片</icon>
@@ -1192,7 +201,7 @@ WP企业统一供应统合东区的模块化温控系统，依靠微通道与相
     <description>浮士德兄弟与其他强者展开厮杀之时，被撕裂的着装碎片。材质相当神奇，倘若搜集到一定数量，兴许能够加入其他材料，从而合成新的装备？</description>
   </item>
   <item>
-    <id>1542</id>
+    <id>16220</id>
     <name>牛仔装备碎片</name>
     <displayname>牛仔装备碎片</displayname>
     <icon>牛仔装备碎片</icon>
@@ -1202,7 +211,7 @@ WP企业统一供应统合东区的模块化温控系统，依靠微通道与相
     <description>牛仔与其他强者展开厮杀之时，被撕裂的着装碎片。材质相当神奇，倘若搜集到一定数量，兴许能够加入其他材料，从而合成新的装备？</description>
   </item>
   <item>
-    <id>1543</id>
+    <id>16221</id>
     <name>硬化僵尸碎肉块</name>
     <displayname>硬化僵尸碎肉块</displayname>
     <icon>硬化僵尸碎肉块</icon>
@@ -1212,7 +221,7 @@ WP企业统一供应统合东区的模块化温控系统，依靠微通道与相
     <description>硬化僵尸被其他强者狩猎之时，被击碎的肉块碎片。材质相当神奇，倘若搜集到一定数量，兴许能够加入其他材料，从而合成新的装备？</description>
   </item>
   <item>
-    <id>1544</id>
+    <id>16222</id>
     <name>黑龙装备碎片</name>
     <displayname>黑龙装备碎片</displayname>
     <icon>黑龙装备碎片</icon>
@@ -1222,7 +231,151 @@ WP企业统一供应统合东区的模块化温控系统，依靠微通道与相
     <description>黑龙与其他强者展开厮杀之时，被撕裂的着装碎片。材质相当神奇，倘若搜集到一定数量，兴许能够加入其他材料，从而合成新的装备？</description>
   </item>
   <item>
-    <id>1545</id>
+    <id>16223</id>
+    <name>复活币</name>
+    <displayname>复活币</displayname>
+    <icon>复活币</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>500</price>
+    <description>消耗1个进行一次复活。</description>
+  </item>
+  <item>
+    <id>16224</id>
+    <name>蓝晶</name>
+    <displayname>蓝晶</displayname>
+    <icon>蓝晶</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>1000</price>
+    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
+  </item>
+  <item>
+    <id>16225</id>
+    <name>方舟卫士样本</name>
+    <displayname>方舟卫士样本</displayname>
+    <icon>方舟卫士样本</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>1000</price>
+    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
+  </item>
+  <item>
+    <id>16226</id>
+    <name>诺亚枪械碎片</name>
+    <displayname>诺亚枪械碎片</displayname>
+    <icon>诺亚枪械碎片</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>1000</price>
+    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
+  </item>
+  <item>
+    <id>16227</id>
+    <name>诺亚僵尸证明</name>
+    <displayname>诺亚僵尸证明</displayname>
+    <icon>诺亚僵尸证明</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>1000</price>
+    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
+  </item>
+  <item>
+    <id>16228</id>
+    <name>无人机残骸</name>
+    <displayname>无人机残骸</displayname>
+    <icon>无人机残骸</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>1000</price>
+    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
+  </item>
+  <item>
+    <id>16229</id>
+    <name>冰雪之心线索文件</name>
+    <displayname>冰雪之心线索文件</displayname>
+    <icon>冰雪之心线索文件</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>1000</price>
+    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
+  </item>
+  <item>
+    <id>16230</id>
+    <name>诺亚医疗器械</name>
+    <displayname>诺亚医疗器械</displayname>
+    <icon>诺亚医疗器械</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>1000</price>
+    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
+  </item>
+  <item>
+    <id>16231</id>
+    <name>诺亚雪山山顶情报</name>
+    <displayname>诺亚雪山山顶情报</displayname>
+    <icon>诺亚雪山山顶情报</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>1000</price>
+    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
+  </item>
+  <item>
+    <id>16232</id>
+    <name>异形龙骨碎片</name>
+    <displayname>异形龙骨碎片</displayname>
+    <icon>异形龙骨碎片</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>1000</price>
+    <description>从外星异形身上获取的碎片，十分罕见，异形地图每次都可获得！</description>
+  </item>
+  <item>
+    <id>16233</id>
+    <name>蜡</name>
+    <displayname>蜡</displayname>
+    <icon>蜡</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>1000</price>
+    <description>用于炼金与合成的材料。
+蜡具有防锈与润滑的作用，在日用品中非常常见。</description>
+  </item>
+  <item>
+    <id>16234</id>
+    <name>醋</name>
+    <displayname>醋</displayname>
+    <icon>醋</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>1000</price>
+    <description>用于炼金与烹饪的材料。
+醋酸是良好的化学溶剂，并且可以用于烹饪调味。</description>
+  </item>
+  <item>
+    <id>16235</id>
+    <name>粘土</name>
+    <displayname>粘土</displayname>
+    <icon>粘土</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>1000</price>
+    <description>用于建筑的材料。
+粘土是具有黏性的，粒度较小的土壤。粘土是制作陶瓷、仪器耐高温材料的重要原料。</description>
+  </item>
+  <item>
+    <id>16236</id>
+    <name>石灰</name>
+    <displayname>石灰</displayname>
+    <icon>石灰</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>1000</price>
+    <description>用于建筑的材料。
+石灰以氧化钙为主要成分，是重要的建筑材料。</description>
+  </item>
+  <item>
+    <id>16237</id>
     <name>黑铁装备碎片</name>
     <displayname>黑铁装备碎片</displayname>
     <icon>黑铁装备碎片</icon>
@@ -1232,63 +385,370 @@ WP企业统一供应统合东区的模块化温控系统，依靠微通道与相
     <description>黑铁与其他强者展开厮杀之时，被撕裂的着装碎片。材质相当神奇，倘若搜集到一定数量，兴许能够加入其他材料，从而合成新的装备？</description>
   </item>
   <item>
-    <id>12001</id>
-    <name>二阶复合防御组件</name>
-    <displayname>二阶复合防御组件</displayname>
-    <icon>二阶复合防御组件</icon>
+    <id>16238</id>
+    <name>硫酸盐</name>
+    <displayname>硫酸盐</displayname>
+    <icon>硫酸盐</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>2000</price>
+    <description>用于炼金、建筑与合成的材料。
+硫酸盐是一类由金属离子与硫酸根离子组成的化合物的统称，随金属阳离子种类不同，硫酸盐在化肥、冶炼、建筑、工艺等方面的作用也有所不同。</description>
+  </item>
+  <item>
+    <id>16239</id>
+    <name>明矾</name>
+    <displayname>明矾</displayname>
+    <icon>明矾</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>2000</price>
+    <description>用于炼金的材料。
+十二水合硫酸铝钾，即明矾，是用于净水与合成缓冲剂的材料。</description>
+  </item>
+  <item>
+    <id>16240</id>
+    <name>汞合金</name>
+    <displayname>汞合金</displayname>
+    <icon>汞合金</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>2000</price>
+    <description>用于炼金、合成的材料。
+汞合金，也称汞齐，是常用的合金添加剂，在医疗、电子领域有所应用。</description>
+  </item>
+  <item>
+    <id>16241</id>
+    <name>硼砂</name>
+    <displayname>硼砂</displayname>
+    <icon>硼砂</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>2000</price>
+    <description>用于炼金、建筑和合成的材料。
+硼砂常用于玻璃制造、农业施肥与材料合成领域。</description>
+  </item>
+  <item>
+    <id>16242</id>
+    <name>黄铜</name>
+    <displayname>黄铜</displayname>
+    <icon>黄铜</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>2000</price>
+    <description>用于炼金的材料。
+黄铜是由铜、锌以及其他金属组成的合金，在建筑与机械制作领域具有重要作用。</description>
+  </item>
+  <item>
+    <id>16243</id>
+    <name>玻璃</name>
+    <displayname>玻璃</displayname>
+    <icon>玻璃</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>2000</price>
+    <description>用于建筑的材料。
+玻璃被广泛用于建筑领域中，是最重要的建筑材料之一。</description>
+  </item>
+  <item>
+    <id>16244</id>
+    <name>精油</name>
+    <displayname>精油</displayname>
+    <icon>精油</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>2000</price>
+    <description>用于合成与烹饪的材料。
+精油是一类从香料植物或泌香动物中提取而来的，加工得到的挥发性香味物质。精油具有杀菌消毒、熏香、调味的作用。</description>
+  </item>
+  <item>
+    <id>16245</id>
+    <name>硫磺</name>
+    <displayname>硫磺</displayname>
+    <icon>硫磺</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>2000</price>
+    <description>用于合成与炼金的材料。
+硫磺常用于农药等杀菌药物的制作。</description>
+  </item>
+  <item>
+    <id>16246</id>
+    <name>残破的枪械</name>
+    <displayname>残破的枪械</displayname>
+    <icon>残破的枪械</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>3000</price>
+    <description>掺有烈炎矿石的枪械</description>
+  </item>
+  <item>
+    <id>16247</id>
+    <name>辛火草</name>
+    <displayname>辛火草</displayname>
+    <icon>辛火草</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <weight>1</weight>
+    <price>3000</price>
+    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
+  </item>
+  <item>
+    <id>16248</id>
+    <name>毒素样本</name>
+    <displayname>毒素样本</displayname>
+    <icon>毒素样本</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <weight>1</weight>
+    <price>3000</price>
+    <description>来源不明的毒素样本。</description>
+  </item>
+  <item>
+    <id>16249</id>
+    <name>锌棒</name>
+    <displayname>锌棒</displayname>
+    <icon>锌棒</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>3000</price>
+    <description>用于建筑与炼金的材料。
+锌被广泛用于金属镀层防锈、建筑工艺与化学生产工作中。</description>
+  </item>
+  <item>
+    <id>16250</id>
+    <name>铝粉</name>
+    <displayname>铝粉</displayname>
+    <icon>铝粉</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>3000</price>
+    <description>用于建筑、炼金与合成的材料。
+铝粉是重要的工业制品，其在化学领域内可以充当燃料添加剂、金属填充剂，同时又可以参与混凝土制作，并在电子领域起到重要作用。</description>
+  </item>
+  <item>
+    <id>16251</id>
+    <name>碱液</name>
+    <displayname>碱液</displayname>
+    <icon>碱液</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>3000</price>
+    <description>用于合成与炼金的材料。
+碱液具有强腐蚀性，常用于化学反应。</description>
+  </item>
+  <item>
+    <id>16252</id>
+    <name>僵尸血液样本</name>
+    <displayname>僵尸血液样本</displayname>
+    <icon>僵尸血液样本</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>4000</price>
+    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
+  </item>
+  <item>
+    <id>16253</id>
+    <name>试验材料</name>
+    <displayname>试验材料</displayname>
+    <icon>试验材料</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <weight>1</weight>
+    <price>4000</price>
+    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
+  </item>
+  <item>
+    <id>16254</id>
+    <name>爆炸僵尸样本</name>
+    <displayname>爆炸僵尸样本</displayname>
+    <icon>爆炸僵尸样本</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <weight>1</weight>
+    <price>4000</price>
+    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
+  </item>
+  <item>
+    <id>16255</id>
+    <name>尸母标本</name>
+    <displayname>尸母标本</displayname>
+    <icon>尸母标本</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>4000</price>
+    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
+  </item>
+  <item>
+    <id>16256</id>
+    <name>诺亚机枪</name>
+    <displayname>诺亚机枪</displayname>
+    <icon>诺亚机枪</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <weight>1</weight>
+    <price>4000</price>
+    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
+  </item>
+  <item>
+    <id>16257</id>
+    <name>研究文件</name>
+    <displayname>研究文件</displayname>
+    <icon>研究文件</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <weight>1</weight>
+    <price>4000</price>
+    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
+  </item>
+  <item>
+    <id>16258</id>
+    <name>烈炎矿石</name>
+    <displayname>烈炎矿石</displayname>
+    <icon>烈炎矿石</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>4000</price>
+    <description>产自于火山中的稀有矿石</description>
+  </item>
+  <item>
+    <id>16259</id>
+    <name>铅</name>
+    <displayname>铅</displayname>
+    <icon>铅</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>4000</price>
+    <description>用于建筑、强化与合成的材料。
+铅常用于电子元件制作与建筑领域，并具有较强的抗辐射能力。</description>
+  </item>
+  <item>
+    <id>16260</id>
+    <name>未知金属</name>
+    <displayname>未知金属</displayname>
+    <icon>未知金属</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>5000</price>
+    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
+  </item>
+  <item>
+    <id>16261</id>
+    <name>秘钥A</name>
+    <displayname>秘钥A</displayname>
+    <icon>秘钥A</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>5000</price>
+    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
+  </item>
+  <item>
+    <id>16262</id>
+    <name>秘钥B</name>
+    <displayname>秘钥B</displayname>
+    <icon>秘钥B</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <weight>1</weight>
+    <price>5000</price>
+    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
+  </item>
+  <item>
+    <id>16263</id>
+    <name>秘钥C</name>
+    <displayname>秘钥C</displayname>
+    <icon>秘钥C</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <weight>1</weight>
+    <price>5000</price>
+    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
+  </item>
+  <item>
+    <id>16264</id>
+    <name>砒霜</name>
+    <displayname>砒霜</displayname>
+    <icon>砒霜</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>5000</price>
+    <description>用于炼金的材料。
+三氧化二砷，即砒霜，是参与金属冶炼的重要药剂。尽管可以被用于农药制作和医疗，但其剧毒性不容忽视。</description>
+  </item>
+  <item>
+    <id>16265</id>
+    <name>王水</name>
+    <displayname>王水</displayname>
+    <icon>王水</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>5000</price>
+    <description>用于炼金的材料。
+由浓盐酸与浓硝酸按3：1体积混合得到的试剂，常用于金属冶炼。</description>
+  </item>
+  <item>
+    <id>16266</id>
+    <name>兽王碎片</name>
+    <displayname>兽王碎片</displayname>
+    <icon>兽王碎片</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>6000</price>
+    <description>合成&lt;font color="#ff00ff"&gt;兽王套装&lt;/font&gt;必备材料，来自&lt;font color="#ff00ff"&gt;兽王&lt;/font&gt;</description>
+  </item>
+  <item>
+    <id>16267</id>
+    <name>月之碎片</name>
+    <displayname>月之碎片</displayname>
+    <icon>月之碎片</icon>
     <type>收集品</type>
     <use>材料</use>
     <price>10000</price>
-    <description>用于提升限制等级低于10的防具或特殊防具的性能。
-在装备表面和内衬缝入韧性极佳的皮革和布料，减少穿戴者受到的伤害。
-幸存者管它叫"海苔饭团"——层层防护，饿了别真咬一口。</description>
+    <description>活动专属，用于合成秋月</description>
   </item>
   <item>
-    <id>12002</id>
-    <name>三阶复合防御组件</name>
-    <displayname>三阶复合防御组件</displayname>
-    <icon>三阶复合防御组件</icon>
+    <id>16268</id>
+    <name>国庆纪念币</name>
+    <displayname>国庆纪念币</displayname>
+    <icon>国庆纪念币</icon>
     <type>收集品</type>
     <use>材料</use>
-    <price>50000</price>
-    <description>用于提升限制等级低于10的防具或特殊防具的性能。
-在装备表面构造由金属插板、高分子量聚乙烯纤维、高模量碳纤维等材料复合而成的防护层。多层材料能有效减免切割，钝击，贯穿等各种伤害。
-黑市交易时的切口："要点蜂蜜饼干吗？"</description>
+    <price>10000</price>
+    <description>活动专属，用于合成黄金QBZ</description>
   </item>
   <item>
-    <id>12003</id>
-    <name>四阶复合防御组件</name>
-    <displayname>四阶复合防御组件</displayname>
-    <icon>四阶复合防御组件</icon>
+    <id>16269</id>
+    <name>圣诞糖果</name>
+    <displayname>圣诞糖果</displayname>
+    <icon>圣诞糖果</icon>
     <type>收集品</type>
     <use>材料</use>
-    <price>150000</price>
-    <description>用于提升限制等级低于10的防具或特殊防具的性能。
-使用纳米技术对装备内外进行编程，穿戴者通过定势电信号直接感知、操控装备，使装备完全成为躯体的延申，从而全方位提升其性能。
-逆向烧录的固件代码显示，它的项目代号是“薄荷晶糖”。</description>
+    <price>10000</price>
+    <description>圣诞节来临，收集糖果换装备了哦</description>
   </item>
   <item>
-    <id>12004</id>
-    <name>墨冰战术涂料</name>
-    <displayname>墨冰战术涂料</displayname>
-    <icon>墨冰武器图纸</icon>
+    <id>16270</id>
+    <name>冰魄矿石</name>
+    <displayname>冰魄矿石</displayname>
+    <icon>冰魄矿石</icon>
     <type>收集品</type>
     <use>材料</use>
-    <price>150000</price>
-    <description>用于制作墨冰武器。</description>
+    <price>10000</price>
+    <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
   </item>
   <item>
-    <id>12005</id>
-    <name>狱火战术涂料</name>
-    <displayname>狱火战术涂料</displayname>
-    <icon>狱火武器图纸</icon>
+    <id>16271</id>
+    <name>剑圣碎片</name>
+    <displayname>剑圣碎片</displayname>
+    <icon>剑圣碎片</icon>
     <type>收集品</type>
     <use>材料</use>
-    <price>150000</price>
-    <description>用于制作狱火武器。</description>
+    <weight>1</weight>
+    <price>10000</price>
+    <description>用于合成剑圣套装</description>
   </item>
   <item>
-    <id>12006</id>
+    <id>16272</id>
     <name>铁枪核心</name>
     <displayname>铁枪核心</displayname>
     <icon>铁枪核心</icon>
@@ -1301,46 +761,128 @@ WP企业统一供应统合东区的模块化温控系统，依靠微通道与相
     </description>
   </item>
   <item>
-    <id>12101</id>
-    <name>霰弹枪口收束器</name>
-    <displayname>霰弹枪口收束器</displayname>
-    <icon>霰弹枪口收束器</icon>
+    <id>16273</id>
+    <name>远古碎片</name>
+    <displayname>远古碎片</displayname>
+    <icon>远古碎片</icon>
     <type>收集品</type>
     <use>材料</use>
-    <price>6000</price>
-    <description>用于改装的中等材料。
-内战时期遗留的标准化枪口装置，其内嵌可编程叶片能动态收束弹道，将射程与密度赋予无序的散射。
-其通用接口核心将宿主动力学误差参数化为自校量，闭环控制收束弹道，抹平废铁与精工之间的技术代差。
-企业不制造公平，只拉近死亡的距离。</description>
+    <price>15000</price>
+    <description>来自外星的材料，可把装备远古化属性大幅增加</description>
   </item>
   <item>
-    <id>12102</id>
-    <name>M203榴弹发射器</name>
-    <displayname>M203榴弹发射器</displayname>
-    <icon>M203榴弹发射器</icon>
+    <id>16274</id>
+    <name>墨冰战术涂料</name>
+    <displayname>墨冰战术涂料</displayname>
+    <icon>墨冰武器图纸</icon>
     <type>收集品</type>
     <use>材料</use>
-    <price>6000</price>
-    <description>用于改装的中等材料。
-巨企 VI 社的传奇沟通工具产品线，起源于对M203设计的整包私有化，技术冻结在专利墙后，法务部前。
-历代更新实为计划性淘汰，其更新指标的核心是降低成本提升利润，同时加固引信固件与底火标签的配对认证。
-幸存者在清理售货机时，见证了企业的账期目标达成：让高爆弹像罐装苏打水一样普及。</description>
+    <price>150000</price>
+    <description>用于制作墨冰武器。</description>
   </item>
   <item>
-    <id>12103</id>
-    <name>纳米执行单元</name>
-    <displayname>纳米执行单元</displayname>
-    <icon>纳米执行单元</icon>
+    <id>16275</id>
+    <name>狱火战术涂料</name>
+    <displayname>狱火战术涂料</displayname>
+    <icon>狱火武器图纸</icon>
     <type>收集品</type>
     <use>材料</use>
-    <price>50000</price>
-    <description>用于改装的高等材料。
-封装于惰性基质中的可编程分子机器集群，能够实时重构材料的物理属性与微观结构。
-基于分子级致动器阵列单元，通过外部场激励实现微观形变与能量传递，赋予超精密作动能力。
-未来已至，只是分布不均，修补世间的一切裂痕，除了文明本身。</description>
+    <price>150000</price>
+    <description>用于制作狱火武器。</description>
   </item>
   <item>
-    <id>12104</id>
+    <id>16301</id>
+    <name>军用帆布</name>
+    <displayname>军用帆布</displayname>
+    <icon>军用帆布</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>1000</price>
+    <description>用于改装的低级材料。
+军用帆布耐用廉价，阻燃防霉，是搭建临时建筑的优秀材料。末世之中的聪明人会意识到军用帆布的多重优势。
+它不仅能用来加固帐篷、简易栅栏等基础设施，还能用来修补装备、遮蔽视线、制作防护装置等。
+也因此成为了一种相对“稳定”的交换媒介。</description>
+  </item>
+  <item>
+    <id>16302</id>
+    <name>上色涂料</name>
+    <displayname>上色涂料</displayname>
+    <icon>上色涂料</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>1000</price>
+    <description>用于改装的低级材料。
+为装备上色是必需的：赋予表面色彩，便于敌我识别。
+涂料配方还能提供防火、抗菌、耐磨及物理/热防护等额外功能，增强装备在恶劣环境下的性能与耐久度。
+在末世，恰当的涂装不仅关乎生存，有时也承载着使用者对特定身份的认同或过往经历的印记。</description>
+  </item>
+  <item>
+    <id>16303</id>
+    <name>弹簧</name>
+    <displayname>弹簧</displayname>
+    <icon>弹簧</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>1000</price>
+    <description>用于改装的低级材料。
+基于胡克定律利用弹性形变储存和释放能量，是机械结构中的核心部件，广泛用于枪械以及各种自制装备中。
+末世后，弹簧作为收集品，经常因频繁使用和环境恶劣而磨损，需定期更换和修复。
+合适尺寸的弹簧更是珍贵资源。</description>
+  </item>
+  <item>
+    <id>16304</id>
+    <name>增效剂</name>
+    <displayname>增效剂</displayname>
+    <icon>增效剂</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>1000</price>
+    <description>用于改装的低级材料。
+一类能附加表面涂层的强化药剂总称，广泛应用于各种表面处理工艺，增强其耐磨性、抗腐蚀性和强度。
+部分增效剂甚至具备自修复和自适应能力，可以在遭受损伤后自动修复表面微裂纹，恢复原有的结构强度。
+现在主要用在护甲与兵器的强化提升上</description>
+  </item>
+  <item>
+    <id>16305</id>
+    <name>可塑式钢板</name>
+    <displayname>可塑式钢板</displayname>
+    <icon>可塑式钢板</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>1000</price>
+    <description>用于改装的低级材料。
+战前大规模生产的高性能预制标准件，采用纳米粉末颗粒工艺将晶体结构改性为类奥氏体相。
+工艺上几乎没有限制，只需要简单的热处理即可迅速达到所需的机械性能和形状稳定性。
+易于获取，加工便捷，机械师们永远不会嫌它们多的。</description>
+  </item>
+  <item>
+    <id>16306</id>
+    <name>战术导轨</name>
+    <displayname>战术导轨</displayname>
+    <icon>战术导轨</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>1000</price>
+    <description>用于改装的低级材料。
+这种模块化的接口系统基于New Optimized Adaptable Harmonization 协议。
+允许快速、精准地安装各种战术配件，并最大限度地兼容各类旧有导轨标准。
+虽然其起源不明，但不妨碍它成为幸存者间的事实标准。</description>
+  </item>
+  <item>
+    <id>16307</id>
+    <name>螺丝套件</name>
+    <displayname>螺丝套件</displayname>
+    <icon>螺丝套件</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>1000</price>
+    <description>用于改装的低级材料。
+广泛应用于机械连接中的标准化紧固件，能在高频振动、温度波动和外力冲击下提供稳固连接。
+长期使用后，磨损、疲劳及环境因素将导致紧固性能逐步衰减，其失效先兆包括：预紧力降低、界面微动、异响增加。
+规范强制周期更换，执行视资源权衡。</description>
+  </item>
+  <item>
+    <id>16308</id>
     <name>下挂霰弹枪</name>
     <displayname>下挂霰弹枪</displayname>
     <icon>下挂霰弹枪</icon>
@@ -1353,7 +895,460 @@ WP企业统一供应统合东区的模块化温控系统，依靠微通道与相
 被部分幸存者视作门后的主妇：你的堡垒，你的法案，你的最终裁决。</description>
   </item>
   <item>
-    <id>12105</id>
+    <id>16309</id>
+    <name>二阶复合防御组件</name>
+    <displayname>二阶复合防御组件</displayname>
+    <icon>二阶复合防御组件</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>10000</price>
+    <description>用于提升限制等级低于10的防具或特殊防具的性能。
+在装备表面和内衬缝入韧性极佳的皮革和布料，减少穿戴者受到的伤害。
+幸存者管它叫"海苔饭团"——层层防护，饿了别真咬一口。</description>
+  </item>
+  <item>
+    <id>16401</id>
+    <name>可充锂电池</name>
+    <displayname>可充锂电池</displayname>
+    <icon>可充锂电池</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>6000</price>
+    <description>用于改装的中等材料。
+基于锂离子在正负极间可逆嵌入脱嵌的电化学反应，能量密度高、循环寿命长、倍率性能好，是电气设备的理想电源。
+在末日降临带来的emp风暴中，少量锂电池没有因此损毁，因而在末日中极其抢手。
+据说联合大学在回收和修复损坏的电池单体及电路板。</description>
+  </item>
+  <item>
+    <id>16402</id>
+    <name>小型液晶屏</name>
+    <displayname>小型液晶屏</displayname>
+    <icon>小型液晶屏</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>6000</price>
+    <description>用于改装的中等材料。
+末日前走入千家万户的液晶屏大多因为灾难而损坏，电子产业的消失也使得液晶屏无法再大规模生产。
+尽管如此，液晶屏的核心部件——如显示控制板、背光源、连接线等，依然具有重要的可利用价值。
+来收集并且拆解他们吧，这就是最新世代的电子扭蛋游戏。</description>
+  </item>
+  <item>
+    <id>16403</id>
+    <name>战术背带</name>
+    <displayname>战术背带</displayname>
+    <icon>战术背带</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>6000</price>
+    <description>用于改装的中等材料。
+模块化装备接口的战场适应性改造样本。通过材料替代与结构拓扑优化实现去工业化生产。
+战前采用航天级钛合金框架与选择性激光熔融技术，专为特种作战定制。
+现利用汽车安全带与金属残件即可通过热压-缝纫复合工艺重构。</description>
+  </item>
+  <item>
+    <id>16404</id>
+    <name>防沙皮革</name>
+    <displayname>防沙皮革</displayname>
+    <icon>防沙皮革</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>6000</price>
+    <description>用于改装的中等材料。
+现存72%为统合生产批号，灰色事件后转为民用配额，沙漠防护装备改造基材，末日后的稀缺改装资源。
+碳化硅/自修复聚合物复合结构（含锆镀膜残余）能够有效阻隔细微砂砾侵蚀并减少沙暴摩擦电荷积累。
+某些幸存者发现该材料能够通过XMAS-12-25弹道防护基准测试。</description>
+  </item>
+  <item>
+    <id>16405</id>
+    <name>烈性火药</name>
+    <displayname>烈性火药</displayname>
+    <icon>烈性火药</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>6000</price>
+    <description>用于改装的中等材料。
+原材料来源广泛，通过爆轰参数整定工艺，将异构化含能材料调配成标准化输出的烈性火药单元。
+能在手工作坊环境下，通过可控爆轰波诱导枪管金属发生相变。
+也可以用于制造弹药，但子弹可没好枪稀缺。</description>
+  </item>
+  <item>
+    <id>16406</id>
+    <name>生物催化剂</name>
+    <displayname>生物催化剂</displayname>
+    <icon>生物催化剂</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>6000</price>
+    <description>用于改装的中等材料。
+能极大程度降低反应能量门槛，让许多在末世条件下难以实现的化学改造变得可行。
+固定化酶载体虽具理论半衰期，但随着热力学熵增，构象漂移依旧让催化活性呈对数衰减。
+联合大学的周报显示，变异菌株比研究生早8小时适应黑暗环境。</description>
+  </item>
+  <item>
+    <id>16407</id>
+    <name>护手</name>
+    <displayname>护手</displayname>
+    <icon>护手</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>6000</price>
+    <description>用于改装的中等材料。
+贴合掌形的护手能优化握持控制，提高换势速率，并在劈、刺、格挡中提供精准反馈。
+末世之中，标准化制式护手早已消失，取而代之的是战士们因地制宜的改造产物。
+维护周期终止于使用者生物信号消失后氧化层形成阶段。</description>
+  </item>
+  <item>
+    <id>16408</id>
+    <name>石英磨刀石</name>
+    <displayname>石英磨刀石</displayname>
+    <icon>石英磨刀石</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>6000</price>
+    <description>用于改装的中等材料。
+文明崩溃后，标准化高精度磨刀石几近绝迹，其空缺由手工筛选与拼配的残存工艺填补。
+不同目数的石英磨刀石分别用于各阶段加工：低目数用于粗磨修型，高目数专注于精磨抛光。
+每套磨具的粒度分布谱线，都是匠人独有的工艺指纹。</description>
+  </item>
+  <item>
+    <id>16409</id>
+    <name>不锈钢材</name>
+    <displayname>不锈钢材</displayname>
+    <icon>不锈钢材</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>6000</price>
+    <description>用于改装的中等材料。
+曾是撑起文明穹顶的钢铁骨架，屈服强度始终高于文明重建的迫切指数。
+现今只能从废墟中搜寻到一些残留的废钢，尝试重新冶炼和锻造的过程复杂且耗时。
+炼成则钢，炼金成账单。</description>
+  </item>
+  <item>
+    <id>16410</id>
+    <name>高耐力橡胶</name>
+    <displayname>高耐力橡胶</displayname>
+    <icon>高耐力橡胶</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>6000</price>
+    <description>用于改装的中等材料。
+机械、载具与装备的关键柔性部件来源，广泛用于轮胎、履带、密封件与各类缓冲结构。
+这种历经末世严苛环境考验的弹性体聚合物，即使经历了严重的热氧老化，依然能在极端温差和磨损下保持结构完整性。
+经热氧老化逆转工艺，可以勉强恢复部分性能。</description>
+  </item>
+  <item>
+    <id>16411</id>
+    <name>强化金属管</name>
+    <displayname>强化金属管</displayname>
+    <icon>强化金属管</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>6000</price>
+    <description>用于改装的中等材料。
+回收自旧日设备，无全新供应。经过某种未公开的新兴工艺二次强化处理以提升屈服强度和抗疲劳极限。
+是构建高负载液压或支撑结构的必需品，也是机械师用来制造高膛压武器的核心部件。
+最终是性能的爆发，还是生命的消逝，取决于它，也取决于使用者。</description>
+  </item>
+  <item>
+    <id>16412</id>
+    <name>复合式军用塑料</name>
+    <displayname>复合式军用塑料</displayname>
+    <icon>复合式军用塑料</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>6000</price>
+    <description>用于改装的中等材料。
+由多种聚合物基体与纤维/颗粒增强相复合而成，具备预设的轻质、高强、耐腐蚀以及可接受的冲击韧性。
+从步枪护木到无人机框架，从防弹插板到便携式通讯设备外壳，这种材料忠实地记录了人类将一切事物武器化的天赋。
+这或许是下一代文明能找到的，关于人类最持久的时空胶囊。</description>
+  </item>
+  <item>
+    <id>16413</id>
+    <name>透镜</name>
+    <displayname>透镜</displayname>
+    <icon>透镜</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>6000</price>
+    <description>用于改装的中等材料。
+利用材料折射率差异对光线进行汇聚或发散的精密光学元件，常被用于武器瞄准镜、侦察设备或简易聚能装置。
+末世中，完好无瑕的透镜比幸存者的希望还稀缺，机械师们的手艺决定了使用者究竟是在窥探目标，还是在提前预览自己的终点。
+清晰的视野？那不过是死亡的另一种滤镜。</description>
+  </item>
+  <item>
+    <id>16414</id>
+    <name>高强度合金</name>
+    <displayname>高强度合金</displayname>
+    <icon>高强度合金</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>6000</price>
+    <description>用于改装的中等材料。
+回收自战前高应力部件——工业框架、装甲底盘、机械残骸的关节节点，其设计初衷即为抵抗结构性破坏。
+由多相组织与析出相强化构成，原始性能优异，但经历末世高温冲刷与粗暴重铸后，成分比与晶粒走向已难以溯源。
+内部残余应力已是既定事实，让冲击成了统计学幻觉。</description>
+  </item>
+  <item>
+    <id>16415</id>
+    <name>强力胶</name>
+    <displayname>强力胶</displayname>
+    <icon>强力胶</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>6000</price>
+    <description>用于改装的中等材料。
+高分子粘结剂的统称，依靠链间缠结、氢键与范德华力完成异质材料间的强制耦合。
+在缺乏精密机加工设备的末世，它是将工业废墟的分子碎片强制重塑为功能性实体的关键介质。
+忠诚度仅限于当前分子键的稳定，持久性？一个高分子笑话。</description>
+  </item>
+  <item>
+    <id>16416</id>
+    <name>枪械内构强化套件</name>
+    <displayname>枪械内构强化套件</displayname>
+    <icon>枪械内构强化套件</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>6000</price>
+    <description>用于改装的中等材料。
+模块化的内部改造组件，通过替换关键受力部件、植入能量管线与反馈回路，构建一套集成化的运作控制结构。
+依托末世技术接口，这些更新令老旧装备获得与时代脱节的杀伤力，其运作精度与响应速率达到令人不安的高度。
+这个时代，会思考的不一定是人，有时甚至不是活物。</description>
+  </item>
+  <item>
+    <id>16417</id>
+    <name>高级木料</name>
+    <displayname>高级木料</displayname>
+    <icon>高级木料</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>6000</price>
+    <description>用于改装的中等材料。
+旧时代的生态木材，经解构、重压与聚合物填充形成的复合木料。可持续设计的噱头，高强度废土应用的硬材。
+通过分子层面的重塑与压缩，其制造工艺将木质纤维的物理潜能压榨至极限，赋予其近乎钢铁的硬度和可疑的弹道防护效能。
+为绿色未来而生，却只对现在的物理定律负责。</description>
+  </item>
+  <item>
+    <id>16418</id>
+    <name>霰弹枪口收束器</name>
+    <displayname>霰弹枪口收束器</displayname>
+    <icon>霰弹枪口收束器</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>6000</price>
+    <description>用于改装的中等材料。
+内战时期遗留的标准化枪口装置，其内嵌可编程叶片能动态收束弹道，将射程与密度赋予无序的散射。
+其通用接口核心将宿主动力学误差参数化为自校量，闭环控制收束弹道，抹平废铁与精工之间的技术代差。
+企业不制造公平，只拉近死亡的距离。</description>
+  </item>
+  <item>
+    <id>16419</id>
+    <name>M203榴弹发射器</name>
+    <displayname>M203榴弹发射器</displayname>
+    <icon>M203榴弹发射器</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>6000</price>
+    <description>用于改装的中等材料。
+巨企 VI 社的传奇沟通工具产品线，起源于对M203设计的整包私有化，技术冻结在专利墙后，法务部前。
+历代更新实为计划性淘汰，其更新指标的核心是降低成本提升利润，同时加固引信固件与底火标签的配对认证。
+幸存者在清理售货机时，见证了企业的账期目标达成：让高爆弹像罐装苏打水一样普及。</description>
+  </item>
+  <item>
+    <id>16420</id>
+    <name>三阶复合防御组件</name>
+    <displayname>三阶复合防御组件</displayname>
+    <icon>三阶复合防御组件</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>50000</price>
+    <description>用于提升限制等级低于10的防具或特殊防具的性能。
+在装备表面构造由金属插板、高分子量聚乙烯纤维、高模量碳纤维等材料复合而成的防护层。多层材料能有效减免切割，钝击，贯穿等各种伤害。
+黑市交易时的切口："要点蜂蜜饼干吗？"</description>
+  </item>
+  <item>
+    <id>16501</id>
+    <name>动力液压杆</name>
+    <displayname>动力液压杆</displayname>
+    <icon>动力液压杆</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>50000</price>
+    <description>用于改装的高等材料。
+由强化合金与超高压流体精密封装的线性作动单元，一种将输入能量转化为可控超常推拉力的废土罕有组件。
+将流体压力转化为超规格推力，驱动武器在战场瞬息完成构型切换，并强硬吸收重型弹药对结构的破坏性冲击。
+向量无方向歧视，阈值无道德判断——液压系统只关心压强，崩坏交由人类承担。</description>
+  </item>
+  <item>
+    <id>16502</id>
+    <name>碳纤维布料</name>
+    <displayname>碳纤维布料</displayname>
+    <icon>碳纤维布料</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>50000</price>
+    <description>用于改装的高等材料。
+由高模量碳素纤维束精密编织而成的工程结构基材。以极致的比强度与比模量，承担轻量化高应力结构的载荷。
+表层常经等离子体活化与化学接枝处理，便于与柔性导电层复合，构建可嵌入感测、控制、数据流转的装备神经。
+结构完美，化学惰性，对定义其价值的文明崩解无动于衷。</description>
+  </item>
+  <item>
+    <id>16503</id>
+    <name>电脑芯片</name>
+    <displayname>电脑芯片</displayname>
+    <icon>电脑芯片</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>50000</price>
+    <description>用于改装的高等材料。
+封装在抗干扰合金壳体内的现场可编程门阵列系统模块，具备高性能可重构处理与多协议接口能力。
+其核心资源池于军用级物理安防与多层级加密协议验证后，允许系统强制接驳并驱动近乎所有个人级设备接口。
+设计理念已不可考据，只剩使用说明在区块链中反复自我更新。</description>
+  </item>
+  <item>
+    <id>16504</id>
+    <name>传感器</name>
+    <displayname>传感器</displayname>
+    <icon>传感器</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>50000</price>
+    <description>用于改装的高等材料。
+负责采集并精密量化微幅光热声振等物理扰动，生成处理单元可解逻辑信号流的硬件前端。
+多模敏感阵列同步执行模数转换及数据封装，以通用协议送往主控链路，以支撑战术决策闭环。
+致命威胁下精度即解释权，系统基于误差完成最终的现实构建。</description>
+  </item>
+  <item>
+    <id>16505</id>
+    <name>传动装置</name>
+    <displayname>传动装置</displayname>
+    <icon>传动装置</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>50000</price>
+    <description>用于改装的高等材料。
+巴别塔时期标准化的可重构机械能接口模块，集成智能功率分配与多协议接口。
+其设计意图是抹平一切动力差异，理论上能解析任意输入，强制匹配目标输出，并实时自适应负载。
+但复杂的系统总有复杂的崩溃方式。</description>
+  </item>
+  <item>
+    <id>16506</id>
+    <name>水冷机构</name>
+    <displayname>水冷机构</displayname>
+    <icon>水冷机构</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>50000</price>
+    <description>用于改装的高等材料。
+WP企业统一供应统合东区的模块化温控系统，依靠微通道与相变技术实现极端工况下的稳定控温。
+其精密部件未按抗战损或低维护环境设计，但所设冗余结构在计划失效后维持了核心功能的持续运作。
+设计寿命之外的长存被视作天网工程学的成功案例。</description>
+  </item>
+  <item>
+    <id>16507</id>
+    <name>突击型光学瞄具</name>
+    <displayname>突击型光学瞄具</displayname>
+    <icon>突击型光学瞄具</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>50000</price>
+    <description>用于改装的高等材料。
+集成多传感器融合、AI辅助目标识别及半自主跟踪系统，专为高速突击接战设计。
+制造商破产后认证及密钥体系崩溃，其核心AI与高级功能长期处于锁定状态，仅作为性能增强型常规瞄具被使用。
+研究院专员仍在尝试将固件移植伪装成升级。</description>
+  </item>
+  <item>
+    <id>16508</id>
+    <name>战术鱼骨零件</name>
+    <displayname>战术鱼骨零件</displayname>
+    <icon>战术鱼骨零件</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>50000</price>
+    <description>用于改装的高等材料。
+作为早期NOAH协议的激进扩展，理论上支持向下兼容所有历史标准。
+集成神经链路控制、能源微通道与自适应纳米接口阵列，支持模块化热插拔与多协议自适应。
+标准只剩下能接上就算成功。</description>
+  </item>
+  <item>
+    <id>16509</id>
+    <name>KM型消声器</name>
+    <displayname>KM型消声器</displayname>
+    <icon>KM型消声器</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>50000</price>
+    <description>用于改装的高等材料。
+基于赫尔姆霍兹共振腔与迷宫式涡流导向结构，削峰展宽枪口压力波并压低声焰与红外特征。
+原型基于Visto Industrial社的精密制品，原为某特种部队的特殊渗透作战任务定制。
+战前的密封件与加密配件预期已失效，现多以兼容件与 NOAH 接口改装再生。</description>
+  </item>
+  <item>
+    <id>16510</id>
+    <name>镭射瞄准具</name>
+    <displayname>镭射瞄准具</displayname>
+    <icon>镭射瞄准具</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>50000</price>
+    <description>用于改装的高等材料。
+军规衍生型半导体激光器，配合陀螺稳定与零位微调，集成数据总线姿态补偿回路，动态零位校准。
+原生支持 IR/可见双模，逾越DRM付费墙需云端密钥——而云端已成辐射尘埃。
+锁定时延即交火成本，而解锁许可永远404。</description>
+  </item>
+  <item>
+    <id>16511</id>
+    <name>加长弹匣</name>
+    <displayname>加长弹匣</displayname>
+    <icon>加长弹匣</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>50000</price>
+    <description>用于改装的高等材料。
+双鼓并行进给与分流导弹舌结合恒力弹簧卷带与干膜润滑，显著提升装填容量并压缩换弹窗口。
+长时压簧负载导致供弹机构疲劳与时序失控，故采用火力支援位集中配发，纳入编号化共享资产的维保循环。
+序号比子弹更珍贵——前者终将回收，后者归于损耗。</description>
+  </item>
+  <item>
+    <id>16512</id>
+    <name>战术握把</name>
+    <displayname>战术握把</displayname>
+    <icon>战术握把</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>50000</price>
+    <description>用于改装的高等材料。
+人机工程学垂直/倾斜双角度设计，玻纤增强聚合物内嵌记忆金属骨架，热致回弹维持握型稳定。
+握痕记录使用履历，磨损预示最后一握，高保真人机接口将战术意图无损传递，细节控制即战术优势。
+握把如战友：磨损可以预见，背叛无法预料。</description>
+  </item>
+  <item>
+    <id>16513</id>
+    <name>非栓式机构</name>
+    <displayname>非栓式机构</displayname>
+    <icon>非栓式机构</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>50000</price>
+    <description>用于改装的高等材料。
+巴别塔计划的技术遗产，基于可编程气体动力学矩阵的跨平台循环转换模块，赋予管状平台全自动循环能力。
+以自持控制回路接管机械链并覆写工作时序，无微码库则退化为启发式曲线，故障集中于闭锁失败与应力疲劳。
+统一接口，统合失控路径。</description>
+  </item>
+  <item>
+    <id>16514</id>
+    <name>纳米执行单元</name>
+    <displayname>纳米执行单元</displayname>
+    <icon>纳米执行单元</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>50000</price>
+    <description>用于改装的高等材料。
+封装于惰性基质中的可编程分子机器集群，能够实时重构材料的物理属性与微观结构。
+基于分子级致动器阵列单元，通过外部场激励实现微观形变与能量传递，赋予超精密作动能力。
+未来已至，只是分布不均，修补世间的一切裂痕，除了文明本身。</description>
+  </item>
+  <item>
+    <id>16515</id>
     <name>下挂微型导弹发射器</name>
     <displayname>下挂微型导弹发射器</displayname>
     <icon>下挂微型导弹发射器</icon>
@@ -1366,7 +1361,19 @@ WP企业统一供应统合东区的模块化温控系统，依靠微通道与相
 旧处方，由新世界自行执行。</description>
   </item>
   <item>
-    <id>12106</id>
+    <id>16516</id>
+    <name>四阶复合防御组件</name>
+    <displayname>四阶复合防御组件</displayname>
+    <icon>四阶复合防御组件</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>150000</price>
+    <description>用于提升限制等级低于10的防具或特殊防具的性能。
+使用纳米技术对装备内外进行编程，穿戴者通过定势电信号直接感知、操控装备，使装备完全成为躯体的延申，从而全方位提升其性能。
+逆向烧录的固件代码显示，它的项目代号是“薄荷晶糖”。</description>
+  </item>
+  <item>
+    <id>16601</id>
     <name>下挂铁血肩炮</name>
     <displayname>下挂铁血肩炮</displayname>
     <icon>下挂铁血肩炮</icon>
@@ -1377,6 +1384,6 @@ WP企业统一供应统合东区的模块化温控系统，依靠微通道与相
 三轴稳定等离子投射单元，拆离共生装甲后冷改下挂，相位准直器与独立供能舱降额运行。
 技术来源成谜，回收品编号与某科幻电影道具库存重合，但流言与坐标指向同一片神秘丛林。
 自毁链与生物锁已隔离，荧幕落幕，道具易主。
-</description>
+    </description>
   </item>
 </root>

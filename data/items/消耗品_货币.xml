@@ -1,9 +1,9 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<!--已用ID：[661, 662, 680, 2500]
-预留ID区间：18501-18600-->
+<?xml version="1.0" encoding="UTF-8"?>
+<!--已用ID：[19301, 19302, 19303, 19304]
+预留ID区间：19301-19500-->
 <root>
   <item>
-    <id>661</id>
+    <id>19301</id>
     <name>金币</name>
     <displayname>金钱</displayname>
     <icon>金钱</icon>
@@ -13,17 +13,7 @@
     <description>一个金币</description>
   </item>
   <item>
-    <id>662</id>
-    <name>K点</name>
-    <displayname>K点</displayname>
-    <icon>K点</icon>
-    <type>消耗品</type>
-    <use>货币</use>
-    <price>100</price>
-    <description>一个K点</description>
-  </item>
-  <item>
-    <id>680</id>
+    <id>19302</id>
     <name>经验值</name>
     <displayname>经验值</displayname>
     <icon>经验值</icon>
@@ -33,7 +23,7 @@
     <description>经验值*1</description>
   </item>
   <item>
-    <id>2500</id>
+    <id>19303</id>
     <name>技能点</name>
     <displayname>技能点</displayname>
     <icon>技能点</icon>
@@ -41,5 +31,15 @@
     <use>货币</use>
     <price>10</price>
     <description>技能点（SP点）*1</description>
+  </item>
+  <item>
+    <id>19304</id>
+    <name>K点</name>
+    <displayname>K点</displayname>
+    <icon>K点</icon>
+    <type>消耗品</type>
+    <use>货币</use>
+    <price>100</price>
+    <description>一个K点</description>
   </item>
 </root>

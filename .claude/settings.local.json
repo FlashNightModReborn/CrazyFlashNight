@@ -90,7 +90,8 @@
       "Bash(git verify-pack:*)",
       "Read(//c/**)",
       "Bash(do echo \"Found: $file\")",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Read(//c/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/**)"
     ],
     "deny": [],
     "ask": []
