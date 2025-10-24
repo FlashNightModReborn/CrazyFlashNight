@@ -83,20 +83,34 @@
         <skill>
             <skillname>滑步</skillname>
             <description>经过骨誓铭牌改装的武器可以使用滑步。</description>
-            <cd>2000</cd>
+            <cd>3000</cd>
             <mp>5</mp>
         </skill>
-        <description>入门级战术载体，嵌入微芯片的骷髅头挂饰，提供生存向战斗数据支持。</description>
+        <description>嵌入战术芯片的骷髅头挂饰，提供闪避数据支持并赋予滑步技能。</description>
     </mod>
     <mod>
         <name>辅助握持板</name>
         <use>刀</use>
-        <description>玻纤增强聚合物板体，提升握持稳定性，降低持握疲劳。</description>
+        <stats>
+            <override>
+                <actiontype>狂野</actiontype>
+            </override>
+            <percentage>
+                <power>3</power>
+            </percentage>
+        </stats>
+        <description>玻纤增强聚合物板体，引导狂野攻击风格，提升近战威力。</description>
     </mod>
     <mod>
         <name>手柄皮</name>
         <use>刀</use>
-        <description>缠绕式握柄覆盖物，防滑耐用，提高握持舒适度。</description>
+        <skill>
+            <skillname>凶斩</skillname>
+            <description>经过手柄皮改装的武器可以使用凶斩。</description>
+            <cd>8000</cd>
+            <mp>40</mp>
+        </skill>
+        <description>防滑握柄覆盖物，提供稳固握持，赋予凶斩技能。</description>
     </mod>
     <!-- 中级材料 -->
     <!-- 还差一个可充锂电池 -->
@@ -303,32 +317,83 @@
                 <weight>2</weight>
             </flat>
         </stats>
-        <description>复合木质材料，增加生命、魔法与防御，但降低热抗。</description>
+        <description>复合木质材料，增加生命、精力与防御，但降低热抗。</description>
     </mod>
     <mod>
         <name>骨誓铭牌</name>
         <use>刀</use>
-        <description>烧蚀硬化骨与金属铭牌编结的重坠尾绳，调节武器质心，提升操控性。</description>
+        <stats>
+            <flat>
+                <weight>1.5</weight>
+                <defence>15</defence>
+            </flat>
+        </stats>
+        <skill>
+            <skillname>黑刀斩术</skillname>
+            <description>经过骨誓铭牌改装的武器可以使用黑刀斩术。</description>
+            <cd>6000</cd>
+            <mp>45</mp>
+        </skill>
+        <description>烧蚀硬化骨与铭牌重坠，增加防御并赋予黑刀斩术。</description>
     </mod>
     <mod>
         <name>配重坠</name>
         <use>刀</use>
-        <description>精密配重调节单元，稳定刃线并提升打击精度。</description>
+        <stats>
+            <flat>
+                <weight>1.5</weight>
+            </flat>
+        </stats>
+        <skill>
+            <skillname>回旋裂地</skillname>
+            <description>经过配重坠改装的武器可以使用回旋裂地。</description>
+            <cd>12000</cd>
+            <mp>30</mp>
+        </skill>
+        <description>精密配重调节单元，优化打击轨迹，赋予回旋裂地技能。</description>
     </mod>
     <mod>
         <name>强化柄芯</name>
         <use>刀</use>
-        <description>一体锻造的高强度内核加固条，显著提升抗弯与抗剪能力。</description>
+        <stats>
+            <override>
+                <modslot>3</modslot>
+            </override>
+            <flat>
+                <weight>2</weight>
+            </flat>
+        </stats>
+        <description>高强度内核加固条，将武器配件槽扩展至3个。</description>
     </mod>
     <mod>
         <name>挂环指槽板</name>
         <use>刀</use>
-        <description>带指槽的侧板组件，集成挂环和导向孔，提供防脱和扯绳功能。</description>
+        <stats>
+            <flat>
+                <weight>0.5</weight>
+            </flat>
+        </stats>
+        <skill>
+            <skillname>狼跳</skillname>
+            <description>经过挂环指槽板改装的武器可以使用狼跳。</description>
+            <cd>8000</cd>
+            <mp>35</mp>
+        </skill>
+        <description>带指槽的侧板组件，优化握持防脱，赋予狼跳技能。</description>
     </mod>
     <mod>
         <name>电击导能柄</name>
         <use>刀</use>
-        <description>高压脉冲传导柄部组件，命中瞬间向刃体注入短促电击。</description>
+        <stats>
+            <flat>
+                <power>-10</power>
+            </flat>
+            <override>
+                <damagetype>破击</damagetype>
+                <magictype>电</magictype>
+            </override>
+        </stats>
+        <description>高压脉冲传导柄部，附加电击打击，略微降低威力。</description>
     </mod>
     <!-- 高级材料 -->
     <mod>
@@ -635,22 +700,55 @@
     <mod>
         <name>骨约晨星</name>
         <use>刀</use>
-        <description>多股编缆与微型陀螺仪阵列，编织成漫天律动的星轨，可控摆锤动量。</description>
+        <stats>
+            <flat>
+                <weight>2.5</weight>
+                <evasion>15</evasion>
+                <accuracy>15</accuracy>
+            </flat>
+            <percentage>
+                <power>15</power>
+            </percentage>
+        </stats>
+        <description>多股编缆与陀螺仪阵列，全面提升威力、命中与闪避能力。</description>
     </mod>
     <mod>
         <name>环格护手</name>
         <use>刀</use>
-        <description>千年古法锻玄铁为环，深冷淬火强化晶格，光纤贯穿铁骨成经络。</description>
+        <skill>
+            <skillname>追踪五连</skillname>
+            <description>手持该武器可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人。战技启动时，按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
+            <cd>8000</cd>
+            <mp>30</mp>
+        </skill>
+        <description>千年古法锻玄铁为环，融合光纤数据系统，赋予追踪五连刺技能。</description>
     </mod>
     <mod>
         <name>赤旌熔脊柄</name>
         <use>刀</use>
-        <description>超高温核心柄部组件，命中时将过载热能沿脊线泵入刃体，专为硬目标穿透设计。</description>
+        <stats>
+            <override>
+                <damagetype>破击</damagetype>
+                <magictype>热</magictype>
+            </override>
+        </stats>
+        <description>超高温核心柄部组件，附加热属性伤害，有效穿透硬目标。</description>
     </mod>
     <mod>
         <name>震动吸收器</name>
         <use>刀</use>
-        <description>多级磁流变阻尼复合筒，主动吸收并抵消高频振动，提升使用舒适度。</description>
+        <stats>
+            <flat>
+                <weight>2.5</weight>
+            </flat>
+        </stats>
+        <skill>
+            <skillname>破坏殆尽</skillname>
+            <description>经过震动吸收器改装的武器可以使用破坏殆尽。</description>
+            <cd>8000</cd>
+            <mp>50</mp>
+        </skill>
+        <description>多级磁流变阻尼复合筒，吸收高频振动，赋予破坏殆尽技能。</description>
     </mod>
     <!-- 其他材料 -->
     <mod>
