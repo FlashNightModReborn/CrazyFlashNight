@@ -71,6 +71,33 @@
         </stats>
         <description>标准化紧固件，增强枪械结构稳定性。</description>
     </mod>
+    <mod>
+        <name>骨芯颅印</name>
+        <use>刀</use>
+        <stats>
+            <flat>
+                <weight>0.5</weight>
+                <evasion>15</evasion>
+            </flat>
+        </stats>
+        <skill>
+            <skillname>滑步</skillname>
+            <description>经过骨誓铭牌改装的武器可以使用滑步。</description>
+            <cd>2000</cd>
+            <mp>5</mp>
+        </skill>
+        <description>入门级战术载体，嵌入微芯片的骷髅头挂饰，提供生存向战斗数据支持。</description>
+    </mod>
+    <mod>
+        <name>辅助握持板</name>
+        <use>刀</use>
+        <description>玻纤增强聚合物板体，提升握持稳定性，降低持握疲劳。</description>
+    </mod>
+    <mod>
+        <name>手柄皮</name>
+        <use>刀</use>
+        <description>缠绕式握柄覆盖物，防滑耐用，提高握持舒适度。</description>
+    </mod>
     <!-- 中级材料 -->
     <!-- 还差一个可充锂电池 -->
     <mod>
@@ -277,6 +304,31 @@
             </flat>
         </stats>
         <description>复合木质材料，增加生命、魔法与防御，但降低热抗。</description>
+    </mod>
+    <mod>
+        <name>骨誓铭牌</name>
+        <use>刀</use>
+        <description>烧蚀硬化骨与金属铭牌编结的重坠尾绳，调节武器质心，提升操控性。</description>
+    </mod>
+    <mod>
+        <name>配重坠</name>
+        <use>刀</use>
+        <description>精密配重调节单元，稳定刃线并提升打击精度。</description>
+    </mod>
+    <mod>
+        <name>强化柄芯</name>
+        <use>刀</use>
+        <description>一体锻造的高强度内核加固条，显著提升抗弯与抗剪能力。</description>
+    </mod>
+    <mod>
+        <name>挂环指槽板</name>
+        <use>刀</use>
+        <description>带指槽的侧板组件，集成挂环和导向孔，提供防脱和扯绳功能。</description>
+    </mod>
+    <mod>
+        <name>电击导能柄</name>
+        <use>刀</use>
+        <description>高压脉冲传导柄部组件，命中瞬间向刃体注入短促电击。</description>
     </mod>
     <!-- 高级材料 -->
     <mod>
@@ -579,6 +631,26 @@
             </percentage>
         </stats>
         <description>可编程分子机器集群，全面提升装备伤害输出能力。</description>
+    </mod>
+    <mod>
+        <name>骨约晨星</name>
+        <use>刀</use>
+        <description>多股编缆与微型陀螺仪阵列，编织成漫天律动的星轨，可控摆锤动量。</description>
+    </mod>
+    <mod>
+        <name>环格护手</name>
+        <use>刀</use>
+        <description>千年古法锻玄铁为环，深冷淬火强化晶格，光纤贯穿铁骨成经络。</description>
+    </mod>
+    <mod>
+        <name>赤旌熔脊柄</name>
+        <use>刀</use>
+        <description>超高温核心柄部组件，命中时将过载热能沿脊线泵入刃体，专为硬目标穿透设计。</description>
+    </mod>
+    <mod>
+        <name>震动吸收器</name>
+        <use>刀</use>
+        <description>多级磁流变阻尼复合筒，主动吸收并抵消高频振动，提升使用舒适度。</description>
     </mod>
     <!-- 其他材料 -->
     <mod>
