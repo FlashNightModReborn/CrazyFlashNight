@@ -1,9 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<!--已用ID：[18201, 18202, 18203, 18204, 18205, 18206, 18207, 18208, 18209, 18210, 18211, 18212, 18213, 18214, 18215, 18216, 18217, 18218, 18219, 18220, 18221, 18222, 18223, 18224, 18225, 18226, 18227, 18228, 18229, 18230, 18231, 18232, 18233, 18234, 18235, 18236, 18237, 18238, 18239, 18240, 18241, 18242, 18243, 18244, 18245, 18246, 18247, 18248, 18249, 18250, 18251, 18252, 18253, 18254, 18255, 18256, 18257, 18258, 18259, 18260, 18261, 18262, 18263, 18264, 18265, 18266, 18267, 18268, 18269, 18270, 18271, 18272, 18273, 18274, 18275, 18276, 18277, 18278, 18279, 18280, 18281, 18282, 18283, 18284, 18285, 18286, 18287, 18288, 18289, 18290, 18291, 18292, 18293, 18294, 18295, 18296, 18297, 18298, 18299, 18300, 18301, 18302, 18303, 18304, 18305, 18306, 18307, 18308, 18309, 18310, 18311, 18312, 18313, 18314, 18315, 18316, 18317, 18318, 18319, 18320, 18321, 18322, 18323, 18324, 18325, 18326, 18327, 18328, 18329, 18330, 18331, 18332, 18333, 18334, 18335, 18336, 18337, 18338, 18339, 18340, 18341, 18342, 18343, 18344, 18345, 18346, 18347, 18348, 18349, 18350, 18351, 18352, 18353, 18354, 18355, 18356, 18357, 18358, 18359, 18360, 18361, 18362, 18363, 18364, 18365, 18366, 18367, 18368, 18369, 18370, 18371, 18372, 18373, 18374, 18375, 18376, 18377, 18378, 18379]
-预留ID区间：18201-18700-->
+<!--
+物品ID已自动生成，无需手动维护-->
 <root>
   <item weapontype="特殊">
-    <id>18201</id>
     <name>天使铳</name>
     <displayname>天使铳</displayname>
     <icon>天使铳</icon>
@@ -36,7 +35,6 @@
     </data>
   </item>
   <item weapontype="霰弹枪">
-    <id>18202</id>
     <name>单管霰弹枪</name>
     <displayname>单管霰弹枪</displayname>
     <icon>单管霰弹枪</icon>
@@ -65,7 +63,6 @@
     </data>
   </item>
   <item weapontype="狙击步枪">
-    <id>18203</id>
     <name>单管步枪</name>
     <displayname>单管步枪</displayname>
     <icon>单管步枪</icon>
@@ -93,7 +90,6 @@
     </data>
   </item>
   <item weapontype="特殊">
-    <id>18204</id>
     <name>光子破坏炮</name>
     <displayname>光子破坏炮</displayname>
     <icon>光子破坏炮</icon>
@@ -121,7 +117,6 @@
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18205</id>
     <name>L85A1</name>
     <displayname>L85A2</displayname>
     <icon>L85A1</icon>
@@ -149,7 +144,6 @@
     </data>
   </item>
   <item weapontype="机枪">
-    <id>18206</id>
     <name>M1915Chauchat</name>
     <displayname>M1915绍沙轻机枪</displayname>
     <icon>M1915Chauchat</icon>
@@ -178,7 +172,6 @@
     </data>
   </item>
   <item weapontype="狙击步枪">
-    <id>18207</id>
     <name>53式步骑枪</name>
     <displayname>53式步骑枪</displayname>
     <icon>53式步骑枪</icon>
@@ -232,7 +225,6 @@
     </data_fire>
   </item>
   <item weapontype="冲锋枪">
-    <id>18208</id>
     <name>TYPE79</name>
     <displayname>79式冲锋枪</displayname>
     <icon>TYPE79</icon>
@@ -261,7 +253,6 @@
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18209</id>
     <name>AK47</name>
     <displayname>AK47</displayname>
     <icon>AK47</icon>
@@ -289,7 +280,6 @@
     </data>
   </item>
   <item weapontype="霰弹枪">
-    <id>18210</id>
     <name>DBHshotgun</name>
     <displayname>20号双管猎枪</displayname>
     <icon>DBHshotgun</icon>
@@ -318,7 +308,6 @@
     </data>
   </item>
   <item weapontype="霰弹枪">
-    <id>18211</id>
     <name>雷明登870</name>
     <displayname>雷明登870</displayname>
     <icon>雷明登870</icon>
@@ -348,7 +337,6 @@
     </data>
   </item>
   <item weapontype="战斗步枪">
-    <id>18212</id>
     <name>HKG3</name>
     <displayname>G3A3</displayname>
     <icon>HKG3</icon>
@@ -377,7 +365,6 @@
     </data>
   </item>
   <item weapontype="近战">
-    <id>18213</id>
     <name>僵尸割草机</name>
     <displayname>僵尸割草机</displayname>
     <icon>僵尸割草机</icon>
@@ -430,7 +417,6 @@
     </lifecycle>
   </item>
   <item weapontype="突击步枪">
-    <id>18214</id>
     <name>M16A1</name>
     <displayname>M16A1</displayname>
     <icon>M16A1</icon>
@@ -458,7 +444,6 @@
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18215</id>
     <name>M4A1</name>
     <displayname>M4A1</displayname>
     <icon>M4A1</icon>
@@ -513,7 +498,6 @@
     </data_fire>
   </item>
   <item weapontype="突击步枪">
-    <id>18216</id>
     <name>G36</name>
     <displayname>自动步枪G36</displayname>
     <icon>G36</icon>
@@ -541,7 +525,6 @@
     </data>
   </item>
   <item weapontype="冲锋枪">
-    <id>18217</id>
     <name>PPSh41</name>
     <displayname>PPSh41冲锋枪</displayname>
     <icon>PPSh41</icon>
@@ -569,7 +552,6 @@
     </data>
   </item>
   <item weapontype="战斗步枪">
-    <id>18218</id>
     <name>HKSL8</name>
     <displayname>HK SL8</displayname>
     <icon>HKSL8</icon>
@@ -597,7 +579,6 @@
     </data>
   </item>
   <item weapontype="发射器">
-    <id>18219</id>
     <name>RPG</name>
     <displayname>RPG</displayname>
     <icon>RPG</icon>
@@ -639,7 +620,6 @@
     </lifecycle>
   </item>
   <item weapontype="发射器">
-    <id>18220</id>
     <name>土豆炮</name>
     <displayname>土豆炮</displayname>
     <icon>土豆炮</icon>
@@ -668,7 +648,6 @@
     </data>
   </item>
   <item weapontype="压制机枪">
-    <id>18221</id>
     <name>XM556-Preview</name>
     <displayname>XM556-Preview</displayname>
     <icon>XM556</icon>
@@ -712,7 +691,6 @@
     </lifecycle>
   </item>
   <item weapontype="突击步枪">
-    <id>18222</id>
     <name>FAMAS</name>
     <displayname>FAMAS</displayname>
     <icon>FAMAS</icon>
@@ -742,7 +720,6 @@ C国在1980年代曾经对多种进口枪支进行了大量的对比试验，包
     </data>
   </item>
   <item weapontype="冲锋枪">
-    <id>18223</id>
     <name>汤姆逊冲锋枪</name>
     <displayname>汤姆逊冲锋枪</displayname>
     <icon>汤姆逊冲锋枪</icon>
@@ -770,7 +747,6 @@ C国在1980年代曾经对多种进口枪支进行了大量的对比试验，包
     </data>
   </item>
   <item weapontype="战斗步枪">
-    <id>18224</id>
     <name>SteyrScout</name>
     <displayname>SteyrScout</displayname>
     <icon>SteyrScout</icon>
@@ -804,7 +780,6 @@ C国在1980年代曾经对多种进口枪支进行了大量的对比试验，包
     </data>
   </item>
   <item weapontype="霰弹枪">
-    <id>18225</id>
     <name>勃朗宁725双管霰弹枪</name>
     <displayname>勃朗宁725双管霰弹枪</displayname>
     <icon>勃朗宁725双管霰弹枪</icon>
@@ -833,7 +808,6 @@ C国在1980年代曾经对多种进口枪支进行了大量的对比试验，包
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18226</id>
     <name>AUG</name>
     <displayname>AUG</displayname>
     <icon>AUG</icon>
@@ -888,7 +862,6 @@ C国在1980年代曾经对多种进口枪支进行了大量的对比试验，包
     </data_fire>
   </item>
   <item weapontype="冲锋枪">
-    <id>18227</id>
     <name>UMP</name>
     <displayname>UMP45</displayname>
     <icon>UMP</icon>
@@ -918,7 +891,6 @@ C国在1980年代曾经对多种进口枪支进行了大量的对比试验，包
     </data>
   </item>
   <item weapontype="特殊">
-    <id>18228</id>
     <name>吉他喷火器</name>
     <displayname>烈火吉他</displayname>
     <icon>吉他喷火器</icon>
@@ -951,7 +923,6 @@ C国在1980年代曾经对多种进口枪支进行了大量的对比试验，包
     </data>
   </item>
   <item weapontype="压制机枪">
-    <id>18229</id>
     <name>M249</name>
     <displayname>M249</displayname>
     <icon>M249</icon>
@@ -992,7 +963,6 @@ C国在1980年代曾经对多种进口枪支进行了大量的对比试验，包
     </lifecycle>
   </item>
   <item weapontype="战斗步枪">
-    <id>18230</id>
     <name>Type56R</name>
     <displayname>56式半自动步枪</displayname>
     <icon>Type56R</icon>
@@ -1020,7 +990,6 @@ C国在1980年代曾经对多种进口枪支进行了大量的对比试验，包
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18231</id>
     <name>MK17</name>
     <displayname>MK17</displayname>
     <icon>MK17</icon>
@@ -1048,7 +1017,6 @@ C国在1980年代曾经对多种进口枪支进行了大量的对比试验，包
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18232</id>
     <name>AK200</name>
     <displayname>AK200</displayname>
     <icon>AK200</icon>
@@ -1077,7 +1045,6 @@ C国在1980年代曾经对多种进口枪支进行了大量的对比试验，包
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18233</id>
     <name>XM8</name>
     <displayname>XM8</displayname>
     <icon>XM8</icon>
@@ -1106,7 +1073,6 @@ C国在1980年代曾经对多种进口枪支进行了大量的对比试验，包
     </data>
   </item>
   <item weapontype="战斗步枪">
-    <id>18234</id>
     <name>毛瑟98k</name>
     <displayname>毛瑟98k</displayname>
     <icon>毛瑟98k</icon>
@@ -1139,7 +1105,6 @@ C国在1980年代曾经对多种进口枪支进行了大量的对比试验，包
     </data>
   </item>
   <item weapontype="冲锋枪">
-    <id>18235</id>
     <name>M1A1SMG</name>
     <displayname>M1A1冲锋枪</displayname>
     <icon>M1A1SMG</icon>
@@ -1167,7 +1132,6 @@ C国在1980年代曾经对多种进口枪支进行了大量的对比试验，包
     </data>
   </item>
   <item weapontype="发射器">
-    <id>18236</id>
     <name>M3 Rocket Launcher</name>
     <displayname>M3 Rocket Launcher</displayname>
     <icon>M3 Rocket Launcher</icon>
@@ -1196,7 +1160,6 @@ C国在1980年代曾经对多种进口枪支进行了大量的对比试验，包
     </data>
   </item>
   <item weapontype="霰弹枪">
-    <id>18237</id>
     <name>雷明登870急速型</name>
     <displayname>雷明登870急速马格南</displayname>
     <icon>雷明登870急速型</icon>
@@ -1226,7 +1189,6 @@ C国在1980年代曾经对多种进口枪支进行了大量的对比试验，包
     </data>
   </item>
   <item weapontype="霰弹枪">
-    <id>18238</id>
     <name>雷明登870警用型</name>
     <displayname>雷明登870警用型</displayname>
     <icon>雷明登870警用型</icon>
@@ -1256,7 +1218,6 @@ C国在1980年代曾经对多种进口枪支进行了大量的对比试验，包
     </data>
   </item>
   <item weapontype="冲锋枪">
-    <id>18239</id>
     <name>TYPE79TAPSII</name>
     <displayname>79式TAPSII</displayname>
     <icon>TYPE79TAPSII</icon>
@@ -1285,7 +1246,6 @@ C国在1980年代曾经对多种进口枪支进行了大量的对比试验，包
     </data>
   </item>
   <item weapontype="战斗步枪">
-    <id>18240</id>
     <name>G3SG1</name>
     <displayname>G3SG1</displayname>
     <icon>G3SG1</icon>
@@ -1316,7 +1276,6 @@ C国在1980年代曾经对多种进口枪支进行了大量的对比试验，包
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18241</id>
     <name>FN F2000</name>
     <displayname>FN F2000</displayname>
     <icon>FN F2000</icon>
@@ -1347,7 +1306,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="冲锋枪">
-    <id>18242</id>
     <name>MP40BLACK</name>
     <displayname>MP40冲锋枪</displayname>
     <icon>MP40BLACK</icon>
@@ -1375,7 +1333,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="冲锋枪">
-    <id>18243</id>
     <name>KRISS突击版</name>
     <displayname>KRISS Vector CRB</displayname>
     <icon>KRISS突击版</icon>
@@ -1405,7 +1362,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="机枪">
-    <id>18244</id>
     <name>HK23</name>
     <displayname>HK23</displayname>
     <icon>HK23</icon>
@@ -1435,7 +1391,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="压制机枪">
-    <id>18245</id>
     <name>XM556-Microgun</name>
     <displayname>XM556-Microgun</displayname>
     <icon>XM556-Microgun</icon>
@@ -1477,7 +1432,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </lifecycle>
   </item>
   <item weapontype="突击步枪">
-    <id>18246</id>
     <name>AKS74U</name>
     <displayname>AKS74U</displayname>
     <icon>AKS74U</icon>
@@ -1505,7 +1459,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="霰弹枪">
-    <id>18247</id>
     <name>XM1014</name>
     <displayname>M1014</displayname>
     <icon>XM1014</icon>
@@ -1560,7 +1513,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data_fire>
   </item>
   <item weapontype="战斗步枪">
-    <id>18248</id>
     <name>SteyrScout10</name>
     <displayname>SteyrScout强化版</displayname>
     <icon>SteyrScout10</icon>
@@ -1593,7 +1545,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="战斗步枪">
-    <id>18249</id>
     <name>KaiShek</name>
     <displayname>中正式步枪</displayname>
     <icon>KaiShek</icon>
@@ -1622,7 +1573,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="压制机枪">
-    <id>18250</id>
     <name>MK48</name>
     <displayname>MK48</displayname>
     <icon>MK48</icon>
@@ -1652,7 +1602,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="发射器">
-    <id>18251</id>
     <name>RPG7V2</name>
     <displayname>RPG7V2</displayname>
     <icon>RPG7V2</icon>
@@ -1695,7 +1644,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </lifecycle>
   </item>
   <item weapontype="战斗步枪">
-    <id>18252</id>
     <name>HKSL8BLACK</name>
     <displayname>猎魂骑士SL8</displayname>
     <icon>HKSL8BLACK</icon>
@@ -1724,7 +1672,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="冲锋枪">
-    <id>18253</id>
     <name>TTI MPX</name>
     <displayname>TTI MPX</displayname>
     <icon>TTI MPX</icon>
@@ -1752,7 +1699,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18254</id>
     <name>AK74</name>
     <displayname>AK74</displayname>
     <icon>AK74</icon>
@@ -1810,7 +1756,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data_fire>
   </item>
   <item weapontype="冲锋枪">
-    <id>18255</id>
     <name>PP1901</name>
     <displayname>PP-19-01“勇士”</displayname>
     <icon>PP1901</icon>
@@ -1838,7 +1783,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="机枪">
-    <id>18256</id>
     <name>PKM机枪</name>
     <displayname>PKM</displayname>
     <icon>PKM机枪</icon>
@@ -1878,7 +1822,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </lifecycle>
   </item>
   <item weapontype="狙击步枪">
-    <id>18257</id>
     <name>Sniper</name>
     <displayname>SSG 04</displayname>
     <icon>Sniper</icon>
@@ -1931,7 +1874,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data_fire>
   </item>
   <item weapontype="近战">
-    <id>18258</id>
     <name>混凝土切割机</name>
     <displayname>混凝土切割机</displayname>
     <icon>混凝土切割机</icon>
@@ -1994,7 +1936,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </lifecycle>
   </item>
   <item weapontype="霰弹枪">
-    <id>18259</id>
     <name>FNSLP半自动霰弹枪</name>
     <displayname>FNSLP半自动霰弹枪</displayname>
     <icon>FNSLP半自动霰弹枪</icon>
@@ -2024,7 +1965,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="霰弹枪">
-    <id>18260</id>
     <name>白火铳</name>
     <displayname>白火铳</displayname>
     <icon>白火铳</icon>
@@ -2082,7 +2022,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data_fire>
   </item>
   <item weapontype="突击步枪">
-    <id>18261</id>
     <name>M4A1改</name>
     <displayname>M16战术版</displayname>
     <icon>M4A1改</icon>
@@ -2120,7 +2059,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="发射器">
-    <id>18262</id>
     <name>M202火箭发射器</name>
     <displayname>M202</displayname>
     <icon>M202火箭发射器</icon>
@@ -2149,7 +2087,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="压制机枪">
-    <id>18263</id>
     <name>MG42</name>
     <displayname>MG42</displayname>
     <icon>MG42</icon>
@@ -2181,7 +2118,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="发射器">
-    <id>18264</id>
     <name>Milkor MGL榴弹发射器</name>
     <displayname>Milkor MGL榴弹发射器</displayname>
     <icon>Milkor MGL榴弹发射器</icon>
@@ -2209,7 +2145,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="战斗步枪">
-    <id>18265</id>
     <name>中国88式狙击步枪</name>
     <displayname>C国88式狙击步枪</displayname>
     <icon>中国88式狙击步枪</icon>
@@ -2261,7 +2196,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data_fire>
   </item>
   <item weapontype="霰弹枪">
-    <id>18266</id>
     <name>ZUX197</name>
     <displayname>ZUX197</displayname>
     <icon>ZUX197</icon>
@@ -2293,7 +2227,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="冲锋枪">
-    <id>18267</id>
     <name>MP5A3</name>
     <displayname>MP5A3</displayname>
     <icon>MP5A3</icon>
@@ -2323,7 +2256,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18268</id>
     <name>HK33KA3</name>
     <displayname>HK33KA3</displayname>
     <icon>HK33KA3</icon>
@@ -2351,7 +2283,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="战斗步枪">
-    <id>18269</id>
     <name>m14</name>
     <displayname>m14</displayname>
     <icon>m14</icon>
@@ -2405,7 +2336,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data_fire>
   </item>
   <item weapontype="机枪">
-    <id>18270</id>
     <name>M1918A2</name>
     <displayname>M1918A2</displayname>
     <icon>M1918A2</icon>
@@ -2434,7 +2364,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="近战">
-    <id>18271</id>
     <name>生命收割者</name>
     <displayname>生命收割者</displayname>
     <icon>生命收割者</icon>
@@ -2464,7 +2393,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="狙击步枪">
-    <id>18272</id>
     <name>M24SWS</name>
     <displayname>M24狙击步枪</displayname>
     <icon>M24SWS</icon>
@@ -2494,7 +2422,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="霰弹枪">
-    <id>18273</id>
     <name>XM1014战术版</name>
     <displayname>M1014战术版</displayname>
     <icon>XM1014战术版</icon>
@@ -2525,7 +2452,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18274</id>
     <name>战术版AK200</name>
     <displayname>战术版AK200</displayname>
     <icon>战术版AK200</icon>
@@ -2554,7 +2480,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="狙击步枪">
-    <id>18275</id>
     <name>Marlin1895</name>
     <displayname>马林1895杠杆步枪</displayname>
     <icon>Marlin1895</icon>
@@ -2585,7 +2510,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18276</id>
     <name>HK53</name>
     <displayname>HK53</displayname>
     <icon>HK53</icon>
@@ -2613,7 +2537,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="狙击步枪">
-    <id>18277</id>
     <name>芬兰之星</name>
     <displayname>芬兰之星</displayname>
     <icon>芬兰之星</icon>
@@ -2644,7 +2567,6 @@ F2000在那寻常往复的国际战争与武装冲突中多次证明了自己的
     </data>
   </item>
   <item weapontype="压制机枪">
-    <id>18278</id>
     <name>NEGEV</name>
     <displayname>NEGEV</displayname>
     <icon>NEGEV</icon>
@@ -2686,7 +2608,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </lifecycle>
   </item>
   <item weapontype="压制机枪">
-    <id>18279</id>
     <name>XM214-CageFrame</name>
     <displayname>XM214-CageFrame</displayname>
     <icon>XM214-CageFrame</icon>
@@ -2744,7 +2665,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </lifecycle>
   </item>
   <item weapontype="突击步枪">
-    <id>18280</id>
     <name>巨兽</name>
     <displayname>巨兽</displayname>
     <icon>巨兽</icon>
@@ -2772,7 +2692,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18281</id>
     <name>QBZ95</name>
     <displayname>QBZ95</displayname>
     <icon>QBZ95</icon>
@@ -2800,7 +2719,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18282</id>
     <name>HK416</name>
     <displayname>HK416</displayname>
     <icon>HK416</icon>
@@ -2853,7 +2771,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data_fire>
   </item>
   <item weapontype="突击步枪">
-    <id>18283</id>
     <name>HK33A2</name>
     <displayname>HK33A2</displayname>
     <icon>HK33A2</icon>
@@ -2881,7 +2798,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="冲锋枪">
-    <id>18284</id>
     <name>MP510</name>
     <displayname>MP5/10</displayname>
     <icon>MP510</icon>
@@ -2910,7 +2826,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="特殊">
-    <id>18285</id>
     <name>Fire Gun</name>
     <displayname>火焰喷射器</displayname>
     <icon>Fire Gun</icon>
@@ -2941,7 +2856,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="冲锋枪">
-    <id>18286</id>
     <name>MMP80</name>
     <displayname>MMP80</displayname>
     <icon>MMP80</icon>
@@ -2988,7 +2902,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="战斗步枪">
-    <id>18287</id>
     <name>中国88式狙击步枪改造版</name>
     <displayname>C国88式狙击步枪改造版</displayname>
     <icon>中国88式狙击步枪改造版</icon>
@@ -3018,7 +2931,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18288</id>
     <name>QBZ-191</name>
     <displayname>QBZ-191</displayname>
     <icon>QBZ-191</icon>
@@ -3047,7 +2959,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18289</id>
     <name>TTI TR1</name>
     <displayname>TTI TR1</displayname>
     <icon>TTI TR1</icon>
@@ -3075,7 +2986,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="近战">
-    <id>18290</id>
     <name>MACSIII</name>
     <displayname>MACSIII</displayname>
     <icon>MACSIII</icon>
@@ -3137,7 +3047,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </lifecycle>
   </item>
   <item weapontype="发射器">
-    <id>18291</id>
     <name>PF98A</name>
     <displayname>PF98A</displayname>
     <icon>PF98A</icon>
@@ -3181,7 +3090,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </lifecycle>
   </item>
   <item weapontype="发射器">
-    <id>18292</id>
     <name>NLAW</name>
     <displayname>NLAW</displayname>
     <icon>NLAW</icon>
@@ -3211,7 +3119,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="压制机枪">
-    <id>18293</id>
     <name>M134</name>
     <displayname>M134</displayname>
     <icon>M134</icon>
@@ -3266,7 +3173,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="战斗步枪">
-    <id>18294</id>
     <name>QBU-191</name>
     <displayname>QBU-191</displayname>
     <icon>QBZ-191 Series</icon>
@@ -3296,7 +3202,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18295</id>
     <name>极品巨兽</name>
     <displayname>银虹视界</displayname>
     <icon>极品巨兽</icon>
@@ -3324,7 +3229,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18296</id>
     <name>M4A1雷神</name>
     <displayname>M4A1雷神</displayname>
     <icon>M4A1雷神</icon>
@@ -3352,7 +3256,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18297</id>
     <name>AK47火麒麟</name>
     <displayname>AK47火麒麟</displayname>
     <icon>AK47火麒麟</icon>
@@ -3381,7 +3284,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18298</id>
     <name>二西莫夫M4A1</name>
     <displayname>二西莫夫M4A1</displayname>
     <icon>二西莫夫M4A1</icon>
@@ -3409,7 +3311,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18299</id>
     <name>二西莫夫AK47</name>
     <displayname>二西莫夫AK47</displayname>
     <icon>二西莫夫AK47</icon>
@@ -3437,7 +3338,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18300</id>
     <name>穿刺QBZ95</name>
     <displayname>穿刺QBZ95</displayname>
     <icon>穿刺QBZ95</icon>
@@ -3465,7 +3365,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="特殊">
-    <id>18301</id>
     <name>毒蛛</name>
     <displayname>毒蛛</displayname>
     <icon>毒蛛</icon>
@@ -3499,7 +3398,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18302</id>
     <name>G11</name>
     <displayname>G11</displayname>
     <icon>G11</icon>
@@ -3547,7 +3445,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </lifecycle>
   </item>
   <item weapontype="特殊">
-    <id>18303</id>
     <name>怒海狂鲨</name>
     <displayname>怒海狂鲨</displayname>
     <icon>怒海狂鲨</icon>
@@ -3576,7 +3473,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="发射器">
-    <id>18304</id>
     <name>中国湖榴弹发射器</name>
     <displayname>瓷器湖</displayname>
     <icon>中国湖榴弹发射器</icon>
@@ -3606,7 +3502,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="战斗步枪">
-    <id>18305</id>
     <name>SVD</name>
     <displayname>SVD</displayname>
     <icon>SVD</icon>
@@ -3658,7 +3553,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data_fire>
   </item>
   <item weapontype="突击步枪">
-    <id>18306</id>
     <name>烈焰枪A100</name>
     <displayname>烈焰枪A100</displayname>
     <icon>烈焰枪A100</icon>
@@ -3688,7 +3582,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18307</id>
     <name>烈焰枪B100</name>
     <displayname>烈焰枪B100</displayname>
     <icon>烈焰枪B100</icon>
@@ -3716,7 +3609,6 @@ Negev在中东地区的多次冲突中证明了其可靠性与适应性，其轻
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18308</id>
     <name>M4A1科技白</name>
     <displayname>M4A1科技白</displayname>
     <icon>M4A1科技白</icon>
@@ -3746,7 +3638,6 @@ M4A1由A国的柯特公司于1984年研发。作为A军制式步枪的同时，�
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18309</id>
     <name>AK74金线</name>
     <displayname>AK74金线</displayname>
     <icon>AK74金线</icon>
@@ -3778,7 +3669,6 @@ AK74突击步枪，由卡拉希尼柯夫在1974年设计，于伊热夫斯克机
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18310</id>
     <name>AK74战术版</name>
     <displayname>AK74战术版</displayname>
     <icon>AK74战术版</icon>
@@ -3816,7 +3706,6 @@ AK74突击步枪，由卡拉希尼柯夫在1974年设计，于伊热夫斯克机
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18311</id>
     <name>M4A1战术版</name>
     <displayname>M4A1战术版</displayname>
     <icon>M4A1战术版</icon>
@@ -3854,7 +3743,6 @@ AK74突击步枪，由卡拉希尼柯夫在1974年设计，于伊热夫斯克机
     </data>
   </item>
   <item weapontype="反器材武器">
-    <id>18312</id>
     <name>061ABSR</name>
     <displayname>061ABSR</displayname>
     <icon>061ABSR</icon>
@@ -3893,7 +3781,6 @@ AK74突击步枪，由卡拉希尼柯夫在1974年设计，于伊热夫斯克机
     </data>
   </item>
   <item weapontype="冲锋枪">
-    <id>18313</id>
     <name>AR57</name>
     <displayname>AR57</displayname>
     <icon>AR57</icon>
@@ -3938,7 +3825,6 @@ AK74突击步枪，由卡拉希尼柯夫在1974年设计，于伊热夫斯克机
     </lifecycle>
   </item>
   <item weapontype="狙击步枪">
-    <id>18314</id>
     <name>AWM狙击步枪</name>
     <displayname>AWM狙击步枪</displayname>
     <icon>AWM狙击步枪</icon>
@@ -3970,7 +3856,6 @@ AWM原来以狩猎为主，后来普及军事层面，采用旋转后拉式枪�
     </data>
   </item>
   <item weapontype="机枪">
-    <id>18315</id>
     <name>ValmetM78</name>
     <displayname>瓦尔梅特M78</displayname>
     <icon>ValmetM78</icon>
@@ -3999,7 +3884,6 @@ AWM原来以狩猎为主，后来普及军事层面，采用旋转后拉式枪�
     </data>
   </item>
   <item weapontype="战斗步枪">
-    <id>18316</id>
     <name>HKSL8EX</name>
     <displayname>猎魂骑士EX</displayname>
     <icon>HKSL8EX</icon>
@@ -4028,7 +3912,6 @@ AWM原来以狩猎为主，后来普及军事层面，采用旋转后拉式枪�
     </data>
   </item>
   <item weapontype="战斗步枪">
-    <id>18317</id>
     <name>HKSL8GOLD</name>
     <displayname>猎魂金骑</displayname>
     <icon>HKSL8GOLD</icon>
@@ -4057,7 +3940,6 @@ AWM原来以狩猎为主，后来普及军事层面，采用旋转后拉式枪�
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18318</id>
     <name>AK74M</name>
     <displayname>AK74M</displayname>
     <icon>AK74M</icon>
@@ -4086,7 +3968,6 @@ AWM原来以狩猎为主，后来普及军事层面，采用旋转后拉式枪�
     </data>
   </item>
   <item weapontype="狙击步枪">
-    <id>18319</id>
     <name>AWP</name>
     <displayname>AWP</displayname>
     <icon>AWP</icon>
@@ -4118,7 +3999,6 @@ AWM原来以狩猎为主，后来普及军事层面，采用旋转后拉式枪�
     </data>
   </item>
   <item weapontype="狙击步枪">
-    <id>18320</id>
     <name>HSR10S</name>
     <displayname>HSR10S</displayname>
     <icon>HSR10S</icon>
@@ -4148,7 +4028,6 @@ AWM原来以狩猎为主，后来普及军事层面，采用旋转后拉式枪�
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18321</id>
     <name>HK53SP</name>
     <displayname>挣扎者</displayname>
     <icon>HK53</icon>
@@ -4177,7 +4056,6 @@ AWM原来以狩猎为主，后来普及军事层面，采用旋转后拉式枪�
     </data>
   </item>
   <item weapontype="近战">
-    <id>18322</id>
     <name>火药燃气液压打桩机</name>
     <displayname>火药燃气液压打桩机</displayname>
     <icon>火药燃气液压打桩机</icon>
@@ -4223,7 +4101,6 @@ AWM原来以狩猎为主，后来普及军事层面，采用旋转后拉式枪�
     </lifecycle>
   </item>
   <item weapontype="霰弹枪">
-    <id>18323</id>
     <name>TTI Benelli M4</name>
     <displayname>TTI Benelli M4</displayname>
     <icon>TTI Benelli M4</icon>
@@ -4253,7 +4130,6 @@ AWM原来以狩猎为主，后来普及军事层面，采用旋转后拉式枪�
     </data>
   </item>
   <item weapontype="特殊">
-    <id>18324</id>
     <name>铁枪</name>
     <displayname>铁枪</displayname>
     <icon>铁枪</icon>
@@ -4294,7 +4170,6 @@ AWM原来以狩猎为主，后来普及军事层面，采用旋转后拉式枪�
     </lifecycle>
   </item>
   <item weapontype="狙击步枪">
-    <id>18325</id>
     <name>WA2000</name>
     <displayname>WA2000</displayname>
     <icon>WA2000</icon>
@@ -4326,7 +4201,6 @@ AWM原来以狩猎为主，后来普及军事层面，采用旋转后拉式枪�
     </data>
   </item>
   <item weapontype="特殊">
-    <id>18326</id>
     <name>龙炎</name>
     <displayname>龙炎</displayname>
     <icon>龙炎</icon>
@@ -4360,7 +4234,6 @@ AWM原来以狩猎为主，后来普及军事层面，采用旋转后拉式枪�
     </data>
   </item>
   <item weapontype="特殊">
-    <id>18327</id>
     <name>wa90变形款</name>
     <displayname>WA90</displayname>
     <icon>wa90变形款</icon>
@@ -4477,7 +4350,6 @@ AWM原来以狩猎为主，后来普及军事层面，采用旋转后拉式枪�
     </lifecycle>
   </item>
   <item weapontype="狙击步枪">
-    <id>18328</id>
     <name>DTA SRS</name>
     <displayname>DTA SRS</displayname>
     <icon>DTA SRS</icon>
@@ -4508,7 +4380,6 @@ AWM原来以狩猎为主，后来普及军事层面，采用旋转后拉式枪�
     </data>
   </item>
   <item weapontype="机枪">
-    <id>18329</id>
     <name>ZB-26</name>
     <displayname>ZB-26</displayname>
     <icon>ZB-26</icon>
@@ -4538,7 +4409,6 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
     </data>
   </item>
   <item weapontype="反器材武器">
-    <id>18330</id>
     <name>GM6_LYNX</name>
     <displayname>GM6_LYNX</displayname>
     <icon>GM6_LYNX</icon>
@@ -4591,7 +4461,6 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
     </lifecycle>
   </item>
   <item weapontype="狙击步枪">
-    <id>18331</id>
     <name>诺亚方舟护士狙击步枪</name>
     <displayname>诺亚方舟护士狙击步枪</displayname>
     <icon>诺亚方舟护士狙击步枪</icon>
@@ -4625,7 +4494,6 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18332</id>
     <name>炎魔枪A100</name>
     <displayname>炎魔枪A100</displayname>
     <icon>炎魔枪A100</icon>
@@ -4655,7 +4523,6 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18333</id>
     <name>炎魔枪B100</name>
     <displayname>炎魔枪B100</displayname>
     <icon>炎魔枪B100</icon>
@@ -4683,7 +4550,6 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18334</id>
     <name>诺亚卫士科技步枪</name>
     <displayname>诺亚卫士科技步枪</displayname>
     <icon>诺亚卫士科技步枪</icon>
@@ -4711,7 +4577,6 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
     </data>
   </item>
   <item weapontype="霰弹枪">
-    <id>18335</id>
     <name>SPAS12战术版</name>
     <displayname>SPAS12战术版</displayname>
     <icon>SPAS12战术版</icon>
@@ -4743,7 +4608,6 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
     </data>
   </item>
   <item weapontype="霰弹枪">
-    <id>18336</id>
     <name>SPAS12</name>
     <displayname>SPAS12</displayname>
     <icon>SPAS12</icon>
@@ -4775,7 +4639,6 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
     </data>
   </item>
   <item weapontype="反器材武器">
-    <id>18337</id>
     <name>巴雷特</name>
     <displayname>M82A1</displayname>
     <icon>巴雷特</icon>
@@ -4807,7 +4670,6 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18338</id>
     <name>SAI GRY 幽灵</name>
     <displayname>SAI GRY 幽灵</displayname>
     <icon>SAI GRY 幽灵</icon>
@@ -4835,7 +4697,6 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18339</id>
     <name>EPHI破狭者套件</name>
     <displayname>EPHI破狭者套件</displayname>
     <icon>EPHI破狭者套件</icon>
@@ -4866,7 +4727,6 @@ ZB-26曾大量装备本土军方，并出口至20余个国家，其成功的设�
     </data>
   </item>
   <item weapontype="反器材武器">
-    <id>18340</id>
     <name>ASH12.7</name>
     <displayname>ASH12</displayname>
     <icon>ASH12.7</icon>
@@ -4895,7 +4755,6 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     </data>
   </item>
   <item weapontype="发射器">
-    <id>18341</id>
     <name>M202FLASH</name>
     <displayname>M202FLASH</displayname>
     <icon>M202FLASH</icon>
@@ -4926,7 +4785,6 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     </data>
   </item>
   <item weapontype="霰弹枪">
-    <id>18342</id>
     <name>Jackhammer</name>
     <displayname>Jackhammer</displayname>
     <icon>Jackhammer</icon>
@@ -4991,7 +4849,6 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     </lifecycle>
   </item>
   <item weapontype="霰弹枪">
-    <id>18343</id>
     <name>牛仔的温切斯特</name>
     <displayname>Winchester</displayname>
     <icon>牛仔的温切斯特</icon>
@@ -5021,7 +4878,6 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     </data>
   </item>
   <item weapontype="机枪">
-    <id>18344</id>
     <name>M60E3</name>
     <displayname>M60E3</displayname>
     <icon>M60E3</icon>
@@ -5051,7 +4907,6 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     </data>
   </item>
   <item weapontype="发射器">
-    <id>18345</id>
     <name>轰天巨炮</name>
     <displayname>轰天巨炮</displayname>
     <icon>轰天巨炮</icon>
@@ -5079,7 +4934,6 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     </data>
   </item>
   <item weapontype="发射器">
-    <id>18346</id>
     <name>RPG28</name>
     <displayname>RPG28</displayname>
     <icon>RPG28</icon>
@@ -5125,7 +4979,6 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     </lifecycle>
   </item>
   <item weapontype="突击步枪">
-    <id>18347</id>
     <name>G111</name>
     <displayname>G111</displayname>
     <icon>G111</icon>
@@ -5178,7 +5031,6 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     </lifecycle>
   </item>
   <item weapontype="冲锋枪">
-    <id>18348</id>
     <name>CAR冲锋枪</name>
     <displayname>CAR</displayname>
     <icon>CAR</icon>
@@ -5208,7 +5060,6 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     </data>
   </item>
   <item weapontype="发射器">
-    <id>18349</id>
     <name>XM25</name>
     <displayname>XM25</displayname>
     <icon>XM25</icon>
@@ -5253,7 +5104,6 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     </lifecycle>
   </item>
   <item weapontype="反器材武器">
-    <id>18350</id>
     <name>T181</name>
     <displayname>T181</displayname>
     <icon>T181</icon>
@@ -5284,7 +5134,6 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     </data>
   </item>
   <item weapontype="反器材武器">
-    <id>18351</id>
     <name>T181C</name>
     <displayname>T181C</displayname>
     <icon>T181C</icon>
@@ -5315,7 +5164,6 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     </data>
   </item>
   <item weapontype="发射器">
-    <id>18352</id>
     <name>战术版FIM92</name>
     <displayname>FIM92毒刺改巡飞弹发射器</displayname>
     <icon>战术版FIM92</icon>
@@ -5346,7 +5194,6 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18353</id>
     <name>非规格步枪</name>
     <displayname>非规格步枪</displayname>
     <icon>非规格步枪</icon>
@@ -5395,7 +5242,6 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     </data>
   </item>
   <item weapontype="霰弹枪">
-    <id>18354</id>
     <name>TTI Gen 12</name>
     <displayname>TTI Gen 12</displayname>
     <icon>TTI Gen 12</icon>
@@ -5425,7 +5271,6 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     </data>
   </item>
   <item weapontype="特殊">
-    <id>18355</id>
     <name>诛神枪</name>
     <displayname>烬灭</displayname>
     <icon>诛神枪</icon>
@@ -5455,7 +5300,6 @@ ASh-12突击步枪是专门为近距离战斗设计设计的，考虑到有效�
     </data>
   </item>
   <item weapontype="压制机枪">
-    <id>18356</id>
     <name>PKM战术版</name>
     <displayname>PKP机枪</displayname>
     <icon>PKP</icon>
@@ -5495,7 +5339,6 @@ PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳�
     </lifecycle>
   </item>
   <item weapontype="突击步枪">
-    <id>18357</id>
     <name>HK416战术版</name>
     <displayname>HK416战术版</displayname>
     <icon>HK416战术版</icon>
@@ -5541,7 +5384,6 @@ PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳�
     </data>
   </item>
   <item weapontype="反器材武器">
-    <id>18358</id>
     <name>巴雷特印花集</name>
     <displayname>巴雷特印花集</displayname>
     <icon>巴雷特印花集</icon>
@@ -5575,7 +5417,6 @@ PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳�
     </data>
   </item>
   <item weapontype="反器材武器">
-    <id>18359</id>
     <name>M82A1加强版</name>
     <displayname>M82A1加强版</displayname>
     <icon>M82A1加强版</icon>
@@ -5609,7 +5450,6 @@ PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳�
     </data>
   </item>
   <item weapontype="反器材武器">
-    <id>18360</id>
     <name>战术巴雷特</name>
     <displayname>M82A1战术版</displayname>
     <icon>战术巴雷特</icon>
@@ -5663,7 +5503,6 @@ PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳�
     </lifecycle>
   </item>
   <item weapontype="压制机枪">
-    <id>18361</id>
     <name>M134暴力版</name>
     <displayname>M134暴力版</displayname>
     <icon>M134暴力版</icon>
@@ -5716,7 +5555,6 @@ PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳�
     </data>
   </item>
   <item weapontype="压制机枪">
-    <id>18362</id>
     <name>MG42战术版</name>
     <displayname>MG42战术版</displayname>
     <icon>MG42战术版</icon>
@@ -5748,7 +5586,6 @@ PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳�
     </data>
   </item>
   <item weapontype="霰弹枪">
-    <id>18363</id>
     <name>黄金QBZ</name>
     <displayname>黄金QBZ</displayname>
     <icon>黄金QBZ</icon>
@@ -5778,7 +5615,6 @@ PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳�
     </data>
   </item>
   <item weapontype="霰弹枪">
-    <id>18364</id>
     <name>双管白火铳</name>
     <displayname>双管白火铳</displayname>
     <icon>双管白火铳</icon>
@@ -5809,7 +5645,6 @@ PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳�
     </data>
   </item>
   <item weapontype="霰弹枪">
-    <id>18365</id>
     <name>逻辑工作室一型</name>
     <displayname>逻辑工作室一型</displayname>
     <icon>逻辑工作室一型</icon>
@@ -5838,7 +5673,6 @@ PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳�
     </data>
   </item>
   <item weapontype="发射器">
-    <id>18366</id>
     <name>追月弩</name>
     <displayname>追月弩</displayname>
     <icon>追月弩</icon>
@@ -5866,7 +5700,6 @@ PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳�
     </data>
   </item>
   <item weapontype="狙击步枪">
-    <id>18367</id>
     <name>能量狙击枪</name>
     <displayname>能量狙击枪</displayname>
     <icon>能量狙击枪</icon>
@@ -5899,7 +5732,6 @@ PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳�
     </data>
   </item>
   <item weapontype="反器材武器">
-    <id>18368</id>
     <name>高斯枪</name>
     <displayname>高斯枪</displayname>
     <icon>高斯枪</icon>
@@ -5931,7 +5763,6 @@ PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳�
     </data>
   </item>
   <item weapontype="突击步枪">
-    <id>18369</id>
     <name>战术-QBZ-191</name>
     <displayname>战术-QBZ-191</displayname>
     <icon>战术-QBZ-191</icon>
@@ -5962,7 +5793,6 @@ PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳�
     </data>
   </item>
   <item weapontype="战斗步枪">
-    <id>18370</id>
     <name>战术-QBU-191</name>
     <displayname>战术-QBU-191</displayname>
     <icon>战术-QBZ-191 Series</icon>
@@ -5994,7 +5824,6 @@ QBZ191的精确射手步枪版本，也正如QBZ191一样，拥有优秀的人�
     </data>
   </item>
   <item weapontype="战斗步枪">
-    <id>18371</id>
     <name>G1111</name>
     <displayname>G1111</displayname>
     <icon>G1111</icon>
@@ -6072,7 +5901,6 @@ QBZ191的精确射手步枪版本，也正如QBZ191一样，拥有优秀的人�
     </lifecycle>
   </item>
   <item weapontype="压制近战">
-    <id>18372</id>
     <name>等离子切割机</name>
     <displayname>等离子切割机</displayname>
     <icon>等离子切割机</icon>
@@ -6115,7 +5943,6 @@ QBZ191的精确射手步枪版本，也正如QBZ191一样，拥有优秀的人�
     </lifecycle>
   </item>
   <item weapontype="发射器">
-    <id>18373</id>
     <name>RShG4</name>
     <displayname>RShG4</displayname>
     <icon>RShG4</icon>
@@ -6161,7 +5988,6 @@ QBZ191的精确射手步枪版本，也正如QBZ191一样，拥有优秀的人�
     </lifecycle>
   </item>
   <item weapontype="突击步枪">
-    <id>18374</id>
     <name>量子能量枪</name>
     <displayname>量子能量枪</displayname>
     <icon>量子能量枪</icon>
@@ -6191,7 +6017,6 @@ QBZ191的精确射手步枪版本，也正如QBZ191一样，拥有优秀的人�
     </data>
   </item>
   <item weapontype="特殊">
-    <id>18375</id>
     <name>紫色幻想</name>
     <displayname>紫色幻想</displayname>
     <icon>紫色幻想</icon>
@@ -6222,7 +6047,6 @@ QBZ191的精确射手步枪版本，也正如QBZ191一样，拥有优秀的人�
     </data>
   </item>
   <item weapontype="压制机枪">
-    <id>18376</id>
     <name>M134暴力版的PIG版</name>
     <displayname>M134暴力版</displayname>
     <icon>M134暴力版</icon>
@@ -6284,7 +6108,6 @@ QBZ191的精确射手步枪版本，也正如QBZ191一样，拥有优秀的人�
     </lifecycle>
   </item>
   <item weapontype="特殊">
-    <id>18377</id>
     <name>远古诛神枪</name>
     <displayname>远古诛神枪</displayname>
     <icon>远古诛神枪</icon>
@@ -6312,7 +6135,6 @@ QBZ191的精确射手步枪版本，也正如QBZ191一样，拥有优秀的人�
     </data>
   </item>
   <item weapontype="特殊">
-    <id>18378</id>
     <name>战术版喷火器</name>
     <displayname>战术版喷火器</displayname>
     <icon>战术版喷火器</icon>
@@ -6341,7 +6163,6 @@ QBZ191的精确射手步枪版本，也正如QBZ191一样，拥有优秀的人�
     </data>
   </item>
   <item weapontype="霰弹枪">
-    <id>18379</id>
     <name>黄金QBZ的Andy版</name>
     <displayname>黄金QBZ</displayname>
     <icon>黄金QBZ</icon>

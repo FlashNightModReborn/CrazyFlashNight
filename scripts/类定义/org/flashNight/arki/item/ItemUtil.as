@@ -81,9 +81,16 @@ class org.flashNight.arki.item.ItemUtil{
             _multiTierDict[multiTierList[tierIndex]] = {};
         }
 
+        // 自动生成ID：完全忽略XML中的ID配置
+        var autoIncrementID = 1;
+
         for(var i in combinedData){
             var itemData = combinedData[i];
             var itemName = itemData.name;
+
+            // 自动分配ID（忽略XML中的ID）
+            itemData.id = autoIncrementID++;
+
             _itemDataDict[itemName] = itemData;
             _itemNamesByID[itemData.id] = itemName;
             _itemDataArray.push(itemData);
@@ -103,9 +110,10 @@ class org.flashNight.arki.item.ItemUtil{
             else if(itemData.use === "材料") _materialDict[itemName] = true;
             else if(itemData.use === "情报") _informationMaxValueDict[itemName] = itemData.maxvalue;
         }
-        _itemDataArray = QuickSort.adaptiveSort(_itemDataArray, function(a, b) {
-            return a.id - b.id; // Numeric comparison
-        });
+
+        // 由于for...in遍历是反序的，需要反转数组以保持XML中的正序
+        // 这样可以通过调整XML中物品的位置来直观控制显示顺序
+        _itemDataArray.reverse();
 
         itemDataDict = _itemDataDict;
         itemDataArray = _itemDataArray;

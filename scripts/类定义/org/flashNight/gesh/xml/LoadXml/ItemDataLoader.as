@@ -160,17 +160,27 @@ ItemDataLoader.loadItemData(
 		var itemNamesByID = new Object();
 		var maxID = 0;
 		var informationMaxValueDict = new Object();
+
+		// 自动生成ID：完全忽略XML中的ID配置
+		var autoIncrementID = 1;
+
 		for(var i in combinedData){
 			var itemData = combinedData[i];
+
+			// 自动分配ID（忽略XML中的ID）
+			itemData.id = autoIncrementID++;
+
 			itemDataDict[itemData.name] = itemData;
 			itemNamesByID[itemData.id] = itemData.name;
 			itemDataArray.push(itemData);
 			if(itemData.id > maxID) maxID = itemData.id;
 			if(itemData.use =="情报") informationMaxValueDict[itemData.name] = itemData.maxvalue;
 		}
-		itemDataArray = org.flashNight.naki.Sort.QuickSort.adaptiveSort(itemDataArray, function(a, b) {
-            return a.id - b.id; // Numeric comparison
-        });
+
+		// 由于for...in遍历是反序的，需要反转数组以保持XML中的正序
+		// 这样可以通过调整XML中物品的位置来直观控制显示顺序
+		itemDataArray.reverse();
+
 		org.flashNight.arki.item.ItemUtil.itemDataDict = itemDataDict;
 		org.flashNight.arki.item.ItemUtil.itemDataArray = itemDataArray;
 		org.flashNight.arki.item.ItemUtil.itemNamesByID = itemNamesByID;
