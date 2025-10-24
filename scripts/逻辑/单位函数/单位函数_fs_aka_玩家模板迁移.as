@@ -1438,10 +1438,13 @@ _root.主角函数.死亡检测 = function() {
         return;
     }
 
-    // === 处理友军死亡 ===
-    this.新版人物文字信息._visible = false;
-    _root.add2map(this, 2);
-    this.removeMovieClip();
+    // === 处理友军死亡（非玩家角色） ===
+    // 只有非玩家控制的友军单位才需要被删除
+    if (this._name !== _root.控制目标) {
+        this.新版人物文字信息._visible = false;
+        _root.add2map(this, 2);
+        this.removeMovieClip();
+    }
 }
 
 //迁移刀口位置生成子弹
