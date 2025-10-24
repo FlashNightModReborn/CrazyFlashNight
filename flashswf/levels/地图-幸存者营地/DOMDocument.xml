@@ -17,7 +17,7 @@
           <DOMFolderItem name="新地图素材/女仆黑/步枪/狙击步枪" itemID="6577c619-0000070a"/>
           <DOMFolderItem name="新地图素材/女仆黑/步枪/狙击步枪/Revision 4" itemID="6577c619-0000070b"/>
           <DOMFolderItem name="新地图素材/女仆黑/弹药" itemID="6577dc9d-00000575"/>
-          <DOMFolderItem name="重复项目文件夹" itemID="66a62699-00005e3d" isExpanded="true"/>
+          <DOMFolderItem name="重复项目文件夹" itemID="66a62699-00005e3d"/>
      </folders>
      <media>
           <DOMBitmapItem name="新地图素材/1 2 副本" itemID="488d9613-000005ff" sourceExternalFilepath="./LIBRARY/新地图素材/1 2 副本" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="新地图素材/1 2 副本" bitmapDataHRef="M 7 1707581568.dat" frameRight="2500" frameBottom="2880"/>
@@ -58,7 +58,7 @@
           <Include href="sprite/Symbol 3044.xml" loadImmediate="false" itemID="6597607e-00000e07" lastModified="1704196122"/>
           <Include href="sprite/场景门.xml" loadImmediate="false" itemID="66f59fc0-00000c5a" lastModified="1727373261"/>
           <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
-          <Include href="地图-幸存者营地.xml" itemID="65c7a0f5-0000109e" lastModified="1761314032"/>
+          <Include href="地图-幸存者营地.xml" itemID="65c7a0f5-0000109e" lastModified="1761326319"/>
           <Include href="叠底门.xml" loadImmediate="false" itemID="6605761b-00001057" lastModified="1711633947"/>
           <Include href="动画/待机.xml" loadImmediate="false" itemID="65f4431c-00000940" lastModified="1710749398"/>
           <Include href="垃圾堆2.xml" loadImmediate="false" itemID="65df2759-00000043" lastModified="1709123417"/>
@@ -294,6 +294,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="329689" publishTime="1761325514"/>
+          <PublishItem publishSize="329689" publishTime="1761325451"/>
+          <PublishItem publishSize="329689" publishTime="1761325396"/>
           <PublishItem publishSize="329621" publishTime="1761312749"/>
           <PublishItem publishSize="331932" publishTime="1737186444"/>
           <PublishItem publishSize="331936" publishTime="1737186235"/>
@@ -311,6 +314,5 @@
           <PublishItem publishSize="347787" publishTime="1711633627"/>
           <PublishItem publishSize="345223" publishTime="1711522662"/>
           <PublishItem publishSize="345219" publishTime="1711522560"/>
-          <PublishItem publishSize="336810" publishTime="1711521893"/>
      </publishHistory>
 </DOMDocument>

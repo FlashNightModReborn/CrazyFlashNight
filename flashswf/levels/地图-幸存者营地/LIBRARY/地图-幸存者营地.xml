@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-幸存者营地" itemID="65c7a0f5-0000109e" linkageExportForAS="true" linkageIdentifier="地图-幸存者营地" lastModified="1761314032" lastUniqueIdentifier="32">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-幸存者营地" itemID="65c7a0f5-0000109e" linkageExportForAS="true" linkageIdentifier="地图-幸存者营地" lastModified="1761326319" lastUniqueIdentifier="32">
   <timeline>
     <DOMTimeline name="地图-幸存者营地">
       <layers>
@@ -121,7 +121,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="出生地" color="#0FD8B1" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="出生地" color="#0FD8B1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -174,13 +174,37 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
+        <DOMLayer name="门3" color="#BA50B8" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/场景门" name="门3" centerPoint3DX="100.5" centerPoint3DY="598.9">
+                  <matrix>
+                    <Matrix a="3.84092712402344" d="18.7664031982422" tx="90" ty="578.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	切换场景("门2","地下2层","",_root.左键);
+}
+onClipEvent (load) {
+	是否从门加载主角 = false;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="门1" color="#BA50B8" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/场景门" name="门1" selected="true" centerPoint3DX="2828.75" centerPoint3DY="571">
+                <DOMSymbolInstance libraryItemName="sprite/场景门" name="门1" selected="true" centerPoint3DX="2814.75" centerPoint3DY="585">
                   <matrix>
-                    <Matrix a="5.6405029296875" d="18.7664031982422" tx="2818.25" ty="551.05"/>
+                    <Matrix a="4.11039733886719" d="18.7664031982422" tx="2804.25" ty="565.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -199,7 +223,7 @@ onClipEvent (load) {
           </frames>
         </DOMLayer>
         <DOMLayer name="NPC" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="女仆黑" color="#BA6078" parentLayerIndex="8" locked="true" autoNamed="false">
+        <DOMLayer name="女仆黑" color="#BA6078" parentLayerIndex="9" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -244,7 +268,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="女仆白" color="#BA6078" parentLayerIndex="8" locked="true" autoNamed="false">
+        <DOMLayer name="女仆白" color="#BA6078" parentLayerIndex="9" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -271,7 +295,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="JK" color="#D2FD7B" parentLayerIndex="8" locked="true" autoNamed="false">
+        <DOMLayer name="JK" color="#D2FD7B" parentLayerIndex="9" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -298,7 +322,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="波斯士兵" color="#9933CC" parentLayerIndex="8" locked="true" autoNamed="false">
+        <DOMLayer name="波斯士兵" color="#9933CC" parentLayerIndex="9" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -353,7 +377,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="围墙" color="#FF800A" autoNamed="false">
+        <DOMLayer name="围墙" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -401,7 +425,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#A65995" autoNamed="false">
+        <DOMLayer name="背景" color="#A65995" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
