@@ -364,8 +364,8 @@ _root.杂交可雇佣兵 = function(n, 杂交几率, 杂交许可)
 				{
 					break;
 				}
-				杂交装备等级 = _root.getItemData(杂交装备).level;
-				自身装备等级 = _root.getItemData(样本佣兵[迭代器]).level;
+				杂交装备等级 = _root.getItemData(杂交装备).data.level;
+				自身装备等级 = _root.getItemData(样本佣兵[迭代器]).data.level;
 				杂交装备类型 = _root.getItemData(杂交装备).use;
 				var 装备杂交几率 = (杂交装备等级 >= 自身装备等级) ? ((杂交几率 - (样本佣兵[0] - 杂交装备等级) * 2) * 装备杂交系数) : 0;
 				var 装备杂交许可检测 = (杂交装备类型 == 装备类型数组[迭代器 - 6]) and (杂交装备等级 <= 样本佣兵[0]) ;
