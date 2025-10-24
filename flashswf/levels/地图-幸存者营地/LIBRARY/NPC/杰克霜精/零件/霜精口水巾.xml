@@ -34,16 +34,15 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle0="1" strokeStyle="1" edges="!4418 782S5|3847 216!3847 216|3789 232"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="!3789 232S3[3794 278 3926 374"/>
-                    <Edge fillStyle0="1" fillStyle1="3" edges="!3926 374S3[4349 779 4418 782"/>
                     <Edge fillStyle0="2" fillStyle1="3" edges="!343 716S3|1394 318!1394 318[1425 389 1336 606!1336 606|1015 1416!1015 1416|2255 589!2255 589[2357 524 2405 593!2405 593|3043 1533!3043 1533|3325 566!3325 566[3369 498 3532 572!3532 572|4574 1280!4574 1280[3821 593 3926 374"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!3926 374S3[3794 278 3789 232"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!3789 232S5[3030 424 1516 0!1516 0[1126 284 522 585"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!522 585S7|343 716"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!4418 782S5|3847 216!3847 216|3789 232"/>
                     <Edge fillStyle1="3" strokeStyle="1" edges="!4418 782S6|5086 1445!5086 1445[4430 989 4003 497!4003 497|4755 1439!4755 1439[4030 1109 3380 642!3380 642[3283 1219 3081 1734!3081 1734[2678 1267 2326 690!2326 690[1628 1174 872 1612!872 1612[986 1094 1274 468!1274 468[548 769 0 830
 !0 830[278 706 522 585"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="
-!522 585S6[1126 284 1516 0!1516 0[3030 424 3789 232"/>
-                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
-!522 585S7|343 716"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="
+!3926 374S3[4349 779 4418 782"/>
                   </edges>
                 </DOMShape>
               </elements>

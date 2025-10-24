@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-幸存者营地" itemID="65c7a0f5-0000109e" linkageExportForAS="true" linkageIdentifier="地图-幸存者营地" lastModified="1755154813" lastUniqueIdentifier="32">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-幸存者营地" itemID="65c7a0f5-0000109e" linkageExportForAS="true" linkageIdentifier="地图-幸存者营地" lastModified="1761314032" lastUniqueIdentifier="32">
   <timeline>
     <DOMTimeline name="地图-幸存者营地">
       <layers>
@@ -121,7 +121,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="出生地" color="#0FD8B1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="出生地" color="#0FD8B1" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -146,7 +146,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="门 2" color="#9933CC" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="门 2" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -174,20 +174,20 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="门1" color="#BA50B8" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="门1" color="#BA50B8" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/场景门" name="门1" centerPoint3DX="2828.75" centerPoint3DY="571">
+                <DOMSymbolInstance libraryItemName="sprite/场景门" name="门1" selected="true" centerPoint3DX="2828.75" centerPoint3DY="571">
                   <matrix>
-                    <Matrix a="3.30868530273438" d="18.7664031982422" tx="2818.25" ty="551.05"/>
+                    <Matrix a="5.6405029296875" d="18.7664031982422" tx="2818.25" ty="551.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-	切换场景("门2","地下2层","",_root.右键);
+	切换场景("出生地","地图-界外街道","",_root.右键);
 }
 onClipEvent (load) {
 	是否从门加载主角 = false;
@@ -353,7 +353,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="围墙" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="围墙" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -401,11 +401,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#A65995" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="背景" color="#A65995" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新地图素材/幸存者营地背景图" name="背景" selected="true" centerPoint3DX="2421.1" centerPoint3DY="693.25">
+                <DOMSymbolInstance libraryItemName="新地图素材/幸存者营地背景图" name="背景" centerPoint3DX="2421.1" centerPoint3DY="693.25">
                   <matrix>
                     <Matrix tx="1732.05" ty="230.5"/>
                   </matrix>

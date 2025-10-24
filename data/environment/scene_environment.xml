@@ -884,7 +884,6 @@
         <Width>1400</Width>
         <Height>770</Height>
         <Horizon>20</Horizon>
-        <SpaceCondition>室内</SpaceCondition>
         <Skybox>
             <url>大学楼栋.swf</url>
             <SpeedRate>4</SpeedRate>
@@ -981,6 +980,19 @@
         <Width>1200</Width>
         <Height>600</Height>
         <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>6</MinIllumination>
+        <BGM>Dialtone</BGM>
+    </Environment>
+	    <Environment>
+        <BackgroundURL>地图-界外街道</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1550</Xmax>
+        <Ymin>280</Ymin>
+        <Ymax>785</Ymax>
+        <Width>1600</Width>
+        <Height>800</Height>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>6</MinIllumination>
         <BGM>Dialtone</BGM>

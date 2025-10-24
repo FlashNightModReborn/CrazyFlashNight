@@ -3,23 +3,14 @@
           <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
           <DOMFolderItem name="image" itemID="65976161-00000eac"/>
           <DOMFolderItem name="NPC" itemID="66a62697-00005e1f"/>
-          <DOMFolderItem name="NPC/杰克霜精" itemID="66a62697-00005e20"/>
+          <DOMFolderItem name="NPC/杰克霜精" itemID="66a62697-00005e20" isExpanded="true"/>
           <DOMFolderItem name="NPC/杰克霜精/零件" itemID="65f482a0-00001ef3"/>
           <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
           <DOMFolderItem name="sound" itemID="66055aed-000010ea"/>
           <DOMFolderItem name="sprite" itemID="65976153-00000ea6"/>
           <DOMFolderItem name="动画" itemID="65f7e940-00000bc1"/>
           <DOMFolderItem name="新地图素材" itemID="65c7a080-00000f7d"/>
-          <DOMFolderItem name="新地图素材/假小子机枪手" itemID="65b640e5-00003329"/>
-          <DOMFolderItem name="新地图素材/假小子机枪手/发型0104 1.svg" itemID="657c794f-0000012b"/>
-          <DOMFolderItem name="新地图素材/假小子机枪手/发型0104 1.svg/Layer 1" itemID="657c794f-0000012c"/>
-          <DOMFolderItem name="新地图素材/假小子机枪手/女头0004_waifu2x_art_scan_noise3_scale.svg" itemID="657c6207-000001aa"/>
-          <DOMFolderItem name="新地图素材/假小子机枪手/女头0004_waifu2x_art_scan_noise3_scale.svg/Layer 1" itemID="657c6207-000001ab"/>
-          <DOMFolderItem name="新地图素材/假小子机枪手/新建画布1.svg" itemID="657c797d-00000139"/>
-          <DOMFolderItem name="新地图素材/假小子机枪手/新建画布1.svg/Layer 1" itemID="657c797d-0000013a"/>
-          <DOMFolderItem name="新地图素材/假小子机枪手/新建画布2.svg" itemID="657c79aa-00000140"/>
-          <DOMFolderItem name="新地图素材/假小子机枪手/新建画布2.svg/Layer 1" itemID="657c79aa-00000141"/>
-          <DOMFolderItem name="新地图素材/居合" itemID="65957bd7-00000748"/>
+          <DOMFolderItem name="新地图素材/居合" itemID="65957bd7-00000748" isExpanded="true"/>
           <DOMFolderItem name="新地图素材/女仆白" itemID="6577dc70-000004fb"/>
           <DOMFolderItem name="新地图素材/女仆黑" itemID="65b649c3-00003bb4"/>
           <DOMFolderItem name="新地图素材/女仆黑/步枪" itemID="6577c619-00000709"/>
@@ -67,7 +58,7 @@
           <Include href="sprite/Symbol 3044.xml" loadImmediate="false" itemID="6597607e-00000e07" lastModified="1704196122"/>
           <Include href="sprite/场景门.xml" loadImmediate="false" itemID="66f59fc0-00000c5a" lastModified="1727373261"/>
           <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
-          <Include href="地图-幸存者营地.xml" itemID="65c7a0f5-0000109e" lastModified="1755154813"/>
+          <Include href="地图-幸存者营地.xml" itemID="65c7a0f5-0000109e" lastModified="1761314032"/>
           <Include href="叠底门.xml" loadImmediate="false" itemID="6605761b-00001057" lastModified="1711633947"/>
           <Include href="动画/待机.xml" loadImmediate="false" itemID="65f4431c-00000940" lastModified="1710749398"/>
           <Include href="垃圾堆2.xml" loadImmediate="false" itemID="65df2759-00000043" lastModified="1709123417"/>
@@ -75,7 +66,6 @@
           <Include href="门框.xml" loadImmediate="false" itemID="66055908-00000711" lastModified="1712303187"/>
           <Include href="提示箭头.xml" loadImmediate="false" itemID="660d39b9-00001fe8" lastModified="1712142777"/>
           <Include href="新地图素材/6 2 复制 2.xml" itemIcon="1" loadImmediate="false" itemID="635124fe-00001a82" lastModified="1150130308"/>
-          <Include href="新地图素材/npcTomboy.xml" loadImmediate="false" itemID="65b64089-00002d5a" lastModified="1707201592"/>
           <Include href="新地图素材/npc女仆白.xml" loadImmediate="false" itemID="65b6452d-00003a51" lastModified="1740635210"/>
           <Include href="新地图素材/npc女仆黑.xml" loadImmediate="false" itemID="65b649a8-00003bb2" lastModified="1740635197"/>
           <Include href="新地图素材/npc武装jk.xml" loadImmediate="false" itemID="65b64071-00002d13" lastModified="1746437984"/>
@@ -205,36 +195,6 @@
           <Include href="新地图素材/Tomboy.xml" loadImmediate="false" itemID="65b6438a-00003913" lastModified="1706813131"/>
           <Include href="新地图素材/白女仆头.xml" loadImmediate="false" itemID="657e6260-000005f5" lastModified="1702781536"/>
           <Include href="新地图素材/防弹衣.xml" itemIcon="1" loadImmediate="false" itemID="65941827-000001c1" lastModified="1704347090"/>
-          <Include href="新地图素材/假小子机枪手/Symbol 2.xml" loadImmediate="false" itemID="65923d7a-00000a76" lastModified="1704076735"/>
-          <Include href="新地图素材/假小子机枪手/Symbol 1543.xml" loadImmediate="false" itemID="657c7650-00000016" lastModified="1702663645"/>
-          <Include href="新地图素材/假小子机枪手/Symbol 1545.xml" loadImmediate="false" itemID="657c7650-00000017" lastModified="1702726562"/>
-          <Include href="新地图素材/假小子机枪手/Symbol 1547.xml" loadImmediate="false" itemID="657c7650-00000018" lastModified="1702726558"/>
-          <Include href="新地图素材/假小子机枪手/Symbol 1549.xml" loadImmediate="false" itemID="657c7650-00000019" lastModified="1702658708"/>
-          <Include href="新地图素材/假小子机枪手/Symbol 1551.xml" loadImmediate="false" itemID="657c7650-0000001a" lastModified="1702658700"/>
-          <Include href="新地图素材/假小子机枪手/Symbol 1553.xml" loadImmediate="false" itemID="657c7650-0000001b" lastModified="1702658314"/>
-          <Include href="新地图素材/假小子机枪手/Symbol 1555.xml" loadImmediate="false" itemID="657c7650-0000001c" lastModified="1702659323"/>
-          <Include href="新地图素材/假小子机枪手/Symbol 1557.xml" loadImmediate="false" itemID="657c7650-0000001f" lastModified="1702658688"/>
-          <Include href="新地图素材/假小子机枪手/Symbol 1559.xml" loadImmediate="false" itemID="657c7650-00000022" lastModified="1702743946"/>
-          <Include href="新地图素材/假小子机枪手/Symbol 1562.xml" loadImmediate="false" itemID="657c7650-00000027" lastModified="1702709161"/>
-          <Include href="新地图素材/假小子机枪手/Symbol 1564.xml" loadImmediate="false" itemID="657c7650-00000029" lastModified="1702658529"/>
-          <Include href="新地图素材/假小子机枪手/Symbol 1566.xml" loadImmediate="false" itemID="657c7650-0000002b" lastModified="1702658490"/>
-          <Include href="新地图素材/假小子机枪手/Symbol 1568.xml" loadImmediate="false" itemID="657c7650-0000002d" lastModified="1702781516"/>
-          <Include href="新地图素材/假小子机枪手/发型0104 1.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="657c7f45-0000015b" lastModified="1702657861"/>
-          <Include href="新地图素材/假小子机枪手/发型0104 1.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="657c7f45-0000015c" lastModified="1702657861"/>
-          <Include href="新地图素材/假小子机枪手/发型0104 1.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="657c7f45-0000015d" lastModified="1702657861"/>
-          <Include href="新地图素材/假小子机枪手/发型0104 1.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_2.xml" loadImmediate="false" itemID="657c7f45-0000015e" lastModified="1702657861"/>
-          <Include href="新地图素材/假小子机枪手/发型0104 1.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_3.xml" loadImmediate="false" itemID="657c7f45-0000015f" lastModified="1702657861"/>
-          <Include href="新地图素材/假小子机枪手/发型0104 1.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_4.xml" loadImmediate="false" itemID="657c7f45-00000160" lastModified="1702657861"/>
-          <Include href="新地图素材/假小子机枪手/发型0104 1.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_5.xml" loadImmediate="false" itemID="657c7f45-00000161" lastModified="1702657861"/>
-          <Include href="新地图素材/假小子机枪手/发型0104 1.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_6.xml" loadImmediate="false" itemID="657c7f45-00000162" lastModified="1702657861"/>
-          <Include href="新地图素材/假小子机枪手/假小子头.xml" loadImmediate="false" itemID="657e6224-000005e0" lastModified="1702781476"/>
-          <Include href="新地图素材/假小子机枪手/女头0004_waifu2x_art_scan_noise3_scale.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="657c78cc-00000124" lastModified="1702656204"/>
-          <Include href="新地图素材/假小子机枪手/女头0004_waifu2x_art_scan_noise3_scale.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="657c78cc-00000125" lastModified="1702656204"/>
-          <Include href="新地图素材/假小子机枪手/女头0004_waifu2x_art_scan_noise3_scale.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="657c78cc-00000126" lastModified="1702656204"/>
-          <Include href="新地图素材/假小子机枪手/头.xml" loadImmediate="false" itemID="657c62e3-000001b3" lastModified="1702744667"/>
-          <Include href="新地图素材/假小子机枪手/新建画布1.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="657c797d-0000013b" lastModified="1702656381"/>
-          <Include href="新地图素材/假小子机枪手/新建画布2.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="657c79aa-00000142" lastModified="1702656426"/>
-          <Include href="新地图素材/假小子机枪手/元件 1.xml" loadImmediate="false" itemID="657c7a33-0000014a" lastModified="1702656641"/>
           <Include href="新地图素材/狙击女仆黑.xml" loadImmediate="false" itemID="65b649d2-00003bd9" lastModified="1706813101"/>
           <Include href="新地图素材/居合/大腿.xml" itemIcon="1" loadImmediate="false" itemID="6593cfd4-00000317" lastModified="1704250775"/>
           <Include href="新地图素材/居合/裙子.xml" itemIcon="1" loadImmediate="false" itemID="6593cfcc-00000316" lastModified="1706448986"/>
@@ -334,6 +294,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="329621" publishTime="1761312749"/>
           <PublishItem publishSize="331932" publishTime="1737186444"/>
           <PublishItem publishSize="331936" publishTime="1737186235"/>
           <PublishItem publishSize="331915" publishTime="1737186025"/>

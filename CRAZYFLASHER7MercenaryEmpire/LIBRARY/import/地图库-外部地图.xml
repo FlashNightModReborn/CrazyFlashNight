@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/地图库-外部地图" itemID="65c79a79-00000dc4" lastModified="1760977762" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/地图库-外部地图" itemID="65c79a79-00000dc4" lastModified="1761313866" lastUniqueIdentifier="6">
   <timeline>
-    <DOMTimeline name="地图库-外部地图" currentFrame="22">
+    <DOMTimeline name="地图库-外部地图" currentFrame="4">
       <layers>
         <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
@@ -45,6 +45,14 @@
                 <DOMSymbolInstance libraryItemName="import/外部地图/地图-幸存者营地" centerPoint3DX="59.85" centerPoint3DY="14.7">
                   <transformationPoint>
                     <Point x="59.85" y="14.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="import/外部地图/地图-界外街道" selected="true" centerPoint3DX="73.5" centerPoint3DY="45.45">
+                  <matrix>
+                    <Matrix tx="-2.6" ty="33.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="76.1" y="11.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
