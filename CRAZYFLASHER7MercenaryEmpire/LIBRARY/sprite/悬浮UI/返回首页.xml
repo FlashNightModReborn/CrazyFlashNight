@@ -1,42 +1,31 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1024" itemID="6597607e-0000083b" lastModified="1704196122">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/返回首页" itemID="68fc4b01-00003ec1" lastModified="1761364737">
   <timeline>
-    <DOMTimeline name="Symbol 1024">
+    <DOMTimeline name="返回首页">
       <layers>
-        <DOMLayer name="Layer 1" color="#B15384">
+        <DOMLayer name="Layer 1" color="#29C0BF">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <LinearGradient>
-                        <matrix>
-                          <Matrix a="0" b="0.006561279296875" c="-0.006561279296875" d="0" tx="8.6" ty="12.15"/>
-                        </matrix>
-                        <GradientEntry color="#FF0033" ratio="0"/>
-                        <GradientEntry color="#660000" ratio="1"/>
-                      </LinearGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle1="1" edges="!204 243|279 318!279 318|246 351!246 351|172 277!172 277|97 351!97 351|64 318!64 318|139 243!139 243|64 169!64 169|97 136!97 136|172 210!172 210|246 136!246 136|279 169!279 169|204 243"/>
-                  </edges>
-                </DOMShape>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2063" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#3BD4A7">
+        <DOMLayer name="Layer 2" color="#BE3FB1">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
-                <DOMDynamicText selected="true" fontRenderingMode="device" width="60.5" height="15.55" isSelectable="false">
+                <DOMDynamicText fontRenderingMode="device" width="54.5" height="15.55" isSelectable="false">
                   <matrix>
-                    <Matrix tx="16.25" ty="3.5"/>
+                    <Matrix tx="20.25" ty="4.25"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>取消</characters>
+                      <characters>返回首页</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -47,11 +36,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#4DD9A7" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#FB9760" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/通用背景mc" selected="true" centerPoint3DX="39" centerPoint3DY="12">
+                <DOMSymbolInstance libraryItemName="sprite/通用背景mc" centerPoint3DX="39" centerPoint3DY="12">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -99,7 +88,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 0" color="#FE7D25">
+        <DOMLayer name="Sound Layer 0" color="#99BB30">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -112,7 +101,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 1" color="#2DECA8">
+        <DOMLayer name="Sound Layer 1" color="#2CACCE">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>

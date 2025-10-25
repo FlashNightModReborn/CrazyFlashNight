@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 2065" itemID="6597607e-00000a8e" lastModified="1714842190">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 2065" itemID="6597607e-00000a8e" lastModified="1761366404" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="Symbol 2065" currentFrame="10">
+    <DOMTimeline name="Symbol 2065" currentFrame="11">
       <layers>
         <DOMLayer name="Labels Layer" color="#C750EA">
           <frames>
@@ -48,7 +48,7 @@ _root.全部翻译(this);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#F5CAF4" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#F5CAF4">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -91,9 +91,9 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="10" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 2064" selected="true" centerPoint3DX="60" centerPoint3DY="64.15">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/返回首页" centerPoint3DX="191.2" centerPoint3DY="14.5">
                   <matrix>
-                    <Matrix tx="21" ty="51.65"/>
+                    <Matrix tx="152.2" ty="2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -101,6 +101,7 @@ on(rollOut){
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
 	stop();
+	this._visible = false;
 	_root.全部翻译(this);
 }
 on (release) {
@@ -175,7 +176,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#88BBA1">
+        <DOMLayer name="Layer 5" color="#88BBA1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements>
@@ -196,9 +197,9 @@ on (rollOut) {
             </DOMFrame>
             <DOMFrame index="5" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1024" centerPoint3DX="148.5" centerPoint3DY="64.15">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1024" centerPoint3DX="155.4" centerPoint3DY="68.3">
                   <matrix>
-                    <Matrix tx="109.15" ty="51.65"/>
+                    <Matrix tx="116.05" ty="55.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -222,6 +223,45 @@ on(rollOut){
    gotoAndStop(1);
 }
 ]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/退出游戏" selected="true" centerPoint3DX="63.2" centerPoint3DY="67.8">
+                  <matrix>
+                    <Matrix tx="24.2" ty="55.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="39" y="12"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	stop();
+	_root.全部翻译(this);
+}
+on (release) {
+	gotoAndStop(1);
+	fscommand("quit");
+	_root.exitlogin();
+	_root.停止在线检测();
+	/*
+	for (var each in _root)
+	{
+		_root[eval("each")].removeMovieClip();
+	}
+	*/
+	// _root.gotoAndStop("离开界面");
+	// _root.gotoAndStop("封面");
+  _root.gotoAndStop("steam");
+
+}
+on (press) {
+	gotoAndStop(3);
+}
+on (rollOver) {
+	gotoAndStop(2);
+}
+on (rollOut) {
+	gotoAndStop(1);
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
