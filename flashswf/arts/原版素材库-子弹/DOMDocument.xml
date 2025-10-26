@@ -59,7 +59,7 @@
           <DOMBitmapItem name="3.位图相关/bitmap353.png" itemID="668e7c1a-0000024d" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap353.png" sourceLastImported="1720613914" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap353.png" bitmapDataHRef="M 93 1721575215.dat" frameRight="2120" frameBottom="2640"/>
           <DOMBitmapItem name="3.位图相关/bitmap355.png" itemID="668e7c1a-00000252" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap355.png" sourceLastImported="1720613914" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap355.png" bitmapDataHRef="M 94 1721575215.dat" frameRight="5320" frameBottom="4100"/>
           <DOMBitmapItem name="3.位图相关/bitmap357.png" itemID="668e7c1a-00000257" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap357.png" sourceLastImported="1720613914" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap357.png" bitmapDataHRef="M 95 1721575215.dat" frameRight="3400" frameBottom="3260"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4711.png" itemID="668e7c1c-0000050e" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap4711.png" sourceLastImported="1720613916" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4711.png" bitmapDataHRef="M 1 1721575215.dat" frameRight="4800" frameBottom="4800"/>
+          <DOMBitmapItem name="3.位图相关/bitmap4711.png" itemID="668e7c1c-0000050e" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap4711.png" sourceLastImported="1720613916" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4711.png" bitmapDataHRef="M 1 1721575215.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="3.位图相关/bitmap4713.png" itemID="668e7c1c-00000518" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap4713.png" sourceLastImported="1720613916" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4713.png" bitmapDataHRef="M 2 1721575215.dat" frameRight="4800" frameBottom="4800"/>
           <DOMBitmapItem name="3.位图相关/bitmap4730.png" itemID="668e7c1c-00000531" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap4730.png" sourceLastImported="1720613916" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4730.png" bitmapDataHRef="M 78 1721575215.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="3.位图相关/bitmap4731.png" itemID="668e7c1c-00000536" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap4731.png" sourceLastImported="1720613916" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4731.png" bitmapDataHRef="M 79 1721575215.dat" frameRight="3940" frameBottom="2220"/>
@@ -183,8 +183,8 @@
           <Include href="弹壳/霰弹弹壳.xml" itemID="6634e7c1-0000196a" lastModified="1714811989"/>
           <Include href="弹壳/重机枪弹壳.xml" itemID="66357b12-00000b67" lastModified="1714811998"/>
           <Include href="导弹.xml" loadImmediate="false" itemID="671dc67e-000007ce" lastModified="1730004606"/>
-          <Include href="地雷激光扫描线.xml" itemIcon="1" loadImmediate="false" itemID="687af4b5-000005e2" lastModified="1752890259"/>
           <Include href="等离子光片.xml" loadImmediate="false" itemID="6883540e-00000e06" lastModified="1753438466"/>
+          <Include href="地雷激光扫描线.xml" itemIcon="1" loadImmediate="false" itemID="687af4b5-000005e2" lastModified="1752890259"/>
           <Include href="反坦克导弹图像.xml" itemIcon="1" loadImmediate="false" itemID="68d8f8ee-00000eb8" lastModified="1759049966"/>
           <Include href="联弹/白色手里剑/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000250" lastModified="1705503817"/>
           <Include href="联弹/白色手里剑/Symbol 23.xml" loadImmediate="false" itemID="6577efbc-00000251" lastModified="1705503796"/>
@@ -516,7 +516,7 @@
           <Include href="无AS链接/Symbol 4761.xml" loadImmediate="false" itemID="668e7c1e-0000117e" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4762.xml" loadImmediate="false" itemID="668e7c1e-0000117f" lastModified="1720702702"/>
           <Include href="无AS链接/Symbol 4784.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000118f" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 4785.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001190" lastModified="1730004794"/>
+          <Include href="无AS链接/Symbol 4785.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001190" lastModified="1761457494"/>
           <Include href="无AS链接/Symbol 4786.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001191" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4828.xml" loadImmediate="false" itemID="668e7c1e-000011a8" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4829.xml" loadImmediate="false" itemID="668e7c1e-000011a9" lastModified="1720533000"/>
@@ -608,7 +608,7 @@
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 664.xml" loadImmediate="false" itemID="668b9cdd-000001e0" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 1217.xml" itemIcon="1" loadImmediate="false" itemID="668b9f53-000001d0" lastModified="1720426265"/>
           <Include href="无AS链接/月牙刀光.xml" loadImmediate="false" itemID="68d25fac-000012ee" lastModified="1758618233"/>
-          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1759049949"/>
+          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1761457442"/>
           <Include href="子弹-持续组/电球.xml" itemID="669d343b-00001740" lastModified="1722876120"/>
           <Include href="子弹-持续组/火焰.xml" itemID="669d3404-00001734" lastModified="1754922735"/>
           <Include href="子弹-持续组/声波.xml" itemID="669d34bf-0000176e" lastModified="1722875808"/>
@@ -629,7 +629,7 @@
           <Include href="子弹-炮弹与爆炸组/普通子弹.xml" itemID="669d342e-0000173d" lastModified="1721578542"/>
           <Include href="子弹-炮弹与爆炸组/气锤地雷.xml" itemID="6878f9c7-00000a5c" lastModified="1753436110"/>
           <Include href="子弹-炮弹与爆炸组/气锤地雷素材.xml" loadImmediate="false" itemID="6878fa5b-00000a6f" lastModified="1752760717"/>
-          <Include href="子弹-炮弹与爆炸组/小型导弹.xml" itemID="669d34c7-00001770" lastModified="1730004177"/>
+          <Include href="子弹-炮弹与爆炸组/小型导弹.xml" itemID="669d34c7-00001770" lastModified="1761458021"/>
           <Include href="子弹-炮弹与爆炸组/重型火箭弹.xml" itemID="68d3b57d-00001bdf" lastModified="1758792063"/>
           <Include href="子弹-普通与穿刺组/暗器/寒铁镖.xml" itemID="68e4ed8a-000020af" lastModified="1759835429"/>
           <Include href="子弹-普通与穿刺组/暗器/寒铁镖中转.xml" itemID="68e4ec85-000020a1" lastModified="1759988707"/>
@@ -664,13 +664,13 @@
           <Include href="自瞄准星特效/火力支援新瞄准镜.xml" loadImmediate="false" itemID="671399a0-00002828" lastModified="1729337760"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="场景 1" currentFrame="2">
+          <DOMTimeline name="场景 1">
                <layers>
                     <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
                          <frames>
                               <DOMFrame index="0" duration="54" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="原版素材库-子弹" centerPoint3DX="66.7" centerPoint3DY="8.8">
+                                        <DOMSymbolInstance libraryItemName="原版素材库-子弹" selected="true" centerPoint3DX="66.7" centerPoint3DY="8.8">
                                              <transformationPoint>
                                                   <Point/>
                                              </transformationPoint>
@@ -1011,6 +1011,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3924053" publishTime="1761458029"/>
           <PublishItem publishSize="4096224" publishTime="1760841021"/>
           <PublishItem publishSize="4096273" publishTime="1760840813"/>
           <PublishItem publishSize="4096297" publishTime="1760840745"/>
@@ -1030,6 +1031,5 @@
           <PublishItem publishSize="4090270" publishTime="1759826924"/>
           <PublishItem publishSize="4090297" publishTime="1759826766"/>
           <PublishItem publishSize="4090366" publishTime="1759826692"/>
-          <PublishItem publishSize="4090292" publishTime="1759826581"/>
      </publishHistory>
 </DOMDocument>

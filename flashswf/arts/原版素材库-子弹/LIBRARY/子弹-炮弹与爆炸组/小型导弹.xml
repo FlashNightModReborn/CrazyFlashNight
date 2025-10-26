@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-炮弹与爆炸组/小型导弹" itemID="669d34c7-00001770" linkageExportForAS="true" linkageIdentifier="小型导弹" lastModified="1730004177">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-炮弹与爆炸组/小型导弹" itemID="669d34c7-00001770" linkageExportForAS="true" linkageIdentifier="小型导弹" lastModified="1761458021">
   <timeline>
     <DOMTimeline name="小型导弹">
       <layers>
@@ -82,7 +82,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#8AFC5B">
+        <DOMLayer name="Layer 4" color="#8AFC5B" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -133,6 +133,7 @@ this.removeMovieClip();
    _root.gameworld.子弹区域[子弹名].xmov = 0;
    _root.gameworld.子弹区域[子弹名].ymov = 0;
    发射者名 = _root.gameworld.子弹区域[子弹名].发射者名;
+   是否为敌人 = _root.gameworld.子弹区域[子弹名].是否为敌人;
    Z轴坐标 = _root.gameworld.子弹区域[子弹名].Z轴坐标;
    this.转换导弹坐标 = function()
    {
@@ -240,11 +241,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#BFD7A3" current="true" isSelected="true">
+        <DOMLayer name="Layer 5" color="#BFD7A3">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4785" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4785" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.395782470703125" b="4.57763671875e-005" c="4.57763671875e-005" d="0.395782470703125" tx="46.8" ty="-4.65"/>
                   </matrix>

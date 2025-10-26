@@ -5,27 +5,7 @@
         <DOMLayer name="Layer 1" color="#28D1ED" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMShape isFloating="true">
-                  <fills>
-                    <FillStyle index="1">
-                      <SolidColor color="#A5F49B"/>
-                    </FillStyle>
-                    <FillStyle index="2">
-                      <SolidColor color="#FFFF80"/>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="!-7 -231|-3 -230"/>
-                    <Edge fillStyle0="1" edges="!-3 -230|-6 -239!-6 -239|-7 -231"/>
-<<<<<<< HEAD
-                    <Edge fillStyle1="2" edges="!-3 -230|28 18!28 18|-4 242!-4 242|-34 6!-34 6|-7 -231"/>
-=======
-                    <Edge fillStyle0="2" edges="!-7 -231|-34 6!-34 6|-4 242!-4 242|28 18!28 18|-3 -230"/>
->>>>>>> 7ee00bd3520537cb4f28356a06d0bd9d7f8471f8
-                  </edges>
-                </DOMShape>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
