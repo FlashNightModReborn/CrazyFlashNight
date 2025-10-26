@@ -1141,8 +1141,8 @@ _root.战宠进阶函数.战马血清 = {
 	},
 	单位进阶执行:function(){
 		if(this.宠物属性.战马血清){
-			this.hp满血值 += 10000 * _root.难度等级;
-			this.hp += 10000 * _root.难度等级;
+			this.hp满血值 += 15000 * _root.难度等级;
+			this.hp += 15000 * _root.难度等级;
 			this.防御力 += 200;
 			this.空手攻击力 += 150 * _root.难度等级;
 			this.韧性系数 += 20;
