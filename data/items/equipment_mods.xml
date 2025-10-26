@@ -42,6 +42,8 @@
             <percentage>
                 <defence>2</defence>
                 <damage>2</damage>
+                <punch>2</punch>
+                <power>2</power>
             </percentage>
         </stats>
         <description>表面强化药剂，全面提升装备性能。</description>
@@ -496,7 +498,7 @@
         </stats>
         <description>AI辅助瞄具，对满血敌人造成暴击伤害，并提高精准度。</description>
     </mod>
-    <!-- <mod>
+    <mod>
         <name>KM型消声器</name>
         <use>长枪,手枪</use>
         <tag>枪口</tag>
@@ -507,7 +509,7 @@
             </override>
         </stats>
         <description>消除枪械的射击声音和枪火。（后续应该还有降低嘲讽相关的数值加成，待补充）</description>
-    </mod> -->
+    </mod>
     <mod>
         <name>镭射瞄准具</name>
         <use>长枪,手枪</use>
@@ -562,8 +564,6 @@
         </stats>
         <description>跨平台循环转换模块，提升弹容但降低单发威力。对点射武器增益作用于射击轮数，适合狙击武器与发射器。</description>
     </mod>
-
-    <!-- 后面可能实装的新插件举例 -->
     <mod>
         <name>霰弹枪口收束器</name>
         <use>长枪,手枪</use>
@@ -577,6 +577,22 @@
         </stats>
         <description>动态收束装置，大幅降低霰弹扩散并提升弹速。</description>
     </mod>
+    <mod>
+        <name>纳米执行单元</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备,刀,手枪,长枪</use>
+        <stats>
+            <percentage>
+                <damage>8</damage>
+                <punch>8</punch>
+                <knifepower>8</knifepower>
+                <gunpower>8</gunpower>
+                <power>8</power>
+            </percentage>
+        </stats>
+        <description>可编程分子机器集群，全面提升装备伤害输出能力。</description>
+    </mod>
+
+    <!-- 后面可能实装的新插件举例 -->
     <mod>
         <name>下挂霰弹枪</name>
         <use>长枪</use>
@@ -686,20 +702,6 @@
         <description>等离子投射装置，发射追踪电浆弹，提高装备等级需求。</description>
     </mod>
     <mod>
-        <name>纳米执行单元</name>
-        <use>头部装备,上装装备,下装装备,手部装备,脚部装备,刀,手枪,长枪</use>
-        <stats>
-            <percentage>
-                <damage>8</damage>
-                <punch>8</punch>
-                <knifepower>8</knifepower>
-                <gunpower>8</gunpower>
-                <power>8</power>
-            </percentage>
-        </stats>
-        <description>可编程分子机器集群，全面提升装备伤害输出能力。</description>
-    </mod>
-    <mod>
         <name>骨约晨星</name>
         <use>刀</use>
         <stats>
@@ -763,6 +765,16 @@
             </override>
         </stats>
         <description>生物毒素，为武器额外附着少量毒属性附加伤害。</description>
+    </mod>
+    <mod>
+        <name>月之碎片</name>
+        <use>上装装备</use>
+        <stats>
+            <override>
+                <force>10</force>
+            </override>
+        </stats>
+        <description>蕴含的月光精华融合进丹田周围的装备区域，可提升内力，会覆盖掉原有装备的内力加成。</description>
     </mod>
     <mod>
         <name>成长的勋章</name>
