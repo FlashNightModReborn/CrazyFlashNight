@@ -1,7 +1,6 @@
-org.flashNight.naki.Sort.TimSortTest.runTests();
+org.flashNight.naki.Sort.PowerSortTest.runTests();
 
-
-Starting Enhanced TimSort Tests...
+Starting Enhanced PowerSort Tests...
 
 === 基础功能测试 ===
 PASS: 空数组测试
@@ -18,7 +17,7 @@ PASS: 三元素数组测试（随机）
 PASS: 三元素数组测试（部分有序）
 PASS: 三元素数组测试（完全逆序）
 
-=== TimSort 核心特性测试 ===
+=== PowerSort 核心特性测试 ===
 PASS: Galloping Mode 激活测试
 PASS: Galloping Mode 效率测试
     Galloping效率测试耗时: 0ms
@@ -54,11 +53,11 @@ PASS: 最大栈深度测试
 
 === 实际应用场景测试 ===
 PASS: 部分有序数据测试
-    部分有序数据排序耗时: 1ms
+    部分有序数据排序耗时: 0ms
 PASS: 交替模式测试
 PASS: 钢琴键模式测试
 PASS: 大量重复值测试
-    大量重复值排序耗时: 10ms
+    大量重复值排序耗时: 9ms
 PASS: 管道模式测试
 PASS: 随机游走模式测试
 PASS: 数据库风格数据测试
@@ -73,7 +72,7 @@ PASS: MIN_RUN边界测试 (length=64)
 PASS: MIN_RUN边界测试 (length=65)
 PASS: Gallop阈值边界测试
 PASS: 大数组压力测试
-    大数组压力测试 (size=50000) 耗时: 757ms
+    大数组压力测试 (size=50000) 耗时: 5961ms
 PASS: 深度递归避免测试
 PASS: 内存效率测试
     内存效率测试耗时: 1ms
@@ -82,38 +81,38 @@ PASS: 内存效率测试
 
 开始增强版性能测试...
   测试数组大小: 1000
-    random: 14ms
+    random: 23ms
     sorted: 1ms
-    reverse: 2ms
-    partiallyOrdered: 10ms
-    manyDuplicates: 12ms
+    reverse: 1ms
+    partiallyOrdered: 12ms
+    manyDuplicates: 22ms
     pianoKeys: 3ms
     organPipe: 2ms
     mergeStress: 4ms
     gallopFriendly: 2ms
-    gallopUnfriendly: 9ms
+    gallopUnfriendly: 8ms
   测试数组大小: 5000
-    random: 78ms
-    sorted: 4ms
+    random: 276ms
+    sorted: 5ms
     reverse: 6ms
-    partiallyOrdered: 69ms
-    manyDuplicates: 74ms
-    pianoKeys: 16ms
+    partiallyOrdered: 144ms
+    manyDuplicates: 201ms
+    pianoKeys: 20ms
     organPipe: 12ms
-    mergeStress: 19ms
-    gallopFriendly: 6ms
-    gallopUnfriendly: 58ms
+    mergeStress: 24ms
+    gallopFriendly: 8ms
+    gallopUnfriendly: 101ms
   测试数组大小: 10000
-    random: 172ms
+    random: 848ms
     sorted: 9ms
-    reverse: 11ms
-    partiallyOrdered: 146ms
-    manyDuplicates: 159ms
-    pianoKeys: 31ms
-    organPipe: 24ms
-    mergeStress: 37ms
-    gallopFriendly: 12ms
-    gallopUnfriendly: 121ms
+    reverse: 12ms
+    partiallyOrdered: 477ms
+    manyDuplicates: 636ms
+    pianoKeys: 41ms
+    organPipe: 22ms
+    mergeStress: 47ms
+    gallopFriendly: 17ms
+    gallopUnfriendly: 331ms
 增强版性能测试完成
 
-All Enhanced TimSort Tests Completed.
+All Enhanced PowerSort Tests Completed.
