@@ -1,5 +1,6 @@
 org.flashNight.naki.Sort.PowerSortTest.runTests();
 
+
 Starting Enhanced PowerSort Tests...
 
 === 基础功能测试 ===
@@ -57,7 +58,7 @@ PASS: 部分有序数据测试
 PASS: 交替模式测试
 PASS: 钢琴键模式测试
 PASS: 大量重复值测试
-    大量重复值排序耗时: 11ms
+    大量重复值排序耗时: 10ms
 PASS: 管道模式测试
 PASS: 随机游走模式测试
 PASS: 数据库风格数据测试
@@ -72,47 +73,47 @@ PASS: MIN_RUN边界测试 (length=64)
 PASS: MIN_RUN边界测试 (length=65)
 PASS: Gallop阈值边界测试
 PASS: 大数组压力测试
-    大数组压力测试 (size=50000) 耗时: 5695ms
+    大数组压力测试 (size=50000) 耗时: 5699ms
 PASS: 深度递归避免测试
 PASS: 内存效率测试
-    内存效率测试耗时: 2ms
+    内存效率测试耗时: 1ms
 
 === 性能测试 ===
 
 开始增强版性能测试...
   测试数组大小: 1000
-    random: 23ms
+    random: 22ms
     sorted: 1ms
-    reverse: 1ms
-    partiallyOrdered: 12ms
-    manyDuplicates: 22ms
+    reverse: 2ms
+    partiallyOrdered: 13ms
+    manyDuplicates: 23ms
     pianoKeys: 4ms
     organPipe: 2ms
     mergeStress: 5ms
-    gallopFriendly: 2ms
+    gallopFriendly: 1ms
     gallopUnfriendly: 9ms
   测试数组大小: 5000
-    random: 278ms
+    random: 277ms
     sorted: 5ms
     reverse: 5ms
-    partiallyOrdered: 159ms
-    manyDuplicates: 210ms
-    pianoKeys: 22ms
-    organPipe: 11ms
-    mergeStress: 25ms
-    gallopFriendly: 8ms
+    partiallyOrdered: 157ms
+    manyDuplicates: 207ms
+    pianoKeys: 20ms
+    organPipe: 13ms
+    mergeStress: 24ms
+    gallopFriendly: 6ms
     gallopUnfriendly: 105ms
   测试数组大小: 10000
-    random: 812ms
+    random: 802ms
     sorted: 9ms
-    reverse: 12ms
-    partiallyOrdered: 496ms
-    manyDuplicates: 647ms
-    pianoKeys: 45ms
-    organPipe: 22ms
-    mergeStress: 51ms
-    gallopFriendly: 17ms
-    gallopUnfriendly: 328ms
+    reverse: 10ms
+    partiallyOrdered: 481ms
+    manyDuplicates: 626ms
+    pianoKeys: 42ms
+    organPipe: 24ms
+    mergeStress: 47ms
+    gallopFriendly: 14ms
+    gallopUnfriendly: 318ms
 增强版性能测试完成
 
 All Enhanced PowerSort Tests Completed.
