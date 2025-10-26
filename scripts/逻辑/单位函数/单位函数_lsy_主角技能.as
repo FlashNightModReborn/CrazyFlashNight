@@ -628,7 +628,7 @@ _root.技能函数.拔刀术攻击 = function()
 	
 	if (_parent.刀属性.power != undefined && _parent.刀属性.power != NaN)
 	{
-		子弹.子弹威力 = _parent.空手攻击力 * 0.1 + (0.25 * _parent.内力 + _parent.刀属性.power * 0.12) * (4 + _parent.技能等级) + _parent.刀属性.power * temp * 0.12 * (10 + _parent.技能等级);
+		子弹.子弹威力 = _parent.空手攻击力 * 0.1 + (0.5 * _parent.内力 + _parent.刀属性.power * 0.12) * (4 + _parent.技能等级) + _parent.刀属性.power * temp * 0.12 * (10 + _parent.技能等级);
 	}
 	else
 	{
@@ -675,7 +675,7 @@ _root.技能函数.六连攻击 = function()
 	
 	if (_parent.刀属性.power != undefined && _parent.刀属性.power != NaN)
 	{
-		子弹.子弹威力 = _parent.空手攻击力 * 0.1 + (0.25 * _parent.内力 + _parent.刀属性.power * 0.1) * (4 + _parent.技能等级) + _parent.刀属性.power * 0.1 * (10 + _parent.技能等级);
+		子弹.子弹威力 = _parent.空手攻击力 * 0.1 + (0.5 * _parent.内力 + _parent.刀属性.power * 0.1) * (4 + _parent.技能等级) + _parent.刀属性.power * 0.1 * (10 + _parent.技能等级);
 	}
 	else
 	{
@@ -714,13 +714,13 @@ _root.技能函数.六连攻击 = function()
 _root.技能函数.迅斩攻击 = function(){
 	var 子弹参数 = new Object();
 	
-	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + _parent.刀属性.power * 0.5 * (3 + _parent.技能等级);
+	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + _parent.刀属性.power * (3 + _parent.技能等级 * 0.35);
 	// if (_parent.mp攻击加成)
 	// {
 	// 	子弹参数.子弹威力 += _parent.mp攻击加成;
 	// }
 	子弹参数.Z轴攻击范围 = 50;
-	子弹参数.击倒率 = 1/_parent.技能等级;
+	子弹参数.击倒率 = 1.3/(3 + _parent.技能等级);
 	子弹参数.不硬直 = true;
 
 	if(_parent.兵器伤害类型){

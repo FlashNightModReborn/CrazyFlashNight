@@ -215,12 +215,12 @@
     </Skill>
     <Skill id="19">
         <Name>拔刀术</Name>
-        <Type>剑术-锋利度/内力</Type>
+        <Type>剑术-锋利度&amp;内力</Type>
         <Description>武士奥义之术！无刀时则使用内力御气触发。基础强度：较高，升级收益：正常。</Description>
         <UnlockLevel>25</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>50</UnlockSP>
-        <UpgradeSP>35</UpgradeSP>
+        <UpgradeSP>30</UpgradeSP>
         <CD>6000</CD>
         <MP>40</MP>
     </Skill>
@@ -237,7 +237,7 @@
     </Skill>
     <Skill id="21">
         <Name>六连</Name>
-        <Type>剑术-锋利度/内力</Type>
+        <Type>剑术-锋利度&amp;内力</Type>
         <Description>拔刀术的终极奥义，霹雳一闪·六连！无刀时则使用内力御气触发。基础强度：高，升级收益：较高。</Description>
         <UnlockLevel>35</UnlockLevel>
         <MaxLevel>10</MaxLevel>
@@ -264,7 +264,7 @@
         <UnlockLevel>1</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>15</UnlockSP>
-        <UpgradeSP>15</UpgradeSP>
+        <UpgradeSP>10</UpgradeSP>
         <CD>5000</CD>
         <MP>20</MP>
     </Skill>
@@ -325,7 +325,7 @@
     </Skill>
     <Skill id="29">
         <Name>火力支援</Name>
-        <Type>枪术</Type>
+        <Type>枪术-轰炸</Type>
         <Description>大范围火力技能！基础强度：较高，升级收益：较低。</Description>
         <UnlockLevel>25</UnlockLevel>
         <MaxLevel>10</MaxLevel>
@@ -347,7 +347,7 @@
     </Skill>
     <Skill id="31">
         <Name>上帝之杖</Name>
-        <Type>枪术</Type>
+        <Type>枪术-轰炸</Type>
         <Description>骇入天网控制中心，向目标发射一枚卫星制导的天基动能金属钨棒，造成剧烈物理爆炸！伤害不分敌我，具有一定斩杀效果。开启的瞬间自动锁定最近敌人，锁定期间可按互动键切换一定范围内的目标，再次按下技能键可立刻发射。升级可以延长手动瞄准时间并提升伤害。基础强度：较高，升级收益：正常。</Description>
         <UnlockLevel>50</UnlockLevel>
         <MaxLevel>10</MaxLevel>
