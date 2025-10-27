@@ -3,6 +3,101 @@
 物品ID已自动生成，无需手动维护-->
 <root>
   <item>
+    <name>Andy装鞋</name>
+    <displayname>Andy装鞋</displayname>
+    <icon>Andy装鞋</icon>
+    <type>防具</type>
+    <use>脚部装备</use>
+    <price>80000</price>
+    <description>Andy专属装备</description>
+    <data>
+      <dressup>男变装-Andy装鞋</dressup>
+      <level>22</level>
+      <weight>2.5</weight>
+      <hp>50</hp>
+      <mp>50</mp>
+      <damage>50</damage>
+      <defence>170</defence>
+      <bullet />
+    </data>
+  </item>
+  <item>
+    <name>Andy装手套</name>
+    <displayname>Andy装手套</displayname>
+    <icon>Andy装手套</icon>
+    <type>防具</type>
+    <use>手部装备</use>
+    <price>80000</price>
+    <description>Andy专属装备</description>
+    <data>
+      <dressup>男变装-Andy装手套</dressup>
+      <level>22</level>
+      <weight>2.5</weight>
+      <hp>50</hp>
+      <mp>50</mp>
+      <damage>50</damage>
+      <defence>170</defence>
+      <bullet />
+    </data>
+  </item>
+  <item>
+    <name>Andy下装</name>
+    <displayname>Andy下装</displayname>
+    <icon>Andy下装</icon>
+    <type>防具</type>
+    <use>下装装备</use>
+    <price>80000</price>
+    <description>Andy专属套装</description>
+    <data>
+      <dressup>变装-Andy下装</dressup>
+      <level>22</level>
+      <weight>2.5</weight>
+      <hp>50</hp>
+      <mp>50</mp>
+      <damage>50</damage>
+      <defence>170</defence>
+      <bullet />
+    </data>
+  </item>
+  <item>
+    <name>Andy上装</name>
+    <displayname>Andy上装</displayname>
+    <icon>Andy上装</icon>
+    <type>防具</type>
+    <use>上装装备</use>
+    <price>80000</price>
+    <description>Andy专属装备</description>
+    <data>
+      <dressup>变装-Andy上装</dressup>
+      <level>22</level>
+      <weight>2.5</weight>
+      <hp>50</hp>
+      <mp>50</mp>
+      <damage>50</damage>
+      <defence>170</defence>
+      <bullet />
+    </data>
+  </item>
+  <item>
+    <name>Andy装头</name>
+    <displayname>Andy装头</displayname>
+    <icon>Andy装头</icon>
+    <type>防具</type>
+    <use>头部装备</use>
+    <price>80000</price>
+    <description>Andy专属装备</description>
+    <data>
+      <dressup>男变装-andy套领口</dressup>
+      <level>22</level>
+      <weight>2.5</weight>
+      <hp>50</hp>
+      <mp>50</mp>
+      <damage>50</damage>
+      <defence>170</defence>
+      <bullet />
+    </data>
+  </item>
+  <item>
     <name>小F头部</name>
     <displayname>小F头部</displayname>
     <icon>小F头部</icon>
