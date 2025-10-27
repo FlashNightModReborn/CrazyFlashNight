@@ -305,6 +305,26 @@
             ],
             
             "chain":"引导#16"
+        },
+        {
+            "id": 120017,
+            "title": "$SIDE_TITLE_120017",
+            "description": "$SIDE_DESCRIPTION_120017",
+
+            "get_requirements": [28],
+            "get_conversation": "$SIDE_GET_120017",
+            "get_npc": "小F",
+
+            "finish_requirements": [
+            ],
+            "finish_conversation": "$SIDE_FINISH_120017",
+            "finish_npc": "假肢仙人",
+            "rewards": [
+                "金币#1000",
+                "经验值#1000"
+            ],
+            
+            "chain":"引导#17"
         }
     ]
 }
