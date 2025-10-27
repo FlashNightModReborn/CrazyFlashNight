@@ -59,6 +59,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
 
         // 1. 验证进度要求 - 如果不满足则直接移除并返回
         if (!ProgressValidator.validate(target)) {
+            // _root.发布消息("移除不满足进度要求的地图元件: " + target._name);
             return;
         }
 

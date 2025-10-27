@@ -4,6 +4,44 @@
  */
 class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.ProgressValidator {
     
+/**
+ * 安全删除 MovieClip（时间轴实例需先挪到动态深度再删）
+ */
+private static function safeRemove(target:MovieClip):Void {
+    if (target == undefined) return;
+
+    // 根层/关卡级别不允许直接删，给个兜底
+    if (target == _root) { 
+        target.unloadMovie(); 
+        target._visible = false; 
+        return; 
+    }
+
+    var p:MovieClip = target._parent;
+    if (p == undefined) { // 理论上用不到，但防御一下
+        target.removeMovieClip();
+        return;
+    }
+
+    // 如果是时间轴实例（深度<0），先挪到同一父容器的动态深度
+    // 注意：swapDepths 应该用父容器的 getNextHighestDepth()
+    var d:Number = target.getDepth();
+    if (d < 0) {
+        var safeDepth:Number = p.getNextHighestDepth(); // >=0 的空闲深度
+        target.swapDepths(safeDepth);
+    }
+
+    // 挪到动态深度后即可真正删除
+    target.removeMovieClip();
+
+    // 兜底：极端情况下（组件/系统锁定），至少清空与隐藏
+    if (typeof target == "movieclip") { // 如果还保留着引用
+        target.unloadMovie();
+        target._visible = false;
+    }
+}
+
+
     /**
      * 验证目标是否满足进度要求
      * @param target 要验证的目标MovieClip
@@ -19,13 +57,13 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Progre
 
         // 检查最小主线进度要求
         if (!isNaN(minProgress) && currentProgress < minProgress) {
-            target.removeMovieClip();
+            safeRemove(target);
             return false;
         }
 
         // 检查最大主线进度限制
         if (!isNaN(maxProgress) && currentProgress > maxProgress) {
-            target.removeMovieClip();
+            safeRemove(target);
             return false;
         }
 
