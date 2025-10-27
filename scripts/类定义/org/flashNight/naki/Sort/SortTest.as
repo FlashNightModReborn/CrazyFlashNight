@@ -44,7 +44,7 @@ class org.flashNight.naki.Sort.SortTest {
     // 测试配置
     private var testConfig:Object = {
         basicSizes:       [10, 50, 100, 300, 1000, 3000, 10000],
-        stressSizes:      [3000, 10000, 30000],
+        stressSizes:      [30000, 100000, 300000],
         testIterations:   5,
         enableMemoryMonitoring: true,
         enableDetailedStats:    true,
