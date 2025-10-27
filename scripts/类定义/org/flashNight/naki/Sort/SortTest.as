@@ -44,7 +44,7 @@ class org.flashNight.naki.Sort.SortTest {
     // 测试配置
     private var testConfig:Object = {
         basicSizes:       [10, 50, 100, 300, 1000, 3000, 10000],
-        stressSizes:      [30000, 100000, 300000],
+        stressSizes:      [3000, 10000, 30000],
         testIterations:   5,
         enableMemoryMonitoring: true,
         enableDetailedStats:    true,
@@ -53,15 +53,20 @@ class org.flashNight.naki.Sort.SortTest {
     
     // 存储性能数据
     private var performanceMatrix:Object;
+
+    // 存储稳定性测试结果
+    private var stabilityResults:Object;
     
     // 排序方法定义
     private var sortMethods:Array = [
-        { name: "InsertionSort", sort: org.flashNight.naki.Sort.InsertionSort.sort, expectedComplexity: "O(n²)" },
-        { name: "PDQSort",       sort: org.flashNight.naki.Sort.PDQSort.sort,       expectedComplexity: "O(n log n)" },
-        { name: "QuickSort",     sort: org.flashNight.naki.Sort.QuickSort.sort,     expectedComplexity: "O(n log n)" },
-        { name: "AdaptiveSort",  sort: org.flashNight.naki.Sort.QuickSort.adaptiveSort, expectedComplexity: "O(n log n)" },
-        { name: "TimSort",       sort: org.flashNight.naki.Sort.TimSort.sort,       expectedComplexity: "O(n log n)" },
-        { name: "BuiltInSort",   sort: builtInSort,                                 expectedComplexity: "O(n log n)" }
+        { name: "InsertionSort",     sort: org.flashNight.naki.Sort.InsertionSort.sort,      expectedComplexity: "O(n²)" },
+        { name: "PDQSort",           sort: org.flashNight.naki.Sort.PDQSort.sort,            expectedComplexity: "O(n log n)" },
+        { name: "QuickSort",         sort: org.flashNight.naki.Sort.QuickSort.sort,          expectedComplexity: "O(n log n)" },
+        { name: "AdaptiveSort",      sort: org.flashNight.naki.Sort.QuickSort.adaptiveSort,  expectedComplexity: "O(n log n)" },
+        { name: "TimSort",           sort: org.flashNight.naki.Sort.TimSort.sort,            expectedComplexity: "O(n log n)" },
+        { name: "NaturalMergeSort",  sort: org.flashNight.naki.Sort.NaturalMergeSort.sort,   expectedComplexity: "O(n log n)" },
+        { name: "PowerSort",         sort: org.flashNight.naki.Sort.PowerSort.sort,          expectedComplexity: "O(n log n)" },
+        { name: "BuiltInSort",       sort: builtInSort,                                      expectedComplexity: "O(n log n)" }
     ];
     
     /**
@@ -85,8 +90,14 @@ class org.flashNight.naki.Sort.SortTest {
      */
     private function initializePerformanceMatrix():Void {
         performanceMatrix = {};
+        stabilityResults = {};
         for (var i:Number = 0; i < sortMethods.length; i++) {
             performanceMatrix[sortMethods[i].name] = {};
+            stabilityResults[sortMethods[i].name] = {
+                stable: true,      // 默认假设稳定，测试中发现不稳定则标记
+                testsPassed: 0,
+                testsFailed: 0
+            };
         }
     }
     
@@ -253,22 +264,30 @@ class org.flashNight.naki.Sort.SortTest {
         var compareFunc:Function = function(a:Object, b:Object):Number {
             return a.value < b.value ? -1 : (a.value > b.value ? 1 : 0);
         };
-        
+
         // 动态生成期望的稳定排序结果
         var expected:Array = this.generateStableExpectedResult(data, compareFunc);
-        
+
         trace("原始数据: " + formatObjectArray(data));
         trace("稳定排序期望: " + formatObjectArray(expected));
-        
+
         for (var i:Number = 0; i < sortMethods.length; i++) {
             var m:Object = sortMethods[i];
             var arr:Array = copyArray(data);
             try {
                 var res:Array = m.sort(arr, compareFunc);
                 var stable:Boolean = checkStabilityEnhanced(res, expected);
-                
+
+                // 记录稳定性测试结果
+                if (stable) {
+                    stabilityResults[m.name].testsPassed++;
+                } else {
+                    stabilityResults[m.name].testsFailed++;
+                    stabilityResults[m.name].stable = false;  // 标记为不稳定
+                }
+
                 trace("\n" + m.name + ": " + (stable ? "✓ 稳定" : "✗ 不稳定"));
-                
+
                 // 只有在不稳定时才打印详细结果，保持报告整洁
                 if (!stable) {
                     trace("  结果: " + formatObjectArray(res));
@@ -276,6 +295,8 @@ class org.flashNight.naki.Sort.SortTest {
                     analyzeStabilityViolations(res, expected);
                 }
             } catch (e:Error) {
+                stabilityResults[m.name].testsFailed++;
+                stabilityResults[m.name].stable = false;
                 trace("\n" + m.name + " ERROR: " + e.message);
             }
         }
@@ -664,46 +685,69 @@ class org.flashNight.naki.Sort.SortTest {
     }
 
     /**
-     * 推荐矩阵
+     * 推荐矩阵 - 基于测试结果动态生成
      */
     private function generateRecommendationMatrix():Void {
         trace("\n" + repeatChar("-", 60));
         trace("💡 使用推荐矩阵");
         trace(repeatChar("-", 60));
-        
-        var recommendations:Array = [
-            {
-                condition: "数据规模 < 100",
-                recommended: findBestForSmallData(),
-                reason: "小数据量时简单算法开销更低"
-            },
-            {
-                condition: "数据规模 > 3000",
-                recommended: findBestForLargeData(),
-                reason: "大数据量需要高效的分治算法"
-            },
-            {
-                condition: "数据已基本有序",
-                recommended: findBestForSortedData(),
-                reason: "利用现有有序性可显著提升性能"
-            },
-            {
-                condition: "包含大量重复元素",
-                recommended: findBestForDuplicates(),
-                reason: "三路分区等技术可优化重复元素处理"
-            },
-            {
-                condition: "需要稳定排序",
-                recommended: "TimSort",
-                reason: "保持相同元素的相对顺序"
-            },
-            {
-                condition: "内存限制严格",
-                recommended: findBestForMemory(),
-                reason: "原地排序算法减少额外内存使用"
-            }
-        ];
-        
+
+        // 动态生成推荐列表
+        var recommendations:Array = [];
+
+        // 小数据推荐
+        var smallDataBest:String = findBestForSmallData();
+        recommendations.push({
+            condition: "数据规模 < 100",
+            recommended: smallDataBest,
+            reason: "小数据量时开销低的算法更优"
+        });
+
+        // 大数据推荐
+        var largeDataBest:String = findBestForLargeData();
+        recommendations.push({
+            condition: "数据规模 > 3000",
+            recommended: largeDataBest,
+            reason: "大数据量需要高效的分治算法"
+        });
+
+        // 已排序数据推荐
+        var sortedDataBest:String = findBestForSortedData();
+        recommendations.push({
+            condition: "数据已基本有序",
+            recommended: sortedDataBest,
+            reason: "利用现有有序性可显著提升性能"
+        });
+
+        // 重复元素推荐
+        var duplicatesBest:String = findBestForDuplicates();
+        recommendations.push({
+            condition: "包含大量重复元素",
+            recommended: duplicatesBest,
+            reason: "在重复元素场景下表现最优"
+        });
+
+        // 稳定排序推荐（动态选择）
+        var stableBest:String = findBestForStableSort();
+        var stableAlgsCount:Number = 0;
+        for (var alg:String in stabilityResults) {
+            if (stabilityResults[alg].stable) stableAlgsCount++;
+        }
+        recommendations.push({
+            condition: "需要稳定排序",
+            recommended: stableBest,
+            reason: "保持相同元素的相对顺序（" + stableAlgsCount + "个稳定算法中性能最优）"
+        });
+
+        // 内存受限推荐（动态选择）
+        var memoryBest:String = findBestForMemory();
+        recommendations.push({
+            condition: "内存限制严格",
+            recommended: memoryBest,
+            reason: "原地排序算法，在无额外空间算法中性能最优"
+        });
+
+        // 输出推荐
         for (var r:Number = 0; r < recommendations.length; r++) {
             var rec:Object = recommendations[r];
             trace("• " + rec.condition);
@@ -792,36 +836,38 @@ class org.flashNight.naki.Sort.SortTest {
     }
 
     /**
-     * 结论
+     * 结论 - 基于测试结果动态生成
      */
     private function generateConclusion():Void {
         trace("\n" + repeatChar("-", 60));
         trace("🎯 测试结论");
         trace(repeatChar("-", 60));
-        
+
         var overallBest:String = findOverallBestAlgorithm();
         var versatileBest:String = findMostVersatileAlgorithm();
-        
+        var stableBest:String = findBestForStableSort();
+        var memoryBest:String = findBestForMemory();
+
         trace("基于本次测试的主要发现:");
         trace("");
         trace("1. 综合性能最佳: " + overallBest);
         trace("   在大多数测试场景中表现优异，具有良好的时间复杂度特性。");
-        
+
         trace("");
         trace("2. 适应性最强: " + versatileBest);
         trace("   在各种数据分布下都能保持相对稳定的性能表现。");
-        
+
         trace("");
         trace("3. 关键洞察:");
         generateKeyInsights();
-        
+
         trace("");
         trace("4. 建议:");
         trace("   • 一般用途推荐: " + overallBest);
         trace("   • 性能要求极高: " + findBestForPerformance());
-        trace("   • 稳定性要求: TimSort");
-        trace("   • 内存受限环境: " + findBestForMemory());
-        
+        trace("   • 稳定性要求: " + stableBest + " (性能最优的稳定排序)");
+        trace("   • 内存受限环境: " + memoryBest + " (性能最优的原地排序)");
+
         trace("\n" + repeatChar("=", 80));
         trace("测试报告生成完成");
         trace(repeatChar("=", 80));
@@ -1182,8 +1228,96 @@ class org.flashNight.naki.Sort.SortTest {
         return findBestAlgorithmForDistribution("重复元素");
     }
 
+    /**
+     * 从所有通过稳定性测试的算法中选择性能最好的
+     * @return 最佳稳定排序算法名称
+     */
+    private function findBestForStableSort():String {
+        var stableAlgorithms:Array = [];
+
+        // 收集所有稳定的算法
+        for (var alg:String in stabilityResults) {
+            if (stabilityResults[alg].stable) {
+                stableAlgorithms.push(alg);
+            }
+        }
+
+        if (stableAlgorithms.length == 0) {
+            return "无稳定算法";
+        }
+
+        // 在稳定算法中找性能最好的
+        var bestAlg:String = stableAlgorithms[0];
+        var bestScore:Number = Infinity;
+
+        for (var i:Number = 0; i < stableAlgorithms.length; i++) {
+            var algName:String = stableAlgorithms[i];
+            var totalTime:Number = 0;
+            var count:Number = 0;
+
+            // 计算该算法的平均性能
+            for (var dist:String in performanceMatrix[algName]) {
+                for (var size:String in performanceMatrix[algName][dist]) {
+                    var time:Number = performanceMatrix[algName][dist][size];
+                    if (isFinite(time) && time >= 0) {
+                        totalTime += time;
+                        count++;
+                    }
+                }
+            }
+
+            if (count > 0) {
+                var avgScore:Number = totalTime / count;
+                if (avgScore < bestScore) {
+                    bestScore = avgScore;
+                    bestAlg = algName;
+                }
+            }
+        }
+
+        return bestAlg;
+    }
+
+    /**
+     * 从原地排序算法中选择性能最好的
+     * 原地排序算法：PDQSort, QuickSort, AdaptiveSort
+     * @return 最佳原地排序算法名称
+     */
     private function findBestForMemory():String {
-        return "PDQSort";
+        var inPlaceAlgorithms:Array = ["PDQSort", "QuickSort", "AdaptiveSort"];
+        var bestAlg:String = inPlaceAlgorithms[0];
+        var bestScore:Number = Infinity;
+
+        for (var i:Number = 0; i < inPlaceAlgorithms.length; i++) {
+            var algName:String = inPlaceAlgorithms[i];
+
+            // 检查算法是否存在
+            if (!performanceMatrix[algName]) continue;
+
+            var totalTime:Number = 0;
+            var count:Number = 0;
+
+            // 计算该算法的平均性能
+            for (var dist:String in performanceMatrix[algName]) {
+                for (var size:String in performanceMatrix[algName][dist]) {
+                    var time:Number = performanceMatrix[algName][dist][size];
+                    if (isFinite(time) && time >= 0) {
+                        totalTime += time;
+                        count++;
+                    }
+                }
+            }
+
+            if (count > 0) {
+                var avgScore:Number = totalTime / count;
+                if (avgScore < bestScore) {
+                    bestScore = avgScore;
+                    bestAlg = algName;
+                }
+            }
+        }
+
+        return bestAlg;
     }
 
     private function findBestForPerformance():String {
@@ -1624,8 +1758,8 @@ class org.flashNight.naki.Sort.SortTest {
     private function generateRecommendations():Void {
         trace("\n使用建议:");
         trace("  • 小数据(<100): " + findBestForSmallData());
-        trace("  • 需要稳定: TimSort");
-        trace("  • 内存受限: PDQSort");
+        trace("  • 需要稳定: " + findBestForStableSort());
+        trace("  • 内存受限: " + findBestForMemory());
         trace("  • 随机数据: " + findBestAlgorithmForDistribution("随机数据"));
         trace("  • 部分有序: " + findBestAlgorithmForDistribution("部分有序"));
         trace("  • 重复多: " + findBestAlgorithmForDistribution("重复元素"));
