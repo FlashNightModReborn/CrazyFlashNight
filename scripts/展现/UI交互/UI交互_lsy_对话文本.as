@@ -131,7 +131,8 @@ _root.加密html剧情文本 = function(str:String, encryptReplace, encryptCut){
 		for(var key in encryptReplace){
 			replaceArr.push(key);
 		}
-		replaceArr = org.flashNight.naki.Sort.QuickSort.adaptiveSort(replaceArr, function(a, b) {
+		// 使用稳定排序TimSort，确保相同长度的key保持原始顺序
+		replaceArr = org.flashNight.naki.Sort.TimSort.sort(replaceArr, function(a, b) {
 			return b.length - a.length; //按字符串长度倒序排列
 		});
 		for(var i=0; i<replaceArr.length; i++){
@@ -146,7 +147,8 @@ _root.加密html剧情文本 = function(str:String, encryptReplace, encryptCut){
 		for(var key in encryptCut){
 			cutArr.push(key);
 		}
-		cutArr = org.flashNight.naki.Sort.QuickSort.adaptiveSort(cutArr, function(a, b) {
+		// 使用稳定排序TimSort，确保相同长度的key保持原始顺序
+		cutArr = org.flashNight.naki.Sort.TimSort.sort(cutArr, function(a, b) {
 			return b.length - a.length; //按字符串长度倒序排列
 		});
 		for(var i=0; i<cutArr.length; i++){

@@ -361,7 +361,8 @@ fs修改：
 变更等级(和对应经验)的简写：..15
 无限火力（可能产生bug）：ultrarapidfire
 无限火力（可能产生bug）的简写：fire
-获得所有材料：getallmods
+获得所有配件材料：getallmods
+获得所有情报（满额）：getallintelligence
 
 _root.变量值变更（字符串型）：#_root.abc=AAA
 _root.变量值变更（非字符串型）：#_root.abc=123;int

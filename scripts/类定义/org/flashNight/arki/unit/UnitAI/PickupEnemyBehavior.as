@@ -3,6 +3,7 @@ import org.flashNight.naki.RandomNumberEngine.*;
 import org.flashNight.arki.unit.UnitAI.EnemyBehavior;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.naki.Select.QuickSelect;
 // 会拾取物品的敌人状态机，继承敌人基础状态机
 
 class org.flashNight.arki.unit.UnitAI.PickupEnemyBehavior extends EnemyBehavior{
@@ -58,16 +59,49 @@ class org.flashNight.arki.unit.UnitAI.PickupEnemyBehavior extends EnemyBehavior{
             if(_root.物品栏.背包.getFirstVacancy() == -1) self.允许拾取 = false;
         }
         if(self.允许拾取){
-            var 可拾取物距离表 = new Array();
+            // 混合策略优化：小数据量用线性查找，大数据量用QuickSelect
+            var 可拾取物距离表 = [];
+
+            // 收集已落地的可拾取物
             for (var i in _root.pickupItemManager.pickupItemDict){
                 var 可拾取物 = _root.pickupItemManager.pickupItemDict[i];
-                if(可拾取物 != null) 可拾取物距离表.push({物品: 可拾取物, 距离: Math.abs(可拾取物._x - data.x)});
+                if(可拾取物 != null && 可拾取物.area != null) {
+                    可拾取物距离表.push({
+                        物品: 可拾取物,
+                        距离: Math.abs(可拾取物._x - data.x)
+                    });
+                }
             }
-            可拾取物距离表.sortOn("距离",16);
-            var target_item = 可拾取物距离表[0].物品;
-            // 若可拾取物已经落地（有area）且距离在最小范围内则通过检测
-            if(target_item.area != null && (可拾取物距离表[0].距离 < maxdistance)){
-                // 将拾取目标更新为target，并进入拾取状态
+
+            // 根据数据量选择算法
+            var target_item = null;
+            var 最小距离 = maxdistance;
+
+            if(可拾取物距离表.length == 0) {
+                // 没有可拾取物，跳过
+            } else if(可拾取物距离表.length <= 20) {
+                // 小数据量（≤20个）：使用O(n)线性查找
+                for(var j = 0; j < 可拾取物距离表.length; j++) {
+                    if(可拾取物距离表[j].距离 < 最小距离) {
+                        最小距离 = 可拾取物距离表[j].距离;
+                        target_item = 可拾取物距离表[j].物品;
+                    }
+                }
+            } else {
+                // 大数据量（>20个）：使用QuickSelect高效选择
+                var 最近记录 = QuickSelect.selectKth(
+                    可拾取物距离表,
+                    0,  // 找第0小（即最小值）
+                    function(a, b) { return a.距离 - b.距离; }
+                );
+
+                if(最近记录.距离 < maxdistance) {
+                    target_item = 最近记录.物品;
+                }
+            }
+
+            // 若找到符合条件的可拾取物，进入拾取状态
+            if(target_item != null){
                 data.target = target_item;
                 self.dispatcher.publish("aggroClear", self);
                 self.拾取目标 = target_item._name;

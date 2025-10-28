@@ -70,6 +70,17 @@ _root.cheatFunction.getallmods = function(){
 	_root.最上层发布文字提示("获得所有配件材料各1个");
 }
 
+_root.cheatFunction.getallintelligence = function(){
+	var intelligenceDict = org.flashNight.arki.item.ItemUtil.informationMaxValueDict;
+	var acarr = [];
+	for(var name in intelligenceDict){
+		var maxValue = intelligenceDict[name]; // 获取该情报的最大值
+		acarr.push({name: name, value: maxValue});
+	}
+	org.flashNight.arki.item.ItemUtil.acquire(acarr);
+	_root.最上层发布文字提示("获得所有情报(满额)");
+}
+
 
 
 _root.cheatCode = function(作弊码){
