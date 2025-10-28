@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1758443684" lastUniqueIdentifier="69">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1761645166" lastUniqueIdentifier="76">
   <timeline>
-    <DOMTimeline name="新版物品栏界面" currentFrame="7">
+    <DOMTimeline name="新版物品栏界面" currentFrame="31" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;57&lt;/guideline&gt;&lt;guideline direction="h"&gt;81&lt;/guideline&gt;&lt;guideline direction="h"&gt;105&lt;/guideline&gt;&lt;guideline direction="h"&gt;129&lt;/guideline&gt;&lt;guideline direction="h"&gt;193&lt;/guideline&gt;&lt;guideline direction="h"&gt;188&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#23D4A1">
           <frames>
@@ -478,14 +478,14 @@ onClipEvent (unload) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="强化界面" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="强化界面" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="5" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新版装备强化界面" name="装备强化界面" selected="true" centerPoint3DX="-87" centerPoint3DY="165">
+                <DOMSymbolInstance libraryItemName="新版装备强化界面" name="装备强化界面" centerPoint3DX="-87" centerPoint3DY="165">
                   <matrix>
                     <Matrix tx="-215" ty="5"/>
                   </matrix>
@@ -1410,7 +1410,7 @@ onClipEvent (unload) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="格子" color="#E66AA8" autoNamed="false">
+        <DOMLayer name="格子" color="#E66AA8" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements>
@@ -1426,7 +1426,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="23" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="个人信息界面" centerPoint3DX="140" centerPoint3DY="180">
+                <DOMSymbolInstance libraryItemName="个人信息界面" selected="true" centerPoint3DX="140" centerPoint3DY="180">
                   <matrix>
                     <Matrix ty="30"/>
                   </matrix>
@@ -1459,6 +1459,59 @@ onClipEvent (unload) {
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="新强化界面/强化界面背景" centerPoint3DX="-187.05" centerPoint3DY="91">
+                  <matrix>
+                    <Matrix a="1.42349243164063" tx="-300.85" ty="11"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="128" y="160"/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="1" distance="2" strength="0.3"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="-196.5" centerPoint3DY="141.7">
+                  <matrix>
+                    <Matrix a="1.26228332519531" tx="-286.95" ty="140.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="-196.5" centerPoint3DY="179.15">
+                  <matrix>
+                    <Matrix a="1.26226806640625" tx="-286.95" ty="178.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="20" keyMode="9728">
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
