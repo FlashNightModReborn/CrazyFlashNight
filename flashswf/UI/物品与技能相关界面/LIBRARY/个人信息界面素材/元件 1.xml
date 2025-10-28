@@ -1,7 +1,72 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="个人信息界面素材/元件 1" itemID="66dd691c-0000090f" symbolType="graphic" lastModified="1726169905">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="个人信息界面素材/元件 1" itemID="66dd691c-0000090f" symbolType="graphic" lastModified="1761657784">
   <timeline>
-    <DOMTimeline name="元件 1">
+    <DOMTimeline name="元件 1" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;250&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="36" height="10.3" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="11.75" ty="7.7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>轻</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" size="8" bitmapSize="160" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" size="8" bitmapSize="160" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="36" height="10.3" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="72" ty="7.7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>中</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" size="8" bitmapSize="160" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" size="8" bitmapSize="160" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="36" height="10.3" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="161.5" ty="7.7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>重</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" size="8" bitmapSize="160" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" size="8" bitmapSize="160" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
@@ -38,27 +103,38 @@
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal" caps="none">
+                        <fill>
+                          <SolidColor color="#999999"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!4800 0|4800 80"/>
-                    <Edge strokeStyle="1" edges="!4800 80|4800 160!2400 80|2400 160"/>
+                    <Edge strokeStyle="2" edges="!4941 0|4941 40!4941 40|4941 88"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!4800 40|4800 80"/>
+                    <Edge strokeStyle="1" edges="!4800 80|4800 160"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!4800 0|4800 40"/>
+                    <Edge strokeStyle="2" edges="!4800 40|4941 40"/>
+                    <Edge strokeStyle="1" edges="!2400 80|2400 160"/>
                     <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!2400 0|2400 80"/>
-                    <Edge fillStyle1="3" edges="!2400 80|1200 80"/>
+                    <Edge fillStyle0="2" edges="!2400 80|4800 80"/>
                     <Edge strokeStyle="1" edges="!1200 80|1200 160"/>
                     <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!1200 80|1200 0"/>
-                    <Edge fillStyle1="3" edges="!1200 0|2400 0"/>
+                    <Edge fillStyle0="1" edges="!1200 0|0 0"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!0 0|0 44!0 44|0 80"/>
+                    <Edge fillStyle0="1" edges="!0 80|1200 80"/>
                     <Edge strokeStyle="1" edges="!0 80|0 160"/>
-                    <Edge fillStyle0="1" strokeStyle="1" edges="!0 0|0 80"/>
-                    <Edge fillStyle0="1" edges="!0 80|1200 80!1200 0|0 0"/>
+                    <Edge fillStyle1="3" edges="!1200 0|2400 0"/>
                     <Edge fillStyle1="2" edges="!2400 0|4800 0"/>
-                    <Edge fillStyle0="2" edges="!2400 80|4800 80"/>
-                    <Edge cubics="!4800 0(;4800,0 4800,80 4800,80q4800 0 4800 80);"/>
+                    <Edge fillStyle1="3" edges="!2400 80|1200 80"/>
+                    <Edge strokeStyle="2" edges="!-141 4|-141 44!-141 44|0 44!-141 44|-141 92"/>
                     <Edge cubics="!4800 80(;4800,80 4800,160 4800,160q4800 80 4800 160);"/>
                     <Edge cubics="!2400 0(;2400,0 2400,80 2400,80q2400 0 2400 80);"/>
                     <Edge cubics="!2400 80(;2400,80 2400,160 2400,160q2400 80 2400 160);"/>
                     <Edge cubics="!1200 0(;1200,0 1200,80 1200,80q1200 0 1200 80);"/>
                     <Edge cubics="!1200 80(;1200,80 1200,160 1200,160q1200 80 1200 160);"/>
-                    <Edge cubics="!0 80(;0,80 0,0 0,0q0 80 0 0);"/>
                     <Edge cubics="!0 80(;0,80 0,160 0,160q0 80 0 160);"/>
                     <Edge cubics="!1200 80(;1200,80 0,80 0,80q1200 80 0 80);"/>
                     <Edge cubics="!0 0(;0,0 1200,0 1200,0q0 0 1200 0);"/>
@@ -66,65 +142,21 @@
                     <Edge cubics="!1200 80(;1200,80 2400,80 2400,80q1200 80 2400 80);"/>
                     <Edge cubics="!2400 0(;2400,0 4800,0 4800,0q2400 0 4800 0);"/>
                     <Edge cubics="!2400 80(;2400,80 4800,80 4800,80q2400 80 4800 80);"/>
+                    <Edge cubics="!4800 40(;4800,40 4800,80 4800,80p4800 40q4800 80);"/>
+                    <Edge cubics="!4800 0(;4800,0 4800,40 4800,40q4800 0p4800 40);"/>
+                    <Edge cubics="!-205 0(;-205,0 -205,44 -205,44q-205 0 -205 44);"/>
+                    <Edge cubics="!-205 44(;-205,44 -205,88 -205,88q-205 44 -205 88);"/>
+                    <Edge cubics="!4941 0(;4941,0 4941,40 4941,40q4941 0p4941 40);"/>
+                    <Edge cubics="!4800 40(;4800,40 4941,40 4941,40q4800 40 4941 40);"/>
+                    <Edge cubics="!0 44(;0,44 0,0 0,0q0 44 0 0);"/>
+                    <Edge cubics="!0 80(;0,80 0,44 0,44q0 80 0 44);"/>
+                    <Edge cubics="!0 44(;0,44 -141,44 -141,44q0 44 -141 44);"/>
+                    <Edge cubics="!-141 44(;-141,44 -205,44 -205,44q-141 44 -205 44);"/>
+                    <Edge cubics="!4941 40(;4941,40 4941,88 4941,88p4941 40q4941 88);"/>
+                    <Edge cubics="!-141 4(;-141,4 -141,44 -141,44q-141 4p-141 44);"/>
+                    <Edge cubics="!-141 44(;-141,44 -141,92 -141,92p-141 44q-141 92);"/>
                   </edges>
                 </DOMShape>
-                <DOMStaticText fontRenderingMode="standard" width="36" height="10.3" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="11.75" ty="7.7"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>轻</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" size="8" bitmapSize="160" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" size="8" bitmapSize="160" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMStaticText>
-                <DOMStaticText fontRenderingMode="standard" width="36" height="10.3" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="72" ty="7.7"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>中</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" size="8" bitmapSize="160" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" size="8" bitmapSize="160" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMStaticText>
-                <DOMStaticText fontRenderingMode="standard" width="36" height="10.3" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="161.5" ty="7.7"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>重</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" size="8" bitmapSize="160" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" size="8" bitmapSize="160" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMStaticText>
               </elements>
             </DOMFrame>
           </frames>

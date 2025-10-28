@@ -287,9 +287,50 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     }
 
     /**
+     * 计算武器的最终威力
+     * 统一处理武器基础威力、被动技能倍率和额外加成倍率
+     * 此方法可被UI显示和子弹生成逻辑共同使用，确保数据一致性
+     *
+     * @param parentRef   父级引用（单位对象）
+     * @param weaponType  武器类型（"长枪"、"手枪"、"手枪2"、"刀"）
+     * @param basePower   武器基础威力（weaponData.power）
+     * @return 返回计算后的最终威力（不含伤害加成）
+     */
+    public static function calculateWeaponPower(parentRef:Object, weaponType:String, basePower:Number):Number {
+        var finalPower:Number = basePower;
+        var passiveSkills:Object = parentRef.被动技能;
+
+        // 预生成武器类型判断结果
+        var isLongGun:Boolean = (weaponType == "长枪");
+        var isPistol:Boolean = (weaponType == "手枪" || weaponType == "手枪2");
+
+        // 应用枪械攻击被动技能倍率
+        if (passiveSkills && passiveSkills.枪械攻击 && passiveSkills.枪械攻击.启用) {
+            var attackLevel:Number = passiveSkills.枪械攻击.等级 ? passiveSkills.枪械攻击.等级 : 0;
+            if (isLongGun) {
+                // 长枪公式: basePower * (1.5 + 等级 * 0.03) + 30
+                finalPower = basePower * (1.5 + attackLevel * 0.03) + 30;
+            } else if (isPistol) {
+                // 手枪公式: basePower * (1 + 等级 * 0.015) + 20
+                finalPower = basePower * (1 + attackLevel * 0.015) + 20;
+            }
+        }
+
+        // 应用额外攻击加成倍率
+        if (isLongGun && parentRef.长枪额外攻击加成倍率) {
+            finalPower += basePower * parentRef.长枪额外攻击加成倍率;
+        }
+        if (isPistol && parentRef.短枪额外攻击加成倍率) {
+            finalPower += basePower * parentRef.短枪额外攻击加成倍率;
+        }
+
+        return finalPower;
+    }
+
+    /**
      * 生成子弹属性对象
      * 根据武器类型、数据和额外参数生成完整的子弹属性配置
-     * 
+     *
      * @param parentRef   父级引用
      * @param weaponType  武器类型
      * @param weaponData  武器数据数组
@@ -302,10 +343,6 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         // 缓存常用的对象属性，减少重复查找
         var passiveSkills:Object = parentRef.被动技能;
         var isEnemy:Boolean = Boolean(parentRef.是否为敌人);
-        
-        // 预生成武器类型判断结果
-        var isLongGun:Boolean = (weaponType == "长枪");
-        var isPistol:Boolean = (weaponType == "手枪" || weaponType == "手枪2");
 
         // 缓存 weaponData 数组中各个关键数据，使用具名属性提高可读性
         var wd:Object = {
@@ -343,24 +380,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         bulletProps.击倒率         = wd.击倒率;
         bulletProps.击中后子弹的效果 = wd.击中后子弹效果;
 
-        // 计算子弹威力（基于枪械攻击被动技能及额外攻击加成）
-        var basePower:Number  = wd.子弹威力Base;
-        var finalPower:Number = basePower;
-        if (passiveSkills.枪械攻击 && passiveSkills.枪械攻击.启用) {
-            var attackLevel:Number = passiveSkills.枪械攻击.等级;
-            if (isLongGun) {
-                finalPower = basePower * (1.5 + attackLevel * 0.03) + 30;
-            } else {
-                finalPower = basePower * (1 + attackLevel * 0.015) + 20;
-            }
-        }
-        if (isLongGun && parentRef.长枪额外攻击加成倍率) {
-            finalPower += basePower * parentRef.长枪额外攻击加成倍率;
-        }
-        if (isPistol && parentRef.短枪额外攻击加成倍率) {
-            finalPower += basePower * parentRef.短枪额外攻击加成倍率;
-        }
-        bulletProps.子弹威力 = finalPower;
+        // 计算子弹威力（使用统一的武器威力计算函数）
+        var basePower:Number = wd.子弹威力Base;
+        bulletProps.子弹威力 = calculateWeaponPower(parentRef, weaponType, basePower);
 
         // 处理动态参数：伤害类型、魔法伤害属性、毒、吸血、击溃（击溃对应 bulletProps.血量上限击溃）
         var optionalKeys:Array = ["伤害类型", "魔法伤害属性", "毒", "吸血", "击溃"];

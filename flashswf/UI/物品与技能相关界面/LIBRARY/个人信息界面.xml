@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="个人信息界面" itemID="66dd624f-000008f4" lastModified="1761645313" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="个人信息界面" itemID="66dd624f-000008f4" lastModified="1761666149" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="个人信息界面" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;187&lt;/guideline&gt;&lt;guideline direction="h"&gt;234&lt;/guideline&gt;&lt;guideline direction="h"&gt;210&lt;/guideline&gt;&lt;guideline direction="h"&gt;283&lt;/guideline&gt;&lt;guideline direction="h"&gt;258&lt;/guideline&gt;&lt;guideline direction="v"&gt;-148&lt;/guideline&gt;&lt;guideline direction="h"&gt;156&lt;/guideline&gt;&lt;guideline direction="h"&gt;180&lt;/guideline&gt;&lt;guideline direction="h"&gt;202&lt;/guideline&gt;&lt;guideline direction="v"&gt;-273&lt;/guideline&gt;&lt;guideline direction="v"&gt;139&lt;/guideline&gt;&lt;guideline direction="v"&gt;190&lt;/guideline&gt;&lt;guideline direction="v"&gt;8&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="个人信息界面" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;187&lt;/guideline&gt;&lt;guideline direction="h"&gt;244&lt;/guideline&gt;&lt;guideline direction="h"&gt;210&lt;/guideline&gt;&lt;guideline direction="h"&gt;283&lt;/guideline&gt;&lt;guideline direction="h"&gt;258&lt;/guideline&gt;&lt;guideline direction="v"&gt;-148&lt;/guideline&gt;&lt;guideline direction="h"&gt;156&lt;/guideline&gt;&lt;guideline direction="h"&gt;180&lt;/guideline&gt;&lt;guideline direction="h"&gt;202&lt;/guideline&gt;&lt;guideline direction="v"&gt;-273&lt;/guideline&gt;&lt;guideline direction="v"&gt;139&lt;/guideline&gt;&lt;guideline direction="v"&gt;190&lt;/guideline&gt;&lt;guideline direction="v"&gt;8&lt;/guideline&gt;&lt;guideline direction="h"&gt;224&lt;/guideline&gt;&lt;guideline direction="h"&gt;273&lt;/guideline&gt;&lt;guideline direction="h"&gt;297&lt;/guideline&gt;&lt;guideline direction="h"&gt;108&lt;/guideline&gt;&lt;guideline direction="v"&gt;9&lt;/guideline&gt;&lt;guideline direction="v"&gt;267&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -13,27 +13,28 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.人物信息函数.获取人物信息(this);]]></script>
+                <script><![CDATA[_root.人物信息函数.获取人物信息(this);
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="个人信息界面素材/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix tx="20" ty="125"/>
+                    <Matrix tx="20" ty="123.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="100" y="2.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="个人信息界面素材/滑块" name="负重滑块" centerPoint3DX="22" centerPoint3DY="125">
+                <DOMSymbolInstance libraryItemName="个人信息界面素材/滑块" name="负重滑块" centerPoint3DX="22" centerPoint3DY="123.95">
                   <matrix>
-                    <Matrix tx="20" ty="120"/>
+                    <Matrix tx="20" ty="118.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="2" y="5"/>
@@ -43,7 +44,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文字" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="文字" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -86,9 +87,9 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText fontRenderingMode="device" width="77.6" height="15.55" isSelectable="false" variableName="速度">
+                <DOMDynamicText fontRenderingMode="device" width="77.6" height="15.55" isSelectable="false" variableName="速度" renderAsHTML="true">
                   <matrix>
-                    <Matrix tx="192" ty="82"/>
+                    <Matrix tx="192" ty="92.2"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -99,22 +100,9 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText fontRenderingMode="device" width="218.25" height="15.55" isSelectable="false" variableName="经验值">
+                <DOMDynamicText fontRenderingMode="device" width="218.25" height="15.55" isSelectable="false" variableName="称号" renderAsHTML="true">
                   <matrix>
-                    <Matrix tx="71.5" ty="58"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>999999999 / 999999999</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMDynamicText>
-                <DOMDynamicText fontRenderingMode="device" width="220.55" height="15.55" isSelectable="false" variableName="称号" renderAsHTML="true">
-                  <matrix>
-                    <Matrix tx="71.4" ty="34"/>
+                    <Matrix tx="71.5" ty="56.55"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -131,22 +119,22 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText fontRenderingMode="device" width="36.5" height="15.55" isSelectable="false" variableName="等级">
+                <DOMDynamicText fontRenderingMode="device" width="220.55" height="15.55" isSelectable="false" variableName="经验值" renderAsHTML="true">
                   <matrix>
-                    <Matrix tx="71.4" ty="10"/>
+                    <Matrix tx="71.4" ty="32.65"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>999</characters>
+                      <characters>菜鸟</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText fontRenderingMode="device" width="93.05" height="15.55" isSelectable="false" variableName="身高">
+                <DOMDynamicText fontRenderingMode="device" width="62.1" height="33.1" isSelectable="false" variableName="身高">
                   <matrix>
-                    <Matrix tx="192.3" ty="10"/>
+                    <Matrix tx="71.4" ty="8.85"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -157,9 +145,22 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
+                <DOMDynamicText fontRenderingMode="device" width="93.05" height="15.55" isSelectable="false" variableName="体重">
+                  <matrix>
+                    <Matrix tx="192.3" ty="8.7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>99kg</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
                 <DOMDynamicText fontRenderingMode="device" width="59.5" height="15.55" isSelectable="false" variableName="装备重量">
                   <matrix>
-                    <Matrix tx="72" ty="82"/>
+                    <Matrix tx="72" ty="92.2"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -197,13 +198,13 @@
                     <DOMTextRun>
                       <characters>最大</characters>
                       <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#AFB4BD"/>
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
                       <characters>HP</characters>
                       <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#AFB4BD"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
@@ -229,7 +230,7 @@
                 </DOMStaticText>
                 <DOMStaticText fontRenderingMode="device" width="50.05" height="14.25" isSelectable="false">
                   <matrix>
-                    <Matrix tx="142" ty="82"/>
+                    <Matrix tx="142" ty="92.2"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -264,7 +265,19 @@
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>经验值</characters>
+                      <characters>称</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>    </characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>号</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -277,13 +290,13 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText fontRenderingMode="device" width="35" height="14.25" isSelectable="false">
+                <DOMStaticText fontRenderingMode="device" width="83.15" height="14.25" isSelectable="false">
                   <matrix>
                     <Matrix tx="10" ty="34"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>称</characters>
+                      <characters>等</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -295,13 +308,7 @@
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
-                      <characters>号</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
+                      <characters>级</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -311,37 +318,6 @@
                 <DOMStaticText fontRenderingMode="device" width="44.1" height="14.25" isSelectable="false">
                   <matrix>
                     <Matrix tx="10" ty="10"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>等</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>    </characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>级</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMStaticText>
-                <DOMStaticText fontRenderingMode="device" width="72.55" height="14.25" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="141.75" ty="10"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -370,9 +346,40 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="72.55" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="141.75" ty="8.95"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>体</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>    </characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>重</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
                 <DOMStaticText fontRenderingMode="device" width="53" height="14.25" isSelectable="false">
                   <matrix>
-                    <Matrix tx="10" ty="82"/>
+                    <Matrix tx="10" ty="92.2"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -467,7 +474,7 @@
                 </DOMStaticText>
                 <DOMStaticText fontRenderingMode="device" width="18.15" height="10.3" isSelectable="false">
                   <matrix>
-                    <Matrix tx="18" ty="134.5"/>
+                    <Matrix tx="18" ty="133.45"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -480,7 +487,7 @@
                 </DOMStaticText>
                 <DOMDynamicText fontRenderingMode="device" width="32.75" height="10.3" isSelectable="false" variableName="重甲重量">
                   <matrix>
-                    <Matrix tx="229" ty="134.5"/>
+                    <Matrix tx="229" ty="133.45"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -493,7 +500,7 @@
                 </DOMDynamicText>
                 <DOMDynamicText fontRenderingMode="device" width="30.75" height="10.3" isSelectable="false" variableName="轻甲_中甲重量">
                   <matrix>
-                    <Matrix tx="65.25" ty="134.5"/>
+                    <Matrix tx="65.25" ty="133.45"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -506,7 +513,7 @@
                 </DOMDynamicText>
                 <DOMDynamicText fontRenderingMode="device" width="33.25" height="10.3" isSelectable="false" variableName="中甲_重甲重量">
                   <matrix>
-                    <Matrix tx="124.5" ty="134.5"/>
+                    <Matrix tx="124.5" ty="133.45"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -524,6 +531,12 @@
                   <textRuns>
                     <DOMTextRun>
                       <characters>能量抗性</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -749,7 +762,7 @@
                 </DOMStaticText>
                 <DOMStaticText fontRenderingMode="device" width="65.9" height="14.25" isSelectable="false">
                   <matrix>
-                    <Matrix tx="-270.75" ty="186.2"/>
+                    <Matrix tx="-270.75" ty="124.9"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -758,11 +771,17 @@
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
                     </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
                 <DOMStaticText fontRenderingMode="device" width="65.9" height="14.25" isSelectable="false">
                   <matrix>
-                    <Matrix tx="-146.25" ty="185.85"/>
+                    <Matrix tx="-146.25" ty="124.55"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -771,11 +790,17 @@
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
                     </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
                 <DOMStaticText fontRenderingMode="device" width="65.9" height="14.25" isSelectable="false">
                   <matrix>
-                    <Matrix tx="-270.75" ty="211.05"/>
+                    <Matrix tx="-270.75" ty="149.75"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -784,11 +809,17 @@
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
                     </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
                 <DOMStaticText fontRenderingMode="device" width="65.9" height="14.25" isSelectable="false">
                   <matrix>
-                    <Matrix tx="-146.25" ty="211.05"/>
+                    <Matrix tx="-146.25" ty="149.75"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -797,15 +828,8 @@
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
                     </DOMTextRun>
-                  </textRuns>
-                </DOMStaticText>
-                <DOMStaticText fontRenderingMode="device" width="65.9" height="14.25" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="-270.75" ty="235.2"/>
-                  </matrix>
-                  <textRuns>
                     <DOMTextRun>
-                      <characters>拆挡能力</characters>
+                      <characters></characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -814,11 +838,36 @@
                 </DOMStaticText>
                 <DOMStaticText fontRenderingMode="device" width="65.9" height="14.25" isSelectable="false">
                   <matrix>
-                    <Matrix tx="-146.25" ty="235.2"/>
+                    <Matrix tx="-270.75" ty="174.9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>拆挡能力</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="65.9" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-146.25" ty="174.9"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
                       <characters>坚稳能力</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -832,6 +881,12 @@
                   <textRuns>
                     <DOMTextRun>
                       <characters>伤害加成</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -897,7 +952,7 @@
                 </DOMStaticText>
                 <DOMStaticText fontRenderingMode="device" width="65.9" height="14.25" isSelectable="false">
                   <matrix>
-                    <Matrix tx="-270.9" ty="257.25"/>
+                    <Matrix tx="-270.9" ty="196.55"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -925,6 +980,12 @@
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
                     </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
                 <DOMStaticText fontRenderingMode="device" width="65.9" height="14.25" isSelectable="false">
@@ -933,7 +994,7 @@
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>躲闪力</characters>
+                      <characters>闪避负荷</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -1046,7 +1107,7 @@
                 </DOMDynamicText>
                 <DOMDynamicText fontRenderingMode="device" width="57" height="15.55" isSelectable="false" variableName="基本防御">
                   <matrix>
-                    <Matrix tx="-211.9" ty="184.2"/>
+                    <Matrix tx="-211.9" ty="122.9"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -1059,7 +1120,7 @@
                 </DOMDynamicText>
                 <DOMDynamicText fontRenderingMode="device" width="57" height="15.55" isSelectable="false" variableName="装备防御">
                   <matrix>
-                    <Matrix tx="-85.55" ty="184.55"/>
+                    <Matrix tx="-85.55" ty="122.9"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -1072,7 +1133,7 @@
                 </DOMDynamicText>
                 <DOMDynamicText fontRenderingMode="device" width="57" height="15.55" isSelectable="false" variableName="踉跄韧性">
                   <matrix>
-                    <Matrix tx="-211.9" ty="210.1"/>
+                    <Matrix tx="-211.9" ty="148.8"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -1085,7 +1146,7 @@
                 </DOMDynamicText>
                 <DOMDynamicText fontRenderingMode="device" width="57" height="15.55" isSelectable="false" variableName="韧性上限">
                   <matrix>
-                    <Matrix tx="-85.55" ty="208.7"/>
+                    <Matrix tx="-85.55" ty="148.8"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -1098,7 +1159,7 @@
                 </DOMDynamicText>
                 <DOMDynamicText fontRenderingMode="device" width="57" height="15.55" isSelectable="false" variableName="拆挡能力">
                   <matrix>
-                    <Matrix tx="-211.9" ty="234.6"/>
+                    <Matrix tx="-211.9" ty="174.3"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -1111,7 +1172,7 @@
                 </DOMDynamicText>
                 <DOMDynamicText fontRenderingMode="device" width="57" height="15.55" isSelectable="false" variableName="坚稳能力">
                   <matrix>
-                    <Matrix tx="-85.55" ty="234.6"/>
+                    <Matrix tx="-85.55" ty="174.3"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -1124,7 +1185,7 @@
                 </DOMDynamicText>
                 <DOMDynamicText fontRenderingMode="device" width="57" height="15.55" isSelectable="false" variableName="懒闪避">
                   <matrix>
-                    <Matrix tx="-211.95" ty="257.35"/>
+                    <Matrix tx="-211.95" ty="196.65"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -1148,7 +1209,7 @@
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText fontRenderingMode="device" width="57" height="15.55" isSelectable="false" variableName="躲闪力">
+                <DOMDynamicText fontRenderingMode="device" width="57" height="15.55" isSelectable="false" variableName="闪避负荷">
                   <matrix>
                     <Matrix tx="192.7" ty="233.1"/>
                   </matrix>
@@ -1237,8 +1298,176 @@
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
                     </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="65.9" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-270.75" ty="233.85"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>空手威力</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="65.9" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-146.25" ty="233.85"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>冷兵威力</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="65.9" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-270.75" ty="257.65"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>主手威力</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="65.9" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-146.25" ty="257.65"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>副手威力</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMDynamicText fontRenderingMode="device" width="57" height="15.55" isSelectable="false" variableName="空手威力">
+                  <matrix>
+                    <Matrix tx="-211.9" ty="233.1"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>99999</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText fontRenderingMode="device" width="57" height="15.55" isSelectable="false" variableName="冷兵威力">
+                  <matrix>
+                    <Matrix tx="-85.55" ty="233.1"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>99999</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText fontRenderingMode="device" width="57" height="15.55" isSelectable="false" variableName="主手威力">
+                  <matrix>
+                    <Matrix tx="-211.9" ty="255.5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>99999</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText fontRenderingMode="device" width="57" height="15.55" isSelectable="false" variableName="副手威力">
+                  <matrix>
+                    <Matrix tx="-85.55" ty="255.5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>99999</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMStaticText fontRenderingMode="device" width="65.9" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-270.75" ty="281.1"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>长枪威力</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMDynamicText fontRenderingMode="device" width="57" height="15.55" isSelectable="false" variableName="长枪威力">
+                  <matrix>
+                    <Matrix tx="-211.9" ty="279.65"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>99999</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMStaticText fontRenderingMode="device" width="65.9" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-146" ty="281.1"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>手雷威力</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMDynamicText fontRenderingMode="device" width="57" height="15.55" isSelectable="false" variableName="手雷威力">
+                  <matrix>
+                    <Matrix tx="-85.55" ty="279.65"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>99999</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
               </elements>
             </DOMFrame>
           </frames>

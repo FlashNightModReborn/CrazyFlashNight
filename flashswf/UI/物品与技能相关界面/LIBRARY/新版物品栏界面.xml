@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1761645166" lastUniqueIdentifier="76">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1761657794" lastUniqueIdentifier="79">
   <timeline>
-    <DOMTimeline name="新版物品栏界面" currentFrame="31" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;57&lt;/guideline&gt;&lt;guideline direction="h"&gt;81&lt;/guideline&gt;&lt;guideline direction="h"&gt;105&lt;/guideline&gt;&lt;guideline direction="h"&gt;129&lt;/guideline&gt;&lt;guideline direction="h"&gt;193&lt;/guideline&gt;&lt;guideline direction="h"&gt;188&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="新版物品栏界面" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;57&lt;/guideline&gt;&lt;guideline direction="h"&gt;81&lt;/guideline&gt;&lt;guideline direction="h"&gt;105&lt;/guideline&gt;&lt;guideline direction="h"&gt;129&lt;/guideline&gt;&lt;guideline direction="h"&gt;193&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#23D4A1">
           <frames>
@@ -1480,9 +1480,9 @@ onClipEvent (unload) {
                     <BevelFilter blurX="0" blurY="1" distance="2" strength="0.3"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="-196.5" centerPoint3DY="141.7">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="-196.5" centerPoint3DY="139.7">
                   <matrix>
-                    <Matrix a="1.26228332519531" tx="-286.95" ty="140.7"/>
+                    <Matrix a="1.26226806640625" tx="-286.95" ty="138.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1494,9 +1494,37 @@ onClipEvent (unload) {
                     <Color alphaMultiplier="0.6015625"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="-196.5" centerPoint3DY="179.15">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="-196.5" centerPoint3DY="252.45">
                   <matrix>
-                    <Matrix a="1.26226806640625" tx="-286.95" ty="178.15"/>
+                    <Matrix a="1.26226806640625" tx="-286.95" ty="251.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="102.1" centerPoint3DY="116.2">
+                  <matrix>
+                    <Matrix a="1.26226806640625" tx="11.65" ty="115.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="102.1" centerPoint3DY="183.1">
+                  <matrix>
+                    <Matrix a="1.26226806640625" tx="11.65" ty="182.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

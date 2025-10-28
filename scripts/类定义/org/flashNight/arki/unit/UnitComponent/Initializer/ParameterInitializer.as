@@ -12,6 +12,10 @@
         if (isNaN(target.躲闪率)) target.躲闪率 = 999;
         if (isNaN(target.等级)) target.等级 = 1;
 
+        // 初始化体重：基于身高计算（身高 - 105）
+        if (isNaN(target.身高)) target.身高 = 175;
+        target.体重 = target.身高 - 105;
+
         if (isNaN(target.remainingImpactForce)) target.remainingImpactForce = 0;
         if (isNaN(target.lastHitTime)) target.lastHitTime = currentFrame;
 

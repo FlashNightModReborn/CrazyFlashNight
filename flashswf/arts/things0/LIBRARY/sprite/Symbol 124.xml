@@ -1761,7 +1761,7 @@ else
 	if(_parent._parent.被动技能.裂地拳 && _parent._parent.被动技能.裂地拳.等级){
 		子弹属性.子弹威力 +=  _parent._parent.空手攻击力 *  _parent._parent.被动技能.裂地拳.等级 / 10;
 	}
-	子弹属性.子弹威力 += _parent._parent.空手攻击力 * Math.min((_parent._parent.重量 + _parent._parent.身高 - 105)/100 , 2);
+	子弹属性.子弹威力 += _parent._parent.空手攻击力 * Math.min((_parent._parent.重量 + _parent._parent.体重)/100 , 2);
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 50;
 	子弹属性.击倒率 = 0.01;

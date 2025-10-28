@@ -205,9 +205,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.基础魔法伤害属性 = undefined;
         target.基础命中加成 = 0;
         target.佣兵技能概率抑制基数 = 0;
-        
+
         target.命中加成 = 0;
-        target.韧性加成 = target.身高 - 105 - 50; //equipped.toughness
+        target.韧性加成 = target.体重 - 50; //equipped.toughness
         target.闪避加成 = 0; //equipped.evasion
 
         // 刷新装备数值核心函数
