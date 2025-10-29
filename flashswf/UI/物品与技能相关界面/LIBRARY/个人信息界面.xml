@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="个人信息界面" itemID="66dd624f-000008f4" lastModified="1761666149" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="个人信息界面" itemID="66dd624f-000008f4" lastModified="1761737877" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="个人信息界面" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;187&lt;/guideline&gt;&lt;guideline direction="h"&gt;244&lt;/guideline&gt;&lt;guideline direction="h"&gt;210&lt;/guideline&gt;&lt;guideline direction="h"&gt;283&lt;/guideline&gt;&lt;guideline direction="h"&gt;258&lt;/guideline&gt;&lt;guideline direction="v"&gt;-148&lt;/guideline&gt;&lt;guideline direction="h"&gt;156&lt;/guideline&gt;&lt;guideline direction="h"&gt;180&lt;/guideline&gt;&lt;guideline direction="h"&gt;202&lt;/guideline&gt;&lt;guideline direction="v"&gt;-273&lt;/guideline&gt;&lt;guideline direction="v"&gt;139&lt;/guideline&gt;&lt;guideline direction="v"&gt;190&lt;/guideline&gt;&lt;guideline direction="v"&gt;8&lt;/guideline&gt;&lt;guideline direction="h"&gt;224&lt;/guideline&gt;&lt;guideline direction="h"&gt;273&lt;/guideline&gt;&lt;guideline direction="h"&gt;297&lt;/guideline&gt;&lt;guideline direction="h"&gt;108&lt;/guideline&gt;&lt;guideline direction="v"&gt;9&lt;/guideline&gt;&lt;guideline direction="v"&gt;267&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -9,12 +9,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.人物信息函数.获取人物信息(this);
-]]></script>
+                <script><![CDATA[_root.人物信息函数.获取人物信息(this);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -22,7 +21,7 @@
         </DOMLayer>
         <DOMLayer name="图层 3" color="#FF800A">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="30" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="个人信息界面素材/元件 1" symbolType="graphic" loop="loop">
                   <matrix>
@@ -44,9 +43,9 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文字" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="文字" color="#4FFF4F" autoNamed="false">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="30" keyMode="9728">
               <elements>
                 <DOMDynamicText fontRenderingMode="device" width="57" height="15.55" isSelectable="false" variableName="空手攻击力">
                   <matrix>
@@ -126,6 +125,12 @@
                   <textRuns>
                     <DOMTextRun>
                       <characters>菜鸟</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -309,6 +314,12 @@
                     </DOMTextRun>
                     <DOMTextRun>
                       <characters>级</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -999,6 +1010,12 @@
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
                     </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
                 <DOMDynamicText fontRenderingMode="device" width="57" height="15.55" isSelectable="false" variableName="能量抗性">
@@ -1317,6 +1334,12 @@
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
                     </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
                 <DOMStaticText fontRenderingMode="device" width="65.9" height="14.25" isSelectable="false">
@@ -1326,6 +1349,12 @@
                   <textRuns>
                     <DOMTextRun>
                       <characters>冷兵威力</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -1343,6 +1372,12 @@
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
                     </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
                 <DOMStaticText fontRenderingMode="device" width="65.9" height="14.25" isSelectable="false">
@@ -1352,6 +1387,12 @@
                   <textRuns>
                     <DOMTextRun>
                       <characters>副手威力</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -1417,6 +1458,12 @@
                   <textRuns>
                     <DOMTextRun>
                       <characters>长枪威力</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
