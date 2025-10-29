@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地1层" itemID="668a9fdf-00005040" linkageExportForAS="true" linkageIdentifier="基地场景-基地1层" lastModified="1749711693" lastUniqueIdentifier="22">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地1层" itemID="668a9fdf-00005040" linkageExportForAS="true" linkageIdentifier="基地场景-基地1层" lastModified="1761757880" lastUniqueIdentifier="23">
   <timeline>
     <DOMTimeline name="基地1层">
       <layers>
@@ -440,7 +440,7 @@ onClipEvent (load) {
 	商店 = "服装出售";
 	身高 = 175;
 	性别 = "女";
-	方向 = "左";
+	方向 = "右";
 	NPC任务_任务_关卡路径 = "夺取材料";
 	_root.初始化NPC(this);
 }]]></script>

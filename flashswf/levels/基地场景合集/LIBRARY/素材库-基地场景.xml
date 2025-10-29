@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-基地场景" itemID="67877067-00002014" linkageExportForAS="true" linkageIdentifier="素材库-基地场景" lastModified="1759995615" lastUniqueIdentifier="19">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-基地场景" itemID="67877067-00002014" linkageExportForAS="true" linkageIdentifier="素材库-基地场景" lastModified="1759995615" lastUniqueIdentifier="20">
   <timeline>
-    <DOMTimeline name="素材库-基地场景">
+    <DOMTimeline name="素材库-基地场景" currentFrame="49">
       <layers>
         <DOMLayer name="as" color="#9933CC" autoNamed="false">
           <frames>
@@ -82,7 +82,7 @@
             </DOMFrame>
             <DOMFrame index="36" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="地图/基地1层" name="gameworld" centerPoint3DX="1117.15" centerPoint3DY="407.3">
+                <DOMSymbolInstance libraryItemName="地图/基地1层" name="gameworld" selected="true" centerPoint3DX="1117.15" centerPoint3DY="407.3">
                   <matrix>
                     <Matrix d="1.00030517578125" tx="-1"/>
                   </matrix>

@@ -1,0 +1,49 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/宝石线人右大臂" itemID="68f2824e-000000fe" symbolType="graphic" lastModified="1760723534">
+  <timeline>
+    <DOMTimeline name="宝石线人右大臂">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#D6B3AA"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#F6DED3"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!463 2885[1409 1565 1999 245!1999 245[1980 205 1959 171"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!1959 171[1245 1552 349 2907"/>
+                    <Edge fillStyle0="1" edges="!349 2907[402 2900 463 2885"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!1959 171[1783 -109 1439 69!1439 69[1213 181 15 2405"/>
+                    <Edge fillStyle0="2" edges="!15 2405[-74 2954 349 2907"/>
+                    <Edge cubics="!463 2885(;1094,2005 1606,1125 1999,245q463 2885Q1409 1565q1999 245);"/>
+                    <Edge cubics="!1439 69(;1288,144 814,922 15,2405q1439 69Q1213 181q15 2405);"/>
+                    <Edge cubics="!1439 69(;1670,-50 1843,-15 1959,171q1439 69Q1783 -109q1959 171);"/>
+                    <Edge cubics="!1959 171(;1974,197 1987,220 1999,245q1959 171 1999 245);"/>
+                    <Edge cubics="!15 2405(;-45,2772 68,2939 349,2907q15 2405Q-74 2954q349 2907);"/>
+                    <Edge cubics="!349 2907(;386,2902 423,2895 463,2885q349 2907Q402 2900q463 2885);"/>
+                    <Edge cubics="!1959 171(;1483,1092 946,2004 349,2907q1959 171Q1245 1552q349 2907);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/宝石线人枪" itemID="68fe1230-000000df" symbolType="graphic" lastModified="1761481264">
+  <timeline>
+    <DOMTimeline name="宝石线人枪">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/宝石线人枪头上色" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix ty="10.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="42.7" y="18.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/宝石线人枪身上色" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="85.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="107.7" y="69.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

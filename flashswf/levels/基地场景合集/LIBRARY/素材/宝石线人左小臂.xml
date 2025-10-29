@@ -1,0 +1,51 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/宝石线人左小臂" itemID="68f28582-0000011a" symbolType="graphic" lastModified="1760724403">
+  <timeline>
+    <DOMTimeline name="宝石线人左小臂">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#2D2C2D"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#4A4948"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!540 61[#22C.67 #45.7B 573 79!573 79[610 100 648 127"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!648 127[830 522 984 1975"/>
+                    <Edge fillStyle1="1" edges="!984 1975[955 2015 924 2048!924 2048[#38E.0A #80F.08 896 2076.5"/>
+                    <Edge fillStyle1="2" edges="!896 2076.5[#2D2.EB #8C1.7E 504 2199"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!504 2199[170 1194 0 127"/>
+                    <Edge fillStyle1="2" edges="!0 127[#F7.1E #FFFFA8.13 540 61"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!540 61|896 2076.5"/>
+                    <Edge cubics="!648 127(;625,110 602,95 573,79q648 127 573 79);"/>
+                    <Edge cubics="!573 79(;369,-40 176,-25 0,127q573 79Q261 -100q0 127);"/>
+                    <Edge cubics="!0 127(;113,838 281,1529 504,2199q0 127Q170 1194q504 2199);"/>
+                    <Edge cubics="!504 2199(;663,2230 803,2179 924,2048q504 2199Q741 2245q924 2048);"/>
+                    <Edge cubics="!924 2048(;945,2025 965,2001 984,1975q924 2048 984 1975);"/>
+                    <Edge cubics="!648 127(;769,390 881,1006 984,1975q648 127Q830 522q984 1975);"/>
+                    <Edge cubics="!573 79(;573,79 924,2048 924,2048q573 79 924 2048);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

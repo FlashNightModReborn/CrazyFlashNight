@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/宝石线人箱子整体" itemID="68fe096b-0000008b" symbolType="graphic" lastModified="1761479657">
+  <timeline>
+    <DOMTimeline name="宝石线人箱子整体">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/宝石线人箱子面1上色" symbolType="graphic" centerPoint3DX="388.05" centerPoint3DY="223.15" loop="loop">
+                  <matrix>
+                    <Matrix a="0.939697265625" b="-0.342025756835938" tx="251.1" ty="125.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="145.75" y="147.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/宝石线人箱子面2上色" symbolType="graphic" centerPoint3DX="126.2" centerPoint3DY="200.1" loop="loop">
+                  <matrix>
+                    <Matrix a="0.86602783203125" b="0.5" ty="-20.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="145.7" y="147.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/宝石线人箱子面3上色" symbolType="graphic" centerPoint3DX="261" centerPoint3DY="21" loop="loop">
+                  <matrix>
+                    <Matrix tx="37.7" ty="-82.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="223.3" y="103.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

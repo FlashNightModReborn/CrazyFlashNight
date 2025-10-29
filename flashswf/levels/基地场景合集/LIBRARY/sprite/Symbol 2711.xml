@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#ED616B" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#ED616B">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -124,7 +124,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#8EFD2B">
+        <DOMLayer name="Layer 6" color="#8EFD2B" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>

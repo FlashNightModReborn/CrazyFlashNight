@@ -1,18 +1,18 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/宝石线人-NPC" itemID="668a9bc7-00004f42" lastModified="1740633500" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/宝石线人-NPC" itemID="668a9bc7-00004f42" lastModified="1761758190" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="宝石线人-NPC">
+    <DOMTimeline name="宝石线人-NPC" currentFrame="15">
       <layers>
         <DOMLayer name="Labels Layer" color="#F9605A">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="15" name="描边" labelType="name" keyMode="9728">
+            <DOMFrame index="15" duration="5" name="描边" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#5897C7" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#5897C7">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -28,7 +28,7 @@ Z轴坐标 = this._y;
             <DOMFrame index="2" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="14" keyMode="9728">
+            <DOMFrame index="14" duration="6" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[gotoAndPlay(2);
                 ]]></script>
@@ -41,9 +41,9 @@ Z轴坐标 = this._y;
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="UI重构/商店相关/npc商店名称UI" name="商店名" centerPoint3DX="47.15" centerPoint3DY="-158.65">
+                <DOMSymbolInstance libraryItemName="UI重构/商店相关/npc商店名称UI" name="商店名" centerPoint3DX="78.15" centerPoint3DY="-148.15">
                   <matrix>
-                    <Matrix tx="-16.85" ty="-168.4"/>
+                    <Matrix tx="14.15" ty="-157.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="64" y="9.75"/>
@@ -53,11 +53,11 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#9C27E0">
+        <DOMLayer name="Layer 3" color="#9C27E0" locked="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/透明控件" name="area" centerPoint3DX="-4" centerPoint3DY="-116">
+                <DOMSymbolInstance libraryItemName="sprite/透明控件" name="area" selected="true" centerPoint3DX="-4" centerPoint3DY="-116">
                   <matrix>
                     <Matrix a="1.47552490234375" d="5.6412353515625" tx="-16.5" ty="-128.5"/>
                   </matrix>
@@ -73,9 +73,9 @@ Z轴坐标 = this._y;
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2363" name="文字信息" centerPoint3DX="52" centerPoint3DY="-108.15">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2363" name="文字信息" centerPoint3DX="52" centerPoint3DY="-98.15">
                   <matrix>
-                    <Matrix ty="-131.75"/>
+                    <Matrix ty="-121.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -85,11 +85,11 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#A5E179">
+        <DOMLayer name="Layer 5" color="#A5E179" locked="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 2712" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 2712" selected="true" symbolType="button">
                   <matrix>
                     <Matrix a="3.5955810546875" d="5.72062683105469" tx="0.85" ty="-59.6"/>
                   </matrix>
@@ -124,17 +124,32 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#E5B01B">
+        <DOMLayer name="Layer 6" color="#E5B01B" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="20" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 1629" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="待机合集" centerPoint3DX="-0.2" centerPoint3DY="-57.45">
                   <matrix>
-                    <Matrix a="0.178604125976563" d="0.178604125976563" tx="2.5" ty="-61"/>
+                    <Matrix a="0.14215087890625" d="0.14215087890625" tx="-58.55" ty="-119.95"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="411.55" y="448.1"/>
                   </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="待机合集" selected="true" centerPoint3DX="-0.2" centerPoint3DY="-57.45">
+                  <matrix>
+                    <Matrix a="0.14215087890625" d="0.14215087890625" tx="-58.55" ty="-119.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="411.55" y="448.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#0066FF" strength="10"/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -146,7 +161,7 @@ on(rollOut){
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 476" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.35626220703125" d="0.130508422851563" tx="2.35" ty="2.2"/>
+                    <Matrix a="0.465713500976563" d="0.182418823242188" tx="2.35" ty="-7.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

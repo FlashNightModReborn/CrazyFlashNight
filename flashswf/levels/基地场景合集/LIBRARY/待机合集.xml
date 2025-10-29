@@ -1,0 +1,115 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="待机合集" itemID="6900edc4-00000205" symbolType="graphic" lastModified="1761758588" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="待机合集" currentFrame="49">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="16" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/宝石线人无人机" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="627.6" ty="97.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="18" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/宝石线人无人机" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="627.6" ty="86.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/宝石线人无人机" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="627.6" ty="104.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/宝石线人无人机" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="627.6" ty="94.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_4" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" duration="50" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="待机动画cs6" symbolType="graphic" firstFrame="19" loop="loop">
+                  <matrix>
+                    <Matrix tx="-85.65" ty="-32.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="561.5" y="406.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_3" color="#FF800A" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="50" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="50" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/宝石线人神秘仪器" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.67230224609375" d="1.67230224609375" tx="483.35" ty="315.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="59.45" y="94.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/宝石线人神秘球体" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="594.65" ty="612.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="79.8" y="79.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/宝石线人箱子整体" symbolType="graphic" centerPoint3DX="405.35" centerPoint3DY="631.95" loop="loop">
+                  <matrix>
+                    <Matrix a="0.877197265625" d="1.00741577148438" tx="175.1" ty="461.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="263.1" y="220.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

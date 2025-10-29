@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/985女-NPC" itemID="668aad0c-000062ea" lastModified="1724850094" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/985女-NPC" itemID="668aad0c-000062ea" lastModified="1761757718" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="985女-NPC">
+    <DOMTimeline name="985女-NPC" currentFrame="9">
       <layers>
         <DOMLayer name="Labels Layer" color="#98B655">
           <frames>
@@ -101,7 +101,7 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2805" selected="true" centerPoint3DX="35.6" centerPoint3DY="171.65">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2805" centerPoint3DX="35.6" centerPoint3DY="171.65">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

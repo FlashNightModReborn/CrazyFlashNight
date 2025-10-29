@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/宝石线人头部发光1" itemID="68f13381-00000081" symbolType="graphic" lastModified="1760638257">
+  <timeline>
+    <DOMTimeline name="宝石线人头部发光1">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#8ED3EA"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!50 0|0 74!0 74|0 154!0 154|50 154!50 154|106 68!106 68|106 4!106 4|50 0"/>
+                    <Edge cubics="!50 0(;50,0 0,74 0,74q50 0 0 74);"/>
+                    <Edge cubics="!0 74(;0,74 0,154 0,154q0 74 0 154);"/>
+                    <Edge cubics="!0 154(;0,154 50,154 50,154q0 154 50 154);"/>
+                    <Edge cubics="!50 154(;50,154 106,68 106,68q50 154 106 68);"/>
+                    <Edge cubics="!106 68(;106,68 106,4 106,4q106 68 106 4);"/>
+                    <Edge cubics="!106 4(;106,4 50,0 50,0q106 4 50 0);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
