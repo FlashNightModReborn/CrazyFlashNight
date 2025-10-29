@@ -219,56 +219,86 @@ _root.人物信息函数.获得伤害加成 = function(自机){
 
 // ========== 新增：武器威力函数 ==========
 _root.人物信息函数.获得空手威力 = function(自机){
-	// 空手威力 = 空手攻击力 + 伤害加成
+	// 空手威力 = 空手攻击力 + 伤害加成 + 毒伤害
 	var 空手攻击力 = 自机.空手攻击力 ? 自机.空手攻击力 : 0;
 	var 伤害加成 = 自机.伤害加成 ? 自机.伤害加成 : 0;
-	return Math.floor(空手攻击力 + 伤害加成);
+
+	// 计算毒伤害：max(基础毒 + 空手毒, 淬毒)
+	var 装备毒 = (自机.基础毒 ? 自机.基础毒 : 0) + (自机.空手毒 ? 自机.空手毒 : 0);
+	var 毒伤害 = Math.max(装备毒, 自机.淬毒 ? 自机.淬毒 : 0);
+
+	return Math.floor(空手攻击力 + 伤害加成 + 毒伤害);
 };
 
 _root.人物信息函数.获得冷兵威力 = function(自机){
-	// 冷兵威力 = 刀属性.power + 伤害加成
+	// 冷兵威力 = 刀属性.power + 伤害加成 + 毒伤害
 	if(!自机.刀属性 || !自机.刀属性.power) return 0;
 	var 刀威力 = 自机.刀属性.power;
 	var 伤害加成 = 自机.伤害加成 ? 自机.伤害加成 : 0;
-	return Math.floor(刀威力 + 伤害加成);
+
+	// 计算毒伤害：max(基础毒 + 兵器毒, 淬毒)
+	var 装备毒 = (自机.基础毒 ? 自机.基础毒 : 0) + (自机.兵器毒 ? 自机.兵器毒 : 0);
+	var 毒伤害 = Math.max(装备毒, 自机.淬毒 ? 自机.淬毒 : 0);
+
+	return Math.floor(刀威力 + 伤害加成 + 毒伤害);
 };
 
 _root.人物信息函数.获得主手威力 = function(自机){
-	// 主手威力 = [ShootInitCore.calculateWeaponPower] + 伤害加成
+	// 主手威力 = [ShootInitCore.calculateWeaponPower] + 伤害加成 + 毒伤害
 	if(!自机.手枪属性 || !自机.手枪属性.power) return 0;
 
 	// 使用ShootInitCore的统一计算函数，确保与实际战斗逻辑一致
 	var 武器威力 = ShootInitCore.calculateWeaponPower(自机, "手枪", 自机.手枪属性.power);
 	var 伤害加成 = 自机.伤害加成 ? 自机.伤害加成 : 0;
-	return Math.floor(武器威力 + 伤害加成);
+
+	// 计算毒伤害：max(基础毒 + 手枪毒, 淬毒)
+	var 装备毒 = (自机.基础毒 ? 自机.基础毒 : 0) + (自机.手枪毒 ? 自机.手枪毒 : 0);
+	var 毒伤害 = Math.max(装备毒, 自机.淬毒 ? 自机.淬毒 : 0);
+
+	return Math.floor(武器威力 + 伤害加成 + 毒伤害);
 };
 
 _root.人物信息函数.获得副手威力 = function(自机){
-	// 副手威力 = [ShootInitCore.calculateWeaponPower] + 伤害加成
+	// 副手威力 = [ShootInitCore.calculateWeaponPower] + 伤害加成 + 毒伤害
 	if(!自机.手枪2属性 || !自机.手枪2属性.power) return 0;
 
 	// 使用ShootInitCore的统一计算函数，确保与实际战斗逻辑一致
 	var 武器威力 = ShootInitCore.calculateWeaponPower(自机, "手枪2", 自机.手枪2属性.power);
 	var 伤害加成 = 自机.伤害加成 ? 自机.伤害加成 : 0;
-	return Math.floor(武器威力 + 伤害加成);
+
+	// 计算毒伤害：max(基础毒 + 手枪2毒, 淬毒)
+	var 装备毒 = (自机.基础毒 ? 自机.基础毒 : 0) + (自机.手枪2毒 ? 自机.手枪2毒 : 0);
+	var 毒伤害 = Math.max(装备毒, 自机.淬毒 ? 自机.淬毒 : 0);
+
+	return Math.floor(武器威力 + 伤害加成 + 毒伤害);
 };
 
 _root.人物信息函数.获得长枪威力 = function(自机){
-	// 长枪威力 = [ShootInitCore.calculateWeaponPower] + 伤害加成
+	// 长枪威力 = [ShootInitCore.calculateWeaponPower] + 伤害加成 + 毒伤害
 	if(!自机.长枪属性 || !自机.长枪属性.power) return 0;
 
 	// 使用ShootInitCore的统一计算函数，确保与实际战斗逻辑一致
 	var 武器威力 = ShootInitCore.calculateWeaponPower(自机, "长枪", 自机.长枪属性.power);
 	var 伤害加成 = 自机.伤害加成 ? 自机.伤害加成 : 0;
-	return Math.floor(武器威力 + 伤害加成);
+
+	// 计算毒伤害：max(基础毒 + 长枪毒, 淬毒)
+	var 装备毒 = (自机.基础毒 ? 自机.基础毒 : 0) + (自机.长枪毒 ? 自机.长枪毒 : 0);
+	var 毒伤害 = Math.max(装备毒, 自机.淬毒 ? 自机.淬毒 : 0);
+
+	return Math.floor(武器威力 + 伤害加成 + 毒伤害);
 };
 
 _root.人物信息函数.获得手雷威力 = function(自机){
-	// 手雷威力 = 手雷属性.power + 伤害加成
+	// 手雷威力 = 手雷属性.power + 伤害加成 + 毒伤害
 	if(!自机.手雷属性 || !自机.手雷属性.power) return 0;
 	var 手雷威力 = 自机.手雷属性.power;
 	var 伤害加成 = 自机.伤害加成 ? 自机.伤害加成 : 0;
-	return Math.floor(手雷威力 + 伤害加成);
+
+	// 计算毒伤害：max(基础毒 + 手雷毒, 淬毒)
+	var 装备毒 = (自机.基础毒 ? 自机.基础毒 : 0) + (自机.手雷毒 ? 自机.手雷毒 : 0);
+	var 毒伤害 = Math.max(装备毒, 自机.淬毒 ? 自机.淬毒 : 0);
+
+	return Math.floor(手雷威力 + 伤害加成 + 毒伤害);
 };
 
 _root.人物信息函数.获得空手加成 = function(自机){
