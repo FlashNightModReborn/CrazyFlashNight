@@ -105,8 +105,9 @@ _root.联弹系统.爆炸联弹消失 = function(clip:MovieClip):Void {
             var 单元体:MovieClip = clip.area.单元体列表[i];
             // 记录单元体当前位置
             var point:Object = { x: 单元体._x, y: 单元体._y };
-            // 坐标转换到 gameworld 坐标系
-            _root.pointToGameworld(point, 单元体);
+            // 坐标转换到 gameworld 坐标系（使用新的直接调用方式）
+            单元体.localToGlobal(point);
+            _root.gameworld.globalToLocal(point);
             
             // 在 gameworld 中添加联弹爆炸效果
             var 爆炸:MovieClip = _root.gameworld.attachMovie("联弹爆炸", "explosion" + i, _root.gameworld.getNextHighestDepth());

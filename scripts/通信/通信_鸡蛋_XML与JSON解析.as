@@ -55,16 +55,18 @@ _root.duplicateOf = function(ori){
 	return ori;
 };
 
-_root.StringClassify = function(str){
+// 未使用 - 可移除
+/*_root.StringClassify = function(str){
 	if (str == "true") return true;
 	if (str == "false") return false;
 	if (str == "null" || str == "") return null;
 	if (str == "undefined") return undefined;
 	if (!isNaN(Number(str))) return Number(str);
 	return str;
-};
+};*/
 
-_root.MakeArray = function(len, content){
+// 未使用 - 可移除
+/*_root.MakeArray = function(len, content){
 	var newArray = [];
 	var i = 0;
 	while (i < len)
@@ -73,7 +75,7 @@ _root.MakeArray = function(len, content){
 		i += 1;
 	}
 	return newArray;
-};
+};*/
 
 
 //物品
@@ -98,17 +100,19 @@ _root.getNPCShop = function(name){
 }
 
 //兵种
-_root.getUnitData = function(index){
+// 未使用 - 可移除
+/*_root.getUnitData = function(index){
 	if (isNaN(Number(index))){
 		return _root.duplicateOf(_root.units[_root.unit_indices_by_name[index]]);
 	}
 	return _root.duplicateOf(_root.units[_root.unit_indices_by_id[Number(index)]]);
-}
+}*/
 
 //佣兵
-_root.getMercData = function(index){
+// 未使用 - 可移除
+/*_root.getMercData = function(index){
 	return _root.duplicateOf(_root.mercs_list[_root.merc_indices_by_id[index]]);
 };
 _root.getMercEasyData = function(index){
 	return _root.duplicateOf(_root.mercs_easy_list[_root.merc_easy_indices_by_id[index]]);
-};
+};*/
