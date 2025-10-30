@@ -199,6 +199,8 @@ _root.佣兵杂交序号 = function(n, 杂交几率, 杂交许可)
 	}
 	return n;
 };
+// 已废弃的名称生成函数 - 现在统一使用随机生成杂交佣兵名
+/*
 _root.拼接生成杂交佣兵名 = function(原佣兵名称, 杂交佣兵名称)
 {
 	var 切割点原名称 = _root.随机整数(0, 原佣兵名称.length - 1);
@@ -243,6 +245,7 @@ _root.常规生成杂交佣兵名 = function(原佣兵名称, 杂交佣兵名称
 {
 	return _root.成功率(50) ? 原佣兵名称 : 杂交佣兵名称;
 };
+*/
 _root.战队信息数组 = [];
 
 _root.加载并配置战队信息("data/hybrid_mercenaries/teams.xml");
