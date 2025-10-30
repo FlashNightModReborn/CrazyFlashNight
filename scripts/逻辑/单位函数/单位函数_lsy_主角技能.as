@@ -162,6 +162,49 @@ _root.技能函数.获取移动方向 = function(){
 
 //技能具体执行内容与伤害函数
 
+//速度转伤害函数，用于给部分刀剑技能增加基于速度的额外伤害
+//参数：行走X速度（单位的原始速度值）
+_root.技能函数.速度转伤害 = function(行走X速度:Number):Number {
+	// 计算显示速度值（m/s）
+	var 显示速度:Number = Math.floor(行走X速度 * 20) / 10;
+	// 按公式计算伤害加成：(速度-8)*6
+	var damage:Number = (显示速度 - 8) * 6;
+	// _root.发布消息("速度转伤害加成：" + damage + " (速度:" + 显示速度 + "m/s)");
+	return damage;
+}
+
+//小跳移动距离计算函数，统一处理不同类型小跳的距离和超重惩罚
+//参数：跳跃类型("后跳"/"上下跳"/"前跳")、技能等级、重量、等级
+_root.技能函数.小跳移动距离计算 = function(跳跃类型:String, 技能等级:Number, 重量:Number, 等级:Number):Number {
+	var 基准移动距离:Number = 0;
+
+	// 根据跳跃类型计算基准移动距离
+	switch(跳跃类型) {
+		case "后跳":
+			基准移动距离 = -20 * (1 + 技能等级 / 10);
+			break;
+		case "上下跳":
+			基准移动距离 = 10 * (1 + 技能等级 / 10);
+			break;
+		case "前跳":
+			基准移动距离 = 20 * (1 + 技能等级 / 10);
+			break;
+		default:
+			基准移动距离 = 0;
+			break;
+	}
+
+	// 使用重量速度关系计算惩罚（只惩罚不收益）
+	var 速度系数:Number = _root.主角函数.重量速度关系(重量, 等级);
+	if (速度系数 > 1) {
+		速度系数 = 1; // 截断到1，只惩罚不收益
+	}
+
+	// _root.发布消息("小跳类型：" + 跳跃类型 + "，基准距离：" + 基准移动距离 + "，速度系数：" + 速度系数);
+
+	return 基准移动距离 * 速度系数;
+}
+
 _root.技能函数.寸拳攻击 = function(联弹霰弹值){
 	子弹属性 = _root.子弹属性初始化(this.攻击点);
 	
@@ -465,8 +508,12 @@ _root.技能函数.瞬步斩攻击 = function()
 	var 子弹参数 = new Object();
 	var temp = 1;
 	if(_root.技能函数.瞬步斩伤害乘数表[_parent.刀.name] > 1) temp = _root.技能函数.瞬步斩伤害乘数表[_parent.刀.name];
-	
+
 	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + 0.5 * _parent.内力 * (5 + _parent.技能等级) + _parent.刀属性.power * temp * 0.1 * (10 + _parent.技能等级);
+	// 添加速度转伤害加成
+	if (_parent.行走X速度) {
+		子弹参数.子弹威力 += _root.技能函数.速度转伤害(_parent.行走X速度);
+	}
 	if (_parent.mp攻击加成)
 	{
 		子弹参数.子弹威力 += _parent.mp攻击加成;
@@ -625,7 +672,7 @@ _root.技能函数.拔刀术攻击 = function()
 
 	var temp = 1;
 	if(_root.技能函数.拔刀术伤害乘数表[_parent.刀.name] > 1) temp = _root.技能函数.拔刀术伤害乘数表[_parent.刀.name];
-	
+
 	if (_parent.刀属性.power != undefined && _parent.刀属性.power != NaN)
 	{
 		子弹.子弹威力 = _parent.空手攻击力 * 0.1 + (0.5 * _parent.内力 + _parent.刀属性.power * 0.12) * (4 + _parent.技能等级) + _parent.刀属性.power * temp * 0.12 * (10 + _parent.技能等级);
@@ -633,6 +680,10 @@ _root.技能函数.拔刀术攻击 = function()
 	else
 	{
 		子弹.子弹威力 = _parent.空手攻击力 * 0.1 + 0.85 * _parent.内力 * (4 + _parent.技能等级);
+	}
+	// 添加速度转伤害加成
+	if (_parent.行走X速度) {
+		子弹.子弹威力 += _root.技能函数.速度转伤害(_parent.行走X速度);
 	}
 	if (_parent.mp攻击加成)
 	{
@@ -713,8 +764,12 @@ _root.技能函数.六连攻击 = function()
 
 _root.技能函数.迅斩攻击 = function(){
 	var 子弹参数 = new Object();
-	
+
 	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + _parent.刀属性.power * (3 + _parent.技能等级 * 0.35);
+	// 添加速度转伤害加成
+	if (_parent.行走X速度) {
+		子弹参数.子弹威力 += _root.技能函数.速度转伤害(_parent.行走X速度);
+	}
 	// if (_parent.mp攻击加成)
 	// {
 	// 	子弹参数.子弹威力 += _parent.mp攻击加成;
