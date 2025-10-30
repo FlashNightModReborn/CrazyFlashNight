@@ -7,7 +7,7 @@
     <Skill id="0">
         <Name>小跳</Name>
         <Type>武术</Type>
-        <Description>回避技能！每位战士进入战场前必学的身法。基础强度：高，升级收益：较低。</Description>
+        <Description>回避技能！每位战士进入战场前必学的身法。超重时位移距离受到惩罚。基础强度：高，升级收益：较低。</Description>
         <UnlockLevel>1</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>10</UnlockSP>
@@ -183,7 +183,7 @@
     <Skill id="16">
         <Name>瞬步斩</Name>
         <Type>剑术-锋利度&amp;内力</Type>
-        <Description>快速移动的同时，进行连续斩击！段数打满时伤害较高。基础强度：可用，升级收益：正常，使用难度：较高。</Description>
+        <Description>快速移动的同时，进行连续斩击！段数打满时伤害较高。受到速度影响，提升一定伤害。基础强度：可用，升级收益：正常，使用难度：较高。</Description>
         <UnlockLevel>5</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>20</UnlockSP>
@@ -216,7 +216,7 @@
     <Skill id="19">
         <Name>拔刀术</Name>
         <Type>剑术-锋利度&amp;内力</Type>
-        <Description>武士奥义之术！无刀时则使用内力御气触发。基础强度：较高，升级收益：正常。</Description>
+        <Description>武士奥义之术！无刀时则使用内力御气触发。受到速度影响，提升一定伤害。基础强度：较高，升级收益：正常。</Description>
         <UnlockLevel>25</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>50</UnlockSP>
@@ -260,7 +260,7 @@
     <Skill id="23">
         <Name>迅斩</Name>
         <Type>剑术-锋利度</Type>
-        <Description>迅速的一斩！可有效削弱敌方韧性，技能发动时按住奔跑键时可以前冲。基础强度：较高，升级收益：正常。</Description>
+        <Description>迅速的一斩！可有效削弱敌方韧性，技能发动时按住奔跑键时可以前冲。受到速度影响，提升一定伤害。基础强度：较高，升级收益：正常。</Description>
         <UnlockLevel>1</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>15</UnlockSP>
