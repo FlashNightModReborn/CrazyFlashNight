@@ -173,6 +173,31 @@ _root.技能函数.速度转伤害 = function(行走X速度:Number):Number {
 	return damage;
 }
 
+// 获取技能乘数工具函数（从XML配置读取）
+// 参数：技能名称（如"凶斩"、"瞬步斩"等）
+// 返回：技能乘数（默认为1，表示无加成）
+_root.技能函数.获取技能乘数 = function(技能名称:String):Number {
+	// 默认乘数为1（无加成）
+	var 默认乘数:Number = 1;
+
+	// 三重空值检查：刀属性 -> skillmultipliers -> 具体技能
+	if (_parent.刀属性 &&
+	    _parent.刀属性.skillmultipliers &&
+	    _parent.刀属性.skillmultipliers[技能名称]) {
+
+		// 显式类型转换为数字
+		var 乘数:Number = Number(_parent.刀属性.skillmultipliers[技能名称]);
+
+		// 验证数值有效性：非NaN且大于1才使用
+		if (!isNaN(乘数) && 乘数 > 1) {
+			return 乘数;
+		}
+	}
+
+	// 如果没有配置或配置无效，返回默认值
+	return 默认乘数;
+}
+
 //小跳移动距离计算函数，统一处理不同类型小跳的距离和超重惩罚
 //参数：跳跃类型("后跳"/"上下跳"/"前跳")、技能等级、重量、等级
 _root.技能函数.小跳移动距离计算 = function(跳跃类型:String, 技能等级:Number, 重量:Number, 等级:Number):Number {
@@ -434,12 +459,8 @@ _root.技能函数.气动波攻击 = function()
 _root.技能函数.凶斩攻击 = function(不硬直)
 {
 	var 子弹参数 = new Object();
-	var temp = 1;
-	// 从XML配置读取技能乘数（重构后）
-	if(_parent.刀属性 && _parent.刀属性.skillmultipliers && _parent.刀属性.skillmultipliers.凶斩) {
-		var mult = Number(_parent.刀属性.skillmultipliers.凶斩);
-		if (!isNaN(mult) && mult > 1) temp = mult;
-	}
+	// 从XML配置读取技能乘数（使用工具函数）
+	var temp = _root.技能函数.获取技能乘数("凶斩");
 
 	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + 1.5 * _parent.内力 * (5 + _parent.技能等级) + _parent.刀属性.power * temp * 0.125 * (10 + _parent.技能等级);
 	if (_parent.mp攻击加成)
@@ -474,12 +495,8 @@ _root.技能函数.凶斩攻击 = function(不硬直)
 _root.技能函数.瞬步斩攻击 = function()
 {
 	var 子弹参数 = new Object();
-	var temp = 1;
-	// 从XML配置读取技能乘数（重构后）
-	if(_parent.刀属性 && _parent.刀属性.skillmultipliers && _parent.刀属性.skillmultipliers.瞬步斩) {
-		var mult = Number(_parent.刀属性.skillmultipliers.瞬步斩);
-		if (!isNaN(mult) && mult > 1) temp = mult;
-	}
+	// 从XML配置读取技能乘数（使用工具函数）
+	var temp = _root.技能函数.获取技能乘数("瞬步斩");
 
 	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + 0.5 * _parent.内力 * (5 + _parent.技能等级) + _parent.刀属性.power * temp * 0.1 * (10 + _parent.技能等级);
 	// 添加速度转伤害加成
@@ -553,12 +570,8 @@ _root.技能函数.龙斩刀伤 = function(Z轴攻击范围)
 	子弹.霰弹值 = 5;
 	子弹.子弹散射度 = 0;
 	子弹.子弹种类 = "近战联弹";
-	var temp = 1;
-	// 从XML配置读取技能乘数（重构后）
-	if(_parent.刀属性 && _parent.刀属性.skillmultipliers && _parent.刀属性.skillmultipliers.龙斩) {
-		var mult = Number(_parent.刀属性.skillmultipliers.龙斩);
-		if (!isNaN(mult) && mult > 1) temp = mult;
-	}
+	// 从XML配置读取技能乘数（使用工具函数）
+	var temp = _root.技能函数.获取技能乘数("龙斩");
 
 	子弹.子弹威力 = 12 * _parent.内力 + _parent.空手攻击力 * 0.1 + (_parent.内力 + _parent.刀属性.power * 0.2) * 0.5 * _parent.技能等级 + _parent.刀属性.power * temp * 0.12 * (10 + _parent.技能等级);
 	if (_parent.mp攻击加成)
@@ -634,12 +647,8 @@ _root.技能函数.拔刀术攻击 = function()
 	子弹.子弹散射度 = 0;
 	子弹.子弹种类 = "近战子弹";
 
-	var temp = 1;
-	// 从XML配置读取技能乘数（重构后）
-	if(_parent.刀属性 && _parent.刀属性.skillmultipliers && _parent.刀属性.skillmultipliers.拔刀术) {
-		var mult = Number(_parent.刀属性.skillmultipliers.拔刀术);
-		if (!isNaN(mult) && mult > 1) temp = mult;
-	}
+	// 从XML配置读取技能乘数（使用工具函数）
+	var temp = _root.技能函数.获取技能乘数("拔刀术");
 
 	if (_parent.刀属性.power != undefined && _parent.刀属性.power != NaN)
 	{
