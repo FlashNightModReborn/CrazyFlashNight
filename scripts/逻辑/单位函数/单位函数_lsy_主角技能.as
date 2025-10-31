@@ -429,35 +429,18 @@ _root.技能函数.气动波攻击 = function()
 	_root.子弹区域shoot传递(子弹);
 }
 
-
-_root.技能函数.凶斩伤害乘数表 = {
-	砍刀:3,
-	单刀:3,
-	大剑:2.5,
-	金蛇剑:2.5,
-	棒球棍:3,
-	双面斧:3,
-	单刃斧头:3,
-	拆迁铁锤:3,
-	中国战刀:3,
-	西洋重剑:3.5,
-	斩马刀:3.5,
-	烈焰斩马刀:3,
-	雷神之锤:2,
-	光斧金牛:2,
-	光刀狮子:2,
-	血色光剑天秤:2,
-	电子音乐键盘:2,
-	红色电子吉他:2,
-	桔色电子吉他:2
-};
+// 注：凶斩伤害乘数表已迁移至 data/items/武器_刀.xml 中的 <skillmultipliers> 标签
 
 _root.技能函数.凶斩攻击 = function(不硬直)
 {
 	var 子弹参数 = new Object();
 	var temp = 1;
-	if(_root.技能函数.凶斩伤害乘数表[_parent.刀.name] > 1) temp = _root.技能函数.凶斩伤害乘数表[_parent.刀.name];
-	
+	// 从XML配置读取技能乘数（重构后）
+	if(_parent.刀属性 && _parent.刀属性.skillmultipliers && _parent.刀属性.skillmultipliers.凶斩) {
+		var mult = Number(_parent.刀属性.skillmultipliers.凶斩);
+		if (!isNaN(mult) && mult > 1) temp = mult;
+	}
+
 	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + 1.5 * _parent.内力 * (5 + _parent.技能等级) + _parent.刀属性.power * temp * 0.125 * (10 + _parent.技能等级);
 	if (_parent.mp攻击加成)
 	{
@@ -486,28 +469,17 @@ _root.技能函数.凶斩攻击 = function(不硬直)
 	_parent.刀口位置生成子弹(子弹参数);
 }
 
-_root.技能函数.瞬步斩伤害乘数表 = {
-	匕首:3.5,
-	大剑:2.5,
-	短棒:3,
-	水管:3,
-	棒球棒:1.5,
-	破旧军刀:3,
-	光刃摩羯:2,
-	光剑天秤:2,
-	战术狗腿刀:2,
-	金蛇剑:2,
-	// 秋月:3,
-	虎彻:3,
-	镜之虎彻:3,
-	饮血野太刀:2
-};
+// 注：瞬步斩伤害乘数表已迁移至 data/items/武器_刀.xml 中的 <skillmultipliers> 标签
 
 _root.技能函数.瞬步斩攻击 = function()
 {
 	var 子弹参数 = new Object();
 	var temp = 1;
-	if(_root.技能函数.瞬步斩伤害乘数表[_parent.刀.name] > 1) temp = _root.技能函数.瞬步斩伤害乘数表[_parent.刀.name];
+	// 从XML配置读取技能乘数（重构后）
+	if(_parent.刀属性 && _parent.刀属性.skillmultipliers && _parent.刀属性.skillmultipliers.瞬步斩) {
+		var mult = Number(_parent.刀属性.skillmultipliers.瞬步斩);
+		if (!isNaN(mult) && mult > 1) temp = mult;
+	}
 
 	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + 0.5 * _parent.内力 * (5 + _parent.技能等级) + _parent.刀属性.power * temp * 0.1 * (10 + _parent.技能等级);
 	// 添加速度转伤害加成
@@ -541,12 +513,7 @@ _root.技能函数.瞬步斩攻击 = function()
 	_parent.刀口位置生成子弹(子弹参数);
 }
 
-_root.技能函数.龙斩刀伤乘数表 = {
-	青萍元气剑:2,
-	黑铁的剑:2,
-	中国战刀:3,
-	金蛇剑:2
-};
+// 注：龙斩刀伤乘数表已迁移至 data/items/武器_刀.xml 中的 <skillmultipliers> 标签
 
 _root.技能函数.龙斩气伤 = function(Z轴攻击范围)
 {
@@ -587,8 +554,12 @@ _root.技能函数.龙斩刀伤 = function(Z轴攻击范围)
 	子弹.子弹散射度 = 0;
 	子弹.子弹种类 = "近战联弹";
 	var temp = 1;
-	if(_root.技能函数.龙斩刀伤乘数表[_parent.刀.name] > 1) temp = _root.技能函数.龙斩刀伤乘数表[_parent.刀.name];
-	
+	// 从XML配置读取技能乘数（重构后）
+	if(_parent.刀属性 && _parent.刀属性.skillmultipliers && _parent.刀属性.skillmultipliers.龙斩) {
+		var mult = Number(_parent.刀属性.skillmultipliers.龙斩);
+		if (!isNaN(mult) && mult > 1) temp = mult;
+	}
+
 	子弹.子弹威力 = 12 * _parent.内力 + _parent.空手攻击力 * 0.1 + (_parent.内力 + _parent.刀属性.power * 0.2) * 0.5 * _parent.技能等级 + _parent.刀属性.power * temp * 0.12 * (10 + _parent.技能等级);
 	if (_parent.mp攻击加成)
 	{
@@ -653,14 +624,7 @@ _root.技能函数.地震攻击 = function(Z轴攻击范围)
 	_root.子弹区域shoot传递(子弹);
 }
 
-_root.技能函数.拔刀术伤害乘数表 = {
-	饮血野太刀:2,
-	光刃摩羯:2,
-	虎彻:3,
-	镜之虎彻:2.5,
-	// 秋月:2,
-	金蛇剑:2
-};
+// 注：拔刀术伤害乘数表已迁移至 data/items/武器_刀.xml 中的 <skillmultipliers> 标签
 
 _root.技能函数.拔刀术攻击 = function()
 {
@@ -671,7 +635,11 @@ _root.技能函数.拔刀术攻击 = function()
 	子弹.子弹种类 = "近战子弹";
 
 	var temp = 1;
-	if(_root.技能函数.拔刀术伤害乘数表[_parent.刀.name] > 1) temp = _root.技能函数.拔刀术伤害乘数表[_parent.刀.name];
+	// 从XML配置读取技能乘数（重构后）
+	if(_parent.刀属性 && _parent.刀属性.skillmultipliers && _parent.刀属性.skillmultipliers.拔刀术) {
+		var mult = Number(_parent.刀属性.skillmultipliers.拔刀术);
+		if (!isNaN(mult) && mult > 1) temp = mult;
+	}
 
 	if (_parent.刀属性.power != undefined && _parent.刀属性.power != NaN)
 	{

@@ -57,19 +57,20 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     return result;
   }
 
-  // === 生成刀技乘数（1:1 复刻 _root.注释文本.生成刀技乘数） ===
+  // === 生成刀技乘数（重构后：从XML配置读取） ===
   public static function buildBladeSkillMultipliers(item:Object):Array {
     var result = [];
-    if (item.use === "刀") {
-      var multiplierTables = [_root.技能函数.凶斩伤害乘数表, _root.技能函数.瞬步斩伤害乘数表,
-                 _root.技能函数.龙斩刀伤乘数表, _root.技能函数.拔刀术伤害乘数表];
+    if (item.use === "刀" && item.data && item.data.skillmultipliers) {
+      var skillMultipliers = item.data.skillmultipliers;
       var skillNames = ["凶斩","瞬步斩","龙斩","拔刀术"];
-      for (var i=0; i<multiplierTables.length; i++) {
-        var multiplier = Number(multiplierTables[i][item.name]);
+
+      for (var i=0; i<skillNames.length; i++) {
+        var skillName = skillNames[i];
+        var multiplier = Number(skillMultipliers[skillName]);
         if (!isNaN(multiplier) && multiplier > 1) {
           result.push(
             TooltipFormatter.color("【技能加成】", TooltipConstants.COL_HL),
-            "使用", skillNames[i], "享受", String((multiplier-1)*100), TooltipConstants.SUF_PERCENT, "锋利度增益",
+            "使用", skillName, "享受", String((multiplier-1)*100), TooltipConstants.SUF_PERCENT, "锋利度增益",
             TooltipFormatter.br()
           );
         }
