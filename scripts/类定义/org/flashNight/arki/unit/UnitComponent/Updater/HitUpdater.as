@@ -4,6 +4,7 @@ import org.flashNight.arki.component.Damage.*;
 import org.flashNight.arki.component.Collider.*;
 import org.flashNight.arki.component.Effect.*;
 import org.flashNight.arki.unit.UnitComponent.Status.*;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
 
@@ -13,9 +14,11 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
 
         // 刷新目标的冲击力数据
         ImpactHandler.refreshImpactForce(hitTarget);
-        
-        // 播报仇恨转锁
-        hitTarget.dispatcher.publish("aggroSet", hitTarget, shooter, bullet);
+
+        // 播报仇恨转锁 - 仅对敌人生效，友军伤害不触发仇恨
+        if (FactionManager.areUnitsEnemies(hitTarget, shooter)) {
+            hitTarget.dispatcher.publish("aggroSet", hitTarget, shooter, bullet);
+        }
         
         // ────────────── 方向判断及效果 ──────────────
         // 利用布尔运算确定初始受击方向，考虑了两个因素：
