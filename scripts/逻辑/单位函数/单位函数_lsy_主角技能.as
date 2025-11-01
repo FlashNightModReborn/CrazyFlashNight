@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.spatial.move.*;
 import org.flashNight.arki.item.*;
+import org.flashNight.arki.unit.Action.Skill.*;
 
 _root.技能函数 = new Object();
 
@@ -166,78 +167,25 @@ _root.技能函数.获取移动方向 = function(){
 
 //速度转伤害函数，用于给部分刀剑技能增加基于速度的额外伤害
 //参数：行走X速度（单位的原始速度值）
+//注：已迁移到 SkillDamageCore.speedToDamage，此处保留为兼容性代理
 _root.技能函数.速度转伤害 = function(行走X速度:Number):Number {
-	// 计算显示速度值（m/s）
-	var 显示速度:Number = Math.floor(行走X速度 * 20) / 10;
-	// 按公式计算伤害加成：(速度-8)*6
-	var damage:Number = (显示速度 - 8) * 6;
-	// _root.发布消息("速度转伤害加成：" + damage + " (速度:" + 显示速度 + "m/s)");
-	return damage;
+	return SkillDamageCore.speedToDamage(行走X速度);
 }
 
 // 获取技能乘数工具函数（从XML配置读取）
 // 参数：技能名称（如"凶斩"、"瞬步斩"等）
 // 返回：技能乘数（默认为1，表示无加成）
+//注：已迁移到 SkillDamageCore.getSkillMultiplier，此处保留为兼容性代理
 _root.技能函数.获取技能乘数 = function(技能名称:String):Number {
-	// 默认乘数为1（无加成）
-	var 默认乘数:Number = 1;
-
-	// 三重空值检查：刀属性 -> skillmultipliers -> 具体技能
-	if (_parent.刀属性 &&
-	    _parent.刀属性.skillmultipliers &&
-	    _parent.刀属性.skillmultipliers[技能名称]) {
-
-		// 显式类型转换为数字
-		var 乘数:Number = Number(_parent.刀属性.skillmultipliers[技能名称]);
-
-		// 验证数值有效性：非NaN且大于1才使用
-		if (!isNaN(乘数) && 乘数 > 1) {
-			return 乘数;
-		}
-	}
-
-	// 如果没有配置或配置无效，返回默认值
-	return 默认乘数;
+	return SkillDamageCore.getSkillMultiplier(_parent, 技能名称);
 }
 
 // 传递兵器属性到子弹工具函数
 // 参数：子弹对象（可以是子弹或子弹参数对象）
 // 功能：将_parent的兵器特殊属性（伤害类型、魔法属性、毒、吸血、击溃、暴击、斩杀）传递给子弹
+//注：已迁移到 SkillAttributeCore.transferWeaponAttributes，此处保留为兼容性代理
 _root.技能函数.传递兵器属性到子弹 = function(子弹:Object):Void {
-	// 传递伤害类型（如"物理"、"魔法"等）
-	if (_parent.兵器伤害类型) {
-		子弹.伤害类型 = _parent.兵器伤害类型;
-	}
-
-	// 传递魔法伤害属性（如"火"、"冰"、"雷"等）
-	if (_parent.兵器魔法伤害属性) {
-		子弹.魔法伤害属性 = _parent.兵器魔法伤害属性;
-	}
-
-	// 传递毒属性
-	if (_parent.兵器毒) {
-		子弹.毒 = _parent.兵器毒;
-	}
-
-	// 传递吸血属性
-	if (_parent.兵器吸血) {
-		子弹.吸血 = _parent.兵器吸血;
-	}
-
-	// 传递击溃属性（血量上限击溃）
-	if (_parent.兵器击溃) {
-		子弹.血量上限击溃 = _parent.兵器击溃;
-	}
-
-	// 传递暴击属性
-	if (_parent.兵器暴击) {
-		子弹.暴击 = _parent.兵器暴击;
-	}
-
-	// 传递斩杀属性
-	if (_parent.兵器斩杀) {
-		子弹.斩杀 = _parent.兵器斩杀;
-	}
+	SkillAttributeCore.transferWeaponAttributes(_parent, 子弹);
 }
 
 //小跳移动距离计算函数，统一处理不同类型小跳的距离和超重惩罚
@@ -732,29 +680,14 @@ _root.技能函数.迅斩攻击 = function(){
 // 单个武器换弹工具函数
 // 参数：武器对象（如 _parent.长枪）、武器属性对象（如 _parent.长枪属性）
 // 功能：检查武器是否有已发射弹药，如果有则尝试提交弹夹并重置发射数
+//注：已迁移到 SkillReloadCore.reloadWeapon，此处保留为兼容性代理
 _root.技能函数.武器换弹 = function(武器对象:Object, 武器属性对象:Object):Void {
-	if (武器对象.value.shot > 0) {
-		var 弹夹名称:String = 武器属性对象.clipname;
-		if (ItemUtil.singleSubmit(弹夹名称, 1)) {
-			武器对象.value.shot = 0;
-			_parent.当前弹夹副武器已发射数 = 0;
-		}
-	}
+	SkillReloadCore.reloadWeapon(武器对象, 武器属性对象, _parent);
 }
 
+//注：已迁移到 SkillReloadCore.rollReload，此处保留为兼容性代理
 _root.技能函数.翻滚换弹 = function(){
-	if (_root.控制目标 != _parent._name) {
-		_parent.长枪.value.shot = 0;
-		_parent.当前弹夹副武器已发射数 = 0;
-		_parent.手枪.value.shot = 0;
-		_parent.手枪2.value.shot = 0;
-		return;
-	}
-
-	// 使用工具函数处理三种武器的换弹
-	_root.技能函数.武器换弹(_parent.长枪, _parent.长枪属性);
-	_root.技能函数.武器换弹(_parent.手枪, _parent.手枪属性);
-	_root.技能函数.武器换弹(_parent.手枪2, _parent.手枪2属性);
+	SkillReloadCore.rollReload(_parent);
 }
 
 _root.技能函数.火舞旋风攻击 = function(){
