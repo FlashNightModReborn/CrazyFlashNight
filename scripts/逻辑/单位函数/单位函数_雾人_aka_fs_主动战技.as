@@ -327,7 +327,7 @@ _root.主动战技函数.长枪.气锤光炮 = {初始化: function(自机) {
         prop.子弹种类 = 自机.气锤光炮弹药类型;
         自机.气锤光炮原伤害 = prop.子弹威力;
         var magazineCapName:String = "长枪弹匣容量";
-        var rate:Number = (自机[magazineCapName] - 自机.长枪.value.shot) * prop.霰弹值 / 2;
+        var rate:Number = (自机[magazineCapName] - 自机.长枪.value.shot) * prop.霰弹值 / 3;
         // _root.发布消息(自机.气锤光炮原伤害, rate)
         prop.子弹威力 *= rate;
         prop.霰弹值 = 1;
