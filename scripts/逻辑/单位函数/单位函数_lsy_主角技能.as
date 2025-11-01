@@ -165,28 +165,8 @@ _root.技能函数.获取移动方向 = function(){
 
 //技能具体执行内容与伤害函数
 
-//速度转伤害函数，用于给部分刀剑技能增加基于速度的额外伤害
-//参数：行走X速度（单位的原始速度值）
-//注：已迁移到 SkillDamageCore.speedToDamage，此处保留为兼容性代理
-_root.技能函数.速度转伤害 = function(行走X速度:Number):Number {
-	return SkillDamageCore.speedToDamage(行走X速度);
-}
-
-// 获取技能乘数工具函数（从XML配置读取）
-// 参数：技能名称（如"凶斩"、"瞬步斩"等）
-// 返回：技能乘数（默认为1，表示无加成）
-//注：已迁移到 SkillDamageCore.getSkillMultiplier，此处保留为兼容性代理
-_root.技能函数.获取技能乘数 = function(技能名称:String):Number {
-	return SkillDamageCore.getSkillMultiplier(_parent, 技能名称);
-}
-
-// 传递兵器属性到子弹工具函数
-// 参数：子弹对象（可以是子弹或子弹参数对象）
-// 功能：将_parent的兵器特殊属性（伤害类型、魔法属性、毒、吸血、击溃、暴击、斩杀）传递给子弹
-//注：已迁移到 SkillAttributeCore.transferWeaponAttributes，此处保留为兼容性代理
-_root.技能函数.传递兵器属性到子弹 = function(子弹:Object):Void {
-	SkillAttributeCore.transferWeaponAttributes(_parent, 子弹);
-}
+// 注：速度转伤害、获取技能乘数、传递兵器属性到子弹等工具函数已迁移至 SkillDamageCore 和 SkillAttributeCore
+// 业务代码请直接调用静态方法，无需通过代理层
 
 //小跳移动距离计算函数，统一处理不同类型小跳的距离和超重惩罚
 //参数：跳跃类型("后跳"/"上下跳"/"前跳")、技能等级、重量、等级
@@ -450,7 +430,7 @@ _root.技能函数.凶斩攻击 = function(不硬直)
 {
 	var 子弹参数 = new Object();
 	// 从XML配置读取技能乘数（使用工具函数）
-	var temp = _root.技能函数.获取技能乘数("凶斩");
+	var temp = SkillDamageCore.getSkillMultiplier(_parent, "凶斩");
 
 	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + 1.5 * _parent.内力 * (5 + _parent.技能等级) + _parent.刀属性.power * temp * 0.125 * (10 + _parent.技能等级);
 	if (_parent.mp攻击加成)
@@ -462,7 +442,7 @@ _root.技能函数.凶斩攻击 = function(不硬直)
 	子弹参数.不硬直 = 不硬直;
 
 	// 传递兵器特殊属性到子弹
-	_root.技能函数.传递兵器属性到子弹(子弹参数);
+	SkillAttributeCore.transferWeaponAttributes(_parent, 子弹参数);
 
 	_parent.刀口位置生成子弹(子弹参数);
 }
@@ -473,12 +453,12 @@ _root.技能函数.瞬步斩攻击 = function()
 {
 	var 子弹参数 = new Object();
 	// 从XML配置读取技能乘数（使用工具函数）
-	var temp = _root.技能函数.获取技能乘数("瞬步斩");
+	var temp = SkillDamageCore.getSkillMultiplier(_parent, "瞬步斩");
 
 	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + 0.5 * _parent.内力 * (5 + _parent.技能等级) + _parent.刀属性.power * temp * 0.1 * (10 + _parent.技能等级);
 	// 添加速度转伤害加成
 	if (_parent.行走X速度) {
-		子弹参数.子弹威力 += _root.技能函数.速度转伤害(_parent.行走X速度);
+		子弹参数.子弹威力 += SkillDamageCore.speedToDamage(_parent.行走X速度);
 	}
 	if (_parent.mp攻击加成)
 	{
@@ -489,7 +469,7 @@ _root.技能函数.瞬步斩攻击 = function()
 	子弹参数.不硬直 = true;
 
 	// 传递兵器特殊属性到子弹
-	_root.技能函数.传递兵器属性到子弹(子弹参数);
+	SkillAttributeCore.transferWeaponAttributes(_parent, 子弹参数);
 
 	_parent.刀口位置生成子弹(子弹参数);
 }
@@ -535,7 +515,7 @@ _root.技能函数.龙斩刀伤 = function(Z轴攻击范围)
 	子弹.子弹散射度 = 0;
 	子弹.子弹种类 = "近战联弹";
 	// 从XML配置读取技能乘数（使用工具函数）
-	var temp = _root.技能函数.获取技能乘数("龙斩");
+	var temp = SkillDamageCore.getSkillMultiplier(_parent, "龙斩");
 
 	子弹.子弹威力 = 12 * _parent.内力 + _parent.空手攻击力 * 0.1 + (_parent.内力 + _parent.刀属性.power * 0.2) * 0.5 * _parent.技能等级 + _parent.刀属性.power * temp * 0.12 * (10 + _parent.技能等级);
 	if (_parent.mp攻击加成)
@@ -556,7 +536,7 @@ _root.技能函数.龙斩刀伤 = function(Z轴攻击范围)
 	子弹.击中后子弹的效果 = "空手攻击火花";
 	子弹.水平击退速度 = 15;
 	子弹.区域定位area = this.攻击点;
-	_root.技能函数.传递兵器属性到子弹(子弹);
+	SkillAttributeCore.transferWeaponAttributes(_parent, 子弹);
 	_root.子弹区域shoot传递(子弹);
 }
 
@@ -597,7 +577,7 @@ _root.技能函数.拔刀术攻击 = function()
 	子弹.子弹种类 = "近战子弹";
 
 	// 从XML配置读取技能乘数（使用工具函数）
-	var temp = _root.技能函数.获取技能乘数("拔刀术");
+	var temp = SkillDamageCore.getSkillMultiplier(_parent, "拔刀术");
 
 	if (_parent.刀属性.power != undefined && _parent.刀属性.power != NaN)
 	{
@@ -609,7 +589,7 @@ _root.技能函数.拔刀术攻击 = function()
 	}
 	// 添加速度转伤害加成
 	if (_parent.行走X速度) {
-		子弹.子弹威力 += _root.技能函数.速度转伤害(_parent.行走X速度);
+		子弹.子弹威力 += SkillDamageCore.speedToDamage(_parent.行走X速度);
 	}
 	if (_parent.mp攻击加成)
 	{
@@ -622,7 +602,7 @@ _root.技能函数.拔刀术攻击 = function()
 	子弹.击倒率 = 1;
 	子弹.击中后子弹的效果 = "空手攻击火花";
 	子弹.区域定位area = this.攻击点;
-	_root.技能函数.传递兵器属性到子弹(子弹);
+	SkillAttributeCore.transferWeaponAttributes(_parent, 子弹);
 	_root.子弹区域shoot传递(子弹);
 }
 
@@ -634,7 +614,7 @@ _root.技能函数.六连攻击 = function()
 	子弹.子弹散射度 = 0;
 	子弹.子弹种类 = "近战子弹";
 	子弹.不硬直 = true;
-	
+
 	if (_parent.刀属性.power != undefined && _parent.刀属性.power != NaN)
 	{
 		子弹.子弹威力 = _parent.空手攻击力 * 0.1 + (0.5 * _parent.内力 + _parent.刀属性.power * 0.1) * (4 + _parent.技能等级) + _parent.刀属性.power * 0.1 * (10 + _parent.技能等级);
@@ -654,7 +634,7 @@ _root.技能函数.六连攻击 = function()
 	子弹.击倒率 = 1;
 	子弹.击中后子弹的效果 = "空手攻击火花";
 	子弹.区域定位area = this.攻击点;
-	_root.技能函数.传递兵器属性到子弹(子弹);
+	SkillAttributeCore.transferWeaponAttributes(_parent, 子弹);
 	_root.子弹区域shoot传递(子弹);
 }
 
@@ -664,7 +644,7 @@ _root.技能函数.迅斩攻击 = function(){
 	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + _parent.刀属性.power * (3 + _parent.技能等级 * 0.35);
 	// 添加速度转伤害加成
 	if (_parent.行走X速度) {
-		子弹参数.子弹威力 += _root.技能函数.速度转伤害(_parent.行走X速度);
+		子弹参数.子弹威力 += SkillDamageCore.speedToDamage(_parent.行走X速度);
 	}
 	// if (_parent.mp攻击加成)
 	// {
@@ -673,21 +653,15 @@ _root.技能函数.迅斩攻击 = function(){
 	子弹参数.Z轴攻击范围 = 50;
 	子弹参数.击倒率 = 2/(10 + _parent.技能等级);
 	子弹参数.不硬直 = true;
-	_root.技能函数.传递兵器属性到子弹(子弹参数);
+	SkillAttributeCore.transferWeaponAttributes(_parent, 子弹参数);
 	_parent.刀口位置生成子弹(子弹参数);
 }
 
-// 单个武器换弹工具函数
-// 参数：武器对象（如 _parent.长枪）、武器属性对象（如 _parent.长枪属性）
-// 功能：检查武器是否有已发射弹药，如果有则尝试提交弹夹并重置发射数
-//注：已迁移到 SkillReloadCore.reloadWeapon，此处保留为兼容性代理
-_root.技能函数.武器换弹 = function(武器对象:Object, 武器属性对象:Object):Void {
-	SkillReloadCore.reloadWeapon(武器对象, 武器属性对象, _parent);
-}
+// 注：单个武器换弹工具函数已迁移至 SkillReloadCore.reloadWeapon，业务代码请直接调用
 
-//注：已迁移到 SkillReloadCore.rollReload，此处保留为兼容性代理
+// 翻滚换弹（SWF资源接口，保留用于资源文件调用）
 _root.技能函数.翻滚换弹 = function(){
-	SkillReloadCore.rollReload(_parent);
+	SkillReloadCore.reloadAllWeapons(_parent);
 }
 
 _root.技能函数.火舞旋风攻击 = function(){

@@ -63,12 +63,16 @@ class org.flashNight.arki.unit.Action.Skill.SkillReloadCore {
     }
 
     /**
-     * 翻滚换弹函数（批量换弹）
+     * 批量换弹函数（全量换弹）
      *
-     * 在翻滚技能释放时，自动为长枪、手枪、手枪2三种武器进行换弹。
+     * 为单位的所有武器（长枪、手枪、手枪2）进行换弹。
      * 该函数会根据单位是否为玩家控制采取不同策略：
      * - 非玩家控制：直接重置已发射数（不消耗道具）
      * - 玩家控制：调用 reloadWeapon 正常消耗弹夹道具
+     *
+     * 使用场景：
+     * - 翻滚技能换弹
+     * - 其他需要批量换弹的技能或行为
      *
      * 执行流程：
      * 1. 检查单位是否为当前控制目标
@@ -78,12 +82,14 @@ class org.flashNight.arki.unit.Action.Skill.SkillReloadCore {
      * @param unit 单位对象（需要包含 长枪、手枪、手枪2 及其属性对象）
      * @return void
      *
-     * @example 在翻滚技能中使用
-     * _root.技能函数.翻滚换弹 = function() {
-     *     SkillReloadCore.rollReload(_parent);
-     * }
+     * @example 典型使用场景
+     * // 翻滚换弹
+     * SkillReloadCore.reloadAllWeapons(_parent);
+     *
+     * // 其他需要批量换弹的场景
+     * SkillReloadCore.reloadAllWeapons(unit);
      */
-    public static function rollReload(unit:MovieClip):Void {
+    public static function reloadAllWeapons(unit:MovieClip):Void {
         // 检查是否为玩家控制目标
         if (_root.控制目标 != unit._name) {
             // 非玩家控制，直接重置（不消耗道具）
