@@ -84,6 +84,15 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      */
     public static var fakeUnits:Object;
 
+    /**
+     * 按阵营分类的预计算UID映射表（性能优化）
+     * 用于避免每帧重复调用 Dictionary.getStaticUID() 和位运算
+     * 键: 阵营名称字符串 (与activeQueues保持一致)
+     * 值: 该阵营的 12位UID (Dictionary.getStaticUID(fakeUnit) & 0x0FFF)
+     * 注意：在 initialize() 时计算一次，processQueue() 中直接使用
+     */
+    public static var queueUIDs:Object;
+
     // ========================================================================
     // 子弹终止控制标志位（位运算优化）
     // 说明：REASON_* 位用于统计/诊断；实际终止分支仅依据 MODE_* 位（见收尾处理）
@@ -163,11 +172,14 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         // 初始化映射表
         activeQueues = {};
         fakeUnits = {};
+        queueUIDs = {};  // 新增：初始化UID缓存表
 
         // 获取所有已注册的阵营列表
         var fractions:Array = FactionManager.getAllFactions();
         var i:Number;
         var key:String;
+        var fakeUnit:Object;  // 临时变量，用于预计算UID
+        
         for (i = 0; i < fractions.length; i++) {
             key = fractions[i];
 
@@ -175,12 +187,18 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             activeQueues[key] = new BulletQueue();
 
             // 创建该阵营的假单位，用于目标缓存查询时的上下文信息
-            fakeUnits[key] = FactionManager.createFactionUnit(key, "queue");
+            fakeUnit = FactionManager.createFactionUnit(key, "queue");
+            fakeUnits[key] = fakeUnit;
+
+            // 新增：预计算并缓存12位UID，避免每帧重复调用getStaticUID
+            queueUIDs[key] = Dictionary.getStaticUID(fakeUnit) & 0x0FFF;
         }
 
         // 创建特殊的友伤队列，处理设置了友军伤害标志的子弹
         activeQueues["all"] = new BulletQueue();
-        fakeUnits["all"] = FactionManager.createFactionUnit("all", "queue");
+        fakeUnit = FactionManager.createFactionUnit("all", "queue");
+        fakeUnits["all"] = fakeUnit;
+        queueUIDs["all"] = Dictionary.getStaticUID(fakeUnit) & 0x0FFF;  // 新增：预计算特殊队列UID
 
         return true;
     }
@@ -579,9 +597,12 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             n = q.getCount();
             if (n == 0) continue;
 
-            // 为本队列计算唯一 UID，并打包"帧戳+队列戳"
-            fakeUnit = fakeUnits[key];
-            queueUID = Dictionary.getStaticUID(fakeUnit) & 0x0FFF; // 12bits
+            // 使用预计算的 UID，避免每帧重复调用 Dictionary.getStaticUID()
+            // 旧实现（已优化）：
+            //   fakeUnit = fakeUnits[key];
+            //   queueUID = Dictionary.getStaticUID(fakeUnit) & 0x0FFF; // 每帧调用+位运算
+            // 新实现：直接查表获取初始化时预计算的12位UID
+            queueUID = queueUIDs[key];  // O(1) 对象属性查找，避免函数调用
             queueStamp = (frameId << 12) | queueUID;
 
             // ---- 子弹排序：按左边界排序以优化扫描线算法 ----
@@ -594,7 +615,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             sortedLength = sortedArr.length;            // 长度快照，避免.length属性重复查询
 
             // ---- 阵营单位获取：用于目标缓存查询 ----
-            // fakeUnit 已在上面获取过
+            fakeUnit = fakeUnits[key];  // 获取阵营代理单位（用于缓存查询）
 
             // ---- 目标缓存获取：根据阵营类型选择合适的缓存策略 ----
             if(key == "all") {
