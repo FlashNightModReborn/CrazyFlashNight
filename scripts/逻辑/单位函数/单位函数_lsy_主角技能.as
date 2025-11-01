@@ -1,5 +1,7 @@
-﻿_root.技能函数 = new Object();
-import org.flashNight.arki.spatial.move.*;
+﻿import org.flashNight.arki.spatial.move.*;
+import org.flashNight.arki.item.*;
+
+_root.技能函数 = new Object();
 
 //释放条件函数
 _root.技能函数.释放条件 = new Object();
@@ -727,6 +729,19 @@ _root.技能函数.迅斩攻击 = function(){
 	_parent.刀口位置生成子弹(子弹参数);
 }
 
+// 单个武器换弹工具函数
+// 参数：武器对象（如 _parent.长枪）、武器属性对象（如 _parent.长枪属性）
+// 功能：检查武器是否有已发射弹药，如果有则尝试提交弹夹并重置发射数
+_root.技能函数.武器换弹 = function(武器对象:Object, 武器属性对象:Object):Void {
+	if (武器对象.value.shot > 0) {
+		var 弹夹名称:String = 武器属性对象.clipname;
+		if (ItemUtil.singleSubmit(弹夹名称, 1)) {
+			武器对象.value.shot = 0;
+			_parent.当前弹夹副武器已发射数 = 0;
+		}
+	}
+}
+
 _root.技能函数.翻滚换弹 = function(){
 	if (_root.控制目标 != _parent._name) {
 		_parent.长枪.value.shot = 0;
@@ -735,28 +750,11 @@ _root.技能函数.翻滚换弹 = function(){
 		_parent.手枪2.value.shot = 0;
 		return;
 	}
-	
-	var 长枪使用弹夹名称 = _parent.长枪属性.clipname;
-	if (_parent.长枪.value.shot > 0){
-		if(org.flashNight.arki.item.ItemUtil.singleSubmit(长枪使用弹夹名称,1)){
-			_parent.长枪.value.shot = 0;
-			_parent.当前弹夹副武器已发射数 = 0;
-		}
-	}
-	var 手枪使用弹夹名称 = _parent.手枪属性.clipname;
-	if (_parent.手枪.value.shot > 0){
-		if(org.flashNight.arki.item.ItemUtil.singleSubmit(手枪使用弹夹名称,1)){
-			_parent.手枪.value.shot = 0;
-			_parent.当前弹夹副武器已发射数 = 0;
-		}
-	}
-	var 手枪2使用弹夹名称 = _parent.手枪2属性.clipname;
-	if (_parent.手枪2.value.shot > 0){
-		if(org.flashNight.arki.item.ItemUtil.singleSubmit(手枪2使用弹夹名称,1)){
-			_parent.手枪2.value.shot = 0;
-			_parent.当前弹夹副武器已发射数 = 0;
-		}
-	}
+
+	// 使用工具函数处理三种武器的换弹
+	_root.技能函数.武器换弹(_parent.长枪, _parent.长枪属性);
+	_root.技能函数.武器换弹(_parent.手枪, _parent.手枪属性);
+	_root.技能函数.武器换弹(_parent.手枪2, _parent.手枪2属性);
 }
 
 _root.技能函数.火舞旋风攻击 = function(){
@@ -777,7 +775,7 @@ _root.技能函数.火舞旋风攻击 = function(){
 	}
 	//消耗燃料罐
 	if (_parent._name == _root.控制目标){
-		if (org.flashNight.arki.item.ItemUtil.singleSubmit("火焰喷射器燃料罐",1)){
+		if (ItemUtil.singleSubmit("火焰喷射器燃料罐",1)){
 			子弹属性.子弹种类 = "火舞旋风";
 			子弹属性.伤害类型 = "魔法";
 			子弹属性.魔法伤害属性 = "热";
