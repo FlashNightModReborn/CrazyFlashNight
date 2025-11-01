@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/系统UI" itemID="684a2580-00015772" linkageExportForAS="true" linkageIdentifier="系统UI" lastModified="1753202464" lastUniqueIdentifier="21">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/系统UI" itemID="684a2580-00015772" linkageExportForAS="true" linkageIdentifier="系统UI" lastModified="1762015501" lastUniqueIdentifier="21">
   <timeline>
-    <DOMTimeline name="系统UI" currentFrame="9" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;10&lt;/guideline&gt;&lt;guideline direction="v"&gt;119&lt;/guideline&gt;&lt;guideline direction="v"&gt;217&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="系统UI" currentFrame="19" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;10&lt;/guideline&gt;&lt;guideline direction="v"&gt;119&lt;/guideline&gt;&lt;guideline direction="v"&gt;217&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#C688B8">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#4B7DFD" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#4B7DFD">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -103,7 +103,7 @@ _root.全部翻译(this);
             <DOMFrame index="4" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="21" keyMode="9728">
+            <DOMFrame index="9" duration="10" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[
 if(_root.帧计时器.性能等级上限){
@@ -117,6 +117,9 @@ if(_root.basicZoomScale){
 _root.全部翻译(this);
 ]]></script>
               </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1271,7 +1274,10 @@ on(rollOut){
                 </DOMDynamicText>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="26" keyMode="9728">
+            <DOMFrame index="4" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1281,7 +1287,7 @@ on(rollOut){
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="10" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
               <elements>
                 <DOMDynamicText fontRenderingMode="device" width="26.75" height="15.55" isSelectable="false">
                   <matrix>
@@ -1297,6 +1303,9 @@ on(rollOut){
                   </textRuns>
                 </DOMDynamicText>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements/>
             </DOMFrame>
             <DOMFrame index="19" duration="11" keyMode="9728">
               <elements/>
@@ -1323,7 +1332,7 @@ on(rollOut){
             <DOMFrame index="4" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="10" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
               <elements>
                 <DOMDynamicText fontRenderingMode="device" width="24.9" height="17" isSelectable="false">
                   <matrix>
@@ -1340,6 +1349,9 @@ on(rollOut){
                 </DOMDynamicText>
               </elements>
             </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
             <DOMFrame index="19" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
@@ -1353,7 +1365,10 @@ on(rollOut){
             <DOMFrame index="4" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="10" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="19" duration="11" keyMode="9728">
@@ -1381,7 +1396,10 @@ on(rollOut){
             <DOMFrame index="4" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="10" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="19" duration="11" keyMode="9728">
@@ -1406,7 +1424,10 @@ on(rollOut){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="26" keyMode="9728">
+            <DOMFrame index="4" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1431,7 +1452,7 @@ on(rollOut){
             <DOMFrame index="4" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="10" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="144.45" centerPoint3DY="184.4">
                   <matrix>
@@ -1454,6 +1475,9 @@ onClipEvent(mouseUp){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
             <DOMFrame index="19" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
@@ -1467,7 +1491,7 @@ onClipEvent(mouseUp){
             <DOMFrame index="4" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="10" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
               <elements>
                 <DOMDynamicText fontRenderingMode="device" width="74.85" height="15.55" isSelectable="false">
                   <matrix>
@@ -1483,6 +1507,9 @@ onClipEvent(mouseUp){
                   </textRuns>
                 </DOMDynamicText>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements/>
             </DOMFrame>
             <DOMFrame index="19" duration="11" keyMode="9728">
               <elements/>
@@ -1506,7 +1533,10 @@ onClipEvent(mouseUp){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="26" keyMode="9728">
+            <DOMFrame index="4" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1531,7 +1561,10 @@ onClipEvent(mouseUp){
             <DOMFrame index="4" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="21" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1544,7 +1577,7 @@ onClipEvent(mouseUp){
             <DOMFrame index="4" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="10" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="144.25" centerPoint3DY="241.65">
                   <matrix>
@@ -1586,12 +1619,38 @@ onClipEvent(mouseUp){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="11" keyMode="9728">
+            <DOMFrame index="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="39.65" centerPoint3DY="94.6">
+                  <matrix>
+                    <Matrix tx="27.2" ty="82.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   控制参数 = "立绘类型";
+   打钩值 = 1;
+   无钩值 = 2;
+}
+onClipEvent(mouseUp){
+   刷新();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 38" color="#E2C777">
+        <DOMLayer name="Layer 38" color="#E2C777" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1611,7 +1670,7 @@ onClipEvent(mouseUp){
             <DOMFrame index="4" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="10" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
               <elements>
                 <DOMDynamicText fontRenderingMode="device" width="75.65" height="15.55" isSelectable="false">
                   <matrix>
@@ -1723,7 +1782,83 @@ onClipEvent(mouseUp){
                 </DOMStaticText>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="11" keyMode="9728">
+            <DOMFrame index="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="176.35" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="40.6" ty="74.35"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>类型</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>1</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="176.35" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="147.65" ty="74.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>类型</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>2</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMSymbolInstance libraryItemName="sprite/复选框" selected="true" centerPoint3DX="147.8" centerPoint3DY="93.75">
+                  <matrix>
+                    <Matrix tx="135.35" ty="81.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   控制参数 = "立绘类型";
+   打钩值 = 2;
+   无钩值 = 1;
+}
+onClipEvent(mouseUp){
+   刷新();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1859,7 +1994,10 @@ on(release, releaseOutside){
             <DOMFrame index="4" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="21" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1884,7 +2022,10 @@ on(release, releaseOutside){
             <DOMFrame index="5" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="21" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1909,7 +2050,7 @@ on(release, releaseOutside){
             <DOMFrame index="5" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="10" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="87.5" centerPoint3DY="241.65">
                   <matrix>
@@ -1931,6 +2072,9 @@ onClipEvent(mouseUp){
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements/>
             </DOMFrame>
             <DOMFrame index="19" duration="11" keyMode="9728">
               <elements/>
@@ -1963,7 +2107,10 @@ onClipEvent(mouseUp){
             <DOMFrame index="2" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="5" duration="25" keyMode="9728">
+            <DOMFrame index="5" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -2028,7 +2175,7 @@ on(rollOut){
             <DOMFrame index="5" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="10" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="33.4" centerPoint3DY="241.65">
                   <matrix>
@@ -2050,6 +2197,9 @@ onClipEvent(mouseUp){
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements/>
             </DOMFrame>
             <DOMFrame index="19" duration="11" keyMode="9728">
               <elements/>
@@ -2112,7 +2262,10 @@ onClipEvent(mouseUp){
                 </DOMDynamicText>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="26" keyMode="9728">
+            <DOMFrame index="4" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -2205,7 +2358,7 @@ onClipEvent(mouseUp){
             <DOMFrame index="4" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="10" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 938" symbolType="graphic" loop="loop">
                   <matrix>
@@ -2402,6 +2555,9 @@ on(release, releaseOutside){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
             <DOMFrame index="19" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
@@ -2466,7 +2622,10 @@ on(release, releaseOutside){
             <DOMFrame index="4" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="21" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -2530,7 +2689,10 @@ on(release, releaseOutside){
             <DOMFrame index="4" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="10" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="19" duration="11" keyMode="9728">
@@ -2632,7 +2794,10 @@ on(rollOut){
             <DOMFrame index="4" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="21" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -2747,7 +2912,10 @@ on (rollOut) {
             <DOMFrame index="5" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="21" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -2816,7 +2984,10 @@ on (rollOut) {
             <DOMFrame index="5" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="21" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -2899,7 +3070,10 @@ on (rollOut) {
             <DOMFrame index="5" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="10" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="19" duration="11" keyMode="9728">
@@ -2992,7 +3166,10 @@ on (rollOut) {
             <DOMFrame index="5" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="10" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="19" duration="11" keyMode="9728">
@@ -3106,7 +3283,7 @@ on(rollOut){
             <DOMFrame index="5" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="10" keyMode="9728">
+            <DOMFrame index="9" duration="9" keyMode="9728">
               <elements>
                 <DOMDynamicText fontRenderingMode="device" width="223.7" height="15.55" isSelectable="false">
                   <matrix>
@@ -3149,8 +3326,25 @@ on(rollOut){
                 </DOMDynamicText>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="11" keyMode="9728">
+            <DOMFrame index="18" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="11" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="223.7" height="20.45" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="11.65" ty="40.05"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>立绘画风切换（部分角色生效）:</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>

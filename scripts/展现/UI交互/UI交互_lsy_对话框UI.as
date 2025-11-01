@@ -221,6 +221,9 @@ _root.对话框UI.刷新内容 = function(){
         对话内容 = dialogueInfo[3];
         人物表情 = dialogueInfo[4];
         if (人物表情 == null) 人物表情 = "普通";
+        if(dialogueInfo[0] == "Andy Law" && _root.立绘类型 && _root.立绘类型 != 1){
+            人物表情 = 人物表情 + _root.立绘类型.toString();
+        }
         对话对象 = dialogueInfo[5];
 
         // ——新增：滤镜风格选择（可缺省）
