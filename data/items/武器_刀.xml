@@ -3622,6 +3622,34 @@ Rnfmabj, Children of the City.</description>
     </data>
   </item>
   <item>
+    <name>BULLOVA DAIDALOS</name>
+    <displayname>BULLOVA DAIDALOS</displayname>
+    <icon>BULLOVA DAIDALOS</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>狂野</actiontype>
+    <skill>
+      <skillname>漆黑凶斩</skillname>
+      <description>手持该武器时可以使用漆黑凶斩。</description>
+      <cd>8000</cd>
+      <mp>50</mp>
+    </skill>
+    <price>350000</price>
+    <description>联合大学的工匠参考黑市流出的设计图制出的武器，设计者信息不明，仅知代号为“Spark621”。
+集机械狂想与毁灭之力于一身的斧镰型兵器，刃部采用了热能与锐刃结合的设计，赤红的能量刃在挥砍时可熔穿重装甲，黑色机械架构红色能量管线，为刃体输送高温能量；作为战场中的收割机器，每一次挥击都带着撕裂空气的轰鸣与熔金断铁的狂暴，也能吞噬所触之物并予以转化，最终以生命能源的形式反馈给使用者。
+硕大的锋刃之中蕴含着作为前文明时代工业结晶的微型熔断装置；因此只需轻触，便能燃烧血肉。</description>
+    <data>
+      <level>35</level>
+      <weight>12</weight>
+      <dressup>刀-BULLOVA DAIDALOS</dressup>
+      <power>290</power>
+      <damagetype>魔法</damagetype>
+      <magictype>热</magictype>
+      <vampirism>10</vampirism>
+      <criticalhit>10</criticalhit>
+    </data>
+  </item>
+  <item>
     <name>杀戮风暴</name>
     <displayname>杀戮风暴</displayname>
     <icon>杀戮风暴</icon>
@@ -3643,9 +3671,6 @@ Rnfmabj, Children of the City.</description>
       <weight>15</weight>
       <dressup>刀-杀戮风暴</dressup>
       <power>280</power>
-      <hp>0</hp>
-      <mp>0</mp>
-      <defence>0</defence>
       <poison>60</poison>
       <damagetype>魔法</damagetype>
       <magictype>毒</magictype>
