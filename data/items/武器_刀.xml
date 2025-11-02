@@ -3590,6 +3590,36 @@ Rnfmabj, Children of the City.</description>
     </data>
   </item>
   <item>
+    <name>杀戮风暴</name>
+    <displayname>杀戮风暴</displayname>
+    <icon>杀戮风暴</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>狂野</actiontype>
+    <price>400000</price>
+    <skill>
+      <skillname>回旋裂地</skillname>
+      <description>手持该武器时可以使用回旋裂地。</description>
+      <cd>7000</cd>
+      <mp>40</mp>
+    </skill>
+    <description>联合大学的工匠参考黑市流出的设计图制出的武器，设计者不明，仅知其代号为“Spark621”。
+融合了机械美学与毁灭力量的重型武器。主体配备的巨形锯齿轮刃充满了侵略性，轮缘的绿色光刃在高速旋转时可轻易撕碎装甲与血肉。
+轮缘的绿色锯齿，蕴含着作为前文明时代工业结晶的可控纳米毒素；因此只需轻触，便能腐蚀血肉。</description>
+    <data>
+      <level>40</level>
+      <weight>15</weight>
+      <dressup>刀-杀戮风暴</dressup>
+      <power>280</power>
+      <hp>0</hp>
+      <mp>0</mp>
+      <defence>0</defence>
+      <poison>60</poison>
+      <damagetype>魔法</damagetype>
+      <magictype>毒</magictype>
+    </data>
+  </item>
+  <item>
     <name>方天画戟一型</name>
     <displayname>方天画戟一型</displayname>
     <icon>方天画戟一型</icon>
