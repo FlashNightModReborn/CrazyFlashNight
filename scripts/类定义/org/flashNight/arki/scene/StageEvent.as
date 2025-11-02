@@ -23,6 +23,7 @@ class org.flashNight.arki.scene.StageEvent {
     public var stageprogress:Object; // 关卡状态
     public var performance:Array; // 关卡演出
     public var sound:Array; // 播放声音
+    public var performance_control:Object; // 性能调控
 
     // ————————————————————————
     // 构造函数
@@ -46,9 +47,13 @@ class org.flashNight.arki.scene.StageEvent {
         dialogue = ObjectUtil.toArray(data.Dialogue);
         performance = ObjectUtil.toArray(data.Performance);
         sound = ObjectUtil.toArray(data.Sound);
+        performance_control = data.PerformanceControl;
     }
 
     public function execute(){
+        // 性能调控（优先执行，确保性能优化在其他操作之前生效）
+        executePerformanceControl();
+
         //动画
         if (animation.Path){
             _root.最上层加载外部动画(animation.Path);
@@ -129,6 +134,35 @@ class org.flashNight.arki.scene.StageEvent {
         }
     }
 
+    /**
+     * 执行性能调控
+     * 根据XML配置的PerformanceControl节点执行性能等级调整
+     */
+    private function executePerformanceControl():Void {
+        // 检查是否有性能调控配置且帧计时器存在
+        if (!performance_control || !_root.帧计时器) return;
+
+        var action:String = performance_control.Action;
+        var message:String = performance_control.Message;
+
+        // 执行对应的性能调控操作
+        if (action == "SetLevel") {
+            // 操作1：设置到指定档位
+            var targetLevel:Number = Number(performance_control.Level);
+            _root.帧计时器.手动设置性能等级(targetLevel);
+
+        } else if (action == "Decrease") {
+            // 操作2：下降若干档位
+            var steps:Number = Number(performance_control.Steps) || 1;
+            _root.帧计时器.降低性能等级(steps);
+        }
+
+        // 显示提示消息
+        if (message && typeof message === "string" && message.length > 0) {
+            _root.最上层发布文字提示(message);
+        }
+    }
+
     public function clear(){
         parameters = null;
 
@@ -141,6 +175,7 @@ class org.flashNight.arki.scene.StageEvent {
         stageprogress = null;
         performance = null;
         sound = null;
+        performance_control = null;
 
         isDestroyed = true;
     }
