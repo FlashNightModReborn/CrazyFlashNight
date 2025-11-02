@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框界面" itemID="6652e908-000026b6" linkageExportForAS="true" linkageIdentifier="对话框界面" lastModified="1760889353" lastUniqueIdentifier="27">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框界面" itemID="6652e908-000026b6" linkageExportForAS="true" linkageIdentifier="对话框界面" lastModified="1762093394" lastUniqueIdentifier="27">
   <timeline>
     <DOMTimeline name="对话框界面">
       <layers>
@@ -74,7 +74,7 @@ on (release) {
               <elements>
                 <DOMSymbolInstance libraryItemName="button/Symbol 1880" symbolType="button">
                   <matrix>
-                    <Matrix a="1.92239379882813" d="1.92239379882813" tx="110" ty="382.95"/>
+                    <Matrix a="1.92239379882813" d="1.92239379882813" tx="63.4" ty="422.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -288,7 +288,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="mask" color="#9933CC" locked="true" outline="true" useOutlineView="true" autoNamed="false" layerType="mask">
+        <DOMLayer name="mask" color="#9933CC" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false" layerType="mask">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -299,14 +299,17 @@ on(rollOut){
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!18200 600|600 600!600 600|600 8100!600 8100|18200 8100!18200 8100|18200 600"/>
+                    <Edge fillStyle1="1" edges="!15486 8105S2[15487 8107 15490 8107!15490 8107[15512 8137 15540 8153!15540 8153|15569 8191!15569 8191|15586 8199!15586 8199[15603 8211 15615 8229!15615 8229|15674 8279!15674 8279|15683 8296!15683 8296|15712 8317!15712 8317|15716 8334
+!15716 8334|15771 8384!15771 8384|15772.5 8387!15772.5 8387|9554 8387!9554 8387[#2548.8F #20B7.57 9536 8363!9536 8363[9505 8338 9470 8322!9470 8322|9462 8290!9462 8290[9458 8290 9456 8288!9456 8288[9412 8250 9364 8232!9364 8232[9364 8224
+ 9361 8218!9361 8218[9352 8200 9323 8199!9323 8199[9323 8191 9319 8188!9319 8188[9301 8174 9282 8167!9282 8167[#243F.94 #1FD6.87 9268 8140.5!9268 8140.5|9268 8100!9268 8100|600 8100!600 8100|600 600!600 600|18200 600!18200 600|18200 8100
+!18200 8100|15477.5 8100!15477.5 8100[#3C79.23 #1FA7.21 15486 8105"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="外部立绘层" color="#FF800A" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="外部立绘层" color="#FF800A" parentLayerIndex="11" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -319,7 +322,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头像" color="#6589A2" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="头像" color="#6589A2" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -345,6 +348,26 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!15834 8077|15446 8077!15446 8077[#3C5C.49 #1F92.25 15460 8086!15460 8086[15464 8086 15469 8086!15469 8086[15473 8100 15486 8105!15486 8105[15487 8107 15490 8107!15490 8107[15512 8137 15540 8153!15540 8153|15569 8191!15569 8191|15586
+ 8199!15586 8199[15603 8211 15615 8229!15615 8229|15674 8279!15674 8279|15683 8296!15683 8296|15712 8317!15712 8317|15716 8334!15716 8334|15771 8384!15771 8384|15772.5 8387!15772.5 8387|15834 8387!15834 8387|15834 8077"/>
+                  </edges>
+                </DOMShape>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
