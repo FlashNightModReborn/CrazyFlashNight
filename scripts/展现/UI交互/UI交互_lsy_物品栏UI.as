@@ -1365,7 +1365,8 @@ _root.物品UI函数.执行安装配件 = function(matName:String){
 _root.物品UI函数.特殊卸下配件列表 = {
 	战术导轨: true,
 	战术背带: true,
-	战术鱼骨零件: true
+	战术鱼骨零件: true,
+	强化柄芯: true
 }
 
 _root.物品UI函数.执行卸下配件 = function(matName:String){
