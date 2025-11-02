@@ -1641,6 +1641,33 @@
     </data>
   </item>
   <item>
+    <name>校制式刀</name>
+    <displayname>校制式刀</displayname>
+    <icon>校制式刀</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>刀剑</actiontype>
+    <price>66300</price>
+    <skill>
+      <skillname>黑刀斩术</skillname>
+      <description>手持该武器时可释放漆黑斩术。</description>
+      <cd>5000</cd>
+      <hp>0</hp>
+      <mp>40</mp>
+    </skill>
+    <description>联合大学的流水线产品，为学校做出过贡献的学生通常手中都有一把。如果他们没有卖掉的话。
+虽然是量产货，但无论是美观还是实用程度都属上乘。</description>
+    <data>
+      <level>17</level>
+      <weight>2</weight>
+      <dressup>刀-校制式刀</dressup>
+      <power>180</power>
+      <hp>0</hp>
+      <defence>0</defence>
+      <evasion>20</evasion>
+    </data>
+  </item>
+  <item>
     <name>永恒之刃</name>
     <displayname>永恒之刃</displayname>
     <icon>永恒之刃</icon>
@@ -3332,7 +3359,13 @@
     <use>刀</use>
     <actiontype>刀剑</actiontype>
     <price>320000</price>
-    <skill>&lt;font color="#FFCC00"&gt;【主动战技】&lt;/font&gt;手持该武器时可以使用弧光斩。&lt;BR&gt;&lt;font color="#FFCC00"&gt;【战技信息】&lt;/font&gt;冷却4秒，消耗25MP。</skill>
+    <skill>
+      <skillname>黑刀斩术</skillname>
+      <description>手持该武器时可释放漆黑斩术。</description>
+      <cd>5000</cd>
+      <hp>0</hp>
+      <mp>40</mp>
+    </skill>
     <description>遥远的某个都市之中，即便文明和秩序仍旧存在，但在其中生存却远比末日艰难。
 一把看上去有点普通的双手大剑，并没有其他工坊的特色感，但是黑色的剑刃和护手却很好的提升了它的辨识度，是某位一阶收尾人使用的专属武器，据说在遇到漆黑噤默前他一直用这把武器来进行战斗。
 而他给出的说法是：“其他的武器怎么用都用太不顺手，但唯独杜兰达尔越用越有劲。”
