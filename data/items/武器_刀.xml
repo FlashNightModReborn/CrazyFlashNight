@@ -4459,6 +4459,37 @@ Library of Ruina, Project Moon.</description>
     </data>
   </item>
   <item>
+    <name>骨肉破碎锤</name>
+    <displayname>骨肉破碎锤</displayname>
+    <icon>骨肉破碎锤</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>狂野</actiontype>
+    <price>600000</price>
+    <skill>
+      <skillname>破坏殆尽</skillname>
+      <description>手持该武器时可以使用破坏殆尽。</description>
+      <cd>10000</cd>
+      <mp>50</mp>
+    </skill>
+    <description>既是信仰与力量的终极具象化，也是蛮荒与暴行的铁血象征。只有奉献了人类资格，进行最荒诞的武装改造的战士才能使用自如。
+造型以哥特式建筑为灵感，锤头是一座微型圣城的立体缩影，繁复的金属雕花镌刻着古老的教义符文。锤杆饰有华丽卷草纹，握柄处的束腰设计兼顾仪式感与握持力。作为神权武装的巅峰造物，每一次挥击都如审判降临。</description>
+    <data>
+      <level>60</level>
+      <weight>80</weight>
+      <dressup>刀-骨肉破碎锤</dressup>
+      <power>800</power>
+      <hp>0</hp>
+      <mp>0</mp>
+      <damagetype>破击</damagetype>
+      <magictype>巨体</magictype>
+      <rout>0.20</rout>
+      <slay>20</slay>
+      <vampirism>20</vampirism>
+      <criticalhit>20</criticalhit>
+    </data>
+  </item>
+  <item>
     <name>铉龙尺</name>
     <displayname>铉龙尺</displayname>
     <icon>铉龙尺</icon>
