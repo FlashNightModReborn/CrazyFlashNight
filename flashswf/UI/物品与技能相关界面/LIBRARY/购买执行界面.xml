@@ -145,50 +145,58 @@ function 计算购买总价(数量)
 
 function 计算售卖总价(数量)
 {
-	//这块代码我写的也是一坨，但是懒得管了，哈哈
 	this.leveltext.htmlText = "";
 	if (数量 == this.数量 && 数量 > 1)
 	{
 		return;
 	}
 	this.数量 = 数量;
-	var 售卖倍率 = 0.25;
-	var 原总价 = Math.floor(this.单价 * 数量 * 售卖倍率);
-	if (_root.主角被动技能.口才 && _root.主角被动技能.口才.启用)
-	{
-		售卖倍率 += _root.主角被动技能.口才.等级 * 0.025;
-	}
-	this.总价 = Math.floor(this.单价 * 数量 * 售卖倍率);
+
+	// 使用统一的售卖价格计算工具函数
+	var priceInfo = _root.物品UI函数.计算售卖总价(this.sellItem, 数量);
+	this.总价 = priceInfo.总价;
+
 	var text1 = "<FONT COLOR=\'#33FF00\'>卖出</FONT> " + this.displayname;
 	var text3 = "<FONT COLOR=\'#33FF00\'>";
-	var 提价 = this.总价 - 原总价;
-	if(提价 > 0){
-		text3 += "口才加成 " + 提价 +"  ";
+
+	// 计算口才加成（装备+tier的口才加成）
+	var 口才加成 = (priceInfo.基础价格 + priceInfo.tier价格) - priceInfo.原总价;
+	if(口才加成 > 0){
+		text3 += "口才加成 " + 口才加成 +"  ";
 	}
 
-	var 强化加成 = 0;
+	// 显示强化信息
 	if (this.物品强化度 > 1)
 	{
 		text1 += " + " + this.物品强化度;
-		//var 强化加成 = _root.物品UI函数.计算强化收益(this.总价, this.物品强化度);
-		var 强化加成 = _root.物品UI函数.计算强化收益(原总价, this.物品强化度);
-		text3 += "强化加成 " + 强化加成;
+		if(priceInfo.强化收益 > 0){
+			text3 += "强化加成 " + priceInfo.强化收益;
+		}
 		this.leveltext.htmlText = text3;
-		this.总价 += 强化加成;
 	}
 	else
 	{
 		text1 += " * " + 数量;
 	}
+
 	this.nametext.htmlText = text1;
 	var text2 = "获得 $" + this.总价;
 
-	提价 = this.总价 - 原总价;
-	if (提价 > 0)
+	// 显示总加成信息
+	var 总加成 = this.总价 - priceInfo.原总价;
+	if (总加成 > 0)
 	{
 		if (isNaN(this.物品强化度))
 		{
-			text2 += " <FONT COLOR=\'#33FF00\'>口才加成 " + 提价 + "</FONT>";
+			var 显示文本 = "";
+			if(priceInfo.tier价格 > 0){
+				显示文本 = "进阶+" + (口才加成 > 0 ? "口才" : "") + "加成 " + 总加成;
+			}else if(口才加成 > 0){
+				显示文本 = "口才加成 " + 总加成;
+			}
+			if(显示文本 != ""){
+				text2 += " <FONT COLOR=\'#33FF00\'>" + 显示文本 + "</FONT>";
+			}
 		}
 		else
 		{

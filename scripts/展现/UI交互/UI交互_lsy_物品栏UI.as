@@ -210,6 +210,72 @@ _root.物品UI函数.计算强化收益 = function(当前总价, 强化等级){
 	return 强化收益;
 }
 
+/**
+ * 计算售卖总价（统一的售卖价格计算函数）
+ * @param item 物品对象（可以是装备或普通物品）
+ * @param 数量 售卖数量
+ * @return 返回一个对象，包含：{总价, 原总价, 基础价格, 售卖倍率, tier价格, 强化收益}
+ */
+_root.物品UI函数.计算售卖总价 = function(item, 数量){
+	var result = {
+		总价: 0,
+		原总价: 0,        // 基础25%折扣价（不含口才加成）
+		基础价格: 0,      // 装备价格 * 售卖倍率（含口才加成）
+		售卖倍率: 0.25,
+		tier价格: 0,      // tier价格 * 售卖倍率（含口才加成）
+		强化收益: 0
+	};
+
+	// 获取物品名称和数据
+	var 物品名 = item.name;
+	var itemData = ItemUtil.getRawItemData(物品名);
+	if(!itemData || !itemData.price){
+		return result;
+	}
+
+	// 计算售卖倍率（基础25% + 口才加成）
+	if(_root.主角被动技能.口才 && _root.主角被动技能.口才.启用){
+		result.售卖倍率 += _root.主角被动技能.口才.等级 * 0.025;
+	}
+
+	// 计算基础价格（物品价格 * 数量 * 售卖倍率）
+	var 单价 = parseInt(itemData.price);
+	result.基础价格 = Math.floor(单价 * 数量 * result.售卖倍率);
+	result.总价 = result.基础价格;
+
+	// 计算原总价（装备基础25%售卖价）
+	result.原总价 = Math.floor(单价 * 数量 * 0.25);
+
+	// 如果是装备，计算 tier 进阶插件价格
+	if(item.value && item.value.tier){
+		var tierName = item.value.tier;
+		var tierMaterialName = EquipmentUtil.tierNameToMaterialDict[tierName];
+		if(tierMaterialName){
+			var tierMaterialData = ItemUtil.getRawItemData(tierMaterialName);
+			if(tierMaterialData && tierMaterialData.price){
+				var tierPrice = parseInt(tierMaterialData.price);
+				if(!isNaN(tierPrice)){
+					// tier 插件价格也应用相同的售卖倍率
+					result.tier价格 = Math.floor(tierPrice * result.售卖倍率);
+					result.总价 += result.tier价格;
+
+					// 原总价也要加上tier的基础25%售卖价
+					result.原总价 += Math.floor(tierPrice * 0.25);
+				}
+			}
+		}
+	}
+
+	// 如果是装备且有强化等级，计算强化收益
+	if(item.value && item.value.level && item.value.level > 1){
+		// 强化收益基于基础价格（不包含tier）计算
+		result.强化收益 = this.计算强化收益(result.基础价格, item.value.level);
+		result.总价 += result.强化收益;
+	}
+
+	return result;
+}
+
 
 
 //排列背包图标
