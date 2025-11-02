@@ -3576,7 +3576,6 @@ Rnfmabj, Children of the City.</description>
     <icon>诺亚镇暴棍</icon>
     <type>武器</type>
     <use>刀</use>
-    <actiontype>短柄</actiontype>
     <price>218400</price>
     <skill>
       <skillname>凶斩</skillname>
@@ -3636,7 +3635,7 @@ Rnfmabj, Children of the City.</description>
       <cd>7000</cd>
       <mp>40</mp>
     </skill>
-    <description>联合大学的工匠参考黑市流出的设计图制出的武器，设计者不明，仅知其代号为“Spark621”。
+    <description>联合大学的工匠参考黑市流出的设计图制出的武器，设计者信息不明，仅知代号为“Spark621”。
 融合了机械美学与毁灭力量的重型武器。主体配备的巨形锯齿轮刃充满了侵略性，轮缘的绿色光刃在高速旋转时可轻易撕碎装甲与血肉。
 轮缘的绿色锯齿，蕴含着作为前文明时代工业结晶的可控纳米毒素；因此只需轻触，便能腐蚀血肉。</description>
     <data>
@@ -3650,6 +3649,60 @@ Rnfmabj, Children of the City.</description>
       <poison>60</poison>
       <damagetype>魔法</damagetype>
       <magictype>毒</magictype>
+    </data>
+  </item>
+  <item>
+    <name>夜刃青霓刀</name>
+    <displayname>夜刃青霓刀</displayname>
+    <icon>夜刃青霓刀</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>刀剑</actiontype>
+    <price>360000</price>
+    <skill>
+      <skillname>弧光斩</skillname>
+      <description>手持该武器时可以使用弧光斩。</description>
+      <cd>4000</cd>
+      <mp>40</mp>
+    </skill>
+    <description>联合大学的工匠参考黑市流出的设计图制出的武器，设计者信息不明，仅知代号为“Spark621”。
+融合了科技与传统太刀元素的利刃，刃缘锐利且带有冷冽的蓝光，仿佛能切割黑暗；刀柄以红色绝缘缠带包裹。高速斩击时，蓝光会随刀锋舞动，让敌人在科技与武术的双重压制下无所遁形。
+看似普通的锋刃之中蕴含着电流放射器；因此只需轻触，便能使目标如遭雷击。</description>
+    <data>
+      <level>36</level>
+      <weight>2.5</weight>
+      <dressup>刀-夜刃青霓刀</dressup>
+      <power>285</power>
+      <damagetype>魔法</damagetype>
+      <magictype>电</magictype>
+      <criticalhit>25</criticalhit>
+    </data>
+  </item>
+  <item>
+    <name>夜刃青霓锥</name>
+    <displayname>夜刃青霓锥</displayname>
+    <icon>夜刃青霓锥</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>短兵</actiontype>
+    <price>174000</price>
+    <skill>
+      <skillname>追踪五连</skillname>
+      <description>手持该武器可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人。战技启动时，按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
+      <cd>7000</cd>
+      <mp>50</mp>
+    </skill>
+    <description>联合大学的工匠参考黑市流出的设计图制出的武器，设计者信息不明，仅知代号为“Spark621”。
+紧凑的形制彰显了突袭的优势，刀柄采取红色绝缘缠带，刀身则是充满机械感的黑色锐刺，末端散发着幽蓝电流光刃，可进行精准的穿刺。适合在近战中实施快速突袭、破甲或补刀。
+看似普通的锋刃之中蕴含着电流放射器；因此只需轻触，便能使目标如遭雷击。</description>
+    <data>
+      <level>35</level>
+      <weight>1.5</weight>
+      <dressup>刀-夜刃青霓锥</dressup>
+      <power>275</power>
+      <damagetype>魔法</damagetype>
+      <magictype>电</magictype>
+      <evasion>50</evasion>
     </data>
   </item>
   <item>
@@ -3673,9 +3726,6 @@ Rnfmabj, Children of the City.</description>
       <weight>10</weight>
       <dressup>刀-方天画戟一型</dressup>
       <power>480</power>
-      <hp>0</hp>
-      <mp>0</mp>
-      <defence>0</defence>
       <evasion>30</evasion>
     </data>
   </item>
