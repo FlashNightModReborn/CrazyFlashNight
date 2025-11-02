@@ -149,6 +149,30 @@ _root.物品UI函数.出售物品 = function(){
 		this.showtext.text = "出售失败：物品已不在原位"
 		return false;
 	}
+
+	// 自动拆除装备上的配件
+	if(item.value && item.value.mods && item.value.mods.length > 0){
+		var mods = item.value.mods.slice(); // 复制数组，避免循环中修改原数组
+		var 卸载数量 = mods.length;
+
+		// 将所有配件返还到材料栏
+		var arr = [];
+		for(var i = 0; i < mods.length; i++){
+			arr.push({name: mods[i], value: 1});
+		}
+		ItemUtil.acquire(arr);
+
+		// 清空配件槽（进阶插件tier不受影响）
+		item.value.mods = [];
+
+		// 播放卸下配件音效
+		_root.播放音效("9mmclip2.wav");
+
+		// 显示拆除的具体配件名称
+		var 配件列表 = mods.join("、");
+		_root.最上层发布文字提示("已自动卸下配件：" + 配件列表);
+	}
+
 	if(isNaN(this.物品强化度)){
 		var totalValue = this.sellCollection.isDict ? item : item.value;
 		if(totalValue < this.数量){
