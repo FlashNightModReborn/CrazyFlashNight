@@ -137,24 +137,36 @@ class org.flashNight.arki.scene.StageEvent {
     /**
      * 执行性能调控
      * 根据XML配置的PerformanceControl节点执行性能等级调整
+     * 支持配置保持时间Duration参数
      */
     private function executePerformanceControl():Void {
         // 检查是否有性能调控配置且帧计时器存在
-        if (!performance_control || !_root.帧计时器) return;
+        if (!performance_control) return;
 
         var action:String = performance_control.Action;
         var message:String = performance_control.Message;
+
+        // 读取保持时间（秒），如果未配置则使用默认值
+        var duration:Number = Number(performance_control.Duration);
+        if (isNaN(duration) || duration <= 0) {
+            duration = undefined; // 使用方法的默认值（5秒）
+        }
 
         // 执行对应的性能调控操作
         if (action == "SetLevel") {
             // 操作1：设置到指定档位
             var targetLevel:Number = Number(performance_control.Level);
-            _root.帧计时器.手动设置性能等级(targetLevel);
+            _root.帧计时器.手动设置性能等级(targetLevel, duration);
 
         } else if (action == "Decrease") {
             // 操作2：下降若干档位
             var steps:Number = Number(performance_control.Steps) || 1;
-            _root.帧计时器.降低性能等级(steps);
+            _root.帧计时器.降低性能等级(steps, duration);
+
+        } else if (action == "Increase") {
+            // 操作3：提升若干档位（新增）
+            var steps:Number = Number(performance_control.Steps) || 1;
+            _root.帧计时器.提升性能等级(steps, duration);
         }
 
         // 显示提示消息

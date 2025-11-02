@@ -54,6 +54,12 @@
         <Event>
             <EventName>Start</EventName>
             <Message>任务目标：找到并保护仪器与各个重要单位</Message>
+            <PerformanceControl>
+                <Action>Decrease</Action>
+                <Steps>2</Steps>
+                <Duration>10</Duration>
+                <Message>预警：高强度战斗即将开始，信号被剧烈压制！</Message>
+            </PerformanceControl>
         </Event>
         <Event>
             <EventName>WaveFinished</EventName>
