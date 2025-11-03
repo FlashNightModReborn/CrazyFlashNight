@@ -1678,6 +1678,32 @@
                 <Text>而且实际上学校里的学生很多也挺喜欢，虽然那些实用又花哨的武器按照原价的话他们至少有一大半买不起。</Text>
             </SubDialogue>
         </Dialogue>
+        <Dialogue id="4">
+            <SubDialogue id="0">
+                <Name>Vanshuther</Name>
+                <Title>工匠</Title>
+                <Char>Vanshuther</Char>
+                <Text>你应该注意到了，校门口的订货装置卖的东西和我这里卖的武器并不一样，无论是质量还是价格都是天差地别。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Vanshuther</Name>
+                <Title>工匠</Title>
+                <Char>Vanshuther</Char>
+                <Text>因为订货装置的配送基本由无人机完成，而这个过程是存在一定风险的，比如说无人机失控，又或是被劫货等突发情况。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>Vanshuther</Name>
+                <Title>工匠</Title>
+                <Char>Vanshuther</Char>
+                <Text>这个情况导致远程订货装置最多只售卖中高端产品，这样就算真的出现了损失，货没送到买家手上，我们也赔得起，不至于损失信誉。至于工坊这里的高端产品，我们只负责当面交货，确保能送到你手上。</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>Vanshuther</Name>
+                <Title>工匠</Title>
+                <Char>Vanshuther</Char>
+                <Text>事先说好，我们不承担后续的护送安保，那是另外的价钱。不过能用上这里的武器的强者基本也不需要我们这个级别的安保规格。</Text>
+            </SubDialogue>
+        </Dialogue>
     </Dialogues>
     <Dialogues>
         <Name>武器订购系统</Name>
@@ -1703,6 +1729,14 @@
                 <Title>购物设备</Title>
                 <Char>武器订购系统</Char>
                 <Text>有时候学校不方便外人进入，因此可以通过远程设备下达订单。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>武器订购系统</Name>
+                <Title>购物设备</Title>
+                <Char>武器订购系统</Char>
+                <Text>……倘若需要其他产品，请入校内工坊详谈。</Text>
             </SubDialogue>
         </Dialogue>
     </Dialogues>

@@ -1256,6 +1256,31 @@
     </data>
   </item>
   <item>
+    <name>合家欢</name>
+    <displayname>合家欢</displayname>
+    <icon>合家欢</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>刀剑</actiontype>
+    <skill>
+      <skillname>黑刀斩术</skillname>
+      <description>手持该武器时可释放漆黑斩术。</description>
+      <cd>5000</cd>
+      <hp>0</hp>
+      <mp>40</mp>
+    </skill>
+    <price>93600</price>
+    <description>通体漆黑的刀柄没有多余的装饰，只有银蓝色的刀刃与之形成鲜明对比；虽然没有用于格挡的刀镡，不过碳纤维刀柄的人体工程学设计对此略有弥补。
+刀是老英雄，越砍越奋勇。</description>
+    <data>
+      <level>15</level>
+      <weight>3</weight>
+      <dressup>刀-合家欢</dressup>
+      <power>195</power>
+      <criticalhit>10</criticalhit>
+    </data>
+  </item>
+  <item>
     <name>光剑天秤</name>
     <displayname>光剑天秤</displayname>
     <icon>光剑天秤</icon>
