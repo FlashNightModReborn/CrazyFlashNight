@@ -2612,6 +2612,36 @@ MP7冲锋枪，由DEU国的黑克勒-科赫设计，由DEU国的黑克勒-科赫
       <impact>100</impact>
     </data>
   </item>
+  <item weapontype="大威力手枪">
+    <name>BOUNCER LEONE</name>
+    <displayname>BOUNCER LEONE</displayname>
+    <icon>BOUNCER LEONE</icon>
+    <type>武器</type>
+    <use>手枪</use>
+    <price>291200</price>
+    <description>联合大学的工匠参考黑市流出的设计图制出的武器，设计者信息不明，仅知代号为“Spark621”。
+枪身之中蕴含着作为前文明时代工业结晶的微型熔断装置；因此每一发子弹都能熔穿血肉。</description>
+    <data>
+      <level>36</level>
+      <weight>2</weight>
+      <dressup>枪-手枪-BOUNCER LEONE</dressup>
+      <capacity>15</capacity>
+      <split>1</split>
+      <diffusion>2</diffusion>
+      <interval>200</interval>
+      <velocity>40</velocity>
+      <bullet>穿刺子弹</bullet>
+      <sound>usp_unsil-1.wav</sound>
+      <muzzle>马格南手枪枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>马格南手枪弹药</clipname>
+      <bulletsize>45</bulletsize>
+      <power>205</power>
+      <impact>100</impact>
+      <damagetype>魔法</damagetype>
+      <magictype>热</magictype>
+    </data>
+  </item>
   <item weapontype="压制机枪">
     <name>XM556-H-Stinger</name>
     <displayname>XM556-H-Stinger</displayname>
