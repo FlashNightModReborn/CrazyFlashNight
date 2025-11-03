@@ -107,6 +107,21 @@
         <description>玻纤增强聚合物板体，引导狂野攻击风格，提升近战威力。</description>
     </mod>
     <mod>
+        <name>绳扣穿孔片</name>
+        <use>刀</use>
+        <stats>
+            <override>
+                <skillmultipliers>
+                    <瞬步斩>2.5</瞬步斩>
+                </skillmultipliers>
+            </override>
+            <flat>
+                <weight>0.3</weight>
+            </flat>
+        </stats>
+        <description>低碳钢片冲压成形的简易固定组件，优化防脱手功能，为瞬步斩赋予150%的锋利度加成。</description>
+    </mod>
+    <mod>
         <name>手柄皮</name>
         <use>刀</use>
         <skill>
@@ -378,8 +393,8 @@
         <stats>
             <override>
                 <skillmultipliers>
-                    <瞬步斩>1.5</瞬步斩>
-                    <凶斩>1.5</凶斩>
+                    <瞬步斩>2.5</瞬步斩>
+                    <凶斩>2.5</凶斩>
                 </skillmultipliers>
             </override>
             <flat>
@@ -732,6 +747,22 @@
             <mp>30</mp>
         </skill>
         <description>千年古法锻玄铁为环，融合光纤数据系统，赋予追踪五连刺技能。</description>
+    </mod>
+    <mod>
+        <name>矩锁多点挂槽板</name>
+        <use>刀</use>
+        <stats>
+            <override>
+                <skillmultipliers>
+                    <拔刀术>3.5</拔刀术>
+                    <瞬步斩>3.5</瞬步斩>
+                </skillmultipliers>
+            </override>
+            <flat>
+                <weight>1.5</weight>
+            </flat>
+        </stats>
+        <description>战术快速锁紧平台，六点矩阵分力结构，为拔刀术和瞬步斩赋予250%的锋利度加成。</description>
     </mod>
     <mod>
         <name>赤旌熔脊柄</name>
