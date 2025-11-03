@@ -129,6 +129,12 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
         if (Obj.血量上限击溃 || shooter.击溃) {
             Obj.击溃 = Math.max(Obj.血量上限击溃 > 0 ? Obj.血量上限击溃 : 0, shooter.击溃 > 0 ? shooter.击溃 : 0);
         }
+        if (Obj.斩杀 || shooter.斩杀) {
+            Obj.斩杀 = Math.max(Obj.斩杀 > 0 ? Obj.斩杀 : 0, shooter.斩杀 > 0 ? shooter.斩杀 : 0);
+        }
+        if (!Obj.暴击 && shooter.暴击) {
+            Obj.暴击 = shooter.暴击;
+        }
     }
     
     /**

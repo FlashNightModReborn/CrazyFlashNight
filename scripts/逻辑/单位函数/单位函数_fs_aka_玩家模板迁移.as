@@ -971,6 +971,16 @@ _root.主角函数.根据模式重新读取武器加成 = function(模式) {
     } else {
         this.命中加成 = this.基础命中加成;
     }
+    if (this[模式 + "暴击"]) {
+        this.暴击 = this[模式 + "暴击"];
+    } else {
+        this.暴击 = undefined;
+    }
+    if (this[模式 + "斩杀"]) {
+        this.斩杀 = this[模式 + "斩杀"];
+    } else {
+        this.斩杀 = 0;
+    }
     this.命中率 = Math.max(this.基础命中率 * (1 + this.命中加成 / 100), DodgeHandler.HIT_RATE_LIMIT);
 }
 

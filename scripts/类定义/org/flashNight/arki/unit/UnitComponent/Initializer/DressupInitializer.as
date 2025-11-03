@@ -306,7 +306,23 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             target[prefix + "吸血"] = data.vampirism ? data.vampirism : 0;
             target[prefix + "击溃"] = data.rout ? data.rout : 0;
             target[prefix + "命中加成"] = data.accuracy ? data.accuracy : 0;
-            target[prefix + "暴击"] = data.criticalhit ? data.criticalhit : null;
+            //target[prefix + "暴击"] = data.criticalhit ? data.criticalhit : null;
+            var temp_criticalhit = data.criticalhit ? data.criticalhit : null;
+            if (!isNaN(Number(temp_criticalhit))) {
+                target[prefix + "暴击"] = function(当前子弹) {
+                    if (_root.成功率(Number(temp_criticalhit))) {
+                        return 1.5;
+                    }
+                    return 1;
+                };
+            } else if (temp_criticalhit == "满血暴击") {
+                target[prefix + "暴击"] = function(当前子弹) {
+                    if (当前子弹.hitTarget.hp >= 当前子弹.hitTarget.hp满血值) {
+                        return 1.5;
+                    }
+                    return 1;
+                };
+            }
             target[prefix + "斩杀"] = data.slay ? data.slay : 0;
         }else{
             if(data.poison) target.基础毒 += data.poison;
