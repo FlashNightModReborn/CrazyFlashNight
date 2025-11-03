@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-Gazer" itemID="665b6b5e-000044ae" linkageExportForAS="true" linkageIdentifier="敌人-Gazer" lastModified="1755702554" lastUniqueIdentifier="54">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-Gazer" itemID="665b6b5e-000044ae" linkageExportForAS="true" linkageIdentifier="敌人-Gazer" lastModified="1762183860" lastUniqueIdentifier="54">
   <timeline>
     <DOMTimeline name="敌人-Gazer">
       <layers>
@@ -113,6 +113,10 @@ hp_max = 30000;
 魔法抗性.首领 = 10;
 魔法抗性.人类 = 50;
 魔法抗性.统合 = 50;
+掉落物 = {};
+掉落物.名字 = "矩锁多点挂槽板";
+掉落物.概率 = 50;
+掉落物.最小逆向等级 = 6;
 
 /*宠物属性的应用示例：
 if(宠物属性.发色){
