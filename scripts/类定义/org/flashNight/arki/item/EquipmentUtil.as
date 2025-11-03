@@ -157,6 +157,23 @@ class org.flashNight.arki.item.EquipmentUtil{
                     mod.weapontypeDict = wdict;
                 }
             }
+            // 解析 grantsWeapontype 标签
+            if(mod.grantsWeapontype){
+                var grantsArr:Array = mod.grantsWeapontype.split(",");
+                if(grantsArr.length > 0){
+                    var grantDict:Object = {};
+                    for(var grantIndex:Number = 0; grantIndex < grantsArr.length; grantIndex++){
+                        grantDict[grantsArr[grantIndex]] = true;
+                    }
+                    mod.grantsWeapontypeDict = grantDict;
+                }
+            }
+            // 解析 detachPolicy 标签，默认为 "single"
+            if(mod.detachPolicy){
+                mod.detachPolicy = mod.detachPolicy;
+            }else{
+                mod.detachPolicy = "single";
+            }
             // 调整百分比区的值为小数
             var percentage:Object = mod.stats.percentage;
             for(var key:String in percentage){
@@ -224,31 +241,46 @@ class org.flashNight.arki.item.EquipmentUtil{
         var list:Array = [];
         var mods:Array = item.value.mods;
 
-        // 查找长枪类装备是否有导轨
-        var hasRail:Boolean = false;
-        if(rawItemData.use === "长枪"){
-            if(rawItemData.weapontype === "突击步枪") hasRail = true;
-            else{
-                for(var i:Number = 0; i < mods.length; i++){
-                    if(mods[i] === "战术导轨" || mods[i] === "战术鱼骨零件"){
-                        hasRail = true;
-                        break;
-                    }
+        // 收集所有已授予的武器类型（包括武器自身类型和配件授予的类型）
+        var grantedTypes:Object = {};
+
+        // 1. 武器自身的weapontype
+        if(rawItemData.weapontype){
+            grantedTypes[rawItemData.weapontype] = true;
+        }
+
+        // 2. 遍历已安装的配件，收集它们授予的武器类型
+        for(var i:Number = 0; i < mods.length; i++){
+            var installedMod:Object = modDict[mods[i]];
+            if(installedMod && installedMod.grantsWeapontypeDict){
+                for(var grantedType:String in installedMod.grantsWeapontypeDict){
+                    grantedTypes[grantedType] = true;
                 }
             }
         }
 
+        // 3. 遍历候选配件列表，检查是否可用
         var useList:Array = modUseLists[rawItemData.use];
         for(var i:Number = 0; i < useList.length; i++){
             var modName:String = useList[i];
             var modData:Object = modDict[modName];
             var weapontypeDict:Object = modData.weapontypeDict;
+
             if(!weapontypeDict){
+                // 没有武器类型限制，直接允许
                 list.push(modName);
-            }else if(weapontypeDict[rawItemData.weapontype]){
-                list.push(modName);
-            }else if(hasRail && weapontypeDict["突击步枪"]){
-                list.push(modName);
+            }else{
+                // 检查是否有任何已授予的类型与配件要求的类型匹配
+                var canUse:Boolean = false;
+                for(var requiredType:String in weapontypeDict){
+                    if(grantedTypes[requiredType]){
+                        canUse = true;
+                        break;
+                    }
+                }
+                if(canUse){
+                    list.push(modName);
+                }
             }
         }
         return list;

@@ -1428,13 +1428,6 @@ _root.物品UI函数.执行安装配件 = function(matName:String){
 	}
 }
 
-_root.物品UI函数.特殊卸下配件列表 = {
-	战术导轨: true,
-	战术背带: true,
-	战术鱼骨零件: true,
-	强化柄芯: true
-}
-
 _root.物品UI函数.执行卸下配件 = function(matName:String){
 	var item = this.当前物品;
 	var mods = item.value.mods;
@@ -1444,7 +1437,10 @@ _root.物品UI函数.执行卸下配件 = function(matName:String){
 		}
 	}
 	if(mods.length > 0 && index < mods.length){
-		if(_root.物品UI函数.特殊卸下配件列表[matName]){
+		// 从配置中读取卸载行为
+		var modData = EquipmentUtil.modDict[matName];
+		if(modData && modData.detachPolicy === "cascade"){
+			// 级联卸载：卸下所有配件
 			var arr = [];
 			for(var i=0; i< mods.length; i++){
 				arr.push({name:mods[i],value:1});
@@ -1452,6 +1448,7 @@ _root.物品UI函数.执行卸下配件 = function(matName:String){
 			ItemUtil.acquire(arr);
 			item.value.mods = [];
 		}else{
+			// 单个卸载：只卸下当前配件
 			ItemUtil.singleAcquire(matName, 1);
 			mods.splice(index, 1);
 		}

@@ -62,6 +62,8 @@
     <mod>
         <name>战术导轨</name>
         <use>长枪</use>
+        <grantsWeapontype>突击步枪</grantsWeapontype>
+        <detachPolicy>cascade</detachPolicy>
         <description>使子类不为[突击步枪]的枪械可以安装对应子类的配件。</description>
     </mod>
     <mod>
@@ -138,6 +140,7 @@
                 <weight>2</weight>
             </flat>
         </stats>
+        <detachPolicy>cascade</detachPolicy>
         <description>将装备的配件槽拓展至3个。</description>
     </mod>
     <mod>
@@ -366,6 +369,7 @@
                 <weight>2</weight>
             </flat>
         </stats>
+        <detachPolicy>cascade</detachPolicy>
         <description>高强度内核加固条，将武器配件槽扩展至3个。</description>
     </mod>
     <mod>
@@ -483,6 +487,8 @@
                 <weight>1</weight>
             </flat>
         </stats>
+        <grantsWeapontype>突击步枪</grantsWeapontype>
+        <detachPolicy>cascade</detachPolicy>
         <description>使子类不为[突击步枪]的枪械可以安装对应子类的配件，并将枪械的配件槽拓展至3个。</description>
     </mod>
     <mod>
