@@ -4378,7 +4378,7 @@ Library of Ruina, Project Moon.</description>
       <dressup>刀-血能源刃</dressup>
       <power>485</power>
       <defence>0</defence>
-      <rout>0.15</rout>
+      <rout>0.05</rout>
       <vampirism>15</vampirism>
       <criticalhit>15</criticalhit>
     </data>
@@ -4481,7 +4481,7 @@ Library of Ruina, Project Moon.</description>
       <cd>8000</cd>
       <mp>50</mp>
     </skill>
-    <price>500000</price>
+    <price>630000</price>
     <description>联合大学的最上等的订制武器之一。长柄尖端附有极不规则的刀刃，所过之处能够汲取部分物质作为能量补给使用者。
 猩红的锋刃内蕴含着作为前文明时代工业结晶的微型分解装置；因此只需轻触，便能使目标溃烂。</description>
     <data>
@@ -4490,7 +4490,7 @@ Library of Ruina, Project Moon.</description>
       <dressup>刀-斩血乱刃戟</dressup>
       <power>500</power>
       <defence>0</defence>
-      <rout>0.10</rout>
+      <rout>0.05</rout>
       <evasion>10</evasion>
       <vampirism>10</vampirism>
       <criticalhit>10</criticalhit>
@@ -4557,7 +4557,7 @@ Library of Ruina, Project Moon.</description>
     <type>武器</type>
     <use>刀</use>
     <actiontype>狂野</actiontype>
-    <price>600000</price>
+    <price>900000</price>
     <skill>
       <skillname>破坏殆尽</skillname>
       <description>手持该武器时可以使用破坏殆尽。</description>
@@ -4575,9 +4575,9 @@ Library of Ruina, Project Moon.</description>
       <mp>0</mp>
       <damagetype>破击</damagetype>
       <magictype>巨体</magictype>
-      <rout>0.20</rout>
-      <slay>20</slay>
-      <vampirism>20</vampirism>
+      <rout>0.15</rout>
+      <slay>10</slay>
+      <vampirism>10</vampirism>
       <criticalhit>20</criticalhit>
     </data>
   </item>
@@ -4723,7 +4723,7 @@ Library of Ruina, Project Moon.</description>
     <type>武器</type>
     <use>刀</use>
     <actiontype>长棍</actiontype>
-    <price>800000</price>
+    <price>1200000</price>
     <skill>
       <skillname>狼跳</skillname>
       <description>手持该武器时可以使用狼跳。</description>
