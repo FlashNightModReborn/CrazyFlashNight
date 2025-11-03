@@ -376,17 +376,17 @@
         <name>挂环指槽板</name>
         <use>刀</use>
         <stats>
+            <override>
+                <skillmultipliers>
+                    <瞬步斩>1.5</瞬步斩>
+                    <凶斩>1.5</凶斩>
+                </skillmultipliers>
+            </override>
             <flat>
                 <weight>0.5</weight>
             </flat>
         </stats>
-        <skill>
-            <skillname>狼跳</skillname>
-            <description>经过挂环指槽板改装的武器可以使用狼跳。</description>
-            <cd>8000</cd>
-            <mp>35</mp>
-        </skill>
-        <description>带指槽的侧板组件，优化握持防脱，赋予狼跳技能。</description>
+        <description>带指槽的侧板组件，优化握持防脱，为瞬步斩和凶斩赋予150%的锋利度加成。</description>
     </mod>
     <mod>
         <name>电击导能柄</name>
