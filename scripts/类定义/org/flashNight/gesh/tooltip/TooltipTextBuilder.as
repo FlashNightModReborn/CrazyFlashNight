@@ -57,23 +57,91 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     return result;
   }
 
-  // === 生成刀技乘数（重构后：从XML配置读取） ===
-  public static function buildBladeSkillMultipliers(item:Object):Array {
+  // === 生成刀技乘数（重构后：从XML配置读取，显示插件影响） ===
+  public static function buildBladeSkillMultipliers(item:Object, baseItem:BaseItem):Array {
     var result = [];
-    if (item.use === "刀" && item.data && item.data.skillmultipliers) {
-      var skillMultipliers = item.data.skillmultipliers;
-      var skillNames = ["凶斩","瞬步斩","龙斩","拔刀术"];
+    if (item.use !== "刀") return result;
 
-      for (var i=0; i<skillNames.length; i++) {
-        var skillName = skillNames[i];
-        var multiplier = Number(skillMultipliers[skillName]);
-        if (!isNaN(multiplier) && multiplier > 1) {
+    // 获取基础数据和最终数据
+    var baseSkillMultipliers = (item.data && item.data.skillmultipliers) ? item.data.skillmultipliers : null;
+    var finalSkillMultipliers = null;
+    var hasEquipData = false;
+
+    if (baseItem && baseItem.getData != undefined) {
+      var calculatedData = baseItem.getData();
+      if (calculatedData && calculatedData.data && calculatedData.data.skillmultipliers) {
+        finalSkillMultipliers = calculatedData.data.skillmultipliers;
+        hasEquipData = true;
+      }
+    }
+
+    // 如果没有计算后的数据，使用原始数据
+    if (!finalSkillMultipliers) {
+      finalSkillMultipliers = baseSkillMultipliers;
+    }
+
+    if (!finalSkillMultipliers && !baseSkillMultipliers) return result;
+
+    // 收集所有技能名称（基础和最终的并集）
+    var skillNames = {};
+    if (baseSkillMultipliers) {
+      for (var key in baseSkillMultipliers) {
+        if (ObjectUtil.isInternalKey(key)) continue;
+        skillNames[key] = true;
+      }
+    }
+    if (finalSkillMultipliers) {
+      for (var key in finalSkillMultipliers) {
+        if (ObjectUtil.isInternalKey(key)) continue;
+        skillNames[key] = true;
+      }
+    }
+
+    // 对每个技能显示变化前后的值（类似魔法抗性的逻辑）
+    for (var skillName:String in skillNames) {
+      var baseMultiplier = (baseSkillMultipliers && baseSkillMultipliers[skillName]) ? baseSkillMultipliers[skillName] : null;
+      var finalMultiplier = (finalSkillMultipliers && finalSkillMultipliers[skillName]) ? finalSkillMultipliers[skillName] : null;
+
+      // 转换为数字，默认为1（无加成）
+      var baseNum = Number(baseMultiplier);
+      if (isNaN(baseNum) || baseNum <= 1) baseNum = 1;
+
+      var finalNum = Number(finalMultiplier);
+      if (isNaN(finalNum) || finalNum <= 1) finalNum = 1;
+
+      // 如果两者都是1（无加成），跳过显示
+      if (baseNum == 1 && finalNum == 1) continue;
+
+      // 若没有实际装备数值或实际数值与原始数值相等，则打印原始数值
+      if (!hasEquipData || finalNum == baseNum) {
+        if (baseNum > 1) {
           result.push(
             TooltipFormatter.color("【技能加成】", TooltipConstants.COL_HL),
-            "使用", skillName, "享受", String((multiplier-1)*100), TooltipConstants.SUF_PERCENT, "锋利度增益",
+            "使用", skillName, "享受", String((baseNum-1)*100), TooltipConstants.SUF_PERCENT, "锋利度增益",
             TooltipFormatter.br()
           );
         }
+      } else {
+        // 有变化，显示变化前后的值（包括降低到0的情况）
+        var finalPercent = (finalNum - 1) * 100;
+        var basePercent = (baseNum - 1) * 100;
+        var enhance = finalNum - baseNum;
+        var enhancePercent = enhance * 100;
+
+        result.push(
+          TooltipFormatter.color("【技能加成】", TooltipConstants.COL_HL),
+          "使用", skillName, "享受<FONT COLOR='", TooltipConstants.COL_HL, "'>", String(finalPercent), TooltipConstants.SUF_PERCENT, "</FONT>锋利度增益"
+        );
+
+        // 显示变化量
+        var sign:String;
+        if (enhance < 0) {
+          enhancePercent = -enhancePercent;
+          sign = " - ";
+        } else {
+          sign = " + ";
+        }
+        result.push(" (", String(basePercent), TooltipConstants.SUF_PERCENT, sign, String(enhancePercent), TooltipConstants.SUF_PERCENT, ")<BR>");
       }
     }
     return result;
@@ -454,12 +522,15 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         }
       }
     }
-    // 查找criticalhit和magicdefence
+    // 查找criticalhit、magicdefence和skillmultipliers
     if(override.criticalhit){
       result.push(quickBuildCriticalHit(override.criticalhit));
     }
     if(override.magicdefence){
       result.push(quickBuildMagicDefence(override.magicdefence));
+    }
+    if(override.skillmultipliers){
+      result.push(quickBuildSkillMultipliers(override.skillmultipliers));
     }
     // 显示伤害类型和破击类型（与 buildEquipmentStats 保持一致）
     quickBuildDamageType(result, override);
@@ -494,6 +565,26 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     }
     if(mdList.length > 0) return "抗性 -> " + mdList.join(", ") + "<BR>";
     return "";
+  }
+
+  // === 快速打印技能乘数数据（用于插件tooltip） ===
+  public static function quickBuildSkillMultipliers(skillmultipliers:Object):String{
+    if(!skillmultipliers) return "";
+    var result = "";
+
+    // 动态遍历所有技能，无需硬编码技能名称列表
+    for (var skillName:String in skillmultipliers) {
+      // 跳过内部属性
+      if (ObjectUtil.isInternalKey(skillName)) continue;
+
+      var multiplier = Number(skillmultipliers[skillName]);
+      if (!isNaN(multiplier) && multiplier > 1) {
+        result += TooltipFormatter.color("【技能加成】", TooltipConstants.COL_HL);
+        result += "使用" + skillName + "享受" + String((multiplier-1)*100) + TooltipConstants.SUF_PERCENT + "锋利度增益";
+        result += TooltipFormatter.br();
+      }
+    }
+    return result;
   }
 
   // === 快速打印伤害类型和破击类型 ===

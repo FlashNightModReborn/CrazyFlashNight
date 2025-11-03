@@ -46,7 +46,7 @@ import org.flashNight.gesh.string.StringUtils;
  *
  * 示例（生成完整注释）：
  * ```actionscript
- * var html:String = org.flashNight.gesh.tooltip.TooltipComposer.generateItemFullText(item, value, level);
+ * var html:String = org.flashNight.gesh.tooltip.TooltipComposer.generateItemFullText(item, value, level, baseItem);
  * _root.注释框.文本框.htmlText = html;
  * ```
  */
@@ -64,12 +64,13 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
    * - 生命周期
    *
    * @param item:Object 物品数据对象
+   * @param baseItem:BaseItem 物品实例对象（可选，用于获取计算后的数据）
    * @return String 拼装后的 HTML 字符串
    */
-  public static function generateItemDescriptionText(item:Object):String {
+  public static function generateItemDescriptionText(item:Object, baseItem:BaseItem):String {
     var buffer:Array = [];
     var itemName = item.name;
-    
+
     append(buffer, TooltipTextBuilder.buildBasicDescription(item));
     if(ItemUtil.isInformation(itemName)){
       append(buffer, TooltipTextBuilder.buildStoryTip(item));
@@ -77,11 +78,11 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
     }else if(ItemUtil.isMaterial(itemName)){
       append(buffer, TooltipTextBuilder.buildModStat(itemName));
     }else if(ItemUtil.isEquipment(itemName)){
-      append(buffer, TooltipTextBuilder.buildBladeSkillMultipliers(item));
+      append(buffer, TooltipTextBuilder.buildBladeSkillMultipliers(item, baseItem));
       append(buffer, TooltipTextBuilder.buildSkillInfo(item.skill));
       append(buffer, TooltipTextBuilder.buildLifecycleInfo(item.lifecyle));
     }
-    
+
     return buffer.join("");
   }
 
@@ -112,22 +113,23 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
    * 生成物品完整注释文本：
    * - 基础段（含生命周期、合成材料、技能信息等）
    * - 简介段（含标题头、装备属性）
-   * 
+   *
    * @param item:Object 物品数据对象
    * @param value:Object 数值对象（包含 tier、level 等）
    * @param upgradeLevel:Number 强化等级（默认从 value.level 获取，最小值 1）
+   * @param baseItem:BaseItem 物品实例对象（可选，用于获取计算后的数据）
    * @return String 完整的 HTML 文本
    */
-  public static function generateItemFullText(item:Object, value:Object, upgradeLevel:Number):String {
+  public static function generateItemFullText(item:Object, value:Object, upgradeLevel:Number, baseItem:BaseItem):String {
     if (upgradeLevel == undefined || isNaN(upgradeLevel) || upgradeLevel < 1) {
       upgradeLevel = (value && value.level > 0) ? value.level : 1;
     }
 
-    var descriptionText:String = generateItemDescriptionText(item);
-    var introText:String 
+    var descriptionText:String = generateItemDescriptionText(item, baseItem);
+    var introText:String
     // var introText:String = generateIntroPanelContent(item, value, upgradeLevel);
-    
-    return descriptionText + introText; 
+
+    return descriptionText + introText;
   }
 
   // ──────────────── 私有辅助方法 ────────────────

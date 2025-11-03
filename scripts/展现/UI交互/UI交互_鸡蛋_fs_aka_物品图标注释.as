@@ -15,7 +15,7 @@ _root.物品图标注释 = function(name, value, baseItem) {
     if(typeof baseItem !== "object") baseItem = null;
 
     // 1) 基础段描述（不含简介头与装备属性）
-    var 描述文本:String = TooltipComposer.generateItemDescriptionText(itemData);
+    var 描述文本:String = TooltipComposer.generateItemDescriptionText(itemData, baseItem);
 
     // 2) 简介面板文本（简介头 + 装备段）
     var 简介文本:String = TooltipComposer.generateIntroPanelContent(baseItem, itemData);
