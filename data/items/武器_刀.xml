@@ -3675,6 +3675,23 @@ Rnfmabj, Children of the City.</description>
       <damagetype>魔法</damagetype>
       <magictype>毒</magictype>
     </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>杀戮风暴初始化</initRoutines>
+          <initParam>
+            <maxSpinCount>29</maxSpinCount>
+            <spinUpAmount>1</spinUpAmount>
+            <spinSpeedFactor>0.1</spinSpeedFactor>
+            <spinDownRate>1</spinDownRate>
+            <endFrame>31</endFrame>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>杀戮风暴周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <name>夜刃青霓刀</name>
