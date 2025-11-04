@@ -79,11 +79,16 @@ class org.flashNight.arki.component.Damage.LifeStealDamageHandle extends BaseDam
             lifeStealAmount = lifeStealAmount < 0 ? 0 : lifeStealAmount; // 确保吸血量不小于 0
 
             // 计算射击者可恢复的血量上限
-            var maxHeal:Number = (shooter.hp满血值 * 1.5 - shooter.hp) | 0; // 使用位运算取整
-            var healAmount:Number = lifeStealAmount > maxHeal ? maxHeal : lifeStealAmount; // 限制吸血量不超过可恢复上限
+            // 缓存射击者HP，减少属性访问
+            var shooterHP:Number = shooter.hp;
+            // 检查射击者是否存活，只有存活的单位才能吸血
+            if (shooterHP > 0) {
+                var maxHeal:Number = (shooter.hp满血值 * 1.5 - shooterHP) | 0; // 使用位运算取整
+                var healAmount:Number = lifeStealAmount > maxHeal ? maxHeal : lifeStealAmount; // 限制吸血量不超过可恢复上限
 
-            // 恢复射击者血量
-            shooter.hp += healAmount;
+                // 恢复射击者血量
+                shooter.hp = shooterHP + healAmount;
+            }
 
             // 添加吸血效果描述
             result.addDamageEffect(
