@@ -33,14 +33,13 @@
                   <edges>
                     <Edge fillStyle1="1" strokeStyle="1" edges="!92 1021[#54.06 #3D0.F6 110.5 941.5!110.5 941.5[#96.E1 #377.46 317 980!317 980|337 1049"/>
                     <Edge fillStyle1="1" edges="!337 1049[#15C.94 #440.FD 354.5 1150"/>
-                    <Edge fillStyle0="2" fillStyle1="1" edges="!354.5 1150[#153.CB #427.75 291 1015!291 1015[#AB.83 #3AA.EB 92 1021"/>
-                    <Edge fillStyle0="2" strokeStyle="1" edges="!92 1021[#5F.F8 #413.BE 109.5 1069!109.5 1069[149 #476.A4 181 1227.5!181 1227.5[#BC.BF #4E0.14 198 1265"/>
-                    <Edge fillStyle0="1" strokeStyle="1" edges="!198 1265[#E2.2B #525.75 267.5 1333.5!267.5 1333.5[#142.17 #54A.D2 361 1323"/>
-                    <Edge fillStyle0="1" edges="!361 1323[#169.24 #515.C1 361 1282"/>
-                    <Edge fillStyle0="2" edges="!361 1282[#168.C1 #4F6.F5 360.5 1260.5"/>
-                    <Edge fillStyle0="1" edges="!360.5 1260.5[#168.CF #4ED.44 361 1262!361 1262[#168.B9 #4EB.C6 360.5 1257.5"/>
-                    <Edge fillStyle0="2" edges="!360.5 1257.5[#167.3C #4AD.52 354.5 1150"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="!360.5 1257.5[#168.9 1259 360.5 1260.5"/>
+                    <Edge fillStyle1="2" edges="!354.5 1150[#167.3C #4AD.52 360.5 1257.5"/>
+                    <Edge fillStyle1="1" edges="!360.5 1257.5[#168.B9 #4EB.C6 361 1262!361 1262[#168.CF #4ED.44 360.5 1260.5"/>
+                    <Edge fillStyle1="2" edges="!360.5 1260.5[#168.C1 #4F6.F5 361 1282"/>
+                    <Edge fillStyle1="1" edges="!361 1282[#169.24 #515.C1 361 1323"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!361 1323[#142.17 #54A.D2 267.5 1333.5!267.5 1333.5[#E2.2B #525.75 198 1265"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!198 1265[#BC.BF #4E0.14 181 1227.5!181 1227.5[149 #476.A4 109.5 1069!109.5 1069[#5F.F8 #413.BE 92 1021"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!92 1021[#AB.83 #3AA.EB 291 1015!291 1015[#153.CB #427.75 354.5 1150!360.5 1257.5[#168.9 1259 360.5 1260.5"/>
                     <Edge fillStyle0="2" fillStyle1="1" edges="!198 1265[323.75 #539.43 361 1282"/>
                     <Edge cubics="!111 942(;138,905 206,918 317,980q111 942Q151 887q317 980);"/>
                     <Edge cubics="!110 1069(;101,1052 95,1036 92,1021q110 1069Q96 1044q92 1021);"/>
@@ -245,12 +244,12 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="3" edges="
-!10240 1710|10293 1691"/>
-                    <Edge strokeStyle="2" edges="
-!9974 1682|10240 1710"/>
                     <Edge strokeStyle="1" edges="
 !9897 1705|9974 1682"/>
+                    <Edge strokeStyle="2" edges="
+!9974 1682|10240 1710"/>
+                    <Edge strokeStyle="3" edges="
+!10240 1710|10293 1691"/>
                   </edges>
                 </DOMShape>
                 <DOMShape isDrawingObject="true">
@@ -464,12 +463,12 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle0="2" fillStyle1="1" edges="
-!10179 1749[10177 1753 10176 1763!10176 1763[10174 1774 10161 1785!10161 1785[10146 1794 10132 1789!10132 1789[10115 1782 10107 1763!10107 1763[10101 1751 10106 1737"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="
-!10106 1737|10179 1749"/>
                     <Edge fillStyle1="2" strokeStyle="2" edges="
 !10179 1749|10221 1756!10221 1756|10251 1796!10251 1796|10129 1812!10129 1812[10035 1797 10002 1721!10002 1721|10106 1737"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!10106 1737|10179 1749"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!10179 1749[10177 1753 10176 1763!10176 1763[10174 1774 10161 1785!10161 1785[10146 1794 10132 1789!10132 1789[10115 1782 10107 1763!10107 1763[10101 1751 10106 1737"/>
                   </edges>
                 </DOMShape>
                 <DOMShape isDrawingObject="true">
@@ -501,12 +500,12 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle0="2" strokeStyle="2" edges="
-!10509 1742|10481 1746!10481 1746|10460 1785!10460 1785|10544 1810!10544 1810[10608 1800 10629 1716!10629 1716|10559 1733"/>
                     <Edge fillStyle0="2" fillStyle1="1" edges="
 !10559 1733[10563 1749 10559 1760!10559 1760[10553 1780 10541 1786!10541 1786[10532 1790 10522 1780!10522 1780[10513 1768 10511 1756!10511 1756[10511 1746 10509 1742"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="
-!10509 1742|10559 1733"/>
+                    <Edge fillStyle0="2" strokeStyle="2" edges="
+!10509 1742|10481 1746!10481 1746|10460 1785!10460 1785|10544 1810!10544 1810[10608 1800 10629 1716!10629 1716|10559 1733"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!10559 1733|10509 1742"/>
                   </edges>
                 </DOMShape>
                 <DOMShape isDrawingObject="true">
