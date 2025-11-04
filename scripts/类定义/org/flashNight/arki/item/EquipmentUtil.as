@@ -91,6 +91,7 @@ class org.flashNight.arki.item.EquipmentUtil{
         add: addProperty,
         multiply: multiplyProperty,
         override: overrideProperty,
+        merge: mergeProperty,  // 新增：深度合并运算符
         applyCap: applyCapProperty
     }
 
@@ -380,6 +381,7 @@ class org.flashNight.arki.item.EquipmentUtil{
         var adder:Object = {};
         var multiplier:Object;
         var overrider:Object = {};
+        var merger:Object = {};  // 新增：收集所有配件的merge数据
         var capper:Object = {};  // 新增：收集所有配件的cap数据
         var skill:Object;
 
@@ -412,11 +414,20 @@ class org.flashNight.arki.item.EquipmentUtil{
                 var overrideStat:Object = modInfo.stats.override;
                 var percentageStat:Object = modInfo.stats.percentage;
                 var flatStat:Object = modInfo.stats.flat;
+                var mergeStat:Object = modInfo.stats.merge;  // 新增：读取merge数据
                 var capStat:Object = modInfo.stats.cap;  // 新增：读取cap数据
+
+                // Debug: 显示当前处理的插件
+                if(mergeStat){
+                    // _root.服务器.发布服务器消息("[EquipmentUtil] 发现插件 '" + value.mods[i] + "' 含有merge数据:");
+                    // _root.服务器.发布服务器消息("  " + ObjectUtil.toString(mergeStat));
+                }
+
                 // 应用对应的加成
                 if(flatStat) operators.add(adder, flatStat, 0);
                 if(percentageStat) operators.add(multiplier, percentageStat, 1);
                 if(overrideStat) operators.override(overrider, overrideStat);
+                if(mergeStat) operators.merge(merger, mergeStat);  // 新增：递归合并merge数据
                 if(capStat) operators.add(capper, capStat, 0);  // 新增：累加cap（多个配件的cap会叠加）
                 // 查找战技
                 if(!skill && modInfo.skill){
@@ -425,10 +436,29 @@ class org.flashNight.arki.item.EquipmentUtil{
             }
         }
 
-        // 以百分比加成-固定加成-覆盖-上限过滤的顺序应用所有加成
+        // 以百分比加成-固定加成-覆盖-合并-上限过滤的顺序应用所有加成
         operators.multiply(data, multiplier);
         operators.add(data, adder, 0);
         operators.override(data, ObjectUtil.clone(overrider)); // 最终覆盖操作前进行一次深拷贝
+
+        // Debug: 追踪merge执行
+        if(merger){
+            // _root.服务器.发布服务器消息("[EquipmentUtil] Applying merge operator:");
+            // _root.服务器.发布服务器消息("  Merger data: " + ObjectUtil.toString(merger));
+            if(data.magicdefence){
+                // _root.服务器.发布服务器消息("  Before merge - magicdefence: " + ObjectUtil.toString(data.magicdefence));
+            }
+        }
+
+        operators.merge(data, merger);  // 新增：深度合并（在override之后，cap之前）
+
+        // Debug: 追踪merge结果
+        if(merger){
+            if(data.magicdefence){
+                // _root.服务器.发布服务器消息("  After merge - magicdefence: " + ObjectUtil.toString(data.magicdefence));
+            }
+        }
+
         operators.applyCap(data, capper, baseData);  // 新增：最后应用cap限制
 
         // 替换战技
@@ -569,5 +599,91 @@ class org.flashNight.arki.item.EquipmentUtil{
                 }
             }
         }
+    }
+
+    /**
+    * 深度合并属性对象（智能合并）。
+    * 递归处理嵌套对象，对于数字类型采用智能合并策略：
+    * - 如果存在负数，取最小值（保留最不利的debuff）
+    * - 如果都是正数，取最大值（保留最有利的buff）
+    *
+    * 使用场景：
+    * - magicdefence等嵌套对象的部分更新
+    * - skillmultipliers的多技能倍率合并
+    *
+    * @param prop 目标属性对象（会被修改）
+    * @param mergeProp 要合并的属性对象
+    */
+    public static function mergeProperty(prop:Object, mergeProp:Object):Void {
+        if(!mergeProp) return;
+
+        for (var key:String in mergeProp) {
+            var mergeVal = mergeProp[key];
+            var propVal = prop[key];
+
+            // 情况1：目标属性不存在，直接添加（深度克隆）
+            if(propVal == undefined) {
+                // _root.服务器.发布服务器消息("    [Merge] 添加新属性 '" + key + "' = " + mergeVal);
+                prop[key] = deepClone(mergeVal);
+                continue;
+            }
+
+            // 情况2：两个都是对象（且不是null），递归合并
+            if(typeof mergeVal == "object" && mergeVal != null &&
+               typeof propVal == "object" && propVal != null) {
+                // _root.服务器.发布服务器消息("    [Merge] 递归合并对象属性 '" + key + "'");
+                mergeProperty(propVal, mergeVal);
+                continue;
+            }
+
+            // 情况3：都是数字，智能合并
+            if(typeof mergeVal == "number" && typeof propVal == "number") {
+                var oldVal:Number = propVal;
+                // 有负数存在：取最小值（负数debuff优先）
+                if(mergeVal < 0 || propVal < 0) {
+                    prop[key] = Math.min(propVal, mergeVal);
+                    // _root.服务器.发布服务器消息("    [Merge] 智能合并(负数) '" + key + "': " + oldVal + " + " + mergeVal + " -> " + prop[key]);
+                } else {
+                    // 都是正数：取最大值（正数buff优先）
+                    prop[key] = Math.max(propVal, mergeVal);
+                    // _root.服务器.发布服务器消息("    [Merge] 智能合并(正数) '" + key + "': " + oldVal + " + " + mergeVal + " -> " + prop[key]);
+                }
+                continue;
+            }
+
+            // 情况4：其他类型（字符串等），直接覆盖
+            // _root.服务器.发布服务器消息("    [Merge] 覆盖属性 '" + key + "': " + propVal + " -> " + mergeVal);
+            prop[key] = mergeVal;
+        }
+    }
+
+    /**
+    * 深度克隆对象（递归复制）。
+    * 用于在merge时避免引用共享问题。
+    *
+    * @param obj 要克隆的对象
+    * @return 深度克隆后的新对象
+    */
+    private static function deepClone(obj):Object {
+        // 基本类型和null直接返回
+        if(typeof obj != "object" || obj == null) {
+            return obj;
+        }
+
+        // 数组类型
+        if(obj instanceof Array) {
+            var arrClone:Array = [];
+            for(var i:Number = 0; i < obj.length; i++) {
+                arrClone[i] = deepClone(obj[i]);
+            }
+            return arrClone;
+        }
+
+        // 普通对象
+        var clone:Object = {};
+        for(var key:String in obj) {
+            clone[key] = deepClone(obj[key]);
+        }
+        return clone;
     }
 }

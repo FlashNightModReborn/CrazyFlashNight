@@ -461,7 +461,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     }
     // 打印魔法抗性
     if (tierData.magicdefence) {
-      result.push(quickBuildMagicDefence(tierData.magicdefence));
+      result.push(quickBuildMagicDefence(tierData.magicdefence, null));
     }
 
     return result;
@@ -493,6 +493,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     var percentage = stats.percentage;
     var flat = stats.flat;
     var override = stats.override;
+    var merge = stats.merge;  // 新增：读取merge数据
     var cap = stats.cap;
     if(percentage){
       var sortedList = getSortedAttrList(percentage);
@@ -517,6 +518,15 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         TooltipFormatter.statLine(result, "override", key, override[key], null);
       }
     }
+    if(merge){
+      var sortedList = getSortedAttrList(merge);
+      for(var i = 0; i < sortedList.length; i++){
+        var key = sortedList[i];
+        // 跳过嵌套对象，它们需要特殊处理
+        if(key == "magicdefence" || key == "skillmultipliers") continue;
+        TooltipFormatter.statLine(result, "merge", key, merge[key], null);
+      }
+    }
     // 显示cap上限
     if(cap){
       var sortedList = getSortedAttrList(cap);
@@ -535,18 +545,25 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         }
       }
     }
-    // 查找criticalhit、magicdefence和skillmultipliers
-    if(override.criticalhit){
+    // 查找criticalhit、magicdefence和skillmultipliers（从override）
+    if(override && override.criticalhit){
       result.push(quickBuildCriticalHit(override.criticalhit));
     }
-    if(override.magicdefence){
-      result.push(quickBuildMagicDefence(override.magicdefence));
+    if(override && override.magicdefence){
+      result.push(quickBuildMagicDefence(override.magicdefence, "覆盖"));
     }
-    if(override.skillmultipliers){
-      result.push(quickBuildSkillMultipliers(override.skillmultipliers));
+    if(override && override.skillmultipliers){
+      result.push(quickBuildSkillMultipliers(override.skillmultipliers, "覆盖"));
+    }
+    // 查找magicdefence和skillmultipliers（从merge）
+    if(merge && merge.magicdefence){
+      result.push(quickBuildMagicDefence(merge.magicdefence, "合并"));
+    }
+    if(merge && merge.skillmultipliers){
+      result.push(quickBuildSkillMultipliers(merge.skillmultipliers, "合并"));
     }
     // 显示伤害类型和破击类型（与 buildEquipmentStats 保持一致）
-    quickBuildDamageType(result, override);
+    if(override) quickBuildDamageType(result, override);
     if(modData.skill){
       result = result.concat(buildSkillInfo(modData.skill));
     }
@@ -568,7 +585,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   }
 
   // === 快速打印魔法抗性数据 ===
-  public static function quickBuildMagicDefence(magicdefence:Object):String{
+  public static function quickBuildMagicDefence(magicdefence:Object, operationType:String):String{
     var mdList = [];
     for(var key in magicdefence) {
       if (ObjectUtil.isInternalKey(key)) continue; // 跳过内部字段（如 __dictUID）
@@ -576,12 +593,16 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       var value = magicdefence[key];
       if (value) mdList.push(mdName + ": " + value);
     }
-    if(mdList.length > 0) return "抗性 -> " + mdList.join(", ") + "<BR>";
+    if(mdList.length > 0) {
+      // 如果指定了操作类型，显示提示
+      var prefix = operationType ? ("<FONT COLOR='" + TooltipConstants.COL_INFO + "'>[" + operationType + "]</FONT> ") : "";
+      return prefix + "抗性 -> " + mdList.join(", ") + "<BR>";
+    }
     return "";
   }
 
   // === 快速打印技能乘数数据（用于插件tooltip） ===
-  public static function quickBuildSkillMultipliers(skillmultipliers:Object):String{
+  public static function quickBuildSkillMultipliers(skillmultipliers:Object, operationType:String):String{
     if(!skillmultipliers) return "";
     var result = "";
 
@@ -592,7 +613,9 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
 
       var multiplier = Number(skillmultipliers[skillName]);
       if (!isNaN(multiplier) && multiplier > 1) {
-        result += TooltipFormatter.color("【技能加成】", TooltipConstants.COL_HL);
+        // 如果指定了操作类型，显示提示
+        var prefix = operationType ? ("<FONT COLOR='" + TooltipConstants.COL_INFO + "'>[" + operationType + "]</FONT> ") : "";
+        result += prefix + TooltipFormatter.color("【技能加成】", TooltipConstants.COL_HL);
         result += "使用" + skillName + "享受" + String((multiplier-1)*100) + TooltipConstants.SUF_PERCENT + "锋利度增益";
         result += TooltipFormatter.br();
       }

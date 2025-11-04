@@ -1,11 +1,11 @@
 <root>
 
-<!--
+    <!--
 ═══════════════════════════════════════════════════════════════════════════════
     装备模组配置文件 - 运算符系统说明
 ═══════════════════════════════════════════════════════════════════════════════
 
-【四种核心运算符】
+【五种核心运算符】
 
 1. flat - 固定值加成
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -58,8 +58,60 @@
    </stats>
 
    用途：改变装备的本质属性，无视之前的计算结果
+   注意：override是浅层覆盖，会完全替换整个对象。对于嵌套对象（如magicdefence），
+         建议使用merge运算符
 
-4. cap - 上限/下限值
+4. merge - 深度合并（推荐用于嵌套对象）
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   运算方式：递归深度合并 + 智能数值合并
+
+   合并规则：
+   - 遇到不存在的键：直接添加
+   - 遇到已存在的键：
+     * 如果是对象：递归合并（不覆盖整个对象）
+     * 如果是数字：
+       - 有负数存在：取最小值（保留最不利的debuff）
+       - 都是正数：取最大值（保留最有利的buff）
+     * 如果是字符串：直接覆盖
+
+   示例：
+   <stats>
+       <merge>
+           <magicdefence>                         [深度合并魔法防御]
+               <热>-8</热>                        [只修改热抗，不影响其他抗性]
+           </magicdefence>
+           <skillmultipliers>                     [深度合并技能倍率]
+               <瞬步斩>2.5</瞬步斩>               [只修改瞬步斩，不影响其他技能]
+           </skillmultipliers>
+       </merge>
+   </stats>
+
+   使用场景：
+   - magicdefence（魔法防御）：多个配件修改不同的抗性
+   - skillmultipliers（技能倍率）：多个配件影响不同的技能
+
+   对比示例：
+   装备基础属性：magicdefence: {冷:5, 热:10, 电:8}
+
+   使用 override（问题）：
+   <merge><magicdefence><热>-8</热></magicdefence></merge>
+   结果：magicdefence: {热:-8}  ❌ 丢失了冷和电
+
+   使用 merge（正确）：
+   <merge><magicdefence><热>-8</热></magicdefence></merge>
+   结果：magicdefence: {冷:5, 热:-8, 电:8}  ✅ 只改热抗，其他保留
+
+   多配件叠加示例：
+   装备基础：    magicdefence: {冷:0, 热:0, 电:0}
+   + 配件A：     merge: {magicdefence: {热:5, 蚀:5}}
+   + 配件B：     merge: {magicdefence: {热:-8}}
+   + 配件C：     merge: {magicdefence: {冷:5, 电:10}}
+   最终结果：    {冷:5, 热:-8, 电:10, 蚀:5}
+   （热有负数-8和正数5，取最小值-8；冷、电、蚀只有正数，直接合并）
+
+   用途：处理嵌套对象的部分更新，避免数据丢失
+
+5. cap - 上限/下限值
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    运算方式：
    - 正数：增益上限（相对基础值，最多增加这么多）
@@ -91,12 +143,15 @@
         ↓
     3. override（覆盖）
         ↓
-    4. cap（上限限制）        ← 优先级最低，最后执行
+    4. merge（深度合并）      ← 新增！
+        ↓
+    5. cap（上限限制）        ← 优先级最低，最后执行
 
 【为什么这样排序？】
   - percentage先行：基于基础值和强化等级计算百分比增幅
   - flat次之：在百分比基础上再加固定值
   - override覆盖：可以完全改变前面的计算结果，用于改变本质属性
+  - merge合并：深度合并嵌套对象，在override之后避免被覆盖影响
   - cap兜底：作为最后的安全阀，防止数值异常
 
 
@@ -185,13 +240,13 @@ skill - 赋予技能
         <name>上色涂料</name>
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
-            <override>
+            <merge>
                 <magicdefence>
                     <热>5</热>
                     <蚀>5</蚀>
                     <毒>5</毒>
                 </magicdefence>
-            </override>
+            </merge>
         </stats>
         <description>功能性涂层，提供多种属性防护。</description>
         <tag>表面涂层</tag>
@@ -422,13 +477,13 @@ skill - 赋予技能
         <name>高耐力橡胶</name>
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
-            <override>
+            <merge>
                 <magicdefence>
                     <冷>5</冷>
                     <热>5</热>
                     <电>10</电>
                 </magicdefence>
-            </override>
+            </merge>
             <flat>
                 <toughness>10</toughness>
             </flat>
@@ -452,13 +507,13 @@ skill - 赋予技能
         <name>复合式军用塑料</name>
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
-            <override>
+            <merge>
                 <magicdefence>
                     <蚀>10</蚀>
                     <毒>5</毒>
                     <波>5</波>
                 </magicdefence>
-            </override>
+            </merge>
             <percentage>
                 <weight>-20</weight>
             </percentage>
@@ -493,11 +548,11 @@ skill - 赋予技能
         <name>强力胶</name>
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
-            <override>
+            <merge>
                 <magicdefence>
                     <冲>10</冲>
                 </magicdefence>
-            </override>
+            </merge>
             <percentage>
                 <punch>6</punch>
             </percentage>
@@ -520,11 +575,11 @@ skill - 赋予技能
         <name>高级木料</name>
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
-            <override>
+            <merge>
                 <magicdefence>
                     <热>-8</热>
                 </magicdefence>
-            </override>
+            </merge>
             <flat>
                 <hp>10</hp>
                 <mp>10</mp>

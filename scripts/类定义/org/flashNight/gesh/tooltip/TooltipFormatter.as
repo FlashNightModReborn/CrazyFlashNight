@@ -125,6 +125,22 @@ class org.flashNight.gesh.tooltip.TooltipFormatter {
       buf.push(label, sign, n, "%<BR>");
     }else if(type === "override"){
       buf.push(label, " -> ", val, "<BR>");
+    }else if(type === "merge"){
+      // merge显示为智能合并（数值类型显示为加法，其他类型显示为箭头）
+      var n:Number = Number(val);
+      if(!isNaN(n)){
+        // 数值类型：显示为 +/- 形式
+        if(n === 0) return;
+        var sign = " + ";
+        if(n < 0){
+          n = -n;
+          sign = " - ";
+        }
+        buf.push("<FONT COLOR='" + TooltipConstants.COL_INFO + "'>[合并]</FONT> ", label, sign, n, "<BR>");
+      }else{
+        // 非数值类型：显示为箭头形式
+        buf.push("<FONT COLOR='" + TooltipConstants.COL_INFO + "'>[合并]</FONT> ", label, " -> ", val, "<BR>");
+      }
     }
   }
 }
