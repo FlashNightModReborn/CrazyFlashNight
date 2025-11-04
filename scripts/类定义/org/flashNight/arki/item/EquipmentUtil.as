@@ -624,7 +624,7 @@ class org.flashNight.arki.item.EquipmentUtil{
             // 情况1：目标属性不存在，直接添加（深度克隆）
             if(propVal == undefined) {
                 // _root.服务器.发布服务器消息("    [Merge] 添加新属性 '" + key + "' = " + mergeVal);
-                prop[key] = deepClone(mergeVal);
+                prop[key] = ObjectUtil.clone(mergeVal);
                 continue;
             }
 
@@ -655,35 +655,5 @@ class org.flashNight.arki.item.EquipmentUtil{
             // _root.服务器.发布服务器消息("    [Merge] 覆盖属性 '" + key + "': " + propVal + " -> " + mergeVal);
             prop[key] = mergeVal;
         }
-    }
-
-    /**
-    * 深度克隆对象（递归复制）。
-    * 用于在merge时避免引用共享问题。
-    *
-    * @param obj 要克隆的对象
-    * @return 深度克隆后的新对象
-    */
-    private static function deepClone(obj):Object {
-        // 基本类型和null直接返回
-        if(typeof obj != "object" || obj == null) {
-            return obj;
-        }
-
-        // 数组类型
-        if(obj instanceof Array) {
-            var arrClone:Array = [];
-            for(var i:Number = 0; i < obj.length; i++) {
-                arrClone[i] = deepClone(obj[i]);
-            }
-            return arrClone;
-        }
-
-        // 普通对象
-        var clone:Object = {};
-        for(var key:String in obj) {
-            clone[key] = deepClone(obj[key]);
-        }
-        return clone;
     }
 }

@@ -15,6 +15,16 @@ import org.flashNight.naki.Sort.InsertionSort;
  */
 class org.flashNight.gesh.tooltip.TooltipTextBuilder {
 
+  /**
+   * 构建操作类型前缀（用于显示"覆盖"、"合并"等标签）
+   * @param operationType 操作类型名称（如"覆盖"、"合并"）
+   * @return 格式化后的前缀字符串，如果 operationType 为空则返回空字符串
+   */
+  private static function buildOperationPrefix(operationType:String):String {
+    if (!operationType) return "";
+    return "<FONT COLOR='" + TooltipConstants.COL_INFO + "'>[" + operationType + "]</FONT> ";
+  }
+
   // === 生成基础描述（1:1 复刻 _root.注释文本.生成基础描述） ===
   public static function buildBasicDescription(item:Object):Array {
     var result = [];
@@ -594,8 +604,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       if (value) mdList.push(mdName + ": " + value);
     }
     if(mdList.length > 0) {
-      // 如果指定了操作类型，显示提示
-      var prefix = operationType ? ("<FONT COLOR='" + TooltipConstants.COL_INFO + "'>[" + operationType + "]</FONT> ") : "";
+      var prefix = buildOperationPrefix(operationType);
       return prefix + "抗性 -> " + mdList.join(", ") + "<BR>";
     }
     return "";
@@ -613,8 +622,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
 
       var multiplier = Number(skillmultipliers[skillName]);
       if (!isNaN(multiplier) && multiplier > 1) {
-        // 如果指定了操作类型，显示提示
-        var prefix = operationType ? ("<FONT COLOR='" + TooltipConstants.COL_INFO + "'>[" + operationType + "]</FONT> ") : "";
+        var prefix = buildOperationPrefix(operationType);
         result += prefix + TooltipFormatter.color("【技能加成】", TooltipConstants.COL_HL);
         result += "使用" + skillName + "享受" + String((multiplier-1)*100) + TooltipConstants.SUF_PERCENT + "锋利度增益";
         result += TooltipFormatter.br();
