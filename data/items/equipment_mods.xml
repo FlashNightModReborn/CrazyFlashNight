@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
 <root>
-    <!-- 初级材料 -->
+
     <mod>
         <name>军用帆布</name>
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
@@ -10,6 +9,7 @@
             </flat>
         </stats>
         <description>耐用的防护布料，增加装备防御力。</description>
+        <tag>外覆基层</tag>
     </mod>
     <mod>
         <name>上色涂料</name>
@@ -24,6 +24,7 @@
             </override>
         </stats>
         <description>功能性涂层，提供多种属性防护。</description>
+        <tag>表面涂层</tag>
     </mod>
     <mod>
         <name>弹簧</name>
@@ -34,6 +35,7 @@
             </percentage>
         </stats>
         <description>机械结构核心部件，提升枪械威力。</description>
+        <tag>枪机</tag>
     </mod>
     <mod>
         <name>增效剂</name>
@@ -47,6 +49,7 @@
             </percentage>
         </stats>
         <description>表面强化药剂，全面提升装备性能。</description>
+        <tag>表面涂层</tag>
     </mod>
     <mod>
         <name>可塑式钢板</name>
@@ -58,6 +61,7 @@
             </flat>
         </stats>
         <description>高性能预制标准件，提升一定防御力，但会增加重量。</description>
+        <tag>外覆加固</tag>
     </mod>
     <mod>
         <name>战术导轨</name>
@@ -65,6 +69,7 @@
         <grantsWeapontype>突击步枪</grantsWeapontype>
         <detachPolicy>cascade</detachPolicy>
         <description>使子类不为[突击步枪]的枪械可以安装对应子类的配件。</description>
+        <tag>导轨基座</tag>
     </mod>
     <mod>
         <name>螺丝套件</name>
@@ -75,6 +80,7 @@
             </flat>
         </stats>
         <description>标准化紧固件，增强枪械结构稳定性。</description>
+        <tag>外部紧固</tag>
     </mod>
     <mod>
         <name>骨芯颅印</name>
@@ -92,6 +98,7 @@
             <mp>5</mp>
         </skill>
         <description>嵌入战术芯片的骷髅头挂饰，提供闪避数据支持并赋予滑步技能。</description>
+        <tag>柄尾</tag>
     </mod>
     <mod>
         <name>辅助握持板</name>
@@ -105,6 +112,7 @@
             </percentage>
         </stats>
         <description>玻纤增强聚合物板体，引导狂野攻击风格，提升近战威力。</description>
+        <tag>柄侧板</tag>
     </mod>
     <mod>
         <name>绳扣穿孔片</name>
@@ -120,6 +128,7 @@
             </flat>
         </stats>
         <description>低碳钢片冲压成形的简易固定组件，优化防脱手功能，为瞬步斩赋予150%的锋利度加成。</description>
+        <tag>柄侧板</tag>
     </mod>
     <mod>
         <name>手柄皮</name>
@@ -131,9 +140,10 @@
             <mp>40</mp>
         </skill>
         <description>防滑握柄覆盖物，提供稳固握持，赋予凶斩技能。</description>
+        <tag>握柄包覆</tag>
     </mod>
-    <!-- 中级材料 -->
-    <!-- 还差一个可充锂电池 -->
+
+
     <mod>
         <name>小型液晶屏</name>
         <use>长枪,手枪</use>
@@ -143,6 +153,7 @@
             </override>
         </stats>
         <description>电子显示组件，提供信息显示，增加暴击率。</description>
+        <tag>瞄具</tag>
     </mod>
     <mod>
         <name>战术背带</name>
@@ -157,6 +168,7 @@
         </stats>
         <detachPolicy>cascade</detachPolicy>
         <description>将装备的配件槽拓展至3个。</description>
+        <tag>肩挂系统</tag>
     </mod>
     <mod>
         <name>防沙皮革</name>
@@ -171,6 +183,7 @@
             </percentage>
         </stats>
         <description>复合防护材料，增加生命值与防御力。</description>
+        <tag>内衬层</tag>
     </mod>
     <mod>
         <name>烈性火药</name>
@@ -185,6 +198,7 @@
             </flat>
         </stats>
         <description>高能量火药，大幅提升暴击率，但会降低精准度。</description>
+        <tag>弹药</tag>
     </mod>
     <mod>
         <name>生物催化剂</name>
@@ -193,10 +207,11 @@
             <override>
                 <damagetype>破击</damagetype>
                 <magictype>生化</magictype>
-                <!-- 瞎填的，展示一下override怎么用 -->
+
             </override>
         </stats>
         <description>生化改造材料，将武器伤害转化为生化破击类型。</description>
+        <tag>表面涂层</tag>
     </mod>
     <mod>
         <name>护手</name>
@@ -219,6 +234,7 @@
             </percentage>
         </stats>
         <description>精密打磨工具，锋利化刀刃，提升近战威力。</description>
+        <tag>刃面处理</tag>
     </mod>
     <mod>
         <name>不锈钢材</name>
@@ -230,6 +246,7 @@
             </flat>
         </stats>
         <description>高强度钢铁材料，显著提升防御力，但会大幅增加重量。</description>
+        <tag>外覆加固</tag>
     </mod>
     <mod>
         <name>高耐力橡胶</name>
@@ -247,6 +264,7 @@
             </flat>
         </stats>
         <description>弹性体聚合物，提供冷热电抗性与韧性。</description>
+        <tag>缓冲层</tag>
     </mod>
     <mod>
         <name>强化金属管</name>
@@ -258,6 +276,7 @@
             </percentage>
         </stats>
         <description>经二次强化处理的高膛压枪管部件，提升威力与弹速。</description>
+        <tag>枪管</tag>
     </mod>
     <mod>
         <name>复合式军用塑料</name>
@@ -275,6 +294,7 @@
             </percentage>
         </stats>
         <description>轻质复合材料，提供毒素与腐蚀抗性并减轻装备重量。</description>
+        <tag>外覆基层</tag>
     </mod>
     <mod>
         <name>透镜</name>
@@ -285,6 +305,7 @@
             </flat>
         </stats>
         <description>精密光学元件，大幅提升瞄准精度。</description>
+        <tag>瞄具</tag>
     </mod>
     <mod>
         <name>高强度合金</name>
@@ -296,6 +317,7 @@
             </percentage>
         </stats>
         <description>多相强化材料，提升装备攻防性能。</description>
+        <tag>材料升级</tag>
     </mod>
     <mod>
         <name>强力胶</name>
@@ -311,6 +333,7 @@
             </percentage>
         </stats>
         <description>高分子粘结剂，提供冲击抗性与韧性。</description>
+        <tag>缓冲层</tag>
     </mod>
     <mod>
         <name>枪械内构强化套件</name>
@@ -321,6 +344,7 @@
             </percentage>
         </stats>
         <description>模块化改造组件，全面强化枪械内部结构。</description>
+        <tag>机匣内构</tag>
     </mod>
     <mod>
         <name>高级木料</name>
@@ -339,6 +363,7 @@
             </flat>
         </stats>
         <description>复合木质材料，增加生命、精力与防御，但降低热抗。</description>
+        <tag>外覆加固</tag>
     </mod>
     <mod>
         <name>骨誓铭牌</name>
@@ -356,6 +381,7 @@
             <mp>45</mp>
         </skill>
         <description>烧蚀硬化骨与铭牌重坠，增加防御并赋予黑刀斩术。</description>
+        <tag>柄尾</tag>
     </mod>
     <mod>
         <name>配重坠</name>
@@ -372,6 +398,7 @@
             <mp>30</mp>
         </skill>
         <description>精密配重调节单元，优化打击轨迹，赋予回旋裂地技能。</description>
+        <tag>柄尾</tag>
     </mod>
     <mod>
         <name>强化柄芯</name>
@@ -386,6 +413,7 @@
         </stats>
         <detachPolicy>cascade</detachPolicy>
         <description>高强度内核加固条，将武器配件槽扩展至3个。</description>
+        <tag>柄芯</tag>
     </mod>
     <mod>
         <name>挂环指槽板</name>
@@ -402,6 +430,7 @@
             </flat>
         </stats>
         <description>带指槽的侧板组件，优化握持防脱，为瞬步斩和凶斩赋予150%的锋利度加成。</description>
+        <tag>柄侧板</tag>
     </mod>
     <mod>
         <name>电击导能柄</name>
@@ -416,8 +445,9 @@
             </override>
         </stats>
         <description>高压脉冲传导柄部，附加电击打击，略微降低威力。</description>
+        <tag>握柄核心</tag>
     </mod>
-    <!-- 高级材料 -->
+
     <mod>
         <name>动力液压杆</name>
         <use>上装装备,下装装备,手部装备</use>
@@ -428,6 +458,7 @@
             </flat>
         </stats>
         <description>超规格线性作动单元，大幅增加近战冲击力并减轻重量。</description>
+        <tag>动力接口</tag>
     </mod>
     <mod>
         <name>碳纤维布料</name>
@@ -440,6 +471,7 @@
             </percentage>
         </stats>
         <description>高模量工程基材，全面提升装备的生命、精力与防御。</description>
+        <tag>外覆基层</tag>
     </mod>
     <mod>
         <name>电脑芯片</name>
@@ -450,6 +482,7 @@
             </flat>
         </stats>
         <description>现场可编程系统模块，降低装备等级限制。</description>
+        <tag>等级校正</tag>
     </mod>
     <mod>
         <name>传感器</name>
@@ -460,6 +493,7 @@
             </flat>
         </stats>
         <description>多模敏感阵列，提供战术数据支持，大幅提升闪避能力。</description>
+        <tag>电子模块</tag>
     </mod>
     <mod>
         <name>水冷机构</name>
@@ -467,7 +501,7 @@
         <weapontype>机枪,压制机枪,近战,压制近战</weapontype>
         <stats>
             <percentage>
-                <!-- <interval>-10</interval>这里也是待定 减射击间隔不管在代码还是平衡上都是极度危险的设计 -->
+
                 <power>25</power>
             </percentage>
             <flat>
@@ -475,6 +509,7 @@
             </flat>
         </stats>
         <description>模块化温控系统，专为机枪与近战机械设计，显著提升威力。</description>
+        <tag>枪管外设</tag>
     </mod>
     <mod>
         <name>传动装置</name>
@@ -490,6 +525,7 @@
             </flat>
         </stats>
         <description>机械能接口模块，智能功率分配，专为近战机械设计，显著提升威力。</description>
+        <tag>动力接口</tag>
     </mod>
     <mod>
         <name>战术鱼骨零件</name>
@@ -505,6 +541,7 @@
         <grantsWeapontype>突击步枪</grantsWeapontype>
         <detachPolicy>cascade</detachPolicy>
         <description>使子类不为[突击步枪]的枪械可以安装对应子类的配件，并将枪械的配件槽拓展至3个。</description>
+        <tag>导轨基座</tag>
     </mod>
     <mod>
         <name>突击型光学瞄具</name>
@@ -518,6 +555,7 @@
             </flat>
         </stats>
         <description>AI辅助瞄具，对满血敌人造成暴击伤害，并提高精准度。</description>
+        <tag>瞄具</tag>
     </mod>
     <mod>
         <name>KM型消声器</name>
@@ -541,6 +579,7 @@
             </flat>
         </stats>
         <description>军规激光器，提供精确瞄准辅助，提升精准度与弹药尺寸。</description>
+        <tag>侧导轨</tag>
     </mod>
     <mod>
         <name>加长弹匣</name>
@@ -554,6 +593,7 @@
             </cap>
         </stats>
         <description>扩容供弹系统，增加弹匣容量。</description>
+        <tag>弹匣</tag>
     </mod>
     <mod>
         <name>战术握把</name>
@@ -566,6 +606,7 @@
             </percentage>
         </stats>
         <description>人机工学握把，降低扩散并提升威力，适用于步枪和冲锋枪。</description>
+        <tag>下导轨</tag>
     </mod>
     <mod>
         <name>非栓式机构</name>
@@ -584,6 +625,7 @@
             </cap>
         </stats>
         <description>跨平台循环转换模块，提升弹容但降低单发威力。对点射武器增益作用于射击轮数，适合狙击武器与发射器。</description>
+        <tag>枪机</tag>
     </mod>
     <mod>
         <name>霰弹枪口收束器</name>
@@ -611,9 +653,10 @@
             </percentage>
         </stats>
         <description>可编程分子机器集群，全面提升装备伤害输出能力。</description>
+        <tag>核心模块</tag>
     </mod>
 
-    <!-- 后面可能实装的新插件举例 -->
+
     <mod>
         <name>下挂霰弹枪</name>
         <use>长枪</use>
@@ -640,6 +683,7 @@
             <impact>8</impact>
         </skill>
         <description>短管泵动霰弹，提供近距离火力支援。</description>
+        <tag>下导轨</tag>
     </mod>
     <mod>
         <name>M203榴弹发射器</name>
@@ -666,6 +710,7 @@
             <impact>10</impact>
         </skill>
         <description>下挂榴弹模块，提供爆炸性火力支援。</description>
+        <tag>下导轨</tag>
     </mod>
     <mod>
         <name>下挂微型导弹发射器</name>
@@ -693,6 +738,7 @@
             <impact>8</impact>
         </skill>
         <description>四联腔导弹系统，提供高精度范围打击能力。</description>
+        <tag>下导轨</tag>
     </mod>
     <mod>
         <name>下挂铁血肩炮</name>
@@ -721,6 +767,7 @@
             <impact>1</impact>
         </skill>
         <description>等离子投射装置，发射追踪电浆弹，提高装备等级需求。</description>
+        <tag>下导轨</tag>
     </mod>
     <mod>
         <name>骨约晨星</name>
@@ -736,6 +783,7 @@
             </percentage>
         </stats>
         <description>多股编缆与陀螺仪阵列，全面提升威力、命中与闪避能力。</description>
+        <tag>柄尾</tag>
     </mod>
     <mod>
         <name>环格护手</name>
@@ -747,6 +795,7 @@
             <mp>30</mp>
         </skill>
         <description>千年古法锻玄铁为环，融合光纤数据系统，赋予追踪五连刺技能。</description>
+        <tag>刀身</tag>
     </mod>
     <mod>
         <name>矩锁多点挂槽板</name>
@@ -763,6 +812,7 @@
             </flat>
         </stats>
         <description>战术快速锁紧平台，六点矩阵分力结构，为拔刀术和瞬步斩赋予250%的锋利度加成。</description>
+        <tag>柄侧板</tag>
     </mod>
     <mod>
         <name>赤旌熔脊柄</name>
@@ -774,6 +824,7 @@
             </override>
         </stats>
         <description>超高温核心柄部组件，附加热属性伤害，有效穿透硬目标。</description>
+        <tag>握柄核心</tag>
     </mod>
     <mod>
         <name>震动吸收器</name>
@@ -790,8 +841,9 @@
             <mp>50</mp>
         </skill>
         <description>多级磁流变阻尼复合筒，吸收高频振动，赋予破坏殆尽技能。</description>
+        <tag>柄芯</tag>
     </mod>
-    <!-- 其他材料 -->
+
     <mod>
         <name>毒素样本</name>
         <use>刀,手枪,长枪,手部装备</use>
@@ -802,6 +854,7 @@
             </override>
         </stats>
         <description>生物毒素，为武器额外附着少量毒属性附加伤害。</description>
+        <tag>表面涂层</tag>
     </mod>
     <mod>
         <name>月之碎片</name>
@@ -812,6 +865,7 @@
             </override>
         </stats>
         <description>蕴含的月光精华融合进丹田周围的装备区域，可提升内力，会覆盖掉原有装备的内力加成。</description>
+        <tag>内力槽</tag>
     </mod>
     <mod>
         <name>成长的勋章</name>
@@ -822,5 +876,6 @@
             </flat>
         </stats>
         <description>强者的证明，降低装备等级限制。</description>
+        <tag>等级校正</tag>
     </mod>
 </root>
