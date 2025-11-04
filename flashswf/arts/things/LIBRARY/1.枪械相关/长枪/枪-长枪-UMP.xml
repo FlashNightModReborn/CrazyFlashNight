@@ -1,14 +1,14 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.枪械相关/长枪/枪-长枪-UMP" itemID="66b46745-000011e1" linkageExportForAS="true" linkageIdentifier="枪-长枪-UMP" lastModified="1723098949">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.枪械相关/长枪/枪-长枪-UMP" itemID="66b46745-000011e1" linkageExportForAS="true" linkageIdentifier="枪-长枪-UMP" lastModified="1762260421" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="枪-长枪-UMP">
       <layers>
-        <DOMLayer name="Layer 1" color="#E1C9F0">
+        <DOMLayer name="Layer 1" color="#E1C9F0" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="枪口位置" centerPoint3DX="152.5" centerPoint3DY="-17.05">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="枪口位置" selected="true" centerPoint3DX="148.25" centerPoint3DY="-28.2">
                   <matrix>
-                    <Matrix tx="140" ty="-29.55"/>
+                    <Matrix tx="135.75" ty="-40.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -18,13 +18,16 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#B4A926" current="true" isSelected="true">
+        <DOMLayer name="Layer 2" color="#B4A926">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 3770" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="UMP" centerPoint3DX="4.15" centerPoint3DY="-5.15">
+                  <matrix>
+                    <Matrix a="0.136795043945313" d="0.136795043945313" tx="-124.6" ty="-65.75"/>
+                  </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="941.9" y="444.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
