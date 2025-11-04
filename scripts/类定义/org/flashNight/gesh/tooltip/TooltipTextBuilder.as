@@ -400,7 +400,16 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     if (item.actiontype !== undefined) result.push("动作：", item.actiontype, "<BR>");
 
     if(value.mods.length > 0){
-      result.push("已安装", value.mods.length, "个配件：", value.mods.join("，"), "<BR>");
+      result.push("<font color='" + TooltipConstants.COL_HL + "'>已安装", value.mods.length, "个配件：</font><BR>");
+      for(var i = 0; i < value.mods.length; i++){
+        var modName = value.mods[i];
+        var modInfo = EquipmentUtil.modDict[modName];
+        if(modInfo && modInfo.tagValue){
+          result.push("  • ", modName, " <font color='" + TooltipConstants.COL_INFO + "'>[", modInfo.tagValue, "]</font><BR>");
+        }else{
+          result.push("  • ", modName, "<BR>");
+        }
+      }
     }
 
     return result;
@@ -472,6 +481,10 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     if(!modData) return result;
     result.push("<font color='" + TooltipConstants.COL_HL + "'>【配件信息】</font><BR>");
     result.push("适用装备类型：" + modData.use + "<BR>");
+    // 显示插件的tag分类
+    if(modData.tagValue){
+      result.push("<font color='" + TooltipConstants.COL_INFO + "'>插件位置：</font>" + modData.tagValue + "<BR>");
+    }
     if(modData.weapontype){
       result.push("适用武器子类：" + modData.weapontype + "<BR>");
     }
