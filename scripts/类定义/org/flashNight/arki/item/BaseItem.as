@@ -33,8 +33,8 @@ class org.flashNight.arki.item.BaseItem{
         if(__value <= 0 || !ItemUtil.isItem(__name)) return null;
         if(ItemUtil.isEquipment(__name)) {
             return new BaseItem(
-                __name, 
-                __value > 13 ? {level: 1} : {level: __value}, 
+                __name,
+                __value > 13 ? {level: 1, mods: []} : {level: __value, mods: []},  // 修复：初始化mods为空数组
                 __lastUpdate
             );
         }
@@ -46,6 +46,10 @@ class org.flashNight.arki.item.BaseItem{
         var __name = initObject.name;
         var __value = initObject.value;
         if(!__value || !ItemUtil.isItem(__name)) return null;
+        // 修复：确保装备的mods字段始终是数组
+        if(ItemUtil.isEquipment(__name) && __value.mods === undefined){
+            __value.mods = [];
+        }
         return new BaseItem(__name, __value, initObject.lastUpdate);
     }
 
@@ -64,13 +68,13 @@ class org.flashNight.arki.item.BaseItem{
             }
             if(strArr[3]){
                 var modArr = strArr[3].split(",");
-                var modObj = {};
+                var modList = [];  // 修复：使用数组而非对象
                 for(var i = 0; i < modArr.length; i++){
                     if(EquipmentUtil.modDict[modArr[i]]){
-                        modObj[modArr[i]] = 1;
+                        modList.push(modArr[i]);  // 修复：直接push配件名到数组
                     }
                 }
-                newItem.value.mods = modObj;
+                newItem.value.mods = modList;  // 修复：赋值为数组
             }
         }
         return newItem;
