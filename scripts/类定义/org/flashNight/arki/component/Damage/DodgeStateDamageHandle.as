@@ -60,6 +60,17 @@ class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDa
         var damageSize:Number = result.damageSize;
         var dodgeState:String = manager.dodgeState;
 
+        // 真伤无视闪避：直接执行取整和视觉效果，跳过闪避处理
+        if (bullet.伤害类型 === "真伤") {
+            damageNumber = (damageNumber > 1) ? (damageNumber | 0) : 1;
+            target.损伤值 = damageNumber;
+            _root.受击变红(120, target);
+            if(target.受击反制){
+                target.受击反制(damageNumber, bullet);
+            }
+            return;  // 早退，避免switch开销
+        }
+
         switch (dodgeState) {
             case "跳弹":
                 damageNumber = DamageResistanceHandler.bounceDamageCalculation(damageNumber, target.防御力);
