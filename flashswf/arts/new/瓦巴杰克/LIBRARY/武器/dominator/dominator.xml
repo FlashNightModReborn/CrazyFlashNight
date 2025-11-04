@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/dominator/dominator" itemID="65df52bb-00000453" linkageExportForAS="true" linkageIdentifier="枪-手枪-dominator" lastModified="1758045738" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/dominator/dominator" itemID="65df52bb-00000453" linkageExportForAS="true" linkageIdentifier="枪-手枪-dominator" lastModified="1762278509" lastUniqueIdentifier="4">
   <timeline>
     <DOMTimeline name="dominator">
       <layers>
@@ -53,6 +53,7 @@
 			if(type!="进图读取"){
 				自机.手枪.value.shot = Math.ceil(自机.手枪.value.shot / 分解模式弹容倍率);
 			}
+			自机.手枪伤害类型 = "物理";
 			自机.man.初始化手枪射击函数();
 		}
 	};
@@ -81,6 +82,7 @@
 			if(type!="进图读取"){
 				自机.手枪.value.shot = Math.ceil(自机.手枪.value.shot * 击杀模式弹容倍率);
 			}
+			自机.手枪伤害类型 = "物理";
 			自机.man.初始化手枪射击函数();
 		}
 	};
@@ -109,6 +111,7 @@
 			if(type!="进图读取"){
 				自机.手枪.value.shot =  Math.ceil(自机.手枪.value.shot * 分解模式弹容倍率);
 			}
+			自机.手枪伤害类型 = "真伤";
 			自机.man.初始化手枪射击函数();
 		}
 	};
