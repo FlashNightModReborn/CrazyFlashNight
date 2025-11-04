@@ -174,6 +174,10 @@ class org.flashNight.arki.item.EquipmentUtil{
             }else{
                 mod.detachPolicy = "single";
             }
+            // 解析 tag 标签，用于实现同tag插件互斥
+            if(mod.tag){
+                mod.tagValue = mod.tag; // 存储tag值
+            }
             // 调整百分比区的值为小数
             var percentage:Object = mod.stats.percentage;
             for(var key:String in percentage){
@@ -300,6 +304,17 @@ class org.flashNight.arki.item.EquipmentUtil{
         for(var i:Number = 0; i < len; i++){
             if(mods[i] === matName) return -2; // 已装备同名配件
         }
+        // 检查tag互斥：同tag的插件不能同时装备
+        if(modData.tagValue){
+            for(var j:Number = 0; j < len; j++){
+                var installedModData:Object = modDict[mods[j]];
+                if(installedModData && installedModData.tagValue){
+                    if(installedModData.tagValue === modData.tagValue){
+                        return -8; // 同tag插件已装备，不能装备多个相同tag的插件
+                    }
+                }
+            }
+        }
         //
         if(itemData.skill && modData.skill) return -4; // 已有战技
         return 1; // 允许装备
@@ -312,6 +327,7 @@ class org.flashNight.arki.item.EquipmentUtil{
         modAvailabilityResults[-1] = "装备配件槽已满";
         modAvailabilityResults[-2] = "已装备";
         modAvailabilityResults[-4] = "配件无法覆盖装备原本的主动战技";
+        modAvailabilityResults[-8] = "同位置插件已装备"; // tag冲突：一个装备不能同时装多个相同tag的插件
     }
 
     public static var modAvailabilityResults:Object;
