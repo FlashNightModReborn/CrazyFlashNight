@@ -2,6 +2,7 @@
 import org.flashNight.gesh.tooltip.TooltipFormatter;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.TooltipDataSelector;
+import org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.component.Damage.*;
 import org.flashNight.gesh.object.ObjectUtil;
@@ -255,10 +256,14 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     var value = baseItem.value ? baseItem.value : 1;
     var upgradeLevel = value.level ? value.level : 1;
 
-    var result = [];
-
     var data = TooltipDataSelector.getEquipmentData(item, value.tier);
     var equipData = upgradeLevel > 1 || value.mods ? baseItem.getData().data : null;
+
+    // 委托给新的编排器（保持完全相同的输出）
+    return EquipmentStatsComposer.compose(baseItem, item, data, equipData);
+
+    /* 原实现已迁移到 builder 子模块
+    var result = [];
 
     TooltipFormatter.upgradeLine(result, data, equipData, "level", null, null);
     TooltipFormatter.upgradeLine(result, data, equipData, "weight", null, TooltipConstants.SUF_KG);
@@ -423,6 +428,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     }
 
     return result;
+    */
   }
 
   // === 生成装备强化数据属性块 ===
