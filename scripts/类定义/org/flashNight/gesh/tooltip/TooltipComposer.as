@@ -71,7 +71,7 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
     var buffer:Array = [];
     var itemName = item.name;
 
-    append(buffer, TooltipTextBuilder.buildBasicDescription(item));
+    append(buffer, TooltipTextBuilder.buildBasicDescription(item, baseItem));
     if(ItemUtil.isInformation(itemName)){
       append(buffer, TooltipTextBuilder.buildStoryTip(item));
       append(buffer, TooltipTextBuilder.buildSynthesisMaterials(item));
@@ -79,7 +79,17 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
       append(buffer, TooltipTextBuilder.buildModStat(itemName));
     }else if(ItemUtil.isEquipment(itemName)){
       append(buffer, TooltipTextBuilder.buildBladeSkillMultipliers(item, baseItem));
-      append(buffer, TooltipTextBuilder.buildSkillInfo(item.skill));
+
+      // 获取最终的 skill（考虑插件可能替换战技）
+      var skillToDisplay:Object = item.skill;
+      if(baseItem && baseItem.getData != undefined) {
+        var calculatedData:Object = baseItem.getData();
+        if(calculatedData && calculatedData.skill !== undefined) {
+          skillToDisplay = calculatedData.skill;
+        }
+      }
+
+      append(buffer, TooltipTextBuilder.buildSkillInfo(skillToDisplay));
       append(buffer, TooltipTextBuilder.buildLifecycleInfo(item.lifecyle));
     }
 

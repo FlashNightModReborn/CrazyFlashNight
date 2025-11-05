@@ -415,8 +415,8 @@ class org.flashNight.arki.item.EquipmentUtil{
         if(tierData.description !== undefined) itemData.description = tierData.description;
         if(tierData.skill !== undefined) itemData.skill = ObjectUtil.clone(tierData.skill);
 
-        // 清空已使用的进阶数据
-        if(itemData[tierKey]) itemData[tierKey] = null;
+        // 清空已使用的进阶数据（无条件置空，保持原始行为）
+        itemData[tierKey] = null;
     }
 
     /**
@@ -467,7 +467,8 @@ class org.flashNight.arki.item.EquipmentUtil{
             var mergeStat:Object = modInfo.stats.merge;
             var capStat:Object = modInfo.stats.cap;
 
-            if(mergeStat) {
+            // 仅在DEBUG模式下执行，避免生产环境的字符串拼接开销
+            if(mergeStat && DEBUG_MODE) {
                 debugLog("发现插件 '" + mods[i] + "' 含有merge数据: " + ObjectUtil.toString(mergeStat));
             }
 

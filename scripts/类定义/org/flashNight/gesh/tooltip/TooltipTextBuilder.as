@@ -28,10 +28,20 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   }
 
   // === 生成基础描述（1:1 复刻 _root.注释文本.生成基础描述） ===
-  public static function buildBasicDescription(item:Object):Array {
+  public static function buildBasicDescription(item:Object, baseItem:BaseItem):Array {
     var result = [];
-    if (item.description) {
-      result.push(item.description.split("\r\n").join(TooltipFormatter.br()), TooltipFormatter.br());
+
+    // 获取最终的 description（考虑进阶可能修改描述）
+    var description:String = item.description;
+    if(baseItem && baseItem.getData != undefined) {
+      var calculatedData:Object = baseItem.getData();
+      if(calculatedData && calculatedData.description !== undefined) {
+        description = calculatedData.description;
+      }
+    }
+
+    if (description) {
+      result.push(description.split("\r\n").join(TooltipFormatter.br()), TooltipFormatter.br());
     }
     return result;
   } 
@@ -192,9 +202,18 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   public static function buildIntroHeader(baseItem:BaseItem, item:Object):Array {
     var value = baseItem.value ? baseItem.value : 1;
     var upgradeLevel = value.level ? value.level : 1;
-    
+
+    // 获取最终的 displayname（考虑进阶可能修改显示名称）
+    var displayName:String = item.displayname;
+    if(baseItem && baseItem.getData != undefined) {
+      var calculatedData:Object = baseItem.getData();
+      if(calculatedData && calculatedData.displayname !== undefined) {
+        displayName = calculatedData.displayname;
+      }
+    }
+
     var result = [];
-    result.push("<B>", (value.tier ? ("[" + value.tier + "]") : ""), item.displayname, "</B><BR>");
+    result.push("<B>", (value.tier ? ("[" + value.tier + "]") : ""), displayName, "</B><BR>");
     result.push(item.type, "    ", item.use, "<BR>");
     // 为手枪和长枪显示具体武器类型
     if (ItemUseTypes.isGun(item.use) && item.data && item.weapontype) {
