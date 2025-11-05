@@ -32,9 +32,11 @@ class org.flashNight.arki.item.BaseItem{
     public static function create(__name:String, __value:Number, __lastUpdate:Number):BaseItem{
         if(__value <= 0 || !ItemUtil.isItem(__name)) return null;
         if(ItemUtil.isEquipment(__name)) {
+            // 动态获取最大强化等级，避免硬编码
+            var maxLevel:Number = EquipmentUtil.getMaxLevel();
             return new BaseItem(
                 __name,
-                __value > 13 ? {level: 1, mods: []} : {level: __value, mods: []},  // 修复：初始化mods为空数组
+                __value > maxLevel ? {level: 1, mods: []} : {level: __value, mods: []},
                 __lastUpdate
             );
         }

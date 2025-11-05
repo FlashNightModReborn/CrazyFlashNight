@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.arki.item.EquipmentUtil;
 /*
  * 物品图标UI基类
 */
@@ -78,7 +79,8 @@ class org.flashNight.arki.item.itemIcon.ItemIcon{
         }else if(value.level > 1){
             leveltext._visible = true;
             leveltext.text = String(value.level);
-            if(value.level == 13) icon.满级框._visible = true;
+            // 动态判断是否达到最大等级，避免硬编码
+            if(value.level >= EquipmentUtil.getMaxLevel()) icon.满级框._visible = true;
         }
     }
 
