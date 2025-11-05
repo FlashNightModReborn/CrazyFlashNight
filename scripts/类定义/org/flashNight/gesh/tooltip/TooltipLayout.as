@@ -153,13 +153,7 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
             icon._x = icon._y = TooltipConstants.ICON_OFFSET;
 
             // 确保图标层级在简介背景之上
-            if (tips.简介背景) {
-                var iconDepth:Number = target.getDepth();
-                var bgDepth:Number = tips.简介背景.getDepth();
-                if (iconDepth <= bgDepth) {
-                    target.swapDepths(bgDepth + TooltipConstants.DEPTH_INCREMENT);
-                }
-            }
+            TooltipBridge.ensureIconAboveIntroBg(TooltipConstants.DEPTH_INCREMENT);
 
             background._height = text._height + backgroundHeightOffset;
         } else {

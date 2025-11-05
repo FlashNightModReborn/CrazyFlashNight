@@ -289,6 +289,29 @@ class org.flashNight.gesh.tooltip.TooltipBridge {
         if (dy != 0) container._y += dy;
     }
 
+    /**
+     * 确保图标层级在简介背景之上
+     *
+     * 检查图标定位器的深度，如果低于或等于简介背景的深度，
+     * 则将图标定位器移动到简介背景上方一层。
+     *
+     * @param depthIncrement:Number 深度增量（默认为 1）
+     */
+    public static function ensureIconAboveIntroBg(depthIncrement:Number):Void {
+        var icon:MovieClip = getIconTarget();
+        var introBg:MovieClip = getIntroBackground();
+
+        if (!icon || !introBg) return; // 安全检查
+
+        var increment:Number = isNaN(depthIncrement) ? 1 : depthIncrement;
+        var iconDepth:Number = icon.getDepth();
+        var bgDepth:Number = introBg.getDepth();
+
+        if (iconDepth <= bgDepth) {
+            icon.swapDepths(bgDepth + increment);
+        }
+    }
+
     // ══════════════════════════════════════════════════════════════
     // 私有辅助方法
     // ══════════════════════════════════════════════════════════════
