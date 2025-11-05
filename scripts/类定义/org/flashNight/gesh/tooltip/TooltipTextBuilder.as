@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.item.*;
 import org.flashNight.gesh.tooltip.TooltipFormatter;
 import org.flashNight.gesh.tooltip.TooltipConstants;
+import org.flashNight.gesh.tooltip.ItemUseTypes;
 import org.flashNight.gesh.tooltip.TooltipDataSelector;
 import org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
@@ -38,7 +39,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   // === 生成剧情碎片提示（1:1 复刻 _root.注释文本.生成剧情碎片提示） ===
   public static function buildStoryTip(item:Object):Array {
     var result = [];
-    if (item.use == "情报") {
+    if (item.use == ItemUseTypes.INFORMATION) {
       result.push(
         TooltipFormatter.color("详细信息可在物品栏的情报界面查阅", TooltipConstants.COL_INFO),
         TooltipFormatter.br()
@@ -71,7 +72,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   // === 生成刀技乘数（重构后：从XML配置读取，显示插件影响） ===
   public static function buildBladeSkillMultipliers(item:Object, baseItem:BaseItem):Array {
     var result = [];
-    if (item.use !== "刀") return result;
+    if (item.use !== ItemUseTypes.MELEE) return result;
 
     // 获取基础数据和最终数据
     var baseSkillMultipliers = (item.data && item.data.skillmultipliers) ? item.data.skillmultipliers : null;
@@ -196,11 +197,11 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     result.push("<B>", (value.tier ? ("[" + value.tier + "]") : ""), item.displayname, "</B><BR>");
     result.push(item.type, "    ", item.use, "<BR>");
     // 为手枪和长枪显示具体武器类型
-    if ((item.use == "手枪" || item.use == "长枪") && item.data && item.weapontype) {
+    if (ItemUseTypes.isGun(item.use) && item.data && item.weapontype) {
       result.push("武器类型：", item.weapontype, "<BR>");
     }
     result.push("$", item.price, "<BR>");
-    if (upgradeLevel > 1 && (item.type == "武器" || item.type == "防具")) {
+    if (upgradeLevel > 1 && (item.type == ItemUseTypes.TYPE_WEAPON || item.type == ItemUseTypes.TYPE_ARMOR)) {
       result.push("<FONT COLOR='" + TooltipConstants.COL_HL + "'>强化等级：", upgradeLevel, "</FONT><BR>");
     } else {
       // 兼容多种形态：value 为数字 或 对象里带各种数量字段
@@ -227,7 +228,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
 
   public static function buildStats(baseItem:BaseItem, item:Object):Array {
     if(!item.data) return [];
-    if (item.use === "药剂"){
+    if (item.use === ItemUseTypes.POTION){
       return buildDrugStats(item);
     }else{
       return buildEquipmentStats(baseItem, item);
@@ -261,174 +262,6 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
 
     // 委托给新的编排器（保持完全相同的输出）
     return EquipmentStatsComposer.compose(baseItem, item, data, equipData);
-
-    /* 原实现已迁移到 builder 子模块
-    var result = [];
-
-    TooltipFormatter.upgradeLine(result, data, equipData, "level", null, null);
-    TooltipFormatter.upgradeLine(result, data, equipData, "weight", null, TooltipConstants.SUF_KG);
-
-    switch (item.use) {
-      case "刀":
-        TooltipFormatter.upgradeLine(result, data, equipData, "power", "锋利度", null);
-        break;
-      case "手雷":
-        result.push("威力：", data.power, "<BR>");
-        break;
-      case "长枪":
-      case "手枪":
-        if (data.clipname) result.push("使用弹夹：", ItemUtil.getItemData(data.clipname).displayname, "<BR>");
-        var bulletString = (data.bulletrename ? data.bulletrename : data.bullet);
-        if (bulletString) result.push("子弹类型：", bulletString, "<BR>");
-        var isNotMultiShot:Boolean = (data.bullet && BulletTypesetter.isVertical(data.bullet));
-        
-        // 数值字段统一防护：使用Number()转换 + isNaN()兜底
-        var splitValue:Number = Number(data.split);
-        if (isNaN(splitValue) || splitValue <= 1) splitValue = 1;
-        
-        var capacity:Number = Number(data.capacity);
-        if (isNaN(capacity)) capacity = 0;
-        
-        var magazineCapacity = isNotMultiShot ? splitValue : 1;
-
-        // 处理弹夹容量显示（考虑magazineCapacity乘数）
-        if (capacity > 0) {
-          if (magazineCapacity > 1) {
-            // 有magazineCapacity乘数（点射武器）
-            // 需要临时创建对象来正确显示乘数后的容量
-            var tempData = {capacity: data.capacity * magazineCapacity};
-            var tempEquipData = equipData ? {capacity: equipData.capacity * magazineCapacity} : null;
-            TooltipFormatter.upgradeLine(result, tempData, tempEquipData, "capacity", "弹夹容量", null);
-          } else {
-            // 普通武器，直接使用upgradeLine
-            TooltipFormatter.upgradeLine(result, data, equipData, "capacity", "弹夹容量", null);
-          }
-        }
-
-        TooltipFormatter.upgradeLine(result, data, equipData, "power", "子弹威力", null);
-        if (splitValue > 1) result.push(isNotMultiShot ? "点射弹数：" : "弹丸数量：", splitValue, "<BR>");
-        
-        // interval和impact的防护：确保是有效数值且非零
-        var interval:Number = Number(data.interval);
-        if (!isNaN(interval) && interval > 0) {
-          result.push("射速：", (Math.floor(10000 / interval) * 0.1 * magazineCapacity), TooltipConstants.SUF_FIRE_RATE + "<BR>");
-        }
-        
-        var impact:Number = Number(data.impact);
-        if (!isNaN(impact) && impact > 0) {
-          result.push("冲击力：", Math.floor(500 / impact), "<BR>");
-        }
-        break;
-    }
-
-    // 使用辅助方法生成属性行
-    TooltipFormatter.upgradeLine(result, data, equipData, "force", null, null);
-    TooltipFormatter.upgradeLine(result, data, equipData, "damage", null, null);
-    TooltipFormatter.upgradeLine(result, data, equipData, "punch", null, null);
-    TooltipFormatter.upgradeLine(result, data, equipData, "knifepower", null, null);
-    TooltipFormatter.upgradeLine(result, data, equipData, "gunpower", null, null);
-
-    // 使用最终计算后的数据显示暴击（如果有mod或强化，则使用equipData）
-    var critData = equipData ? equipData : data;
-    if (critData.criticalhit) {
-      result.push(quickBuildCriticalHit(critData.criticalhit));
-    }
-
-    TooltipFormatter.upgradeLine(result, data, equipData, "accuracy", null, TooltipConstants.SUF_PERCENT);
-    TooltipFormatter.upgradeLine(result, data, equipData, "evasion", null, TooltipConstants.SUF_PERCENT);
-    TooltipFormatter.upgradeLine(result, data, equipData, "toughness", null, TooltipConstants.SUF_PERCENT);
-    TooltipFormatter.upgradeLine(result, data, equipData, "lazymiss", null, null);
-    
-    // 非药剂才在通用区显示"剧毒性"；药剂的剧毒由药剂分支统一输出
-    TooltipFormatter.upgradeLine(result, data, equipData, "poison", null, null);
-    TooltipFormatter.upgradeLine(result, data, equipData, "vampirism", null, TooltipConstants.SUF_PERCENT);
-    TooltipFormatter.upgradeLine(result, data, equipData, "rout", null, TooltipConstants.SUF_PERCENT);
-    TooltipFormatter.upgradeLine(result, data, equipData, "slay", null, TooltipConstants.SUF_BLOOD);
-
-    // 使用最终计算后的数据显示伤害类型（如果有mod或强化，则使用equipData）
-    var finalData = equipData ? equipData : data;
-    quickBuildDamageType(result, finalData);
-
-    // 使用最终计算后的数据显示魔法抗性（如果有mod或强化，则使用equipData）
-    // 收集所有需要显示的抗性类型（基础数据和最终数据的并集）
-    if (finalData.magicdefence || data.magicdefence) {
-      var resistanceTypes = {};
-      if (data.magicdefence) {
-        for (var key in data.magicdefence) {
-          if (ObjectUtil.isInternalKey(key)) continue;
-          resistanceTypes[key] = true;
-        }
-      }
-      if (finalData.magicdefence) {
-        for (var key in finalData.magicdefence) {
-          if (ObjectUtil.isInternalKey(key)) continue;
-          resistanceTypes[key] = true;
-        }
-      }
-
-      // 对每个抗性类型显示变化前后的值（类似 upgradeLine 的逻辑）
-      for (var key in resistanceTypes) {
-        var baseResist = (data.magicdefence && data.magicdefence[key]) ? data.magicdefence[key] : null;
-        var finalResist = (finalData.magicdefence && finalData.magicdefence[key]) ? finalData.magicdefence[key] : null;
-
-        // 如果两者都没有值或都为0，跳过
-        if ((baseResist == null || Number(baseResist) == 0) && (finalResist == null || Number(finalResist) == 0)) continue;
-
-        var displayName = (key == "基础" ? "能量" : key);
-        var label = displayName + "抗性";
-
-        // 若没有实际装备数值或实际数值与原始数值相等，则打印原始数值
-        if (!equipData || finalResist == baseResist || finalResist == null) {
-          if (baseResist != null && Number(baseResist) != 0) {
-            result.push(label, "：", baseResist, "<BR>");
-          }
-        } else {
-          // 有变化，显示变化前后的值
-          if (finalResist != null && Number(finalResist) != 0) {
-            result.push(label, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalResist, "</FONT>");
-            if (baseResist == null) baseResist = 0;
-            // 若属性为数字，则额外打印增幅值
-            var baseNum = Number(baseResist);
-            var finalNum = Number(finalResist);
-            if (isNaN(finalNum) || isNaN(baseNum)) {
-              result.push(" (覆盖", baseResist, ")<BR>");
-            } else {
-              var enhance = finalNum - baseNum;
-              var sign:String;
-              if (enhance < 0) {
-                enhance = -enhance;
-                sign = " - ";
-              } else {
-                sign = " + ";
-              }
-              result.push(" (", baseResist, sign, enhance, ")<BR>");
-            }
-          }
-        }
-      }
-    }
-
-    TooltipFormatter.upgradeLine(result, data, equipData, "defence", null, null);
-    TooltipFormatter.upgradeLine(result, data, equipData, "hp", null, null);
-    TooltipFormatter.upgradeLine(result, data, equipData, "mp", null, null);
-
-    if (item.actiontype !== undefined) result.push("动作：", item.actiontype, "<BR>");
-
-    if(value.mods.length > 0){
-      result.push("<font color='" + TooltipConstants.COL_HL + "'>已安装", value.mods.length, "个配件：</font><BR>");
-      for(var i = 0; i < value.mods.length; i++){
-        var modName = value.mods[i];
-        var modInfo = EquipmentUtil.modDict[modName];
-        if(modInfo && modInfo.tagValue){
-          result.push("  • ", modName, " <font color='" + TooltipConstants.COL_INFO + "'>[", modInfo.tagValue, "]</font><BR>");
-        }else{
-          result.push("  • ", modName, "<BR>");
-        }
-      }
-    }
-
-    return result;
-    */
   }
 
   // === 生成装备强化数据属性块 ===
@@ -436,11 +269,11 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     var result = [];
     var data = itemData.data;
     var stat = EquipmentUtil.levelStatList[level] - 1;
-    if(isNaN(stat)) return;
-    
-    if(itemData.use === "刀"){
+    if(isNaN(stat)) return result;
+
+    if(itemData.use === ItemUseTypes.MELEE){
       TooltipFormatter.enhanceLine(result, "multiply", data, "power", stat, "锋利度");
-    }else if(itemData.use === "长枪" || itemData.use === "手枪"){
+    }else if(ItemUseTypes.isGun(itemData.use)){
       TooltipFormatter.enhanceLine(result, "multiply", data, "power", stat, "子弹威力");
     }
     TooltipFormatter.enhanceLine(result, "multiply", data, "force", stat, null);

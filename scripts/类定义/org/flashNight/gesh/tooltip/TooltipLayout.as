@@ -1,4 +1,5 @@
 ﻿import org.flashNight.gesh.tooltip.TooltipConstants;
+import org.flashNight.gesh.tooltip.ItemUseTypes;
 import org.flashNight.gesh.tooltip.TooltipBridge;
 import org.flashNight.gesh.string.StringUtils;
 
@@ -29,9 +30,9 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
 
 
         switch (itemType) {
-            case "武器":
-            case "防具":
-            case "技能":
+            case ItemUseTypes.TYPE_WEAPON:
+            case ItemUseTypes.TYPE_ARMOR:
+            case ItemUseTypes.TYPE_SKILL:
                 stringWidth = TooltipConstants.BASE_NUM;
                 background._width = TooltipConstants.BASE_NUM;
                 background._x = -TooltipConstants.BASE_NUM;

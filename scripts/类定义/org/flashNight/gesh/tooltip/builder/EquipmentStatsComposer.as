@@ -13,6 +13,7 @@
  */
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.gesh.tooltip.TooltipFormatter;
+import org.flashNight.gesh.tooltip.ItemUseTypes;
 import org.flashNight.gesh.tooltip.builder.MeleeStatsBuilder;
 import org.flashNight.gesh.tooltip.builder.GrenadeStatsBuilder;
 import org.flashNight.gesh.tooltip.builder.GunStatsBuilder;
@@ -46,14 +47,14 @@ class org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer {
 
         // 2. 根据 item.use 分发到专门构建器
         switch (item.use) {
-            case "刀":
+            case ItemUseTypes.MELEE:
                 MeleeStatsBuilder.build(result, baseItem, item, data, equipData);
                 break;
-            case "手雷":
+            case ItemUseTypes.GRENADE:
                 GrenadeStatsBuilder.build(result, baseItem, item, data, equipData);
                 break;
-            case "长枪":
-            case "手枪":
+            case ItemUseTypes.RIFLE:
+            case ItemUseTypes.PISTOL:
                 GunStatsBuilder.build(result, baseItem, item, data, equipData);
                 break;
         }

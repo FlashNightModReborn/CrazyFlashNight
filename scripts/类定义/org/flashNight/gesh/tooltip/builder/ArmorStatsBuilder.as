@@ -19,7 +19,13 @@ class org.flashNight.gesh.tooltip.builder.ArmorStatsBuilder {
 
     /**
      * 构建护甲属性块
-     * 
+     *
+     * 护甲/防具的专属属性显示被整合到 CommonStatsBuilder 中，
+     * 因为防御/HP/MP 是所有装备类型的通用属性。
+     *
+     * 如果将来需要为防具添加专属属性（如护甲等级、防护类型等），
+     * 可以在此方法中实现。
+     *
      * @param result:Array 输出缓冲区（就地修改）
      * @param baseItem:BaseItem 物品实例
      * @param item:Object 物品数据
@@ -28,9 +34,8 @@ class org.flashNight.gesh.tooltip.builder.ArmorStatsBuilder {
      * @return Void（直接修改 result）
      */
     public static function build(result:Array, baseItem:BaseItem, item:Object, data:Object, equipData:Object):Void {
-        // TODO: 实现护甲属性构建逻辑
-        // 1. 防御值
-        // 2. HP/MP 加成
-        // 3. 其他防具专属属性
+        // 当前实现：防具没有独特的专属属性
+        // 防御/HP/MP 等属性已在 CommonStatsBuilder 中统一处理
+        // 如果未来需要添加防具特有属性，可在此实现
     }
 }

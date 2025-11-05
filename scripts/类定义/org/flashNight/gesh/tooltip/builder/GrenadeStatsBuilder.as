@@ -26,7 +26,15 @@ class org.flashNight.gesh.tooltip.builder.GrenadeStatsBuilder {
      * @return Void（直接修改 result）
      */
     public static function build(result:Array, baseItem:BaseItem, item:Object, data:Object, equipData:Object):Void {
-        // 手雷的威力显示（原 case "手雷" 逻辑）
-        result.push("威力：", data.power, "<BR>");
+        // 威力数值防护（Number() + isNaN() 守卫）
+        var power:Number = Number(data.power);
+        if (isNaN(power)) {
+            power = 0;
+        }
+
+        // 只有威力非零时才显示
+        if (power !== 0) {
+            result.push("威力：", power, "<BR>");
+        }
     }
 }
