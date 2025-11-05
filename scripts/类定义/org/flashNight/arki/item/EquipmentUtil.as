@@ -8,6 +8,19 @@ import org.flashNight.arki.item.*;
 
 class org.flashNight.arki.item.EquipmentUtil{
 
+    // 调试模式开关（设置为true时输出调试日志）
+    public static var DEBUG_MODE:Boolean = false;
+
+    /**
+    * 输出调试日志（仅在DEBUG_MODE为true时生效）
+    * @param msg 要输出的调试信息
+    */
+    private static function debugLog(msg:String):Void {
+        if(DEBUG_MODE) {
+            _root.服务器.发布服务器消息("[EquipmentUtil] " + msg);
+        }
+    }
+
     // 强化比例数值表
     // 原公式为 delta = 1 + 0.01 * (level - 1) * (level + 4)
     public static var levelStatList:Array = [
@@ -26,6 +39,14 @@ class org.flashNight.arki.item.EquipmentUtil{
         2.76, // Lv12
         3.04  // Lv13
     ];
+
+    /**
+    * 获取最大等级值（基于levelStatList长度）
+    * @return 最大等级值
+    */
+    public static function getMaxLevel():Number {
+        return levelStatList.length - 1;
+    }
 
     // 数值计算中需要保留小数点的属性字典，目前逻辑为在字典中的属性保留1位小数，否则去尾取整
     public static var decimalPropDict:Object = {
@@ -102,6 +123,17 @@ class org.flashNight.arki.item.EquipmentUtil{
 
     /**
     * 初始化字典并加载配件数据
+    *
+    * @param modData 配件数据数组，每个元素包含：
+    *   - name: 配件名称
+    *   - use: 可用装备类型（逗号分隔）
+    *   - weapontype: 武器类型限制（可选，逗号分隔）
+    *   - grantsWeapontype: 授予的武器类型（可选，逗号分隔）
+    *   - detachPolicy: 拆卸策略（默认"single"）
+    *   - tag: 互斥标签（可选）
+    *   - stats: 属性修改对象 {flat, percentage, override, merge, cap}
+    *
+    * 注意：此方法现在是幂等的，可以安全地多次调用
     */
     public static function loadModData(modData:Array):Void{
         // 初始化字典
@@ -179,10 +211,15 @@ class org.flashNight.arki.item.EquipmentUtil{
             if(mod.tag){
                 mod.tagValue = mod.tag; // 存储tag值
             }
-            // 调整百分比区的值为小数
-            var percentage:Object = mod.stats.percentage;
-            for(var key:String in percentage){
-                percentage[key] *= 0.01;
+            // 调整百分比区的值为小数（防止重复处理）
+            if(!mod._percentageNormalized){
+                var percentage:Object = mod.stats ? mod.stats.percentage : null;
+                if(percentage){
+                    for(var key:String in percentage){
+                        percentage[key] *= 0.01;
+                    }
+                    mod._percentageNormalized = true; // 标记已归一化，防止重复处理
+                }
             }
 
             list.push(name);
@@ -207,6 +244,9 @@ class org.flashNight.arki.item.EquipmentUtil{
 
     /**
     * 查找所有可用的进阶材料
+    *
+    * @param item 装备物品对象
+    * @return 可用的进阶材料名称数组
     */
     public static function getAvailableTierMaterials(item:BaseItem):Array{
         var rawItemData:Object = ItemUtil.getRawItemData(item.name);
@@ -225,6 +265,10 @@ class org.flashNight.arki.item.EquipmentUtil{
 
     /**
     * 查找进阶插件是否能合法装备
+    *
+    * @param item 装备物品对象
+    * @param matName 进阶材料名称
+    * @return true如果可以装备，false否则
     */
     public static function isTierMaterialAvailable(item:BaseItem, matName:String):Boolean{
         var rawItemData:Object = ItemUtil.getRawItemData(item.name);
@@ -237,9 +281,11 @@ class org.flashNight.arki.item.EquipmentUtil{
     }
 
 
-    
     /**
     * 查找所有可用的配件材料
+    *
+    * @param item 装备物品对象
+    * @return 可用的配件名称数组
     */
     public static function getAvailableModMaterials(item:BaseItem):Array{
         var rawItemData:Object = ItemUtil.getRawItemData(item.name);
@@ -266,6 +312,7 @@ class org.flashNight.arki.item.EquipmentUtil{
 
         // 3. 遍历候选配件列表，检查是否可用
         var useList:Array = modUseLists[rawItemData.use];
+        if(!useList) return []; // 添加空值防护
         for(var i:Number = 0; i < useList.length; i++){
             var modName:String = useList[i];
             var modData:Object = modDict[modName];
@@ -293,12 +340,20 @@ class org.flashNight.arki.item.EquipmentUtil{
 
     /**
     * 查找配件插件是否能合法装备
+    *
+    * @param item 装备物品对象
+    * @param itemData 原始物品数据
+    * @param matName 配件名称
+    * @return 状态码：1=可装备，0=配件不存在，-1=槽位已满，-2=已装备，
+    *         -4=战技冲突，-8=tag冲突
     */
     public static function isModMaterialAvailable(item:BaseItem, itemData:Object, matName:String):Number{
         var mods:Array = item.value.mods;
         var modData:Object = modDict[matName];
         if(!modData) return 0;
 
+        // 添加空值防护
+        if(!itemData || !itemData.data) return 0;
         var modslot:Number = itemData.data.modslot;
         var len:Number = mods.length;
         if(len > 0 && len >= modslot) return -1; // 槽位已满
@@ -333,137 +388,188 @@ class org.flashNight.arki.item.EquipmentUtil{
 
     public static var modAvailabilityResults:Object;
 
+    /**
+    * 应用进阶数据覆盖
+    * @private
+    */
+    private static function applyTierData(itemData:Object, value:Object):Void {
+        if(!value.tier) return;
+
+        var tierKey:String = tierNameToKeyDict[value.tier];
+        if(!tierKey) return;
+
+        var tierData:Object = itemData[tierKey];
+        if(!tierData) {
+            // 使用默认进阶数据
+            tierData = defaultTierDataDict[value.tier];
+        }
+
+        if(!tierData) return;
+
+        // 覆盖 data 内的属性
+        propertyOperators.override(itemData.data, tierData);
+
+        // 覆盖顶层属性（icon, displayname, description, skill）
+        if(tierData.icon !== undefined) itemData.icon = tierData.icon;
+        if(tierData.displayname !== undefined) itemData.displayname = tierData.displayname;
+        if(tierData.description !== undefined) itemData.description = tierData.description;
+        if(tierData.skill !== undefined) itemData.skill = ObjectUtil.clone(tierData.skill);
+
+        // 清空已使用的进阶数据
+        if(itemData[tierKey]) itemData[tierKey] = null;
+    }
+
+    /**
+    * 构建基础强化倍率
+    * @private
+    */
+    private static function buildBaseMultiplier(level:Number):Object {
+        if(level <= 1) return {};
+
+        var maxLevel:Number = getMaxLevel();
+        if(level > maxLevel) level = maxLevel;
+
+        var levelMultiplier:Number = levelStatList[level];
+        return {
+            power: levelMultiplier,
+            defence: levelMultiplier,
+            damage: levelMultiplier,
+            force: levelMultiplier,
+            punch: levelMultiplier,
+            knifepower: levelMultiplier,
+            gunpower: levelMultiplier,
+            hp: levelMultiplier,
+            mp: levelMultiplier
+        };
+    }
+
+    /**
+    * 累积配件的各种修改器
+    * @private
+    */
+    private static function accumulateModifiers(mods:Array):Object {
+        var adder:Object = {};
+        var multiplier:Object = {};
+        var overrider:Object = {};
+        var merger:Object = {};
+        var capper:Object = {};
+        var skill:Object = null;
+
+        var operators:Object = propertyOperators;
+
+        for(var i:Number = 0; i < mods.length; i++){
+            var modInfo:Object = modDict[mods[i]];
+            if(!modInfo) continue;
+
+            var overrideStat:Object = modInfo.stats.override;
+            var percentageStat:Object = modInfo.stats.percentage;
+            var flatStat:Object = modInfo.stats.flat;
+            var mergeStat:Object = modInfo.stats.merge;
+            var capStat:Object = modInfo.stats.cap;
+
+            if(mergeStat) {
+                debugLog("发现插件 '" + mods[i] + "' 含有merge数据: " + ObjectUtil.toString(mergeStat));
+            }
+
+            // 应用对应的加成
+            if(flatStat) operators.add(adder, flatStat, 0);
+            if(percentageStat) operators.add(multiplier, percentageStat, 1);
+            if(overrideStat) operators.override(overrider, overrideStat);
+            if(mergeStat) operators.merge(merger, mergeStat);
+            if(capStat) operators.add(capper, capStat, 0);
+
+            // 查找战技
+            if(!skill && modInfo.skill) skill = modInfo.skill;
+        }
+
+        return {
+            adder: adder,
+            multiplier: multiplier,
+            overrider: overrider,
+            merger: merger,
+            capper: capper,
+            skill: skill
+        };
+    }
+
+    /**
+    * 按照固定顺序应用所有运算符
+    * @private
+    */
+    private static function applyOperatorsInOrder(data:Object, baseMultiplier:Object, modifiers:Object):Void {
+        var operators:Object = propertyOperators;
+
+        // 合并基础倍率和配件倍率
+        var finalMultiplier:Object = ObjectUtil.clone(baseMultiplier);
+        operators.add(finalMultiplier, modifiers.multiplier, 1);
+
+        // 保存基础属性副本（用于cap计算）
+        var baseData:Object = ObjectUtil.clone(data);
+
+        // 按顺序应用运算符
+        operators.multiply(data, finalMultiplier);
+        operators.add(data, modifiers.adder, 0);
+        operators.override(data, ObjectUtil.clone(modifiers.overrider));
+
+        // Debug: 追踪merge执行
+        if(modifiers.merger && DEBUG_MODE){
+            debugLog("Applying merge operator: " + ObjectUtil.toString(modifiers.merger));
+            if(data.magicdefence) {
+                debugLog("Before merge - magicdefence: " + ObjectUtil.toString(data.magicdefence));
+            }
+        }
+
+        operators.merge(data, modifiers.merger);
+
+        // Debug: 追踪merge结果
+        if(modifiers.merger && DEBUG_MODE){
+            if(data.magicdefence) {
+                debugLog("After merge - magicdefence: " + ObjectUtil.toString(data.magicdefence));
+            }
+        }
+
+        operators.applyCap(data, modifiers.capper, baseData);
+    }
+
 
 
     /**
     * 计算装备经过进阶、强化与配件之后的最终数值。
     *
-    * @param item 装备物品对象。
-    * @param itemData 原始物品数据。
+    * 运算顺序：
+    * 1. 进阶覆盖（tier override）
+    * 2. 百分比加成（percentage multiply）
+    * 3. 固定值加成（flat add）
+    * 4. 覆盖值（override）
+    * 5. 深度合并（merge）
+    * 6. 上限过滤（cap）
+    *
+    * @param item 装备物品对象，包含value属性（level, tier, mods等）
+    * @param itemData 原始物品数据，会被直接修改
     */
     public static function calculateData(item:BaseItem, itemData:Object):Void{
         var data:Object = itemData.data;
         var value:Object = item.value;
         var level:Number = value.level;
 
-        var operators:Object = propertyOperators; // 三种算子
+        // Step 1: 应用进阶数据
+        applyTierData(itemData, value);
 
-        // 获取对应的多阶数据，若不存在则使用默认数据覆盖
-        if(value.tier){
-            var tierKey:String = tierNameToKeyDict[value.tier];
-            if(tierKey){
-                var tierData:Object = itemData[tierKey];
-                if(tierData){
-                    // 覆盖 data 内的属性
-                    operators.override(data, tierData);
+        // 若没有强化和插件则提前返回
+        if(level < 2 && value.mods.length <= 0) return;
 
-                    // 覆盖顶层属性（icon, displayname, description, skill）
-                    // 支持涂装数据自定义图标、显示名称、描述和技能
-                    if(tierData.icon !== undefined) {
-                        itemData.icon = tierData.icon;
-                    }
-                    if(tierData.displayname !== undefined) itemData.displayname = tierData.displayname;
-                    if(tierData.description !== undefined) itemData.description = tierData.description;
-                    if(tierData.skill !== undefined) itemData.skill = ObjectUtil.clone(tierData.skill);
+        // Step 2: 构建基础强化倍率
+        var baseMultiplier:Object = buildBaseMultiplier(level);
 
-                    itemData[tierKey] = null;
-                }else{
-                    tierData = defaultTierDataDict[value.tier];
-                    if(tierData){
-                        operators.override(data, tierData);
-                    }
-                }
-            }
-        }
+        // Step 3: 累积配件修改器
+        var modifiers:Object = accumulateModifiers(value.mods);
 
-        if(level < 2 && value.mods.length <= 0) return; // 若没有强化和插件则提前返回
+        // Step 4: 按顺序应用所有运算符
+        applyOperatorsInOrder(data, baseMultiplier, modifiers);
 
-        var adder:Object = {};
-        var multiplier:Object;
-        var overrider:Object = {};
-        var merger:Object = {};  // 新增：收集所有配件的merge数据
-        var capper:Object = {};  // 新增：收集所有配件的cap数据
-        var skill:Object;
-
-        // 保存基础属性的副本（用于cap计算变化量）
-        var baseData:Object = ObjectUtil.clone(data);
-
-        // 计算强化加成
-        if(level > 1){
-            if(level > 13) level = 13;
-            var levelMultiplier:Number = levelStatList[level];
-            multiplier = {
-                power: levelMultiplier,
-                defence: levelMultiplier,
-                damage: levelMultiplier,
-                force: levelMultiplier,
-                punch:levelMultiplier,
-                knifepower: levelMultiplier,
-                gunpower: levelMultiplier,
-                hp: levelMultiplier,
-                mp: levelMultiplier
-            };
-        }else{
-            multiplier = {};
-        }
-
-        // 计算插件加成
-        for(var i:Number = 0; i < value.mods.length; i++){
-            var modInfo:Object = modDict[value.mods[i]];
-            if(modInfo){
-                var overrideStat:Object = modInfo.stats.override;
-                var percentageStat:Object = modInfo.stats.percentage;
-                var flatStat:Object = modInfo.stats.flat;
-                var mergeStat:Object = modInfo.stats.merge;  // 新增：读取merge数据
-                var capStat:Object = modInfo.stats.cap;  // 新增：读取cap数据
-
-                // Debug: 显示当前处理的插件
-                if(mergeStat){
-                    // _root.服务器.发布服务器消息("[EquipmentUtil] 发现插件 '" + value.mods[i] + "' 含有merge数据:");
-                    // _root.服务器.发布服务器消息("  " + ObjectUtil.toString(mergeStat));
-                }
-
-                // 应用对应的加成
-                if(flatStat) operators.add(adder, flatStat, 0);
-                if(percentageStat) operators.add(multiplier, percentageStat, 1);
-                if(overrideStat) operators.override(overrider, overrideStat);
-                if(mergeStat) operators.merge(merger, mergeStat);  // 新增：递归合并merge数据
-                if(capStat) operators.add(capper, capStat, 0);  // 新增：累加cap（多个配件的cap会叠加）
-                // 查找战技
-                if(!skill && modInfo.skill){
-                    skill = modInfo.skill;
-                }
-            }
-        }
-
-        // 以百分比加成-固定加成-覆盖-合并-上限过滤的顺序应用所有加成
-        operators.multiply(data, multiplier);
-        operators.add(data, adder, 0);
-        operators.override(data, ObjectUtil.clone(overrider)); // 最终覆盖操作前进行一次深拷贝
-
-        // Debug: 追踪merge执行
-        if(merger){
-            // _root.服务器.发布服务器消息("[EquipmentUtil] Applying merge operator:");
-            // _root.服务器.发布服务器消息("  Merger data: " + ObjectUtil.toString(merger));
-            if(data.magicdefence){
-                // _root.服务器.发布服务器消息("  Before merge - magicdefence: " + ObjectUtil.toString(data.magicdefence));
-            }
-        }
-
-        operators.merge(data, merger);  // 新增：深度合并（在override之后，cap之前）
-
-        // Debug: 追踪merge结果
-        if(merger){
-            if(data.magicdefence){
-                // _root.服务器.发布服务器消息("  After merge - magicdefence: " + ObjectUtil.toString(data.magicdefence));
-            }
-        }
-
-        operators.applyCap(data, capper, baseData);  // 新增：最后应用cap限制
-
-        // 替换战技
-        if(skill){
-            itemData.skill = ObjectUtil.clone(skill);
+        // Step 5: 替换战技
+        if(modifiers.skill){
+            itemData.skill = ObjectUtil.clone(modifiers.skill);
         }
     }
 
