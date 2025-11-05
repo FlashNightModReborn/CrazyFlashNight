@@ -26,6 +26,10 @@ class org.flashNight.gesh.tooltip.TooltipBridge {
      * 获取主文本框引用
      */
     public static function getMainTextBox():MovieClip {
+        if (!_root.注释框 || !_root.注释框.文本框) {
+            trace("[TooltipBridge] WARNING: 主文本框不存在");
+            return null;
+        }
         return _root.注释框.文本框;
     }
 
@@ -33,6 +37,10 @@ class org.flashNight.gesh.tooltip.TooltipBridge {
      * 获取主背景引用
      */
     public static function getMainBackground():MovieClip {
+        if (!_root.注释框 || !_root.注释框.背景) {
+            trace("[TooltipBridge] WARNING: 主背景不存在");
+            return null;
+        }
         return _root.注释框.背景;
     }
 
@@ -40,6 +48,10 @@ class org.flashNight.gesh.tooltip.TooltipBridge {
      * 获取简介文本框引用
      */
     public static function getIntroTextBox():MovieClip {
+        if (!_root.注释框 || !_root.注释框.简介文本框) {
+            trace("[TooltipBridge] WARNING: 简介文本框不存在");
+            return null;
+        }
         return _root.注释框.简介文本框;
     }
 
@@ -47,6 +59,10 @@ class org.flashNight.gesh.tooltip.TooltipBridge {
      * 获取简介背景引用
      */
     public static function getIntroBackground():MovieClip {
+        if (!_root.注释框 || !_root.注释框.简介背景) {
+            trace("[TooltipBridge] WARNING: 简介背景不存在");
+            return null;
+        }
         return _root.注释框.简介背景;
     }
 
@@ -54,6 +70,10 @@ class org.flashNight.gesh.tooltip.TooltipBridge {
      * 获取图标定位器引用
      */
     public static function getIconTarget():MovieClip {
+        if (!_root.注释框 || !_root.注释框.物品图标定位) {
+            trace("[TooltipBridge] WARNING: 图标定位器不存在");
+            return null;
+        }
         return _root.注释框.物品图标定位;
     }
 
@@ -61,7 +81,67 @@ class org.flashNight.gesh.tooltip.TooltipBridge {
      * 获取注释容器引用
      */
     public static function getTooltipContainer():MovieClip {
+        if (!_root.注释框) {
+            trace("[TooltipBridge] WARNING: 注释容器不存在");
+            return null;
+        }
         return _root.注释框;
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // 动态解析器 - 支持 frameType 参数化访问
+    // ══════════════════════════════════════════════════════════════
+
+    /**
+     * 根据框体类型动态获取文本框
+     * @param frameType:String 框体类型（"" 表示主框体，"简介" 表示简介框体）
+     * @return MovieClip 文本框引用，不存在时返回 null
+     *
+     * @example
+     * ```actionscript
+     * var mainText = TooltipBridge.getTextByFrameType("");      // 获取主文本框
+     * var introText = TooltipBridge.getTextByFrameType("简介"); // 获取简介文本框
+     * ```
+     */
+    public static function getTextByFrameType(frameType:String):MovieClip {
+        var container:MovieClip = getTooltipContainer();
+        if (!container) return null;
+
+        var textBoxName:String = frameType + "文本框";
+        var textBox:MovieClip = container[textBoxName];
+
+        if (!textBox) {
+            trace("[TooltipBridge] WARNING: 文本框 '" + textBoxName + "' 不存在");
+            return null;
+        }
+
+        return textBox;
+    }
+
+    /**
+     * 根据框体类型动态获取背景
+     * @param frameType:String 框体类型（"" 表示主框体，"简介" 表示简介框体）
+     * @return MovieClip 背景引用，不存在时返回 null
+     *
+     * @example
+     * ```actionscript
+     * var mainBg = TooltipBridge.getBgByFrameType("");      // 获取主背景
+     * var introBg = TooltipBridge.getBgByFrameType("简介"); // 获取简介背景
+     * ```
+     */
+    public static function getBgByFrameType(frameType:String):MovieClip {
+        var container:MovieClip = getTooltipContainer();
+        if (!container) return null;
+
+        var bgName:String = frameType + "背景";
+        var bg:MovieClip = container[bgName];
+
+        if (!bg) {
+            trace("[TooltipBridge] WARNING: 背景 '" + bgName + "' 不存在");
+            return null;
+        }
+
+        return bg;
     }
 
     // ══════════════════════════════════════════════════════════════

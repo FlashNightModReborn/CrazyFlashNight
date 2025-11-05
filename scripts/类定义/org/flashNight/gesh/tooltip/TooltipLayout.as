@@ -17,7 +17,6 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
         var lengthScore:Number = StringUtils.htmlLengthScore(html, null);
         // 乘以 CHAR_AVG_WIDTH 作为像素缩放系数
         var widthEst:Number = lengthScore * TooltipConstants.CHAR_AVG_WIDTH;
-        // _root.发布消息(minW,maxW,lengthScore,widthEst,Math.max(minW, Math.min(widthEst, maxW)));
         return Math.max(minW, Math.min(widthEst, maxW));
     }
  
@@ -67,10 +66,17 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
         return {width: stringWidth, heightOffset: bgHeightOffset};
     }
 
-    // === 定位注释框（1:1 复刻 _root.注释布局.定位注释框） ===
+    // === 定位注释框（使用 Bridge 访问 UI 元素） ===
     public static function positionTooltip(tips:MovieClip, background:MovieClip, mouseX:Number, mouseY:Number):Void {
-        var introBg:MovieClip = tips.简介背景; // 舞台实例名保留中文
-        var rightBg:MovieClip = tips.背景; // 舞台实例名保留中文
+        // 通过 Bridge 获取 UI 元素
+        var introBg:MovieClip = TooltipBridge.getIntroBackground();
+        var rightBg:MovieClip = TooltipBridge.getMainBackground();
+        var mainText:MovieClip = TooltipBridge.getMainTextBox();
+        var introText:MovieClip = TooltipBridge.getIntroTextBox();
+        var icon:MovieClip = TooltipBridge.getIconTarget();
+
+        if (!introBg) return; // 安全检查
+
         var isAbbr:Boolean = !introBg._visible;
 
         if (isAbbr) {
@@ -79,8 +85,8 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
             tips._y = Math.min(Stage.height - background._height, Math.max(0, mouseY - background._height - TooltipConstants.MOUSE_OFFSET));
             return;
         }
-        // 简介背景显示时 
-        if (rightBg._visible) {
+        // 简介背景显示时
+        if (rightBg && rightBg._visible) {
             // 将注释框右边缘对齐到鼠标指针
             var desiredX:Number = mouseX - rightBg._width;
 
@@ -95,11 +101,13 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
             var offset:Number = mouseY - rightBottomHeight - TooltipConstants.MOUSE_OFFSET;
 
             if (offset > 0) {
-                tips.文本框._y = offset;
-                tips.背景._y = offset;
+                // 使用 Bridge 设置位置
+                TooltipBridge.setPosition("main", NaN, offset);
+                TooltipBridge.setPosition("mainBg", NaN, offset);
             } else {
-                var icon:MovieClip = tips.物品图标定位;
-                rightBg._height = Math.max(tips.文本框.textHeight, icon._height) + TooltipConstants.HEIGHT_ADJUST;
+                if (mainText && icon) {
+                    rightBg._height = Math.max(mainText.textHeight, icon._height) + TooltipConstants.HEIGHT_ADJUST;
+                }
             }
 
             tips._x = Math.max(minX, Math.min(desiredX, maxX));
@@ -109,7 +117,9 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
             tips._y = Math.min(Stage.height - introBg._height, Math.max(0, mouseY - introBg._height - TooltipConstants.MOUSE_OFFSET));
 
             // 左背景高度自适应
-            introBg._height = tips.简介文本框.textHeight + TooltipConstants.HEIGHT_ADJUST;
+            if (introText) {
+                introBg._height = introText.textHeight + TooltipConstants.HEIGHT_ADJUST;
+            }
         }
     }
 
@@ -181,8 +191,13 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
         TooltipBridge.resetMainPositions();
 
         var tips:MovieClip = TooltipBridge.getTooltipContainer();
-        var target:MovieClip = tips[frameType + "文本框"];
-        var background:MovieClip = tips[frameType + "背景"];
+        if (!tips) return; // 安全检查
+
+        // 使用 Bridge 的动态解析器获取元素
+        var target:MovieClip = TooltipBridge.getTextByFrameType(frameType);
+        var background:MovieClip = TooltipBridge.getBgByFrameType(frameType);
+
+        if (!target || !background) return; // 安全检查
 
         tips._visible = true;
         target.htmlText = content;
@@ -194,7 +209,7 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
 
         // 使用定位逻辑处理注释框定位
         positionTooltip(tips, background, _root._xmouse, _root._ymouse);
-        
+
         // 对主框体也应用边界回弹保护
         if (frameType != "简介") {
             TooltipBridge.clampContainerByBg(background, 8);
