@@ -110,15 +110,35 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
   // ──────────────── 完整组合 ────────────────
 
   /**
-   * 生成物品完整注释文本：
+   * 生成物品完整注释文本（便捷包装方法）
+   *
+   * 组合基础段和简介段，生成完整的注释 HTML 文本。
    * - 基础段（含生命周期、合成材料、技能信息等）
    * - 简介段（含标题头、装备属性）
+   *
+   * **使用说明**：
+   * 当前主流用法是分别调用 `generateItemDescriptionText` 和 `generateIntroPanelContent`，
+   * 然后传递给 `renderItemTooltipSmart` 进行智能渲染。本方法提供一步生成完整文本的便捷接口，
+   * 适用于需要直接获取合并后文本的场景。
    *
    * @param item:Object 物品数据对象
    * @param value:Object 数值对象（包含 tier、level 等）
    * @param upgradeLevel:Number 强化等级（默认从 value.level 获取，最小值 1）
    * @param baseItem:BaseItem 物品实例对象（可选，用于获取计算后的数据）
-   * @return String 完整的 HTML 文本
+   * @return String 完整的 HTML 文本（描述段 + 简介段）
+   *
+   * @example 典型用法（分步调用，推荐）
+   * ```actionscript
+   * var 描述文本 = TooltipComposer.generateItemDescriptionText(itemData, baseItem);
+   * var 简介文本 = TooltipComposer.generateIntroPanelContent(baseItem, itemData);
+   * TooltipComposer.renderItemTooltipSmart(name, value, 描述文本, 简介文本, null, iconData);
+   * ```
+   *
+   * @example 便捷用法（一步生成，适用于特殊场景）
+   * ```actionscript
+   * var fullText = TooltipComposer.generateItemFullText(item, value, level, baseItem);
+   * // 自行处理 fullText
+   * ```
    */
   public static function generateItemFullText(item:Object, value:Object, upgradeLevel:Number, baseItem:BaseItem):String {
     if (upgradeLevel == undefined || isNaN(upgradeLevel) || upgradeLevel < 1) {
@@ -126,9 +146,9 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
     }
 
     var descriptionText:String = generateItemDescriptionText(item, baseItem);
-    var introText:String
-    // var introText:String = generateIntroPanelContent(item, value, upgradeLevel);
+    var introText:String = generateIntroPanelContent(baseItem, item);
 
+    // _root.发布消息("introText", introText);
     return descriptionText + introText;
   }
 
