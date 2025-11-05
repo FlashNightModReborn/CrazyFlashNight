@@ -1,24 +1,22 @@
 ﻿/**
- * MeleeStatsBuilder - 近战武器属性构建器
+ * GrenadeStatsBuilder - 手雷属性构建器
  * 
  * 职责：
- * - 构建近战武器专属属性（锋利度等）
- * - 处理刀类武器的特殊显示逻辑
+ * - 构建手雷专属属性（威力等）
+ * - 处理投掷武器的特殊显示逻辑
  * 
  * 设计原则：
  * - 无副作用：仅通过 push 修改传入的 result 数组
- * - 使用 TooltipFormatter 统一格式化
  * - 保持与原逻辑完全一致的输出
  */
 import org.flashNight.arki.item.BaseItem;
-import org.flashNight.gesh.tooltip.TooltipFormatter;
 
-class org.flashNight.gesh.tooltip.builder.MeleeStatsBuilder {
+class org.flashNight.gesh.tooltip.builder.GrenadeStatsBuilder {
 
     /**
-     * 构建近战武器属性块
+     * 构建手雷属性块
      *
-     * 迁移自 TooltipTextBuilder.buildEquipmentStats Line 267-269 (case "刀")
+     * 迁移自 TooltipTextBuilder.buildEquipmentStats Line 270-272 (case "手雷")
      *
      * @param result:Array 输出缓冲区（就地修改）
      * @param baseItem:BaseItem 物品实例
@@ -28,7 +26,7 @@ class org.flashNight.gesh.tooltip.builder.MeleeStatsBuilder {
      * @return Void（直接修改 result）
      */
     public static function build(result:Array, baseItem:BaseItem, item:Object, data:Object, equipData:Object):Void {
-        // 近战武器的锋利度显示（原 case "刀" 逻辑）
-        TooltipFormatter.upgradeLine(result, data, equipData, "power", "锋利度", null);
+        // 手雷的威力显示（原 case "手雷" 逻辑）
+        result.push("威力：", data.power, "<BR>");
     }
 }

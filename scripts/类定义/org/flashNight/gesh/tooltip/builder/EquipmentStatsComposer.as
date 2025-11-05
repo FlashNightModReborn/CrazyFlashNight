@@ -13,12 +13,15 @@
  */
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.gesh.tooltip.TooltipFormatter;
+import org.flashNight.gesh.tooltip.builder.MeleeStatsBuilder;
+import org.flashNight.gesh.tooltip.builder.GrenadeStatsBuilder;
 import org.flashNight.gesh.tooltip.builder.GunStatsBuilder;
 import org.flashNight.gesh.tooltip.builder.CommonStatsBuilder;
 import org.flashNight.gesh.tooltip.builder.CriticalBlockBuilder;
 import org.flashNight.gesh.tooltip.builder.DamageTypeBuilder;
 import org.flashNight.gesh.tooltip.builder.ResistanceBlockBuilder;
 import org.flashNight.gesh.tooltip.builder.ModsBlockBuilder;
+import org.flashNight.gesh.tooltip.TooltipConstants;
 
 class org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer {
 
@@ -39,15 +42,15 @@ class org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer {
 
         // 1. 通用属性：level 和 weight
         TooltipFormatter.upgradeLine(result, data, equipData, "level", null, null);
-        TooltipFormatter.upgradeLine(result, data, equipData, "weight", null, "kg");
+        TooltipFormatter.upgradeLine(result, data, equipData, "weight", null, TooltipConstants.SUF_KG);
 
         // 2. 根据 item.use 分发到专门构建器
         switch (item.use) {
             case "刀":
-                TooltipFormatter.upgradeLine(result, data, equipData, "power", "锋利度", null);
+                MeleeStatsBuilder.build(result, baseItem, item, data, equipData);
                 break;
             case "手雷":
-                result.push("威力：", data.power, "<BR>");
+                GrenadeStatsBuilder.build(result, baseItem, item, data, equipData);
                 break;
             case "长枪":
             case "手枪":
