@@ -2,16 +2,12 @@
 <GameStage>
     <Rewards>
     </Rewards>
+    <!-- SubStage 0: 移动教学 - 无敌人，规避单位缓存池未初始化问题 -->
     <SubStage id="0">
         <BasicInformation>
-            <Animation>
-                <Path>flashswf/movies/movie_gk_1_1.swf</Path>
-                <Pause>1</Pause>
-                <Load>1</Load>
-            </Animation>
             <Background>flashswf/backgrounds/jxgk_BG.swf</Background>
-            <PlayerX>375</PlayerX>
-            <PlayerY>295</PlayerY>
+            <PlayerX>115</PlayerX>
+            <PlayerY>290</PlayerY>
         </BasicInformation>
         <Event>
             <EventName>Start</EventName>
@@ -32,7 +28,46 @@
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#愤怒</Char>
-                <Text>不过，你这丧尸也想杀了我？我的确像条狗，但是我可是从审判日中活了下来，要想杀我，死人没资格！</Text>
+                <Text>妈的，就不该从森林里出来，至少还有点水或者叶子······喉咙火烧一样，真要死了，妈的，至少找个好地方！</Text>
+            </Dialogue>
+        </Event>
+        <!-- 空Wave节点：无敌人，但让系统认为已清理完成，自动显示通关箭头 -->
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <!-- SubStage 1: 战斗教学 - 遭遇僵尸 -->
+    <SubStage id="1">
+        <BasicInformation>
+            <Animation>
+                <Path>flashswf/movies/movie_gk_1_1.swf</Path>
+                <Pause>1</Pause>
+                <Load>1</Load>
+            </Animation>
+            <Background>flashswf/backgrounds/jxgk_BG.swf</Background>
+            <PlayerX>375</PlayerX>
+            <PlayerY>295</PlayerY>
+        </BasicInformation>
+        <Event>
+            <EventName>Start</EventName>
+            <Guidance>引导-战斗</Guidance>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>不对······前面那个是什么？</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#愤怒</Char>
+                <Text>丧尸？！你这死人也想杀了我？我的确像条狗，但是我可是从审判日中活了下来，要想杀我，死人没资格！</Text>
             </Dialogue>
         </Event>
         <Event>
@@ -60,7 +95,8 @@
             </SubWave>
         </Wave>
     </SubStage>
-    <SubStage id="1">
+    <!-- SubStage 2: 遇见The Girl - 压力板触发剧情 -->
+    <SubStage id="2">
         <BasicInformation>
             <Background>flashswf/backgrounds/jxgk_BG.swf</Background>
             <PlayerX>115</PlayerX>
@@ -94,14 +130,8 @@
             <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
-                <Char>$PC_CHAR#愤怒</Char>
-                <Text>妈的，就不该从森林里出来，至少还有点水或者叶子······喉咙火烧一样，真要死了，妈的，至少找个好地方！</Text>
-            </Dialogue>
-            <Dialogue id="1">
-                <Name>$PC</Name>
-                <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
-                <Text>不对，前面那个是什么？</Text>
+                <Text>呼······总算解决了。不对，前面那个是什么？</Text>
             </Dialogue>
         </Event>
         <Event>
@@ -142,7 +172,8 @@
             </FollowingEvent>
         </Event>
     </SubStage>
-    <SubStage id="2">
+    <!-- SubStage 3: 基地房间 - 最终剧情 -->
+    <SubStage id="3">
         <BasicInformation>
             <Background>flashswf/backgrounds/情节2房间_BG.swf</Background>
             <PlayerX>495</PlayerX>
