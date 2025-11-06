@@ -74,3 +74,7 @@ import org.flashNight.arki.item.*;
 #include "../逻辑/装备函数/AR57.as"
 
 #include "../逻辑/装备函数/GM6_LYNX.as"
+
+#include "../逻辑/装备函数/Mark3.as"
+
+#include "../逻辑/装备函数/喷气背包.as"

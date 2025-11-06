@@ -630,6 +630,17 @@
         <毒>15</毒>
       </magicdefence>
     </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>喷气背包初始化</initRoutines>
+          <initParam>
+            <x>-110</x>
+            <y>239</y>
+          </initParam>
+        </init>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <name>钛合金61式头部装甲</name>
@@ -2044,7 +2055,7 @@
 由于装甲本身不提供能量来源，驱动发射器需要安装能量电池。也有使用者参照内力发射气动波的原理来替代供能。</description>
     <skill>
       <skillname>掌炮</skillname>
-      <description>发射掌炮，打出飞弹，需要消耗mp。蓄力可启动蓄能装置，提升内力转化率，增加伤害，并跟随蓄力时长可造成冲属性伤害或能量伤害，最大可蓄力三秒。蓄满时，能量装置转化率达到最高，将消耗1个能量电池，发射强力的电浆炮。若无能量电池，或未完全蓄满时，发射器将吸收内力并转化为两枚更高伤害的追踪能量飞弹。</description>
+      <description>发射掌炮，打出飞弹，需要消耗mp。蓄力可启动蓄能装置，提升内力转化率，增加伤害，并跟随蓄力时长可造成冲属性伤害，最大可蓄力三秒。蓄满时，能量装置转化率达到最高，发射强力的电浆炮。按切换键可消耗能量电池，发射能量弹，大幅增加基础伤害，蓄力解锁一定追踪能力并增加弹数，获得更高转化效率，蓄能达一秒即可发射电浆炮。</description>
       <cd>500</cd>
       <mp>30</mp>
     </skill>
@@ -2060,6 +2071,19 @@
       <punch>0</punch>
       <defence>380</defence>
     </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>Mark3手甲初始化</initRoutines>
+          <initParam>
+            <interval>1000</interval>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>Mark3手甲周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <name>Mark3胸甲</name>
@@ -2083,6 +2107,17 @@
       <punch>0</punch>
       <defence>390</defence>
     </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>喷气背包初始化</initRoutines>
+          <initParam>
+            <x>-107</x>
+            <y>256</y>
+          </initParam>
+        </init>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <name>Mark3腿甲</name>
