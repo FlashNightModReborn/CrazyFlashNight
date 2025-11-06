@@ -37,12 +37,18 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
                 background._width = TooltipConstants.BASE_NUM;
                 background._x = -TooltipConstants.BASE_NUM;
 
+                // 图标定位参数直接复刻 Flash 源文件中的变换矩阵
+                // 注释框.xml:23 物品图标定位: <Matrix a="4.86798" d="4.86798" tx="-192.5" ty="7.5"/>
+                // a/d = 4.86798 → 486.8% 缩放, tx = -192.5 ≈ -200 + 7.5
                 target._x = -TooltipConstants.BASE_NUM + TooltipConstants.BASE_OFFSET;
                 target._xscale = target._yscale = TooltipConstants.BASE_SCALE;
 
                 text._x = -TooltipConstants.BASE_NUM;
+                // 装备布局使用固定的Y坐标(210),与 注释框.xml:39 中简介文本框的 ty="212" 对应
                 text._y = TooltipConstants.TEXT_Y_EQUIPMENT;
 
+                // 背景高度偏移 = 带宽(200) + 额外偏移(20)
+                // 装备布局优先保证足够的垂直空间来容纳图标和文本
                 bgHeightOffset = TooltipConstants.BASE_NUM + TooltipConstants.BG_HEIGHT_OFFSET;
                 break;
 
@@ -53,6 +59,8 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
                 background._width = scaledWidth;
                 background._x = -scaledWidth;
 
+                // 紧凑布局下,图标位置和缩放也按 RATE(0.6) 等比缩放
+                // 保持与装备布局相同的相对位置关系
                 target._x = -scaledWidth + TooltipConstants.BASE_OFFSET * TooltipConstants.RATE;
                 target._xscale = target._yscale = TooltipConstants.BASE_SCALE * TooltipConstants.RATE;
 
@@ -64,6 +72,8 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
                 // 当 scaledWidth 改变时(如紧凑布局 120),Y 坐标同步调整为 10+120=130
                 text._y = TooltipConstants.TEXT_Y_BASE + scaledWidth;
 
+                // 紧凑布局的背景高度偏移 = 额外偏移(20) + 缩放后带宽(120)
+                // 注意:顺序与装备布局相反,优先保证基础偏移,再叠加缩放宽度
                 bgHeightOffset = TooltipConstants.BG_HEIGHT_OFFSET + TooltipConstants.RATE * TooltipConstants.BASE_NUM;
                 break;
         }
@@ -117,7 +127,9 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
 
             tips._x = Math.max(minX, Math.min(desiredX, maxX));
         } else {
-            // 只有左背景可见时
+            // 只有左背景可见时(简介模式)
+            // X定位:先计算左边缘位置,再加回宽度得到注册点(右边缘)的X坐标
+            // 这样确保简介框完整显示且不超出屏幕边界
             tips._x = Math.min(Stage.width - introBg._width, Math.max(0, mouseX - introBg._width)) + introBg._width;
             tips._y = Math.min(Stage.height - introBg._height, Math.max(0, mouseY - introBg._height - TooltipConstants.MOUSE_OFFSET));
 
@@ -150,10 +162,12 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
             // 显示注释文本
             showTooltip(stringWidth, contentText, "简介");
 
-            // 图标挂载，使用 "图标-" + 图标名 的命名规则
+            // 图标挂载：使用 Flash 库链接命名约定 "图标-" + 图标名
+            // 例如: iconName="剑" → 库链接ID="图标-剑"
             if (target.icon) target.icon.removeMovieClip();
             var iconString:String = "图标-" + iconName;
             var icon:MovieClip = target.attachMovie(iconString, "icon", target.getNextHighestDepth());
+            // 图标缩放和位置偏移:150%缩放,19像素偏移(基于美术设计的视觉平衡)
             icon._xscale = icon._yscale = TooltipConstants.ICON_SCALE;
             icon._x = icon._y = TooltipConstants.ICON_OFFSET;
 
