@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跑攻" itemID="690cd8bb-0000117d" lastModified="1762451611" lastUniqueIdentifier="22">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跑攻" itemID="690cd8bb-0000117d" lastModified="1762451781" lastUniqueIdentifier="22">
   <timeline>
-    <DOMTimeline name="兵器跑攻" currentFrame="20">
+    <DOMTimeline name="兵器跑攻" currentFrame="35">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -486,7 +486,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#FBC187" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#FBC187" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
@@ -511,7 +511,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="18" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -534,14 +534,14 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A">
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="35" duration="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -550,7 +550,7 @@ Z轴攻击范围 = 30;
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-	_parent.攻击时可斜向改变移动方向(50);
+	_parent.攻击时可斜向改变移动方向(30);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
