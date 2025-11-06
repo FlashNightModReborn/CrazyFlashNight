@@ -57,8 +57,12 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
                 target._xscale = target._yscale = TooltipConstants.BASE_SCALE * TooltipConstants.RATE;
 
                 text._x = -scaledWidth;
-                // 保持原逻辑：text._y 依赖 text._x
-                text._y = TooltipConstants.TEXT_Y_BASE - text._x;
+                // 重要：Y坐标基于简介带(intro band)的宽度计算
+                // 注释框素材采用右锚定、左扩展的布局(注册点在右边缘,简介带向左生长)
+                // 在 注释框.xml 中,简介文本框坐标为 x=-198, y=212
+                // 即 y ≈ TEXT_Y_BASE(10) + 宽度(200) = 210,保持文本垂直位置与带宽耦合
+                // 当 scaledWidth 改变时(如紧凑布局 120),Y 坐标同步调整为 10+120=130
+                text._y = TooltipConstants.TEXT_Y_BASE + scaledWidth;
 
                 bgHeightOffset = TooltipConstants.BG_HEIGHT_OFFSET + TooltipConstants.RATE * TooltipConstants.BASE_NUM;
                 break;
