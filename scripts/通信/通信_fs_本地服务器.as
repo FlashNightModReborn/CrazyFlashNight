@@ -20,7 +20,15 @@ _root.服务器.端口索引 = _root.server.portIndex;    // 重定向到 Server
 _root.服务器.当前端口 = _root.server.currentPort;  // 重定向到 ServerManager 的 currentPort
 
 // Step 3: 保留原有的函数接口，通过调用新的ServerManager来实现
-_root.服务器.发布服务器消息 = Delegate.create(_root.server, _root.server.sendServerMessage);
+// 使用包装函数而非委托，以支持多参数自动拼接功能(类似 _root.发布消息)
+_root.服务器.发布服务器消息 = function() {
+    var msg:String = "";
+    for (var i = 0; i < arguments.length; i++) {
+        if (i > 0) msg += " "; // 参数间用空格分隔
+        msg += arguments[i];
+    }
+    _root.server.sendServerMessage(msg);
+};
 _root.服务器.获得可用端口 = Delegate.create(_root.server, _root.server.getAvailablePort);
 
 
