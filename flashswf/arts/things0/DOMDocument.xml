@@ -49,7 +49,7 @@
           <DOMFolderItem name="余烬小队/余烬剑痴" itemID="663cf35d-000026f8" isExpanded="true"/>
           <DOMFolderItem name="战斗" itemID="67f1379f-0000087c"/>
           <DOMFolderItem name="重复项目文件夹" itemID="66b9eabe-00000ca4"/>
-          <DOMFolderItem name="主角动画层" itemID="66577cd4-00002e52" isExpanded="true"/>
+          <DOMFolderItem name="主角动画层" itemID="66577cd4-00002e52"/>
           <DOMFolderItem name="主角肢体素材" itemID="68c8295d-0000091e"/>
      </folders>
      <fonts>
@@ -829,7 +829,7 @@
           <Include href="sprite/Symbol 559.xml" loadImmediate="false" itemID="6577b699-00000ac3" lastModified="1702343951"/>
           <Include href="sprite/Symbol 561.xml" loadImmediate="false" itemID="6577b699-00000ac4" lastModified="1702343951"/>
           <Include href="sprite/Symbol 563.xml" loadImmediate="false" itemID="6577b699-00000ac5" lastModified="1702343951"/>
-          <Include href="sprite/Symbol 617.xml" loadImmediate="false" itemID="6577b699-00000adc" lastModified="1762276504"/>
+          <Include href="sprite/Symbol 617.xml" loadImmediate="false" itemID="6577b699-00000adc" lastModified="1762437286"/>
           <Include href="sprite/Symbol 618.xml" loadImmediate="false" itemID="6577b699-00000add" lastModified="1720908276"/>
           <Include href="sprite/Symbol 619.xml" loadImmediate="false" itemID="6577b699-00000ade" lastModified="1720908276"/>
           <Include href="sprite/Symbol 620.xml" loadImmediate="false" itemID="6577b699-00000adf" lastModified="1702343951"/>
@@ -846,8 +846,6 @@
           <Include href="sprite/Symbol 660.xml" loadImmediate="false" itemID="6577b699-00000afd" lastModified="1702343951"/>
           <Include href="sprite/Symbol 663.xml" loadImmediate="false" itemID="6577b699-00000b00" lastModified="1732399362"/>
           <Include href="sprite/Symbol 664.xml" loadImmediate="false" itemID="6577b699-00000b01" lastModified="1721546957"/>
-          <Include href="sprite/Symbol 665.xml" loadImmediate="false" itemID="6577b699-00000b02" lastModified="1744523573"/>
-          <Include href="sprite/Symbol 667.xml" loadImmediate="false" itemID="6577b699-00000b04" lastModified="1750095649"/>
           <Include href="sprite/Symbol 732.xml" loadImmediate="false" itemID="6577b699-00000b37" lastModified="1702343951"/>
           <Include href="sprite/Symbol 749.xml" loadImmediate="false" itemID="6577b699-00000b46" lastModified="1702343951"/>
           <Include href="sprite/Symbol 788.xml" loadImmediate="false" itemID="6577b699-00000b6a" lastModified="1702343951"/>
@@ -1081,6 +1079,9 @@
           <Include href="sprite/Symbol 2017.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000080b" lastModified="1702098593"/>
           <Include href="sprite/Symbol 2019.xml" loadImmediate="false" itemID="6577efbc-0000080c" lastModified="1706255914"/>
           <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1760885907"/>
+          <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1762451258"/>
+          <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1762449711"/>
+          <Include href="sprite/兵器跳跃旧动作备份.xml" loadImmediate="false" itemID="690cd8d3-0000117f" lastModified="1762449619"/>
           <Include href="sprite/持械待机.xml" loadImmediate="false" itemID="6693d49e-00000af1" lastModified="1720966607"/>
           <Include href="sprite/丑陋无比的连按方向奔跑键控.xml" loadImmediate="false" itemID="66587e46-00000645" lastModified="1742889188"/>
           <Include href="sprite/大地震.xml" itemID="668be732-00000660" lastModified="1749127630"/>
@@ -1154,7 +1155,7 @@
           <Include href="sprite/元件 2.xml" loadImmediate="false" itemID="66078dc1-00000698" lastModified="1711771073"/>
           <Include href="sprite/元件 3.xml" loadImmediate="false" itemID="66078dc5-0000069c" lastModified="1711771077"/>
           <Include href="sprite/圆柱体特效.xml" loadImmediate="false" itemID="68386174-00000fee" lastModified="1748527452"/>
-          <Include href="sprite/战技.xml" loadImmediate="false" itemID="66098aa7-00002911" lastModified="1762279316"/>
+          <Include href="sprite/战技.xml" loadImmediate="false" itemID="66098aa7-00002911" lastModified="1762451178"/>
           <Include href="sprite/主角-女（弃用）.xml" loadImmediate="false" itemID="67c8031d-00000716" lastModified="1757947252"/>
           <Include href="sprite/主角模板npc.xml" itemID="686f3f88-000007c6" lastModified="1756118902"/>
           <Include href="残影1.xml" loadImmediate="false" itemID="674008f5-0000089b" lastModified="1732286029"/>
@@ -1366,7 +1367,7 @@
           <Include href="组合拳幻影4‘.xml" loadImmediate="false" itemID="674dba4f-00000597" lastModified="1733147216"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="19" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;465&lt;/guideline&gt;&lt;guideline direction="v"&gt;338&lt;/guideline&gt;&lt;guideline direction="v"&gt;220&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;465&lt;/guideline&gt;&lt;guideline direction="v"&gt;338&lt;/guideline&gt;&lt;guideline direction="v"&gt;220&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Layer 1" color="#DEEE3E" current="true" isSelected="true">
                          <frames>
@@ -1387,7 +1388,7 @@
                               </DOMFrame>
                               <DOMFrame index="1" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/兵器攻击" selected="true" centerPoint3DX="340.9" centerPoint3DY="149.6">
+                                        <DOMSymbolInstance libraryItemName="sprite/兵器攻击" centerPoint3DX="340.9" centerPoint3DY="149.6">
                                              <matrix>
                                                   <Matrix tx="438.4" ty="111.55"/>
                                              </matrix>
@@ -1435,7 +1436,7 @@
                                                   <Point x="64.35" y="36.45"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/战技" centerPoint3DX="493.05" centerPoint3DY="164.9">
+                                        <DOMSymbolInstance libraryItemName="sprite/战技" selected="true" centerPoint3DX="493.05" centerPoint3DY="164.9">
                                              <matrix>
                                                   <Matrix tx="428.55" ty="147.95"/>
                                              </matrix>
@@ -1447,7 +1448,7 @@
                               </DOMFrame>
                               <DOMFrame index="4" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 665" centerPoint3DX="390.7" centerPoint3DY="89.8">
+                                        <DOMSymbolInstance libraryItemName="sprite/兵器跳跃" centerPoint3DX="390.7" centerPoint3DY="89.8">
                                              <matrix>
                                                   <Matrix tx="429" ty="188.9"/>
                                              </matrix>
@@ -1853,25 +1854,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
-          <PublishItem publishSize="3545675" publishTime="1762279182"/>
-          <PublishItem publishSize="3545672" publishTime="1762279063"/>
-          <PublishItem publishSize="3545558" publishTime="1762278645"/>
-          <PublishItem publishSize="3545554" publishTime="1762278126"/>
-          <PublishItem publishSize="3545549" publishTime="1762277622"/>
-          <PublishItem publishSize="3545393" publishTime="1762276919"/>
-          <PublishItem publishSize="3545738" publishTime="1762276556"/>
-          <PublishItem publishSize="3551141" publishTime="1760548986"/>
-          <PublishItem publishSize="3517423" publishTime="1759146685"/>
-          <PublishItem publishSize="3517421" publishTime="1759143310"/>
-          <PublishItem publishSize="3514909" publishTime="1759066781"/>
-          <PublishItem publishSize="3514905" publishTime="1759065927"/>
-          <PublishItem publishSize="3514907" publishTime="1759065900"/>
-          <PublishItem publishSize="3514821" publishTime="1759065624"/>
-          <PublishItem publishSize="3496625" publishTime="1757947035"/>
-          <PublishItem publishSize="3496615" publishTime="1757946968"/>
-          <PublishItem publishSize="3490140" publishTime="1756119285"/>
-          <PublishItem publishSize="3493755" publishTime="1756117764"/>
-          <PublishItem publishSize="3493762" publishTime="1756117531"/>
-          <PublishItem publishSize="3493755" publishTime="1756117341"/>
+          <PublishItem publishSize="3541561" publishTime="1762451062"/>
+          <PublishItem publishSize="3533285" publishTime="1762449309"/>
+          <PublishItem publishSize="3533285" publishTime="1762448887"/>
+          <PublishItem publishSize="3531954" publishTime="1762446418"/>
+          <PublishItem publishSize="3531947" publishTime="1762446325"/>
+          <PublishItem publishSize="3531954" publishTime="1762446221"/>
+          <PublishItem publishSize="3532302" publishTime="1762446030"/>
+          <PublishItem publishSize="3532694" publishTime="1762445651"/>
+          <PublishItem publishSize="3532696" publishTime="1762445389"/>
+          <PublishItem publishSize="3529622" publishTime="1762444426"/>
+          <PublishItem publishSize="3529618" publishTime="1762444215"/>
+          <PublishItem publishSize="3529597" publishTime="1762443197"/>
+          <PublishItem publishSize="3529596" publishTime="1762443099"/>
+          <PublishItem publishSize="3547214" publishTime="1762441819"/>
+          <PublishItem publishSize="3547215" publishTime="1762441684"/>
+          <PublishItem publishSize="3547209" publishTime="1762441427"/>
+          <PublishItem publishSize="3547202" publishTime="1762441236"/>
+          <PublishItem publishSize="3547218" publishTime="1762440987"/>
+          <PublishItem publishSize="3547209" publishTime="1762440720"/>
+          <PublishItem publishSize="3547209" publishTime="1762440594"/>
      </publishHistory>
 </DOMDocument>
