@@ -2,6 +2,7 @@
 import org.flashNight.arki.unit.Action.Shoot.WeaponStateManager;
 import org.flashNight.arki.unit.Action.Shoot.ReloadManager;
 import org.flashNight.arki.unit.Action.Shoot.ShootCore;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManager;
 import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 import org.flashNight.gesh.object.*;
 
@@ -164,29 +165,36 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     /**
      * 初始化武器手的属性
      * 设置特定手持武器的基本属性和子弹属性
-     * 
+     *
      * @param target    目标 MovieClip
      * @param parentRef 父级引用
      * @param config    武器手配置对象
      */
     private static function _initWeaponHand(target:MovieClip, parentRef:Object, config:Object):Void {
         var prefix:String = config.handPrefix;
+        var weaponType:String = config.weaponType;
         var speedProp:String = prefix + "射击速度";
         var magNameProp:String = prefix + "使用弹匣名称";
         var singleShotProp:String = prefix + "是否单发";
         var remainingMagProp:String = prefix + "剩余弹匣数";
-        
+
         // 设置属性
         target[speedProp] = config.weaponData.interval;
         target[magNameProp] = config.weaponData.clipname;
         target[singleShotProp] = config.weaponData.singleshoot;
         target[remainingMagProp] = ItemUtil.getTotal(target[magNameProp]);
-        
+
+        // 处理消音策略：创建并挂到 parentRef
+        var sv:Object = (config.extraParams.消音 !== undefined) ? config.extraParams.消音 : parentRef[weaponType + "消音"];
+        if (sv !== undefined && sv !== null) {
+            parentRef[weaponType + "消音策略"] = ShootInitCore.createSilenceStrategy(sv);
+        }
+
         // 生成子弹属性
         target[config.bulletProperty] = generateBulletProps(
-            parentRef, 
-            config.weaponType, 
-            config.weaponData, 
+            parentRef,
+            config.weaponType,
+            config.weaponData,
             config.extraParams
         );
     }
@@ -261,7 +269,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     /**
      * 初始化单武器系统
      * 设置单武器的基本属性和子弹生成
-     * 
+     *
      * @param target    目标 MovieClip
      * @param parentRef 父级引用
      * @param rootRef   根引用
@@ -270,19 +278,26 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     private static function _initSingleGunSystem(target:MovieClip, parentRef:Object, rootRef:Object, config:Object):Void {
         var weaponData:Array = config.weaponData;
         var extraParams:Object = config.extraParams || {};
-        
+        var weaponType:String = config.weaponType;
+
         // 设置基础属性
         target.射击速度      = weaponData.interval;
         target.使用弹匣名称  = weaponData.clipname;
         target.是否单发      = weaponData.singleshoot;
         target.剩余弹匣数    = ItemUtil.getTotal(target.使用弹匣名称);
-        
+
         // 更新弹药UI显示
         target.刷新弹匣数显示();
-        
+
+        // 处理消音策略：创建并挂到 parentRef
+        var sv:Object = (extraParams.消音 !== undefined) ? extraParams.消音 : parentRef[weaponType + "消音"];
+        if (sv !== undefined && sv !== null) {
+            parentRef[weaponType + "消音策略"] = ShootInitCore.createSilenceStrategy(sv);
+        }
+
         // 生成子弹属性
         target.子弹属性 = generateBulletProps(parentRef, config.weaponType, weaponData, extraParams);
-        
+
         // 单武器使用标准的开始射击和换弹匣函数，已在_bindCoreFunctions中绑定
     }
 
@@ -408,6 +423,12 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             bulletProps.斩杀 = Number(killValue);
         }
 
+        // 处理消音策略：仅引用，不创建闭包
+        var ss:Function = parentRef[weaponType + "消音策略"];
+        if (ss) {
+            bulletProps.消音策略 = ss;
+            // _root.发布消息("为 " + weaponType + " 生成子弹属性时绑定消音策略");
+        }
         //_root.服务器.发布服务器消息(weaponType + " 子弹数据: " + ObjectUtil.toString(wd) + " 返回子弹数据: " + ObjectUtil.toString(bulletProps));
 
         return bulletProps;
@@ -416,7 +437,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     /**
      * 根据暴击参数生成暴击判断函数
      * 支持数值暴击率和特殊条件暴击（如满血暴击）
-     * 
+     *
      * @param critValue 数值（例如 20 表示 20% 暴击率）或字符串（例如 "满血暴击"）
      * @return 返回暴击判断函数
      */
@@ -440,6 +461,42 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         return function(当前子弹:Object):Number {
             return 1.0;
         };
+    }
+
+    /**
+     * 根据消音参数生成消音策略函数
+     * 支持距离消音和概率消音
+     *
+     * @param v 消音值（例如 300 表示距离，"50%" 表示概率）
+     * @return 返回消音策略函数，签名：Function(shooter:Object, target:Object, distance:Number):Boolean
+     *         返回true表示触发仇恨，false表示消音成功不触发
+     */
+    public static function createSilenceStrategy(v:Object):Function {
+        if (v === undefined || v === null) return null;
+
+        var s:String = String(v);
+        // _root.发布消息("创建消音策略，参数：" + s);
+
+        // 概率消音
+        if (s.indexOf("%") > 0) {
+            var p:Number = Number(s.substr(0, s.length - 1));
+            if (isNaN(p) || p < 0 || p > 100) return null;
+
+            return function(shooter:Object, target:Object, d:Number):Boolean {
+                return _root.成功率(p) ? false : FactionManager.areUnitsEnemies(target, shooter);
+            };
+        }
+
+        // 距离消音（远距离消音：超过指定距离不触发仇恨）
+        var r:Number = Number(v);
+        if (!isNaN(r) && r > 0) {
+            return function(shooter:Object, target:Object, d:Number):Boolean {
+                // 距离大于r时消音成功（不触发仇恨），距离小于等于r时正常判定敌我关系
+                return (d > r) ? false : FactionManager.areUnitsEnemies(target, shooter);
+            };
+        }
+
+        return null; // 预留：特殊字符串模式后续扩展
     }
     
     // ======================================================

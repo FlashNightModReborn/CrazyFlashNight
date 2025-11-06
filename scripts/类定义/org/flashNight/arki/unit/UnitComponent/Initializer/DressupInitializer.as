@@ -324,6 +324,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
                 };
             }
             target[prefix + "斩杀"] = data.slay ? data.slay : 0;
+            // 处理消音属性
+            target[prefix + "消音"] = data.silence ? data.silence : null;
         }else{
             if(data.poison) target.基础毒 += data.poison;
             if(data.vampirism) target.基础吸血 += data.vampirism;
@@ -351,6 +353,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.长枪命中加成 = 0;
         target.长枪暴击 = null;
         target.长枪斩杀 = 0;
+        target.长枪消音 = null;
+        target.长枪消音策略 = null;
     }
     private static function removeSecondary1Property(target:MovieClip){
         target.手枪伤害类型 = null;
@@ -361,6 +365,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.手枪命中加成 = 0;
         target.手枪暴击 = null;
         target.手枪斩杀 = 0;
+        target.手枪消音 = null;
+        target.手枪消音策略 = null;
     }
     private static function removeSecondary2Property(target:MovieClip){
         target.手枪2伤害类型 = null;
@@ -371,6 +377,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.手枪2命中加成 = 0;
         target.手枪2暴击 = null;
         target.手枪2斩杀 = 0;
+        target.手枪2消音 = null;
+        target.手枪2消音策略 = null;
     }
     private static function removeMeleeProperty(target:MovieClip){
         target.兵器伤害类型 = null;

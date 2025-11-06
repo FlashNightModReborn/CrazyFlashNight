@@ -794,9 +794,10 @@ skill - 赋予技能
             <override>
                 <sound>null</sound>
                 <muzzle>null</muzzle>
+                <silence>300</silence>
             </override>
         </stats>
-        <description>消除枪械的射击声音和枪火。（后续应该还有降低嘲讽相关的数值加成，待补充）</description>
+        <description>消除枪械的射击声音和枪火，超过300单位距离击中敌人不会触发仇恨。</description>
     </mod>
     <mod>
         <name>镭射瞄准具</name>

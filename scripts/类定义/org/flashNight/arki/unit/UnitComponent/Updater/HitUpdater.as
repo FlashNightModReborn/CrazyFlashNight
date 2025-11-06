@@ -15,11 +15,16 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
         // 刷新目标的冲击力数据
         ImpactHandler.refreshImpactForce(hitTarget);
 
-        // 播报仇恨转锁 - 仅对敌人生效，友军伤害不触发仇恨
-        if (FactionManager.areUnitsEnemies(hitTarget, shooter)) {
+        // 播报仇恨转锁 - 使用消音策略判断（无策略时走原逻辑）
+        var distance:Number = Math.abs(hitTarget._x - shooter._x);
+        var shouldAggro:Boolean = bullet.消音策略 ? bullet.消音策略(shooter, hitTarget, distance) : FactionManager.areUnitsEnemies(hitTarget, shooter);
+
+        if (shouldAggro) {
             hitTarget.dispatcher.publish("aggroSet", hitTarget, shooter, bullet);
+        } else {
+            // _root.发布消息(hitTarget, "未触发仇恨转锁，因消音策略判定双方非敌对关系。");
         }
-        
+
         // ────────────── 方向判断及效果 ──────────────
         // 利用布尔运算确定初始受击方向，考虑了两个因素：
         // 1. 命中对象相对于射手的位置：若 hitTarget 的 _x 坐标小于 shooter 的 _x 坐标，表示 hitTarget 位于射手左侧。
@@ -39,26 +44,27 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
         var hitDirection:String = ((hitTarget._x < shooter._x) ^ bullet.水平击退反向) ? "左" : "右";
 
         // 为实现受击目标视觉上面向与受击方向相反的效果
-        if(!hitTarget.锁定方向) hitTarget.方向改变((hitDirection == "左") ? "右" : "左");
-        
+        if (!hitTarget.锁定方向)
+            hitTarget.方向改变((hitDirection == "左") ? "右" : "左");
+
         var overlapCenter:Vector = collisionResult.overlapCenter;
         var ocx:Number = overlapCenter.x;
         var ocy:Number = overlapCenter.y;
         var sxc:Number = shooter._xscale;
         var bloodEnabled:Boolean = _root.血腥开关;
-        
+
         // 根据血腥开关生成击中血液效果
         if (bloodEnabled) {
             BulletEffectHandler.createBulletEffect(hitTarget, ocx, ocy, sxc);
         }
-        
+
         // ────────────── 冲击力与状态判断 ──────────────
         ImpactStateHandler.handleImpactState(hitTarget, bullet, damageResult, hitDirection, bloodEnabled);
-        
+
         // ────────────── 血槽颜色与后续特效 ──────────────
         BloodBarEffectHandler.updateStatus(hitTarget);
         EffectSystem.Effect(hitTarget.击中效果, ocx, ocy, sxc);
-        
+
         // 判断是否需要生成子弹击中后的后续效果
         bullet.shouldGeneratePostHitEffect = (hitTarget.击中效果 != bullet.击中后子弹的效果);
     }
@@ -67,14 +73,14 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
         doHitUpdate(hitTarget, shooter, bullet, collisionResult, damageResult);
         _root.玩家信息界面.刷新hp显示();
     }
-    
+
     public static function doStageEventUnitUpdate(hitTarget:MovieClip, shooter:MovieClip, bullet:MovieClip, collisionResult:CollisionResult, damageResult:DamageResult):Void {
         doHitUpdate(hitTarget, shooter, bullet, collisionResult, damageResult);
         var hp:Number = hitTarget.hp;
         var hpMax:Number = hitTarget.hp满血值;
         var currentFrame:Number = _root.帧计时器.当前帧数;
 
-        if(hp < hpMax * 0.3 && (currentFrame - hitTarget.lastEmergencyFrame) > 2 * 30) {
+        if (hp < hpMax * 0.3 && (currentFrame - hitTarget.lastEmergencyFrame) > 2 * 30) {
             _root.gameworld.dispatcher.publish("UnitEmergency", hitTarget._name);
             hitTarget.lastEmergencyFrame = currentFrame;
         }
@@ -93,7 +99,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
         } else {
             // 非主角：直接返回核心逻辑函数
 
-            if(target.publishStageEvent) {
+            if (target.publishStageEvent) {
                 target.lastEmergencyFrame = 0;
                 return doStageEventUnitUpdate;
             }
