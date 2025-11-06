@@ -635,10 +635,17 @@
         <init>
           <initRoutines>喷气背包初始化</initRoutines>
           <initParam>
-            <x>-110</x>
-            <y>239</y>
+            <x>-20</x>
+            <y>-80</y>
           </initParam>
         </init>
+        <cycle>
+          <cycleRoutines>喷气背包周期</cycleRoutines>
+          <cycleParam>
+            <x>-20</x>
+            <y>-80</y>
+          </cycleParam>
+        </cycle>
       </attr_0>
     </lifecycle>
   </item>
@@ -1737,6 +1744,24 @@
         <全属性>15</全属性>
       </magicdefence>
     </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>喷气背包初始化</initRoutines>
+          <initParam>
+            <x>-15</x>
+            <y>-80</y>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>喷气背包周期</cycleRoutines>
+          <cycleParam>
+            <x>-15</x>
+            <y>-80</y>
+          </cycleParam>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <name>芬里尔头甲</name>
@@ -2112,10 +2137,17 @@
         <init>
           <initRoutines>喷气背包初始化</initRoutines>
           <initParam>
-            <x>-107</x>
-            <y>256</y>
+            <x>-15</x>
+            <y>-80</y>
           </initParam>
         </init>
+        <cycle>
+          <cycleRoutines>喷气背包周期</cycleRoutines>
+          <cycleParam>
+            <x>-15</x>
+            <y>-80</y>
+          </cycleParam>
+        </cycle>
       </attr_0>
     </lifecycle>
   </item>

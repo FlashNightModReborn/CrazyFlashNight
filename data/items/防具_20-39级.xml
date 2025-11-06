@@ -2761,6 +2761,24 @@
         <冲>10</冲>
       </magicdefence>
     </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>喷气背包初始化</initRoutines>
+          <initParam>
+            <x>-10</x>
+            <y>-80</y>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>喷气背包周期</cycleRoutines>
+          <cycleParam>
+            <x>-10</x>
+            <y>-80</y>
+          </cycleParam>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <name>幻影头部装甲</name>
@@ -2893,6 +2911,24 @@
         <毒>10</毒>
       </magicdefence>
     </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>喷气背包初始化</initRoutines>
+          <initParam>
+            <x>-20</x>
+            <y>-80</y>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>喷气背包周期</cycleRoutines>
+          <cycleParam>
+            <x>-20</x>
+            <y>-80</y>
+          </cycleParam>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <name>61式头部装甲</name>
@@ -3353,6 +3389,24 @@
         <电>20</电>
       </magicdefence>
     </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>喷气背包初始化</initRoutines>
+          <initParam>
+            <x>-10</x>
+            <y>-80</y>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>喷气背包周期</cycleRoutines>
+          <cycleParam>
+            <x>-10</x>
+            <y>-80</y>
+          </cycleParam>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <name>诺亚安保服脚</name>
