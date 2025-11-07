@@ -18,6 +18,8 @@
   public static var SUF_SECOND:String = "秒";
   public static var SUF_FIRE_RATE:String = "发/秒";
   public static var SUF_KG:String = "kg";
+  public static var SUF_DISTANCE:String = "距离";
+  public static var COL_SILENCE:String = "#9999FF";
 
   public static var BASE_NUM:Number = 200;
   public static var RATE:Number = 0.6;
@@ -75,6 +77,7 @@
     velocity: "出膛速度",
     bulletsize: "纵向攻击范围",
     impact: "冲击力",
+    silence: "<FONT COLOR='" + COL_SILENCE + "'>消音效果</FONT>",
     // 额外加成
     accuracy: "命中加成",
     evasion: "挡拆加成",
@@ -102,6 +105,7 @@
     velocity: 14,
     bulletsize: 15,
     impact: 16,
+    silence: 17,
 
     // 5种伤害加成
     force: 21,

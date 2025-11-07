@@ -4,6 +4,7 @@ import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.ItemUseTypes;
 import org.flashNight.gesh.tooltip.TooltipDataSelector;
 import org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer;
+import org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.component.Damage.*;
 import org.flashNight.gesh.object.ObjectUtil;
@@ -383,6 +384,8 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         var key = sortedList[i];
         // 跳过 damagetype 和 magictype，这些需要组合显示
         if(key == "damagetype" || key == "magictype") continue;
+        // 跳过 silence，使用专门的 SilenceEffectBuilder 显示
+        if(key == "silence") continue;
         TooltipFormatter.statLine(result, "override", key, override[key], null);
       }
     }
@@ -413,7 +416,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         }
       }
     }
-    // 查找criticalhit、magicdefence和skillmultipliers（从override）
+    // 查找criticalhit、magicdefence、skillmultipliers和silence（从override）
     if(override && override.criticalhit){
       result.push(quickBuildCriticalHit(override.criticalhit));
     }
@@ -422,6 +425,10 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     }
     if(override && override.skillmultipliers){
       result.push(quickBuildSkillMultipliers(override.skillmultipliers, "覆盖"));
+    }
+    // 使用 SilenceEffectBuilder 构建消音效果显示
+    if(override && override.silence){
+      SilenceEffectBuilder.build(result, null, null, override, null);
     }
     // 查找magicdefence和skillmultipliers（从merge）
     if(merge && merge.magicdefence){

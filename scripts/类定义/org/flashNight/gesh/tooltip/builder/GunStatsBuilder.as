@@ -17,6 +17,7 @@ import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter;
 import org.flashNight.gesh.tooltip.TooltipFormatter;
 import org.flashNight.gesh.tooltip.TooltipConstants;
+import org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder;
 
 class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
 
@@ -95,5 +96,8 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
         if (!isNaN(impact) && impact > 0) {
             result.push("冲击力：", Math.floor(500 / impact), "<BR>");
         }
+
+        // 12. 消音效果显示
+        SilenceEffectBuilder.build(result, baseItem, item, data, equipData);
     }
 }

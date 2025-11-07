@@ -15,6 +15,7 @@ import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.gesh.tooltip.TooltipFormatter;
 import org.flashNight.gesh.tooltip.TooltipConstants;
+import org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder;
 
 class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
 
@@ -43,13 +44,23 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
             var modName:String = value.mods[i];
             var modInfo:Object = EquipmentUtil.modDict[modName];
 
+            // 构建配件显示文本
+            result.push("  • ", modName);
+
+            // 检查是否有 tagValue
             if (modInfo && modInfo.tagValue) {
-                // 带 tagValue 的配件
-                result.push("  • ", modName, " <font color='" + TooltipConstants.COL_INFO + "'>[", modInfo.tagValue, "]</font><BR>");
-            } else {
-                // 不带 tagValue 的配件
-                result.push("  • ", modName, "<BR>");
+                result.push(" <font color='" + TooltipConstants.COL_INFO + "'>[", modInfo.tagValue, "]</font>");
             }
+
+            // 检查是否有消音属性，添加消音效果简短描述
+            if (modInfo && modInfo.override && modInfo.override.silence) {
+                var silenceDesc:String = SilenceEffectBuilder.getShortDescription(modInfo.override.silence);
+                if (silenceDesc != "") {
+                    result.push(" <font color='" + TooltipConstants.COL_SILENCE + "'>[", silenceDesc, "]</font>");
+                }
+            }
+
+            result.push("<BR>");
         }
     }
 }
