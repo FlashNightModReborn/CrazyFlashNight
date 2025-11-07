@@ -153,24 +153,28 @@
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>40</Level>
+                        <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种267</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>40</Level>
+                        <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种265</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
+                        <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="5">
                         <Type>兵种266</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
+                        <Parameters>称号:军阀</Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -287,6 +291,7 @@
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>40</Level>
+                        <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="9">
                         <Type>兵种267</Type>
@@ -294,6 +299,7 @@
                         <Quantity>2</Quantity>
                         <Level>40</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="10">
                         <Type>兵种265</Type>
@@ -301,6 +307,7 @@
                         <Quantity>1</Quantity>
                         <Level>40</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="11">
                         <Type>兵种266</Type>
@@ -308,6 +315,7 @@
                         <Quantity>1</Quantity>
                         <Level>40</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>称号:军阀</Parameters>
                     </Enemy>
                 </EnemyGroup>
                 </SubWave>

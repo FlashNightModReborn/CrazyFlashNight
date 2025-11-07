@@ -106,6 +106,7 @@
                         <Level>20</Level>
                         <x>150</x>
                         <y>380</y>
+                        <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种264</Type>
@@ -114,6 +115,7 @@
                         <Level>20</Level>
                         <x>200</x>
                         <y>420</y>
+                        <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种267</Type>
@@ -122,6 +124,7 @@
                         <Level>20</Level>
                         <x>420</x>
                         <y>400</y>
+                        <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种56</Type>
@@ -227,6 +230,7 @@
                         <Level>20</Level>
                         <SpawnIndex>right</SpawnIndex>
                         <DifficultyMin>地狱</DifficultyMin>
+                        <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种264</Type>
@@ -235,6 +239,7 @@
                         <Level>20</Level>
                         <SpawnIndex>right</SpawnIndex>
                         <DifficultyMin>地狱</DifficultyMin>
+                        <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种265</Type>
@@ -242,6 +247,7 @@
                         <Quantity>1</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>right</SpawnIndex>
+                        <Parameters>称号:军阀</Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
