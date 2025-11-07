@@ -796,8 +796,11 @@ skill - 赋予技能
                 <muzzle>null</muzzle>
                 <silence>90%</silence>
             </override>
+            <flat>
+                <斩杀>8</斩杀>
+            </flat>
         </stats>
-        <description>消除枪械的射击声音和枪火。</description>
+        <description>消除枪械的射击声音和枪火，并为子弹附加斩杀效果。</description>
     </mod>
     <mod>
         <name>镭射瞄准具</name>
