@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器走路旧版备份" itemID="690ce373-00000766" lastModified="1762452339" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器走路旧版备份" itemID="690ce373-00000766" lastModified="1762513186" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="兵器走路旧版备份">
+    <DOMTimeline name="兵器走路旧版备份" currentFrame="21">
       <layers>
         <DOMLayer name="兵器使用检测" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
@@ -1412,7 +1412,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 14" color="#DF18A1" current="true" isSelected="true">
+        <DOMLayer name="Layer 14" color="#DF18A1">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -2280,7 +2280,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 21" color="#90F348" locked="true">
+        <DOMLayer name="Layer 21" color="#90F348" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
