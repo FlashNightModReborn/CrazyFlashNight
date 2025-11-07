@@ -500,15 +500,14 @@ class org.flashNight.arki.item.EquipmentUtil{
     private static function applyOperatorsInOrder(data:Object, baseMultiplier:Object, modifiers:Object):Void {
         var operators:Object = propertyOperators;
 
-        // 合并基础倍率和配件倍率
-        var finalMultiplier:Object = ObjectUtil.clone(baseMultiplier);
-        operators.add(finalMultiplier, modifiers.multiplier, 1);
-
         // 保存基础属性副本（用于cap计算）
         var baseData:Object = ObjectUtil.clone(data);
 
         // 按顺序应用运算符
-        operators.multiply(data, finalMultiplier);
+        // 修正：百分比倍率应当以乘法相结合，而非加法聚合。
+        // 先应用强化等级倍率（baseMultiplier），再应用配件倍率（modifiers.multiplier）。
+        if (baseMultiplier) operators.multiply(data, baseMultiplier);
+        if (modifiers.multiplier) operators.multiply(data, modifiers.multiplier);
         operators.add(data, modifiers.adder, 0);
         operators.override(data, ObjectUtil.clone(modifiers.overrider));
 
