@@ -19,6 +19,14 @@ class org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder {
     /**
      * 构建消音效果块
      *
+     * 关于数据流和 override 语义的说明：
+     * - data: 武器的基础属性（未应用配件）
+     * - equipData: 应用配件后的最终属性（仅在有配件时存在）
+     * - silence 属性使用 override 修改类型（完全替换），而非 flat（加法）或 percentage（乘法）
+     * - 原因：消音是定性属性（距离模式 vs 概率模式），无法进行数值累加
+     *   例如：武器300距离消音 + 配件200距离消音 = 500？这在游戏逻辑上无意义
+     * - 配件的 silence 会完全替换武器的 silence，体现为 finalSilence != baseSilence
+     *
      * @param result:Array 输出缓冲区（就地修改）
      * @param baseItem:BaseItem 物品实例
      * @param item:Object 物品数据
@@ -74,14 +82,26 @@ class org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder {
 
         // 检查是否有配件修改
         if (finalSilence != null && baseSilence != null && finalSilence != baseSilence) {
+            // 检测是否为类型切换（从距离模式切换到概率模式）
+            var baseStr:String = String(baseSilence);
+            var isTypeSwitched:Boolean = (baseStr.indexOf("%") < 0); // 原值不含%说明是距离模式
+
             // 显示配件覆盖效果
             result.push(
                 "<FONT COLOR='" + TooltipConstants.COL_HL + "'>",
                 percentValue,
-                "%</FONT> 概率消音成功 (覆盖",
-                baseSilence,
-                ")<BR>"
+                "%</FONT> 概率消音成功 <FONT COLOR='" + TooltipConstants.COL_INFO + "'>(原"
             );
+
+            if (isTypeSwitched) {
+                // 类型切换：从距离模式切换到概率模式
+                result.push("距离 ", baseSilence);
+            } else {
+                // 同类型覆盖
+                result.push(baseSilence);
+            }
+
+            result.push(")</FONT><BR>");
         } else {
             // 正常显示
             result.push(percentValue, "% 概率消音成功<BR>");
@@ -117,14 +137,26 @@ class org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder {
 
         // 检查是否有配件修改
         if (finalSilence != null && baseSilence != null && finalSilence != baseSilence) {
+            // 检测是否为类型切换（从概率模式切换到距离模式）
+            var baseStr:String = String(baseSilence);
+            var isTypeSwitched:Boolean = (baseStr.indexOf("%") > 0); // 原值含%说明是概率模式
+
             // 显示配件覆盖效果
             result.push(
                 "距离 > <FONT COLOR='" + TooltipConstants.COL_HL + "'>",
                 distanceValue,
-                "</FONT> (覆盖",
-                baseSilence,
-                ")<BR>"
+                "</FONT> <FONT COLOR='" + TooltipConstants.COL_INFO + "'>(原"
             );
+
+            if (isTypeSwitched) {
+                // 类型切换：从概率模式切换到距离模式
+                result.push("概率 ", baseSilence);
+            } else {
+                // 同类型覆盖
+                result.push(baseSilence);
+            }
+
+            result.push(")</FONT><BR>");
         } else {
             // 正常显示
             result.push(
