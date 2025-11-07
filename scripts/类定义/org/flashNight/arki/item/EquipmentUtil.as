@@ -500,14 +500,27 @@ class org.flashNight.arki.item.EquipmentUtil{
     private static function applyOperatorsInOrder(data:Object, baseMultiplier:Object, modifiers:Object):Void {
         var operators:Object = propertyOperators;
 
+        // 合并基础倍率和配件倍率（保持原有全局语义）
+        var finalMultiplier:Object = ObjectUtil.clone(baseMultiplier);
+
+        // 针对 capacity：避免把 (1+p) 作为“增量”再次与 initValue=1 相加导致的 2+p。
+        var modsMultiplier:Object = modifiers.multiplier ? ObjectUtil.clone(modifiers.multiplier) : null;
+        var capacityFactor:Number = NaN;
+        if (modsMultiplier && !isNaN(modsMultiplier.capacity)) {
+            capacityFactor = Number(modsMultiplier.capacity);
+            delete modsMultiplier.capacity; // 从合并倍率中移除 capacity，稍后单独以乘法应用
+        }
+
+        // 其余倍率按旧逻辑合并
+        if (modsMultiplier) operators.add(finalMultiplier, modsMultiplier, 1);
+
         // 保存基础属性副本（用于cap计算）
         var baseData:Object = ObjectUtil.clone(data);
 
         // 按顺序应用运算符
-        // 修正：百分比倍率应当以乘法相结合，而非加法聚合。
-        // 先应用强化等级倍率（baseMultiplier），再应用配件倍率（modifiers.multiplier）。
-        if (baseMultiplier) operators.multiply(data, baseMultiplier);
-        if (modifiers.multiplier) operators.multiply(data, modifiers.multiplier);
+        operators.multiply(data, finalMultiplier);
+        // 单独应用 capacity 的百分比倍率（不改变其他属性语义）
+        if (!isNaN(capacityFactor)) operators.multiply(data, {capacity: capacityFactor});
         operators.add(data, modifiers.adder, 0);
         operators.override(data, ObjectUtil.clone(modifiers.overrider));
 
