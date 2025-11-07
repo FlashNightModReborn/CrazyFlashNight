@@ -6,6 +6,7 @@
 //_root.奔跑键 = 16;//shift键盘
 import org.flashNight.arki.key.KeyManager;
 import org.flashNight.neur.Event.*;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 
 _root.刷新键值设定 = function() {
     // 调用KeyManager的refreshKeySettings方法
@@ -76,3 +77,46 @@ KeyManager.onKeyUp("互动键", function() {
 
 _root.当前玩家总数 = 1;
 _root.playerCurrent = 0;
+
+// ============================
+// 双击方向键触发奔跑（KeyManager集中实现）
+// 可调参数：双击判定帧间隔（默认10帧，约1/6秒@60fps）
+// 说明：
+// - 双击“左键”或“右键”会在主角 MovieClip 上设置
+//   ctrl.doubleTapRunDirection = -1（左） / 1（右）
+// - 帧计时器中会将该意图与 Shift 奔跑取 OR，且在松开方向键时自动清零
+// ============================
+var DOUBLE_TAP_RUN_INTERVAL_FRAMES:Number = 10;
+
+KeyManager.onDoubleTap("左键", DOUBLE_TAP_RUN_INTERVAL_FRAMES, function():Void {
+    var ctrl:Object = TargetCacheManager.findHero();
+    if (ctrl) {
+        ctrl.doubleTapRunDirection = -1;
+        // _root.发布消息("检测到双击左键奔跑");
+    }
+}, this);
+
+KeyManager.onDoubleTap("右键", DOUBLE_TAP_RUN_INTERVAL_FRAMES, function():Void {
+    var ctrl:Object = TargetCacheManager.findHero();
+    if (ctrl) {
+        ctrl.doubleTapRunDirection = 1;
+        // _root.发布消息("检测到双击右键奔跑");
+    }
+}, this);
+
+// 松开对应方向键时，结束双击奔跑意图
+KeyManager.onKeyUp("左键", function():Void {
+    var ctrl:Object = TargetCacheManager.findHero();
+    if (ctrl && ctrl.doubleTapRunDirection == -1) {
+        ctrl.doubleTapRunDirection = 0;
+        // _root.发布消息("左键松开，结束双击奔跑意图");
+    }
+}, this);
+
+KeyManager.onKeyUp("右键", function():Void {
+    var ctrl:Object = TargetCacheManager.findHero();
+    if (ctrl && ctrl.doubleTapRunDirection == 1) {
+        ctrl.doubleTapRunDirection = 0;
+        // _root.发布消息("右键松开，结束双击奔跑意图");
+    }
+}, this);

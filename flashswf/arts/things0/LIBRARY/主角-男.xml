@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1760618317" lastUniqueIdentifier="278">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1762498934" lastUniqueIdentifier="278">
   <timeline>
-    <DOMTimeline name="主角-男" currentFrame="21">
+    <DOMTimeline name="主角-男" currentFrame="10">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4">
           <frames>
@@ -349,185 +349,7 @@ on(release){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="愚蠢的连按方向奔跑键控" color="#E2D9E5" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/丑陋无比的连按方向奔跑键控" centerPoint3DX="107.75" centerPoint3DY="-47.4">
-                  <matrix>
-                    <Matrix a="0.125503540039063" d="0.126754760742188" tx="-14.75" ty="-110.6"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	this._visible = 0;
-	if (_parent.操控目标 == -1)
-	{
-		gotoAndStop(2);
-	}
-}]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="29" duration="131" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="160" duration="29" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/丑陋无比的连按方向奔跑键控" centerPoint3DX="107.75" centerPoint3DY="-47.4">
-                  <matrix>
-                    <Matrix a="0.125503540039063" d="0.126754760742188" tx="-14.75" ty="-110.6"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   this._visible = 0;
-   if(_parent.操控目标 == -1)
-   {
-      gotoAndStop(2);
-   }
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="189" duration="54" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="243" duration="29" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/丑陋无比的连按方向奔跑键控" centerPoint3DX="108.25" centerPoint3DY="-46.45">
-                  <matrix>
-                    <Matrix a="0.125930786132813" d="0.125930786132813" tx="-14.25" ty="-109.65"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   this._visible = 0;
-   if(_parent.操控目标 == -1)
-   {
-      gotoAndStop(2);
-   }
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="272" duration="51" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="323" duration="29" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/丑陋无比的连按方向奔跑键控" centerPoint3DX="108.25" centerPoint3DY="-46.45">
-                  <matrix>
-                    <Matrix a="0.125930786132813" d="0.125930786132813" tx="-14.25" ty="-109.65"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   this._visible = 0;
-   if(_parent.操控目标 == -1)
-   {
-      gotoAndStop(2);
-   }
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="352" duration="56" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="408" duration="29" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/丑陋无比的连按方向奔跑键控" centerPoint3DX="108.25" centerPoint3DY="-46.45">
-                  <matrix>
-                    <Matrix a="0.125930786132813" d="0.125930786132813" tx="-14.25" ty="-109.65"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   this._visible = 0;
-   if(_parent.操控目标 == -1)
-   {
-      gotoAndStop(2);
-   }
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="437" duration="40" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="477" duration="29" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/丑陋无比的连按方向奔跑键控" centerPoint3DX="108.25" centerPoint3DY="-46.45">
-                  <matrix>
-                    <Matrix a="0.125930786132813" d="0.125930786132813" tx="-14.25" ty="-109.65"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   this._visible = 0;
-   if(_parent.操控目标 == -1)
-   {
-      gotoAndStop(2);
-   }
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="506" duration="63" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="569" duration="29" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/丑陋无比的连按方向奔跑键控" centerPoint3DX="108.25" centerPoint3DY="-46.45">
-                  <matrix>
-                    <Matrix a="0.125930786132813" d="0.125930786132813" tx="-14.25" ty="-109.65"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   this._visible = 0;
-   if(_parent.操控目标 == -1)
-   {
-      gotoAndStop(2);
-   }
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="598" duration="80" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="ai" color="#C2C2C7" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="ai" color="#C2C2C7" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -972,7 +794,7 @@ on(release){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动画层" color="#32BDEF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="动画层" color="#32BDEF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>

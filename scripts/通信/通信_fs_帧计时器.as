@@ -511,7 +511,27 @@ _root.帧计时器.键盘输入控制目标 = function()
         控制对象.动作A = (mask & 16) != 0;
         控制对象.动作B = (mask & 32) != 0;
         控制对象.动作C = (mask & 64) != 0;
-        控制对象.强制奔跑 = !((mask & (16 | 32 | 64)) != 0) && (mask & 128) != 0;
+        // Shift 奔跑 与 双击方向奔跑 合并判定
+        // - actionsPressed：按下任一 A/B/C 则不允许进入奔跑
+        // - shiftRun：按住“奔跑键”（默认 Shift）时触发
+        // - doubleRun：UI 层通过 KeyManager 订阅双击左右键后设置的方向意图
+        //              ctrl.doubleTapRunDirection = -1（左）/ 1（右），松开方向键自动清零
+        var actionsPressed:Boolean = (mask & (16 | 32 | 64)) != 0;
+        var shiftRun:Boolean = !actionsPressed && ((mask & 128) != 0);
+
+        var doubleRun:Boolean = false;
+        var dir:Number = 控制对象.doubleTapRunDirection;
+        if (dir) {  // dir 为 null/undefined/0 时都为 false
+            var leftPressed:Boolean = (mask & 1) != 0;
+            var rightPressed:Boolean = (mask & 2) != 0;
+            doubleRun = !actionsPressed && ((dir < 0 && leftPressed) || (dir > 0 && rightPressed));
+            // 若水平方向均未按下，则清除双击奔跑方向
+            if (!leftPressed && !rightPressed) {
+                控制对象.doubleTapRunDirection = 0;
+            }
+        }
+
+        控制对象.强制奔跑 = shiftRun || doubleRun;
 
     }
 };
