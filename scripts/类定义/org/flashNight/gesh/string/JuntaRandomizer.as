@@ -1,4 +1,4 @@
-// ±£´æÎª org/flashNight/gesh/string/JuntaRandomizer.as
+ï»¿// ä¿å­˜ä¸º org/flashNight/gesh/string/JuntaRandomizer.as
 class org.flashNight.gesh.string.JuntaRandomizer {
     private static var juntaNames:Array;
     private static var currentPool:Array;
@@ -6,12 +6,12 @@ class org.flashNight.gesh.string.JuntaRandomizer {
     
     private static function initialize():Void {
         if (!initialized) {
-            // ¾ü·§¾Ş´ó¶à²¿¶ÓÃû³Æ
+            // å†›é˜€å·¨å¤§å¤šéƒ¨é˜Ÿåç§°
             juntaNames = [
-                "³àÁúĞ¡×é", "Õò±¬²¿¶Ó", "½ğÉ«¾üÍÅ", "ºËÎäĞ¡×é", "114ºÏ³ÉÓª", "µÚÒ»½üÎÀ¾üÍÅ", "³¤Éú¾ü",
-                "ÁÒ»ğĞ¡×é", "¿ìËÙ»ú¶¯²¿¶Ó", "¶ÀÀÇÖ®Ê¦", "Ìú´¸Ğ¡×é", "³¾¶¼ÖÎ°²²¿¶Ó", "Õû±àCSSF²¿¶Ó", "11¿Õ½µ²¿¶Ó",
-                "É³µØ×éÖ¯", "ÎÀ¹úÂÃ", "»ÄÄ®ÖÈĞò²¿¶Ó", "Ì«Æ½ÑóĞ­×÷²¿¶Ó", "¶«ÄÏAÖŞÎ¬ºÍ²¿¶Ó", "¸ßÔ­Í»»÷²¿¶Ó", "ÆÆÀİ×¨ÒµĞ¡×é",
-                "³¤Ç¹ÂÃ", "³ÈÉ«¾üÍÅ", "ÉÌ¶Ó»¤ÎÀ²¿¶Ó", "ÃÍ»¢¾üÍÅ", "ÂüÍÓÂŞÂÃ", "°ÔÍõ»¨Ğ¡×é", "íê³ÇÖÎ°²²¿¶Ó"
+                "èµ¤é¾™å°ç»„", "é•‡çˆ†éƒ¨é˜Ÿ", "é‡‘è‰²å†›å›¢", "æ ¸æ­¦å°ç»„", "114åˆæˆè¥", "ç¬¬ä¸€è¿‘å«å†›å›¢", "é•¿ç”Ÿå†›",
+                "çƒˆç«å°ç»„", "å¿«é€ŸæœºåŠ¨éƒ¨é˜Ÿ", "ç‹¬ç‹¼ä¹‹å¸ˆ", "é“é”¤å°ç»„", "å°˜éƒ½æ²»å®‰éƒ¨é˜Ÿ", "æ•´ç¼–CSSFéƒ¨é˜Ÿ", "11ç©ºé™éƒ¨é˜Ÿ",
+                "æ²™åœ°ç»„ç»‡", "å«å›½æ—…", "è’æ¼ ç§©åºéƒ¨é˜Ÿ", "å¤ªå¹³æ´‹åä½œéƒ¨é˜Ÿ", "ä¸œå—Aæ´²ç»´å’Œéƒ¨é˜Ÿ", "é«˜åŸçªå‡»éƒ¨é˜Ÿ", "ç ´å’ä¸“ä¸šå°ç»„",
+                "é•¿æªæ—…", "æ©™è‰²å†›å›¢", "å•†é˜ŸæŠ¤å«éƒ¨é˜Ÿ", "çŒ›è™å†›å›¢", "æ›¼é™€ç½—æ—…", "éœ¸ç‹èŠ±å°ç»„", "é»»åŸæ²»å®‰éƒ¨é˜Ÿ"
             ];
             resetPool();
             initialized = true;
@@ -20,7 +20,7 @@ class org.flashNight.gesh.string.JuntaRandomizer {
     
     private static function resetPool():Void {
         currentPool = juntaNames.slice();
-        // Fisher-YatesÏ´ÅÆËã·¨
+        // Fisher-Yatesæ´—ç‰Œç®—æ³•
         var i:Number = currentPool.length;
         while (--i) {
             var j:Number = Math.floor(Math.random() * (i + 1));
@@ -38,6 +38,6 @@ class org.flashNight.gesh.string.JuntaRandomizer {
         return String(currentPool.pop());
     }
     
-    // ·ÀÖ¹ÊµÀı»¯
+    // é˜²æ­¢å®ä¾‹åŒ–
     private function JuntaRandomizer() {} 
 }
