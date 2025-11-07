@@ -424,20 +424,24 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种97</Type>
+                        <Type>兵种264</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
                         <x>410</x>
                         <y>235</y>
+                        <IsHostile>false</IsHostile>
+                        <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种99</Type>
+                        <Type>兵种267</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
                         <x>425</x>
                         <y>240</y>
+                        <IsHostile>false</IsHostile>
+                        <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种376</Type>
@@ -446,6 +450,7 @@
                         <Level>40</Level>
                         <x>430</x>
                         <y>244</y>
+                        <Parameters>称号:坛主</Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种377</Type>
@@ -454,6 +459,7 @@
                         <Level>40</Level>
                         <x>420</x>
                         <y>250</y>
+                        <Parameters>称号:坛主</Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种71</Type>
