@@ -12,6 +12,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DisplayNameInitializer 
             },
             散人: function(target:Object):Void {
                 target.称号 = HexagramRandomizer.getRandomName() + target.称号;
+            },
+            军阀: function(target:Object):Void {
+                target.称号 = JuntaRandomizer.getRandomName();
             }
             // 可在此继续添加新的称号处理逻辑
         };
