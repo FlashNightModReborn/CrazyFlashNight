@@ -3,6 +3,7 @@ import org.flashNight.arki.unit.Action.Shoot.WeaponStateManager;
 import org.flashNight.arki.unit.Action.Shoot.ReloadManager;
 import org.flashNight.arki.unit.Action.Shoot.ShootCore;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManager;
+import org.flashNight.arki.unit.UnitComponent.Aggro.SilenceStrategyFactory;
 import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 import org.flashNight.gesh.object.*;
 import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
@@ -185,10 +186,10 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         target[singleShotProp] = config.weaponData.singleshoot;
         target[remainingMagProp] = ItemUtil.getTotal(target[magNameProp]);
 
-        // 处理消音策略：创建并挂到 parentRef
+        // 处理消音策略：使用新的工厂类创建并挂到 parentRef
         var sv:Object = (config.extraParams.消音 !== undefined) ? config.extraParams.消音 : parentRef[weaponType + "消音"];
         if (sv !== undefined && sv !== null) {
-            parentRef[weaponType + "消音策略"] = ShootInitCore.createSilenceStrategy(sv);
+            SilenceStrategyFactory.bind(parentRef, weaponType + "消音策略", sv);
         }
 
         // 生成子弹属性
@@ -290,10 +291,10 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         // 更新弹药UI显示
         target.刷新弹匣数显示();
 
-        // 处理消音策略：创建并挂到 parentRef
+        // 处理消音策略：使用新的工厂类创建并挂到 parentRef
         var sv:Object = (extraParams.消音 !== undefined) ? extraParams.消音 : parentRef[weaponType + "消音"];
         if (sv !== undefined && sv !== null) {
-            parentRef[weaponType + "消音策略"] = ShootInitCore.createSilenceStrategy(sv);
+            SilenceStrategyFactory.bind(parentRef, weaponType + "消音策略", sv);
         }
 
         // 生成子弹属性
@@ -468,52 +469,18 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
      * 根据消音参数生成消音策略函数
      * 支持距离消音和概率消音
      *
+     * @deprecated 此方法已被重构到 SilenceStrategyFactory.create()
+     *            保留此方法仅为向后兼容，新代码请使用 SilenceStrategyFactory
+     *
      * @param v 消音值（例如 300 表示距离，"50%" 表示概率）
      * @return 返回消音策略函数，签名：Function(shooter:Object, target:Object, distance:Number):Boolean
      *         返回true表示触发仇恨，false表示消音成功不触发
+     *
+     * @see org.flashNight.arki.unit.UnitComponent.Aggro.SilenceStrategyFactory#create
      */
     public static function createSilenceStrategy(v:Object):Function {
-        if (v == null) return null;
-
-        var s:String = String(v);
-        // _root.发布消息("创建消音策略，参数：" + s);
-
-        // 约定，存在消音策略时，与友军伤害冲突，不检测敌我关系以优化性能
-
-        // 概率消音
-        // 约定，消音策略参数为百分比字符串时表示概率消音
-        var percentIndex:Number = s.indexOf("%");
-        if (percentIndex > 0) {
-            var p:Number = Number(s.substring(0, percentIndex));
-            if (isNaN(p) || p < 0 || p > 100) return null;
-
-            // 预处理概率值：将消音成功率转换为触发仇恨率
-            // 例如：90%消音成功 = 10%触发仇恨
-            var triggerProbability:Number = 100 - p;
-            var rng:LinearCongruentialEngine = LinearCongruentialEngine.getInstance();
-
-            return function(shooter:Object, target:Object, d:Number):Boolean {
-                // 优化：直接判断是否触发仇恨，无需取反
-                // true表示触发仇恨，false表示消音成功
-                return rng.successRate(triggerProbability);
-            };
-        }
-
-        // 距离消音（远距离消音：超过指定距离不触发仇恨）
-        // 约定，消音策略参数为数值时表示距离阈值
-        var r:Number = Number(v);
-        if (!isNaN(r) && r > 0) {
-            // 缓存距离阈值，避免闭包内重复访问外部变量
-            var threshold:Number = r;
-
-            return function(shooter:Object, target:Object, d:Number):Boolean {
-                // 优化：直接返回距离比较结果
-                // 距离<=阈值时返回true（触发仇恨），>阈值时返回false（消音成功）
-                return d <= threshold;
-            };
-        }
-
-        return null; // 预留：特殊字符串模式后续扩展
+        // 委托给新的工厂类处理，保持向后兼容
+        return SilenceStrategyFactory.create(v);
     }
     
     // ======================================================
