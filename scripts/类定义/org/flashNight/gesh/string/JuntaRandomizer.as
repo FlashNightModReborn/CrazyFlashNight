@@ -1,8 +1,14 @@
 ﻿// 保存为 org/flashNight/gesh/string/JuntaRandomizer.as
+import org.flashNight.neur.Event.EventBus;
+
 class org.flashNight.gesh.string.JuntaRandomizer {
     private static var juntaNames:Array;
     private static var currentPool:Array;
     private static var initialized:Boolean = false;
+
+    // 地图锁定机制：同一张地图中所有军阀部队使用同一个称号
+    private static var lockedName:String = null;
+    private static var isLocked:Boolean = false;
     
     private static function initialize():Void {
         if (!initialized) {
@@ -14,6 +20,10 @@ class org.flashNight.gesh.string.JuntaRandomizer {
                 "长枪旅", "橙色军团", "商队护卫部队", "猛虎军团", "曼陀罗旅", "霸王花小组", "黻城治安部队"
             ];
             resetPool();
+
+            // 订阅场景切换事件，用于解锁名称
+            EventBus.getInstance().subscribe("SceneChanged", onSceneChanged, JuntaRandomizer);
+    
             initialized = true;
         }
     }
@@ -29,13 +39,37 @@ class org.flashNight.gesh.string.JuntaRandomizer {
             currentPool[j] = temp;
         }
     }
-    
+
+    /**
+     * 场景切换事件处理：解锁名称，允许下次获取新名称
+     */
+    private static function onSceneChanged():Void {
+        isLocked = false;
+        lockedName = null;
+    }
+
+    /**
+     * 获取随机名称（地图内保持一致）
+     * 每张地图中，所有军阀部队使用同一个称号
+     * 只有在切换地图后，才会获取新的称号
+     */
     public static function getRandomName():String {
         initialize();
+
+        // 如果已锁定，返回锁定的名称
+        if (isLocked && lockedName != null) {
+            return lockedName;
+        }
+
+        // 未锁定：获取新名称并锁定
         if (currentPool.length < 1) {
             resetPool();
         }
-        return String(currentPool.pop());
+
+        lockedName = String(currentPool.pop());
+        isLocked = true;
+
+        return lockedName;
     }
     
     // 防止实例化

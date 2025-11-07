@@ -503,15 +503,47 @@ class org.flashNight.arki.item.EquipmentUtil{
         // 合并基础倍率和配件倍率（保持原有全局语义）
         var finalMultiplier:Object = ObjectUtil.clone(baseMultiplier);
 
-        // 针对 capacity：避免把 (1+p) 作为“增量”再次与 initValue=1 相加导致的 2+p。
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // 特殊处理：不在 baseMultiplier 中的百分比属性
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //
+        // 问题根源：
+        // 在 accumulateModifiers 中，配件的 percentage 通过 operators.add(multiplier, percentageStat, 1)
+        // 累积，initValue=1 导致首次添加时变成 (1 + p)。
+        // 然后在本函数中再次通过 operators.add(finalMultiplier, modsMultiplier, 1) 合并，
+        // 又加了一次 1，最终变成 (1 + 1 + p) = (2 + p)。
+        //
+        // 对于在 baseMultiplier 中的属性（power, defence, damage 等），因为有基础倍率参与，
+        // 这个"多加一次 1"恰好被抵消，计算结果正确。
+        //
+        // 但对于不在 baseMultiplier 中的属性（capacity, velocity, diffusion, weight），
+        // 这个额外的 +1 会导致：
+        //   - capacity +20%  → 实际变成 120% 增幅
+        //   - velocity +10%  → 实际变成 110% 增幅
+        //   - diffusion -20% → 实际变成 80% 增幅（本该减少，结果还在增加）
+        //   - weight -20%    → 实际变成 80% 增幅（本该减重，结果增重）
+        //
+        // 解决方案：
+        // 将这些属性从合并流程中移除，单独以直接乘法应用，避免二次累加 initValue。
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
         var modsMultiplier:Object = modifiers.multiplier ? ObjectUtil.clone(modifiers.multiplier) : null;
-        var capacityFactor:Number = NaN;
-        if (modsMultiplier && !isNaN(modsMultiplier.capacity)) {
-            capacityFactor = Number(modsMultiplier.capacity);
-            delete modsMultiplier.capacity; // 从合并倍率中移除 capacity，稍后单独以乘法应用
+        var specialFactors:Object = {}; // 存储需要特殊处理的属性倍率
+
+        // 需要特殊处理的属性列表（不在 baseMultiplier 中，但被配件 percentage 影响）
+        var specialProps:Array = ["capacity", "velocity", "diffusion", "weight"];
+
+        if (modsMultiplier) {
+            for (var i:Number = 0; i < specialProps.length; i++) {
+                var propName:String = specialProps[i];
+                if (!isNaN(modsMultiplier[propName])) {
+                    specialFactors[propName] = Number(modsMultiplier[propName]);
+                    delete modsMultiplier[propName]; // 从合并倍率中移除，稍后单独应用
+                }
+            }
         }
 
-        // 其余倍率按旧逻辑合并
+        // 其余倍率按旧逻辑合并（加法合并，适用于有 baseMultiplier 的属性）
         if (modsMultiplier) operators.add(finalMultiplier, modsMultiplier, 1);
 
         // 保存基础属性副本（用于cap计算）
@@ -519,8 +551,14 @@ class org.flashNight.arki.item.EquipmentUtil{
 
         // 按顺序应用运算符
         operators.multiply(data, finalMultiplier);
-        // 单独应用 capacity 的百分比倍率（不改变其他属性语义）
-        if (!isNaN(capacityFactor)) operators.multiply(data, {capacity: capacityFactor});
+
+        // 单独应用特殊属性的百分比倍率（直接乘法，不经过加法合并）
+        for (var key:String in specialFactors) {
+            var factorObj:Object = {};
+            factorObj[key] = specialFactors[key];
+            operators.multiply(data, factorObj);
+        }
+
         operators.add(data, modifiers.adder, 0);
         operators.override(data, ObjectUtil.clone(modifiers.overrider));
 
