@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跳跃" itemID="690cd8ce-0000117e" lastModified="1762521538" lastUniqueIdentifier="678">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跳跃" itemID="690cd8ce-0000117e" lastModified="1762525796" lastUniqueIdentifier="678">
   <timeline>
-    <DOMTimeline name="兵器跳跃" currentFrame="106" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;-150&lt;/guideline&gt;&lt;guideline direction="h"&gt;-164&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="兵器跳跃" currentFrame="110" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;-150&lt;/guideline&gt;&lt;guideline direction="h"&gt;-164&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#6DA6D6">
           <frames>
@@ -53,7 +53,7 @@ onClipEvent (enterFrame) {
 
 	if (_parent._parent.hp > 0 && _parent._parent._name == _root.控制目标)
 	{
-		// 双击方向键后触发
+		/* 双击方向键后触发
 		if(_parent._parent.方向 == "右")
 		{
 			if (_parent._parent.doubleTapRunDirection == 1) //双击右键
@@ -68,6 +68,7 @@ onClipEvent (enterFrame) {
 				_parent.gotoAndPlay("飞燕");
 			}
 		}
+		*/
 		// 按下攻击键J后触发
 		if (_parent._parent.被动技能.上挑 && _parent._parent.被动技能.上挑.启用 && Key.isDown(_parent._parent.A键))
 		{
@@ -129,7 +130,7 @@ onClipEvent (load) {
 
 	if (_parent._parent.hp > 0 && _parent._parent._name == _root.控制目标)
 	{
-		// 双击方向键后触发
+		/* 双击方向键后触发
 		if(_parent._parent.方向 == "右")
 		{
 			if (_parent._parent.doubleTapRunDirection == 1) //双击右键
@@ -144,6 +145,7 @@ onClipEvent (load) {
 				_parent.gotoAndPlay("飞燕");
 			}
 		}
+		*/
 		// 按下攻击键J后触发
 		if (Key.isDown(_parent._parent.A键))
 		{
@@ -609,7 +611,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码" color="#2F84FE" autoNamed="false">
+        <DOMLayer name="代码" color="#2F84FE" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -800,10 +802,10 @@ _parent.动画完毕();
             </DOMFrame>
             <DOMFrame index="110" duration="11" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.垂直速度 = _parent.起跳速度 * 0.1;
+                <script><![CDATA[//_parent.垂直速度 = _parent.起跳速度 * 0.1;
 跳跃移动倍率 = 4;
-滞空时间 = 0;
-坠地中 = true;
+//滞空时间 = 0;
+//坠地中 = true;
 _parent.刚体 = true;
 play();]]></script>
               </Actionscript>
@@ -811,10 +813,11 @@ play();]]></script>
             </DOMFrame>
             <DOMFrame index="121" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[坠地中 = false;
-
-_parent.动画完毕();
-stop();]]></script>
+                <script><![CDATA[_parent.gotoAndPlay("跳跃");
+_parent.刚体 = false;
+//坠地中 = false;
+//_parent.动画完毕();
+//stop();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -5192,7 +5195,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小臂" color="#E86C8A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="右小臂" color="#E86C8A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
@@ -5566,7 +5569,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="108" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 868" selected="true" centerPoint3DX="591.5" centerPoint3DY="153.8">
+                <DOMSymbolInstance libraryItemName="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 868" centerPoint3DX="591.5" centerPoint3DY="153.8">
                   <matrix>
                     <Matrix a="0.893295288085938" b="-0.175018310546875" d="0.93695068359375" tx="475.65" ty="260"/>
                   </matrix>
@@ -5582,7 +5585,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="109" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 869" selected="true" centerPoint3DX="584" centerPoint3DY="159.4">
+                <DOMSymbolInstance libraryItemName="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 869" centerPoint3DX="584" centerPoint3DY="159.4">
                   <matrix>
                     <Matrix a="0.893295288085938" b="-0.175018310546875" d="0.93695068359375" tx="475.65" ty="260"/>
                   </matrix>
@@ -5597,9 +5600,6 @@ onClipEvent(load){
               </elements>
             </DOMFrame>
             <DOMFrame index="110" duration="12" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="122" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -5947,7 +5947,7 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="120" duration="11" keyMode="9728">
+            <DOMFrame index="120" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -6319,9 +6319,6 @@ onClipEvent(load){
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="122" duration="9" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -12335,7 +12332,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="93" duration="5" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 872" selected="true" centerPoint3DX="579" centerPoint3DY="227.3">
+                <DOMSymbolInstance libraryItemName="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 872" centerPoint3DX="579" centerPoint3DY="227.3">
                   <matrix>
                     <Matrix a="0.893295288085938" d="0.603561401367188" tx="475.65" ty="273.15"/>
                   </matrix>
@@ -12411,9 +12408,6 @@ onClipEvent(load){
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="122" duration="9" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -17990,9 +17984,6 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="122" duration="9" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="右小腿" color="#0FEFD6" autoNamed="false">
@@ -18475,9 +18466,6 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="122" duration="9" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="右脚" color="#9A8F9C" autoNamed="false">
@@ -18838,9 +18826,6 @@ onClipEvent(load){
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="122" duration="9" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -19203,9 +19188,6 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="122" duration="9" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="左小腿" color="#7A54C0" autoNamed="false">
@@ -19566,9 +19548,6 @@ onClipEvent(load){
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="122" duration="9" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -19931,9 +19910,6 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="122" duration="9" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="屁股" color="#D622A5" autoNamed="false">
@@ -20294,9 +20270,6 @@ onClipEvent(load){
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="122" duration="9" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -20659,9 +20632,6 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="122" duration="9" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="上身" color="#D3936B" autoNamed="false">
@@ -21022,9 +20992,6 @@ onClipEvent(load){
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="122" duration="9" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -21387,9 +21354,6 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="122" duration="9" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="左手枪" color="#90FCAC" autoNamed="false">
@@ -21751,9 +21715,6 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="122" duration="9" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="左手" color="#CDA46D" autoNamed="false">
@@ -22114,9 +22075,6 @@ onClipEvent(load){
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="122" duration="9" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -22493,9 +22451,6 @@ onClipEvent(load){
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="122" duration="9" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -22880,9 +22835,6 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="122" duration="9" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="长枪" color="#8BB8B9" autoNamed="false">
@@ -23259,9 +23211,6 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="122" duration="9" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="刀-低层" color="#9933CC" autoNamed="false">
@@ -23610,9 +23559,6 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="122" duration="9" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="阴影" color="#C6899C" autoNamed="false">
@@ -23824,14 +23770,11 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="122" duration="9" keyMode="9728">
-              <elements/>
-            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="阴影" color="#AE876D" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="131" keyMode="9728">
+            <DOMFrame index="0" duration="122" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>
@@ -23925,7 +23868,7 @@ onClipEvent (enterFrame) {
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="110" duration="21" keyMode="9728">
+            <DOMFrame index="110" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
