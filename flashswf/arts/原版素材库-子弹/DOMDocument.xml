@@ -34,13 +34,13 @@
           <DOMFolderItem name="无AS链接/不知道用在了哪的特效/陨星坠地" itemID="6554d2de-0000309e" isExpanded="true"/>
           <DOMFolderItem name="无AS链接/不知道用在了哪的特效/陨星坠地/未命名文件夹 1" itemID="654f0342-00002948" isExpanded="true"/>
           <DOMFolderItem name="无AS链接/气功弹（和爆炸）素材" itemID="669d393b-0000178c"/>
-          <DOMFolderItem name="子弹-持续组" itemID="669d3984-0000179c" isExpanded="true"/>
+          <DOMFolderItem name="子弹-持续组" itemID="669d3984-0000179c"/>
           <DOMFolderItem name="子弹-持续组/血滴落" itemID="68fe33eb-000016bc" isExpanded="true"/>
           <DOMFolderItem name="子弹-近战子弹专享座位" itemID="669d3aec-000017c1"/>
           <DOMFolderItem name="子弹-炮弹与爆炸组" itemID="669d34e9-0000177b"/>
           <DOMFolderItem name="子弹-普通与穿刺组" itemID="669d349c-00001757"/>
           <DOMFolderItem name="子弹-普通与穿刺组/暗器" itemID="68e4ed93-000020b3" isExpanded="true"/>
-          <DOMFolderItem name="子弹-气功组" itemID="669d3a53-000017b3"/>
+          <DOMFolderItem name="子弹-气功组" itemID="669d3a53-000017b3" isExpanded="true"/>
           <DOMFolderItem name="子弹-特殊组" itemID="669d3a9d-000017bc"/>
           <DOMFolderItem name="自瞄准星特效" itemID="67139c16-00000684"/>
      </folders>
@@ -657,11 +657,12 @@
           <Include href="子弹-普通与穿刺组/铁枪磁轨弹.xml" itemID="68786a09-00004fe9" lastModified="1752807102"/>
           <Include href="子弹-普通与穿刺组/铁枪磁轨弹动画.xml" itemIcon="1" loadImmediate="false" itemID="6879b5cc-00001095" lastModified="1752807115"/>
           <Include href="子弹-普通与穿刺组/无壳穿刺子弹.xml" itemID="687775d5-00002db3" lastModified="1759823934"/>
+          <Include href="子弹-气功组/剑气波.xml" itemID="690e085d-000010d3" lastModified="1762527554"/>
           <Include href="子弹-气功组/气功弹.xml" itemID="668b9d18-000001e7" lastModified="1759817747"/>
-          <Include href="子弹-气功组/气功弹爆炸.xml" itemID="668b9d1d-000001e8" lastModified="1759817767"/>
+          <Include href="子弹-气功组/气功弹爆炸.xml" itemID="668b9d1d-000001e8" lastModified="1762527398"/>
           <Include href="子弹-气功组/屎块爆炸.xml" itemID="66bb409c-00001c97" lastModified="1759818997"/>
-          <Include href="子弹-气功组/天冲命中.xml" itemID="669d34d3-00001773" lastModified="1759821960"/>
-          <Include href="子弹-气功组/月牙天冲.xml" itemID="669d34cf-00001772" lastModified="1759826646"/>
+          <Include href="子弹-气功组/天冲命中.xml" itemID="669d34d3-00001773" lastModified="1762527497"/>
+          <Include href="子弹-气功组/月牙天冲.xml" itemID="669d34cf-00001772" lastModified="1762527508"/>
           <Include href="子弹-特殊组/火力支援-炸弹.xml" itemID="669d345c-00001748" lastModified="1729338582"/>
           <Include href="子弹-特殊组/火力支援开始.xml" itemID="669d3458-00001747" lastModified="1722660646"/>
           <Include href="自瞄准星特效/火力支援新瞄准镜.xml" loadImmediate="false" itemID="671399a0-00002828" lastModified="1729337760"/>
@@ -673,7 +674,7 @@
                          <frames>
                               <DOMFrame index="0" duration="54" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="原版素材库-子弹" selected="true" centerPoint3DX="66.7" centerPoint3DY="8.8">
+                                        <DOMSymbolInstance libraryItemName="原版素材库-子弹" centerPoint3DX="66.7" centerPoint3DY="8.8">
                                              <transformationPoint>
                                                   <Point/>
                                              </transformationPoint>
