@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#999999" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" objectsSnapTo="false" nextSceneIdentifier="2" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#666666" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" objectsSnapTo="false" nextSceneIdentifier="2" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="2.音效文件夹" itemID="656c28f2-00000fe5"/>
           <DOMFolderItem name="2.音效文件夹/爆炸" itemID="656c296a-0000103c" isExpanded="true"/>
@@ -139,7 +139,7 @@
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="ashcore/ashcore.xml" itemID="688340fd-00000819" lastModified="1753436006"/>
           <Include href="ashcore/图标-ashcore.xml" itemID="68835078-00000a95" lastModified="1753436313"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1762605344"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1762613135"/>
           <Include href="NLAW筒子.xml" itemIcon="1" loadImmediate="false" itemID="68d8f28b-00000aab" lastModified="1759048620"/>
           <Include href="q.xml" loadImmediate="false" itemID="6898491a-00000406" lastModified="1754812780"/>
           <Include href="RPG28发射器.xml" itemIcon="1" loadImmediate="false" itemID="68d50204-00000d2a" lastModified="1758790191"/>
@@ -263,15 +263,17 @@
           <Include href="将军 披风/Symbol 911.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000015e5" lastModified="1701508661"/>
           <Include href="将军 披风/Symbol 912.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000015e6" lastModified="1701508661"/>
           <Include href="将军 披风/Symbol 913.xml" loadImmediate="false" itemID="6577faef-000015e7" lastModified="1719556794"/>
-          <Include href="矩辉启明刃/刀-矩辉启明刃.xml" itemID="690f0285-0000a0ce" lastModified="1762604650"/>
+          <Include href="矩辉启明刃/刀-矩辉启明刃.xml" itemID="690f0285-0000a0ce" lastModified="1762612387"/>
           <Include href="矩辉启明刃/光刃.xml" loadImmediate="false" itemID="690f366a-0000a388" lastModified="1762604871"/>
           <Include href="矩辉启明刃/剑刃.xml" loadImmediate="false" itemID="690f0fed-0000a11f" lastModified="1762596701"/>
-          <Include href="矩辉启明刃/剑身.xml" loadImmediate="false" itemID="690f175d-0000a130" lastModified="1762597136"/>
+          <Include href="矩辉启明刃/剑身.xml" loadImmediate="false" itemID="690f175d-0000a130" lastModified="1762608838"/>
+          <Include href="矩辉启明刃/剑身光效.xml" loadImmediate="false" itemID="690f45bd-0000a706" lastModified="1762608574"/>
           <Include href="矩辉启明刃/接口.xml" loadImmediate="false" itemID="690f0f70-0000a10a" lastModified="1762594672"/>
           <Include href="矩辉启明刃/配重.xml" loadImmediate="false" itemID="690f0695-0000a0e1" lastModified="1762592417"/>
-          <Include href="矩辉启明刃/散热鳍片.xml" loadImmediate="false" itemID="690f1517-0000a125" lastModified="1762596138"/>
-          <Include href="矩辉启明刃/外环.xml" loadImmediate="false" itemID="690f0f6a-0000a106" lastModified="1762594666"/>
-          <Include href="矩辉启明刃/握把.xml" loadImmediate="false" itemID="690f079f-0000a0ea" lastModified="1762592803"/>
+          <Include href="矩辉启明刃/散热鳍片.xml" loadImmediate="false" itemID="690f1517-0000a125" lastModified="1762611026"/>
+          <Include href="矩辉启明刃/图标-矩辉启明刃.xml" itemID="690f5550-0000a76f" lastModified="1762612693"/>
+          <Include href="矩辉启明刃/外环.xml" loadImmediate="false" itemID="690f0f6a-0000a106" lastModified="1762608172"/>
+          <Include href="矩辉启明刃/握把.xml" loadImmediate="false" itemID="690f079f-0000a0ea" lastModified="1762609964"/>
           <Include href="矩辉启明刃/星环.xml" loadImmediate="false" itemID="690f1fe4-0000a353" lastModified="1762601533"/>
           <Include href="矩辉启明刃/一层内环.xml" loadImmediate="false" itemID="690f0f61-0000a102" lastModified="1762594657"/>
           <Include href="矩辉启明刃/圆环.xml" loadImmediate="false" itemID="690f08ae-0000a0f1" lastModified="1762594672"/>
@@ -1430,6 +1432,10 @@
                     <SolidSwatchItem color="#95D6D0" hue="117" saturation="105" brightness="171"/>
                     <SolidSwatchItem color="#95D6D0" alpha="0.498039215686275" hue="117" saturation="105" brightness="171"/>
                     <SolidSwatchItem color="#C1EEEB" hue="117" saturation="136" brightness="203"/>
+                    <SolidSwatchItem color="#C7C5C1" hue="24" saturation="11" brightness="185"/>
+                    <SolidSwatchItem color="#575754" hue="40" saturation="4" brightness="81"/>
+                    <SolidSwatchItem color="#4E817C" hue="117" saturation="59" brightness="97"/>
+                    <SolidSwatchItem color="#98958F" hue="25" saturation="10" brightness="139"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1512,6 +1518,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2566373" publishTime="1762612376"/>
           <PublishItem publishSize="2530031" publishTime="1759878713"/>
           <PublishItem publishSize="2530031" publishTime="1759878608"/>
           <PublishItem publishSize="2530041" publishTime="1759878453"/>
@@ -1531,6 +1538,5 @@
           <PublishItem publishSize="2469586" publishTime="1758878665"/>
           <PublishItem publishSize="2430292" publishTime="1758791678"/>
           <PublishItem publishSize="2430292" publishTime="1758791621"/>
-          <PublishItem publishSize="2416671" publishTime="1758773457"/>
      </publishHistory>
 </DOMDocument>

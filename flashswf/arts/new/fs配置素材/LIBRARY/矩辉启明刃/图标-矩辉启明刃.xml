@@ -1,0 +1,73 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="矩辉启明刃/图标-矩辉启明刃" itemID="690f5550-0000a76f" linkageExportForAS="true" linkageIdentifier="图标-矩辉启明刃" lastModified="1762612693">
+  <timeline>
+    <DOMTimeline name="图标-矩辉启明刃">
+      <layers>
+        <DOMLayer name="Script Layer" color="#B5E9B6">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#E6C4A7" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="龙破军霜/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#7C67A1" parentLayerIndex="1" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/刀-矩辉启明刃" selected="true" centerPoint3DX="-44.75" centerPoint3DY="-227">
+                  <matrix>
+                    <Matrix a="-0.153533935546875" b="-0.116195678710938" c="0.116195678710938" d="-0.153533935546875" tx="-8.65" ty="11.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#F89B8E" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="龙破军霜/Symbol 16" selected="true" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/刀-矩辉启明刃" centerPoint3DX="-7" centerPoint3DY="238.2">
+                  <matrix>
+                    <Matrix a="-0.000946044921875" b="-0.322052001953125" c="0.322052001953125" d="-0.000946044921875" tx="-43.1" ty="-0.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

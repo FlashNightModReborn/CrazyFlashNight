@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1762605344" lastUniqueIdentifier="255">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1762613135" lastUniqueIdentifier="256">
   <timeline>
-    <DOMTimeline name="fs配置素材" currentFrame="33" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="32" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
         <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
@@ -964,12 +964,20 @@
                     <Point x="-3.6" y="199.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="矩辉启明刃/刀-矩辉启明刃" centerPoint3DX="590.4" centerPoint3DY="-545.25">
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/刀-矩辉启明刃" selected="true" centerPoint3DX="404.05" centerPoint3DY="-525.35">
                   <matrix>
-                    <Matrix tx="590.5" ty="-703.1"/>
+                    <Matrix tx="404.15" ty="-683.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.1" y="157.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/图标-矩辉启明刃" centerPoint3DX="521" centerPoint3DY="-588.75">
+                  <matrix>
+                    <Matrix a="3.82127380371094" d="3.82127380371094" tx="540.2" ty="-617.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-6.8" y="10.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
