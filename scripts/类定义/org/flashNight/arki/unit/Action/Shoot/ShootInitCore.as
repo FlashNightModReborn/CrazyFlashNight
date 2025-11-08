@@ -444,6 +444,10 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
      * @return 返回暴击判断函数
      */
     public static function createCritLogic(critValue:Object):Function {
+        // 允许外部直接传入暴击判断函数（DressupInitializer 已将 XML 映射为函数的场景）
+        if (typeof critValue == "function") {
+            return Function(critValue);
+        }
         if (!isNaN(Number(critValue))) {
             var critRate:Number = Number(critValue);
             return function(当前子弹:Object):Number {
