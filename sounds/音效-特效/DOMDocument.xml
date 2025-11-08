@@ -4,7 +4,7 @@
           <DOMFolderItem name="爆炸" itemID="67251edb-0000ccae" isExpanded="true"/>
           <DOMFolderItem name="刀光" itemID="672521ac-0000cd05"/>
           <DOMFolderItem name="动画" itemID="6793af9d-0000055a"/>
-          <DOMFolderItem name="技能" itemID="6793af9c-00000559"/>
+          <DOMFolderItem name="技能" itemID="6793af9c-00000559" isExpanded="true"/>
           <DOMFolderItem name="僵尸长斧" itemID="68f43e85-000000d7"/>
           <DOMFolderItem name="其他" itemID="672520ca-0000ccfa"/>
           <DOMFolderItem name="箱子" itemID="683bcbfa-000020d5"/>
@@ -125,6 +125,7 @@
           <DOMSoundItem name="技能/瞬步斩2.wav" itemID="66154a61-0000060f" linkageExportForAS="true" linkageIdentifier="瞬步斩2.wav" sourceExternalFilepath="E:/下载的杂七杂八的玩意儿/steam/steamapps/下载的杂七杂八的玩意儿/下载的杂七杂八的玩意儿/Users/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/sounds/冷兵器/剑/瞬步斩2.wav" sourceLastImported="1727865263" href="技能/瞬步斩2.wav" soundDataHRef="M 72 1737731802.dat" format="44kHz 16bit Mono" sampleCount="16187" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="技能/瞬步斩3.wav" itemID="66154ab5-00000613" linkageExportForAS="true" linkageIdentifier="瞬步斩3.wav" sourceExternalFilepath="E:/下载的杂七杂八的玩意儿/steam/steamapps/下载的杂七杂八的玩意儿/下载的杂七杂八的玩意儿/Users/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/sounds/冷兵器/剑/瞬步斩3.wav" sourceLastImported="1727865266" href="技能/瞬步斩3.wav" soundDataHRef="M 73 1737731802.dat" format="44kHz 16bit Mono" sampleCount="17677" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="动画/索降.wav" itemID="68270273-000002f5" linkageExportForAS="true" linkageIdentifier="索降.wav" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/sounds/音效-特效/LIBRARY/动画/索降.wav" sourceLastImported="1747386936" externalFileSize="143580" href="动画/索降.wav" soundDataHRef="M 112 1747386980.dat" format="44kHz 16bit Mono" sampleCount="71768"/>
+          <DOMSoundItem name="技能/铁血飞弹.mp3" itemID="690ee7d5-00000934" linkageExportForAS="true" linkageIdentifier="铁血飞弹.mp3" sourceExternalFilepath="../things2/LIBRARY/sound783.wav" sourceLastImported="1762584543" href="技能/铁血飞弹.wav" soundDataHRef="M 134 1762584524.dat" format="44kHz 16bit Stereo" sampleCount="51705" exportFormat="5" exportBits="17" dataLength="7911"/>
           <DOMSoundItem name="技能/微波子弹.wav" itemID="669ea2f3-000009d4" linkageExportForAS="true" linkageIdentifier="微波子弹.wav" sourceExternalFilepath="G:/gunsound/things0技能/微波子弹.wav" sourceLastImported="1722331778" href="技能/微波子弹.wav" soundDataHRef="M 74 1737731802.dat" format="44kHz 16bit Mono" sampleCount="115763" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="战斗/武器 从套中拿出警棍 01.mp3" itemID="657437a2-000008bd" linkageExportForAS="true" linkageIdentifier="武器 从套中拿出警棍 01.mp3" sourceExternalFilepath="E:/未成世界/Audio/SE/战斗相关/武器 从套中拿出警棍 01.mp3" sourceLastImported="1730486607" href="战斗/武器 从套中拿出警棍 01.mp3" soundDataHRef="M 15 1737731645.dat" format="44kHz 16bit Stereo" sampleCount="43776" exportFormat="5" exportBits="17" dataLength="11677" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="5472"/>
           <DOMSoundItem name="技能/猩红凶斩.wav" itemID="669ea2f3-000009d8" linkageExportForAS="true" linkageIdentifier="猩红凶斩.wav" sourceExternalFilepath="G:/gunsound/things0技能/猩红凶斩.wav" sourceLastImported="1722331563" href="技能/猩红凶斩.wav" soundDataHRef="M 75 1737731802.dat" format="44kHz 16bit Mono" sampleCount="73975" exportFormat="5" exportBits="17"/>
@@ -146,7 +147,6 @@
           <DOMSoundItem name="战斗/子弹上膛.wav" itemID="66fd49bd-00004136" linkageExportForAS="true" linkageIdentifier="子弹上膛.wav" sourceExternalFilepath="G:/gunsound/替换things0音效换弹+挥刀/re/re146.wav" sourceLastImported="1727875517" href="战斗/子弹上膛.wav" soundDataHRef="M 101 1737731969.dat" format="44kHz 16bit Stereo" sampleCount="23429" exportFormat="5" exportBits="17" dataLength="1144"/>
           <DOMSoundItem name="战斗/子弹上膛2.wav" itemID="66fd49bf-00004137" linkageExportForAS="true" linkageIdentifier="子弹上膛2.wav" sourceExternalFilepath="G:/gunsound/替换things0音效换弹+挥刀/re/re147.wav" sourceLastImported="1727875519" href="战斗/子弹上膛2.wav" soundDataHRef="M 102 1737731969.dat" format="44kHz 16bit Stereo" sampleCount="22050" exportFormat="5" exportBits="17" dataLength="624"/>
      </media>
-     <symbols/>
      <timelines>
           <DOMTimeline name="场景 1">
                <layers>
