@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1762593711" lastUniqueIdentifier="254">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1762605344" lastUniqueIdentifier="255">
   <timeline>
-    <DOMTimeline name="fs配置素材" currentFrame="30" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="33" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
         <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
@@ -17,22 +17,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="56" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();]]></script>
               </Actionscript>
-              <elements>
-                <DOMSymbolInstance libraryItemName="矩辉启明刃/刀-矩辉启明刃" selected="true" centerPoint3DX="112.6" centerPoint3DY="-366.1">
-                  <matrix>
-                    <Matrix tx="112.7" ty="-523.95"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="-0.1" y="157.85"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="56" keyMode="9728" soundName="2.音效文件夹/未命名文件夹 2/测试火焰.mp3">
               <SoundEnvelope>
@@ -630,7 +621,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="12" name="标题页" labelType="name" keyMode="9728">
               <elements>
@@ -971,6 +962,14 @@
                   </matrix>
                   <transformationPoint>
                     <Point x="-3.6" y="199.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/刀-矩辉启明刃" centerPoint3DX="590.4" centerPoint3DY="-545.25">
+                  <matrix>
+                    <Matrix tx="590.5" ty="-703.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="157.85"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

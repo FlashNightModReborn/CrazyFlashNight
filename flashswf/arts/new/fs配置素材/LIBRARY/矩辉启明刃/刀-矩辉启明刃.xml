@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="矩辉启明刃/刀-矩辉启明刃" itemID="690f0285-0000a0ce" linkageExportForAS="true" linkageIdentifier="刀-矩辉启明刃" lastModified="1762597286" lastUniqueIdentifier="30">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="矩辉启明刃/刀-矩辉启明刃" itemID="690f0285-0000a0ce" linkageExportForAS="true" linkageIdentifier="刀-矩辉启明刃" lastModified="1762604650" lastUniqueIdentifier="34">
   <timeline>
-    <DOMTimeline name="刀-矩辉启明刃">
+    <DOMTimeline name="刀-矩辉启明刃" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;166&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Layer 1" color="#7956D9" locked="true">
           <frames>
@@ -50,28 +50,21 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="配重" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="配重" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="矩辉启明刃/握把" centerPoint3DX="166.4" centerPoint3DY="34.55">
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/握把" centerPoint3DX="350.3" centerPoint3DY="33.35">
                   <matrix>
-                    <Matrix tx="157.7" ty="-0.55"/>
+                    <Matrix tx="341.75" ty="-1.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="8.7" y="35.35"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="矩辉启明刃/配重" centerPoint3DX="166.4" centerPoint3DY="-31.85">
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/配重" centerPoint3DX="350.3" centerPoint3DY="-33.05">
                   <matrix>
-                    <Matrix tx="151.2" ty="-45.9"/>
+                    <Matrix tx="335.25" ty="-47.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="15.2" y="14.05"/>
@@ -85,59 +78,67 @@
                     <Point x="15.2" y="14.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="散热鳍片" centerPoint3DX="166.35" centerPoint3DY="136.85">
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/散热鳍片" centerPoint3DX="350.3" centerPoint3DY="135.65">
                   <matrix>
-                    <Matrix tx="137.35" ty="117.5"/>
+                    <Matrix tx="321.4" ty="116.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="29" y="19.35"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="剑身" centerPoint3DX="166.15" centerPoint3DY="123.4">
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/剑身" centerPoint3DX="349.95" centerPoint3DY="122.1">
                   <matrix>
-                    <Matrix d="0.245346069335938" tx="145.2" ty="72"/>
+                    <Matrix d="0.245346069335938" tx="329.25" ty="70.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="20.95" y="209.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="矩辉启明刃/接口" centerPoint3DX="166.35" centerPoint3DY="64.1">
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/接口" centerPoint3DX="350.3" centerPoint3DY="62.95">
                   <matrix>
-                    <Matrix tx="155.75" ty="61"/>
+                    <Matrix tx="339.8" ty="59.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="10.6" y="3.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="散热鳍片" centerPoint3DX="166.45" centerPoint3DY="101.95">
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/散热鳍片" centerPoint3DX="350.35" centerPoint3DY="100.8">
                   <matrix>
-                    <Matrix a="-1" d="-1" tx="195.4" ty="121.2"/>
+                    <Matrix a="-1" d="-1" tx="379.45" ty="120.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="29" y="19.35"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="矩辉启明刃/外环" centerPoint3DX="166.35" centerPoint3DY="122.1">
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/外环" centerPoint3DX="350.1" centerPoint3DY="120.85">
                   <matrix>
-                    <Matrix tx="110.35" ty="66.15"/>
+                    <Matrix tx="294.4" ty="65"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="56" y="55.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="矩辉启明刃/一层内环" centerPoint3DX="161.3" centerPoint3DY="122.35">
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/一层内环" centerPoint3DX="351" centerPoint3DY="125.75">
                   <matrix>
-                    <Matrix tx="110.45" ty="76.2"/>
+                    <Matrix a="0" b="-1" c="1" d="0" tx="304.9" ty="176.65"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="54.75" y="45.6"/>
+                    <Point x="56" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/星环" centerPoint3DX="351.5" centerPoint3DY="121.65">
+                  <matrix>
+                    <Matrix a="0.825531005859375" d="0.825531005859375" tx="309.8" ty="79.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.55" y="51.55"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="握把" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="握把" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -153,7 +154,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="接口" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="接口" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -169,7 +170,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="外环" color="#FF800A" autoNamed="false">
+        <DOMLayer name="外环" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -185,7 +186,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="一层内环" color="#9933CC" autoNamed="false">
+        <DOMLayer name="一层内环" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -201,11 +202,27 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="剑身" color="#FF4F4F" autoNamed="false">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="剑身" centerPoint3DX="1.35" centerPoint3DY="337.85">
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/星环" centerPoint3DX="1.35" centerPoint3DY="74.8">
+                  <matrix>
+                    <Matrix a="0.825531005859375" d="0.825531005859375" tx="-40.4" ty="32.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.55" y="51.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="剑身" color="#FF4F4F" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/剑身" centerPoint3DX="1.35" centerPoint3DY="337.85">
                   <matrix>
                     <Matrix tx="-19.6" ty="128.35"/>
                   </matrix>
@@ -217,16 +234,32 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="散热鳍片" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="散热鳍片" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="散热鳍片" centerPoint3DX="1.55" centerPoint3DY="143.95">
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/散热鳍片" centerPoint3DX="1.55" centerPoint3DY="143.95">
                   <matrix>
                     <Matrix tx="-27.45" ty="124.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 19" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/光刃" centerPoint3DX="0.95" centerPoint3DY="328.3">
+                  <matrix>
+                    <Matrix tx="-43.1" ty="109.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.05" y="218.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
