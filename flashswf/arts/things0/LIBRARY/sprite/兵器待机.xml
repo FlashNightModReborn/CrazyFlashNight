@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器待机" itemID="690df7b1-00000ba7" lastModified="1762538758" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器待机" itemID="690df7b1-00000ba7" lastModified="1762600445" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="兵器待机" currentFrame="115">
+    <DOMTimeline name="兵器待机">
       <layers>
         <DOMLayer name="Labels Layer" color="#AD90CF" locked="true">
           <frames>
@@ -18,7 +18,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#4F9DF5" locked="true">
+        <DOMLayer name="Script Layer" color="#4F9DF5" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="51" keyMode="9728">
               <Actionscript>
@@ -28,7 +28,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
 	gotoAndPlay("肩扛");
 }
 */
-if(_parent.兵器动作类型=="短兵" || _parent.兵器动作类型=="短柄"){
+if(_parent.兵器动作类型=="短兵"){
 	gotoAndPlay("短兵格斗架势");
 }]]></script>
               </Actionscript>
@@ -88,7 +88,7 @@ else if(_parent.格斗架势 == true)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器使用检测" color="#FF4FFF" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="兵器使用检测" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="230" keyMode="9728">
               <elements>
