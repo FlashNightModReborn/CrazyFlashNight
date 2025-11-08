@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="0.防具相关/远古诛神/图标-远古诛神剑" itemID="66912b4d-00000e44" linkageExportForAS="true" linkageIdentifier="图标-远古诛神剑" lastModified="1720789840">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="0.防具相关/远古诛神/图标-远古诛神剑" itemID="66912b4d-00000e44" linkageExportForAS="true" linkageIdentifier="图标-远古诛神剑" lastModified="1762612485">
   <timeline>
     <DOMTimeline name="图标-远古诛神剑">
       <layers>
-        <DOMLayer name="Script Layer" color="#F6FEAE">
+        <DOMLayer name="Script Layer" color="#F6FEAE" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -13,7 +13,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#5BC877" locked="true" current="true" isSelected="true" layerType="mask">
+        <DOMLayer name="Layer 3" color="#5BC877" locked="true" layerType="mask">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -26,13 +26,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#C430F9" parentLayerIndex="1" locked="true">
+        <DOMLayer name="Layer 4" color="#C430F9" parentLayerIndex="1" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="2.冷兵器相关/刀-远古诛神剑" centerPoint3DX="44.95" centerPoint3DY="275.4">
+                <DOMSymbolInstance libraryItemName="2.冷兵器相关/刀-远古诛神剑" selected="true" centerPoint3DX="55.45" centerPoint3DY="285.15">
                   <matrix>
-                    <Matrix a="0.191314697265625" b="-0.191314697265625" c="0.191314697265625" d="0.191314697265625" tx="-28.05" ty="-26.1"/>
+                    <Matrix a="0.191314697265625" b="-0.191314697265625" c="0.191314697265625" d="0.191314697265625" tx="-17.55" ty="-16.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -42,7 +42,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#47BEF8">
+        <DOMLayer name="Layer 5" color="#47BEF8" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

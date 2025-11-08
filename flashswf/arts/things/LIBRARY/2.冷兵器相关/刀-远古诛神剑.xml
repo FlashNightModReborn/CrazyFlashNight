@@ -1,12 +1,12 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2.冷兵器相关/刀-远古诛神剑" itemID="66c0aee9-00004e95" linkageExportForAS="true" linkageIdentifier="刀-远古诛神剑" lastModified="1723903950">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2.冷兵器相关/刀-远古诛神剑" itemID="66c0aee9-00004e95" linkageExportForAS="true" linkageIdentifier="刀-远古诛神剑" lastModified="1762612356">
   <timeline>
     <DOMTimeline name="刀-远古诛神剑">
       <layers>
-        <DOMLayer name="Layer 1" color="#C2AD63" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 1" color="#C2AD63" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="刀口位置3" selected="true" centerPoint3DX="-37.9" centerPoint3DY="348.6">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="刀口位置3" centerPoint3DX="-37.9" centerPoint3DY="348.6">
                   <matrix>
                     <Matrix a="3.03390502929688" d="6.58200073242188" tx="-50.4" ty="336.1"/>
                   </matrix>
@@ -56,7 +56,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#FCD826" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 2" color="#FCD826" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -72,7 +72,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#CFE910" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#CFE910" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -88,7 +88,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#C63BAE" locked="true">
+        <DOMLayer name="Layer 4" color="#C63BAE" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -96,9 +96,6 @@
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <color>
-                    <Color redOffset="150" blueOffset="40" greenOffset="120"/>
-                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
