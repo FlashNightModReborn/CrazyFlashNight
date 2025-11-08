@@ -1,0 +1,44 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="矩辉启明刃/剑刃" itemID="690f0fed-0000a11f" lastModified="1762596701" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="剑刃">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="散热鳍片" centerPoint3DX="29" centerPoint3DY="19.35">
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="剑身" selected="true" centerPoint3DX="28.8" centerPoint3DY="213.25">
+                  <matrix>
+                    <Matrix tx="7.85" ty="3.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
