@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跳跃" itemID="690cd8ce-0000117e" lastModified="1762600432" lastUniqueIdentifier="678">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跳跃" itemID="690cd8ce-0000117e" lastModified="1762600607" lastUniqueIdentifier="678">
   <timeline>
-    <DOMTimeline name="兵器跳跃" currentFrame="116" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;-150&lt;/guideline&gt;&lt;guideline direction="h"&gt;-164&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="兵器跳跃" currentFrame="111" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;-150&lt;/guideline&gt;&lt;guideline direction="h"&gt;-164&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#6DA6D6">
           <frames>
@@ -3964,7 +3964,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="110" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-228.5" centerPoint3DY="20.6">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-228.5" centerPoint3DY="20.6">
                   <matrix>
                     <Matrix a="45.2836151123047" d="23.5989227294922" tx="-30.9" ty="-56.2"/>
                   </matrix>

@@ -1,20 +1,20 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/剑气波" itemID="690e085d-000010d3" linkageExportForAS="true" linkageIdentifier="剑气波" lastModified="1762527554">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/剑气波" itemID="690e085d-000010d3" linkageExportForAS="true" linkageIdentifier="剑气波" lastModified="1762611132" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="剑气波">
+    <DOMTimeline name="剑气波" currentFrame="23">
       <layers>
         <DOMLayer name="Labels Layer" color="#D43C7C">
           <frames>
-            <DOMFrame index="0" duration="5" keyMode="9728">
+            <DOMFrame index="0" duration="24" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="5" duration="5" name="消失" labelType="name" keyMode="9728">
+            <DOMFrame index="24" duration="5" name="消失" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#FBB32D" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#FBB32D">
           <frames>
-            <DOMFrame index="0" duration="5" keyMode="9728">
+            <DOMFrame index="0" duration="24" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[if(_root.gameworld[发射者名].方向 == "左")
 {
@@ -28,7 +28,7 @@ this.魔法伤害属性 = "冲";
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="5" duration="5" keyMode="9728">
+            <DOMFrame index="24" duration="5" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[
 stop();
@@ -40,11 +40,11 @@ this.removeMovieClip();]]></script>
         </DOMLayer>
         <DOMLayer name="Layer 3" color="#4E75CC" outline="true" useOutlineView="true">
           <frames>
-            <DOMFrame index="0" duration="5" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="12" centerPoint3DY="-91.9">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="12" centerPoint3DY="-26.9">
                   <matrix>
-                    <Matrix a="5.06878662109375" d="2.93035888671875" tx="-0.5" ty="-104.4"/>
+                    <Matrix a="5.06878662109375" d="2.93035888671875" tx="-0.5" ty="-39.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -57,29 +57,147 @@ this.removeMovieClip();]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="5" duration="5" keyMode="9728">
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="12" centerPoint3DY="-26.9">
+                  <matrix>
+                    <Matrix a="5.06878662109375" d="2.93035888671875" tx="-0.5" ty="-39.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="12" centerPoint3DY="-26.9">
+                  <matrix>
+                    <Matrix a="5.06878662109375" d="2.93035888671875" tx="-0.5" ty="-39.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="12" centerPoint3DY="-26.9">
+                  <matrix>
+                    <Matrix a="5.06878662109375" d="2.93035888671875" tx="-0.5" ty="-39.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="12" centerPoint3DY="-26.9">
+                  <matrix>
+                    <Matrix a="5.06878662109375" d="2.93035888671875" tx="-0.5" ty="-39.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="12" centerPoint3DY="-26.9">
+                  <matrix>
+                    <Matrix a="5.06878662109375" d="2.93035888671875" tx="-0.5" ty="-39.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#FCE2A8">
+        <DOMLayer name="Layer 4" color="#FCE2A8" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="5" keyMode="9728">
+            <DOMFrame index="0" duration="23" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/月牙刀光" centerPoint3DX="-2.1" centerPoint3DY="-58">
+                <DOMSymbolInstance libraryItemName="无AS链接/月牙刀光" centerPoint3DX="-2.1" centerPoint3DY="7">
                   <matrix>
-                    <Matrix a="0.705093383789063" c="-0.365707397460938" d="0.422592163085938" tx="-24.8" ty="-63"/>
+                    <Matrix a="0.705093383789063" c="-0.365707397460938" d="0.422592163085938" tx="-24.8" ty="2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                   <color>
-                    <Color tintMultiplier="1" tintColor="#FFFFFF"/>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="255" blueOffset="255" greenOffset="255"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="5" duration="5" keyMode="9728">
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/月牙刀光" centerPoint3DX="-2.1" centerPoint3DY="7">
+                  <matrix>
+                    <Matrix a="0.705093383789063" c="-0.365707397460938" d="0.422592163085938" tx="-24.8" ty="2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0" redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="255" blueOffset="255" greenOffset="255"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>

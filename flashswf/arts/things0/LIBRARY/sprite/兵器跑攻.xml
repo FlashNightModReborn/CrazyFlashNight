@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跑攻" itemID="690cd8bb-0000117d" lastModified="1762527753" lastUniqueIdentifier="22">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跑攻" itemID="690cd8bb-0000117d" lastModified="1762610275" lastUniqueIdentifier="22">
   <timeline>
     <DOMTimeline name="兵器跑攻">
       <layers>
@@ -486,7 +486,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#FBC187" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#FBC187" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
@@ -511,7 +511,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="18" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -529,19 +529,9 @@ Z轴攻击范围 = 30;
             <DOMFrame index="23" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="35" duration="20" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A">
-          <frames>
-            <DOMFrame index="0" duration="35" keyMode="9728">
-              <elements/>
-            </DOMFrame>
             <DOMFrame index="35" duration="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -561,7 +551,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -1038,8 +1028,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-1293 -4087[4831 -4437 9831 -3153!9831 -3153[14832 -1873 15782 292!15782 292[16733 2452 13077 4231!13077 4231[9417 6006 3456 6207!3456 6207[-2506 6408 -6897 4561!-6897 4561[-11290 2712 -13010 1265!-13010 1265[-14728 -183 -11073 -1961
-!-11073 -1961[-7416 -3736 -1293 -4087"/>
+!13077 4231[9417 6006 3456 6207!3456 6207[-2506 6408 -6897 4561!-6897 4561[-11290 2712 -13010 1265!-13010 1265[-14728 -183 -11073 -1961!-11073 -1961[-7416 -3736 -1293 -4087!-1293 -4087[4831 -4437 9831 -3153!9831 -3153[14832 -1873 15782
+ 292!15782 292[16733 2452 13077 4231"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1060,8 +1050,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!13559 4354[9753 6200 3387 6563!3387 6563[-2977 6928 -7646 5104!-7646 5104[-12314 3278 -13236 968!-13236 968[-14160 -1341 -10955 -2636!-10955 -2636[-7752 -3930 -1385 -4296!-1385 -4296[4984 -4659 10183 -3324!10183 -3324[15384 -1993 16372
- 259!16372 259[17361 2505 13559 4354"/>
+!-1385 -4296[4984 -4659 10183 -3324!10183 -3324[15384 -1993 16372 259!16372 259[17361 2505 13559 4354!13559 4354[9753 6200 3387 6563!3387 6563[-2977 6928 -7646 5104!-7646 5104[-12314 3278 -13236 968!-13236 968[-14160 -1341 -10955 -2636
+!-10955 -2636[-7752 -3930 -1385 -4296"/>
                   </edges>
                 </DOMShape>
               </elements>

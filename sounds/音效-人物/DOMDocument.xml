@@ -5,7 +5,7 @@
           <DOMFolderItem name="NPC/狗" itemID="66a8f679-00000308"/>
           <DOMFolderItem name="NPC/僵尸" itemID="66a8f650-00000304"/>
           <DOMFolderItem name="NPC/克隆兽" itemID="66a77957-000005f9"/>
-          <DOMFolderItem name="NPC/诺埃尔" itemID="68f23911-0000034d" isExpanded="true"/>
+          <DOMFolderItem name="NPC/诺埃尔" itemID="68f23911-0000034d"/>
           <DOMFolderItem name="NPC/齐天大圣" itemID="68e7b40d-00000273"/>
           <DOMFolderItem name="NPC/齐天大圣/FaShu" itemID="68e7b469-000002ad"/>
           <DOMFolderItem name="NPC/齐天大圣/JGB" itemID="68e7b4db-000002d2"/>
@@ -15,8 +15,8 @@
           <DOMFolderItem name="NPC/武装JK" itemID="68ed0015-0000048a"/>
           <DOMFolderItem name="NPC/下水道" itemID="671e21c8-00000443"/>
           <DOMFolderItem name="NPC/下水道/防化服士兵" itemID="671e21db-0000044c"/>
-          <DOMFolderItem name="主角" itemID="66a8f454-000002ee"/>
-          <DOMFolderItem name="主角/男主角" itemID="66a8f49a-000002f8"/>
+          <DOMFolderItem name="主角" itemID="66a8f454-000002ee" isExpanded="true"/>
+          <DOMFolderItem name="主角/男主角" itemID="66a8f49a-000002f8" isExpanded="true"/>
           <DOMFolderItem name="主角/男主角/武器" itemID="67936d78-00000988"/>
           <DOMFolderItem name="主角/女主角" itemID="66a8f45b-000002f2"/>
      </folders>
@@ -192,7 +192,6 @@
           <DOMSoundItem name="主角/男主角/主角中招2.wav" itemID="67936c46-00000965" linkageExportForAS="true" linkageIdentifier="主角中招2.wav" sourceLastImported="1737714758" href="主角/男主角/主角中招2.wav" soundDataHRef="M 16 1737731896.dat" format="44kHz 16bit Stereo" sampleCount="19267" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="NPC/下水道/防化服士兵/自爆.wav" itemID="671e2798-0000045b" linkageExportForAS="true" linkageIdentifier="自爆.wav" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/修改文件/自爆.wav" sourceLastImported="1730029405" href="NPC/下水道/防化服士兵/自爆.wav" soundDataHRef="M 89 1737731906.dat" format="44kHz 16bit Mono" sampleCount="52988" exportFormat="5" exportBits="16"/>
      </media>
-     <symbols/>
      <timelines>
           <DOMTimeline name="场景 1">
                <layers>
