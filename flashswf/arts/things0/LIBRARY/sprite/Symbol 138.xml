@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 138" itemID="6577b699-000009b5" lastModified="1729784869" lastUniqueIdentifier="28">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 138" itemID="6577b699-000009b5" lastModified="1762600712" lastUniqueIdentifier="28">
   <timeline>
-    <DOMTimeline name="Symbol 138" currentFrame="102">
+    <DOMTimeline name="Symbol 138" currentFrame="103">
       <layers>
         <DOMLayer name="Labels Layer" color="#6ED760">
           <frames>
@@ -7981,12 +7981,12 @@ onClipEvent(load){
             <DOMFrame index="0" duration="119" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="119" duration="12" keyMode="9728">
+            <DOMFrame index="119" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="131" keyMode="9728">
+            <DOMFrame index="129" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="160.5" centerPoint3DY="-49.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" selected="true" centerPoint3DX="160.5" centerPoint3DY="-49.45">
                   <matrix>
                     <Matrix a="-0.723098754882813" b="0.637680053710938" c="-0.667251586914063" d="-0.756607055664063" tx="160.8" ty="-250.7"/>
                   </matrix>
