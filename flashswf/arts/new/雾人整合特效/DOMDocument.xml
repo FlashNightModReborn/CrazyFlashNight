@@ -127,8 +127,8 @@
           <DOMFolderItem name="1.特效文件夹/08.音符特效/00.前置内容" itemID="654592a2-00000506"/>
           <DOMFolderItem name="1.特效文件夹/08.音符特效/01.特效内容" itemID="6545929e-00000505" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/09.黑铁书法" itemID="6553a7d6-00002f43"/>
-          <DOMFolderItem name="1.特效文件夹/10.力大砖飞" itemID="66686d61-00001fd4"/>
-          <DOMFolderItem name="1.特效文件夹/10.力大砖飞/大地裂纹" itemID="65503fa4-000059fe" isExpanded="true"/>
+          <DOMFolderItem name="1.特效文件夹/10.力大砖飞" itemID="66686d61-00001fd4" isExpanded="true"/>
+          <DOMFolderItem name="1.特效文件夹/10.力大砖飞/大地裂纹" itemID="65503fa4-000059fe"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/大地裂纹/b07" itemID="4f7e582c-0000166d"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/大地裂纹/b08" itemID="65503fa9-00005a01"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/地面爆炸" itemID="66686fca-00002067"/>
@@ -136,6 +136,7 @@
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/地面爆炸/MovieClip" itemID="66686fce-0000206a" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/地面喷发" itemID="6554d1f1-0000306a"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/地面喷发/未命名文件夹 1" itemID="6554d269-0000307e"/>
+          <DOMFolderItem name="1.特效文件夹/10.力大砖飞/飞沙走石" itemID="690f6430-000025d7" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/高爆枪火" itemID="66687919-000021de"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/高爆枪火/Graphic" itemID="66687920-000021ed"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/高爆枪火/MovieClip" itemID="66687920-000021e1"/>
@@ -143,9 +144,9 @@
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/空中爆炸1/Graphic" itemID="666870c2-000020b8"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/空中爆炸1/MovieClip" itemID="666870c2-000020ac" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/龙息子弹" itemID="66687b8e-00002220"/>
-          <DOMFolderItem name="1.特效文件夹/10.力大砖飞/强烈地爆" itemID="6553a23c-00002eaf"/>
+          <DOMFolderItem name="1.特效文件夹/10.力大砖飞/强烈地爆" itemID="6553a23c-00002eaf" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1" itemID="6553a22d-00002eab"/>
-          <DOMFolderItem name="1.特效文件夹/10.力大砖飞/强烈震爆" itemID="65539e62-00002df9"/>
+          <DOMFolderItem name="1.特效文件夹/10.力大砖飞/强烈震爆" itemID="65539e62-00002df9" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/强烈震爆/未命名文件夹 1" itemID="65539e68-00002e12"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/碎石飞扬" itemID="6559ac0a-0000113f"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/碎石飞扬/Graphic" itemID="58132c33-0000064e"/>
@@ -161,7 +162,7 @@
           <DOMFolderItem name="1.特效文件夹/12.星座轮盘/星盘" itemID="6598e0f2-00003e18"/>
           <DOMFolderItem name="1.特效文件夹/13.重力井" itemID="659a5353-0000c86a"/>
           <DOMFolderItem name="1.特效文件夹/13.重力井/未命名文件夹 1" itemID="659a54d8-0000c8b8"/>
-          <DOMFolderItem name="1.特效文件夹/14.远程子弹" itemID="66686d68-00001fd5" isExpanded="true"/>
+          <DOMFolderItem name="1.特效文件夹/14.远程子弹" itemID="66686d68-00001fd5"/>
           <DOMFolderItem name="1.特效文件夹/14.远程子弹/冰冷子弹" itemID="66b72fe0-000027fe" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/14.远程子弹/冰汽" itemID="66b786e2-00001dc2" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/14.远程子弹/冰汽/Graphic" itemID="66b786ee-00001dc6" isExpanded="true"/>
@@ -1628,6 +1629,8 @@
           <Include href="1.特效文件夹/10.力大砖飞/地面喷发/未命名文件夹 1/Symbol 308.xml" itemIcon="1" loadImmediate="false" itemID="654b83b3-000022de" lastModified="1699444639"/>
           <Include href="1.特效文件夹/10.力大砖飞/地面喷发/未命名文件夹 1/补间 1.xml" itemIcon="1" loadImmediate="false" itemID="654f0ba4-00002961" lastModified="1699679140"/>
           <Include href="1.特效文件夹/10.力大砖飞/地面喷发/未命名文件夹 1/补间 2.xml" itemIcon="1" loadImmediate="false" itemID="654f0ba4-00002963" lastModified="1699679140"/>
+          <Include href="1.特效文件夹/10.力大砖飞/飞沙走石/飞沙走石.xml" itemID="690f640a-000025cf" lastModified="1762616536"/>
+          <Include href="1.特效文件夹/10.力大砖飞/飞沙走石/飞沙走石素材.xml" itemIcon="1" loadImmediate="false" itemID="690f640f-000025d0" lastModified="1762616335"/>
           <Include href="1.特效文件夹/10.力大砖飞/高爆枪火/Graphic/shape 1231.xml" itemIcon="1" loadImmediate="false" itemID="58132b8f-000004cf" lastModified="1477651343"/>
           <Include href="1.特效文件夹/10.力大砖飞/高爆枪火/Graphic/shape 1232.xml" itemIcon="1" loadImmediate="false" itemID="58132b8f-000004d0" lastModified="1477651343"/>
           <Include href="1.特效文件夹/10.力大砖飞/高爆枪火/Graphic/shape 1233.xml" itemIcon="1" loadImmediate="false" itemID="58132b8f-000004d1" lastModified="1477651343"/>
@@ -1651,7 +1654,7 @@
           <Include href="1.特效文件夹/10.力大砖飞/空中爆炸1/MovieClip/空中爆炸1.xml" itemID="666870c8-000020bb" lastModified="1718124651"/>
           <Include href="1.特效文件夹/10.力大砖飞/空中爆炸1/MovieClip/空中爆炸2.xml" loadImmediate="false" itemID="66687b3f-00002202" lastModified="1718123640"/>
           <Include href="1.特效文件夹/10.力大砖飞/龙息子弹/火焰集束爆炸.xml" itemID="66687b5d-0000221b" lastModified="1718430272"/>
-          <Include href="1.特效文件夹/10.力大砖飞/强烈地爆/强烈地爆.xml" itemID="6553a239-00002ead" lastModified="1702141652"/>
+          <Include href="1.特效文件夹/10.力大砖飞/强烈地爆/强烈地爆.xml" itemID="6553a239-00002ead" lastModified="1762616435"/>
           <Include href="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 13.xml" loadImmediate="false" itemID="6553a229-00002ea9" lastModified="1698481640"/>
           <Include href="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5174.xml" loadImmediate="false" itemID="65536bc5-00002929" lastModified="1698481640"/>
           <Include href="1.特效文件夹/10.力大砖飞/强烈地爆/未命名文件夹 1/Symbol 5176.xml" loadImmediate="false" itemID="65536bc5-0000292a" lastModified="1698481640"/>

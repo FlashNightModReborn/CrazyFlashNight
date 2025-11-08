@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/10.力大砖飞/强烈地爆/强烈地爆" itemID="6553a239-00002ead" linkageExportForAS="true" linkageIdentifier="强烈地爆" lastModified="1702141652" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/10.力大砖飞/强烈地爆/强烈地爆" itemID="6553a239-00002ead" linkageExportForAS="true" linkageIdentifier="强烈地爆" lastModified="1762616435" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="强烈地爆">
+    <DOMTimeline name="强烈地爆" currentFrame="4">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -23,7 +23,7 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="-5.65" centerPoint3DY="-36.65">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-5.65" centerPoint3DY="-36.65">
                   <matrix>
                     <Matrix a="3.57499694824219" d="2.27000427246094" tx="-77.15" ty="-82.05"/>
                   </matrix>
@@ -35,7 +35,7 @@
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="-5.65" centerPoint3DY="-36.65">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-5.65" centerPoint3DY="-36.65">
                   <matrix>
                     <Matrix a="5.04702758789063" d="4.2783203125" tx="-107.2" ty="-166.8"/>
                   </matrix>
@@ -50,7 +50,7 @@
             </DOMFrame>
             <DOMFrame index="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-5.65" centerPoint3DY="-36.65">
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="-5.65" centerPoint3DY="-36.65">
                   <matrix>
                     <Matrix a="6.4349365234375" d="5.62600708007813" tx="-134.95" ty="-220.7"/>
                   </matrix>

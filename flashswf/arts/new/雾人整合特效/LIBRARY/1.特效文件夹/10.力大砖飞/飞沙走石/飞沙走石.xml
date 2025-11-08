@@ -1,0 +1,125 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/10.力大砖飞/飞沙走石/飞沙走石" itemID="690f640a-000025cf" linkageExportForAS="true" linkageIdentifier="飞沙走石" lastModified="1762616536">
+  <timeline>
+    <DOMTimeline name="飞沙走石">
+      <layers>
+        <DOMLayer name="Script Layer" color="#5AC970" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._rotation = 0;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-5.65" centerPoint3DY="-36.65">
+                  <matrix>
+                    <Matrix a="5.77925109863281" d="3.3387451171875" tx="-80.2" ty="-125.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.4" y="40.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="37.35" centerPoint3DY="-36.65">
+                  <matrix>
+                    <Matrix a="6.4349365234375" d="5.62600708007813" tx="-91.95" ty="-220.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="37.35" centerPoint3DY="-36.65">
+                  <matrix>
+                    <Matrix a="6.4349365234375" d="6.997314453125" tx="-91.95" ty="-275.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="37.35" centerPoint3DY="-36.65">
+                  <matrix>
+                    <Matrix a="6.4349365234375" d="6.997314453125" tx="-91.95" ty="-275.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="37.35" centerPoint3DY="-36.65">
+                  <matrix>
+                    <Matrix a="6.4349365234375" d="6.997314453125" tx="-91.95" ty="-275.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/飞沙走石/飞沙走石素材" symbolType="graphic" loop="play once">
+                  <matrix>
+                    <Matrix a="1.39469909667969" d="1.23667907714844" tx="-3.35" ty="-79.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.4" y="32.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

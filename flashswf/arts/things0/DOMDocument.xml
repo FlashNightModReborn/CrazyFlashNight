@@ -677,7 +677,6 @@
           <Include href="sprite/Symbol 135.xml" loadImmediate="false" itemID="6577b699-000009b2" lastModified="1736866247"/>
           <Include href="sprite/Symbol 136.xml" loadImmediate="false" itemID="6577b699-000009b3" lastModified="1720908276"/>
           <Include href="sprite/Symbol 137.xml" loadImmediate="false" itemID="6577b699-000009b4" lastModified="1725368140"/>
-          <Include href="sprite/Symbol 138.xml" loadImmediate="false" itemID="6577b699-000009b5" lastModified="1762600712"/>
           <Include href="sprite/Symbol 142.xml" loadImmediate="false" itemID="6577b699-000009b7" lastModified="1702343951"/>
           <Include href="sprite/Symbol 144.xml" loadImmediate="false" itemID="6577b699-000009b8" lastModified="1723437652"/>
           <Include href="sprite/Symbol 151.xml" loadImmediate="false" itemID="6577b699-000009b9" lastModified="1736864655"/>
@@ -1060,13 +1059,14 @@
           <Include href="sprite/Symbol 2016.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000080a" lastModified="1702098593"/>
           <Include href="sprite/Symbol 2017.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000080b" lastModified="1702098593"/>
           <Include href="sprite/Symbol 2019.xml" loadImmediate="false" itemID="6577efbc-0000080c" lastModified="1706255914"/>
+          <Include href="sprite/被击飞击倒.xml" loadImmediate="false" itemID="690f5883-00001c3b" lastModified="1762614535"/>
           <Include href="sprite/兵器待机.xml" loadImmediate="false" itemID="690df7b1-00000ba7" lastModified="1762600515"/>
-          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1762612447"/>
+          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1762618448"/>
           <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1762600520"/>
           <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1762610275"/>
           <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1762600607"/>
           <Include href="sprite/兵器跳跃旧动作备份.xml" loadImmediate="false" itemID="690cd8d3-0000117f" lastModified="1762449619"/>
-          <Include href="sprite/兵器走路.xml" loadImmediate="false" itemID="690ce360-00000724" lastModified="1762610371"/>
+          <Include href="sprite/兵器走路.xml" loadImmediate="false" itemID="690ce360-00000724" lastModified="1762614557"/>
           <Include href="sprite/兵器走路旧版备份.xml" loadImmediate="false" itemID="690ce373-00000766" lastModified="1762513186"/>
           <Include href="sprite/丑陋无比的连按方向奔跑键控.xml" loadImmediate="false" itemID="66587e46-00000645" lastModified="1742889188"/>
           <Include href="sprite/大地震.xml" itemID="668be732-00000660" lastModified="1749127630"/>
@@ -1839,6 +1839,10 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3407485" publishTime="1762618329"/>
+          <PublishItem publishSize="3407337" publishTime="1762613640"/>
+          <PublishItem publishSize="3407475" publishTime="1762613543"/>
+          <PublishItem publishSize="3407338" publishTime="1762612465"/>
           <PublishItem publishSize="3407317" publishTime="1762612019"/>
           <PublishItem publishSize="3407331" publishTime="1762611720"/>
           <PublishItem publishSize="3407116" publishTime="1762610561"/>
@@ -1855,9 +1859,5 @@
           <PublishItem publishSize="3555260" publishTime="1762600461"/>
           <PublishItem publishSize="3555280" publishTime="1762575811"/>
           <PublishItem publishSize="3552541" publishTime="1762538664"/>
-          <PublishItem publishSize="3550948" publishTime="1762529472"/>
-          <PublishItem publishSize="3550966" publishTime="1762529101"/>
-          <PublishItem publishSize="3550951" publishTime="1762529000"/>
-          <PublishItem publishSize="3550939" publishTime="1762528852"/>
      </publishHistory>
 </DOMDocument>
