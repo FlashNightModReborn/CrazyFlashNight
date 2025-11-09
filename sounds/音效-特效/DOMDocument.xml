@@ -1,7 +1,7 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="80" height="80" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="8.66021495624003" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="UI" itemID="67bb5bb8-00000490"/>
-          <DOMFolderItem name="爆炸" itemID="67251edb-0000ccae"/>
+          <DOMFolderItem name="爆炸" itemID="67251edb-0000ccae" isExpanded="true"/>
           <DOMFolderItem name="刀光" itemID="672521ac-0000cd05"/>
           <DOMFolderItem name="动画" itemID="6793af9d-0000055a"/>
           <DOMFolderItem name="技能" itemID="6793af9c-00000559"/>
@@ -9,7 +9,7 @@
           <DOMFolderItem name="其他" itemID="672520ca-0000ccfa" isExpanded="true"/>
           <DOMFolderItem name="箱子" itemID="683bcbfa-000020d5"/>
           <DOMFolderItem name="血液" itemID="669e4395-00003307"/>
-          <DOMFolderItem name="战斗" itemID="657437e1-00000909"/>
+          <DOMFolderItem name="战斗" itemID="657437e1-00000909" isExpanded="true"/>
      </folders>
      <media>
           <DOMSoundItem name="血液/blood1.wav" itemID="669e43a9-00003311" linkageExportForAS="true" linkageIdentifier="blood1.wav" sourceExternalFilepath="G:/gunsound/blood/new/blood1.wav" sourceLastImported="1722442995" href="血液/blood1.wav" soundDataHRef="M 38 1737731645.dat" format="44kHz 16bit Mono" sampleCount="48510" exportFormat="1" exportBits="17"/>
@@ -167,6 +167,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3604939" publishTime="1762657318"/>
           <PublishItem publishSize="3581537" publishTime="1761061166"/>
           <PublishItem publishSize="3581536" publishTime="1761061156"/>
           <PublishItem publishSize="3586480" publishTime="1761059730"/>

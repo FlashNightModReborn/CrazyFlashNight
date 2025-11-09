@@ -42,13 +42,14 @@
           <DOMFolderItem name="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1" itemID="6553944a-00002b83"/>
           <DOMFolderItem name="1.特效文件夹/02.黄金色系/斩打命一" itemID="6553948a-00002bcd"/>
           <DOMFolderItem name="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1" itemID="655391d5-00002a0f"/>
-          <DOMFolderItem name="1.特效文件夹/03.赤橙色系" itemID="65503f83-000059f5"/>
+          <DOMFolderItem name="1.特效文件夹/03.赤橙色系" itemID="65503f83-000059f5" isExpanded="true"/>
+          <DOMFolderItem name="1.特效文件夹/03.赤橙色系/ROUND WAVE" itemID="69100b5e-0000135d"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/赤橙横斩" itemID="653d64bd-00000da4"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/赤橙雷光" itemID="653dec60-00001585"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/赤橙强击" itemID="653df339-0000162d"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/黑铁攻势" itemID="65472599-00000cdd"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/滑动光斩" itemID="653cdaf1-000003c7"/>
-          <DOMFolderItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸" itemID="6554d76e-00003106"/>
+          <DOMFolderItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸" itemID="6554d76e-00003106" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸/火攻" itemID="653d66c3-00000e12"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸/火回旋" itemID="653d67a3-00000e39"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸/火焰喷射" itemID="66687e15-000029bf"/>
@@ -57,7 +58,7 @@
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸/空中小火焰爆炸" itemID="65742c4e-000007d3"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈火燃烧" itemID="66d71f77-000050cb"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈火燃烧/冷火" itemID="68db820d-000016cc"/>
-          <DOMFolderItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈炎斜升" itemID="654f371b-00004bac"/>
+          <DOMFolderItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈炎斜升" itemID="654f371b-00004bac" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈炎斜升/未命名文件夹 1" itemID="656c89f9-00000816"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸/熔炎裂渊" itemID="654f9523-00005777"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸/熔炎裂渊/Shape" itemID="61fa3de4-000008a7"/>
@@ -178,6 +179,7 @@
           <DOMFolderItem name="1.特效文件夹/子弹化水晶/音效" itemID="67b87d4b-000013fa"/>
           <DOMFolderItem name="尚未整理" itemID="654b849e-0000242e" isExpanded="true"/>
           <DOMFolderItem name="尚未整理/(劣质)蓝色刀光" itemID="6554d18c-00003066"/>
+          <DOMFolderItem name="尚未整理/火" itemID="69101036-00001393" isExpanded="true"/>
      </folders>
      <media>
           <DOMBitmapItem name="1.特效文件夹/05.粉紫色系/紫雷星陨/bitmap255.png" itemID="653d1951-0000053b" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/05.粉紫色系/紫雷星陨/bitmap255.png" sourceLastImported="1698502993" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="1.特效文件夹/05.粉紫色系/紫雷星陨/bitmap255.png" bitmapDataHRef="M 23 1698520330.dat" frameRight="11480" frameBottom="23140"/>
@@ -653,6 +655,8 @@
           <Include href="1.特效文件夹/02.黄金色系/斩打命一/斩打命一.xml" itemID="655391dd-00002a11" lastModified="1715776822"/>
           <Include href="1.特效文件夹/02.黄金色系/斩打命中特效.xml" itemID="6644ad2e-00001659" lastModified="1762656004"/>
           <Include href="1.特效文件夹/02.黄金色系/斩打命中特效偏下.xml" itemID="67bb137b-00003b1b" lastModified="1740316696"/>
+          <Include href="1.特效文件夹/03.赤橙色系/ROUND WAVE/ROUND WAVE.xml" itemID="69100b15-00001354" lastModified="1762660283"/>
+          <Include href="1.特效文件夹/03.赤橙色系/ROUND WAVE/ROUND WAVE素材.xml" itemIcon="1" loadImmediate="false" itemID="69100b04-00001352" lastModified="1762659827"/>
           <Include href="1.特效文件夹/03.赤橙色系/赤橙横斩/Symbol 287.xml" loadImmediate="false" itemID="653d644e-00000cb9" lastModified="1698427550"/>
           <Include href="1.特效文件夹/03.赤橙色系/赤橙横斩/Symbol 289.xml" loadImmediate="false" itemID="653d644e-00000cba" lastModified="1698427550"/>
           <Include href="1.特效文件夹/03.赤橙色系/赤橙横斩/Symbol 291.xml" loadImmediate="false" itemID="653d644e-00000cbb" lastModified="1698427550"/>
@@ -880,7 +884,7 @@
           <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈火燃烧/烈火燃烧-内火-3.xml" loadImmediate="false" itemID="66d71f67-000050c7" lastModified="1725374311"/>
           <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈火燃烧/烈火燃烧大.xml" itemID="68d92edd-00000995" lastModified="1761060285"/>
           <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈火燃烧/烈火燃烧位图容器.xml" itemIcon="1" loadImmediate="false" itemID="68d13b45-000016f2" lastModified="1758542735"/>
-          <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈炎斜升/烈炎斜升.xml" itemID="654f37b8-00004baf" lastModified="1762656309"/>
+          <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈炎斜升/烈炎斜升.xml" itemID="654f37b8-00004baf" lastModified="1762659919"/>
           <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈炎斜升/未命名文件夹 1/Symbol 125.xml" loadImmediate="false" itemID="654ba156-00002683" lastModified="1696643875"/>
           <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈炎斜升/未命名文件夹 1/Symbol 127.xml" loadImmediate="false" itemID="654ba156-00002684" lastModified="1696643875"/>
           <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/烈炎斜升/未命名文件夹 1/Symbol 129.xml" loadImmediate="false" itemID="654ba156-00002685" lastModified="1696643875"/>
@@ -952,7 +956,7 @@
           <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/炎飞燕/未命名文件夹 1/元件 7.xml" loadImmediate="false" itemID="65560f9b-00003158" lastModified="1700138907"/>
           <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/炎飞燕/未命名文件夹 1/元件 8.xml" loadImmediate="false" itemID="65560fa2-0000315c" lastModified="1700138914"/>
           <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/炎飞燕/炎飞燕.xml" itemID="65742e16-000007d9" lastModified="1762657895"/>
-          <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/炎飞燕/炎飞燕动画.xml" loadImmediate="false" itemID="65742dce-000007d7" lastModified="1762658041"/>
+          <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/炎飞燕/炎飞燕动画.xml" loadImmediate="false" itemID="65742dce-000007d7" lastModified="1762659206"/>
           <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/余烬重生/Symbol 10.xml" itemIcon="1" loadImmediate="false" itemID="654b745d-000020a2" lastModified="1690083265"/>
           <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/余烬重生/Symbol 12.xml" loadImmediate="false" itemID="654b745d-0000208e" lastModified="1690083265"/>
           <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/余烬重生/Symbol 13.xml" loadImmediate="false" itemID="654b745d-0000207a" lastModified="1690083265"/>
@@ -998,7 +1002,7 @@
           <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/中火燃/Graphic/特效6.fla_1_271_2014-02-24 17&amp;#05812&amp;#0580451445.xml" itemIcon="1" loadImmediate="false" itemID="530b0ced-0000221e" lastModified="1393233133"/>
           <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/中火燃/Graphic/特效6.fla_1_272_2014-02-24 17&amp;#05812&amp;#0580491425.xml" itemIcon="1" loadImmediate="false" itemID="530b0ced-0000221f" lastModified="1393233133"/>
           <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/中火燃/中火燃.xml" itemID="654fb05d-000058a1" lastModified="1699727854"/>
-          <Include href="1.特效文件夹/03.赤橙色系/强贯通/强贯通.xml" itemID="65539cca-00002d84" lastModified="1762656400"/>
+          <Include href="1.特效文件夹/03.赤橙色系/强贯通/强贯通.xml" itemID="65539cca-00002d84" lastModified="1762659186"/>
           <Include href="1.特效文件夹/03.赤橙色系/强贯通/未命名文件夹 1/Symbol 13.xml" loadImmediate="false" itemID="65539cc5-00002d83" lastModified="1698481640"/>
           <Include href="1.特效文件夹/03.赤橙色系/强贯通/未命名文件夹 1/Symbol 5054.xml" loadImmediate="false" itemID="65536bc5-00002999" lastModified="1698481640"/>
           <Include href="1.特效文件夹/03.赤橙色系/强贯通/未命名文件夹 1/Symbol 5055.xml" itemIcon="1" loadImmediate="false" itemID="65536bc5-0000299a" lastModified="1698481640"/>
@@ -1945,12 +1949,17 @@
           <Include href="1.特效文件夹/子弹化水晶/图形/Symbol 620.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000b0a" lastModified="1701332846"/>
           <Include href="1.特效文件夹/子弹化水晶/子弹化水晶.xml" itemID="67b881a8-00001d94" lastModified="1740145339"/>
           <Include href="area.xml" loadImmediate="false" itemID="653d1625-00000520" lastModified="1762658581"/>
-          <Include href="尚未整理/(劣质)蓝色刀光/(劣质)蓝色刀光.xml" itemID="6554d199-00003068" lastModified="1762658713"/>
+          <Include href="尚未整理/(劣质)蓝色刀光/(劣质)蓝色刀光.xml" itemID="6554d199-00003068" lastModified="1762658888"/>
+          <Include href="尚未整理/asjbhasjasjhds.xml" itemIcon="1" loadImmediate="false" itemID="4b552b60-000003ba" lastModified="1762661603"/>
           <Include href="尚未整理/dfhdfshfhdfh.xml" itemIcon="1" loadImmediate="false" itemID="4b590879-0000038b" lastModified="1762655171"/>
-          <Include href="尚未整理/dfshfjghjfl.xml" itemIcon="1" loadImmediate="false" itemID="4b594d76-000003be" lastModified="1700058863"/>
           <Include href="尚未整理/dkghkg.xml" itemIcon="1" loadImmediate="false" itemID="4b5fabc5-00000109" lastModified="1702111957"/>
-          <Include href="尚未整理/ghjkghkghk.xml" itemIcon="1" loadImmediate="false" itemID="4b57b117-000002be" lastModified="1702111669"/>
           <Include href="尚未整理/jfgjgdkghkdghkdgkl.xml" itemIcon="1" loadImmediate="false" itemID="4b5fa1f1-00000105" lastModified="1702111665"/>
+          <Include href="尚未整理/火/asdasmdjwqeklsd.xml" itemIcon="1" loadImmediate="false" itemID="4b556569-000005db" lastModified="1762661188"/>
+          <Include href="尚未整理/火/asdjasjdqwasd.xml" itemIcon="1" loadImmediate="false" itemID="4b5553e1-000003d8" lastModified="1762660972"/>
+          <Include href="尚未整理/火/asdzzxcasdddsadq.xml" itemIcon="1" loadImmediate="false" itemID="4b5d0c01-00000031" lastModified="1762660466"/>
+          <Include href="尚未整理/火/dfshfjghjfl.xml" itemIcon="1" loadImmediate="false" itemID="4b594d76-000003be" lastModified="1762660546"/>
+          <Include href="尚未整理/火/qsdfgvfdgrdfvxcvbfdxb.xml" itemIcon="1" loadImmediate="false" itemID="4b5e559f-00000029" lastModified="1762660967"/>
+          <Include href="尚未整理/旋风.xml" itemIcon="1" loadImmediate="false" itemID="69101355-000013af" lastModified="1762661546"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -2054,6 +2063,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="6573784" publishTime="1762660238"/>
+          <PublishItem publishSize="6573776" publishTime="1762660095"/>
           <PublishItem publishSize="6611683" publishTime="1762657339"/>
           <PublishItem publishSize="6754116" publishTime="1762655923"/>
           <PublishItem publishSize="5518541" publishTime="1760876666"/>
@@ -2072,7 +2083,5 @@
           <PublishItem publishSize="3966415" publishTime="1740314269"/>
           <PublishItem publishSize="3966367" publishTime="1740313896"/>
           <PublishItem publishSize="3966344" publishTime="1740313556"/>
-          <PublishItem publishSize="3725770" publishTime="1740223056"/>
-          <PublishItem publishSize="3725769" publishTime="1740222974"/>
      </publishHistory>
 </DOMDocument>

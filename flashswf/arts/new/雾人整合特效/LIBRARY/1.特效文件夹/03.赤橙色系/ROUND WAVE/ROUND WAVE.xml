@@ -1,0 +1,96 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/ROUND WAVE/ROUND WAVE" itemID="69100b15-00001354" linkageExportForAS="true" linkageIdentifier="ROUND WAVE" lastModified="1762660283" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="ROUND WAVE" currentFrame="5">
+      <layers>
+        <DOMLayer name="代码" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.gameworld[发射者名].方向 == "左")
+{
+   this._xscale = -100;
+}
+this._rotation = 0;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="area" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="70.45" centerPoint3DY="-17.5">
+                  <matrix>
+                    <Matrix a="4.29611206054688" d="3.72491455078125" tx="-26.15" ty="-140.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="70.45" centerPoint3DY="-17.5">
+                  <matrix>
+                    <Matrix a="4.87602233886719" d="5.02400207519531" tx="-26.15" ty="-192.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="70.45" centerPoint3DY="-17.5">
+                  <matrix>
+                    <Matrix a="4.87602233886719" d="5.02398681640625" tx="-26.15" ty="-192.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/ROUND WAVE/ROUND WAVE素材" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.54740905761719" tx="14.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
