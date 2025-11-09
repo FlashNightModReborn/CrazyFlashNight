@@ -21,6 +21,19 @@
           <DOMFolderItem name="NPC-Registrar/Shotguns/Mossberg M500" itemID="68b435cf-000026c7"/>
           <DOMFolderItem name="NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun" itemID="68b435cf-000026c8"/>
           <DOMFolderItem name="NPC-Registrar/组件" itemID="68b435cf-000026db"/>
+          <DOMFolderItem name="NPC-劳埃德" itemID="69109f71-000009dd"/>
+          <DOMFolderItem name="NPC-劳埃德/素材" itemID="69109f71-000009de"/>
+          <DOMFolderItem name="NPC-劳埃德/素材/防具-防护手套" itemID="69109f71-000009df"/>
+          <DOMFolderItem name="NPC-劳埃德/素材/防具-防护手套/组件" itemID="690e1958-00001555"/>
+          <DOMFolderItem name="NPC-劳埃德/素材/防具-兽王衣装" itemID="69109f71-000009e1"/>
+          <DOMFolderItem name="NPC-劳埃德/素材/防具-兽王衣装/组件" itemID="668d4453-00001787"/>
+          <DOMFolderItem name="NPC-劳埃德/素材/防具-夜行侦察" itemID="69109f71-000009f7"/>
+          <DOMFolderItem name="NPC-劳埃德/素材/头部" itemID="69109f71-00000a14"/>
+          <DOMFolderItem name="NPC-劳埃德/素材/武器-dominator" itemID="69109f71-000009fe"/>
+          <DOMFolderItem name="NPC-劳埃德/素材/武器-dominator/素材" itemID="69109f71-000009ff"/>
+          <DOMFolderItem name="NPC-劳埃德/素材/武器-G11" itemID="69109f71-000009e3"/>
+          <DOMFolderItem name="NPC-劳埃德/素材/武器-G11/组件" itemID="690e198b-0000155e"/>
+          <DOMFolderItem name="NPC-劳埃德/素材/武器-阎魔刀" itemID="69109f71-000009e5"/>
           <DOMFolderItem name="NPC/NPC-程铮" itemID="68f4e96e-00006656"/>
           <DOMFolderItem name="NPC/NPC-程铮/杂项" itemID="67d805c4-000014f5"/>
           <DOMFolderItem name="NPC/NPC-程铮/组件" itemID="68f4e950-00006620"/>
@@ -241,6 +254,52 @@
           <Include href="NPC-Registrar/组件/腰带.xml" itemIcon="1" loadImmediate="false" itemID="68b41184-0000198e" lastModified="1756631428"/>
           <Include href="NPC-Registrar/组件/衣服.xml" itemIcon="1" loadImmediate="false" itemID="68b43294-00001af8" lastModified="1756639892"/>
           <Include href="NPC-Registrar/组件/子弹.xml" loadImmediate="false" itemID="68b4192f-000019a9" lastModified="1756633619"/>
+          <Include href="NPC-劳埃德/素材/防具-防护手套/先进防护服手-右手.xml" loadImmediate="false" itemID="68727a1c-00000648" lastModified="1752338319"/>
+          <Include href="NPC-劳埃德/素材/防具-防护手套/先进防护服手-左手.xml" loadImmediate="false" itemID="68727a19-00000647" lastModified="1752337739"/>
+          <Include href="NPC-劳埃德/素材/防具-防护手套/组件/右手.xml" loadImmediate="false" itemID="6856b694-000003d9" lastModified="1750513300"/>
+          <Include href="NPC-劳埃德/素材/防具-防护手套/组件/元件 13.xml" loadImmediate="false" itemID="68542e58-000002df" lastModified="1752332949"/>
+          <Include href="NPC-劳埃德/素材/防具-防护手套/组件/元件 20.xml" loadImmediate="false" itemID="68542e58-000002e1" lastModified="1752332920"/>
+          <Include href="NPC-劳埃德/素材/防具-防护手套/组件/元件 21.xml" loadImmediate="false" itemID="68542e58-000002e0" lastModified="1752332905"/>
+          <Include href="NPC-劳埃德/素材/防具-防护手套/组件/元件 23.xml" loadImmediate="false" itemID="6856b4cc-000003c9" lastModified="1750512844"/>
+          <Include href="NPC-劳埃德/素材/防具-防护手套/组件/元件 35.xml" loadImmediate="false" itemID="6719d2ce-00000581" lastModified="1750346533"/>
+          <Include href="NPC-劳埃德/素材/防具-防护手套/组件/左手.xml" loadImmediate="false" itemID="6856b6a2-000003e2" lastModified="1752332918"/>
+          <Include href="NPC-劳埃德/素材/防具-兽王衣装/男变装-兽王战甲身体.xml" loadImmediate="false" itemID="668d443f-00001781" lastModified="1762531882"/>
+          <Include href="NPC-劳埃德/素材/防具-兽王衣装/男变装-兽王战甲右下臂.xml" loadImmediate="false" itemID="668d442c-00001778" lastModified="1762531878"/>
+          <Include href="NPC-劳埃德/素材/防具-兽王衣装/男变装-兽王战甲左下臂.xml" loadImmediate="false" itemID="668d442a-00001777" lastModified="1762531874"/>
+          <Include href="NPC-劳埃德/素材/防具-兽王衣装/女变装-兽王战甲上臂.xml" loadImmediate="false" itemID="668d4429-00001776" lastModified="1762531870"/>
+          <Include href="NPC-劳埃德/素材/防具-兽王衣装/组件/Symbol 3224.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000ea7" lastModified="1762529760"/>
+          <Include href="NPC-劳埃德/素材/防具-兽王衣装/组件/Symbol 3231.xml" loadImmediate="false" itemID="65f68a66-00000ea8" lastModified="1762523402"/>
+          <Include href="NPC-劳埃德/素材/防具-夜行侦察/男变装-夜行侦查下装屁股.xml" loadImmediate="false" itemID="65fd2296-00003db2" lastModified="1762531767"/>
+          <Include href="NPC-劳埃德/素材/防具-夜行侦察/男变装-夜行侦查下装右大腿.xml" loadImmediate="false" itemID="65fd163d-000029bd" lastModified="1762531777"/>
+          <Include href="NPC-劳埃德/素材/防具-夜行侦察/男变装-夜行侦查下装左大腿.xml" loadImmediate="false" itemID="65fd1607-000029b8" lastModified="1762531580"/>
+          <Include href="NPC-劳埃德/素材/头部/劳埃德脸型.xml" loadImmediate="false" itemID="69109e41-000009db" lastModified="1762696769"/>
+          <Include href="NPC-劳埃德/素材/头部/头.xml" loadImmediate="false" itemID="690e1cdc-0000157e" lastModified="1762685601"/>
+          <Include href="NPC-劳埃德/素材/头部/头发.xml" loadImmediate="false" itemID="690e2266-000015ed" lastModified="1762685624"/>
+          <Include href="NPC-劳埃德/素材/武器-dominator/素材/插件.xml" loadImmediate="false" itemID="65e5bc90-00000215" lastModified="1709554832"/>
+          <Include href="NPC-劳埃德/素材/武器-dominator/素材/发光部件.xml" loadImmediate="false" itemID="65e5afc9-0000017d" lastModified="1709647469"/>
+          <Include href="NPC-劳埃德/素材/武器-dominator/素材/枪柄.xml" loadImmediate="false" itemID="65e6d257-00000276" lastModified="1709653721"/>
+          <Include href="NPC-劳埃德/素材/武器-dominator/素材/枪柄整体.xml" loadImmediate="false" itemID="65e6d2cf-0000028c" lastModified="1709626063"/>
+          <Include href="NPC-劳埃德/素材/武器-dominator/素材/枪柄组件1.xml" loadImmediate="false" itemID="65e6c5e4-00000233" lastModified="1709622886"/>
+          <Include href="NPC-劳埃德/素材/武器-dominator/素材/枪柄组件2.xml" loadImmediate="false" itemID="65e6c68b-00000239" lastModified="1709622923"/>
+          <Include href="NPC-劳埃德/素材/武器-dominator/素材/枪身1.xml" loadImmediate="false" itemID="65e58f29-00000047" lastModified="1709648639"/>
+          <Include href="NPC-劳埃德/素材/武器-dominator/素材/枪身1+文字.xml" loadImmediate="false" itemID="65e59d28-00000090" lastModified="1709653571"/>
+          <Include href="NPC-劳埃德/素材/武器-dominator/素材/枪身2.xml" loadImmediate="false" itemID="65e59c47-00000083" lastModified="1709546626"/>
+          <Include href="NPC-劳埃德/素材/武器-dominator/素材/枪身2+文字.xml" loadImmediate="false" itemID="65e59de8-00000092" lastModified="1709653528"/>
+          <Include href="NPC-劳埃德/素材/武器-dominator/素材/枪身4.xml" loadImmediate="false" itemID="65e5bc03-0000020d" lastModified="1709652129"/>
+          <Include href="NPC-劳埃德/素材/武器-dominator/素材/枪身5-组件1.xml" loadImmediate="false" itemID="65e6c1dc-00000218" lastModified="1709621724"/>
+          <Include href="NPC-劳埃德/素材/武器-dominator/素材/枪身5-组件2.xml" loadImmediate="false" itemID="65e6c560-00000228" lastModified="1709654620"/>
+          <Include href="NPC-劳埃德/素材/武器-dominator/素材/枪身文字.xml" loadImmediate="false" itemID="65e589d0-00000037" lastModified="1709541840"/>
+          <Include href="NPC-劳埃德/素材/武器-dominator/素材/文字2.xml" loadImmediate="false" itemID="65e59d01-00000087" lastModified="1709653334"/>
+          <Include href="NPC-劳埃德/素材/武器-dominator/素材/阴影.xml" loadImmediate="false" itemID="65e739e8-00000e34" lastModified="1709652539"/>
+          <Include href="NPC-劳埃德/素材/武器-G11/G1111.xml" loadImmediate="false" itemID="687633d0-00000c36" lastModified="1762685913"/>
+          <Include href="NPC-劳埃德/素材/武器-G11/组件/G1111轮盘.xml" loadImmediate="false" itemID="687662df-000003bc" lastModified="1752589023"/>
+          <Include href="NPC-劳埃德/素材/武器-G11/组件/G1111枪口.xml" itemIcon="1" loadImmediate="false" itemID="6878c2f3-000003ad" lastModified="1752746157"/>
+          <Include href="NPC-劳埃德/素材/武器-G11/组件/G1111上护甲.xml" itemIcon="1" loadImmediate="false" itemID="6878c651-000003d5" lastModified="1752745553"/>
+          <Include href="NPC-劳埃德/素材/武器-G11/组件/G1111下护甲.xml" itemIcon="1" loadImmediate="false" itemID="6878c659-000003d9" lastModified="1753936399"/>
+          <Include href="NPC-劳埃德/素材/武器-阎魔刀/刀刃.xml" loadImmediate="false" itemID="657585c3-00000e5b" lastModified="1702204197"/>
+          <Include href="NPC-劳埃德/素材/武器-阎魔刀/阎魔刀刀柄.xml" loadImmediate="false" itemID="657577b7-00000ad6" lastModified="1702203385"/>
+          <Include href="NPC-劳埃德/素材/武器-阎魔刀/阎魔刀刀口.xml" loadImmediate="false" itemID="65757cf1-00000b08" lastModified="1702203837"/>
+          <Include href="NPC-劳埃德/素材/武器-阎魔刀/阎魔刀决定版.xml" loadImmediate="false" itemID="6575814a-00000b50" lastModified="1702305178"/>
           <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1_4.xml" loadImmediate="false" itemID="68f4e559-00006172" lastModified="1760879961"/>
           <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1_5.xml" loadImmediate="false" itemID="68f4e559-0000617a" lastModified="1760879961"/>
           <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1_6.xml" loadImmediate="false" itemID="68f4e559-00006187" lastModified="1760879961"/>
@@ -564,7 +623,6 @@
           <Include href="sprite/Symbol 51639.xml" loadImmediate="false" itemID="6597607e-00000b7c" lastModified="1704196122"/>
           <Include href="sprite/Symbol 51643.xml" loadImmediate="false" itemID="6597607e-00000b82" lastModified="1704196122"/>
           <Include href="sprite/Symbol 51645.xml" loadImmediate="false" itemID="6597607e-00000b85" lastModified="1704196122"/>
-          <Include href="sprite/男变装-基本脸型.xml" loadImmediate="false" itemID="668be716-0000065a" lastModified="1726470590"/>
           <Include href="sprite/男变装-裸体右手.xml" loadImmediate="false" itemID="668be707-00000653" lastModified="1726469978"/>
           <Include href="sprite/男变装-裸体右下臂.xml" loadImmediate="false" itemID="668be704-00000652" lastModified="1749173472"/>
           <Include href="sprite/男变装-裸体左手.xml" loadImmediate="false" itemID="668be700-00000650" lastModified="1726469977"/>
@@ -981,7 +1039,7 @@
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
           <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1762093394"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1762267204"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1762697162"/>
           <Include href="发型/Symbol 799.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000814" lastModified="1710653981"/>
           <Include href="歌留多/歌留多胯.xml" loadImmediate="false" itemID="67096725-00000045" lastModified="1728669954"/>
           <Include href="歌留多/歌留多身体.xml" loadImmediate="false" itemID="67095275-0000000f" lastModified="1728665563"/>
@@ -1065,6 +1123,7 @@
           <Include href="男变装-废城军装下装小腿.xml" loadImmediate="false" itemID="683c35d1-00001e47" lastModified="1749173491"/>
           <Include href="男变装-废城军装下装右大腿.xml" loadImmediate="false" itemID="683c35c6-00001e44" lastModified="1749173491"/>
           <Include href="男变装-废城军装下装左大腿.xml" loadImmediate="false" itemID="683c373f-000021ce" lastModified="1749173491"/>
+          <Include href="男变装-基本脸型.xml" loadImmediate="false" itemID="668be716-0000065a" lastModified="1726470590"/>
           <Include href="头改.xml" loadImmediate="false" itemID="66f59217-0000567c" lastModified="1727369773"/>
           <Include href="拖拽动画.xml" loadImmediate="false" itemID="67aca330-0000212d" lastModified="1739367829"/>
           <Include href="拖拽动画2.xml" loadImmediate="false" itemID="67aca57c-0000214d" lastModified="1739367882"/>
