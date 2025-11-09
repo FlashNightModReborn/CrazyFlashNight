@@ -262,11 +262,28 @@ class org.flashNight.arki.item.ItemUtil{
     }
 
     // 根据任务文件内的物品字符串生成itemRequirement
+    // 支持 ## 语法表示数量需求（而非强化度需求）
     public static function getRequirementFromTask(itemArray:Array):Array{
         var newArray = new Array(itemArray.length);
         for(var i = 0; i < itemArray.length; i++){
-            var arr = itemArray[i].split("#");
-            newArray[i] = {name:arr[0], value:Number(arr[1])};
+            var itemStr = itemArray[i];
+            var isQuantity = false;  // 标记是否为数量需求
+            var arr;
+
+            // 检查是否使用 ## 语法（明确的数量需求）
+            if(itemStr.indexOf("##") != -1){
+                arr = itemStr.split("##");
+                isQuantity = true;  // ## 表示数量需求
+            } else {
+                arr = itemStr.split("#");
+                // 对于单个 #，保持原有逻辑（装备=强化度，非装备=数量）
+            }
+
+            newArray[i] = {
+                name: arr[0],
+                value: Number(arr[1]),
+                isQuantity: isQuantity  // 新增标记字段
+            };
         }
         return newArray;
     }
@@ -476,6 +493,7 @@ class org.flashNight.arki.item.ItemUtil{
         for(var i = 0; i < itemArray.length; i++){
             var name = itemArray[i].name;
             var value = itemArray[i].value;
+            var isQuantity = itemArray[i].isQuantity;  // 获取数量标记
             if(isMaterial(name)){
                 if(材料.getValue(name) < value) return null;
                 list.材料[name] = value;
@@ -513,17 +531,30 @@ class org.flashNight.arki.item.ItemUtil{
                     var bagItem = 背包.getItem(index);
                     if(name != bagItem.name) continue;
 
-                    // 装备物品：检查强化等级（value 是 Object）
+                    // 装备物品处理
                     if(isEquipment(name)){
-                        if(bagItem.value.level >= value){
-                            // 强化等级满足需求，记录此装备
-                            list.背包[index] = value;
-                            value = 0;
-                            break;
+                        // 如果明确标记为数量需求（使用##语法），则计算装备数量
+                        if(isQuantity){
+                            // 装备数量模式：累计装备个数
+                            list.背包[index] = 1;  // 记录此格有1个装备
+                            value -= 1;  // 需求数量减1
+                            if(value <= 0){
+                                value = 0;
+                                break;
+                            }
+                            continue;
+                        } else {
+                            // 强化度模式（原有逻辑）：检查强化等级
+                            if(bagItem.value.level >= value){
+                                // 强化等级满足需求，记录此装备
+                                list.背包[index] = value;
+                                value = 0;
+                                break;
+                            }
+                            // 强化等级不够，继续查找其他格子
+                            // 关键：必须 continue，否则会执行后面的数量计算导致 NaN
+                            continue;
                         }
-                        // 强化等级不够，继续查找其他格子
-                        // 关键：必须 continue，否则会执行后面的数量计算导致 NaN
-                        continue;
                     }
 
                     // 非装备物品：检查数量（value 是 Number）
@@ -560,11 +591,12 @@ class org.flashNight.arki.item.ItemUtil{
         return list;
     }
     
-    /* 
+    /*
      * submit 函数处理提交物品事件。
      * 输入值为一个物品数组，经过contain函数处理后，在背包和材料栏对应的位置移除对应数量的物品。情报栏的物品不会被submit函数移除
      * 若成功移除所有物品，返回true
      * 若背包和材料栏没有足够物品，返回false
+     * 支持装备数量扣除（使用##语法时）
      */
     public static function submit(itemArray:Array):Boolean{
         var list = ItemUtil.contain(itemArray);
@@ -583,10 +615,22 @@ class org.flashNight.arki.item.ItemUtil{
         // }
         //背包
         var 背包 = _root.物品栏.背包;
+        // 需要根据原始需求判断是否为数量模式
+        var itemMap = {};  // 创建映射以获取原始需求信息
+        for(var k = 0; k < itemArray.length; k++){
+            itemMap[itemArray[k].name] = itemArray[k];
+        }
+
         for(var i in list.背包){
             var item = 背包.getItem(i);
-            if(isNaN(item.value)) 背包.remove(i);
-            else 背包.addValue(i, -list.背包[i]);
+            var originalReq = itemMap[item.name];
+
+            // 如果是装备且使用##语法（数量模式），或者是装备但list中记录的是1（数量模式的标记）
+            if(isNaN(item.value) || (isEquipment(item.name) && list.背包[i] == 1 && originalReq && originalReq.isQuantity)){
+                背包.remove(i);  // 移除整个装备
+            } else {
+                背包.addValue(i, -list.背包[i]);  // 减少数量
+            }
         }
         //药剂栏
         var 药剂栏 = _root.物品栏.药剂栏;
