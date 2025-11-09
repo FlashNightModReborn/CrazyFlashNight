@@ -1,4 +1,6 @@
-﻿_root.改装系统 = new Object();
+﻿import org.flashNight.gesh.object.*;
+
+_root.改装系统 = new Object();
 _root.改装系统.当前页数 = 1;
 
 _root.改装系统.加载改装清单 = function(清单){
@@ -75,11 +77,37 @@ _root.改装系统.向后翻页 = function(){
     }
 }
 
-_root.改装系统.获取材料个数 = function(itemData, name, val){
+_root.改装系统.获取材料个数 = function(itemData, materialInfo){
+    var name = materialInfo.name;
+    var val = materialInfo.value;
+
+    var isQuantity = materialInfo.isQuantity;
+
+    // 如果是装备类型
     if(itemData.type == "武器" || itemData.type == "防具"){
-        if(val > 1) return "+" + val;
-        return "";
+        // 如果是数量模式（使用##语法）
+        if(isQuantity){
+            // 计算持有的装备数量
+            var 装备数量 = 0;
+            var 背包 = _root.物品栏.背包;
+            var indexArr = 背包.getIndexes();
+            for(var i = 0; i < indexArr.length; i++){
+                var index = indexArr[i];
+                var item = 背包.getItem(index);
+                if(item.name == name){
+                    装备数量++;  // 每个格子算一个装备
+                }
+            }
+            var color = 装备数量 < val ? "\'#FF3333\'" : "\'#66FF66\'";
+            return "<FONT COLOR=" + color + ">" + 装备数量 + " / " + val + "</FONT>";
+        } else {
+            // 强化度模式（原有逻辑）
+            if(val > 1) return "+" + val;
+            return "";
+        }
     }
+
+    // 非装备物品的处理（保持原有逻辑）
     var 持有数量 = 0;
     if(itemData.use == "情报"){
         持有数量 = _root.收集品栏.情报.getValue(name);

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1762613135" lastUniqueIdentifier="256">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1762689762" lastUniqueIdentifier="256">
   <timeline>
-    <DOMTimeline name="fs配置素材" currentFrame="32" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="13" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
         <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
@@ -34,7 +34,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="文件夹 3" color="#808080" layerType="folder"/>
-        <DOMLayer name="图层 4" color="#4F80FF">
+        <DOMLayer name="图层 4" color="#4F80FF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -177,7 +177,7 @@
                     <Point x="74.25" y="-42"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="长枪/XM214/XM214-CageFrame" centerPoint3DX="-10.75" centerPoint3DY="276.4">
+                <DOMSymbolInstance libraryItemName="长枪/XM214/XM214-CageFrame" selected="true" centerPoint3DX="-10.75" centerPoint3DY="276.4">
                   <matrix>
                     <Matrix tx="-110.2" ty="269.6"/>
                   </matrix>
@@ -621,7 +621,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" duration="12" name="标题页" labelType="name" keyMode="9728">
               <elements>
@@ -964,7 +964,7 @@
                     <Point x="-3.6" y="199.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="矩辉启明刃/刀-矩辉启明刃" selected="true" centerPoint3DX="404.05" centerPoint3DY="-525.35">
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/刀-矩辉启明刃" centerPoint3DX="404.05" centerPoint3DY="-525.35">
                   <matrix>
                     <Matrix tx="404.15" ty="-683.2"/>
                   </matrix>

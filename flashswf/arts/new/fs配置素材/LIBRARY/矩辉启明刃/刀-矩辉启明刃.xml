@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="矩辉启明刃/刀-矩辉启明刃" itemID="690f0285-0000a0ce" linkageExportForAS="true" linkageIdentifier="刀-矩辉启明刃" lastModified="1762612387" lastUniqueIdentifier="52">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="矩辉启明刃/刀-矩辉启明刃" itemID="690f0285-0000a0ce" linkageExportForAS="true" linkageIdentifier="刀-矩辉启明刃" lastModified="1762687840" lastUniqueIdentifier="52">
   <timeline>
-    <DOMTimeline name="刀-矩辉启明刃" currentFrame="14" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;166&lt;/guideline&gt;&lt;guideline direction="v"&gt;1&lt;/guideline&gt;&lt;guideline direction="h"&gt;76&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="刀-矩辉启明刃" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;166&lt;/guideline&gt;&lt;guideline direction="v"&gt;1&lt;/guideline&gt;&lt;guideline direction="h"&gt;76&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="图层 21" color="#808080">
+        <DOMLayer name="图层 21" color="#808080" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <Actionscript>
@@ -88,7 +88,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="外环" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="外环" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements>
@@ -291,7 +291,7 @@
             </DOMFrame>
             <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="矩辉启明刃/剑身光效" centerPoint3DX="0.7" centerPoint3DY="335.5">
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/剑身光效" name="剑身光效" centerPoint3DX="0.7" centerPoint3DY="335.5">
                   <matrix>
                     <Matrix tx="-14.65" ty="143.25"/>
                   </matrix>
@@ -306,7 +306,7 @@
             </DOMFrame>
             <DOMFrame index="11" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="矩辉启明刃/剑身光效" centerPoint3DX="0.7" centerPoint3DY="335.5">
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/剑身光效" name="剑身光效" centerPoint3DX="0.7" centerPoint3DY="335.5">
                   <matrix>
                     <Matrix tx="-14.65" ty="143.25"/>
                   </matrix>
@@ -537,7 +537,7 @@
             </DOMFrame>
             <DOMFrame index="10" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="矩辉启明刃/光刃" centerPoint3DX="0.95" centerPoint3DY="328.3">
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/光刃" name="光刃" centerPoint3DX="0.95" centerPoint3DY="328.3">
                   <matrix>
                     <Matrix tx="-43.1" ty="109.85"/>
                   </matrix>
@@ -552,7 +552,7 @@
             </DOMFrame>
             <DOMFrame index="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="矩辉启明刃/光刃" centerPoint3DX="0.95" centerPoint3DY="328.3">
+                <DOMSymbolInstance libraryItemName="矩辉启明刃/光刃" name="光刃" centerPoint3DX="0.95" centerPoint3DY="328.3">
                   <matrix>
                     <Matrix tx="-43.1" ty="109.85"/>
                   </matrix>

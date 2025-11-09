@@ -72,7 +72,22 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         result.push("合成材料：<BR>");
         for (var i=0; i<requirements.length; i++) {
           if (requirements[i] && requirements[i].name) {
-            result.push(ItemUtil.getItemData(requirements[i].name).displayname, "：", requirements[i].value, "<BR>");
+            var itemData = ItemUtil.getItemData(requirements[i].name);
+            var displayText = itemData.displayname;
+
+            // 根据是否为数量模式决定显示方式
+            if (requirements[i].isQuantity) {
+              // 数量模式：显示 "物品名 x 数量"
+              displayText += " x " + requirements[i].value;
+            } else if (ItemUtil.isEquipment(requirements[i].name)) {
+              // 强化度模式：显示 "物品名 +强化度"
+              displayText += " +" + requirements[i].value;
+            } else {
+              // 非装备物品：显示数量
+              displayText += "：" + requirements[i].value;
+            }
+
+            result.push(displayText, "<BR>");
           }
         }
       }

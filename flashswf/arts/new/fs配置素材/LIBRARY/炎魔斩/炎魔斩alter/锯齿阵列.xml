@@ -1,12 +1,12 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="炎魔斩/炎魔斩alter/锯齿阵列" itemID="64fc5b2d-00000650" lastModified="1694262839">
   <timeline>
-    <DOMTimeline name="锯齿阵列">
+    <DOMTimeline name="锯齿阵列" currentFrame="2">
       <layers>
         <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true" heightLiteral="24">
           <frames>
             <DOMFrame index="0" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="炎魔斩/炎魔斩alter/锯齿阵列降低性能需求" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="炎魔斩/炎魔斩alter/锯齿阵列降低性能需求" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point x="11.8" y="140.9"/>
                   </transformationPoint>
@@ -27,7 +27,7 @@
             </DOMFrame>
             <DOMFrame index="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="炎魔斩/炎魔斩alter/锯齿阵列降低性能需求" symbolType="graphic" centerPoint3DX="11.9" centerPoint3DY="127.7" loop="loop">
+                <DOMSymbolInstance libraryItemName="炎魔斩/炎魔斩alter/锯齿阵列降低性能需求" selected="true" symbolType="graphic" centerPoint3DX="11.9" centerPoint3DY="127.7" loop="loop">
                   <matrix>
                     <Matrix tx="-0.15" ty="-13.4"/>
                   </matrix>
