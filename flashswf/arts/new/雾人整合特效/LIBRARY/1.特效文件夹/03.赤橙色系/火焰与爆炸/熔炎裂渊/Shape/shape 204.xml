@@ -1,0 +1,71 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/火焰与爆炸/熔炎裂渊/Shape/shape 204" itemID="61fa3de4-0000096e" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="shape 204">
+      <layers>
+        <DOMLayer name="Layer_1" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.01263427734375" b="-0.000823974609375" c="-0.0014190673828125" d="0.021453857421875" tx="7.1" ty="-18.7"/>
+                        </matrix>
+                        <GradientEntry color="#F8E000" ratio="0"/>
+                        <GradientEntry color="#F87800" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#F8F8F8"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#FFCC00"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.627532958984375" b="-0.0416107177734375" c="-0.0416107177734375" d="0.627532958984375" tx="280.85" ty="-282.4"/>
+                        </matrix>
+                        <GradientEntry color="#F8E000" ratio="0"/>
+                        <GradientEntry color="#F87800" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="5">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.0044403076171875" b="-0.00823974609375" c="-0.0050811767578125" d="0.02093505859375" tx="3.75" ty="-44.65"/>
+                        </matrix>
+                        <GradientEntry color="#F8E000" ratio="0"/>
+                        <GradientEntry color="#F87800" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="6">
+                      <SolidColor color="#F87800"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="6" edges="!157 -14|147 -22!147 -22|155 -14!155 -14|157 -14"/>
+                    <Edge fillStyle0="4" edges="!300 -9|299 -9"/>
+                    <Edge fillStyle0="4" fillStyle1="2" edges="!299 -9|304 -6"/>
+                    <Edge fillStyle0="4" edges="!304 -6|307 -12"/>
+                    <Edge fillStyle0="4" fillStyle1="1" edges="!307 -12|300 -9"/>
+                    <Edge fillStyle1="2" edges="!304 -6|302 0!302 0|299 -7!299 -7|299 -9"/>
+                    <Edge fillStyle1="5" edges="!234 -52.5|293 -5!293 -5|292 -4!292 -4|234 -52.5"/>
+                    <Edge fillStyle0="5" fillStyle1="5" edges="!234 -52.5|176 -100"/>
+                    <Edge fillStyle1="1" edges="!300 -9|200 -219!200 -219[242 -152 202 -321!202 -321|321 -14!321 -14|319 -14!319 -14|309 -17!309 -17|307 -12"/>
+                    <Edge fillStyle1="3" edges="!-146 -950|-322 -1322!-322 -1322|-136 -949!-136 -949|-146 -950"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!-42 -730|-31 -737"/>
+                    <Edge fillStyle0="2" edges="!-31 -737|-40 -759!-40 -759|-42 -730"/>
+                    <Edge fillStyle1="1" edges="!-31 -737|85 -461!85 -461|-42 -730"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

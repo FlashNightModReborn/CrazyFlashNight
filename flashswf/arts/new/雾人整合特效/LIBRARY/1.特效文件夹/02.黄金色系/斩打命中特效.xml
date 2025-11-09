@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/02.黄金色系/斩打命中特效" itemID="6644ad2e-00001659" linkageExportForAS="true" linkageIdentifier="斩打命中特效" lastModified="1740144373" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/02.黄金色系/斩打命中特效" itemID="6644ad2e-00001659" linkageExportForAS="true" linkageIdentifier="斩打命中特效" lastModified="1762656004" lastUniqueIdentifier="4">
   <timeline>
     <DOMTimeline name="斩打命中特效">
       <layers>
@@ -24,7 +24,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#B2728A">
+        <DOMLayer name="Layer 2" color="#B2728A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -2127,7 +2127,7 @@ this._y -= 60;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#888BCD" current="true" isSelected="true">
+        <DOMLayer name="Layer 12" color="#888BCD">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -2375,7 +2375,7 @@ this._y -= 60;]]></script>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4975" selected="true" centerPoint3DX="349.65" centerPoint3DY="7">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4975" centerPoint3DX="349.65" centerPoint3DY="7">
                   <matrix>
                     <Matrix a="-0.113845825195313" b="-0.0032196044921875" c="0.0300750732421875" d="-1.06340026855469" tx="49.5" ty="4.75"/>
                   </matrix>

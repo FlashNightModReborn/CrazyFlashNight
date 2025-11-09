@@ -1,0 +1,141 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/火焰与爆炸/炎飞燕/炎飞燕" itemID="65742e16-000007d9" linkageExportForAS="true" linkageIdentifier="炎飞燕" lastModified="1762657895" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="炎飞燕">
+      <layers>
+        <DOMLayer name="攻击判定&amp;代码" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (_root.gameworld[发射者名].方向 == "左")
+{
+	this._xscale = -100;
+}
+this._rotation = 0;
+this._y -= 100;]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="70.3" centerPoint3DY="0.4">
+                  <matrix>
+                    <Matrix a="1.39999389648438" tx="42.3" ty="-19.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.6" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" centerPoint3DX="70.3" centerPoint3DY="0.4">
+                  <matrix>
+                    <Matrix a="1.39999389648438" tx="42.3" ty="-19.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.6" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" name="消失" labelType="name" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[声音 = "";
+霰弹值 = 1;
+子弹散射度 = 0;
+发射效果 = "";
+子弹种类 = "空中小火焰爆炸";
+子弹威力 = 100;
+子弹速度 = 0;
+击中地图效果 = "";
+Z轴攻击范围 = 60;
+击倒率 = 1;
+击中后子弹的效果 = "";
+shootX = this._x;
+shootY = this._y;
+if(_root.client != null && _root.me != null)
+{
+   _root.子弹区域shoot表演(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+}
+else
+{
+   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+}
+stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" centerPoint3DX="70.3" centerPoint3DY="0.4">
+                  <matrix>
+                    <Matrix a="1.39999389648438" tx="42.3" ty="-19.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.6" y="-0.05"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   横向加速度 = 1;
+   横向速度 = 0;
+   this.onEnterFrame = function()
+   {
+      if(90 > _parent._rotation and _parent._rotation > -90)
+      {
+         横向速度 += 横向加速度;
+         _parent._x += 横向速度;
+      }
+      else if(360 > _parent._rotation and _parent._rotation > 270)
+      {
+         横向速度 += 横向加速度;
+         _parent._x += 横向速度;
+      }
+      else if(270 > _parent._rotation and _parent._rotation > 90)
+      {
+         横向速度 += 横向加速度;
+         _parent._x -= 横向速度;
+      }
+      else if(-90 > _parent._rotation and _parent._rotation > -270)
+      {
+         横向速度 += 横向加速度;
+         _parent._x -= 横向速度;
+      }
+   };
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/炎飞燕/炎飞燕动画" selected="true" centerPoint3DX="-163" centerPoint3DY="-232.5">
+                  <matrix>
+                    <Matrix tx="64.3" ty="0.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

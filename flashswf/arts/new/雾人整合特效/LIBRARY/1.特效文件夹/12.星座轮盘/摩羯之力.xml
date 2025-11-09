@@ -1,17 +1,15 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/12.星座轮盘/摩羯之力" itemID="65995d5a-00003f84" linkageExportForAS="true" linkageIdentifier="摩羯之力" lastModified="1722346117" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/12.星座轮盘/摩羯之力" itemID="65995d5a-00003f84" linkageExportForAS="true" linkageIdentifier="摩羯之力" lastModified="1762657230" lastUniqueIdentifier="6">
   <timeline>
-    <DOMTimeline name="摩羯之力" currentFrame="2">
+    <DOMTimeline name="摩羯之力">
       <layers>
         <DOMLayer name="作用" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728" soundName="2.音效文件夹/winggun_special_on.wav">
+            <DOMFrame index="0" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this._rotation = 0;
+_root.播放音效("星座轮盘转动.wav");
 ]]></script>
               </Actionscript>
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
               <elements/>
             </DOMFrame>
             <DOMFrame index="2" duration="2" keyMode="9728">

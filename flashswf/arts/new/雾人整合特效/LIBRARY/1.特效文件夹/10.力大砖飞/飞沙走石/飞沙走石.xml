@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/10.力大砖飞/飞沙走石/飞沙走石" itemID="690f640a-000025cf" linkageExportForAS="true" linkageIdentifier="飞沙走石" lastModified="1762616536">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/10.力大砖飞/飞沙走石/飞沙走石" itemID="690f640a-000025cf" linkageExportForAS="true" linkageIdentifier="飞沙走石" lastModified="1762656293">
   <timeline>
     <DOMTimeline name="飞沙走石">
       <layers>
@@ -7,7 +7,7 @@
             <DOMFrame index="0" duration="4" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this._rotation = 0;
-]]></script>
+_root.播放音效("爆炸 较明亮 01.mp3");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -15,7 +15,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-5.65" centerPoint3DY="-36.65">
                   <matrix>
-                    <Matrix a="5.77925109863281" d="3.3387451171875" tx="-80.2" ty="-125.05"/>
+                    <Matrix a="5.77923583984375" d="3.3387451171875" tx="-80.2" ty="-125.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="1.4" y="40.25"/>

@@ -1,0 +1,180 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/火焰与爆炸/火攻/火凤火攻" itemID="65492202-00000616" linkageExportForAS="true" linkageIdentifier="火凤火攻" lastModified="1762656305" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="火凤火攻">
+      <layers>
+        <DOMLayer name="代码&amp;判定" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._rotation = random(360);
+this.伤害类型 = "魔法";
+this.魔法伤害属性 = "热";]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="6.35" centerPoint3DY="-31.6">
+                  <matrix>
+                    <Matrix a="2.39999389648438" d="1.56500244140625" tx="-41.65" ty="-62.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="2.7" centerPoint3DY="-41.8">
+                  <matrix>
+                    <Matrix a="3.24859619140625" d="2.11471557617188" tx="-62.3" ty="-95.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="4.8" centerPoint3DY="-41.8">
+                  <matrix>
+                    <Matrix a="3.66281127929688" d="2.63810729980469" tx="-68.5" ty="-116.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#5CFA34">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/火攻/Symbol 274" centerPoint3DX="3.25" centerPoint3DY="-34.1">
+                  <matrix>
+                    <Matrix a="1.10826110839844" d="1.10826110839844" tx="-41.65" ty="-63.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="28" blurY="6" strength="1.5"/>
+                  </filters>
+                  <color>
+                    <Color alphaOffset="9" redOffset="246" blueOffset="-255" greenOffset="6"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/火攻/Symbol 276" centerPoint3DX="-3.55" centerPoint3DY="-50.75">
+                  <matrix>
+                    <Matrix a="1.10826110839844" d="1.10826110839844" tx="-63.85" ty="-97"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="28" blurY="6" strength="1.5"/>
+                  </filters>
+                  <color>
+                    <Color alphaOffset="9" redOffset="246" blueOffset="-255" greenOffset="29"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/火攻/Symbol 278" centerPoint3DX="1.15" centerPoint3DY="-69.7">
+                  <matrix>
+                    <Matrix a="1.10826110839844" d="1.10826110839844" tx="-70.95" ty="-127.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="28" blurY="6" strength="1.5"/>
+                  </filters>
+                  <color>
+                    <Color alphaOffset="9" redOffset="246" blueOffset="-255" greenOffset="29"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/火攻/Symbol 280" centerPoint3DX="7.55" centerPoint3DY="-84.35">
+                  <matrix>
+                    <Matrix a="1.10826110839844" d="1.10826110839844" tx="-73.25" ty="-153.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="28" blurY="6" strength="1.5"/>
+                  </filters>
+                  <color>
+                    <Color alphaOffset="9" redOffset="246" blueOffset="-255" greenOffset="29"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/火攻/Symbol 282" centerPoint3DX="4.55" centerPoint3DY="-87.4">
+                  <matrix>
+                    <Matrix a="1.10826110839844" d="1.10826110839844" tx="-85.8" ty="-159.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="28" blurY="6" strength="1.5"/>
+                  </filters>
+                  <color>
+                    <Color alphaOffset="9" redOffset="246" blueOffset="-255" greenOffset="29"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/火攻/Symbol 284" centerPoint3DX="4.4" centerPoint3DY="-86.3">
+                  <matrix>
+                    <Matrix a="1.10826110839844" d="1.10826110839844" tx="-88.35" ty="-161"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="28" blurY="6" strength="1.5"/>
+                  </filters>
+                  <color>
+                    <Color alphaOffset="9" redOffset="246" blueOffset="-255" greenOffset="29"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

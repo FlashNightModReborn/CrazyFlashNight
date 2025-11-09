@@ -1,0 +1,223 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/火焰与爆炸/火焰喷射/MovieClip/火焰喷射" itemID="66687e2a-000029d3" lastModified="1762655133" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="火焰喷射">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (_root.gameworld[发射者名].方向 == "左")
+{
+	this._xscale = -100;
+}
+this._rotation = 0;
+//this._y -= 100;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-34.05" centerPoint3DY="-40">
+                  <matrix>
+                    <Matrix a="3.72122192382813" d="1.90977478027344" tx="-9.85" ty="-67.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="42.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-18.05" centerPoint3DY="-40">
+                  <matrix>
+                    <Matrix a="5.02833557128906" d="2.73924255371094" tx="6.15" ty="-102.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="42.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-18.05" centerPoint3DY="-40">
+                  <matrix>
+                    <Matrix a="6.50355529785156" d="2.92402648925781" tx="6.15" ty="-110.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="42.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-18.05" centerPoint3DY="-40">
+                  <matrix>
+                    <Matrix a="6.50355529785156" d="2.92402648925781" tx="6.15" ty="-110.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="42.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/火焰喷射/Graphic/shape 686" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-105.6" ty="33.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/火焰喷射/Graphic/shape 687" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-105.6" ty="33.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/火焰喷射/Graphic/shape 688" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-105.6" ty="33.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/火焰喷射/Graphic/shape 689" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-105.6" ty="33.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/火焰喷射/Graphic/shape 690" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-105.6" ty="33.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/火焰喷射/Graphic/shape 691" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-105.6" ty="33.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/火焰喷射/Graphic/shape 692" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-105.6" ty="33.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/火焰喷射/Graphic/shape 693" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-105.6" ty="33.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/火焰喷射/Graphic/shape 694" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-105.6" ty="33.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/火焰喷射/Graphic/shape 695" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-105.6" ty="33.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/火焰喷射/Graphic/shape 696" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-105.6" ty="33.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

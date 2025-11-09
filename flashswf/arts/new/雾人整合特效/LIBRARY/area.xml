@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="area" itemID="653d1625-00000520" lastModified="1702141674">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="area" itemID="653d1625-00000520" lastModified="1762658581">
   <timeline>
     <DOMTimeline name="area">
       <layers>
-        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 1" color="#4FFF4F" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -13,7 +13,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!0 0|800 0!800 0|800 800!800 800|0 800!0 800|0 0"/>
+                    <Edge fillStyle1="1" edges="!0 0S2|800 0!800 0|800 800!800 800|0 800!0 800|0 0"/>
                     <Edge cubics="!800 0(800,0;800,0 800,800 800,800q800 0 800 800);"/>
                     <Edge cubics="!0 800(0,800;0,800 0,0 0,0q0 800 0 0);"/>
                     <Edge cubics="!800 800(800,800;800,800 0,800 0,800q800 800 0 800);"/>

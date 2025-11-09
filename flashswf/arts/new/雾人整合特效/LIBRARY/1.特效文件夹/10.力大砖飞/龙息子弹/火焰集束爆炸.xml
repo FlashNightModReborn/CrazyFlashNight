@@ -1,20 +1,13 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/10.力大砖飞/龙息子弹/火焰集束爆炸" itemID="66687b5d-0000221b" linkageExportForAS="true" linkageIdentifier="火焰集束爆炸" lastModified="1718430272" lastUniqueIdentifier="16">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/10.力大砖飞/龙息子弹/火焰集束爆炸" itemID="66687b5d-0000221b" linkageExportForAS="true" linkageIdentifier="火焰集束爆炸" lastModified="1762656510" lastUniqueIdentifier="16">
   <timeline>
-    <DOMTimeline name="火焰集束爆炸" currentFrame="14">
+    <DOMTimeline name="火焰集束爆炸">
       <layers>
         <DOMLayer name="音效" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="15" keyMode="9728" soundName="2.音效文件夹/M1014火焰.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A">
-          <frames>
-            <DOMFrame index="0" duration="9" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("M1014火焰.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
@@ -75,7 +68,7 @@
             </DOMFrame>
             <DOMFrame index="2" duration="13" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/火焰喷射2/MovieClip/火焰喷射2" centerPoint3DX="65.4" centerPoint3DY="-11.55">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/火焰喷射2/火焰喷射2" centerPoint3DX="65.4" centerPoint3DY="-11.55">
                   <matrix>
                     <Matrix a="0.846771240234375" b="0.0711822509765625" c="-0.0711822509765625" d="0.846771240234375" tx="60.55" ty="-6.7"/>
                   </matrix>
@@ -174,7 +167,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰喷射/MovieClip/火焰喷射" centerPoint3DX="9.85" centerPoint3DY="-10.7">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/火焰与爆炸/火焰喷射/MovieClip/火焰喷射" centerPoint3DX="9.85" centerPoint3DY="-10.7">
                   <matrix>
                     <Matrix a="0.982620239257813" b="0.185623168945313" c="-0.185623168945313" d="0.982620239257813" tx="-168.9" ty="19.45"/>
                   </matrix>
