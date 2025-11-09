@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC-劳埃德/素材/防具-防护手套/组件/左手" itemID="6856b6a2-000003e2" lastModified="1752332918" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="左手">
+      <layers>
+        <DOMLayer name="图层_1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC-劳埃德/素材/防具-防护手套/组件/元件 35" selected="true" centerPoint3DX="70" centerPoint3DY="106.15">
+                  <matrix>
+                    <Matrix a="-2.71014404296875" d="2.776611328125" tx="131.95" ty="37.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.85" y="24.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC-劳埃德/素材/防具-防护手套/组件/元件 21" selected="true" centerPoint3DX="64.25" centerPoint3DY="71.45">
+                  <matrix>
+                    <Matrix tx="-0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="64.3" y="71.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC-劳埃德/素材/防具-防护手套/组件/元件 20" selected="true" centerPoint3DX="91.6" centerPoint3DY="63.35">
+                  <matrix>
+                    <Matrix a="0.96026611328125" b="0.279052734375" c="-0.279052734375" d="0.96026611328125" tx="48.05" ty="1.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="59" y="47.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
