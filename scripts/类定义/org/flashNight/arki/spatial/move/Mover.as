@@ -473,6 +473,91 @@ class org.flashNight.arki.spatial.move.Mover {
 
 
     /**
+     * 将实体从非法位置（与碰撞层相交）挤出到最近的合法位置。
+     *
+     * 采用“同心圆放射采样”的启发式：
+     * - 先检测当前位置是否合法；若合法直接返回 true；
+     * - 若不合法，以给定的半径步长向外扩展，在每一圈按照角度步长采样若干方向；
+     * - 第一次命中的合法采样点即刻落位并返回 true；若搜索到最大半径仍未命中，返回 false；
+     *
+     * 注意：本方法会同步更新 `_x`、`Z`（与 `_y`）以及 `aabbCollider`，并调用 `swapDepths` 保证显示正确；
+     * 若实体没有 `aabbCollider` 字段则忽略碰撞盒同步。
+     *
+     * @param entity 需要被挤出的 MovieClip（要求具有 `_x`、`_y`、`Z*` 坐标属性）
+     * @param maxRadius 最大搜索半径（像素，默认 180）
+     * @param radiusStep 半径步长（像素，默认 8）
+     * @param angleStepDeg 角度步长（度，默认 30）
+     * @return Boolean 是否成功找到合法位置
+     */
+    public static function pushOutFromCollision(entity:MovieClip,
+                                                maxRadius:Number,
+                                                radiusStep:Number,
+                                                angleStepDeg:Number):Boolean {
+        // 默认参数
+        if (maxRadius == null || maxRadius <= 0) maxRadius = 180;
+        if (radiusStep == null || radiusStep <= 0) radiusStep = 8;
+        if (angleStepDeg == null || angleStepDeg <= 0) angleStepDeg = 30;
+
+        // 读取当前全局坐标（以实体注点为准）
+        var baseX:Number = entity._x;
+        var baseY:Number = entity.Z轴坐标 != undefined ? entity.Z轴坐标 : entity._y;
+
+        // 当前位置若已合法，直接返回
+        if (Mover.isPointValid(baseX, baseY)) {
+            return true;
+        }
+
+        // 先尝试四/八方向的近邻快速探测（半径=radiusStep）
+        var quickDirs:Array = [
+            {x: 1,  y: 0}, {x: -1, y: 0}, {x: 0,  y: 1}, {x: 0,  y: -1},
+            {x: 1,  y: 1}, {x: 1,  y: -1}, {x: -1, y: 1}, {x: -1, y: -1}
+        ];
+        var i:Number;
+        for (i = 0; i < quickDirs.length; i++) {
+            var qx:Number = baseX + quickDirs[i].x * radiusStep;
+            var qy:Number = baseY + quickDirs[i].y * radiusStep;
+            if (Mover.isPointValid(qx, qy)) {
+                entity._x = qx;
+                entity.Z轴坐标 = qy;
+                entity._y = qy;
+                if (entity.aabbCollider && entity.aabbCollider.updateFromUnitArea) {
+                    entity.aabbCollider.updateFromUnitArea(entity);
+                }
+                entity.swapDepths(entity._y);
+                return true;
+            }
+        }
+
+        // 同心圆放射搜索
+        var r:Number;
+        for (r = radiusStep; r <= maxRadius; r += radiusStep) {
+            var ang:Number = 0;
+            while (ang < 360) {
+                var rad:Number = ang * Math.PI / 180;
+                var tx:Number = baseX + Math.cos(rad) * r;
+                var ty:Number = baseY + Math.sin(rad) * r;
+
+                if (Mover.isPointValid(tx, ty)) {
+                    entity._x = tx;
+                    entity.Z轴坐标 = ty;
+                    entity._y = ty;
+                    if (entity.aabbCollider && entity.aabbCollider.updateFromUnitArea) {
+                        entity.aabbCollider.updateFromUnitArea(entity);
+                    }
+                    entity.swapDepths(entity._y);
+                    return true;
+                }
+
+                ang += angleStepDeg;
+            }
+        }
+
+        // 未找到合法位置，最后尝试将其钳制到屏幕边界以避免极端越界
+        Mover.enforceScreenBounds(entity);
+        return false;
+    }
+
+    /**
      * 强制将实体限制在屏幕/关卡范围内
      *
      * @param entity 需要限制的 MovieClip 对象，要求其具有 _x、_y、Z轴坐标、aabbCollider、swapDepths 等属性

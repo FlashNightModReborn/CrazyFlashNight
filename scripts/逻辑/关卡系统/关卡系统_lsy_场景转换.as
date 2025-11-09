@@ -7,6 +7,18 @@ import org.flashNight.arki.scene.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.component.Effect.*;
 import org.flashNight.gesh.object.*;
+import org.flashNight.arki.spatial.move.*;
+
+// 场景就绪时，若主角位置处于碰撞中，则尝试挤出到最近合法点（一次性挂钩，避免重复注册）
+EventBus.getInstance().subscribe("SceneReady", function():Void {
+	var hero:MovieClip = TargetCacheManager.findHero();
+	if (hero && !Mover.isMovieClipPositionValid(hero)) {
+		var pushed:Boolean = Mover.pushOutFromCollision(hero, 180, 8, 30);
+		if (!pushed) {
+			Mover.enforceScreenBounds(hero);
+		}
+	}
+}, null);
 
 _root.转场景记录数据 = function(){
 	_root.转场景记录数据第一次记录 = true;
