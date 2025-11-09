@@ -193,6 +193,9 @@ _root.刷新人物装扮 = function(目标) {
         目标人物.人物文字信息 = null;
     }
 
+    // 清理射击相关任务，防止武器切换时射速继承问题
+    ShootCore.cleanup(目标人物);
+
     StaticInitializer.initializeUnit(目标人物); // 包含了整理后的刷新装扮函数
 
     //佣兵战力强化修正                                                                                                              
