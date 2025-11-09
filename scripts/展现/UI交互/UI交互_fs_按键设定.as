@@ -120,3 +120,32 @@ KeyManager.onKeyUp("右键", function():Void {
         // _root.发布消息("右键松开，结束双击奔跑意图");
     }
 }, this);
+
+
+// =============================
+// 输入冻结（SceneReady 前屏蔽方向键）
+// 未解决问题，姑且屏蔽
+// =============================
+
+/*
+
+_root.按键设定 = {};
+_root.按键设定.__originalIsDown = Key.isDown;
+_root.按键设定.__isDown = function(code:Number):Boolean {
+    _root.发布消息("sceneInputReady=" + _root.sceneInputReady);
+    if (code == _root.左键 || code == _root.右键 || code == _root.上键 || code == _root.下键) {
+        return false;
+    }
+    return _root.按键设定.__originalIsDown(code);
+};
+
+EventBus.getInstance().subscribe("SceneChanged", function():Void { 
+    Key.isDown =  _root.按键设定.__isDown;
+    _root.发布消息("方向键输入已冻结");
+}, null);
+EventBus.getInstance().subscribe("SceneReady", function():Void { 
+    Key.isDown = _root.按键设定.__originalIsDown;
+    _root.发布消息("方向键输入已解冻");
+}, null);
+
+*/

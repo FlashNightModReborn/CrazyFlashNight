@@ -251,6 +251,9 @@ class org.flashNight.arki.scene.StageManager {
         // 加载玩家
         gameworld.出生地.是否从门加载角色();
 
+        // 重置场景切换冷却计数，防止加载期间持续按键导致的穿墙问题
+        _root.场景转换函数.上次切换帧数 = _root.帧计时器.当前帧数;
+
         // 监听关卡完成，失败，直接进入下一张图事件
         gameworld.dispatcher.subscribeOnce("StageFinished", this.finishStage, this);
         gameworld.dispatcher.subscribeOnce("StageFailed", this.failStage, this);

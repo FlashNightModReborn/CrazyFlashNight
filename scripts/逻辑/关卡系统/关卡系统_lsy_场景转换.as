@@ -99,6 +99,9 @@ _root.转场景数据传递 = function(){
 		}
 		i ++;
 	}
+
+	// 重置场景切换冷却计数，防止加载期间持续按键导致的穿墙问题
+	_root.场景转换函数.上次切换帧数 = _root.帧计时器.当前帧数;
 }
 
 _root.转场景数据 = [0, 0, "空手"];
@@ -357,7 +360,7 @@ _root.场景转换函数.切换场景 = function(对应门名, 目标场景帧, 
 	
 	var currentFrame:Number = _root.帧计时器.当前帧数;
 	// _root.发布消息("场景转换函数.切换场景 " + (currentFrame - _root.场景转换函数.上次切换帧数) + " " + 对应方向 + " " + this.hitTest(控制对象.area) + " " + 控制对象.hp);
-	if ((currentFrame - _root.场景转换函数.上次切换帧数 > 60) && 对应方向 && this.hitTest(控制对象.area) && 控制对象.hp > 0){
+	if ((currentFrame - _root.场景转换函数.上次切换帧数 > 30) && 对应方向 && this.hitTest(控制对象.area) && 控制对象.hp > 0){
 		
 		var pt = {x:控制对象._x, y:控制对象.Z轴坐标};
 		游戏世界.localToGlobal(pt);
