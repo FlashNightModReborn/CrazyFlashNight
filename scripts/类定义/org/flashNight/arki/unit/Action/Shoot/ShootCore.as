@@ -259,4 +259,39 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             }
         }
     }
+
+    /**
+     * 清理指定单位的所有射击相关任务
+     * 用于在武器切换或刷新装扮时清理遗留的射击任务
+     *
+     * @param core 需要清理的单位对象
+     */
+    public static function cleanup(core:Object):Void {
+        if (!core) return;
+
+        var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+
+        // 清理主手射击任务
+        if (core[primaryParams.taskName]) {
+            wheel.removeTask(core[primaryParams.taskName]);
+            delete core[primaryParams.taskName];
+        }
+
+        // 清理副手射击任务
+        if (core[secondaryParams.taskName]) {
+            wheel.removeTask(core[secondaryParams.taskName]);
+            delete core[secondaryParams.taskName];
+        }
+
+        // 清理射击后摇任务
+        if (core.taskLabel && core.taskLabel["结束射击后摇"]) {
+            wheel.removeTask(core.taskLabel["结束射击后摇"]);
+            delete core.taskLabel["结束射击后摇"];
+        }
+
+        // 重置射击状态标志
+        core[primaryParams.shootingStateName] = false;
+        core[secondaryParams.shootingStateName] = false;
+        core.射击最大后摇中 = false;
+    }
 }
