@@ -1,0 +1,39 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-FS/素材/大腿1" itemID="6911fe60-0000316d" sourceFlashFilepath="../../levels/地图-界外街道.fla" sourceLibraryItemHRef="NPC/NPC-FS/素材/大腿1" sourceLastModified="1762786912" symbolType="graphic" lastModified="1762786912" sourceItemID="561602f4-00000178">
+  <timeline>
+    <DOMTimeline name="大腿1">
+      <layers>
+        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#1B1B1B"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!2 198[-14 16 334 0!334 0[408 8 462 24!462 24[612 68 605 169!605 169|605 172"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!605 172|535 800!535 800|535 868!535 868|463 1456!463 1456|461 1462"/>
+                    <Edge fillStyle1="1" edges="!461 1462[404 1595 333 1600!333 1600[254 1606 158 1458"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!158 1458[127 1193 91 989!91 989|44 766!44 766[11 577 6 458!6 458[-3 272 2 198"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!44 766|58 774"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

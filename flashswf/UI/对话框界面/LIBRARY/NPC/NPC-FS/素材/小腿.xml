@@ -1,0 +1,100 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-FS/素材/小腿" itemID="6911fbf5-0000313a" sourceFlashFilepath="../../levels/地图-界外街道.fla" sourceLibraryItemHRef="NPC/NPC-FS/素材/小腿" sourceLastModified="1762786729" symbolType="graphic" lastModified="1762786729" lastUniqueIdentifier="3" sourceItemID="557a7df3-000004db">
+  <timeline>
+    <DOMTimeline name="小腿">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/关节" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.11239624023438" b="0.107879638671875" c="0.156265258789063" d="1.03704833984375" tx="-2.35" ty="-3.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/燃料喷射动画" centerPoint3DX="64.8" centerPoint3DY="-21">
+                  <matrix>
+                    <Matrix a="0.649566650390625" b="-1.45611572265625" c="1.45610046386719" d="0.6495361328125" tx="12.55" ty="-25.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.9" y="31"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#FFFF00" locked="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#1B1B1B"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#393939"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal" weight="0.75">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-655 -765|-215 -925"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!-215 -925[214 -700 329 -119!329 -119[#163.9A #33.17 406.5 187.5!406.5 187.5[#1B4.0A #10B.91 474 336!474 336[#214.5F #1B8.5F 610 518!610 518|623 602"/>
+                    <Edge fillStyle1="1" edges="!623 602|660 839!660 839|581 922!581 922|499 936.5"/>
+                    <Edge fillStyle1="2" edges="!499 936.5|391 956"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!391 956|329 792!329 792|304 754"/>
+                    <Edge fillStyle1="2" strokeStyle="2" edges="!304 754|125 460"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!125 460|-655 -765"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!499 936.5[#14A.EF #29E.EC 233.5 397.5!233.5 397.5[#B8.95 #1B1.16 125 460"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4 复制" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/燃料喷射动画" centerPoint3DX="0.65" centerPoint3DY="-9.6">
+                  <matrix>
+                    <Matrix a="0.649566650390625" b="-1.45611572265625" c="1.45610046386719" d="0.6495361328125" tx="-51.6" ty="-14.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.9" y="31"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

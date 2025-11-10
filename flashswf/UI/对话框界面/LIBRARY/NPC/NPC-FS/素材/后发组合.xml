@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-FS/素材/后发组合" itemID="6911fbe2-00003137" lastModified="1762786274">
+  <timeline>
+    <DOMTimeline name="后发组合">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/后发" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.445968627929688" b="-0.0016937255859375" d="0.592819213867188" tx="12.8" ty="19.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/发丝" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.20553588867188" b="-0.0045623779296875" d="0.638778686523438" tx="12.3" ty="14.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

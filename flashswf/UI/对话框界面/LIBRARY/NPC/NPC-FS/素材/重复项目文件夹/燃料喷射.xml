@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-FS/素材/重复项目文件夹/燃料喷射" itemID="6911f54a-00003107" lastModified="1762784586">
+  <timeline>
+    <DOMTimeline name="燃料喷射">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0157470703125" d="0.089447021484375" tx="10.25" ty="12.15"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.141176470588235"/>
+                        <GradientEntry color="#00FFFF" alpha="0.501960784313725" ratio="0.325490196078431"/>
+                        <GradientEntry color="#00FFFF" alpha="0" ratio="0.662745098039216"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!203 0S2[294 -3 362 176!362 176[430 356 436 612!436 612[443 868 384 1050!384 1050[325 1233 234 1236!234 1236[144 1239 76 1059!76 1059[8 880 1 624!1 624[-5 368 54 185!54 185[113 3 203 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

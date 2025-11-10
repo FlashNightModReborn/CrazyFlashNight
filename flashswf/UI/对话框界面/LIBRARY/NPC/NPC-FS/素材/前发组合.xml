@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-FS/素材/前发组合" itemID="6911fe50-0000316b" lastModified="1762786896">
+  <timeline>
+    <DOMTimeline name="前发组合">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/shape 654" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.558670043945313" b="-0.0021209716796875" d="0.638778686523438" tx="28.15" ty="32.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/前发" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.345733642578125" b="-0.001312255859375" d="0.574310302734375" tx="14.4" ty="23.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

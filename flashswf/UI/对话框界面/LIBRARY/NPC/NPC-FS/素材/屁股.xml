@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-FS/素材/屁股" itemID="6911fbef-00003139" symbolType="graphic" lastModified="1762786287">
+  <timeline>
+    <DOMTimeline name="屁股">
+      <layers>
+        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#101010"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!282 -425[306 -307 436 -184!436 -184[565 -62 548 241"/>
+                    <Edge fillStyle1="1" edges="!548 241[538 436 328 501!328 501|308 506!308 506[132 553 14 553!14 553|-100 548!-100 548|-156 533!-156 533[-207 472 -220 467"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!-220 467[-407 379 -468 189"/>
+                    <Edge fillStyle1="1" edges="!-468 189|-518 91!-518 91|-548 25"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!-548 25[-563 -152 -438 -389!-438 -389|-438 -439!-438 -439|-435 -445"/>
+                    <Edge fillStyle1="1" edges="!-435 -445[-400 -506 -285 -532!-285 -532[-211 -550 -108 -552!-108 -552|22 -549!22 -549|30 -549!30 -549[225 -538 282 -425"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

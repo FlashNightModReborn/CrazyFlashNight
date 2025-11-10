@@ -1,0 +1,64 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-FS/素材/头" itemID="6911f45d-000030f9" lastModified="1762784349" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="头">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/头型" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.562667846679688" b="-0.001922607421875" d="0.553726196289063" tx="15.4" ty="20.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/眼睛" centerPoint3DX="16.35" centerPoint3DY="23.15">
+                  <matrix>
+                    <Matrix a="-0.3533935546875" d="0.348480224609375" tx="21.2" ty="20.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.6" y="8.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/眉毛" centerPoint3DX="16.95" centerPoint3DY="21.55">
+                  <matrix>
+                    <Matrix a="-0.342941284179688" d="0.341232299804688" tx="21.2" ty="19.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="1.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/眉毛" centerPoint3DX="26.2" centerPoint3DY="21.5">
+                  <matrix>
+                    <Matrix a="0.212631225585938" b="-0.0306396484375" c="0.0491180419921875" d="0.33770751953125" tx="24.7" ty="19.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.2" y="1.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/眼睛2" centerPoint3DX="26.2" centerPoint3DY="23.45">
+                  <matrix>
+                    <Matrix a="-0.3533935546875" d="0.348480224609375" tx="30.65" ty="21.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.9" y="7.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/头顶毛" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.529342651367188" b="-0.00201416015625" d="0.638778686523438" tx="18.15" ty="12.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

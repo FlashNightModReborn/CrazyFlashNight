@@ -1,0 +1,2680 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-FS/素材/矩辉启明刃/刀-矩辉启明刃循环动画" itemID="69120068-000034bd" lastModified="1762787831" lastUniqueIdentifier="281">
+  <timeline>
+    <DOMTimeline name="刀-矩辉启明刃循环动画" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;166&lt;/guideline&gt;&lt;guideline direction="v"&gt;1&lt;/guideline&gt;&lt;guideline direction="h"&gt;76&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="图层 21" color="#808080" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="接口" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/接口" centerPoint3DX="1.55" centerPoint3DY="17.45">
+                  <matrix>
+                    <Matrix tx="-9.05" ty="14.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.6" y="3.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="外环" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/外环" centerPoint3DX="1.55" centerPoint3DY="75.45">
+                  <matrix>
+                    <Matrix tx="-54.45" ty="19.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56" y="55.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="一层内环" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" centerPoint3DX="-0.2" centerPoint3DY="71.3">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-1" d="0" tx="46" ty="20.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.75" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" selected="true" centerPoint3DX="-0.65" centerPoint3DY="71.4">
+                  <matrix>
+                    <Matrix a="0.109634399414063" b="0.993606567382813" c="-0.993606567382813" d="0.109634399414063" tx="39.7" ty="15.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.75" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" selected="true" centerPoint3DX="-1.05" centerPoint3DY="71.55">
+                  <matrix>
+                    <Matrix a="0.221145629882813" b="0.974502563476563" c="-0.974502563476563" d="0.221145629882813" tx="32.75" ty="11.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.7" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" selected="true" centerPoint3DX="-1.5" centerPoint3DY="71.75">
+                  <matrix>
+                    <Matrix a="0.329833984375" b="0.942947387695313" c="-0.942947387695313" d="0.329833984375" tx="25.35" ty="8.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.7" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" selected="true" centerPoint3DX="-1.8" centerPoint3DY="71.95">
+                  <matrix>
+                    <Matrix a="0.431350708007813" b="0.900772094726563" c="-0.900772094726563" d="0.431350708007813" tx="17.9" ty="6.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.75" y="45.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" selected="true" centerPoint3DX="-2.15" centerPoint3DY="72.15">
+                  <matrix>
+                    <Matrix a="0.530441284179688" b="0.845977783203125" c="-0.845977783203125" d="0.530441284179688" tx="9.9" ty="4.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.8" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" selected="true" centerPoint3DX="-2.45" centerPoint3DY="72.5">
+                  <matrix>
+                    <Matrix a="0.622756958007813" b="0.780364990234375" c="-0.780364990234375" d="0.622756958007813" tx="1.9" ty="4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.75" y="45.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" selected="true" centerPoint3DX="-2.8" centerPoint3DY="72.85">
+                  <matrix>
+                    <Matrix a="0.707107543945313" b="0.707107543945313" c="-0.707107543945313" d="0.707107543945313" tx="-6.1" ty="4.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.8" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" selected="true" centerPoint3DX="-2.95" centerPoint3DY="73.2">
+                  <matrix>
+                    <Matrix a="0.780364990234375" b="0.622756958007813" c="-0.622756958007813" d="0.780364990234375" tx="-13.95" ty="5.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.8" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" selected="true" centerPoint3DX="-3.2" centerPoint3DY="73.6">
+                  <matrix>
+                    <Matrix a="0.845977783203125" b="0.530441284179688" c="-0.530441284179688" d="0.845977783203125" tx="-21.75" ty="7.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.75" y="45.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" selected="true" centerPoint3DX="-3.3" centerPoint3DY="74.05">
+                  <matrix>
+                    <Matrix a="0.900772094726563" b="0.431350708007813" c="-0.431350708007813" d="0.900772094726563" tx="-29.2" ty="10.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.7" y="45.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" selected="true" centerPoint3DX="-3.4" centerPoint3DY="74.45">
+                  <matrix>
+                    <Matrix a="0.942947387695313" b="0.329833984375" c="-0.329833984375" d="0.942947387695313" tx="-36.2" ty="14.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.75" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" selected="true" centerPoint3DX="-3.5" centerPoint3DY="74.9">
+                  <matrix>
+                    <Matrix a="0.974502563476563" b="0.221145629882813" c="-0.221145629882813" d="0.974502563476563" tx="-42.9" ty="18.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.8" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" centerPoint3DX="-3.45" centerPoint3DY="75.3">
+                  <matrix>
+                    <Matrix a="0.993606567382813" b="0.109634399414063" c="-0.109634399414063" d="0.993606567382813" tx="-49" ty="23.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.75" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="91" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" centerPoint3DX="-3.5" centerPoint3DY="75.7">
+                  <matrix>
+                    <Matrix tx="-54.35" ty="29.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.75" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="105" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" centerPoint3DX="-3.5" centerPoint3DY="75.7">
+                  <matrix>
+                    <Matrix tx="-54.35" ty="29.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.75" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="106" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" centerPoint3DX="-3.45" centerPoint3DY="75.3">
+                  <matrix>
+                    <Matrix a="0.993606567382813" b="0.109634399414063" c="-0.109634399414063" d="0.993606567382813" tx="-49" ty="23.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.75" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" centerPoint3DX="-3.5" centerPoint3DY="74.9">
+                  <matrix>
+                    <Matrix a="0.974502563476563" b="0.221145629882813" c="-0.221145629882813" d="0.974502563476563" tx="-42.9" ty="18.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.8" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="108" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" selected="true" centerPoint3DX="-3.4" centerPoint3DY="74.45">
+                  <matrix>
+                    <Matrix a="0.942947387695313" b="0.329833984375" c="-0.329833984375" d="0.942947387695313" tx="-36.2" ty="14.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.75" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="109" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" centerPoint3DX="-3.3" centerPoint3DY="74.05">
+                  <matrix>
+                    <Matrix a="0.900772094726563" b="0.431350708007813" c="-0.431350708007813" d="0.900772094726563" tx="-29.2" ty="10.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.7" y="45.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="110" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" centerPoint3DX="-3.2" centerPoint3DY="73.6">
+                  <matrix>
+                    <Matrix a="0.845977783203125" b="0.530441284179688" c="-0.530441284179688" d="0.845977783203125" tx="-21.75" ty="7.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.75" y="45.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="111" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" selected="true" centerPoint3DX="-2.95" centerPoint3DY="73.2">
+                  <matrix>
+                    <Matrix a="0.780364990234375" b="0.622756958007813" c="-0.622756958007813" d="0.780364990234375" tx="-13.95" ty="5.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.8" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="112" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" selected="true" centerPoint3DX="-2.8" centerPoint3DY="72.85">
+                  <matrix>
+                    <Matrix a="0.707107543945313" b="0.707107543945313" c="-0.707107543945313" d="0.707107543945313" tx="-6.1" ty="4.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.8" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="113" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" selected="true" centerPoint3DX="-2.45" centerPoint3DY="72.5">
+                  <matrix>
+                    <Matrix a="0.622756958007813" b="0.780364990234375" c="-0.780364990234375" d="0.622756958007813" tx="1.9" ty="4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.75" y="45.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="114" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" selected="true" centerPoint3DX="-2.15" centerPoint3DY="72.15">
+                  <matrix>
+                    <Matrix a="0.530441284179688" b="0.845977783203125" c="-0.845977783203125" d="0.530441284179688" tx="9.9" ty="4.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.8" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="115" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" selected="true" centerPoint3DX="-1.8" centerPoint3DY="71.95">
+                  <matrix>
+                    <Matrix a="0.431350708007813" b="0.900772094726563" c="-0.900772094726563" d="0.431350708007813" tx="17.9" ty="6.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.75" y="45.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="116" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" selected="true" centerPoint3DX="-1.5" centerPoint3DY="71.75">
+                  <matrix>
+                    <Matrix a="0.329833984375" b="0.942947387695313" c="-0.942947387695313" d="0.329833984375" tx="25.35" ty="8.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.7" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" centerPoint3DX="-1.05" centerPoint3DY="71.55">
+                  <matrix>
+                    <Matrix a="0.221145629882813" b="0.974502563476563" c="-0.974502563476563" d="0.221145629882813" tx="32.75" ty="11.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.7" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" centerPoint3DX="-0.65" centerPoint3DY="71.4">
+                  <matrix>
+                    <Matrix a="0.109634399414063" b="0.993606567382813" c="-0.993606567382813" d="0.109634399414063" tx="39.7" ty="15.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.75" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/一层内环" centerPoint3DX="-0.2" centerPoint3DY="71.3">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-1" d="0" tx="46" ty="20.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.75" y="45.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="星环" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" centerPoint3DX="1.45" centerPoint3DY="75.75">
+                  <matrix>
+                    <Matrix a="0.825531005859375" d="0.825531005859375" tx="-40.3" ty="33.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.8" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" selected="true" centerPoint3DX="1.8" centerPoint3DY="75.75">
+                  <matrix>
+                    <Matrix a="0.714935302734375" b="0.410415649414063" c="-0.410415649414063" d="0.714935302734375" tx="-13.15" ty="18"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.85" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" selected="true" centerPoint3DX="2.1" centerPoint3DY="75.85">
+                  <matrix>
+                    <Matrix a="0.410415649414063" b="0.714935302734375" c="-0.714935302734375" d="0.410415649414063" tx="18.35" ty="18.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.85" y="52.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" selected="true" centerPoint3DX="2.3" centerPoint3DY="76.2">
+                  <matrix>
+                    <Matrix a="0" b="0.825531005859375" c="-0.825531005859375" d="0" tx="45" ty="34.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.8" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" selected="true" centerPoint3DX="2.35" centerPoint3DY="76.45">
+                  <matrix>
+                    <Matrix a="-0.31591796875" b="0.762680053710938" c="-0.762680053710938" d="-0.31591796875" tx="57.75" ty="54.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.85" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" selected="true" centerPoint3DX="2.25" centerPoint3DY="76.8">
+                  <matrix>
+                    <Matrix a="-0.583740234375" b="0.583740234375" c="-0.583740234375" d="-0.583740234375" tx="61.95" ty="77.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.8" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" selected="true" centerPoint3DX="2.1" centerPoint3DY="76.9">
+                  <matrix>
+                    <Matrix a="-0.762680053710938" b="0.31591796875" c="-0.31591796875" d="-0.762680053710938" tx="56.95" ty="100.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.75" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" selected="true" centerPoint3DX="1.85" centerPoint3DY="77.05">
+                  <matrix>
+                    <Matrix a="-0.825531005859375" d="-0.825531005859375" tx="43.6" ty="119.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.8" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" selected="true" centerPoint3DX="1.6" centerPoint3DY="77.05">
+                  <matrix>
+                    <Matrix a="-0.762680053710938" b="-0.31591796875" c="0.31591796875" d="-0.762680053710938" tx="23.85" ty="132.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.85" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" selected="true" centerPoint3DX="1.3" centerPoint3DY="77.05">
+                  <matrix>
+                    <Matrix a="-0.583740234375" b="-0.583740234375" c="0.583740234375" d="-0.583740234375" tx="0.65" ty="136.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.9" y="52.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" selected="true" centerPoint3DX="1.1" centerPoint3DY="76.85">
+                  <matrix>
+                    <Matrix a="-0.31591796875" b="-0.762680053710938" c="0.762680053710938" d="-0.31591796875" tx="-22.35" ty="131.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.85" y="52.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" selected="true" centerPoint3DX="0.95" centerPoint3DY="76.75">
+                  <matrix>
+                    <Matrix a="0" b="-0.825531005859375" c="0.825531005859375" d="0" tx="-41.7" ty="118.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.8" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" selected="true" centerPoint3DX="0.85" centerPoint3DY="76.35">
+                  <matrix>
+                    <Matrix a="0.410415649414063" b="-0.714935302734375" c="0.714935302734375" d="0.410415649414063" tx="-56.75" ty="91.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.85" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" centerPoint3DX="1" centerPoint3DY="75.9">
+                  <matrix>
+                    <Matrix a="0.714935302734375" b="-0.410415649414063" c="0.410415649414063" d="0.714935302734375" tx="-56.25" ty="59.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.85" y="52.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="91" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" centerPoint3DX="1.45" centerPoint3DY="75.75">
+                  <matrix>
+                    <Matrix a="0.825531005859375" d="0.825531005859375" tx="-40.3" ty="33.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.8" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="105" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" centerPoint3DX="1.45" centerPoint3DY="75.75">
+                  <matrix>
+                    <Matrix a="0.825531005859375" d="0.825531005859375" tx="-40.3" ty="33.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.8" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="106" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" centerPoint3DX="1" centerPoint3DY="75.9">
+                  <matrix>
+                    <Matrix a="0.714935302734375" b="-0.410415649414063" c="0.410415649414063" d="0.714935302734375" tx="-56.25" ty="59.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.85" y="52.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" centerPoint3DX="0.85" centerPoint3DY="76.35">
+                  <matrix>
+                    <Matrix a="0.410415649414063" b="-0.714935302734375" c="0.714935302734375" d="0.410415649414063" tx="-56.75" ty="91.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.85" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="108" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" selected="true" centerPoint3DX="0.95" centerPoint3DY="76.75">
+                  <matrix>
+                    <Matrix a="0" b="-0.825531005859375" c="0.825531005859375" d="0" tx="-41.7" ty="118.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.8" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="109" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" centerPoint3DX="1.1" centerPoint3DY="76.85">
+                  <matrix>
+                    <Matrix a="-0.31591796875" b="-0.762680053710938" c="0.762680053710938" d="-0.31591796875" tx="-22.35" ty="131.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.85" y="52.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="110" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" centerPoint3DX="1.3" centerPoint3DY="77.05">
+                  <matrix>
+                    <Matrix a="-0.583740234375" b="-0.583740234375" c="0.583740234375" d="-0.583740234375" tx="0.65" ty="136.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.9" y="52.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="111" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" selected="true" centerPoint3DX="1.6" centerPoint3DY="77.05">
+                  <matrix>
+                    <Matrix a="-0.762680053710938" b="-0.31591796875" c="0.31591796875" d="-0.762680053710938" tx="23.85" ty="132.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.85" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="112" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" selected="true" centerPoint3DX="1.85" centerPoint3DY="77.05">
+                  <matrix>
+                    <Matrix a="-0.825531005859375" d="-0.825531005859375" tx="43.6" ty="119.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.8" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="113" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" selected="true" centerPoint3DX="2.1" centerPoint3DY="76.9">
+                  <matrix>
+                    <Matrix a="-0.762680053710938" b="0.31591796875" c="-0.31591796875" d="-0.762680053710938" tx="56.95" ty="100.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.75" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="114" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" selected="true" centerPoint3DX="2.25" centerPoint3DY="76.8">
+                  <matrix>
+                    <Matrix a="-0.583740234375" b="0.583740234375" c="-0.583740234375" d="-0.583740234375" tx="61.95" ty="77.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.8" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="115" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" selected="true" centerPoint3DX="2.35" centerPoint3DY="76.45">
+                  <matrix>
+                    <Matrix a="-0.31591796875" b="0.762680053710938" c="-0.762680053710938" d="-0.31591796875" tx="57.75" ty="54.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.85" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="116" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" selected="true" centerPoint3DX="2.3" centerPoint3DY="76.2">
+                  <matrix>
+                    <Matrix a="0" b="0.825531005859375" c="-0.825531005859375" d="0" tx="45" ty="34.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.8" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" centerPoint3DX="2.1" centerPoint3DY="75.85">
+                  <matrix>
+                    <Matrix a="0.410415649414063" b="0.714935302734375" c="-0.714935302734375" d="0.410415649414063" tx="18.35" ty="18.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.85" y="52.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" centerPoint3DX="1.8" centerPoint3DY="75.75">
+                  <matrix>
+                    <Matrix a="0.714935302734375" b="0.410415649414063" c="-0.410415649414063" d="0.714935302734375" tx="-13.15" ty="18"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.85" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/星环" centerPoint3DX="1.45" centerPoint3DY="75.75">
+                  <matrix>
+                    <Matrix a="0.825531005859375" d="0.825531005859375" tx="-40.3" ty="33.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.8" y="52.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="散热鳍片" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" centerPoint3DX="1.65" centerPoint3DY="80.25">
+                  <matrix>
+                    <Matrix a="-1" d="-2.05943298339844" tx="30.55" ty="120.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" selected="true" centerPoint3DX="1.5" centerPoint3DY="80.2">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-2.05938720703125" d="0" tx="41.4" ty="51.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" selected="true" centerPoint3DX="1.55" centerPoint3DY="80.3">
+                  <matrix>
+                    <Matrix d="2.05943298339844" tx="-27.45" ty="40.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" selected="true" centerPoint3DX="1.55" centerPoint3DY="100.9">
+                  <matrix>
+                    <Matrix d="1.70628356933594" tx="-27.45" ty="67.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" selected="true" centerPoint3DX="1.55" centerPoint3DY="121.55">
+                  <matrix>
+                    <Matrix d="1.35308837890625" tx="-27.45" ty="95.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" selected="true" centerPoint3DX="1.55" centerPoint3DY="142.15">
+                  <matrix>
+                    <Matrix tx="-27.45" ty="122.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" selected="true" centerPoint3DX="1.55" centerPoint3DY="147.3">
+                  <matrix>
+                    <Matrix tx="-27.45" ty="127.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" selected="true" centerPoint3DX="1.55" centerPoint3DY="145.65">
+                  <matrix>
+                    <Matrix tx="-27.45" ty="126.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" selected="true" centerPoint3DX="1.55" centerPoint3DY="143.95">
+                  <matrix>
+                    <Matrix tx="-27.45" ty="124.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" selected="true" centerPoint3DX="1.55" centerPoint3DY="143.95">
+                  <matrix>
+                    <Matrix tx="-27.45" ty="124.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" selected="true" centerPoint3DX="1.55" centerPoint3DY="143.95">
+                  <matrix>
+                    <Matrix tx="-27.45" ty="124.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" selected="true" centerPoint3DX="1.55" centerPoint3DY="143.95">
+                  <matrix>
+                    <Matrix tx="-27.45" ty="124.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" selected="true" centerPoint3DX="1.55" centerPoint3DY="143.95">
+                  <matrix>
+                    <Matrix tx="-27.45" ty="124.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" centerPoint3DX="1.55" centerPoint3DY="143.95">
+                  <matrix>
+                    <Matrix tx="-27.45" ty="124.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="91" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" centerPoint3DX="1.55" centerPoint3DY="143.95">
+                  <matrix>
+                    <Matrix tx="-27.45" ty="124.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="105" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" centerPoint3DX="1.55" centerPoint3DY="143.95">
+                  <matrix>
+                    <Matrix tx="-27.45" ty="124.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="106" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" centerPoint3DX="1.55" centerPoint3DY="143.95">
+                  <matrix>
+                    <Matrix tx="-27.45" ty="124.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" centerPoint3DX="1.55" centerPoint3DY="143.95">
+                  <matrix>
+                    <Matrix tx="-27.45" ty="124.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="108" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" selected="true" centerPoint3DX="1.55" centerPoint3DY="143.95">
+                  <matrix>
+                    <Matrix tx="-27.45" ty="124.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="109" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" centerPoint3DX="1.55" centerPoint3DY="143.95">
+                  <matrix>
+                    <Matrix tx="-27.45" ty="124.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="110" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" centerPoint3DX="1.55" centerPoint3DY="143.95">
+                  <matrix>
+                    <Matrix tx="-27.45" ty="124.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="111" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" selected="true" centerPoint3DX="1.55" centerPoint3DY="143.95">
+                  <matrix>
+                    <Matrix tx="-27.45" ty="124.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="112" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" selected="true" centerPoint3DX="1.55" centerPoint3DY="145.65">
+                  <matrix>
+                    <Matrix tx="-27.45" ty="126.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="113" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" selected="true" centerPoint3DX="1.55" centerPoint3DY="147.3">
+                  <matrix>
+                    <Matrix tx="-27.45" ty="127.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="114" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" selected="true" centerPoint3DX="1.55" centerPoint3DY="142.15">
+                  <matrix>
+                    <Matrix tx="-27.45" ty="122.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="115" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" selected="true" centerPoint3DX="1.55" centerPoint3DY="121.55">
+                  <matrix>
+                    <Matrix d="1.35308837890625" tx="-27.45" ty="95.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="116" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" selected="true" centerPoint3DX="1.55" centerPoint3DY="100.9">
+                  <matrix>
+                    <Matrix d="1.70628356933594" tx="-27.45" ty="67.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" centerPoint3DX="1.55" centerPoint3DY="80.3">
+                  <matrix>
+                    <Matrix d="2.05943298339844" tx="-27.45" ty="40.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" centerPoint3DX="1.5" centerPoint3DY="80.2">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-2.05938720703125" d="0" tx="41.4" ty="51.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片" centerPoint3DX="1.65" centerPoint3DY="80.25">
+                  <matrix>
+                    <Matrix a="-1" d="-2.05943298339844" tx="30.55" ty="120.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29" y="19.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="剑身光效" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身光效" name="剑身光效" selected="true" centerPoint3DX="0.7" centerPoint3DY="335.5">
+                  <matrix>
+                    <Matrix tx="-14.65" ty="143.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.35" y="192.25"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身光效" name="剑身光效" selected="true" centerPoint3DX="0.7" centerPoint3DY="335.5">
+                  <matrix>
+                    <Matrix tx="-14.65" ty="143.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.35" y="192.25"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.328125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身光效" name="剑身光效" selected="true" centerPoint3DX="0.7" centerPoint3DY="335.5">
+                  <matrix>
+                    <Matrix tx="-14.65" ty="143.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.35" y="192.25"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.671875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身光效" name="剑身光效" selected="true" centerPoint3DX="0.7" centerPoint3DY="335.5">
+                  <matrix>
+                    <Matrix tx="-14.65" ty="143.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.35" y="192.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身光效" name="剑身光效" selected="true" centerPoint3DX="0.7" centerPoint3DY="335.5">
+                  <matrix>
+                    <Matrix tx="-14.65" ty="143.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.35" y="192.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身光效" name="剑身光效" centerPoint3DX="0.7" centerPoint3DY="335.5">
+                  <matrix>
+                    <Matrix tx="-14.65" ty="143.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.35" y="192.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="91" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身光效" name="剑身光效" centerPoint3DX="0.7" centerPoint3DY="335.5">
+                  <matrix>
+                    <Matrix tx="-14.65" ty="143.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.35" y="192.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="105" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身光效" name="剑身光效" centerPoint3DX="0.7" centerPoint3DY="335.5">
+                  <matrix>
+                    <Matrix tx="-14.65" ty="143.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.35" y="192.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="106" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身光效" name="剑身光效" centerPoint3DX="0.7" centerPoint3DY="335.5">
+                  <matrix>
+                    <Matrix tx="-14.65" ty="143.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.35" y="192.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身光效" name="剑身光效" centerPoint3DX="0.7" centerPoint3DY="335.5">
+                  <matrix>
+                    <Matrix tx="-14.65" ty="143.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.35" y="192.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="108" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身光效" name="剑身光效" selected="true" centerPoint3DX="0.7" centerPoint3DY="335.5">
+                  <matrix>
+                    <Matrix tx="-14.65" ty="143.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.35" y="192.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="109" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身光效" name="剑身光效" centerPoint3DX="0.7" centerPoint3DY="335.5">
+                  <matrix>
+                    <Matrix tx="-14.65" ty="143.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.35" y="192.25"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.671875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="110" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身光效" name="剑身光效" centerPoint3DX="0.7" centerPoint3DY="335.5">
+                  <matrix>
+                    <Matrix tx="-14.65" ty="143.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.35" y="192.25"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.328125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="111" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身光效" name="剑身光效" selected="true" centerPoint3DX="0.7" centerPoint3DY="335.5">
+                  <matrix>
+                    <Matrix tx="-14.65" ty="143.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.35" y="192.25"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="112" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="113" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="114" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="115" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="116" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="剑身" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" centerPoint3DX="1.65" centerPoint3DY="76.4">
+                  <matrix>
+                    <Matrix d="0.1839599609375" tx="-19.3" ty="37.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" selected="true" centerPoint3DX="1.6" centerPoint3DY="80.25">
+                  <matrix>
+                    <Matrix d="0.19561767578125" tx="-19.35" ty="39.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" selected="true" centerPoint3DX="1.55" centerPoint3DY="84.1">
+                  <matrix>
+                    <Matrix d="0.207275390625" tx="-19.4" ty="40.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" selected="true" centerPoint3DX="1.55" centerPoint3DY="87.9">
+                  <matrix>
+                    <Matrix d="0.21893310546875" tx="-19.4" ty="42.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" selected="true" centerPoint3DX="1.5" centerPoint3DY="91.75">
+                  <matrix>
+                    <Matrix d="0.2305908203125" tx="-19.45" ty="43.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" selected="true" centerPoint3DX="1.45" centerPoint3DY="95.6">
+                  <matrix>
+                    <Matrix d="0.24224853515625" tx="-19.5" ty="44.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" selected="true" centerPoint3DX="1.35" centerPoint3DY="133.05">
+                  <matrix>
+                    <Matrix d="0.4171142578125" tx="-19.6" ty="45.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" selected="true" centerPoint3DX="1.45" centerPoint3DY="227.5">
+                  <matrix>
+                    <Matrix d="0.70855712890625" tx="-19.5" ty="78.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" selected="true" centerPoint3DX="1.35" centerPoint3DY="337.85">
+                  <matrix>
+                    <Matrix tx="-19.6" ty="128.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" selected="true" centerPoint3DX="1.35" centerPoint3DY="337.85">
+                  <matrix>
+                    <Matrix tx="-19.6" ty="128.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" selected="true" centerPoint3DX="1.35" centerPoint3DY="337.85">
+                  <matrix>
+                    <Matrix tx="-19.6" ty="128.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" selected="true" centerPoint3DX="1.35" centerPoint3DY="337.85">
+                  <matrix>
+                    <Matrix tx="-19.6" ty="128.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" selected="true" centerPoint3DX="1.35" centerPoint3DY="337.85">
+                  <matrix>
+                    <Matrix tx="-19.6" ty="128.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" centerPoint3DX="1.35" centerPoint3DY="337.85">
+                  <matrix>
+                    <Matrix tx="-19.6" ty="128.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="91" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" centerPoint3DX="1.35" centerPoint3DY="337.85">
+                  <matrix>
+                    <Matrix tx="-19.6" ty="128.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="105" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" centerPoint3DX="1.35" centerPoint3DY="337.85">
+                  <matrix>
+                    <Matrix tx="-19.6" ty="128.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="106" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" centerPoint3DX="1.35" centerPoint3DY="337.85">
+                  <matrix>
+                    <Matrix tx="-19.6" ty="128.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" centerPoint3DX="1.35" centerPoint3DY="337.85">
+                  <matrix>
+                    <Matrix tx="-19.6" ty="128.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="108" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" selected="true" centerPoint3DX="1.35" centerPoint3DY="337.85">
+                  <matrix>
+                    <Matrix tx="-19.6" ty="128.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="109" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" centerPoint3DX="1.35" centerPoint3DY="337.85">
+                  <matrix>
+                    <Matrix tx="-19.6" ty="128.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="110" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" centerPoint3DX="1.35" centerPoint3DY="337.85">
+                  <matrix>
+                    <Matrix tx="-19.6" ty="128.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="111" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" selected="true" centerPoint3DX="1.35" centerPoint3DY="337.85">
+                  <matrix>
+                    <Matrix tx="-19.6" ty="128.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="112" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" selected="true" centerPoint3DX="1.45" centerPoint3DY="227.5">
+                  <matrix>
+                    <Matrix d="0.70855712890625" tx="-19.5" ty="78.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="113" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" selected="true" centerPoint3DX="1.35" centerPoint3DY="133.05">
+                  <matrix>
+                    <Matrix d="0.4171142578125" tx="-19.6" ty="45.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="114" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" selected="true" centerPoint3DX="1.45" centerPoint3DY="95.6">
+                  <matrix>
+                    <Matrix d="0.24224853515625" tx="-19.5" ty="44.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="115" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" selected="true" centerPoint3DX="1.5" centerPoint3DY="91.75">
+                  <matrix>
+                    <Matrix d="0.2305908203125" tx="-19.45" ty="43.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="116" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" selected="true" centerPoint3DX="1.55" centerPoint3DY="87.9">
+                  <matrix>
+                    <Matrix d="0.21893310546875" tx="-19.4" ty="42.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" centerPoint3DX="1.55" centerPoint3DY="84.1">
+                  <matrix>
+                    <Matrix d="0.207275390625" tx="-19.4" ty="40.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" centerPoint3DX="1.6" centerPoint3DY="80.25">
+                  <matrix>
+                    <Matrix d="0.19561767578125" tx="-19.35" ty="39.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/剑身" centerPoint3DX="1.65" centerPoint3DY="76.4">
+                  <matrix>
+                    <Matrix d="0.1839599609375" tx="-19.3" ty="37.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.95" y="209.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="配重" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" centerPoint3DX="0.9" centerPoint3DY="-71.75">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-85.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" selected="true" centerPoint3DX="0.9" centerPoint3DY="-69.6">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-83.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" selected="true" centerPoint3DX="0.9" centerPoint3DY="-62.15">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-76.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" selected="true" centerPoint3DX="0.9" centerPoint3DY="-54.9">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-68.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" selected="true" centerPoint3DX="0.9" centerPoint3DY="-52.25">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-66.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" selected="true" centerPoint3DX="0.9" centerPoint3DY="-54.45">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-68.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" selected="true" centerPoint3DX="0.9" centerPoint3DY="-62.65">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-76.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" selected="true" centerPoint3DX="0.9" centerPoint3DY="-78.15">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-92.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" selected="true" centerPoint3DX="0.9" centerPoint3DY="-94.75">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-108.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" selected="true" centerPoint3DX="0.9" centerPoint3DY="-109.6">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-123.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" selected="true" centerPoint3DX="0.9" centerPoint3DY="-119.25">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-133.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" selected="true" centerPoint3DX="0.9" centerPoint3DY="-122.2">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-136.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" selected="true" centerPoint3DX="1.3" centerPoint3DY="-113.4">
+                  <matrix>
+                    <Matrix tx="-13.9" ty="-127.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" centerPoint3DX="1.5" centerPoint3DY="-108.15">
+                  <matrix>
+                    <Matrix tx="-13.7" ty="-122.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="91" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" centerPoint3DX="1.6" centerPoint3DY="-106.4">
+                  <matrix>
+                    <Matrix tx="-13.6" ty="-120.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="105" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" centerPoint3DX="1.6" centerPoint3DY="-106.4">
+                  <matrix>
+                    <Matrix tx="-13.6" ty="-120.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="106" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" centerPoint3DX="1.5" centerPoint3DY="-108.15">
+                  <matrix>
+                    <Matrix tx="-13.7" ty="-122.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" centerPoint3DX="1.3" centerPoint3DY="-113.4">
+                  <matrix>
+                    <Matrix tx="-13.9" ty="-127.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="108" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" selected="true" centerPoint3DX="0.9" centerPoint3DY="-122.2">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-136.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="109" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" centerPoint3DX="0.9" centerPoint3DY="-119.25">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-133.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="110" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" centerPoint3DX="0.9" centerPoint3DY="-109.6">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-123.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="111" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" selected="true" centerPoint3DX="0.9" centerPoint3DY="-94.75">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-108.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="112" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" selected="true" centerPoint3DX="0.9" centerPoint3DY="-78.15">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-92.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="113" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" selected="true" centerPoint3DX="0.9" centerPoint3DY="-62.65">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-76.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="114" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" selected="true" centerPoint3DX="0.9" centerPoint3DY="-54.45">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-68.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="115" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" selected="true" centerPoint3DX="0.9" centerPoint3DY="-52.25">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-66.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="116" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" selected="true" centerPoint3DX="0.9" centerPoint3DY="-54.9">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-68.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" centerPoint3DX="0.9" centerPoint3DY="-62.15">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-76.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" centerPoint3DX="0.9" centerPoint3DY="-69.6">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-83.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/配重" centerPoint3DX="0.9" centerPoint3DY="-71.75">
+                  <matrix>
+                    <Matrix tx="-14.3" ty="-85.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.2" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="握把" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" centerPoint3DX="1.6" centerPoint3DY="10.8">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-24.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" selected="true" centerPoint3DX="1.6" centerPoint3DY="13.8">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-21.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" selected="true" centerPoint3DX="1.6" centerPoint3DY="24.4">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-10.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" selected="true" centerPoint3DX="1.6" centerPoint3DY="34.65">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-0.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" selected="true" centerPoint3DX="1.6" centerPoint3DY="38.4">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="3.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" selected="true" centerPoint3DX="1.6" centerPoint3DY="35.95">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="0.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" selected="true" centerPoint3DX="1.6" centerPoint3DY="26.7">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-8.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" selected="true" centerPoint3DX="1.6" centerPoint3DY="9.4">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-25.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" selected="true" centerPoint3DX="1.6" centerPoint3DY="-9.2">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-44.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" selected="true" centerPoint3DX="1.6" centerPoint3DY="-25.9">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-61"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" selected="true" centerPoint3DX="1.6" centerPoint3DY="-36.7">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-71.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" selected="true" centerPoint3DX="1.6" centerPoint3DY="-40">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-75.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" selected="true" centerPoint3DX="1.6" centerPoint3DY="-27.1">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-62.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" centerPoint3DX="1.6" centerPoint3DY="-19.4">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-54.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="91" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" centerPoint3DX="1.6" centerPoint3DY="-16.8">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-51.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="105" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" centerPoint3DX="1.6" centerPoint3DY="-16.8">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-51.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="106" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" centerPoint3DX="1.6" centerPoint3DY="-19.4">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-54.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" centerPoint3DX="1.6" centerPoint3DY="-27.1">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-62.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="108" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" selected="true" centerPoint3DX="1.6" centerPoint3DY="-40">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-75.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="109" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" centerPoint3DX="1.6" centerPoint3DY="-36.7">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-71.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="110" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" centerPoint3DX="1.6" centerPoint3DY="-25.9">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-61"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="111" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" selected="true" centerPoint3DX="1.6" centerPoint3DY="-9.2">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-44.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="112" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" selected="true" centerPoint3DX="1.6" centerPoint3DY="9.4">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-25.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="113" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" selected="true" centerPoint3DX="1.6" centerPoint3DY="26.7">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-8.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="114" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" selected="true" centerPoint3DX="1.6" centerPoint3DY="35.95">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="0.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="115" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" selected="true" centerPoint3DX="1.6" centerPoint3DY="38.4">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="3.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="116" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" selected="true" centerPoint3DX="1.6" centerPoint3DY="34.65">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-0.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" centerPoint3DX="1.6" centerPoint3DY="24.4">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-10.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" centerPoint3DX="1.6" centerPoint3DY="13.8">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-21.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/握把" centerPoint3DX="1.6" centerPoint3DY="10.8">
+                  <matrix>
+                    <Matrix tx="-7.1" ty="-24.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="35.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="光刃" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/光刃" name="光刃" selected="true" centerPoint3DX="0.95" centerPoint3DY="328.3">
+                  <matrix>
+                    <Matrix tx="-43.1" ty="109.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.05" y="218.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/光刃" name="光刃" selected="true" centerPoint3DX="0.95" centerPoint3DY="328.3">
+                  <matrix>
+                    <Matrix tx="-43.1" ty="109.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.05" y="218.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.44140625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/光刃" name="光刃" selected="true" centerPoint3DX="0.95" centerPoint3DY="328.3">
+                  <matrix>
+                    <Matrix tx="-43.1" ty="109.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.05" y="218.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.75"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/光刃" name="光刃" centerPoint3DX="0.95" centerPoint3DY="328.3">
+                  <matrix>
+                    <Matrix tx="-43.1" ty="109.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.05" y="218.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.94140625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="91" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/光刃" name="光刃" centerPoint3DX="0.95" centerPoint3DY="328.3">
+                  <matrix>
+                    <Matrix tx="-43.1" ty="109.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.05" y="218.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="105" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/光刃" name="光刃" centerPoint3DX="0.95" centerPoint3DY="328.3">
+                  <matrix>
+                    <Matrix tx="-43.1" ty="109.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.05" y="218.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="106" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/光刃" name="光刃" centerPoint3DX="0.95" centerPoint3DY="328.3">
+                  <matrix>
+                    <Matrix tx="-43.1" ty="109.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.05" y="218.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.94140625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="107" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/光刃" name="光刃" centerPoint3DX="0.95" centerPoint3DY="328.3">
+                  <matrix>
+                    <Matrix tx="-43.1" ty="109.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.05" y="218.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.75"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="108" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/光刃" name="光刃" selected="true" centerPoint3DX="0.95" centerPoint3DY="328.3">
+                  <matrix>
+                    <Matrix tx="-43.1" ty="109.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.05" y="218.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.44140625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="109" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/光刃" name="光刃" centerPoint3DX="0.95" centerPoint3DY="328.3">
+                  <matrix>
+                    <Matrix tx="-43.1" ty="109.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.05" y="218.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="110" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="111" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="112" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="113" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="114" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="115" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="116" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="117" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,45 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-FS/素材/大腿2" itemID="6911fe63-0000316e" sourceFlashFilepath="../../levels/地图-界外街道.fla" sourceLibraryItemHRef="NPC/NPC-FS/素材/大腿2" sourceLastModified="1762786915" symbolType="graphic" lastModified="1762786915" sourceItemID="561602f4-0000017c">
+  <timeline>
+    <DOMTimeline name="大腿2">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#1B1B1B"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!790 1549[752 1010 706 724!706 724|676 571!676 571[611 299 608 231!608 231|610 121"/>
+                    <Edge fillStyle0="1" edges="!610 121[551 -58 252 27!252 27[-64 154 16 307"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!16 307[53 389 114 613!114 613|117 622!117 622|124 651!124 651[142 715 197 852!197 852[296 1102 516 1597"/>
+                    <Edge fillStyle0="1" edges="!516 1597[575 1645 623 1662!623 1662[740 1702 790 1549"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

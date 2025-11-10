@@ -34,6 +34,10 @@
           <DOMFolderItem name="NPC-劳埃德/素材/武器-G11" itemID="69109f71-000009e3"/>
           <DOMFolderItem name="NPC-劳埃德/素材/武器-G11/组件" itemID="690e198b-0000155e"/>
           <DOMFolderItem name="NPC-劳埃德/素材/武器-阎魔刀" itemID="69109f71-000009e5"/>
+          <DOMFolderItem name="NPC/NPC-FS" itemID="69120bd0-000046b0"/>
+          <DOMFolderItem name="NPC/NPC-FS/素材" itemID="6911f382-000030f6"/>
+          <DOMFolderItem name="NPC/NPC-FS/素材/矩辉启明刃" itemID="6912020b-0000356e"/>
+          <DOMFolderItem name="NPC/NPC-FS/素材/重复项目文件夹" itemID="6911f2ec-00002766"/>
           <DOMFolderItem name="NPC/NPC-程铮" itemID="68f4e96e-00006656"/>
           <DOMFolderItem name="NPC/NPC-程铮/杂项" itemID="67d805c4-000014f5"/>
           <DOMFolderItem name="NPC/NPC-程铮/组件" itemID="68f4e950-00006620"/>
@@ -97,6 +101,7 @@
      </folders>
      <media>
           <DOMBitmapItem name="BMP_e08fcab1_dac5_484b_ac54_5a76f8396624.png" itemID="67812173-00000959" sourceExternalFilepath="BMP_e08fcab1_dac5_484b_ac54_5a76f8396624.png" sourceLastImported="1736515955" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="BMP_e08fcab1_dac5_484b_ac54_5a76f8396624.png" bitmapDataHRef="M 13 1741519841.dat" frameRight="4680" frameBottom="5160"/>
+          <DOMBitmapItem name="NPC/NPC-FS/素材/重复项目文件夹/image 3833" itemID="560f79f1-00000efa" sourceLastImported="1443854833" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="NPC/NPC-FS/素材/重复项目文件夹/image 3833" bitmapDataHRef="M 4 1762790352.dat" frameRight="2020" frameBottom="1780"/>
           <DOMSoundItem name="sound/sound18.wav" itemID="6597607a-00000205" sourceExternalFilepath="../对话框界面/LIBRARY/sound/sound18.wav" sourceLastImported="1704419450" href="sound/sound18.wav" soundDataHRef="M 1 1716708655.dat" format="22kHz 16bit Mono" sampleCount="1893" exportFormat="10"/>
           <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="../对话框界面/LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" href="sound/sound19.wav" soundDataHRef="M 2 1716708655.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
      </media>
@@ -300,6 +305,48 @@
           <Include href="NPC-劳埃德/素材/武器-阎魔刀/阎魔刀刀柄.xml" loadImmediate="false" itemID="657577b7-00000ad6" lastModified="1702203385"/>
           <Include href="NPC-劳埃德/素材/武器-阎魔刀/阎魔刀刀口.xml" loadImmediate="false" itemID="65757cf1-00000b08" lastModified="1702203837"/>
           <Include href="NPC-劳埃德/素材/武器-阎魔刀/阎魔刀决定版.xml" loadImmediate="false" itemID="6575814a-00000b50" lastModified="1702305178"/>
+          <Include href="NPC/NPC-FS/FS-动态.xml" loadImmediate="false" itemID="691206de-0000408a" lastModified="1762790411"/>
+          <Include href="NPC/NPC-FS/素材/大腿1.xml" itemIcon="1" loadImmediate="false" itemID="6911fe60-0000316d" lastModified="1762786912"/>
+          <Include href="NPC/NPC-FS/素材/大腿2.xml" itemIcon="1" loadImmediate="false" itemID="6911fe63-0000316e" lastModified="1762786915"/>
+          <Include href="NPC/NPC-FS/素材/后发组合.xml" loadImmediate="false" itemID="6911fbe2-00003137" lastModified="1762786274"/>
+          <Include href="NPC/NPC-FS/素材/矩辉启明刃/刀-矩辉启明刃循环动画.xml" loadImmediate="false" itemID="69120068-000034bd" lastModified="1762787831"/>
+          <Include href="NPC/NPC-FS/素材/矩辉启明刃/光刃.xml" loadImmediate="false" itemID="690f366a-0000a388" lastModified="1762604871"/>
+          <Include href="NPC/NPC-FS/素材/矩辉启明刃/剑身.xml" loadImmediate="false" itemID="690f175d-0000a130" lastModified="1762608838"/>
+          <Include href="NPC/NPC-FS/素材/矩辉启明刃/剑身光效.xml" loadImmediate="false" itemID="690f45bd-0000a706" lastModified="1762608574"/>
+          <Include href="NPC/NPC-FS/素材/矩辉启明刃/接口.xml" loadImmediate="false" itemID="690f0f70-0000a10a" lastModified="1762594672"/>
+          <Include href="NPC/NPC-FS/素材/矩辉启明刃/配重.xml" loadImmediate="false" itemID="690f0695-0000a0e1" lastModified="1762592417"/>
+          <Include href="NPC/NPC-FS/素材/矩辉启明刃/散热鳍片.xml" loadImmediate="false" itemID="690f1517-0000a125" lastModified="1762611026"/>
+          <Include href="NPC/NPC-FS/素材/矩辉启明刃/外环.xml" loadImmediate="false" itemID="690f0f6a-0000a106" lastModified="1762608172"/>
+          <Include href="NPC/NPC-FS/素材/矩辉启明刃/握把.xml" loadImmediate="false" itemID="690f079f-0000a0ea" lastModified="1762609964"/>
+          <Include href="NPC/NPC-FS/素材/矩辉启明刃/星环.xml" loadImmediate="false" itemID="690f1fe4-0000a353" lastModified="1762601533"/>
+          <Include href="NPC/NPC-FS/素材/矩辉启明刃/一层内环.xml" loadImmediate="false" itemID="690f0f61-0000a102" lastModified="1762594657"/>
+          <Include href="NPC/NPC-FS/素材/眉毛.xml" loadImmediate="false" itemID="6911fb9b-0000312f" lastModified="1762786203"/>
+          <Include href="NPC/NPC-FS/素材/屁股.xml" itemIcon="1" loadImmediate="false" itemID="6911fbef-00003139" lastModified="1762786287"/>
+          <Include href="NPC/NPC-FS/素材/前发组合.xml" loadImmediate="false" itemID="6911fe50-0000316b" lastModified="1762786896"/>
+          <Include href="NPC/NPC-FS/素材/裙子.xml" itemIcon="1" loadImmediate="false" itemID="6911fe2f-00003165" lastModified="1762786863"/>
+          <Include href="NPC/NPC-FS/素材/上身.xml" itemIcon="1" loadImmediate="false" itemID="6911fbc3-00003133" lastModified="1762786243"/>
+          <Include href="NPC/NPC-FS/素材/书本.xml" loadImmediate="false" itemID="69120316-00003e3b" lastModified="1762788403"/>
+          <Include href="NPC/NPC-FS/素材/头.xml" loadImmediate="false" itemID="6911f45d-000030f9" lastModified="1762784349"/>
+          <Include href="NPC/NPC-FS/素材/头型.xml" itemIcon="1" loadImmediate="false" itemID="6911fbbe-00003132" lastModified="1762786238"/>
+          <Include href="NPC/NPC-FS/素材/小腿.xml" itemIcon="1" loadImmediate="false" itemID="6911fbf5-0000313a" lastModified="1762786729"/>
+          <Include href="NPC/NPC-FS/素材/眼睛.xml" loadImmediate="false" itemID="6911fb97-0000312e" lastModified="1762786199"/>
+          <Include href="NPC/NPC-FS/素材/眼睛2.xml" loadImmediate="false" itemID="6911fba3-00003130" lastModified="1762786211"/>
+          <Include href="NPC/NPC-FS/素材/腰部.xml" itemIcon="1" loadImmediate="false" itemID="6911fe2a-00003164" lastModified="1762786858"/>
+          <Include href="NPC/NPC-FS/素材/重复项目文件夹/shape 649.xml" itemIcon="1" loadImmediate="false" itemID="5e443e24-00000fe6" lastModified="1762786806"/>
+          <Include href="NPC/NPC-FS/素材/重复项目文件夹/shape 654.xml" itemIcon="1" loadImmediate="false" itemID="56160350-0000028f" lastModified="1581671527"/>
+          <Include href="NPC/NPC-FS/素材/重复项目文件夹/发丝.xml" itemIcon="1" loadImmediate="false" itemID="6911fbc8-00003134" lastModified="1762786248"/>
+          <Include href="NPC/NPC-FS/素材/重复项目文件夹/关节.xml" itemIcon="1" loadImmediate="false" itemID="6911fc05-0000313b" lastModified="1762786688"/>
+          <Include href="NPC/NPC-FS/素材/重复项目文件夹/后发.xml" itemIcon="1" loadImmediate="false" itemID="6911fbe6-00003138" lastModified="1762786278"/>
+          <Include href="NPC/NPC-FS/素材/重复项目文件夹/前发.xml" itemIcon="1" loadImmediate="false" itemID="6911fe56-0000316c" lastModified="1762786902"/>
+          <Include href="NPC/NPC-FS/素材/重复项目文件夹/燃料喷射.xml" loadImmediate="false" itemID="6911f54a-00003107" lastModified="1762784586"/>
+          <Include href="NPC/NPC-FS/素材/重复项目文件夹/燃料喷射动画.xml" loadImmediate="false" itemID="6911f562-0000310b" lastModified="1762784669"/>
+          <Include href="NPC/NPC-FS/素材/重复项目文件夹/头顶毛.xml" itemIcon="1" loadImmediate="false" itemID="6911fbac-00003131" lastModified="1762786220"/>
+          <Include href="NPC/NPC-FS/素材/重复项目文件夹/元件 1.xml" loadImmediate="false" itemID="5e4420d6-0000030c" lastModified="1762786309"/>
+          <Include href="NPC/NPC-FS/素材/重复项目文件夹/元件 2.xml" loadImmediate="false" itemID="5e4420d6-0000030d" lastModified="1581523076"/>
+          <Include href="NPC/NPC-FS/素材/重复项目文件夹/元件 3.xml" loadImmediate="false" itemID="5e4420d6-0000030e" lastModified="1581523135"/>
+          <Include href="NPC/NPC-FS/素材/重复项目文件夹/元件 4.xml" loadImmediate="false" itemID="5e4420d6-0000030f" lastModified="1762785123"/>
+          <Include href="NPC/NPC-FS/素材/重复项目文件夹/元件 5.xml" loadImmediate="false" itemID="5e4420d6-00000310" lastModified="1762785156"/>
+          <Include href="NPC/NPC-FS/素材/重复项目文件夹/元件 6.xml" loadImmediate="false" itemID="5e4420d6-00000311" lastModified="1581523143"/>
           <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1_4.xml" loadImmediate="false" itemID="68f4e559-00006172" lastModified="1760879961"/>
           <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1_5.xml" loadImmediate="false" itemID="68f4e559-0000617a" lastModified="1760879961"/>
           <Include href="NPC/NPC-程铮/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1_6.xml" loadImmediate="false" itemID="68f4e559-00006187" lastModified="1760879961"/>
@@ -1039,7 +1086,7 @@
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
           <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1762093394"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1762706215"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1762790431"/>
           <Include href="发型/Symbol 799.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000814" lastModified="1710653981"/>
           <Include href="歌留多/歌留多胯.xml" loadImmediate="false" itemID="67096725-00000045" lastModified="1728669954"/>
           <Include href="歌留多/歌留多身体.xml" loadImmediate="false" itemID="67095275-0000000f" lastModified="1728665563"/>
@@ -1523,6 +1570,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="999944" publishTime="1762790249"/>
           <PublishItem publishSize="954700" publishTime="1762706201"/>
           <PublishItem publishSize="954758" publishTime="1762697173"/>
           <PublishItem publishSize="802605" publishTime="1762266955"/>
@@ -1542,6 +1590,5 @@
           <PublishItem publishSize="691809" publishTime="1756644916"/>
           <PublishItem publishSize="682922" publishTime="1756055688"/>
           <PublishItem publishSize="682910" publishTime="1755954805"/>
-          <PublishItem publishSize="682908" publishTime="1755954756"/>
      </publishHistory>
 </DOMDocument>

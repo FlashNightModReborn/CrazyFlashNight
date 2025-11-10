@@ -1,0 +1,42 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-FS/素材/重复项目文件夹/燃料喷射动画" itemID="6911f562-0000310b" lastModified="1762784669" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="燃料喷射动画" currentFrame="19">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/燃料喷射" centerPoint3DX="10.9" centerPoint3DY="30.9">
+                  <transformationPoint>
+                    <Point x="10.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/燃料喷射" centerPoint3DX="10.9" centerPoint3DY="30.9">
+                  <matrix>
+                    <Matrix d="0.89239501953125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/燃料喷射" centerPoint3DX="10.9" centerPoint3DY="30.9">
+                  <transformationPoint>
+                    <Point x="10.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

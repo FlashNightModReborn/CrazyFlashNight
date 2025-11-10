@@ -1,0 +1,971 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-FS/FS-动态" itemID="691206de-0000408a" lastModified="1762790411" lastUniqueIdentifier="51">
+  <timeline>
+    <DOMTimeline name="FS-动态" currentFrame="119">
+      <layers>
+        <DOMLayer name="书本" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/书本" centerPoint3DX="135.9" centerPoint3DY="83">
+                  <matrix>
+                    <Matrix a="-0.497909545898438" b="0.0454864501953125" c="0.0454864501953125" d="0.497909545898438" tx="156.55" ty="63.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.5" y="35.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/书本" centerPoint3DX="133" centerPoint3DY="74.35">
+                  <matrix>
+                    <Matrix a="-0.493911743164063" b="0.0776824951171875" c="0.0776824951171875" d="0.493911743164063" tx="152.6" ty="53.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.55" y="35.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/书本" centerPoint3DX="135.9" centerPoint3DY="83">
+                  <matrix>
+                    <Matrix a="-0.497909545898438" b="0.0454864501953125" c="0.0454864501953125" d="0.497909545898438" tx="156.55" ty="63.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.5" y="35.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刀-矩辉启明刃循环动画" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/刀-矩辉启明刃循环动画" centerPoint3DX="43" centerPoint3DY="56.35">
+                  <matrix>
+                    <Matrix a="0.29998779296875" d="0.29998779296875" tx="42.55" ty="49.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.5" y="22.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/刀-矩辉启明刃循环动画" selected="true" centerPoint3DX="43" centerPoint3DY="50.05">
+                  <matrix>
+                    <Matrix a="0.29998779296875" d="0.29998779296875" tx="42.55" ty="43.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.5" y="22.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/矩辉启明刃/刀-矩辉启明刃循环动画" centerPoint3DX="43" centerPoint3DY="56.35">
+                  <matrix>
+                    <Matrix a="0.29998779296875" d="0.29998779296875" tx="42.55" ty="49.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.5" y="22.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="前发组合" color="#4FFFFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/前发组合" centerPoint3DX="77.6" centerPoint3DY="36.95">
+                  <matrix>
+                    <Matrix a="0.999923706054688" b="0.01275634765625" c="-0.01275634765625" d="0.999923706054688" tx="60.3" ty="10.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.15" y="3.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/前发组合" centerPoint3DX="77.2" centerPoint3DY="34.4">
+                  <matrix>
+                    <Matrix a="0.999786376953125" b="-0.017852783203125" c="0.017852783203125" d="0.999786376953125" tx="59.1" ty="8.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.15" y="3.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/前发组合" centerPoint3DX="72.2" centerPoint3DY="31.95">
+                  <matrix>
+                    <Matrix a="0.998641967773438" b="-0.0521240234375" c="0.0521240234375" d="0.998641967773438" tx="53.15" ty="7.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.15" y="3.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/前发组合" centerPoint3DX="77.6" centerPoint3DY="36.95">
+                  <matrix>
+                    <Matrix a="0.999923706054688" b="0.01275634765625" c="-0.01275634765625" d="0.999923706054688" tx="60.3" ty="10.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.15" y="3.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="头" color="#808080" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/头" centerPoint3DX="91.45" centerPoint3DY="21.85">
+                  <matrix>
+                    <Matrix a="0.983444213867188" b="0.181228637695313" c="-0.181228637695313" d="0.983444213867188" tx="77.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.55" y="34.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/头" centerPoint3DX="89.7" centerPoint3DY="19.55">
+                  <matrix>
+                    <Matrix a="0.970962524414063" b="0.237152099609375" c="-0.237152099609375" d="0.970962524414063" tx="76.65" ty="-3.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.55" y="34.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/头" centerPoint3DX="85" centerPoint3DY="15.75">
+                  <matrix>
+                    <Matrix a="0.993118286132813" b="0.1170654296875" c="-0.1170654296875" d="0.993118286132813" tx="69.3" ty="-4.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.5" y="34.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/头" centerPoint3DX="91.45" centerPoint3DY="21.85">
+                  <matrix>
+                    <Matrix a="0.983444213867188" b="0.181228637695313" c="-0.181228637695313" d="0.983444213867188" tx="77.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.55" y="34.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="小臂" color="#4F80FF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/元件 2" centerPoint3DX="74.5" centerPoint3DY="110.7">
+                  <matrix>
+                    <Matrix a="-0.702560424804688" d="0.722732543945313" tx="76.75" ty="89.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.15" y="28.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/元件 2" centerPoint3DX="65.35" centerPoint3DY="106">
+                  <matrix>
+                    <Matrix a="-0.699951171875" b="-0.060394287109375" c="-0.0621185302734375" d="0.720062255859375" tx="69.55" ty="85.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.25" y="28.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/元件 2" centerPoint3DX="74.5" centerPoint3DY="110.7">
+                  <matrix>
+                    <Matrix a="-0.702560424804688" d="0.722732543945313" tx="76.75" ty="89.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.15" y="28.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="手" color="#FF4F4F" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/元件 3" centerPoint3DX="74.5" centerPoint3DY="136.6">
+                  <matrix>
+                    <Matrix a="-0.619415283203125" d="0.637191772460938" tx="72.35" ty="126.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="16.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/元件 3" centerPoint3DX="63.25" centerPoint3DY="131.4">
+                  <matrix>
+                    <Matrix a="-0.61712646484375" b="-0.053253173828125" c="-0.054779052734375" d="0.63482666015625" tx="62.05" ty="121.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.8" y="16.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/元件 3" centerPoint3DX="74.5" centerPoint3DY="136.6">
+                  <matrix>
+                    <Matrix a="-0.619415283203125" d="0.637191772460938" tx="72.35" ty="126.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.7" y="16.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="上臂" color="#4FFF4F" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/元件 1" centerPoint3DX="74.5" centerPoint3DY="68.55">
+                  <matrix>
+                    <Matrix a="-0.702560424804688" d="0.722732543945313" tx="78.05" ty="43.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.1" y="34.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/元件 1" centerPoint3DX="69.05" centerPoint3DY="63.65">
+                  <matrix>
+                    <Matrix a="-0.699951171875" b="-0.060394287109375" c="-0.0621185302734375" d="0.720062255859375" tx="74.9" ty="39.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.2" y="34.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/元件 1" centerPoint3DX="74.5" centerPoint3DY="68.55">
+                  <matrix>
+                    <Matrix a="-0.702560424804688" d="0.722732543945313" tx="78.05" ty="43.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.1" y="34.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="裙子" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/裙子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.547134399414063" d="0.547134399414063" tx="95.1" ty="112.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/裙子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.545974731445313" b="0.0354766845703125" c="0.0354766845703125" d="0.545974731445313" tx="94.45" ty="106.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/裙子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.547134399414063" d="0.547134399414063" tx="95.1" ty="112.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="腰部" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/腰部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.530029296875" b="-0.06036376953125" c="-0.0619049072265625" d="0.543609619140625" tx="98.25" ty="89.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/腰部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.5328369140625" b="-0.0258636474609375" c="-0.026519775390625" d="0.546478271484375" tx="96.15" ty="83.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/腰部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.530029296875" b="-0.06036376953125" c="-0.0619049072265625" d="0.543609619140625" tx="98.25" ty="89.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="鞋子" color="#FF4FFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/shape 649" centerPoint3DX="65.75" centerPoint3DY="225.35">
+                  <matrix>
+                    <Matrix a="-0.488128662109375" c="0.0323028564453125" d="0.481231689453125" tx="63.8" ty="224.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/shape 649" centerPoint3DX="101.15" centerPoint3DY="221.95">
+                  <matrix>
+                    <Matrix a="-0.458297729492188" b="0.168045043945313" c="0.195999145507813" d="0.440689086914063" tx="98.9" ty="221.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/shape 649" centerPoint3DX="65.75" centerPoint3DY="225.35">
+                  <matrix>
+                    <Matrix a="-0.488128662109375" c="0.0323028564453125" d="0.481231689453125" tx="63.8" ty="224.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="鞋子" color="#4FFFFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/shape 649" centerPoint3DX="103.3" centerPoint3DY="220">
+                  <matrix>
+                    <Matrix a="-0.42352294921875" b="0.0816497802734375" c="0.058837890625" d="0.424453735351563" tx="102.05" ty="220"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/shape 649" centerPoint3DX="100.9" centerPoint3DY="210.7">
+                  <matrix>
+                    <Matrix a="-0.430633544921875" b="0.0241241455078125" c="0.00140380859375" d="0.428512573242188" tx="99.5" ty="211"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/shape 649" centerPoint3DX="103.3" centerPoint3DY="220">
+                  <matrix>
+                    <Matrix a="-0.42352294921875" b="0.0816497802734375" c="0.058837890625" d="0.424453735351563" tx="102.05" ty="220"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="小腿" color="#808080" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/小腿" centerPoint3DX="74.65" centerPoint3DY="195.85">
+                  <matrix>
+                    <Matrix a="-0.405288696289063" b="0.0482025146484375" c="0.033599853515625" d="0.532089233398438" tx="74.5" ty="195.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.4" y="-32.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/小腿" centerPoint3DX="99.6" centerPoint3DY="190.95">
+                  <matrix>
+                    <Matrix a="-0.363922119140625" b="0.18475341796875" c="0.214706420898438" d="0.487991333007813" tx="99" ty="191.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.35" y="-32.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/小腿" centerPoint3DX="74.65" centerPoint3DY="195.85">
+                  <matrix>
+                    <Matrix a="-0.405288696289063" b="0.0482025146484375" c="0.033599853515625" d="0.532089233398438" tx="74.5" ty="195.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-18.4" y="-32.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="大腿2" color="#4F80FF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/大腿2" centerPoint3DX="93.3" centerPoint3DY="143.4">
+                  <matrix>
+                    <Matrix a="-0.739959716796875" b="0.0255279541015625" c="0.0312042236328125" d="0.904129028320313" tx="103" ty="104.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/大腿2" centerPoint3DX="98.4" centerPoint3DY="135.55">
+                  <matrix>
+                    <Matrix a="-0.685943603515625" b="0.278701782226563" c="0.340530395507813" d="0.838134765625" tx="94.3" ty="95.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/大腿2" centerPoint3DX="93.3" centerPoint3DY="143.4">
+                  <matrix>
+                    <Matrix a="-0.739959716796875" b="0.0255279541015625" c="0.0312042236328125" d="0.904129028320313" tx="103" ty="104.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="小腿" color="#FF4F4F" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/小腿" centerPoint3DX="109.1" centerPoint3DY="195.1">
+                  <matrix>
+                    <Matrix a="-0.394683837890625" b="0.1458740234375" c="0.115020751953125" d="0.507034301757813" tx="108.05" ty="193.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-17.15" y="-31.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/小腿" centerPoint3DX="110.25" centerPoint3DY="187.25">
+                  <matrix>
+                    <Matrix a="-0.41070556640625" b="0.09161376953125" c="0.0459747314453125" d="0.517868041992188" tx="109.05" ty="185.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-17.1" y="-30.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/小腿" centerPoint3DX="109.1" centerPoint3DY="195.1">
+                  <matrix>
+                    <Matrix a="-0.394683837890625" b="0.1458740234375" c="0.115020751953125" d="0.507034301757813" tx="108.05" ty="193.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-17.15" y="-31.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="上身" color="#4FFF4F" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/上身" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.533004760742188" b="-0.0606842041015625" c="-0.0619049072265625" d="0.543609619140625" tx="92.05" ty="57.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/上身" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.535812377929688" b="-0.0260009765625" c="-0.026519775390625" d="0.546478271484375" tx="87.85" ty="51.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/上身" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.533004760742188" b="-0.0606842041015625" c="-0.0619049072265625" d="0.543609619140625" tx="92.05" ty="57.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="小臂" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/元件 5" centerPoint3DX="123.4" centerPoint3DY="71.2">
+                  <matrix>
+                    <Matrix a="0.477462768554688" b="0.515380859375" c="0.530166625976563" d="-0.491195678710938" tx="107.85" ty="77.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.8" y="5.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/元件 5" centerPoint3DX="126.45" centerPoint3DY="78.3">
+                  <matrix>
+                    <Matrix a="-0.183547973632813" b="0.677108764648438" c="0.696563720703125" d="0.188812255859375" tx="113.35" ty="68.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.8" y="5.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/元件 5" centerPoint3DX="124.4" centerPoint3DY="67.75">
+                  <matrix>
+                    <Matrix a="0.19989013671875" b="0.673507690429688" c="0.692840576171875" d="-0.205673217773438" tx="107.55" ty="66.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.8" y="5.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/元件 5" centerPoint3DX="123.4" centerPoint3DY="71.2">
+                  <matrix>
+                    <Matrix a="0.477462768554688" b="0.515380859375" c="0.530166625976563" d="-0.491195678710938" tx="107.85" ty="77.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.8" y="5.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="手" color="#4F80FF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/元件 6" centerPoint3DX="137.2" centerPoint3DY="58">
+                  <matrix>
+                    <Matrix a="0.454086303710938" b="0.536087036132813" c="0.451736450195313" d="-0.382659912109375" tx="127.55" ty="59.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.35" y="14.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/元件 6" centerPoint3DX="144.8" centerPoint3DY="82.65">
+                  <matrix>
+                    <Matrix a="-0.213150024414063" b="0.668441772460938" c="0.56329345703125" d="0.179611206054688" tx="138.25" ty="75.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.3" y="14.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/元件 6" centerPoint3DX="142.45" centerPoint3DY="61.85">
+                  <matrix>
+                    <Matrix a="0.169769287109375" b="0.681732177734375" c="0.574478149414063" d="-0.143081665039063" tx="133.1" ty="59.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.3" y="14.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/元件 6" centerPoint3DX="137.2" centerPoint3DY="58">
+                  <matrix>
+                    <Matrix a="0.454086303710938" b="0.536087036132813" c="0.451736450195313" d="-0.382659912109375" tx="127.55" ty="59.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.35" y="14.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="屁股" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/屁股" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.547134399414063" d="0.547134399414063" tx="96.5" ty="101.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/屁股" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.545974731445313" b="0.0354766845703125" c="0.0354766845703125" d="0.545974731445313" tx="95.15" ty="95.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/屁股" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.547134399414063" d="0.547134399414063" tx="96.5" ty="101.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="大腿1" color="#FF4FFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/大腿1" centerPoint3DX="109.4" centerPoint3DY="141">
+                  <matrix>
+                    <Matrix a="-0.685073852539063" b="0.126312255859375" c="0.164031982421875" d="0.8896484375" tx="113.65" ty="103.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/大腿1" centerPoint3DX="110.45" centerPoint3DY="133.45">
+                  <matrix>
+                    <Matrix a="-0.675430297851563" b="0.170486450195313" c="0.22137451171875" d="0.87713623046875" tx="112.4" ty="96.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/大腿1" centerPoint3DX="109.4" centerPoint3DY="141">
+                  <matrix>
+                    <Matrix a="-0.685073852539063" b="0.126312255859375" c="0.164031982421875" d="0.8896484375" tx="113.65" ty="103.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="上臂" color="#4FFFFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/元件 4" centerPoint3DX="114.25" centerPoint3DY="64">
+                  <matrix>
+                    <Matrix a="-0.654922485351563" b="0.254287719726563" c="0.2294921875" d="0.59100341796875" tx="106.65" ty="44"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.4" y="11.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/元件 4" centerPoint3DX="110.45" centerPoint3DY="56.65">
+                  <matrix>
+                    <Matrix a="-0.637054443359375" b="0.296218872070313" c="0.267333984375" d="0.574874877929688" tx="101.6" ty="37.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.45" y="11.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/重复项目文件夹/元件 4" centerPoint3DX="114.25" centerPoint3DY="64">
+                  <matrix>
+                    <Matrix a="-0.654922485351563" b="0.254287719726563" c="0.2294921875" d="0.59100341796875" tx="106.65" ty="44"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.4" y="11.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="后发组合" color="#808080" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/后发组合" centerPoint3DX="102.25" centerPoint3DY="43.7">
+                  <matrix>
+                    <Matrix a="0.983444213867188" b="0.181228637695313" c="-0.181228637695313" d="0.983444213867188" tx="93.2" ty="22.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.7" y="19.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="60" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/后发组合" centerPoint3DX="97.1" centerPoint3DY="37">
+                  <matrix>
+                    <Matrix a="0.993118286132813" b="0.1170654296875" c="-0.1170654296875" d="0.993118286132813" tx="86.75" ty="16.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.7" y="19.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-FS/素材/后发组合" centerPoint3DX="102.25" centerPoint3DY="43.7">
+                  <matrix>
+                    <Matrix a="0.983444213867188" b="0.181228637695313" c="-0.181228637695313" d="0.983444213867188" tx="93.2" ty="22.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.7" y="19.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="影子" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.294921875" d="0.194686889648438" tx="-117.9" ty="139.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="685.45" y="635.4"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.13134765625" d="0.050689697265625" tx="685.35" ty="635.45"/>
+                        </matrix>
+                        <GradientEntry alpha="0.8" ratio="0"/>
+                        <GradientEntry alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!15218 13294S2[14593 13535 13708 13535!13708 13535[12823 13535 12197 13294!12197 13294[11573 13052 11573 12711!11573 12711[11573 12369 12197 12127!12197 12127[12823 11886 13708 11886!13708 11886[14593 11886 15218 12127!15218 12127[15844
+ 12369 15844 12711!15844 12711[15844 13052 15218 13294"/>
+                    <Edge cubics="!11573 12711(;11573,12483 11781,12288 12197,12127q11573 12711Q11573 12369q12197 12127);"/>
+                    <Edge cubics="!12197 13294(;11781,13133 11573,12938 11573,12711q12197 13294Q11573 13052q11573 12711);"/>
+                    <Edge cubics="!15218 12127(;15635,12288 15844,12483 15844,12711q15218 12127Q15844 12369q15844 12711);"/>
+                    <Edge cubics="!13708 11886(;14298,11886 14801,11966 15218,12127q13708 11886Q14593 11886q15218 12127);"/>
+                    <Edge cubics="!15218 13294(;14801,13454 14298,13535 13708,13535q15218 13294Q14593 13535q13708 13535);"/>
+                    <Edge cubics="!15844 12711(;15844,12938 15635,13133 15218,13294q15844 12711Q15844 13052q15218 13294);"/>
+                    <Edge cubics="!12197 12127(;12614,11966 13118,11886 13708,11886q12197 12127Q12823 11886q13708 11886);"/>
+                    <Edge cubics="!13708 13535(;13118,13535 12614,13454 12197,13294q13708 13535Q12823 13535q12197 13294);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.294921875" d="0.194686889648438" tx="-117.9" ty="139.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="685.45" y="635.4"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.13134765625" d="0.050689697265625" tx="685.35" ty="635.45"/>
+                        </matrix>
+                        <GradientEntry alpha="0.8" ratio="0"/>
+                        <GradientEntry alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!15218 13294S2[14593 13535 13708 13535!13708 13535[12823 13535 12197 13294!12197 13294[11573 13052 11573 12711!11573 12711[11573 12369 12197 12127!12197 12127[12823 11886 13708 11886!13708 11886[14593 11886 15218 12127!15218 12127[15844
+ 12369 15844 12711!15844 12711[15844 13052 15218 13294"/>
+                    <Edge cubics="!11573 12711(;11573,12483 11781,12288 12197,12127q11573 12711Q11573 12369q12197 12127);"/>
+                    <Edge cubics="!12197 13294(;11781,13133 11573,12938 11573,12711q12197 13294Q11573 13052q11573 12711);"/>
+                    <Edge cubics="!15218 12127(;15635,12288 15844,12483 15844,12711q15218 12127Q15844 12369q15844 12711);"/>
+                    <Edge cubics="!13708 11886(;14298,11886 14801,11966 15218,12127q13708 11886Q14593 11886q15218 12127);"/>
+                    <Edge cubics="!15218 13294(;14801,13454 14298,13535 13708,13535q15218 13294Q14593 13535q13708 13535);"/>
+                    <Edge cubics="!15844 12711(;15844,12938 15635,13133 15218,13294q15844 12711Q15844 13052q15218 13294);"/>
+                    <Edge cubics="!12197 12127(;12614,11966 13118,11886 13708,11886q12197 12127Q12823 11886q13708 11886);"/>
+                    <Edge cubics="!13708 13535(;13118,13535 12614,13454 12197,13294q13708 13535Q12823 13535q12197 13294);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
