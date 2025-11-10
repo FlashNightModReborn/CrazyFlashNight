@@ -1,12 +1,13 @@
-﻿// 保存为 org/flashNight/gesh/string/HexagramRandomizer.as
-class org.flashNight.gesh.string.HexagramRandomizer {
+﻿import org.flashNight.gesh.string.*;
+import org.flashNight.naki.RandomNumberEngine.*;
+ 
+class org.flashNight.gesh.string.HexagramRandomizer extends BaseNameRandomizer {
+    private static var instance:HexagramRandomizer;
     private static var hexagramNames:Array;
-    private static var currentPool:Array;
     private static var initialized:Boolean = false;
-    
-    private static function initialize():Void {
+
+    private static function ensureNames(target:HexagramRandomizer):Void {
         if (!initialized) {
-            // 六十四卦标准名称
             hexagramNames = [
                 "乾为天", "坤为地", "水雷屯", "山水蒙", "水天需", "天水讼", "地水师",
                 "水地比", "风天小畜", "天泽履", "地天泰", "天地否", "天火同人", "火天大有",
@@ -19,31 +20,26 @@ class org.flashNight.gesh.string.HexagramRandomizer {
                 "巽为风", "兑为泽", "风水涣", "水泽节", "风泽中孚", "雷山小过", "水火既济",
                 "火水未济"
             ];
-            resetPool();
+
             initialized = true;
         }
+
+        target.setNames(hexagramNames);
     }
-    
-    private static function resetPool():Void {
-        currentPool = hexagramNames.slice();
-        // Fisher-Yates洗牌算法
-        var i:Number = currentPool.length;
-        while (--i) {
-            var j:Number = Math.floor(Math.random() * (i + 1));
-            var temp = currentPool[i];
-            currentPool[i] = currentPool[j];
-            currentPool[j] = temp;
+
+    public static function getInstance():HexagramRandomizer {
+        if (instance == null) {
+            instance = new HexagramRandomizer();
+            getInstance = function():HexagramRandomizer {
+                return instance;
+            };
         }
+        return instance;
     }
-    
-    public static function getRandomName():String {
-        initialize();
-        if (currentPool.length < 1) {
-            resetPool();
-        }
-        return String(currentPool.pop());
+
+    private function HexagramRandomizer() {
+        setRandomEngine(LinearCongruentialEngine.getInstance());
+        setUniqueUntilExhaustion(true);
+        ensureNames(this);
     }
-    
-    // 防止实例化
-    private function HexagramRandomizer() {} 
 }

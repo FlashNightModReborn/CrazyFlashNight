@@ -8,13 +8,13 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DisplayNameInitializer 
     private static function initializeHandlers():Object {
         var obj:Object = {
             坛主: function(target:Object):Void {
-                target.称号 = MansionRandomizer.getRandomName() + target.称号;
+                target.称号 = MansionRandomizer.getInstance().getRandomName() + target.称号;
             },
             散人: function(target:Object):Void {
-                target.称号 = HexagramRandomizer.getRandomName() + target.称号;
+                target.称号 = HexagramRandomizer.getInstance().getRandomName() + target.称号;
             },
             军阀: function(target:Object):Void {
-                target.称号 = JuntaRandomizer.getRandomName();
+                target.称号 = JuntaRandomizer.getInstance().getRandomName();
             }
             // 可在此继续添加新的称号处理逻辑
         };
