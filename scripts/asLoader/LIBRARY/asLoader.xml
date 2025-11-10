@@ -311,7 +311,21 @@ _root.加载并配置非人形佣兵随机对话("data/dialogues/enemy_dialogues
             </DOMFrame>
             <DOMFrame index="52" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.加载并配置NPC对话("data/dialogues/npc_dialogues.xml");]]></script>
+                <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.NpcDialogueLoader;
+
+// 使用新的 NpcDialogueLoader 加载NPC对话
+var npcDialogueLoader:NpcDialogueLoader = NpcDialogueLoader.getInstance();
+npcDialogueLoader.loadNpcDialogues(
+    function(data:Object):Void {
+        _root.NPC对话 = data;
+        trace("NPC对话数据加载成功！共加载 " + Object.keys(data).length + " 个NPC的对话");
+    },
+    function():Void {
+        trace("NPC对话数据加载失败！");
+        // 回退到使用原始文件
+        _root.加载并配置NPC对话("data/dialogues/npc_dialogues.xml");
+    }
+);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

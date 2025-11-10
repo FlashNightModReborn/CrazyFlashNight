@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root><Dialogues>
+        <Name>Shop Girl</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>Shop Girl</Name>
+                <Title>军火商</Title>
+                <Char>Shop Girl</Char>
+                <Text>使用工具是人类区别于其他动物的一大特征，当然，武器也是工具的一种。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Shop Girl</Name>
+                <Title>军火商</Title>
+                <Char>Shop Girl#微笑</Char>
+                <Text>一个普通人使用简单的一把手枪或砍刀，也许也能战胜一个空手的经验丰富的战士，所以武器是必备的哦！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>Shop Girl</Name>
+                <Title>军火商</Title>
+                <Char>Shop Girl</Char>
+                <Text>冷兵器不会像枪一样，有子弹的限制，常常成为必备的武器之一。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Shop Girl</Name>
+                <Title>军火商</Title>
+                <Char>Shop Girl#微笑</Char>
+                <Text>冷兵器有长短之分，长的攻击力远，短的爆发力强。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>Shop Girl</Name>
+                <Title>军火商</Title>
+                <Char>Shop Girl</Char>
+                <Text>长枪一般需要双手操作，稳定性好，弹夹容量多，威力大。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Shop Girl</Name>
+                <Title>军火商</Title>
+                <Char>Shop Girl</Char>
+                <Text>但单手枪里也有不错的选择，搭配合理的话，持双枪往往能有强大的火力。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>Shop Girl</Name>
+                <Title>军火商</Title>
+                <Char>Shop Girl#茫然</Char>
+                <Text>我曾经为Andy Law准备过一个关押僵尸的练枪场。但不知道为什么···</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Shop Girl</Name>
+                <Title>军火商</Title>
+                <Char>Shop Girl#悲伤2</Char>
+                <Text>在那段时间里，我总是梦见他在买完枪后拿我当作靶子对着我开火，而我也惨叫后倒在血泊里···完全不明白自己为什么会做这样的梦···</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>冷兵器商人</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>冷兵器商人</Name>
+                <Title>传统卫道士</Title>
+                <Char>冷兵器商人</Char>
+                <Text>使用冷兵器的经济成本可比枪械要低多了。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>冷兵器商人</Name>
+                <Title>传统卫道士</Title>
+                <Char>冷兵器商人</Char>
+                <Text>玩刀可比玩枪刺激。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>冷兵器商人</Name>
+                <Title>传统卫道士</Title>
+                <Char>冷兵器商人</Char>
+                <Text>要不要买几把好刀？普通的和高级货一应俱全。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    </root>

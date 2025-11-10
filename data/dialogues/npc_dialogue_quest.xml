@@ -1,0 +1,401 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root><Dialogues>
+        <Name>Blue</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>Blue</Name>
+                <Title>格斗教练</Title>
+                <Char>Blue#无奈</Char>
+                <Text>其实我尝试过用枪···</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Blue</Name>
+                <Title>格斗教练</Title>
+                <Char>Blue#悲伤</Char>
+                <Text>可惜不知道为什么，我靶子太臭了，还不如用拳头解决···</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>Blue</Name>
+                <Title>格斗教练</Title>
+                <Char>Blue</Char>
+                <Text>格斗的好处就是，同样的一招，和人切磋，最多打伤他，而对付敌人，却可以杀死他。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Blue</Name>
+                <Title>格斗教练</Title>
+                <Char>Blue#微笑</Char>
+                <Text>而且随时可以使用。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>Blue</Name>
+                <Title>格斗教练</Title>
+                <Char>Blue#严肃</Char>
+                <Text>如果是对付失控的天网机器人的话，格斗确实有点乏力···</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Blue</Name>
+                <Title>格斗教练</Title>
+                <Char>Blue</Char>
+                <Text>不过多用一些连续技的话，可以封住敌人的攻击。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>Blue</Name>
+                <Title>格斗教练</Title>
+                <Char>Blue#严肃</Char>
+                <Text>背摔投掷敌人之后应当马上起身，回头飞扑，坐于敌方胯部进行上位压制砸拳，最后用全身的力量践踏敌人。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Blue</Name>
+                <Title>格斗教练</Title>
+                <Char>Blue</Char>
+                <Text>当然，你也可以选择以抱腿摔起手衔接武技。如果三个技能都结实命中，那即便是百里挑一的强者也将身受重创。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="4">
+            <SubDialogue id="0">
+                <Name>Blue</Name>
+                <Title>格斗教练</Title>
+                <Char>Blue</Char>
+                <Text>武技的使用讲究心，技，体三项合一。因此当你过于频繁地使用武技，就会发现不但精疲力竭，而且难以维持专注，也就无法正常使用技能。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Blue</Name>
+                <Title>格斗教练</Title>
+                <Char>Blue</Char>
+                <Text>这时候借助药剂补充或是食用高热量且有营养的食品往往是为战斗续航的最佳选择。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="5">
+            <SubDialogue id="0">
+                <Name>Blue</Name>
+                <Title>格斗教练</Title>
+                <Char>Blue#无奈</Char>
+                <Text>说来惭愧，虽然我是A兵团士兵们的格斗教练，但震地这一招却是Andy Law先教我的···</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="6">
+            <SubDialogue id="0">
+                <Name>Blue</Name>
+                <Title>格斗教练</Title>
+                <Char>Blue#严肃</Char>
+                <Text>在这个世界上，量级并不代表一切。我曾打倒过比我高出至少三个量级的家伙，当然，只靠我的拳头。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="7">
+            <SubDialogue id="0">
+                <Name>Blue</Name>
+                <Title>格斗教练</Title>
+                <Char>Blue</Char>
+                <Text>我只教授空手技能，而械斗方面，你更应该请教的是Andy Law。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="8">
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>Blue哥，面对那种超乎想象的强敌时，我应该怎么做？</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Blue</Name>
+                <Title>格斗教练</Title>
+                <Char>Blue#微笑</Char>
+                <Text>你需要起手动作更快的同时，具备高爆发力且易于抓准时机命中的技能，所以——</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>Blue</Name>
+                <Title>格斗教练</Title>
+                <Char>Blue</Char>
+                <Text>对他使用寸拳吧。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>Singer</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>Singer</Name>
+                <Title>摇滚女皇-主唱</Title>
+                <Char>Singer</Char>
+                <Text>啊，你好！感谢你对我们多次施以援手。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>嗯，不用客气。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>Singer</Name>
+                <Title>摇滚女皇-主唱</Title>
+                <Char>Singer</Char>
+                <Text>管理组织不是容易的事，尤其是对我们来说，黑铁会需要提防，堕落城联合大学也对我们虎视眈眈。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Singer</Name>
+                <Title>摇滚女皇-主唱</Title>
+                <Char>Singer</Char>
+                <Text>只有谨慎才能让我们活下来，我们姐妹，我们整个组织···</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>Singer</Name>
+                <Title>摇滚女皇-主唱</Title>
+                <Char>Singer#思考</Char>
+                <Text>不用太拘谨，其实相对于其他不讲理的人，你已经很谦卑了。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Singer</Name>
+                <Title>摇滚女皇-主唱</Title>
+                <Char>Singer</Char>
+                <Text>我想在结盟后，我们应该是平等的。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>Singer</Name>
+                <Title>摇滚女皇-主唱</Title>
+                <Char>Singer</Char>
+                <Text>光剑吗？嘛，你以后会知道它是怎么用的。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>Guitar</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>Guitar</Name>
+                <Title>摇滚女皇-吉他</Title>
+                <Char>Guitar</Char>
+                <Text>啊！是你啊，看来我上次扎小人没用啊。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>·有这么问好的吗？</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>Guitar</Name>
+                <Title>摇滚女皇-吉他</Title>
+                <Char>Guitar</Char>
+                <Text>不是问好，只是大姐让我这么做的而已，你不要乱脑补啊。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>Guitar</Name>
+                <Title>摇滚女皇-吉他</Title>
+                <Char>Guitar</Char>
+                <Text>我的武器变化多端，用起来也得心应手，一直让我很自豪呢。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>Guitar</Name>
+                <Title>摇滚女皇-吉他</Title>
+                <Char>Guitar</Char>
+                <Text>我们姐妹三人同心，其他女孩子与我们团结在一起，我们这些人才有立足之处。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Guitar</Name>
+                <Title>摇滚女皇-吉他</Title>
+                <Char>Guitar</Char>
+                <Text>女性在末世该有自己的位置，我可不想就这么缩进什么组织的窝里生那么多孩子···</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>Guitar</Name>
+                <Title>摇滚女皇-吉他</Title>
+                <Char>Guitar</Char>
+                <Text>我也当过孩子，孩子是什么样我清楚啊！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>Guitar</Name>
+                <Title>摇滚女皇-吉他</Title>
+                <Char>Guitar</Char>
+                <Text>黑铁会那群人，一直以为他们能一直当老大。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Guitar</Name>
+                <Title>摇滚女皇-吉他</Title>
+                <Char>Guitar</Char>
+                <Text>才不是呢，我们一直当堕落城的抵抗周围丧尸潮入侵的前线，我们这么付出了，才应该上位嘛！</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>Keyboard</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>Keyboard</Name>
+                <Title>摇滚女皇-键盘</Title>
+                <Char>Keyboard</Char>
+                <Text>······</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>···你好啊。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>Keyboard</Name>
+                <Title>摇滚女皇-键盘</Title>
+                <Char>Keyboard</Char>
+                <Text>······谢谢，上次救我。</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>不用客气，收钱办事是我们的准则。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>Keyboard</Name>
+                <Title>摇滚女皇-键盘</Title>
+                <Char>Keyboard</Char>
+                <Text>···我们三姐妹必须依靠彼此，一旦分离，难以独存。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Keyboard</Name>
+                <Title>摇滚女皇-键盘</Title>
+                <Char>Keyboard</Char>
+                <Text>她们是我的家人，毫无疑问的···</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>Keyboard</Name>
+                <Title>摇滚女皇-键盘</Title>
+                <Char>Keyboard</Char>
+                <Text>其实，我不太擅长杂技动作，但是我很羡慕华丽的动作···</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Keyboard</Name>
+                <Title>摇滚女皇-键盘</Title>
+                <Char>Keyboard</Char>
+                <Text>在我看来，挥舞镰刀也是这样···虽然失败过，但成功的话就很优雅···</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>Keyboard</Name>
+                <Title>摇滚女皇-键盘</Title>
+                <Char>Keyboard</Char>
+                <Text>······有什么需要吗？</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>director</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>director</Name>
+                <Title>政治部主任</Title>
+                <Char>director</Char>
+                <Text>统合政府的路线是正确的，但这不代表那群临时政府也是正确的。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>director</Name>
+                <Title>政治部主任</Title>
+                <Char>director</Char>
+                <Text>意识形态的忠诚保障了军队的士气。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>director</Name>
+                <Title>政治部主任</Title>
+                <Char>director</Char>
+                <Text>军队体制改革势在必行···</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>artist</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>artist</Name>
+                <Title>喷漆艺术家</Title>
+                <Char>artist</Char>
+                <Text>这才是尘都该有的样子！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>artist</Name>
+                <Title>喷漆艺术家</Title>
+                <Char>artist</Char>
+                <Text>可惜没人为我的艺术喝彩···除了丧尸，大概。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>Bard</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>Bard</Name>
+                <Title>神秘学家</Title>
+                <Char>Bard</Char>
+                <Text>听说摇滚公园的人非常没素质，会用“做题蛆”来形容我们这种学者。真是大跌眼镜。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>Bard</Name>
+                <Title>神秘学家</Title>
+                <Char>Bard</Char>
+                <Text>学校也不算是个好地方，你永远能从那里见识到无穷无尽的比较，我觉得我还是更适合自由自在的地方。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Bard</Name>
+                <Title>神秘学家</Title>
+                <Char>Bard</Char>
+                <Text>但人终究是不能回头，我在学校也不得不为荒漠的朋友们谋求利益，没法离开了。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>Bard</Name>
+                <Title>神秘学家</Title>
+                <Char>Bard</Char>
+                <Text>从神秘学角度来说···所谓文明收割者更像是胡编乱造的无稽之谈，因为对于神秘危险的敌人来说，当你可以攻击到它的那一刻，它就不再神秘了。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Bard</Name>
+                <Title>神秘学家</Title>
+                <Char>Bard</Char>
+                <Text>当然，神秘学更加专注于一些看似是细枝末节，却又与世界运转逻辑深刻关联的事物，宏大的组织既遥远又肤浅。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>Bard</Name>
+                <Title>神秘学家</Title>
+                <Char>Bard</Char>
+                <Text>任何人，当他们目睹这个世界，或许会觉得这是末日审判，或者其他什么神明力量决定了这一切。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Bard</Name>
+                <Title>神秘学家</Title>
+                <Char>Bard</Char>
+                <Text>这不够深入，我们必须探究这一切的起源，不仅仅是政治上的。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    </root>
