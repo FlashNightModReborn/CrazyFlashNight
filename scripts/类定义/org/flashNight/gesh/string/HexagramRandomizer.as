@@ -1,11 +1,30 @@
 ﻿import org.flashNight.gesh.string.*;
 import org.flashNight.naki.RandomNumberEngine.*;
- 
+
+/**
+ * 六十四卦名称随机器
+ * 用于从六十四卦中随机选择卦名，确保在池耗尽前不重复
+ *
+ * @class HexagramRandomizer
+ * @package org.flashNight.gesh.string
+ * @extends BaseNameRandomizer
+ * @author [作者]
+ * @version 1.0
+ */
 class org.flashNight.gesh.string.HexagramRandomizer extends BaseNameRandomizer {
+    /** 单例实例 */
     private static var instance:HexagramRandomizer;
+
+    /** 六十四卦标准名称数组（静态共享） */
     private static var hexagramNames:Array;
+
+    /** 静态初始化标志，确保名称数组只初始化一次 */
     private static var initialized:Boolean = false;
 
+    /**
+     * 确保六十四卦名称已初始化，并设置到目标实例
+     * @param target 目标HexagramRandomizer实例
+     */
     private static function ensureNames(target:HexagramRandomizer):Void {
         if (!initialized) {
             hexagramNames = [
@@ -27,6 +46,11 @@ class org.flashNight.gesh.string.HexagramRandomizer extends BaseNameRandomizer {
         target.setNames(hexagramNames);
     }
 
+    /**
+     * 获取单例实例（线程安全）
+     * 首次调用后会重写自身以优化后续调用性能
+     * @return HexagramRandomizer实例
+     */
     public static function getInstance():HexagramRandomizer {
         if (instance == null) {
             instance = new HexagramRandomizer();
@@ -37,6 +61,10 @@ class org.flashNight.gesh.string.HexagramRandomizer extends BaseNameRandomizer {
         return instance;
     }
 
+    /**
+     * 私有构造函数，防止外部实例化
+     * 初始化随机引擎并配置为耗尽前不重复模式
+     */
     private function HexagramRandomizer() {
         setRandomEngine(LinearCongruentialEngine.getInstance());
         setUniqueUntilExhaustion(true);
