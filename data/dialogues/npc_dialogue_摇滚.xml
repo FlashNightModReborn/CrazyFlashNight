@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <Dialogues>
+        <Name>Singer</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>Singer</Name>
+                <Title>摇滚女皇-主唱</Title>
+                <Char>Singer</Char>
+                <Text>啊，你好！感谢你对我们多次施以援手。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>嗯，不用客气。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>Singer</Name>
+                <Title>摇滚女皇-主唱</Title>
+                <Char>Singer</Char>
+                <Text>管理组织不是容易的事，尤其是对我们来说，黑铁会需要提防，堕落城联合大学也对我们虎视眈眈。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Singer</Name>
+                <Title>摇滚女皇-主唱</Title>
+                <Char>Singer</Char>
+                <Text>只有谨慎才能让我们活下来，我们姐妹，我们整个组织···</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>Singer</Name>
+                <Title>摇滚女皇-主唱</Title>
+                <Char>Singer#思考</Char>
+                <Text>不用太拘谨，其实相对于其他不讲理的人，你已经很谦卑了。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Singer</Name>
+                <Title>摇滚女皇-主唱</Title>
+                <Char>Singer</Char>
+                <Text>我想在结盟后，我们应该是平等的。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>Singer</Name>
+                <Title>摇滚女皇-主唱</Title>
+                <Char>Singer</Char>
+                <Text>光剑吗？嘛，你以后会知道它是怎么用的。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>Guitar</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>Guitar</Name>
+                <Title>摇滚女皇-吉他</Title>
+                <Char>Guitar</Char>
+                <Text>啊！是你啊，看来我上次扎小人没用啊。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>·有这么问好的吗？</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>Guitar</Name>
+                <Title>摇滚女皇-吉他</Title>
+                <Char>Guitar</Char>
+                <Text>不是问好，只是大姐让我这么做的而已，你不要乱脑补啊。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>Guitar</Name>
+                <Title>摇滚女皇-吉他</Title>
+                <Char>Guitar</Char>
+                <Text>我的武器变化多端，用起来也得心应手，一直让我很自豪呢。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>Guitar</Name>
+                <Title>摇滚女皇-吉他</Title>
+                <Char>Guitar</Char>
+                <Text>我们姐妹三人同心，其他女孩子与我们团结在一起，我们这些人才有立足之处。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Guitar</Name>
+                <Title>摇滚女皇-吉他</Title>
+                <Char>Guitar</Char>
+                <Text>女性在末世该有自己的位置，我可不想就这么缩进什么组织的窝里生那么多孩子···</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>Guitar</Name>
+                <Title>摇滚女皇-吉他</Title>
+                <Char>Guitar</Char>
+                <Text>我也当过孩子，孩子是什么样我清楚啊！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>Guitar</Name>
+                <Title>摇滚女皇-吉他</Title>
+                <Char>Guitar</Char>
+                <Text>黑铁会那群人，一直以为他们能一直当老大。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Guitar</Name>
+                <Title>摇滚女皇-吉他</Title>
+                <Char>Guitar</Char>
+                <Text>才不是呢，我们一直当堕落城的抵抗周围丧尸潮入侵的前线，我们这么付出了，才应该上位嘛！</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>Keyboard</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>Keyboard</Name>
+                <Title>摇滚女皇-键盘</Title>
+                <Char>Keyboard</Char>
+                <Text>······</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>···你好啊。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>Keyboard</Name>
+                <Title>摇滚女皇-键盘</Title>
+                <Char>Keyboard</Char>
+                <Text>······谢谢，上次救我。</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>不用客气，收钱办事是我们的准则。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>Keyboard</Name>
+                <Title>摇滚女皇-键盘</Title>
+                <Char>Keyboard</Char>
+                <Text>···我们三姐妹必须依靠彼此，一旦分离，难以独存。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Keyboard</Name>
+                <Title>摇滚女皇-键盘</Title>
+                <Char>Keyboard</Char>
+                <Text>她们是我的家人，毫无疑问的···</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>Keyboard</Name>
+                <Title>摇滚女皇-键盘</Title>
+                <Char>Keyboard</Char>
+                <Text>其实，我不太擅长杂技动作，但是我很羡慕华丽的动作···</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Keyboard</Name>
+                <Title>摇滚女皇-键盘</Title>
+                <Char>Keyboard</Char>
+                <Text>在我看来，挥舞镰刀也是这样···虽然失败过，但成功的话就很优雅···</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>Keyboard</Name>
+                <Title>摇滚女皇-键盘</Title>
+                <Char>Keyboard</Char>
+                <Text>······有什么需要吗？</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+</root>

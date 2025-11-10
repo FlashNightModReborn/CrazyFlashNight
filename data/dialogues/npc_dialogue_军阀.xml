@@ -1,0 +1,222 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <Dialogues>
+        <Name>general</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>general</Name>
+                <Title>自由革命军司令</Title>
+                <Char>general</Char>
+                <Text>我承认，你很优秀。如果不是你归属于A兵团不肯走，我一定会将你纳入麾下。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>···我忠于A兵团。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>general</Name>
+                <Title>自由革命军司令</Title>
+                <Char>general</Char>
+                <Text>是吗？遗憾。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>general</Name>
+                <Title>自由革命军司令</Title>
+                <Char>general</Char>
+                <Text>玩弄政治的企业家和政客很多，但他们从没问过军人的意见。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>general</Name>
+                <Title>自由革命军司令</Title>
+                <Char>general</Char>
+                <Text>他们在捞钱，我们可是在流血。只有忠于军队的人才能率领军队，这个人绝不是他们。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>general</Name>
+                <Title>自由革命军司令</Title>
+                <Char>general</Char>
+                <Text>军队如果不抓牢，就是贪腐的机器。当然，军队如果抓得太牢，就没有什么战斗意志了。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>general</Name>
+                <Title>自由革命军司令</Title>
+                <Char>general</Char>
+                <Text>平衡为上。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>general</Name>
+                <Title>自由革命军司令</Title>
+                <Char>general</Char>
+                <Text>牛仔是个不错的战士和首领，可惜他志向不在于统治。对我来说也不完全是坏事吧。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>gazer</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>gazer</Name>
+                <Title>火力侦察专家</Title>
+                <Char>gazer</Char>
+                <Text>科技的力量是不言而喻的，我们对科技的取舍不应该带有偏见。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>gazer</Name>
+                <Title>火力侦察专家</Title>
+                <Char>gazer</Char>
+                <Text>遗憾的是，队伍内部存在大量恐惧天网，以至于发展到恐惧天网技术的人，他们秉持的思想对军队的长期发展有负面影响。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>gazer</Name>
+                <Title>火力侦察专家</Title>
+                <Char>gazer</Char>
+                <Text>不用说，军队所用的物资，从HP药剂到穿甲弹，都是现代科技的产物。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>gazer</Name>
+                <Title>火力侦察专家</Title>
+                <Char>gazer</Char>
+                <Text>这种情况下，军队内部的反天网技术思想如果发展到反科技思想，那就成了黑铁会那边的神棍了。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>gazer</Name>
+                <Title>火力侦察专家</Title>
+                <Char>gazer</Char>
+                <Text>A兵团···末世前就形成核心架构，末世后自立的武装佣兵组织。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>gazer</Name>
+                <Title>火力侦察专家</Title>
+                <Char>gazer</Char>
+                <Text>作为统合军事力量的一员，佣兵和同属于统合的正规军之间，一直有着说不清道不明的复杂利害关系。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>gazer</Name>
+                <Title>火力侦察专家</Title>
+                <Char>gazer</Char>
+                <Text>你是A兵团的高手，实力上无疑是的。只是，不清楚你是否有和其他佣兵一样的特质——对纪律有一套自我解读。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>surveyor</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>surveyor</Name>
+                <Title>火力支援学说专家</Title>
+                <Char>surveyor</Char>
+                <Text>改造是一种痛苦的折磨，改造后得到的东西比起经受的磨难可谓不值一提。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>surveyor</Name>
+                <Title>火力支援学说专家</Title>
+                <Char>surveyor</Char>
+                <Text>只不过，末世前或者现在的人都没得选而已。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>surveyor</Name>
+                <Title>火力支援学说专家</Title>
+                <Char>surveyor</Char>
+                <Text>很多人都在问我们，为什么要支持将军。我想理由是很简单的，将军的路线是最适合末世后的人类的。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>surveyor</Name>
+                <Title>火力支援学说专家</Title>
+                <Char>surveyor</Char>
+                <Text>大可以忽略那些疯子，仔细想想，没有稳定的秩序和铁一般的纪律，人类靠什么走出末世？</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>surveyor</Name>
+                <Title>火力支援学说专家</Title>
+                <Char>surveyor</Char>
+                <Text>因为长期驻扎在禁区，我已经有段时间没回基地了。听说你给我们造成了不小的损伤？</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>surveyor</Name>
+                <Title>火力支援学说专家</Title>
+                <Char>surveyor</Char>
+                <Text>不管怎么说，你是个强者。我们的联合更有助于消灭天网和诺亚。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>surveyor</Name>
+                <Title>火力支援学说专家</Title>
+                <Char>surveyor</Char>
+                <Text>一般性的基因改造，比如皮肤强化之类的，早已在末世前普及开。我们相比于祖先，有着更强大的肉体，当然，代价就是你现在能看到的这个世界了。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>Itinerant</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>Itinerant</Name>
+                <Title>后勤部长</Title>
+                <Char>Itinerant</Char>
+                <Text>庸俗的路线斗争掩盖了实际问题，我们需要的是团结，至于科技，应该是有选择地使用。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>Itinerant</Name>
+                <Title>后勤部长</Title>
+                <Char>Itinerant</Char>
+                <Text>如果没有完善的后勤保障的话，军队在这末世未必打得过凶猛的盗贼。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>Itinerant</Name>
+                <Title>后勤部长</Title>
+                <Char>Itinerant</Char>
+                <Text>从东南A洲一路走来，若是没有将军，我们的队伍早就垮掉了。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>director</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>director</Name>
+                <Title>政治部主任</Title>
+                <Char>director</Char>
+                <Text>统合政府的路线是正确的，但这不代表那群临时政府也是正确的。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>director</Name>
+                <Title>政治部主任</Title>
+                <Char>director</Char>
+                <Text>意识形态的忠诚保障了军队的士气。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>director</Name>
+                <Title>政治部主任</Title>
+                <Char>director</Char>
+                <Text>军队体制改革势在必行···</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+</root>

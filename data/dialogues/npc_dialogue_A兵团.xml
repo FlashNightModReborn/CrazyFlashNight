@@ -1,0 +1,405 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root><Dialogues>
+        <Name>小F</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>小F</Name>
+                <Title>机械师</Title>
+                <Char>小F</Char>
+                <Text>用这些垃圾材料改装起来有点困难啊···但本大爷可是天才，应该没问题！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>小F</Name>
+                <Title>机械师</Title>
+                <Char>小F</Char>
+                <Text>你有收集到高级素材吗？本大爷可以给你改出了不起的装备哦！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>小F</Name>
+                <Title>机械师</Title>
+                <Char>小F</Char>
+                <Text>虽然我才15，但不要小看我，从马桶到直升机可都是本大爷在维护！</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>格格巫</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>格格巫</Name>
+                <Title>医生</Title>
+                <Char>格格巫</Char>
+                <Text>需要我帮你治疗吗？不过，治不好就只能随治随走了。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>格格巫</Name>
+                <Title>医生</Title>
+                <Char>格格巫</Char>
+                <Text>要治疗吗，就算治不好也没关系的，包埋的。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>格格巫</Name>
+                <Title>医生</Title>
+                <Char>格格巫</Char>
+                <Text>嗯？我手上的这些？错啦，番茄酱嘛！</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>丽丽丝</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>丽丽丝</Name>
+                <Title>护士</Title>
+                <Char>丽丽丝</Char>
+                <Text>买药？</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>丽丽丝</Name>
+                <Title>护士</Title>
+                <Char>丽丽丝</Char>
+                <Text>治疗找医生，这里只卖药！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>丽丽丝</Name>
+                <Title>护士</Title>
+                <Char>丽丽丝</Char>
+                <Text>不买快走，你好碍眼···</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>酒保</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>通缉犯都是厉害的家伙，你要量力而行，不然这将是我请你喝的最后一杯酒。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>卖酒能赚几个钱？其实我真正的身份是情报贩子。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>我曾经也和你一样是个威风凛凛的战士，直到我的膝盖中了一枪···</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>酒泡氤氲-啤酒</Name>
+        <Dialogue id="0">
+            <TaskRequirement>0</TaskRequirement>
+            <SubDialogue id="0">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>多谢惠顾，这个如何？</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>味道有点特殊···</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>嘛，毕竟点酒的目的也不完全是喝，而是搭话。</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>你经常和别人说话吗？</Text>
+            </SubDialogue>
+            <SubDialogue id="4">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>是啊，毕竟这也是工作之一。客人点了酒之后闷头喝，那对我们经营来说也不是好事。想想看，你要是进酒吧一片安静，那也挺诡异的。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <TaskRequirement>0</TaskRequirement>
+            <SubDialogue id="0">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>这里的酒是用大麦作为原料酿造的，然后混了基地的地下水，末日里有这种选择也算难得了。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>不过因为农产品资源整体上来说不充足，这酒味道清淡如水是很常见的。当然，有时候农场那边的农作物丰收，这酒味道能好点。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>至于安全性嘛···杀菌这块应该会尽量做。</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>A兵团的粮食在内部主要作为口粮使用，也有向外销售。酿酒在这个时代看起来算是浪费，但是如果能维持住基本的士气，那也不算白干。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <TaskRequirement>0</TaskRequirement>
+            <SubDialogue id="0">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>A兵团内部是有自酿酒的，不过嘛···质量总体来说很差，我这里都不卖的。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>A兵团的基地是由监狱改造来的，审判日后A兵团吸纳了一部分监狱罪犯，这些人也把自酿酒风气延续下去了。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>监狱的酿酒可是很脏的，还有囚犯在马桶里酿酒呢。这种情况下，卫生问题影响不小。</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>我在名义上是A兵团酒类营销负责人，但其实吧，我对酒类管理的权限和A兵团对于手下佣兵的管理权限差不多，都比较有名无实。</Text>
+            </SubDialogue>
+            <SubDialogue id="4">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>要想解决这个问题，恐怕得找囚犯那边的头子。虽然他们目前也不算囚犯了，但是坐牢的经历让他们在A兵团内部形成了一个组织中心。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <TaskRequirement>22</TaskRequirement>
+            <SubDialogue id="0">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>我还是有点怀念堕落城的老朋友们的。不过你们最近在和堕落城的一些盗贼干架，我只能希望老伙计们别不幸地被你们收拾了。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>···你好像并不是很悲伤。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>可能你我对“朋友”的定义不同吧。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="4">
+            <TaskRequirement>22</TaskRequirement>
+            <SubDialogue id="0">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>盗贼群体总的来说是很松散的，无论是依附黑铁会的还是自立为“盗贼兄弟会”的···</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>个中细节就需要你自己把握了。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>（无意间听到了不少新鲜事······也许该把它们记录下来）</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>酒泡氤氲-鸡尾酒</Name>
+        <Dialogue id="0">
+            <TaskRequirement>22</TaskRequirement>
+            <SubDialogue id="0">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>如何？</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>味道好很多。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>一分钱一分货嘛。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <TaskRequirement>22</TaskRequirement>
+            <SubDialogue id="0">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>除了用水方面更讲究之外，这边鸡尾酒的灭菌工作也更彻底，不再是简单密闭了事。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>哦，不要问我细节，我也是听技术人员说的。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>至于我这里嘛，也会加点果汁或者其他饮料进去，这方面都是和The Girl通好气的。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <TaskRequirement>22</TaskRequirement>
+            <SubDialogue id="0">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>盗贼也不过是乌合之众，我算是乌合之众里消息灵通点的人。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>堕落城真正的掌握者是黑铁会，挑战者可能是摇滚乐团。至于联合大学之流，能够在A兵团庇护下维持稳定已经不容易了。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>你之前说的“盗贼兄弟会”，也处在谁的庇护下吗？</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>是，也不是。兄弟会的成员以技术人员为主，他们是堕落城这座机器的齿轮。只要机器正常运转，没人会想打齿轮的主意。</Text>
+            </SubDialogue>
+            <SubDialogue id="4">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>一旦机器不转了，兄弟会就和别的小帮派一样朝不保夕了。</Text>
+            </SubDialogue>
+            <SubDialogue id="5">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>（将刚才听到的内容记录下来吧）</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>∞天ㄙ★使的剪∞</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>∞天ㄙ★使的剪∞</Name>
+                <Title>美发师</Title>
+                <Char>∞天ㄙ★使的剪∞</Char>
+                <Text>色彩！华丽的色彩是我的翅膀。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>∞天ㄙ★使的剪∞</Name>
+                <Title>美发师</Title>
+                <Char>∞天ㄙ★使的剪∞</Char>
+                <Text>不要把我和那些洗剪吹比较。我做的是艺术。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>∞天ㄙ★使的剪∞</Name>
+                <Title>美发师</Title>
+                <Char>∞天ㄙ★使的剪∞</Char>
+                <Text>哦？真的吗？你也觉得我的头很爆炸？太好了。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>舞女</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>舞女</Name>
+                <Title>身体艺术家</Title>
+                <Char>舞女</Char>
+                <Text>Come on baby...</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>舞女</Name>
+                <Title>身体艺术家</Title>
+                <Char>舞女</Char>
+                <Text>不要说话，用心感受……</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>舞女</Name>
+                <Title>身体艺术家</Title>
+                <Char>舞女</Char>
+                <Text>不想喝一杯吗？勇士……</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>厨师</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>厨师</Name>
+                <Title>机器人厨师</Title>
+                <Char>厨师</Char>
+                <Text>已提交需求，等待处理。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>厨师</Name>
+                <Title>机器人厨师</Title>
+                <Char>厨师</Char>
+                <Text>库存状态良好，未发现异常现象。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+</root>
