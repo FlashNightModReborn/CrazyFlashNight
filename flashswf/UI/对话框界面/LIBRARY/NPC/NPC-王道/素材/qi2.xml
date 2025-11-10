@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-王道/素材/qi2" itemID="54460afd-000024e8" sourceFlashFilepath="../../levels/地图-界外街道.fla" sourceLibraryItemHRef="NPC/NPC-王道/素材/qi2" sourceLastModified="1417747848" lastModified="1417747848" sourceItemID="54460afd-000024e8">
+  <timeline>
+    <DOMTimeline name="qi2">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-王道/素材/shape 184" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.608856201171875" b="0.791290283203125" c="-0.791290283203125" d="-0.608856201171875" tx="242.4" ty="158.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-王道/素材/shape 184" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.566513061523438" b="0.79888916015625" c="0.833023071289063" d="-0.590667724609375" tx="158.05" ty="151.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-王道/素材/shape 182" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.923721313476563" b="0.3797607421875" c="-0.3797607421875" d="-0.923721313476563" tx="259.35" ty="172.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-王道/素材/shape 182" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.85589599609375" b="0.485397338867188" c="0.491851806640625" d="-0.867279052734375" tx="139.1" ty="166.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

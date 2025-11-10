@@ -1,0 +1,55 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-王道/素材/林（肩膀）" itemID="54c1d7e7-00000212" sourceFlashFilepath="../../levels/地图-界外街道.fla" sourceLibraryItemHRef="NPC/NPC-王道/素材/林（肩膀）" sourceLastModified="1421989863" symbolType="graphic" lastModified="1421989863" sourceItemID="54c1d7e7-00000212">
+  <timeline>
+    <DOMTimeline name="林（肩膀）">
+      <layers>
+        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#1F1F1F"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#F1D99D"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="none" weight="0.5" joints="miter">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!114 -61|114 -236!114 -236[83 -481 -106 -489!-106 -489|-113 -490"/>
+                    <Edge fillStyle0="1" edges="!-113 -490|-124 -492!-124 -492[-147 -486 -169 -457!-169 -457[-195 -423 -187 -260!-187 -260|-187 -259!-187 -259[-179 -98 -104 -45"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!-104 -45|-92 -77!114 -61|114 -33"/>
+                    <Edge fillStyle0="2" edges="!19 463[53 501 117 490!117 490|127 488!127 488[181 474 189 426"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!189 426|189 250!189 250[#B7.64 #9B.BB 171.5 88.5"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="2" edges="!171.5 88.5[#8D.17 #4C.B4 104 56!104 56[83 44 45 44!45 44[-11 44 -25 47!-25 47[-62 55 -93.5 88"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!-93.5 88[#FFFFBE.6A 337.75 19 463"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!171.5 88.5[#97.8E #FFFFE7.EE 114 -61!-104 -45|-103 -33!-103 -33[-99.640625 #1E.D9 -93.5 88"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!-79 -86|-28 -40!-28 -40[-10 -28 10 -21"/>
+                    <Edge cubics="!181 92(;89,59 113,44 45,44q181 92Q147 80q104 56Q83 44q45 44);"/>
+                    <Edge cubics="!45 44(;-5,44 -47,37 -92,88q45 44Q-11 44q-25 47Q-62 55q-92 88);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

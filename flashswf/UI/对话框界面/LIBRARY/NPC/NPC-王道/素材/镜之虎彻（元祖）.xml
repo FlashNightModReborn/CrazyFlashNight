@@ -1,0 +1,38 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-王道/素材/镜之虎彻（元祖）" itemID="54c19c7a-00002554" sourceFlashFilepath="../../levels/地图-界外街道.fla" sourceLibraryItemHRef="NPC/NPC-王道/素材/镜之虎彻（元祖）" sourceLastModified="1421974650" lastModified="1421974650" lastUniqueIdentifier="2" sourceItemID="54c19c7a-00002554">
+  <timeline>
+    <DOMTimeline name="镜之虎彻（元祖）">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-王道/素材/刀" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="514.4" ty="27.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-200.75" y="-2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-王道/素材/刀光" selected="true">
+                  <matrix>
+                    <Matrix tx="3.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="225.8" y="20.45"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF" quality="3" strength="2.9"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.25"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

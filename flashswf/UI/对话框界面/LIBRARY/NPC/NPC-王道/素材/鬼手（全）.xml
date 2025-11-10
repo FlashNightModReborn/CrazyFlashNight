@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-王道/素材/鬼手（全）" itemID="54a73547-0000006a" sourceFlashFilepath="../../levels/地图-界外街道.fla" sourceLibraryItemHRef="NPC/NPC-王道/素材/鬼手（全）" sourceLastModified="1762791816" lastModified="1762791816" lastUniqueIdentifier="4" sourceItemID="54a73547-0000006a">
+  <timeline>
+    <DOMTimeline name="鬼手（全）">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-王道/素材/英克雷残存动力甲身1-2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.09725952148438" b="-0.250335693359375" c="0.430755615234375" d="0.86187744140625" tx="16.75" ty="14.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-王道/素材/胳膊">
+                  <matrix>
+                    <Matrix a="0.139633178710938" b="-0.187530517578125" c="0.28814697265625" d="0.2242431640625" tx="2.5" ty="14.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="48.95" y="88.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

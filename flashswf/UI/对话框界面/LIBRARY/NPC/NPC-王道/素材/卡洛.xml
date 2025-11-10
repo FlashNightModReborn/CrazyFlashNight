@@ -1,0 +1,38 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-王道/素材/卡洛" itemID="54a64fa7-0000012c" sourceFlashFilepath="../../levels/地图-界外街道.fla" sourceLibraryItemHRef="NPC/NPC-王道/素材/卡洛" sourceLastModified="1420185511" lastModified="1420185511" lastUniqueIdentifier="4" sourceItemID="54a64fa7-0000012c">
+  <timeline>
+    <DOMTimeline name="卡洛">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-王道/素材/qi2" selected="true">
+                  <matrix>
+                    <Matrix a="0.72894287109375" d="0.770523071289063" tx="21.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="197.35" y="155.35"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.53125"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-王道/素材/冥炎之卡洛" selected="true">
+                  <matrix>
+                    <Matrix a="0.72894287109375" d="0.770523071289063" ty="-0.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="202.2" y="155.35"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5390625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

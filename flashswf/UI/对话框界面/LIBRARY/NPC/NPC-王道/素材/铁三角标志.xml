@@ -1,0 +1,38 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-王道/素材/铁三角标志" itemID="54460e0a-000024ea" sourceFlashFilepath="../../levels/地图-界外街道.fla" sourceLibraryItemHRef="NPC/NPC-王道/素材/铁三角标志" sourceLastModified="1421989980" lastModified="1421989980" sourceItemID="54460e0a-000024ea">
+  <timeline>
+    <DOMTimeline name="铁三角标志">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!490 78|110 78!110 78|14 -0.5!14 -0.5|645 0!645 0|490 78!660 25|289 572!289 572|314 413!314 413|514 114!514 114|660 25!103 137|260 424!260 424|264 567!264 567|0 18!0 18|103 137"/>
+                    <Edge cubics="!645 0(;645,0 490,78 490,78q645 0p490 78);"/>
+                    <Edge cubics="!514 114(;514,114 660,25 660,25q514 114p660 25);"/>
+                    <Edge cubics="!0 18(;0,18 103,137 103,137q0 18p103 137);"/>
+                    <Edge cubics="!103 137(;103,137 260,424 260,424q103 137p260 424);"/>
+                    <Edge cubics="!490 78(;490,78 110,78 110,78q490 78p110 78);"/>
+                    <Edge cubics="!660 25(;660,25 289,572 289,572q660 25p289 572);"/>
+                    <Edge cubics="!289 572(;289,572 314,413 314,413q289 572p314 413);"/>
+                    <Edge cubics="!314 413(314,413;314,413 514,114 514,114q314 413p514 114)514,114;"/>
+                    <Edge cubics="!260 424(;260,424 264,567 264,567q260 424p264 567);"/>
+                    <Edge cubics="!264 567(;264,567 0,18 0,18q264 567p0 18);"/>
+                    <Edge cubics="!14 0(;14,0 645,0 645,0q14 0p645 0);"/>
+                    <Edge cubics="!110 78(110,78;110,78 14,0 14,0q110 78p14 0)14,0;"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

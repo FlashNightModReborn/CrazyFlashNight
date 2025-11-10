@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-王道/素材/林（头部）" itemID="54c1926f-00000036" sourceFlashFilepath="../../levels/地图-界外街道.fla" sourceLibraryItemHRef="NPC/NPC-王道/素材/林（头部）" sourceLastModified="1421972367" lastModified="1421972367" lastUniqueIdentifier="4" sourceItemID="54c1926f-00000036">
+  <timeline>
+    <DOMTimeline name="林（头部）">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-王道/素材/林（脸)" centerPoint3DX="117.2" centerPoint3DY="157.2">
+                  <matrix>
+                    <Matrix a="-0.703628540039063" d="0.726776123046875" tx="174.15" ty="77.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="80.85" y="109.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-王道/素材/头发" centerPoint3DX="129.05" centerPoint3DY="112.95">
+                  <matrix>
+                    <Matrix a="-0.704025268554688" d="0.763336181640625" tx="258.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="183.3" y="147.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-王道/素材/人手" itemID="54a655ad-00000169" sourceFlashFilepath="../../levels/地图-界外街道.fla" sourceLibraryItemHRef="NPC/NPC-王道/素材/人手" sourceLastModified="1421975138" lastModified="1421975138" lastUniqueIdentifier="1" sourceItemID="54a655ad-00000169">
+  <timeline>
+    <DOMTimeline name="人手">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-王道/素材/林（肩膀）" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.694808959960938" b="0.506484985351563" c="-0.482284545898438" d="0.641357421875" tx="127.8" ty="49.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.2" y="-0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
