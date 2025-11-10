@@ -4,22 +4,23 @@
           <DOMFolderItem name="2.音效文件夹/爆炸" itemID="656c296a-0000103c" isExpanded="true"/>
           <DOMFolderItem name="2.音效文件夹/未命名文件夹 2" itemID="687108c8-00002251"/>
           <DOMFolderItem name="ashcore" itemID="688350b6-00000e01"/>
+          <DOMFolderItem name="P50" itemID="689057d2-0000a3f3" isExpanded="true"/>
           <DOMFolderItem name="sprite" itemID="667d1fff-00000d61"/>
-          <DOMFolderItem name="电感切割刃" itemID="655c5883-00000334" isExpanded="true"/>
-          <DOMFolderItem name="公社打桩矛" itemID="68e1124a-00003912" isExpanded="true"/>
+          <DOMFolderItem name="电感切割刃" itemID="655c5883-00000334"/>
+          <DOMFolderItem name="公社打桩矛" itemID="68e1124a-00003912"/>
           <DOMFolderItem name="光玉的剑相关" itemID="68668bb8-000033c6"/>
           <DOMFolderItem name="吉他喷火" itemID="65546112-000049ff"/>
           <DOMFolderItem name="吉他喷火/未命名文件夹 1" itemID="65546b1d-00004a12"/>
-          <DOMFolderItem name="键盘镰刀" itemID="655480e9-00005ea5" isExpanded="true"/>
+          <DOMFolderItem name="键盘镰刀" itemID="655480e9-00005ea5"/>
           <DOMFolderItem name="将军 披风" itemID="667d1ed9-00000ce9"/>
-          <DOMFolderItem name="矩辉启明刃" itemID="690f03c4-0000a0dc" isExpanded="true"/>
+          <DOMFolderItem name="矩辉启明刃" itemID="690f03c4-0000a0dc"/>
           <DOMFolderItem name="军阀精英敌人" itemID="68843a37-00003366"/>
           <DOMFolderItem name="军阀精英敌人/重甲" itemID="68843a37-00003367" isExpanded="true"/>
           <DOMFolderItem name="军阀精英敌人/重甲/弹药" itemID="68843a37-00003370" isExpanded="true"/>
           <DOMFolderItem name="军阀精英敌人/重甲/机枪" itemID="68843a37-00003368" isExpanded="true"/>
           <DOMFolderItem name="军阀精英敌人/重甲/机枪/转轮机枪" itemID="68843a37-00003369" isExpanded="true"/>
           <DOMFolderItem name="军阀精英敌人/重甲/机枪/转轮机枪/GAU-2B-A" itemID="68843a37-0000336a" isExpanded="true"/>
-          <DOMFolderItem name="龙破军霜" itemID="65f704ac-00002258" isExpanded="true"/>
+          <DOMFolderItem name="龙破军霜" itemID="65f704ac-00002258"/>
           <DOMFolderItem name="生存战素材" itemID="66a8fcff-00001f68"/>
           <DOMFolderItem name="特效素材" itemID="65698b55-000002b7"/>
           <DOMFolderItem name="特效与子弹" itemID="65e41282-000004b3"/>
@@ -36,20 +37,19 @@
           <DOMFolderItem name="炎魔斩/炎魔斩/未命名文件夹 2" itemID="65f6fea9-000020b2"/>
           <DOMFolderItem name="炎魔斩/炎魔斩alter" itemID="6558af7c-000002b4"/>
           <DOMFolderItem name="炎魔斩/炎魔斩刀光" itemID="65597827-0000029d" isExpanded="true"/>
-          <DOMFolderItem name="长枪" itemID="68982df5-00002672"/>
+          <DOMFolderItem name="长枪" itemID="68982df5-00002672" isExpanded="true"/>
           <DOMFolderItem name="长枪/53式步骑枪" itemID="659ea370-00000ca4"/>
+          <DOMFolderItem name="长枪/AR57" itemID="68905807-0000a61f"/>
           <DOMFolderItem name="长枪/g11" itemID="6878f46b-000007fd"/>
           <DOMFolderItem name="长枪/GM6_LYNX" itemID="68979216-000016b1"/>
           <DOMFolderItem name="长枪/Jackhammer" itemID="6870de51-00000afb"/>
           <DOMFolderItem name="长枪/M1918A2" itemID="6872364e-00003591"/>
           <DOMFolderItem name="长枪/NEGEV" itemID="686a7a3e-0000131c"/>
-          <DOMFolderItem name="长枪/PF98A" itemID="68d38e78-0000168e"/>
+          <DOMFolderItem name="长枪/PF98A" itemID="68d38e78-0000168e" isExpanded="true"/>
           <DOMFolderItem name="长枪/PKP" itemID="686b8a7f-000003a1"/>
           <DOMFolderItem name="长枪/RPG7V2" itemID="68d4b946-0000085f"/>
-          <DOMFolderItem name="长枪/wa90" itemID="6559d3b1-000002db" isExpanded="true"/>
-          <DOMFolderItem name="长枪/wa90/AR57" itemID="68905807-0000a61f"/>
+          <DOMFolderItem name="长枪/wa90" itemID="6559d3b1-000002db"/>
           <DOMFolderItem name="长枪/wa90/Graphic" itemID="5e86cc75-00001260"/>
-          <DOMFolderItem name="长枪/wa90/P50" itemID="689057d2-0000a3f3" isExpanded="true"/>
           <DOMFolderItem name="长枪/XM25" itemID="6874cd16-000007b9"/>
           <DOMFolderItem name="长枪/XM214" itemID="689a24d4-000032b3"/>
           <DOMFolderItem name="长枪/XM556" itemID="686bba3f-000040b0"/>
@@ -139,8 +139,10 @@
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="ashcore/ashcore.xml" itemID="688340fd-00000819" lastModified="1753436006"/>
           <Include href="ashcore/图标-ashcore.xml" itemID="68835078-00000a95" lastModified="1753436313"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1762689762"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1762765591"/>
           <Include href="NLAW筒子.xml" itemIcon="1" loadImmediate="false" itemID="68d8f28b-00000aab" lastModified="1759048620"/>
+          <Include href="P50/Kel-Tec-P50.xml" itemID="688f2946-000075a6" lastModified="1759804159"/>
+          <Include href="P50/图标-Kel-Tec-P50.xml" itemID="688f460b-0000768a" lastModified="1759804179"/>
           <Include href="q.xml" loadImmediate="false" itemID="6898491a-00000406" lastModified="1754812780"/>
           <Include href="RPG28发射器.xml" itemIcon="1" loadImmediate="false" itemID="68d50204-00000d2a" lastModified="1758790191"/>
           <Include href="sprite/Symbol 35.xml" itemID="6577b699-00000971" lastModified="1718635260"/>
@@ -154,6 +156,9 @@
           <Include href="补间 18.xml" itemIcon="1" loadImmediate="false" itemID="68a0d0c3-00001dfe" lastModified="1755369667"/>
           <Include href="串联破甲火箭弹.xml" itemIcon="1" loadImmediate="false" itemID="68d50246-00000d30" lastModified="1758790242"/>
           <Include href="弹舱.xml" loadImmediate="false" itemID="68a0c3b6-00001440" lastModified="1755396060"/>
+          <Include href="弹头1.xml" loadImmediate="false" itemID="691196a3-00002e7e" lastModified="1762760359"/>
+          <Include href="弹头2.xml" loadImmediate="false" itemID="6911977c-00002e85" lastModified="1762760731"/>
+          <Include href="弹头3.xml" loadImmediate="false" itemID="691198e8-00002e8e" lastModified="1762760936"/>
           <Include href="等离子光片.xml" loadImmediate="false" itemID="6883540e-00000e06" lastModified="1753438466"/>
           <Include href="电感切割刃/刀-电感切割刃.xml" itemID="655c55d9-00000308" lastModified="1721580831"/>
           <Include href="电感切割刃/刀脊.xml" loadImmediate="false" itemID="655c4e2f-0000062f" lastModified="1700551159"/>
@@ -186,6 +191,7 @@
           <Include href="光玉的剑相关/光玉剑身.xml" itemIcon="1" loadImmediate="false" itemID="68668bbe-000033cc" lastModified="1751550910"/>
           <Include href="光玉的剑相关/图标-光玉的剑.xml" itemID="68673eb7-0000160f" lastModified="1751596727"/>
           <Include href="滚珠.xml" loadImmediate="false" itemID="68a07e37-00002bbb" lastModified="1755391465"/>
+          <Include href="核火箭图像.xml" loadImmediate="false" itemID="69118ab1-00002e6e" lastModified="1762765423"/>
           <Include href="后板.xml" loadImmediate="false" itemID="688f4744-00007a61" lastModified="1754220356"/>
           <Include href="基础枪管.xml" loadImmediate="false" itemID="6887450b-000006ec" lastModified="1753695499"/>
           <Include href="基底.xml" loadImmediate="false" itemID="68a0c9af-00001480" lastModified="1755388839"/>
@@ -263,6 +269,7 @@
           <Include href="将军 披风/Symbol 911.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000015e5" lastModified="1701508661"/>
           <Include href="将军 披风/Symbol 912.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000015e6" lastModified="1701508661"/>
           <Include href="将军 披风/Symbol 913.xml" loadImmediate="false" itemID="6577faef-000015e7" lastModified="1719556794"/>
+          <Include href="解锁拉柄.xml" loadImmediate="false" itemID="6911a3bf-00002ee7" lastModified="1762763732"/>
           <Include href="矩辉启明刃/刀-矩辉启明刃.xml" itemID="690f0285-0000a0ce" lastModified="1762687840"/>
           <Include href="矩辉启明刃/光刃.xml" loadImmediate="false" itemID="690f366a-0000a388" lastModified="1762604871"/>
           <Include href="矩辉启明刃/剑刃.xml" loadImmediate="false" itemID="690f0fed-0000a11f" lastModified="1762596701"/>
@@ -305,6 +312,7 @@
           <Include href="热量6.xml" itemIcon="1" loadImmediate="false" itemID="689c0536-00001ef6" lastModified="1755055414"/>
           <Include href="热量7.xml" itemIcon="1" loadImmediate="false" itemID="689c053c-00001efa" lastModified="1755055420"/>
           <Include href="热量8.xml" itemIcon="1" loadImmediate="false" itemID="689c0541-00001efe" lastModified="1755055425"/>
+          <Include href="伸缩支架.xml" loadImmediate="false" itemID="69119c56-00002ea7" lastModified="1762761814"/>
           <Include href="生存战素材/Symbol 9.xml" itemIcon="1" loadImmediate="false" itemID="65c24a9a-00000cc3" lastModified="1699960314"/>
           <Include href="特效素材/打击伤害数字.xml" itemID="656983a5-000002a1" lastModified="1706446521"/>
           <Include href="特效与子弹/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="65e08f36-00001ff1" lastModified="1702237154"/>
@@ -354,6 +362,9 @@
           <Include href="无AS链接/Symbol 4270.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001073" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4751.xml" loadImmediate="false" itemID="668e7c1e-0000117a" lastModified="1720533000"/>
           <Include href="下框架.xml" loadImmediate="false" itemID="68a09f9b-00000578" lastModified="1755391144"/>
+          <Include href="下支架.xml" loadImmediate="false" itemID="6911a929-00003074" lastModified="1762765097"/>
+          <Include href="下支架基座.xml" loadImmediate="false" itemID="6911a6c0-00002ef3" lastModified="1762765216"/>
+          <Include href="下支架连杆.xml" loadImmediate="false" itemID="6911a9d3-00003080" lastModified="1762765267"/>
           <Include href="线路.xml" loadImmediate="false" itemID="68a0b5b6-00000ae8" lastModified="1755363829"/>
           <Include href="箱子素材/Symbol 9.xml" itemIcon="1" loadImmediate="false" itemID="65c8ed3c-00000647" lastModified="1704525302"/>
           <Include href="箱子素材/Symbol 10.xml" loadImmediate="false" itemID="65c8ed3c-00000648" lastModified="1714562335"/>
@@ -417,6 +428,8 @@
           <Include href="长枪/53式步骑枪/枪身.xml" loadImmediate="false" itemID="659ea159-00000b64" lastModified="1704953133"/>
           <Include href="长枪/53式步骑枪/调整层.xml" loadImmediate="false" itemID="659eb6ee-000005a7" lastModified="1704953093"/>
           <Include href="长枪/53式步骑枪/图标-53式步骑枪.xml" itemID="659eadd3-00000327" lastModified="1704901315"/>
+          <Include href="长枪/AR57/AR57.xml" itemID="68904bb0-0000a3d3" lastModified="1754290230"/>
+          <Include href="长枪/AR57/图标-AR57.xml" itemID="689057e5-0000a41b" lastModified="1754290211"/>
           <Include href="长枪/g11/G11.xml" itemID="68751898-0000072e" lastModified="1752656002"/>
           <Include href="长枪/g11/G11动画.xml" loadImmediate="false" itemID="68776282-000017ba" lastModified="1752654466"/>
           <Include href="长枪/g11/G11上支架.xml" itemIcon="1" loadImmediate="false" itemID="68784e75-00003582" lastModified="1752714869"/>
@@ -480,6 +493,7 @@
           <Include href="长枪/PF98A/PF98A筒子.xml" loadImmediate="false" itemID="68d38e7e-0000168f" lastModified="1758695038"/>
           <Include href="长枪/PF98A/RPG28.xml" itemID="68d500c8-00000d19" lastModified="1758792335"/>
           <Include href="长枪/PF98A/RShG4.xml" itemID="68d65626-0000106d" lastModified="1758879975"/>
+          <Include href="长枪/PF98A/RShG4Я.xml" itemID="6911637d-00002e6a" lastModified="1762768520"/>
           <Include href="长枪/PF98A/图标-PF98A.xml" itemID="68d38e9f-00001691" lastModified="1758695071"/>
           <Include href="长枪/PF98A/图标-RPG28.xml" itemID="68d50369-00000d49" lastModified="1758790537"/>
           <Include href="长枪/PF98A/图标-RShG4.xml" itemID="68d65c8b-000010c1" lastModified="1758878925"/>
@@ -495,12 +509,8 @@
           <Include href="长枪/RPG7V2/弹头.xml" loadImmediate="false" itemID="68d4b907-0000085a" lastModified="1758771535"/>
           <Include href="长枪/RPG7V2/图标-NLAW.xml" itemID="68d9008c-00000ed1" lastModified="1759051953"/>
           <Include href="长枪/RPG7V2/图标-RPG7V2.xml" itemID="68d4b979-00000874" lastModified="1758773313"/>
-          <Include href="长枪/wa90/AR57/AR57.xml" itemID="68904bb0-0000a3d3" lastModified="1754290230"/>
-          <Include href="长枪/wa90/AR57/图标-AR57.xml" itemID="689057e5-0000a41b" lastModified="1754290211"/>
           <Include href="长枪/wa90/Graphic/shape 3716.xml" itemIcon="1" loadImmediate="false" itemID="5e86cc7d-00000e85" lastModified="1585892477"/>
           <Include href="长枪/wa90/Graphic/shape 4006.xml" itemIcon="1" loadImmediate="false" itemID="5e86cc7d-00000fa7" lastModified="1754200354"/>
-          <Include href="长枪/wa90/P50/Kel-Tec-P50.xml" itemID="688f2946-000075a6" lastModified="1759804159"/>
-          <Include href="长枪/wa90/P50/图标-Kel-Tec-P50.xml" itemID="688f460b-0000768a" lastModified="1759804179"/>
           <Include href="长枪/wa90/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="60abe370-00000028" lastModified="1621882292"/>
           <Include href="长枪/wa90/Symbol 5.xml" itemIcon="1" loadImmediate="false" itemID="60abe379-0000002c" lastModified="1700386543"/>
           <Include href="长枪/wa90/Symbol 6.xml" itemIcon="1" loadImmediate="false" itemID="60abe6b3-00000030" lastModified="1700386216"/>
@@ -606,6 +616,8 @@
           <Include href="长枪/铁枪/铁枪准星.xml" loadImmediate="false" itemID="68657e28-00003ea6" lastModified="1751481896"/>
           <Include href="长枪/铁枪/图标-铁枪.xml" itemID="68673ed8-00001625" lastModified="1751627941"/>
           <Include href="长枪/铁枪/图标-铁枪核心.xml" itemID="687108b3-00002236" lastModified="1752238414"/>
+          <Include href="遮罩块.xml" loadImmediate="false" itemID="69118f14-00002e78" lastModified="1762758420"/>
+          <Include href="支架.xml" loadImmediate="false" itemID="69119ba6-00002e99" lastModified="1762761882"/>
           <Include href="重复项目文件夹/area.xml" loadImmediate="false" itemID="65a8e568-0000096e" lastModified="1702141674"/>
           <Include href="主唱光剑/shape 646.xml" itemIcon="1" loadImmediate="false" itemID="561602f7-00000287" lastModified="1444283127"/>
           <Include href="主唱光剑/shape 653.xml" itemIcon="1" loadImmediate="false" itemID="561602f7-0000028e" lastModified="1444283127"/>
@@ -1436,6 +1448,17 @@
                     <SolidSwatchItem color="#575754" hue="40" saturation="4" brightness="81"/>
                     <SolidSwatchItem color="#4E817C" hue="117" saturation="59" brightness="97"/>
                     <SolidSwatchItem color="#98958F" hue="25" saturation="10" brightness="139"/>
+                    <SolidSwatchItem color="#1E1B07" hue="34" saturation="144" brightness="18"/>
+                    <SolidSwatchItem color="#2C290D" hue="37" saturation="131" brightness="27"/>
+                    <SolidSwatchItem color="#393314" hue="33" saturation="115" brightness="37"/>
+                    <SolidSwatchItem color="#030201" hue="20" saturation="120" brightness="2"/>
+                    <SolidSwatchItem color="#19180F" hue="36" saturation="63" brightness="19"/>
+                    <SolidSwatchItem color="#212015" hue="36" saturation="52" brightness="26"/>
+                    <SolidSwatchItem color="#22221F" hue="40" saturation="12" brightness="31"/>
+                    <SolidSwatchItem color="#14130B" hue="36" saturation="74" brightness="15"/>
+                    <SolidSwatchItem color="#2B2A17" hue="40" saturation="70" brightness="31"/>
+                    <SolidSwatchItem color="#1C1D0F" hue="43" saturation="76" brightness="21"/>
+                    <SolidSwatchItem color="#3D3E2D" hue="43" saturation="38" brightness="50"/>
                </swatches>
           </swatchList>
      </swatchLists>

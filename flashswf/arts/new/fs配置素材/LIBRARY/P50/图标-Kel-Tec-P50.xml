@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/wa90/AR57/图标-AR57" itemID="689057e5-0000a41b" linkageExportForAS="true" linkageIdentifier="图标-AR57" lastModified="1754290211" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="P50/图标-Kel-Tec-P50" itemID="688f460b-0000768a" linkageExportForAS="true" linkageIdentifier="图标-Kel-Tec-P50" lastModified="1759804179" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="图标-AR57">
+    <DOMTimeline name="图标-Kel-Tec-P50">
       <layers>
-        <DOMLayer name="Action Layer" color="#FFFF00" locked="true">
+        <DOMLayer name="Action Layer" color="#FFFF00" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <Actionscript>
@@ -13,7 +13,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Mask Layer 2" color="#FFFF00" locked="true" layerType="mask">
+        <DOMLayer name="Mask Layer 2" color="#FFFF00" locked="true" outline="true" useOutlineView="true" layerType="mask">
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <elements>
@@ -26,23 +26,23 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Masked Layer 3 - 2" color="#FFFF00" parentLayerIndex="1" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Masked Layer 3 - 2" color="#FFFF00" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="长枪/wa90/AR57/AR57" centerPoint3DX="30.8" centerPoint3DY="11.75">
+                <DOMSymbolInstance libraryItemName="P50/Kel-Tec-P50" selected="true" centerPoint3DX="19.95" centerPoint3DY="6.15">
                   <matrix>
-                    <Matrix a="0.211898803710938" b="-0.211898803710938" c="0.211898803710938" d="0.211898803710938" tx="1.2" ty="8.6"/>
+                    <Matrix a="0.148483276367188" b="-0.148483276367188" c="0.148483276367188" d="0.148483276367188" tx="-0.6" ty="4.35"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="61.6" y="79.75"/>
+                    <Point x="61.8" y="80"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#FFFF00">
+        <DOMLayer name="Layer 1" color="#FFFF00" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <elements>
@@ -55,7 +55,7 @@
             </DOMFrame>
             <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="长枪/wa90/AR57/AR57" centerPoint3DX="9.05" centerPoint3DY="-86">
+                <DOMSymbolInstance libraryItemName="P50/Kel-Tec-P50" selected="true" centerPoint3DX="9.05" centerPoint3DY="-86">
                   <matrix>
                     <Matrix a="0.212646484375" d="0.212646484375" tx="-5.95" ty="2.75"/>
                   </matrix>

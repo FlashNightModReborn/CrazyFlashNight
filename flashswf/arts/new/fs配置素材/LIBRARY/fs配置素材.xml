@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1762689762" lastUniqueIdentifier="256">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1762765591" lastUniqueIdentifier="257">
   <timeline>
-    <DOMTimeline name="fs配置素材" currentFrame="13" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="19" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
         <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
@@ -121,7 +121,7 @@
                     <Point x="63.7" y="-39.2"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="长枪/wa90/P50/Kel-Tec-P50" centerPoint3DX="959.05" centerPoint3DY="92.85">
+                <DOMSymbolInstance libraryItemName="P50/Kel-Tec-P50" centerPoint3DX="959.05" centerPoint3DY="92.85">
                   <matrix>
                     <Matrix tx="661.55" ty="107.85"/>
                   </matrix>
@@ -129,7 +129,7 @@
                     <Point x="297.35" y="-35.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="长枪/wa90/P50/图标-Kel-Tec-P50" centerPoint3DX="833.65" centerPoint3DY="128.15">
+                <DOMSymbolInstance libraryItemName="P50/图标-Kel-Tec-P50" centerPoint3DX="833.65" centerPoint3DY="128.15">
                   <matrix>
                     <Matrix tx="833.65" ty="128.15"/>
                   </matrix>
@@ -137,7 +137,7 @@
                     <Point x="32.05" y="-34.3"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="长枪/wa90/AR57/AR57" centerPoint3DX="920.65" centerPoint3DY="220.65">
+                <DOMSymbolInstance libraryItemName="长枪/AR57/AR57" centerPoint3DX="920.65" centerPoint3DY="220.65">
                   <matrix>
                     <Matrix tx="621.6" ty="214.1"/>
                   </matrix>
@@ -145,7 +145,7 @@
                     <Point x="298.8" y="6.55"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="长枪/wa90/AR57/图标-AR57" centerPoint3DX="785.2" centerPoint3DY="240.15">
+                <DOMSymbolInstance libraryItemName="长枪/AR57/图标-AR57" centerPoint3DX="785.2" centerPoint3DY="240.15">
                   <matrix>
                     <Matrix tx="785.2" ty="240.15"/>
                   </matrix>
@@ -603,6 +603,14 @@
                   </matrix>
                   <transformationPoint>
                     <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/PF98A/RShG4Я" selected="true" centerPoint3DX="-345.65" centerPoint3DY="440.5">
+                  <matrix>
+                    <Matrix tx="-344.4" ty="456.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.25" y="-16.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
