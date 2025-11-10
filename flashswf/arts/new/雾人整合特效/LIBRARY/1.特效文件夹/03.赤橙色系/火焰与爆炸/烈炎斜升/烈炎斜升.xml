@@ -23,7 +23,7 @@ this.魔法伤害属性 = "热";
 _root.播放音效("爆炸 火球 炸裂 04.mp3");]]></script>
               </Actionscript>
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="80.15" centerPoint3DY="-17.5">
+                <DOMSymbolInstance libraryItemName="area40X40" name="area" centerPoint3DX="80.15" centerPoint3DY="-17.5">
                   <matrix>
                     <Matrix a="3.69560241699219" d="3.72491455078125" tx="17.25" ty="-140.65"/>
                   </matrix>
@@ -35,7 +35,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="119.45" centerPoint3DY="-17.5">
+                <DOMSymbolInstance libraryItemName="area40X40" name="area" selected="true" centerPoint3DX="119.45" centerPoint3DY="-17.5">
                   <matrix>
                     <Matrix a="3.69560241699219" d="3.72491455078125" tx="56.85" ty="-140.65"/>
                   </matrix>
@@ -50,7 +50,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="119.45" centerPoint3DY="-17.5">
+                <DOMSymbolInstance libraryItemName="area40X40" name="area" selected="true" centerPoint3DX="119.45" centerPoint3DY="-17.5">
                   <matrix>
                     <Matrix a="3.69560241699219" d="3.72491455078125" tx="56.85" ty="-140.65"/>
                   </matrix>
@@ -62,7 +62,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="94.85" centerPoint3DY="-24.9">
+                <DOMSymbolInstance libraryItemName="area40X40" name="area" selected="true" centerPoint3DX="94.85" centerPoint3DY="-24.9">
                   <matrix>
                     <Matrix a="2.26589965820313" b="0.811569213867188" c="-1.71757507324219" d="4.79551696777344" tx="130.2" ty="-201.95"/>
                   </matrix>

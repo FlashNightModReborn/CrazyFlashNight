@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/镜芒一闪" itemID="668be71d-0000065c" linkageExportForAS="true" linkageIdentifier="镜芒一闪" lastModified="1720444701">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/01.白净色系/镜闪/镜芒一闪" itemID="668be71d-0000065c" linkageExportForAS="true" linkageIdentifier="镜芒一闪" lastModified="1762771858">
   <timeline>
     <DOMTimeline name="镜芒一闪">
       <layers>
@@ -32,7 +32,7 @@ this.removeMovieClip();
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" name="area" centerPoint3DX="-858.4" centerPoint3DY="-121.4">
+                <DOMSymbolInstance libraryItemName="area25X25" name="area" centerPoint3DX="-858.4" centerPoint3DY="-121.4">
                   <matrix>
                     <Matrix a="69.760009765625" d="4.35992431640625" tx="-870.9" ty="-133.9"/>
                   </matrix>
@@ -47,11 +47,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#F984B2" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#F984B2">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 348">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/01.白净色系/镜闪/素材/Symbol 348">
                   <matrix>
                     <Matrix a="2.82841491699219" b="1.697021484375" c="-2.82841491699219" d="1.697021484375" tx="1.05" ty="-82"/>
                   </matrix>
@@ -63,7 +63,7 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="2" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 353" selected="true" centerPoint3DX="0.95" centerPoint3DY="-81.95">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/01.白净色系/镜闪/素材/Symbol 353" selected="true" centerPoint3DX="0.95" centerPoint3DY="-81.95">
                   <matrix>
                     <Matrix a="2.82841491699219" b="1.697021484375" c="-2.82841491699219" d="1.697021484375" tx="1.05" ty="-82"/>
                   </matrix>
@@ -75,7 +75,7 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="4" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 357" selected="true" centerPoint3DX="-8.9" centerPoint3DY="-82.25">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/01.白净色系/镜闪/素材/Symbol 357" selected="true" centerPoint3DX="-8.9" centerPoint3DY="-82.25">
                   <matrix>
                     <Matrix a="2.82841491699219" b="1.697021484375" c="-2.82841491699219" d="1.697021484375" tx="1.05" ty="-82"/>
                   </matrix>
@@ -87,7 +87,7 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="6" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 362" selected="true">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/01.白净色系/镜闪/素材/Symbol 362" selected="true" centerPoint3DX="-50.3" centerPoint3DY="-90.9">
                   <matrix>
                     <Matrix a="2.82841491699219" b="1.697021484375" c="-2.82841491699219" d="1.697021484375" tx="1.05" ty="-82"/>
                   </matrix>
@@ -99,7 +99,7 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="8" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 367" selected="true" centerPoint3DX="-8.95" centerPoint3DY="-95.8">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/01.白净色系/镜闪/素材/Symbol 367" centerPoint3DX="-8.95" centerPoint3DY="-95.8">
                   <matrix>
                     <Matrix a="2.82841491699219" b="1.697021484375" c="-2.82841491699219" d="1.697021484375" tx="1.05" ty="-82"/>
                   </matrix>
@@ -114,12 +114,12 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 0" color="#F122EF">
+        <DOMLayer name="Sound Layer 0" color="#F122EF" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="12" keyMode="9728" soundName="sound/sound363.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="0" duration="12" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound363.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>

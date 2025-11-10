@@ -13,7 +13,7 @@
 this._rotation = 0;]]></script>
               </Actionscript>
               <elements>
-                <DOMSymbolInstance libraryItemName="area" selected="true" centerPoint3DX="0.35" centerPoint3DY="-15.65">
+                <DOMSymbolInstance libraryItemName="area40X40" selected="true" centerPoint3DX="0.35" centerPoint3DY="-15.65">
                   <matrix>
                     <Matrix a="1.49749755859375" d="1.18649291992188" tx="-29.6" ty="-39.4"/>
                   </matrix>
@@ -25,7 +25,7 @@ this._rotation = 0;]]></script>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" centerPoint3DX="-1" centerPoint3DY="-63.15">
+                <DOMSymbolInstance libraryItemName="area40X40" centerPoint3DX="-1" centerPoint3DY="-63.15">
                   <matrix>
                     <Matrix a="2.64683532714844" d="1.83905029296875" tx="-53.95" ty="-99.95"/>
                   </matrix>
@@ -37,7 +37,7 @@ this._rotation = 0;]]></script>
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" centerPoint3DX="-1.1" centerPoint3DY="-77.45">
+                <DOMSymbolInstance libraryItemName="area40X40" centerPoint3DX="-1.1" centerPoint3DY="-77.45">
                   <matrix>
                     <Matrix a="2.64683532714844" d="2.99308776855469" tx="-54.05" ty="-137.35"/>
                   </matrix>
@@ -87,7 +87,7 @@ this.removeMovieClip();
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!-12 -3700|5 -1159!5 -1159|2517 -1165!18 729|5 -1159!5 -1159|-2502 -1154"/>
+                    <Edge strokeStyle="1" edges="!18 729|5 -1159!5 -1159|2517 -1165!-12 -3700|5 -1159!5 -1159|-2502 -1154"/>
                   </edges>
                 </DOMShape>
               </elements>

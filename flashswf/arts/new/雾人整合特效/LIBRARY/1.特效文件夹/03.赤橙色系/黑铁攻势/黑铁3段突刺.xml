@@ -25,7 +25,7 @@ if(_root.gameworld[发射者名].方向 == "左")
 this._rotation = 0;]]></script>
               </Actionscript>
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="205.95" centerPoint3DY="-78.55">
+                <DOMSymbolInstance libraryItemName="area40X40" name="area" centerPoint3DX="205.95" centerPoint3DY="-78.55">
                   <matrix>
                     <Matrix a="2.10931396484375" b="0.007293701171875" c="-0.0037689208984375" d="1.09001159667969" tx="158.7" ty="-101.05"/>
                   </matrix>
@@ -37,7 +37,7 @@ this._rotation = 0;]]></script>
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="235.15" centerPoint3DY="-78.55">
+                <DOMSymbolInstance libraryItemName="area40X40" name="area" centerPoint3DX="235.15" centerPoint3DY="-78.55">
                   <matrix>
                     <Matrix a="2.10931396484375" b="0.007293701171875" c="-0.0037689208984375" d="1.09001159667969" tx="187.9" ty="-101.05"/>
                   </matrix>
@@ -52,7 +52,7 @@ this._rotation = 0;]]></script>
                 <script><![CDATA[this.removeMovieClip();]]></script>
               </Actionscript>
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="251.25" centerPoint3DY="-78.55">
+                <DOMSymbolInstance libraryItemName="area40X40" name="area" centerPoint3DX="251.25" centerPoint3DY="-78.55">
                   <matrix>
                     <Matrix a="2.10931396484375" b="0.007293701171875" c="-0.0037689208984375" d="1.09001159667969" tx="204" ty="-101.05"/>
                   </matrix>

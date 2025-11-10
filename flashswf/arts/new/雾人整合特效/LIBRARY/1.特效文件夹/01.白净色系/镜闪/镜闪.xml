@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/01.白净色系/镜闪/镜闪" itemID="65535a88-00002879" linkageExportForAS="true" linkageIdentifier="镜闪" lastModified="1722180043" lastUniqueIdentifier="45">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/01.白净色系/镜闪/镜闪" itemID="65535a88-00002879" linkageExportForAS="true" linkageIdentifier="镜闪" lastModified="1762771908" lastUniqueIdentifier="45">
   <timeline>
-    <DOMTimeline name="镜闪" currentFrame="7">
+    <DOMTimeline name="镜闪">
       <layers>
         <DOMLayer name="代码&amp;判定" color="#9933CC" locked="true" autoNamed="false">
           <frames>
@@ -10,7 +10,7 @@
 this._y -= 100;]]></script>
               </Actionscript>
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-4.05" centerPoint3DY="-1.05">
+                <DOMSymbolInstance libraryItemName="area40X40" name="area" centerPoint3DX="-4.05" centerPoint3DY="-1.05">
                   <matrix>
                     <Matrix a="8.20109558105469" tx="-165.7" ty="-21.05"/>
                   </matrix>
@@ -28,7 +28,7 @@ this._y -= 100;]]></script>
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-4.05" centerPoint3DY="-1.05">
+                <DOMSymbolInstance libraryItemName="area40X40" name="area" centerPoint3DX="-4.05" centerPoint3DY="-1.05">
                   <matrix>
                     <Matrix a="10.0053100585938" tx="-201.8" ty="-21.05"/>
                   </matrix>
@@ -46,7 +46,7 @@ this._y -= 100;]]></script>
             </DOMFrame>
             <DOMFrame index="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-4.05" centerPoint3DY="-1.05">
+                <DOMSymbolInstance libraryItemName="area40X40" name="area" centerPoint3DX="-4.05" centerPoint3DY="-1.05">
                   <matrix>
                     <Matrix a="17.2841796875" d="1.85000610351563" tx="-347.35" ty="-38.05"/>
                   </matrix>
