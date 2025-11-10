@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跑攻" itemID="690cd8bb-0000117d" lastModified="1762610275" lastUniqueIdentifier="22">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跑攻" itemID="690cd8bb-0000117d" lastModified="1762778688" lastUniqueIdentifier="22">
   <timeline>
-    <DOMTimeline name="兵器跑攻">
+    <DOMTimeline name="兵器跑攻" currentFrame="35">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -263,7 +263,7 @@ function 攻击时按键四向空中移动(慢速度, 快速度)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#9933CC" autoNamed="false">
+        <DOMLayer name="攻击as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -376,7 +376,9 @@ Z轴攻击范围 = 30;
 Z轴攻击范围 = 30;
 击倒率 = 10;
 水平击退速度 = 10;
-兵器冲击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
+兵器冲击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);
+
+_parent.UpdateSmallState("跑攻三段中");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -486,7 +488,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#FBC187" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#FBC187" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
@@ -511,7 +513,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="18" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
