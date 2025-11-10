@@ -368,6 +368,8 @@ _root.加载并配置NPC对话 = function(xml文件地址:String):Void
 
 _root.读取NPC对话 = function(NPC名称:String){
 	var 总对话 = _root.NPC对话[NPC名称];
+
+	// _root.发布消息("读取NPC对话: " + NPC名称 + " 对话数量: " + (总对话 ? 总对话.length : 0));
 	if(!总对话 || !总对话.length){
 		return null;
 	}
@@ -378,6 +380,8 @@ _root.读取NPC对话 = function(NPC名称:String){
 		}
 		输出对话.push(总对话[i].Dialogue);
 	}
+
+	// _root.发布消息("过滤后NPC对话数量: " + 输出对话.length);
 	return 输出对话;
 };
 
@@ -387,6 +391,8 @@ _root.读取并组装NPC对话 = function(NPC名称:String){
 	for(var i:Number = 0; i < 总对话.length; i++){
 		输出对话[i] = _root.组装单次对话(总对话[i]);
 	}
+
+	// _root.发布消息(NPC名称, "组装后NPC对话数量: " + 输出对话.length);
 	return 输出对话;
 }
 

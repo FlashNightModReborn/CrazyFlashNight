@@ -101,9 +101,13 @@ class org.flashNight.gesh.xml.LoadXml.NpcDialogueLoader extends BaseXMLLoader {
             // trace("NpcDialogueLoader: 子 XML 文件加载成功 = " + xmlFilePath);
             // trace("NpcDialogueLoader: 子 XML 数据 = " + ObjectUtil.toString(childData));
 
-            // NPC对话数据结构: childData.Dialogues 是一个数组，每个元素包含 Name 和 Dialogue
-            if (childData.Dialogues) {
-                var dialoguesArray:Array = (childData.Dialogues instanceof Array) ? childData.Dialogues : [childData.Dialogues];
+            // 修复：新的XML文件结构中，childData直接就是根节点，包含Dialogues
+            // 每个文件只有一个Dialogues节点（代表一个或多个NPC）
+            var dialoguesData:Object = childData.Dialogues;
+
+            if (dialoguesData) {
+                // 将Dialogues转换为数组（可能是单个对象或数组）
+                var dialoguesArray:Array = (dialoguesData instanceof Array) ? dialoguesData : [dialoguesData];
 
                 for (var i:Number = 0; i < dialoguesArray.length; i++) {
                     var npcData:Object = dialoguesArray[i];
@@ -111,9 +115,59 @@ class org.flashNight.gesh.xml.LoadXml.NpcDialogueLoader extends BaseXMLLoader {
                         var npcName:String = npcData.Name;
                         // trace("NpcDialogueLoader: 合并NPC对话，NPC名称 = " + npcName);
 
-                        // 将整个Dialogue数组存储，保持原有数据结构
+                        // 修复：需要保持与游戏期望的数据结构一致
+                        // 游戏期望: NPC对话[NPC名称] = [{TaskRequirement: 0, Dialogue: [...]}, ...]
                         if (npcData.Dialogue) {
-                            self.combinedData[npcName] = (npcData.Dialogue instanceof Array) ? npcData.Dialogue : [npcData.Dialogue];
+                            // 如果该NPC还没有数据，初始化为空数组
+                            if (!self.combinedData[npcName]) {
+                                self.combinedData[npcName] = [];
+                            }
+
+                            // 将Dialogue转换为数组
+                            var dialogueArray:Array = (npcData.Dialogue instanceof Array) ? npcData.Dialogue : [npcData.Dialogue];
+
+                            // 为每个对话创建正确的数据结构
+                            for (var j:Number = 0; j < dialogueArray.length; j++) {
+                                var dialogueObj:Object = {};
+                                var dialogue:Object = dialogueArray[j];
+
+                                // 提取TaskRequirement字段（如果存在）
+                                dialogueObj.TaskRequirement = dialogue.TaskRequirement ? Number(dialogue.TaskRequirement) : 0;
+
+                                // 重要：Dialogue字段应该直接是SubDialogue数组，而不是完整的对话对象
+                                // 游戏代码期望: 总对话[i].Dialogue 直接就是 SubDialogue数组
+                                // 同时需要将字段名转换为小写，因为组装单次对话函数期望小写字段名
+                                if (dialogue.SubDialogue) {
+                                    var subDialogueArray:Array = (dialogue.SubDialogue instanceof Array) ? dialogue.SubDialogue : [dialogue.SubDialogue];
+
+                                    // 转换字段名为小写
+                                    var convertedSubDialogues:Array = [];
+                                    for (var k:Number = 0; k < subDialogueArray.length; k++) {
+                                        var subDialogue:Object = subDialogueArray[k];
+                                        var convertedSubDialogue:Object = {};
+
+                                        // 转换字段名为小写（Name -> name, Title -> title, etc.）
+                                        convertedSubDialogue.name = subDialogue.Name || subDialogue.name;
+                                        convertedSubDialogue.title = subDialogue.Title || subDialogue.title;
+                                        convertedSubDialogue.char = subDialogue.Char || subDialogue.char;
+                                        convertedSubDialogue.text = subDialogue.Text || subDialogue.text;
+                                        convertedSubDialogue.id = subDialogue.id;
+
+                                        // 保留其他可能的字段
+                                        convertedSubDialogue.target = subDialogue.Target || subDialogue.target;
+                                        convertedSubDialogue.imageurl = subDialogue.ImageUrl || subDialogue.imageurl;
+
+                                        convertedSubDialogues.push(convertedSubDialogue);
+                                    }
+
+                                    dialogueObj.Dialogue = convertedSubDialogues;
+                                } else {
+                                    // 如果没有SubDialogue，将整个对话对象作为单个元素的数组
+                                    dialogueObj.Dialogue = [dialogue];
+                                }
+
+                                self.combinedData[npcName].push(dialogueObj);
+                            }
                         }
                     }
                 }
