@@ -1,0 +1,36 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-大圣/正常大圣/大圣手臂双方向" itemID="68988bc6-0000060a" symbolType="graphic" lastModified="1754827785">
+  <timeline>
+    <DOMTimeline name="大圣手臂双方向" currentFrame="1">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-大圣/正常大圣/正常大圣左小臂">
+                  <matrix>
+                    <Matrix a="0.5570068359375" b="-0.201156616210938" c="0.20318603515625" d="0.562667846679688" tx="-24" ty="-19.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.7" y="13.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-大圣/正常大圣/正常大圣小臂右">
+                  <matrix>
+                    <Matrix a="0.603805541992188" b="-0.1617431640625" c="0.1617431640625" d="0.603805541992188" tx="-28.1" ty="-25.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="36.7" y="47.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

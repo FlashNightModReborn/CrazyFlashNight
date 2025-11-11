@@ -1,0 +1,68 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-BLACK-L/德洛希尔/素材/DE LOS HILL头" itemID="54a55640-00000f69" lastModified="1762833424" lastUniqueIdentifier="7">
+  <timeline>
+    <DOMTimeline name="DE LOS HILL头">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/德洛希尔/素材/散件/德洛希尔头" centerPoint3DX="96.55" centerPoint3DY="92.1">
+                  <matrix>
+                    <Matrix a="-1.42520141601563" d="1.42520141601563" tx="193.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="67.8" y="64.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/德洛希尔/素材/散件/发夹">
+                  <matrix>
+                    <Matrix a="-1.42520141601563" d="1.42520141601563" tx="31.35" ty="90.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.4" y="3.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMGroup>
+                  <members>
+                    <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/德洛希尔/素材/散件/德洛希尔眼睛右眼" centerPoint3DX="91.2" centerPoint3DY="103.75">
+                      <matrix>
+                        <Matrix a="-1.42520141601563" d="1.42520141601563" tx="106.7" ty="95.3"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="10.85" y="5.95"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/德洛希尔/素材/散件/德洛希尔眼睛左眼向下看" centerPoint3DX="44.45" centerPoint3DY="104.15">
+                      <matrix>
+                        <Matrix a="1.116455078125" d="1.33795166015625" tx="32.7" ty="96.25"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="10.5" y="6"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/德洛希尔/素材/散件/德洛希尔怒" centerPoint3DX="69.35" centerPoint3DY="103">
+                      <matrix>
+                        <Matrix a="-1.42520141601563" d="1.42520141601563" tx="96.45" ty="80.5"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="22.25" y="15.6"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/0.散件/嘴1" centerPoint3DX="66.55" centerPoint3DY="146.7">
+                      <matrix>
+                        <Matrix a="-1.42520141601563" d="1.42520141601563" tx="73.5" ty="144.5"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="4.85" y="0.9"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

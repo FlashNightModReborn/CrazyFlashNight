@@ -1,0 +1,63 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-BLACK-L/BLACK/素材/0.散件/black脸" itemID="543923c0-000019a8" lastModified="1413546863" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="black脸">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/0.散件/胡渣">
+                  <matrix>
+                    <Matrix a="0.93975830078125" d="0.93975830078125" tx="4.7" ty="26.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.55" y="9.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CBA389"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="none" weight="0.5" joints="miter">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!702 388[#2C1.0E #137.B4 674 241!674 241|650.5 187.5!650.5 187.5[#275.7 #8D.9A 596 102!596 102[#23E.C5 #4D.58 549 57!549 57|521 39.5!521 39.5[#1E9.71 #17.D4 455.5 17!455.5 17[#165.9E #1.87 264.5 32.5!264.5 32.5[#D7.BE #30.E7 179.5 83
+!179.5 83[#8D.69 117.5 121 161.5!121 161.5|95 221.5!95 221.5[#4C.44 #10A.F6 72 314!72 314|67.5 379.5"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
+!67.5 379.5|82 395!82 395[#6D.E2 #1AB.3 117.5 471"/>
+                    <Edge fillStyle0="1" edges="
+!701.5 388|702 388"/>
+                    <Edge strokeStyle="1" edges="
+!702 388|701.5 395!701.5 395|701.5 388"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!701.5 388|683.5 557!683.5 557[680 #251.B1 659 675!659 675[#27E.1C #2F3.D3 477 910!477 910[#1A4.C9 #396.77 375 897.5!375 897.5[345 881.75 315 866!315 866[#111.3A #349.A9 240 807!240 807[#CC.66 #301.1A 179 721.5!179 721.5[#99.11 #2A0.9F
+ 117 629!117 629[#69.88 #285.FB 87.5 655.5!87.5 655.5|79 659!79 659[#20.96 #262.16 28 528.5!28 528.5[#18.CC #1DB.63 11 422.5!11 422.5[#3.E2 #18A.7E 19 370!19 370[#2C.9C #168.D9 67.5 379.5"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
+!117 629[#5F.22 #23F.54 94.5 519!94.5 519|94.5 495.5"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,51 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-BLACK-L/BLACK/素材/1.武器/刀刃1" itemID="54e49b24-0000212f" lastModified="1424268068">
+  <timeline>
+    <DOMTimeline name="刀刃1">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="12.4" ty="-5.95"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#E6E6E6"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#999999"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.3" joints="bevel">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="2" edges="!1558 223|1541 191"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!1541 191|370 253!370 253|168 236!168 236|58 204"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!58 204|-248 311!-248 311[143 296 343 281!343 281|1558 223"/>
+                    <Edge fillStyle0="1" edges="!1541 191|1562 177!1562 177|1520 165!1520 165|1516 152"/>
+                    <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!1516 152|448 220!448 220[404 223 388 181"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!388 181|58 204"/>
+                    <Edge fillStyle0="3" edges="!1516 152|1503 119"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!1503 119|388 181"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

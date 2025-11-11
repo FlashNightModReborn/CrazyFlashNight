@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-heeho君/零件/霜精臂膀" itemID="65e9853a-000001ee" symbolType="graphic" lastModified="1728926532">
+  <timeline>
+    <DOMTimeline name="霜精臂膀">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="-0.010284423828125" b="0.007537841796875" c="-0.0699615478515625" d="-0.0954437255859375" tx="52.5" ty="73"/>
+                        </matrix>
+                        <GradientEntry color="#B4BABB" ratio="0"/>
+                        <GradientEntry color="#B4BABB" ratio="0.431372549019608"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0588836669921875" b="0.07855224609375" c="-0.02734375" d="0.0204925537109375" tx="55.5" ty="69.5"/>
+                        </matrix>
+                        <GradientEntry color="#B4BABB" ratio="0"/>
+                        <GradientEntry color="#B4BABB" ratio="0.431372549019608"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!219 613[377 556 516 716!516 716[906 1219 1209 1751"/>
+                    <Edge fillStyle0="1" edges="!1209 1751|1701 1416"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!1701 1416[1043 747 542 19!542 19[289 -44 75 105!75 105[-2 173 0 240!0 240[14 385 125 490!125 490[172 551 219 613"/>
+                    <Edge fillStyle1="2" edges="!1209 1751|1026 1876"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!1026 1876[668 1215 219 613"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

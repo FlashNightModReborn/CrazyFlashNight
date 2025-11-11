@@ -1,0 +1,34 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-文天/素材/尚未整理/Symbol 63" itemID="6577b699-00000984" lastModified="1702343951" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="Symbol 63">
+      <layers>
+        <DOMLayer name="Layer 1" color="#EBE61B" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-文天/素材/尚未整理/Symbol 28" name="枪" centerPoint3DX="87.25" centerPoint3DY="27.65">
+                  <matrix>
+                    <Matrix tx="28.5" ty="-4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.基本款._visible = 0;
+   if(_parent._parent._parent.手枪_装扮 != undefined)
+   {
+      this.attachMovie(_parent._parent._parent.手枪_装扮,"装扮",this.getNextHighestDepth());
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

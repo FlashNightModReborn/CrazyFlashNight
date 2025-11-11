@@ -1,0 +1,41 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-BLACK-L/德洛希尔/素材/散件/发夹" itemID="54706df7-0000002a" lastModified="1416654558">
+  <timeline>
+    <DOMTimeline name="发夹">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.009063720703125" d="0.00360107421875" tx="16.65" ty="6.6"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry color="#666666" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!212 85.5[#B8.5 #56.B9 123.5 101.5!123.5 101.5[#3E.C2 #74.39 0 134!0 134|0 103!0 103[#2A.8E #41.AE 109.5 46!109.5 46[#B0.75 #1A.6E 223.5 26.5!223.5 26.5[#10E.9D #1A.91 297 16!297 16|297 48!297 48|290 79!290 79[#EF.9E #54.51 212 85.5"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

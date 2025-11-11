@@ -1,0 +1,46 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-文天/素材/尚未整理/Symbol 25" itemID="6577b699-00000969" lastModified="1703258185" lastUniqueIdentifier="9">
+  <timeline>
+    <DOMTimeline name="Symbol 25">
+      <layers>
+        <DOMLayer name="Layer 1" color="#BEC4D2" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-文天/素材/尚未整理/Symbol 24" centerPoint3DX="49.5" centerPoint3DY="21.45">
+                  <matrix>
+                    <Matrix tx="20"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.attachMovie(_parent._parent._parent.左手,"装扮",this.getNextHighestDepth());
+   if(this.装扮._x != undefined)
+   {
+      this.基本款._visible = 0;
+   }
+   else
+   {
+      this.基本款._visible = 1;
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-文天/素材/左手" centerPoint3DX="14.75" centerPoint3DY="-4.1">
+                  <matrix>
+                    <Matrix a="0.538650512695313" b="-0.842544555664063" c="0.842544555664063" d="0.538650512695313" tx="-28.55" ty="2.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.05" y="33.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-heeho君/补间 3" itemID="660fa2d6-00000af0" symbolType="graphic" lastModified="1712300758">
+  <timeline>
+    <DOMTimeline name="补间 3">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-heeho君/零件/带帽霜精头" selected="true" centerPoint3DX="-1.6" centerPoint3DY="-0.1">
+                  <matrix>
+                    <Matrix a="-0.110702514648438" b="0.004638671875" c="0.004302978515625" d="0.119308471679688" tx="18.1" ty="-17.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="130.1" y="267.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-heeho君/零件/墨镜" selected="true" centerPoint3DX="6.95" centerPoint3DY="1.55">
+                  <matrix>
+                    <Matrix a="-0.107818603515625" d="0.111175537109375" tx="15" ty="-1.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="77.45" y="31.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
