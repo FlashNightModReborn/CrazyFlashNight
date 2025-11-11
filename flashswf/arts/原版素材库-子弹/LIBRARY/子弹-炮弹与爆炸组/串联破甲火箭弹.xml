@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-炮弹与爆炸组/串联破甲火箭弹" itemID="68d50469-00001436" linkageExportForAS="true" linkageIdentifier="串联破甲火箭弹" lastModified="1758857964" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="串联破甲火箭弹" currentFrame="2">
+    <DOMTimeline name="串联破甲火箭弹" currentFrame="1">
       <layers>
         <DOMLayer name="Labels Layer" color="#725BC2">
           <frames>
@@ -80,7 +80,7 @@ this.removeMovieClip();
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="-34.25" centerPoint3DY="-6.1">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="-34.25" centerPoint3DY="-6.1">
                   <matrix>
                     <Matrix a="6.11166381835938" d="1.34100341796875" tx="-46.75" ty="-18.6"/>
                   </matrix>
@@ -92,7 +92,7 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="15.7" centerPoint3DY="-5.25">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="15.7" centerPoint3DY="-5.25">
                   <matrix>
                     <Matrix a="2.12896728515625" d="1.15008544921875" tx="3.2" ty="-17.75"/>
                   </matrix>

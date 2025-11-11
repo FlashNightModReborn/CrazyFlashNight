@@ -139,7 +139,7 @@
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="ashcore/ashcore.xml" itemID="688340fd-00000819" lastModified="1753436006"/>
           <Include href="ashcore/图标-ashcore.xml" itemID="68835078-00000a95" lastModified="1753436313"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1762823088"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1762825832"/>
           <Include href="NLAW筒子.xml" itemIcon="1" loadImmediate="false" itemID="68d8f28b-00000aab" lastModified="1759048620"/>
           <Include href="P50/Kel-Tec-P50.xml" itemID="688f2946-000075a6" lastModified="1759804159"/>
           <Include href="P50/图标-Kel-Tec-P50.xml" itemID="688f460b-0000768a" lastModified="1759804179"/>
@@ -493,10 +493,11 @@
           <Include href="长枪/PF98A/PF98A筒子.xml" loadImmediate="false" itemID="68d38e7e-0000168f" lastModified="1758695038"/>
           <Include href="长枪/PF98A/RPG28.xml" itemID="68d500c8-00000d19" lastModified="1758792335"/>
           <Include href="长枪/PF98A/RShG4.xml" itemID="68d65626-0000106d" lastModified="1758879975"/>
-          <Include href="长枪/PF98A/RShG4Я.xml" itemID="6911637d-00002e6a" lastModified="1762823734"/>
+          <Include href="长枪/PF98A/RShG4Я.xml" itemID="6911637d-00002e6a" lastModified="1762830933"/>
           <Include href="长枪/PF98A/图标-PF98A.xml" itemID="68d38e9f-00001691" lastModified="1758695071"/>
           <Include href="长枪/PF98A/图标-RPG28.xml" itemID="68d50369-00000d49" lastModified="1758790537"/>
           <Include href="长枪/PF98A/图标-RShG4.xml" itemID="68d65c8b-000010c1" lastModified="1758878925"/>
+          <Include href="长枪/PF98A/图标-RShG4Я.xml" itemID="69129664-000011d7" lastModified="1762825855"/>
           <Include href="长枪/PKP/PKP.xml" itemID="686b8a62-00000383" lastModified="1754217284"/>
           <Include href="长枪/PKP/PKP弹链动画.xml" loadImmediate="false" itemID="686ba7f6-00000b49" lastModified="1751886658"/>
           <Include href="长枪/PKP/PKP子弹1.xml" loadImmediate="false" itemID="686ba894-00000cab" lastModified="1751886365"/>
@@ -1541,6 +1542,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2604408" publishTime="1762830943"/>
+          <PublishItem publishSize="2604166" publishTime="1762825902"/>
+          <PublishItem publishSize="2604114" publishTime="1762825275"/>
           <PublishItem publishSize="2566373" publishTime="1762612376"/>
           <PublishItem publishSize="2530031" publishTime="1759878713"/>
           <PublishItem publishSize="2530031" publishTime="1759878608"/>
@@ -1558,8 +1562,5 @@
           <PublishItem publishSize="2465886" publishTime="1758879260"/>
           <PublishItem publishSize="2465887" publishTime="1758879009"/>
           <PublishItem publishSize="2465886" publishTime="1758878935"/>
-          <PublishItem publishSize="2469586" publishTime="1758878665"/>
-          <PublishItem publishSize="2430292" publishTime="1758791678"/>
-          <PublishItem publishSize="2430292" publishTime="1758791621"/>
      </publishHistory>
 </DOMDocument>

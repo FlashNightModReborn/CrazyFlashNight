@@ -184,8 +184,8 @@
           <Include href="弹壳/霰弹弹壳.xml" itemID="6634e7c1-0000196a" lastModified="1714811989"/>
           <Include href="弹壳/重机枪弹壳.xml" itemID="66357b12-00000b67" lastModified="1714811998"/>
           <Include href="导弹.xml" loadImmediate="false" itemID="671dc67e-000007ce" lastModified="1730004606"/>
-          <Include href="地雷激光扫描线.xml" itemIcon="1" loadImmediate="false" itemID="687af4b5-000005e2" lastModified="1752890259"/>
           <Include href="等离子光片.xml" loadImmediate="false" itemID="6883540e-00000e06" lastModified="1753438466"/>
+          <Include href="地雷激光扫描线.xml" itemIcon="1" loadImmediate="false" itemID="687af4b5-000005e2" lastModified="1752890259"/>
           <Include href="反坦克导弹图像.xml" itemIcon="1" loadImmediate="false" itemID="68d8f8ee-00000eb8" lastModified="1759049966"/>
           <Include href="联弹/白色手里剑/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000250" lastModified="1705503817"/>
           <Include href="联弹/白色手里剑/Symbol 23.xml" loadImmediate="false" itemID="6577efbc-00000251" lastModified="1705503796"/>
@@ -620,7 +620,7 @@
           <Include href="子弹-持续组/血滴落/血池.xml" loadImmediate="false" itemID="68fe31e2-0000141e" lastModified="1761489378"/>
           <Include href="子弹-持续组/血滴落/血滴落.xml" itemID="669d34db-00001775" lastModified="1761489952"/>
           <Include href="子弹-持续组/月光陨落.xml" itemID="669d34d7-00001774" lastModified="1721578711"/>
-          <Include href="子弹-持续组/诛神闪电.xml" itemID="669d33fc-00001732" lastModified="1752981174"/>
+          <Include href="子弹-持续组/诛神闪电.xml" itemID="669d33fc-00001732" lastModified="1762831825"/>
           <Include href="子弹-近战子弹专享座位/近战子弹.xml" itemID="668fd762-000019f9" lastModified="1720702818"/>
           <Include href="子弹-炮弹与爆炸组/爆炎手里剑.xml" itemID="669d3b07-000017c2" lastModified="1752979880"/>
           <Include href="子弹-炮弹与爆炸组/串联破甲火箭弹.xml" itemID="68d50469-00001436" lastModified="1758857964"/>
@@ -668,13 +668,13 @@
           <Include href="自瞄准星特效/火力支援新瞄准镜.xml" loadImmediate="false" itemID="671399a0-00002828" lastModified="1729337760"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="场景 1">
+          <DOMTimeline name="场景 1" currentFrame="2">
                <layers>
                     <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
                          <frames>
                               <DOMFrame index="0" duration="54" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="原版素材库-子弹" centerPoint3DX="66.7" centerPoint3DY="8.8">
+                                        <DOMSymbolInstance libraryItemName="原版素材库-子弹" selected="true" centerPoint3DX="66.7" centerPoint3DY="8.8">
                                              <transformationPoint>
                                                   <Point/>
                                              </transformationPoint>
