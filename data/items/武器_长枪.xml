@@ -3011,6 +3011,38 @@
       <impact>10</impact>
     </data>
   </item>
+  <item weapontype="变型枪">
+    <name>双面雷神</name>
+    <displayname>双面雷神</displayname>
+    <icon>双面雷神</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>1</price>
+    <description>来自逆战的双面雷神。测试</description>
+    <data>
+      <level>1</level>
+      <weight>4</weight>
+      <dressup>枪-长枪-双面雷神</dressup>
+      <capacity>35</capacity>
+      <split>4</split>
+      <diffusion>10</diffusion>
+      <interval>168</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>40</velocity>
+      <bullet>加强普通子弹</bullet>
+      <bulletrename>加强普通子弹</bulletrename>
+      <sound>silencer.wav</sound>
+      <muzzle>突击步枪枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>突击步枪通用弹药</clipname>
+      <bulletsize>25</bulletsize>
+      <power>446</power>
+      <impact>12</impact>
+    </data>
+狙击形态
+      <capacity2>14</capacity2>
+      <声音>apwersound.wav</声音>
+  </item>
   <item weapontype="近战">
     <name>MACSIII</name>
     <displayname>MACSIII</displayname>
