@@ -5,6 +5,8 @@
           <DOMFolderItem name="3.防具/10.军阀系列/未命名文件夹 1" itemID="657b1152-000030c5" isExpanded="true"/>
           <DOMFolderItem name="4.发型相关" itemID="67331ffe-0000076a"/>
           <DOMFolderItem name="artist素材" itemID="67cd7c96-00000adc"/>
+          <DOMFolderItem name="BLACK" itemID="6912b9f7-00001a8b"/>
+          <DOMFolderItem name="BLACK/素材" itemID="6912b9f7-00001a8c"/>
           <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
           <DOMFolderItem name="director" itemID="67ac7643-0000065f"/>
           <DOMFolderItem name="Itinerant" itemID="668fa432-00000ba2"/>
@@ -143,6 +145,7 @@
           <Include href="artist素材/Symbol 3560.xml" loadImmediate="false" itemID="66631a4d-00001edc" lastModified="1741519989"/>
           <Include href="artist素材/Symbol 3561.xml" loadImmediate="false" itemID="66631a4d-00001edd" lastModified="1741519991"/>
           <Include href="artist素材/Symbol 3562.xml" loadImmediate="false" itemID="66631a4d-00001ede" lastModified="1741519994"/>
+          <Include href="BLACK/素材/大围巾动画.xml" loadImmediate="false" itemID="6912b175-00001350" lastModified="1762832757"/>
           <Include href="button/Symbol 1879.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000a33" lastModified="1739367868"/>
           <Include href="button/Symbol 1880.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000a34" lastModified="1739367697"/>
           <Include href="button/Symbol 1881.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000a35" lastModified="1704196122"/>
@@ -339,7 +342,6 @@
           <Include href="NPC/NPC-BLACK-L/BLACK/素材/大围巾/shape 20341.xml" itemIcon="1" loadImmediate="false" itemID="54e49adf-00002079" lastModified="1424267999"/>
           <Include href="NPC/NPC-BLACK-L/BLACK/素材/大围巾/shape 20351.xml" itemIcon="1" loadImmediate="false" itemID="54e49ae0-0000207a" lastModified="1424268000"/>
           <Include href="NPC/NPC-BLACK-L/BLACK/素材/大围巾/shape 20361.xml" itemIcon="1" loadImmediate="false" itemID="54e49ae1-0000207b" lastModified="1762832695"/>
-          <Include href="NPC/NPC-BLACK-L/BLACK/素材/大围巾动画.xml" loadImmediate="false" itemID="6912b175-00001350" lastModified="1762832757"/>
           <Include href="NPC/NPC-BLACK-L/BLACK/素材/裤裆.xml" itemIcon="1" loadImmediate="false" itemID="6912b169-0000134e" lastModified="1762832745"/>
           <Include href="NPC/NPC-BLACK-L/BLACK/素材/上臂.xml" itemIcon="1" loadImmediate="false" itemID="6912b2b7-0000135e" lastModified="1762833079"/>
           <Include href="NPC/NPC-BLACK-L/BLACK/素材/身体.xml" loadImmediate="false" itemID="69128324-000005dd" lastModified="1762832852"/>
@@ -1157,7 +1159,7 @@
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
           <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1762093394"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1762834513"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1762834984"/>
           <Include href="发型/Symbol 799.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000814" lastModified="1710653981"/>
           <Include href="歌留多/歌留多胯.xml" loadImmediate="false" itemID="67096725-00000045" lastModified="1728669954"/>
           <Include href="歌留多/歌留多身体.xml" loadImmediate="false" itemID="67095275-0000000f" lastModified="1728665563"/>
@@ -1641,6 +1643,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1083222" publishTime="1762834623"/>
           <PublishItem publishSize="1037760" publishTime="1762790685"/>
           <PublishItem publishSize="1037757" publishTime="1762790442"/>
           <PublishItem publishSize="999944" publishTime="1762790249"/>
@@ -1660,6 +1663,5 @@
           <PublishItem publishSize="686097" publishTime="1760359752"/>
           <PublishItem publishSize="686090" publishTime="1757944892"/>
           <PublishItem publishSize="685102" publishTime="1756645812"/>
-          <PublishItem publishSize="691809" publishTime="1756644916"/>
      </publishHistory>
 </DOMDocument>

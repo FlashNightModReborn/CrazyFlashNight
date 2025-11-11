@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-BLACK-L/BLACK/素材/大围巾动画" itemID="6912b175-00001350" lastModified="1762832757">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="BLACK/素材/大围巾动画" itemID="6912b175-00001350" lastModified="1762832757">
   <timeline>
-    <DOMTimeline name="大围巾动画">
+    <DOMTimeline name="大围巾动画" currentFrame="15">
       <layers>
         <DOMLayer name="Layer 2" color="#FFFF00">
           <frames>
@@ -79,7 +79,7 @@
             </DOMFrame>
             <DOMFrame index="14" duration="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/大围巾/shape 20361" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/大围巾/shape 20361" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
