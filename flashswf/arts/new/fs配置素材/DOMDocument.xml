@@ -139,7 +139,7 @@
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="ashcore/ashcore.xml" itemID="688340fd-00000819" lastModified="1753436006"/>
           <Include href="ashcore/图标-ashcore.xml" itemID="68835078-00000a95" lastModified="1753436313"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1762765591"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1762823088"/>
           <Include href="NLAW筒子.xml" itemIcon="1" loadImmediate="false" itemID="68d8f28b-00000aab" lastModified="1759048620"/>
           <Include href="P50/Kel-Tec-P50.xml" itemID="688f2946-000075a6" lastModified="1759804159"/>
           <Include href="P50/图标-Kel-Tec-P50.xml" itemID="688f460b-0000768a" lastModified="1759804179"/>
@@ -158,7 +158,7 @@
           <Include href="弹舱.xml" loadImmediate="false" itemID="68a0c3b6-00001440" lastModified="1755396060"/>
           <Include href="弹头1.xml" loadImmediate="false" itemID="691196a3-00002e7e" lastModified="1762760359"/>
           <Include href="弹头2.xml" loadImmediate="false" itemID="6911977c-00002e85" lastModified="1762760731"/>
-          <Include href="弹头3.xml" loadImmediate="false" itemID="691198e8-00002e8e" lastModified="1762760936"/>
+          <Include href="弹头3.xml" loadImmediate="false" itemID="691198e8-00002e8e" lastModified="1762823635"/>
           <Include href="等离子光片.xml" loadImmediate="false" itemID="6883540e-00000e06" lastModified="1753438466"/>
           <Include href="电感切割刃/刀-电感切割刃.xml" itemID="655c55d9-00000308" lastModified="1721580831"/>
           <Include href="电感切割刃/刀脊.xml" loadImmediate="false" itemID="655c4e2f-0000062f" lastModified="1700551159"/>
@@ -178,8 +178,6 @@
           <Include href="电感切割刃/元件 10.xml" loadImmediate="false" itemID="55900939-00000014" lastModified="1435503030"/>
           <Include href="电感切割刃/中间刀.xml" loadImmediate="false" itemID="655c4fdd-0000063b" lastModified="1700548573"/>
           <Include href="电容器舱.xml" loadImmediate="false" itemID="68a0d830-00001f8c" lastModified="1755396083"/>
-          <Include href="调试用定位.xml" itemID="689f43ef-00002651" lastModified="1755268079"/>
-          <Include href="调试用失败定位.xml" itemID="689f43e7-00002650" lastModified="1755268071"/>
           <Include href="反坦克导弹图像.xml" itemIcon="1" loadImmediate="false" itemID="68d8f8ee-00000eb8" lastModified="1759049966"/>
           <Include href="公社爆燃钻矛图像.xml" itemIcon="1" loadImmediate="false" itemID="68e4cdc4-000044d0" lastModified="1759878071"/>
           <Include href="公社打桩矛/刀-公社爆燃钻矛.xml" itemID="68e4cbcb-000044c3" lastModified="1759878774"/>
@@ -320,6 +318,8 @@
           <Include href="特效与子弹/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="65e08f36-00001ff1" lastModified="1702237154"/>
           <Include href="特效与子弹/Symbol 13.xml" loadImmediate="false" itemID="65e08f36-00001ff0" lastModified="1702237154"/>
           <Include href="提把.xml" loadImmediate="false" itemID="68a08614-00002d17" lastModified="1755391446"/>
+          <Include href="调试用定位.xml" itemID="689f43ef-00002651" lastModified="1755268079"/>
+          <Include href="调试用失败定位.xml" itemID="689f43e7-00002650" lastModified="1755268071"/>
           <Include href="铁锤弹头罩.xml" loadImmediate="false" itemID="68d65b86-0000109d" lastModified="1758878816"/>
           <Include href="铁锤筒子.xml" loadImmediate="false" itemID="68d65ae5-00001095" lastModified="1758878775"/>
           <Include href="铁锤文字1.xml" loadImmediate="false" itemID="68d65a98-0000108d" lastModified="1758878516"/>
@@ -423,10 +423,10 @@
           <Include href="炎魔斩纹路.xml" loadImmediate="false" itemID="6678d078-000005ae" lastModified="1719193720"/>
           <Include href="长枪/53式步骑枪/53式步骑枪.xml" itemID="659e146e-000007c4" lastModified="1704953208"/>
           <Include href="长枪/53式步骑枪/弹仓.xml" loadImmediate="false" itemID="659e932d-00000b3c" lastModified="1704891181"/>
-          <Include href="长枪/53式步骑枪/调整层.xml" loadImmediate="false" itemID="659eb6ee-000005a7" lastModified="1704953093"/>
           <Include href="长枪/53式步骑枪/枪管.xml" loadImmediate="false" itemID="659ea149-00000b60" lastModified="1704953006"/>
           <Include href="长枪/53式步骑枪/枪机.xml" loadImmediate="false" itemID="659e9856-00000b4e" lastModified="1704953025"/>
           <Include href="长枪/53式步骑枪/枪身.xml" loadImmediate="false" itemID="659ea159-00000b64" lastModified="1704953133"/>
+          <Include href="长枪/53式步骑枪/调整层.xml" loadImmediate="false" itemID="659eb6ee-000005a7" lastModified="1704953093"/>
           <Include href="长枪/53式步骑枪/图标-53式步骑枪.xml" itemID="659eadd3-00000327" lastModified="1704901315"/>
           <Include href="长枪/AR57/AR57.xml" itemID="68904bb0-0000a3d3" lastModified="1754290230"/>
           <Include href="长枪/AR57/图标-AR57.xml" itemID="689057e5-0000a41b" lastModified="1754290211"/>
@@ -493,7 +493,7 @@
           <Include href="长枪/PF98A/PF98A筒子.xml" loadImmediate="false" itemID="68d38e7e-0000168f" lastModified="1758695038"/>
           <Include href="长枪/PF98A/RPG28.xml" itemID="68d500c8-00000d19" lastModified="1758792335"/>
           <Include href="长枪/PF98A/RShG4.xml" itemID="68d65626-0000106d" lastModified="1758879975"/>
-          <Include href="长枪/PF98A/RShG4Я.xml" itemID="6911637d-00002e6a" lastModified="1762768520"/>
+          <Include href="长枪/PF98A/RShG4Я.xml" itemID="6911637d-00002e6a" lastModified="1762823734"/>
           <Include href="长枪/PF98A/图标-PF98A.xml" itemID="68d38e9f-00001691" lastModified="1758695071"/>
           <Include href="长枪/PF98A/图标-RPG28.xml" itemID="68d50369-00000d49" lastModified="1758790537"/>
           <Include href="长枪/PF98A/图标-RShG4.xml" itemID="68d65c8b-000010c1" lastModified="1758878925"/>
