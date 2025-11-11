@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-BLACK-L/NPC-BLACK-L" itemID="6912b4b8-0000138d" lastModified="1762833747" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-BLACK-L/NPC-BLACK-L" itemID="6912b4b8-0000138d" lastModified="1762834138" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="NPC-BLACK-L">
+    <DOMTimeline name="NPC-BLACK-L" currentFrame="7">
       <layers>
         <DOMLayer name="Labels Layer" color="#9933CC" autoNamed="false">
           <frames>
@@ -94,7 +94,7 @@ on(rollOut){
         </DOMLayer>
         <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="7" keyMode="9728">
+            <DOMFrame index="0" duration="8" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/BLACK-L&amp;德洛希尔" selected="true" centerPoint3DX="28.05" centerPoint3DY="-63.5">
                   <matrix>
@@ -103,21 +103,6 @@ on(rollOut){
                   <transformationPoint>
                     <Point x="77.15" y="86.15"/>
                   </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="7" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-歌留多/素材/髅髅宫歌留多-站立动画" centerPoint3DX="3.2" centerPoint3DY="-56.9">
-                  <matrix>
-                    <Matrix tx="-14" ty="-127.6"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="17.2" y="70.7"/>
-                  </transformationPoint>
-                  <filters>
-                    <GlowFilter color="#E2928E" strength="10"/>
-                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

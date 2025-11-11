@@ -1,12 +1,12 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-BLACK-L/BLACK/BLACK-L&amp;德洛希尔" itemID="6912b3df-0000135f" lastModified="1762833790" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-BLACK-L/BLACK/BLACK-L&amp;德洛希尔" itemID="6912b3df-0000135f" lastModified="1762834149" lastUniqueIdentifier="9">
   <timeline>
     <DOMTimeline name="BLACK-L&amp;德洛希尔">
       <layers>
-        <DOMLayer name="图层 1" color="#4FFF4F" locked="true">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/1.武器/刀1">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/1.武器/刀1" selected="true">
                   <matrix>
                     <Matrix a="-0.5133056640625" b="-0.69287109375" c="-0.704971313476563" d="0.504470825195313" tx="89.25" ty="84.5"/>
                   </matrix>
@@ -14,7 +14,7 @@
                     <Point x="60.8" y="8.9"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/小臂" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/小臂" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.101760864257813" b="-0.282516479492188" c="-0.287445068359375" d="0.0999908447265625" tx="27" ty="39.05"/>
                   </matrix>
@@ -22,7 +22,7 @@
                     <Point x="-2.8" y="-32.4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/身体" centerPoint3DX="53.95" centerPoint3DY="47.1">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/身体" selected="true" centerPoint3DX="53.95" centerPoint3DY="47.1">
                   <matrix>
                     <Matrix a="-0.438720703125" d="0.431167602539063" tx="80.9" ty="4.25"/>
                   </matrix>
@@ -30,7 +30,7 @@
                     <Point x="73.6" y="98.55"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/裤裆" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/裤裆" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.284515380859375" d="0.279617309570313" tx="48.9" ty="72.05"/>
                   </matrix>
@@ -38,7 +38,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/大腿内" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/大腿内" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.228439331054688" b="-0.129608154296875" c="-0.131866455078125" d="0.224502563476563" tx="33.55" ty="90.9"/>
                   </matrix>
@@ -70,7 +70,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/上臂" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/上臂" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.271820068359375" b="0.114532470703125" c="0.119338989257813" d="0.273574829101563" tx="66.1" ty="42.35"/>
                   </matrix>
@@ -78,7 +78,7 @@
                     <Point x="-4.5" y="-33.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/大围巾动画" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/大围巾动画" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0878448486328125" d="0.085174560546875" tx="42.35" ty="4.1"/>
                   </matrix>
@@ -86,7 +86,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/black头" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/black头" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.263351440429688" d="0.259231567382813" tx="44.4" ty="14.7"/>
                   </matrix>
@@ -94,7 +94,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/大腿外" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/大腿外" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.282394409179688" b="0.0743560791015625" c="0.0756683349609375" d="0.27752685546875" tx="58.85" ty="93"/>
                   </matrix>
@@ -137,7 +137,7 @@
                     <Color brightness="0.05"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/小臂" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/小臂" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.144149780273438" b="-0.214508056640625" c="-0.218276977539063" d="0.14166259765625" tx="62.85" ty="61.05"/>
                   </matrix>
@@ -145,7 +145,7 @@
                     <Point x="0.7" y="0.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/外手" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/外手" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.233474731445313" b="0.114883422851563" c="0.117324829101563" d="0.229705810546875" tx="46.4" ty="71.2"/>
                   </matrix>
@@ -153,7 +153,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/小臂" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/小臂" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.193817138671875" b="-0.19171142578125" c="0.195053100585938" d="0.190475463867188" tx="20.1" ty="50.95"/>
                   </matrix>
@@ -161,7 +161,7 @@
                     <Point x="-1.55" y="44.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/外手" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/外手" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.185348510742188" b="0.1810302734375" c="-0.184188842773438" d="0.182159423828125" tx="33.25" ty="64.85"/>
                   </matrix>
@@ -173,7 +173,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="影子" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="影子" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

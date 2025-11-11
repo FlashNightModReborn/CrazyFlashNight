@@ -1,0 +1,62 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-BLACK-L/BLACK/素材/BLACK-L头" itemID="544102eb-000003fa" lastModified="1413546912" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="BLACK-L头">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.25">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!365 334|355 344"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/0.散件/black脸">
+                  <matrix>
+                    <Matrix tx="5.35" ty="0.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.7" y="22.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/0.散件/black眼">
+                  <matrix>
+                    <Matrix tx="15.75" ty="22.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-15.05" y="18.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/0.散件/围巾">
+                  <matrix>
+                    <Matrix a="0.761459350585938" b="-0.138198852539063" c="0.165695190429688" d="0.912979125976563" tx="9.5" ty="34.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.55" y="8.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/BLACK/素材/0.散件/black发型">
+                  <matrix>
+                    <Matrix a="-0.842391967773438" d="0.842391967773438" tx="47.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.95" y="22.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

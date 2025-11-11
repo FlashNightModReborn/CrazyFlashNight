@@ -34,6 +34,12 @@
           <DOMFolderItem name="NPC-劳埃德/素材/武器-G11" itemID="69109f71-000009e3"/>
           <DOMFolderItem name="NPC-劳埃德/素材/武器-G11/组件" itemID="690e198b-0000155e"/>
           <DOMFolderItem name="NPC-劳埃德/素材/武器-阎魔刀" itemID="69109f71-000009e5"/>
+          <DOMFolderItem name="NPC/NPC-BLACK-L" itemID="6912b700-00001a5c"/>
+          <DOMFolderItem name="NPC/NPC-BLACK-L/BLACK" itemID="6912b700-00001a5d"/>
+          <DOMFolderItem name="NPC/NPC-BLACK-L/BLACK/素材" itemID="6912b700-00001a5e"/>
+          <DOMFolderItem name="NPC/NPC-BLACK-L/BLACK/素材/0.散件" itemID="69128503-000005fd"/>
+          <DOMFolderItem name="NPC/NPC-BLACK-L/BLACK/素材/1.武器" itemID="6912b700-00001a61"/>
+          <DOMFolderItem name="NPC/NPC-BLACK-L/BLACK/素材/大围巾" itemID="6912b128-0000134b"/>
           <DOMFolderItem name="NPC/NPC-FS" itemID="69120bd0-000046b0"/>
           <DOMFolderItem name="NPC/NPC-FS/素材" itemID="6911f382-000030f6"/>
           <DOMFolderItem name="NPC/NPC-FS/素材/矩辉启明刃" itemID="6912020b-0000356e"/>
@@ -307,6 +313,38 @@
           <Include href="NPC-劳埃德/素材/武器-阎魔刀/阎魔刀刀柄.xml" loadImmediate="false" itemID="657577b7-00000ad6" lastModified="1702203385"/>
           <Include href="NPC-劳埃德/素材/武器-阎魔刀/阎魔刀刀口.xml" loadImmediate="false" itemID="65757cf1-00000b08" lastModified="1702203837"/>
           <Include href="NPC-劳埃德/素材/武器-阎魔刀/阎魔刀决定版.xml" loadImmediate="false" itemID="6575814a-00000b50" lastModified="1702305178"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/0.散件/black发型.xml" loadImmediate="false" itemID="54313dcc-00000017" lastModified="1413546866"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/0.散件/black脸.xml" loadImmediate="false" itemID="543923c0-000019a8" lastModified="1413546863"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/0.散件/black眼.xml" loadImmediate="false" itemID="54410368-00000478" lastModified="1413546869"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/0.散件/蜂窝纹1.xml" loadImmediate="false" itemID="69128335-000005de" lastModified="1762820917"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/0.散件/蜂窝纹2.xml" loadImmediate="false" itemID="69128338-000005df" lastModified="1762820920"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/0.散件/蜂窝纹3.xml" loadImmediate="false" itemID="6912833b-000005e0" lastModified="1762820923"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/0.散件/蜂窝纹4.xml" loadImmediate="false" itemID="69128349-000005e1" lastModified="1762820937"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/0.散件/蜂窝纹5.xml" loadImmediate="false" itemID="69128402-000005e9" lastModified="1762821122"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/0.散件/蜂窝纹6.xml" loadImmediate="false" itemID="69128408-000005ea" lastModified="1762821128"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/0.散件/胡渣.xml" loadImmediate="false" itemID="691283f8-000005e8" lastModified="1762821112"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/0.散件/围巾.xml" loadImmediate="false" itemID="544101e8-0000001b" lastModified="1413546599"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/1.武器/刀1.xml" loadImmediate="false" itemID="54e49b23-0000212e" lastModified="1762834527"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/1.武器/刀刃1.xml" loadImmediate="false" itemID="54e49b24-0000212f" lastModified="1424268068"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/BLACK-L头.xml" loadImmediate="false" itemID="544102eb-000003fa" lastModified="1413546912"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/black头.xml" itemIcon="1" loadImmediate="false" itemID="54410318-00000477" lastModified="1762834442"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/不明物.xml" loadImmediate="false" itemID="6912b1cd-0000135c" lastModified="1762832845"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/大腿内.xml" itemIcon="1" loadImmediate="false" itemID="69128e14-00001343" lastModified="1762823700"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/大腿外.xml" itemIcon="1" loadImmediate="false" itemID="69128e35-00001344" lastModified="1762823733"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/大围巾/shape 20291.xml" itemIcon="1" loadImmediate="false" itemID="54e49adb-00002074" lastModified="1424267995"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/大围巾/shape 20301.xml" itemIcon="1" loadImmediate="false" itemID="54e49adc-00002075" lastModified="1424267996"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/大围巾/shape 20311.xml" itemIcon="1" loadImmediate="false" itemID="54e49adc-00002076" lastModified="1424267996"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/大围巾/shape 20321.xml" itemIcon="1" loadImmediate="false" itemID="54e49add-00002077" lastModified="1424267997"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/大围巾/shape 20331.xml" itemIcon="1" loadImmediate="false" itemID="54e49ade-00002078" lastModified="1424267998"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/大围巾/shape 20341.xml" itemIcon="1" loadImmediate="false" itemID="54e49adf-00002079" lastModified="1424267999"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/大围巾/shape 20351.xml" itemIcon="1" loadImmediate="false" itemID="54e49ae0-0000207a" lastModified="1424268000"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/大围巾/shape 20361.xml" itemIcon="1" loadImmediate="false" itemID="54e49ae1-0000207b" lastModified="1762832695"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/大围巾动画.xml" loadImmediate="false" itemID="6912b175-00001350" lastModified="1762832757"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/裤裆.xml" itemIcon="1" loadImmediate="false" itemID="6912b169-0000134e" lastModified="1762832745"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/上臂.xml" itemIcon="1" loadImmediate="false" itemID="6912b2b7-0000135e" lastModified="1762833079"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/身体.xml" loadImmediate="false" itemID="69128324-000005dd" lastModified="1762832852"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/外手.xml" itemIcon="1" loadImmediate="false" itemID="69128dec-00001340" lastModified="1762823660"/>
+          <Include href="NPC/NPC-BLACK-L/BLACK/素材/小臂.xml" itemIcon="1" loadImmediate="false" itemID="69128e0f-00001342" lastModified="1762823695"/>
           <Include href="NPC/NPC-FS/FS-动态.xml" loadImmediate="false" itemID="691206de-0000408a" lastModified="1762790411"/>
           <Include href="NPC/NPC-FS/素材/大腿1.xml" itemIcon="1" loadImmediate="false" itemID="6911fe60-0000316d" lastModified="1762786912"/>
           <Include href="NPC/NPC-FS/素材/大腿2.xml" itemIcon="1" loadImmediate="false" itemID="6911fe63-0000316e" lastModified="1762786915"/>
@@ -1119,7 +1157,7 @@
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
           <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1762093394"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1762795514"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1762834513"/>
           <Include href="发型/Symbol 799.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000814" lastModified="1710653981"/>
           <Include href="歌留多/歌留多胯.xml" loadImmediate="false" itemID="67096725-00000045" lastModified="1728669954"/>
           <Include href="歌留多/歌留多身体.xml" loadImmediate="false" itemID="67095275-0000000f" lastModified="1728665563"/>
