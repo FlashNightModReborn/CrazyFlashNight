@@ -66,7 +66,8 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
         // 7. 处理弹夹容量显示（考虑 magazineCapacity 乘数）
         // 说明：
         // - 对于点射/联弹（magazineCapacity > 1）的武器，最终显示容量会乘以点射数；
-        // - 为避免“上限/增量被放大造成误解”，括号内的增量按基础容量计算，并明确显示“×点射数”。
+        // - 为避免"上限/增量被放大造成误解"，括号内的增量按基础容量计算，并明确显示"×点射数"。
+        // - 当 deltaBase = 0（无配件修改）时，仅显示简化格式，避免混淆的 "0×N" 显示
         if (capacity > 0) {
             if (magazineCapacity > 1) {
                 // 计算基础与最终容量（未乘点射数）
@@ -79,14 +80,21 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
                 var baseScaled:Number = baseCap * magazineCapacity;
                 var finalScaled:Number = finalCap * magazineCapacity;
 
-                // 基础增量（未乘点射数），用于解释“cap 按基础容量生效”
+                // 基础增量（未乘点射数），用于解释"cap 按基础容量生效"
                 var deltaBase:Number = finalCap - baseCap;
 
-                // 输出：弹夹容量：<HL>最终×点射</HL> (基础×点射 + 基础增量 × 点射数)
-                result.push(
-                    "弹夹容量：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalScaled, "</FONT>",
-                    " (", baseScaled, " + ", deltaBase, "×", magazineCapacity, ")<BR>"
-                );
+                // 根据是否有增量决定显示格式
+                if (deltaBase != 0 && equipData) {
+                    // 有配件修改时：显示详细分解公式
+                    // 输出：弹夹容量：<HL>最终×点射</HL> (基础×点射 + 基础增量 × 点射数)
+                    result.push(
+                        "弹夹容量：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalScaled, "</FONT>",
+                        " (", baseScaled, " + ", deltaBase, "×", magazineCapacity, ")<BR>"
+                    );
+                } else {
+                    // 无配件修改时：简化显示，避免混淆的 "0×N"
+                    result.push("弹夹容量：", finalScaled, "<BR>");
+                }
             } else {
                 // 普通武器，直接使用 upgradeLine
                 TooltipFormatter.upgradeLine(result, data, equipData, "capacity", "弹夹容量", null);
