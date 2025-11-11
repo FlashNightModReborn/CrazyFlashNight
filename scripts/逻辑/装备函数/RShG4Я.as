@@ -34,6 +34,7 @@ _root.装备生命周期函数.RShG4Я初始化 = function(ref, param)
     /* ---------- 3) 播放控制 ---------- */
     ref.currentAction     = "idle";       // idle/draw/standby/fire/reload/undraw
     ref.currentFrame      = ref.defaultStartFrame;
+    ref.emptyStandby      = false;        // 是否处于空仓待机状态
 
     /* ---------- 4) 事件订阅 ---------- */
     // 攻击模式变化时刷新可视
@@ -117,6 +118,7 @@ _root.装备生命周期函数.RShG4Я周期 = function (ref)
 
     // 2) 状态机推进
     var nextAction:String = ref.currentAction;
+    // _root.发布消息("状态机开始", "currentAction=" + ref.currentAction, "currentFrame=" + ref.currentFrame);
 
     if (ref.currentAction == "idle") {
         // 从 idle 进入 draw
@@ -128,22 +130,37 @@ _root.装备生命周期函数.RShG4Я周期 = function (ref)
             ref.currentFrame += 1;
         } else {
             nextAction = "standby";
-            ref.currentFrame = ref.endFrame;
+            ref.currentFrame = ref.endFrame;  // draw完成后停在待机位置（19帧）
         }
     }
     else if (ref.currentAction == "standby") {
-        // 有射击请求且有弹才进入 fire
+        // 记录状态用于调试
+        // _root.发布消息("standby状态", "currentFrame=" + ref.currentFrame, "isEmpty=" + isEmpty, "emptyStandby=" + ref.emptyStandby);
+
+        // 有射击请求时，无条件进入 fire 动画（让动画播放，即使是空仓）
         if (ref.fireRequest) {
-            if (!isEmpty) {  // 还有弹药
-                nextAction = "fire";
-                ref.currentFrame = ref.fireStartFrame;
-                // 射击计数由游戏系统管理，动画系统不需要维护
-            }
-            // 无论是否有弹，消费本帧请求
+            nextAction = "fire";
+            ref.currentFrame = ref.fireStartFrame;
+            ref.emptyStandby = false;  // 清除空仓标记
+            // 消费本帧请求
             ref.fireRequest = false;
         } else {
-            // standby状态下保持当前帧（可能是endFrame或fireEndFrame）
-            // 不强制跳转，让动画保持在合适的位置
+            // 非射击情况下的处理
+            if (ref.emptyStandby) {
+                // 空仓待机状态
+                if (!isEmpty) {
+                    // 弹药已补充，触发装填动画
+                    nextAction = "reload";
+                    ref.currentFrame = ref.reloadStartFrame;
+                    ref.emptyStandby = false;
+                } else {
+                    // 仍然空仓，保持在射击结束位置
+                    ref.currentFrame = ref.fireEndFrame;
+                }
+            } else {
+                // 正常待机状态，保持在待机位置
+                ref.currentFrame = ref.endFrame;
+            }
         }
     }
     else if (ref.currentAction == "fire") {
@@ -166,9 +183,11 @@ _root.装备生命周期函数.RShG4Я周期 = function (ref)
             if (!afterFireIsEmpty) {  // 还有弹药，进入装填
                 nextAction = "reload";
                 ref.currentFrame = ref.reloadStartFrame;
+                ref.emptyStandby = false;
             } else {  // 弹药打光，停在射击结束帧待机
                 nextAction = "standby";
-                ref.currentFrame = ref.fireEndFrame;  // 保持在射击结束位置，不要跳回到endFrame
+                ref.currentFrame = ref.fireEndFrame;  // 保持在射击结束位置
+                ref.emptyStandby = true;  // 标记为空仓待机
             }
         }
     }
@@ -180,6 +199,7 @@ _root.装备生命周期函数.RShG4Я周期 = function (ref)
             // 注意：弹药重置由游戏系统负责，动画系统不需要管理
             nextAction = "standby";
             ref.currentFrame = ref.endFrame;
+            ref.emptyStandby = false;  // 装填完成，清除空仓标记
         }
     }
     else if (ref.currentAction == "undraw") {
@@ -205,11 +225,10 @@ _root.装备生命周期函数.RShG4Я视觉 = function (ref)
     var gun:MovieClip   = target.长枪_引用;
     // 帧跳转
     gun.gotoAndStop(ref.currentFrame);
-    _root.发布消息("RShG4Я视觉", ref.currentFrame);
+    // _root.服务器.发布服务器消息("RShG4Я视觉", target.长枪属性.capacity, target[ref.装备类型].value.shot, ref.currentAction, ref.currentFrame);
     // 外露弹药显隐
     var isEmpty:Boolean = (target.长枪属性.capacity == target[ref.装备类型].value.shot);
 
-    // 约定：弹头1 是第一枚可见、弹头2 是第二枚可见
     gun.弹头1._visible = gun.弹头2._visible = !isEmpty;
 
 };

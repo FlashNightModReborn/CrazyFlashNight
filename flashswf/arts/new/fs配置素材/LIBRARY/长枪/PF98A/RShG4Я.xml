@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/PF98A/RShG4Я" itemID="6911637d-00002e6a" linkageExportForAS="true" linkageIdentifier="枪-长枪-RShG4Я" lastModified="1762830933" lastUniqueIdentifier="72">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/PF98A/RShG4Я" itemID="6911637d-00002e6a" linkageExportForAS="true" linkageIdentifier="枪-长枪-RShG4Я" lastModified="1762844239" lastUniqueIdentifier="76">
   <timeline>
-    <DOMTimeline name="RShG4Я" currentFrame="24" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;210&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="RShG4Я" currentFrame="34" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;210&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
@@ -24,7 +24,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="枪口" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="枪口" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -40,9 +40,9 @@
             </DOMFrame>
             <DOMFrame index="4" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" selected="true" centerPoint3DX="443.8" centerPoint3DY="-50.1">
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="289.6" centerPoint3DY="-50.1">
                   <matrix>
-                    <Matrix tx="431.3" ty="-62.6"/>
+                    <Matrix tx="277.1" ty="-62.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -68,9 +68,9 @@
             </DOMFrame>
             <DOMFrame index="4" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁锤文字1" name="文字1" centerPoint3DX="-60.9" centerPoint3DY="-44.55">
+                <DOMSymbolInstance libraryItemName="铁锤文字1" name="文字1" centerPoint3DX="-215.1" centerPoint3DY="-44.55">
                   <matrix>
-                    <Matrix a="0.80609130859375" d="0.80609130859375" tx="-60.85" ty="-44.55"/>
+                    <Matrix a="0.80609130859375" d="0.80609130859375" tx="-215.05" ty="-44.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.05"/>
@@ -96,9 +96,9 @@
             </DOMFrame>
             <DOMFrame index="4" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="遮罩块" centerPoint3DX="233.1" centerPoint3DY="-43.1">
+                <DOMSymbolInstance libraryItemName="遮罩块" centerPoint3DX="78.9" centerPoint3DY="-43.1">
                   <matrix>
-                    <Matrix tx="233.1" ty="-43.1"/>
+                    <Matrix tx="78.9" ty="-43.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -124,9 +124,9 @@
             </DOMFrame>
             <DOMFrame index="4" duration="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="铁锤文字2" name="文字2" centerPoint3DX="229.2" centerPoint3DY="-53.25">
+                <DOMSymbolInstance libraryItemName="铁锤文字2" name="文字2" centerPoint3DX="75" centerPoint3DY="-53.25">
                   <matrix>
-                    <Matrix tx="229.2" ty="-53.25"/>
+                    <Matrix tx="75" ty="-53.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -152,9 +152,9 @@
             </DOMFrame>
             <DOMFrame index="4" duration="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="核火箭图像" centerPoint3DX="126.35" centerPoint3DY="-16">
+                <DOMSymbolInstance libraryItemName="核火箭图像" centerPoint3DX="-27.85" centerPoint3DY="-16">
                   <matrix>
-                    <Matrix tx="126.35" ty="-15.95"/>
+                    <Matrix tx="-27.85" ty="-15.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point y="-0.05"/>
@@ -164,9 +164,9 @@
             </DOMFrame>
             <DOMFrame index="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="核火箭图像" centerPoint3DX="126.65" centerPoint3DY="-16.1">
+                <DOMSymbolInstance libraryItemName="核火箭图像" centerPoint3DX="-27.55" centerPoint3DY="-16.1">
                   <matrix>
-                    <Matrix tx="126.65" ty="-16.05"/>
+                    <Matrix tx="-27.55" ty="-16.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point y="-0.05"/>
@@ -176,9 +176,9 @@
             </DOMFrame>
             <DOMFrame index="19" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="核火箭图像" centerPoint3DX="126.65" centerPoint3DY="-16.1">
+                <DOMSymbolInstance libraryItemName="核火箭图像" centerPoint3DX="-27.55" centerPoint3DY="-16.1">
                   <matrix>
-                    <Matrix tx="126.65" ty="-16.05"/>
+                    <Matrix tx="-27.55" ty="-16.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point y="-0.05"/>
@@ -204,9 +204,9 @@
             </DOMFrame>
             <DOMFrame index="4" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="下支架基座" centerPoint3DX="67" centerPoint3DY="-34.25">
+                <DOMSymbolInstance libraryItemName="下支架基座" centerPoint3DX="-87.2" centerPoint3DY="-34.25">
                   <matrix>
-                    <Matrix a="0.931854248046875" b="0.36285400390625" c="-0.36285400390625" d="0.931854248046875" tx="67.45" ty="-33.85"/>
+                    <Matrix a="0.931854248046875" b="0.36285400390625" c="-0.36285400390625" d="0.931854248046875" tx="-86.75" ty="-33.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.05" y="0.05"/>
@@ -216,9 +216,9 @@
             </DOMFrame>
             <DOMFrame index="7" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="下支架基座" centerPoint3DX="58.8" centerPoint3DY="-34.25">
+                <DOMSymbolInstance libraryItemName="下支架基座" centerPoint3DX="-95.4" centerPoint3DY="-34.25">
                   <matrix>
-                    <Matrix a="0.931854248046875" b="0.36285400390625" c="-0.36285400390625" d="0.931854248046875" tx="59.25" ty="-33.85"/>
+                    <Matrix a="0.931854248046875" b="0.36285400390625" c="-0.36285400390625" d="0.931854248046875" tx="-94.95" ty="-33.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.05" y="0.05"/>
@@ -228,9 +228,9 @@
             </DOMFrame>
             <DOMFrame index="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="下支架基座" centerPoint3DX="56.55" centerPoint3DY="-5.9">
+                <DOMSymbolInstance libraryItemName="下支架基座" centerPoint3DX="-97.65" centerPoint3DY="-5.9">
                   <matrix>
-                    <Matrix a="0.9901123046875" b="0.13592529296875" c="-0.13592529296875" d="0.9901123046875" tx="57" ty="-5.15"/>
+                    <Matrix a="0.9901123046875" b="0.13592529296875" c="-0.13592529296875" d="0.9901123046875" tx="-97.2" ty="-5.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point y="0.1"/>
@@ -240,9 +240,9 @@
             </DOMFrame>
             <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="下支架基座" centerPoint3DX="57.55" centerPoint3DY="15.4">
+                <DOMSymbolInstance libraryItemName="下支架基座" centerPoint3DX="-96.65" centerPoint3DY="15.4">
                   <matrix>
-                    <Matrix a="0.996566772460938" b="0.0782928466796875" c="-0.0782928466796875" d="0.996566772460938" tx="58.25" ty="15.85"/>
+                    <Matrix a="0.996566772460938" b="0.0782928466796875" c="-0.0782928466796875" d="0.996566772460938" tx="-95.95" ty="15.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.05" y="0.1"/>
@@ -252,9 +252,9 @@
             </DOMFrame>
             <DOMFrame index="11" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="下支架基座" centerPoint3DX="61.55" centerPoint3DY="27.85">
+                <DOMSymbolInstance libraryItemName="下支架基座" centerPoint3DX="-92.65" centerPoint3DY="27.85">
                   <matrix>
-                    <Matrix tx="61.6" ty="27.85"/>
+                    <Matrix tx="-92.6" ty="27.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.05"/>
@@ -264,9 +264,9 @@
             </DOMFrame>
             <DOMFrame index="19" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="下支架基座" centerPoint3DX="61.55" centerPoint3DY="27.85">
+                <DOMSymbolInstance libraryItemName="下支架基座" centerPoint3DX="-92.65" centerPoint3DY="27.85">
                   <matrix>
-                    <Matrix tx="61.6" ty="27.85"/>
+                    <Matrix tx="-92.6" ty="27.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.05"/>
@@ -292,9 +292,9 @@
             </DOMFrame>
             <DOMFrame index="4" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="下支架连杆" centerPoint3DX="96.45" centerPoint3DY="10.55">
+                <DOMSymbolInstance libraryItemName="下支架连杆" centerPoint3DX="-57.75" centerPoint3DY="10.55">
                   <matrix>
-                    <Matrix a="0.409042358398438" b="0.912506103515625" c="-0.912506103515625" d="0.409042358398438" tx="97.65" ty="10.7"/>
+                    <Matrix a="0.409042358398438" b="0.912506103515625" c="-0.912506103515625" d="0.409042358398438" tx="-56.55" ty="10.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="18.3" y="-18"/>
@@ -304,9 +304,9 @@
             </DOMFrame>
             <DOMFrame index="7" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="下支架连杆" centerPoint3DX="88.25" centerPoint3DY="10.55">
+                <DOMSymbolInstance libraryItemName="下支架连杆" centerPoint3DX="-65.95" centerPoint3DY="10.55">
                   <matrix>
-                    <Matrix a="0.409042358398438" b="0.912506103515625" c="-0.912506103515625" d="0.409042358398438" tx="89.45" ty="10.7"/>
+                    <Matrix a="0.409042358398438" b="0.912506103515625" c="-0.912506103515625" d="0.409042358398438" tx="-64.75" ty="10.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="18.3" y="-18"/>
@@ -316,9 +316,9 @@
             </DOMFrame>
             <DOMFrame index="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="下支架连杆" centerPoint3DX="87.6" centerPoint3DY="32.45">
+                <DOMSymbolInstance libraryItemName="下支架连杆" centerPoint3DX="-66.6" centerPoint3DY="32.45">
                   <matrix>
-                    <Matrix a="0.838836669921875" b="0.5416259765625" c="-0.5416259765625" d="0.838836669921875" tx="88.65" ty="31.9"/>
+                    <Matrix a="0.838836669921875" b="0.5416259765625" c="-0.5416259765625" d="0.838836669921875" tx="-65.55" ty="31.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="18.3" y="-17.95"/>
@@ -328,9 +328,9 @@
             </DOMFrame>
             <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="下支架连杆" centerPoint3DX="94.95" centerPoint3DY="44">
+                <DOMSymbolInstance libraryItemName="下支架连杆" centerPoint3DX="-59.25" centerPoint3DY="44">
                   <matrix>
-                    <Matrix a="0.99359130859375" b="0.0975494384765625" c="-0.0975494384765625" d="0.99359130859375" tx="95.45" ty="42.85"/>
+                    <Matrix a="0.99359130859375" b="0.0975494384765625" c="-0.0975494384765625" d="0.99359130859375" tx="-58.75" ty="42.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="18.35" y="-17.95"/>
@@ -340,9 +340,9 @@
             </DOMFrame>
             <DOMFrame index="11" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="下支架连杆" centerPoint3DX="95.25" centerPoint3DY="45.6">
+                <DOMSymbolInstance libraryItemName="下支架连杆" centerPoint3DX="-58.95" centerPoint3DY="45.6">
                   <matrix>
-                    <Matrix tx="95.25" ty="45.6"/>
+                    <Matrix tx="-58.95" ty="45.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point y="-0.1"/>
@@ -352,9 +352,9 @@
             </DOMFrame>
             <DOMFrame index="19" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="下支架连杆" centerPoint3DX="95.25" centerPoint3DY="45.6">
+                <DOMSymbolInstance libraryItemName="下支架连杆" centerPoint3DX="-58.95" centerPoint3DY="45.6">
                   <matrix>
-                    <Matrix tx="95.25" ty="45.6"/>
+                    <Matrix tx="-58.95" ty="45.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point y="-0.1"/>
@@ -380,9 +380,9 @@
             </DOMFrame>
             <DOMFrame index="4" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="下支架" centerPoint3DX="34.55" centerPoint3DY="-8.75">
+                <DOMSymbolInstance libraryItemName="下支架" centerPoint3DX="-119.65" centerPoint3DY="-8.75">
                   <matrix>
-                    <Matrix a="0.737442016601563" b="-0.675384521484375" c="0.675384521484375" d="0.737442016601563" tx="34.3" ty="-8.65"/>
+                    <Matrix a="0.737442016601563" b="-0.675384521484375" c="0.675384521484375" d="0.737442016601563" tx="-119.9" ty="-8.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-16.2" y="-46.1"/>
@@ -392,9 +392,9 @@
             </DOMFrame>
             <DOMFrame index="7" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="下支架" centerPoint3DX="26.35" centerPoint3DY="-8.75">
+                <DOMSymbolInstance libraryItemName="下支架" centerPoint3DX="-127.85" centerPoint3DY="-8.75">
                   <matrix>
-                    <Matrix a="0.737442016601563" b="-0.675384521484375" c="0.675384521484375" d="0.737442016601563" tx="26.1" ty="-8.65"/>
+                    <Matrix a="0.737442016601563" b="-0.675384521484375" c="0.675384521484375" d="0.737442016601563" tx="-128.1" ty="-8.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-16.2" y="-46.1"/>
@@ -404,9 +404,9 @@
             </DOMFrame>
             <DOMFrame index="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="下支架" centerPoint3DX="34.7" centerPoint3DY="9.6">
+                <DOMSymbolInstance libraryItemName="下支架" centerPoint3DX="-119.5" centerPoint3DY="9.6">
                   <matrix>
-                    <Matrix a="0.9320068359375" b="-0.359344482421875" c="0.359344482421875" d="0.9320068359375" tx="34.4" ty="9.6"/>
+                    <Matrix a="0.9320068359375" b="-0.359344482421875" c="0.359344482421875" d="0.9320068359375" tx="-119.8" ty="9.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-16.2" y="-46.1"/>
@@ -416,9 +416,9 @@
             </DOMFrame>
             <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="下支架" centerPoint3DX="36.15" centerPoint3DY="16.55">
+                <DOMSymbolInstance libraryItemName="下支架" centerPoint3DX="-118.05" centerPoint3DY="16.55">
                   <matrix>
-                    <Matrix a="0.982070922851563" b="-0.182327270507813" c="0.182327270507813" d="0.982070922851563" tx="35.85" ty="16.5"/>
+                    <Matrix a="0.982070922851563" b="-0.182327270507813" c="0.182327270507813" d="0.982070922851563" tx="-118.35" ty="16.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-16.2" y="-46.1"/>
@@ -428,9 +428,9 @@
             </DOMFrame>
             <DOMFrame index="11" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="下支架" centerPoint3DX="45.55" centerPoint3DY="23.4">
+                <DOMSymbolInstance libraryItemName="下支架" centerPoint3DX="-108.65" centerPoint3DY="23.4">
                   <matrix>
-                    <Matrix tx="45.6" ty="23.45"/>
+                    <Matrix tx="-108.6" ty="23.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.05" y="-0.05"/>
@@ -440,9 +440,9 @@
             </DOMFrame>
             <DOMFrame index="19" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="下支架" centerPoint3DX="45.55" centerPoint3DY="23.4">
+                <DOMSymbolInstance libraryItemName="下支架" centerPoint3DX="-108.65" centerPoint3DY="23.4">
                   <matrix>
-                    <Matrix tx="45.6" ty="23.45"/>
+                    <Matrix tx="-108.6" ty="23.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.05" y="-0.05"/>
@@ -468,9 +468,9 @@
             </DOMFrame>
             <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="解锁拉柄" centerPoint3DX="260.1" centerPoint3DY="-99.4">
+                <DOMSymbolInstance libraryItemName="解锁拉柄" centerPoint3DX="105.9" centerPoint3DY="-99.4">
                   <matrix>
-                    <Matrix a="0" b="-1" c="1" d="0" tx="260.1" ty="-99.45"/>
+                    <Matrix a="0" b="-1" c="1" d="0" tx="105.9" ty="-99.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-5.05" y="23.9"/>
@@ -480,9 +480,9 @@
             </DOMFrame>
             <DOMFrame index="7" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="解锁拉柄" centerPoint3DX="289.4" centerPoint3DY="-118.3">
+                <DOMSymbolInstance libraryItemName="解锁拉柄" centerPoint3DX="135.2" centerPoint3DY="-118.3">
                   <matrix>
-                    <Matrix tx="289.4" ty="-118.3"/>
+                    <Matrix tx="135.2" ty="-118.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-4.5" y="23.75"/>
@@ -492,9 +492,9 @@
             </DOMFrame>
             <DOMFrame index="19" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="解锁拉柄" centerPoint3DX="289.4" centerPoint3DY="-118.3">
+                <DOMSymbolInstance libraryItemName="解锁拉柄" centerPoint3DX="135.2" centerPoint3DY="-118.3">
                   <matrix>
-                    <Matrix tx="289.4" ty="-118.3"/>
+                    <Matrix tx="135.2" ty="-118.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-4.5" y="23.75"/>
@@ -520,9 +520,9 @@
             </DOMFrame>
             <DOMFrame index="4" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头3" name="弹头3" centerPoint3DX="393.85" centerPoint3DY="-53.4">
+                <DOMSymbolInstance libraryItemName="弹头3" name="弹头3" centerPoint3DX="239.65" centerPoint3DY="-53.4">
                   <matrix>
-                    <Matrix tx="393.85" ty="-53.35"/>
+                    <Matrix tx="239.65" ty="-53.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point y="-0.05"/>
@@ -532,9 +532,9 @@
             </DOMFrame>
             <DOMFrame index="11" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头3" name="弹头3" centerPoint3DX="393.85" centerPoint3DY="-53.4">
+                <DOMSymbolInstance libraryItemName="弹头3" name="弹头3" centerPoint3DX="239.65" centerPoint3DY="-53.4">
                   <matrix>
-                    <Matrix tx="393.85" ty="-53.35"/>
+                    <Matrix tx="239.65" ty="-53.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point y="-0.05"/>
@@ -544,9 +544,9 @@
             </DOMFrame>
             <DOMFrame index="14" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头3" name="弹头3" centerPoint3DX="416.8" centerPoint3DY="-53.5">
+                <DOMSymbolInstance libraryItemName="弹头3" name="弹头3" centerPoint3DX="262.6" centerPoint3DY="-53.5">
                   <matrix>
-                    <Matrix tx="416.8" ty="-53.45"/>
+                    <Matrix tx="262.6" ty="-53.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point y="-0.05"/>
@@ -556,9 +556,9 @@
             </DOMFrame>
             <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头3" name="弹头3" centerPoint3DX="416.8" centerPoint3DY="-53.5">
+                <DOMSymbolInstance libraryItemName="弹头3" name="弹头3" centerPoint3DX="262.6" centerPoint3DY="-53.5">
                   <matrix>
-                    <Matrix tx="416.8" ty="-53.45"/>
+                    <Matrix tx="262.6" ty="-53.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point y="-0.05"/>
@@ -568,9 +568,9 @@
             </DOMFrame>
             <DOMFrame index="21" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头3" name="弹头3" centerPoint3DX="424.5" centerPoint3DY="-53.45">
+                <DOMSymbolInstance libraryItemName="弹头3" name="弹头3" centerPoint3DX="270.3" centerPoint3DY="-53.45">
                   <matrix>
-                    <Matrix tx="424.5" ty="-53.4"/>
+                    <Matrix tx="270.3" ty="-53.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point y="-0.05"/>
@@ -580,9 +580,9 @@
             </DOMFrame>
             <DOMFrame index="24" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头3" name="弹头3" centerPoint3DX="380.35" centerPoint3DY="-53.4">
+                <DOMSymbolInstance libraryItemName="弹头3" name="弹头3" centerPoint3DX="226.15" centerPoint3DY="-53.4">
                   <matrix>
-                    <Matrix tx="380.35" ty="-53.35"/>
+                    <Matrix tx="226.15" ty="-53.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point y="-0.05"/>
@@ -592,9 +592,9 @@
             </DOMFrame>
             <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头3" name="弹头3" centerPoint3DX="380.35" centerPoint3DY="-53.4">
+                <DOMSymbolInstance libraryItemName="弹头3" name="弹头3" centerPoint3DX="226.15" centerPoint3DY="-53.4">
                   <matrix>
-                    <Matrix tx="380.35" ty="-53.35"/>
+                    <Matrix tx="226.15" ty="-53.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point y="-0.05"/>
@@ -604,9 +604,9 @@
             </DOMFrame>
             <DOMFrame index="27" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头3" name="弹头3" centerPoint3DX="393.85" centerPoint3DY="-53.4">
+                <DOMSymbolInstance libraryItemName="弹头3" name="弹头3" centerPoint3DX="239.65" centerPoint3DY="-53.4">
                   <matrix>
-                    <Matrix tx="393.85" ty="-53.35"/>
+                    <Matrix tx="239.65" ty="-53.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point y="-0.05"/>
@@ -616,9 +616,9 @@
             </DOMFrame>
             <DOMFrame index="30" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头3" name="弹头3" centerPoint3DX="416.8" centerPoint3DY="-53.5">
+                <DOMSymbolInstance libraryItemName="弹头3" name="弹头3" centerPoint3DX="262.6" centerPoint3DY="-53.5">
                   <matrix>
-                    <Matrix tx="416.8" ty="-53.45"/>
+                    <Matrix tx="262.6" ty="-53.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point y="-0.05"/>
@@ -644,9 +644,9 @@
             </DOMFrame>
             <DOMFrame index="4" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头2" name="弹头2" centerPoint3DX="399.65" centerPoint3DY="-55.15">
+                <DOMSymbolInstance libraryItemName="弹头2" name="弹头2" centerPoint3DX="245.45" centerPoint3DY="-55.15">
                   <matrix>
-                    <Matrix tx="399.65" ty="-55.15"/>
+                    <Matrix tx="245.45" ty="-55.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -656,9 +656,9 @@
             </DOMFrame>
             <DOMFrame index="11" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头2" name="弹头2" centerPoint3DX="399.65" centerPoint3DY="-55.15">
+                <DOMSymbolInstance libraryItemName="弹头2" name="弹头2" centerPoint3DX="245.45" centerPoint3DY="-55.15">
                   <matrix>
-                    <Matrix tx="399.65" ty="-55.15"/>
+                    <Matrix tx="245.45" ty="-55.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -668,9 +668,9 @@
             </DOMFrame>
             <DOMFrame index="13" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头2" name="弹头2" centerPoint3DX="414.65" centerPoint3DY="-55.15">
+                <DOMSymbolInstance libraryItemName="弹头2" name="弹头2" centerPoint3DX="260.45" centerPoint3DY="-55.15">
                   <matrix>
-                    <Matrix tx="414.65" ty="-55.15"/>
+                    <Matrix tx="260.45" ty="-55.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -680,9 +680,9 @@
             </DOMFrame>
             <DOMFrame index="16" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头2" name="弹头2" centerPoint3DX="456.45" centerPoint3DY="-55.25">
+                <DOMSymbolInstance libraryItemName="弹头2" name="弹头2" centerPoint3DX="302.25" centerPoint3DY="-55.25">
                   <matrix>
-                    <Matrix tx="456.45" ty="-55.25"/>
+                    <Matrix tx="302.25" ty="-55.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -695,9 +695,9 @@
             </DOMFrame>
             <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头2" name="弹头2" centerPoint3DX="372.65" centerPoint3DY="-55.15">
+                <DOMSymbolInstance libraryItemName="弹头2" name="弹头2" centerPoint3DX="218.45" centerPoint3DY="-55.15">
                   <matrix>
-                    <Matrix tx="372.65" ty="-55.15"/>
+                    <Matrix tx="218.45" ty="-55.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -707,9 +707,9 @@
             </DOMFrame>
             <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头2" name="弹头2" centerPoint3DX="399.65" centerPoint3DY="-55.15">
+                <DOMSymbolInstance libraryItemName="弹头2" name="弹头2" centerPoint3DX="245.45" centerPoint3DY="-55.15">
                   <matrix>
-                    <Matrix tx="399.65" ty="-55.15"/>
+                    <Matrix tx="245.45" ty="-55.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -719,9 +719,9 @@
             </DOMFrame>
             <DOMFrame index="29" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头2" name="弹头2" centerPoint3DX="414.65" centerPoint3DY="-55.15">
+                <DOMSymbolInstance libraryItemName="弹头2" name="弹头2" centerPoint3DX="260.45" centerPoint3DY="-55.15">
                   <matrix>
-                    <Matrix tx="414.65" ty="-55.15"/>
+                    <Matrix tx="260.45" ty="-55.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -731,9 +731,9 @@
             </DOMFrame>
             <DOMFrame index="32" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头2" name="弹头2" centerPoint3DX="456.45" centerPoint3DY="-55.25">
+                <DOMSymbolInstance libraryItemName="弹头2" name="弹头2" centerPoint3DX="302.25" centerPoint3DY="-55.25">
                   <matrix>
-                    <Matrix tx="456.45" ty="-55.25"/>
+                    <Matrix tx="302.25" ty="-55.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -743,7 +743,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="弹头1" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="弹头1" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -759,9 +759,9 @@
             </DOMFrame>
             <DOMFrame index="4" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="418.45" centerPoint3DY="-56.35">
+                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="264.25" centerPoint3DY="-56.35">
                   <matrix>
-                    <Matrix tx="418.45" ty="-56.35"/>
+                    <Matrix tx="264.25" ty="-56.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -771,9 +771,9 @@
             </DOMFrame>
             <DOMFrame index="11" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="418.45" centerPoint3DY="-56.35">
+                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="264.25" centerPoint3DY="-56.35">
                   <matrix>
-                    <Matrix tx="418.45" ty="-56.35"/>
+                    <Matrix tx="264.25" ty="-56.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -783,9 +783,9 @@
             </DOMFrame>
             <DOMFrame index="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="434.55" centerPoint3DY="-56.35">
+                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="280.35" centerPoint3DY="-56.35">
                   <matrix>
-                    <Matrix tx="434.55" ty="-56.35"/>
+                    <Matrix tx="280.35" ty="-56.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -795,9 +795,9 @@
             </DOMFrame>
             <DOMFrame index="14" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="448.6" centerPoint3DY="-56.35">
+                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="294.4" centerPoint3DY="-56.35">
                   <matrix>
-                    <Matrix tx="448.6" ty="-56.35"/>
+                    <Matrix tx="294.4" ty="-56.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -807,9 +807,9 @@
             </DOMFrame>
             <DOMFrame index="16" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="476.5" centerPoint3DY="-56.35">
+                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="322.3" centerPoint3DY="-56.35">
                   <matrix>
-                    <Matrix tx="476.5" ty="-56.35"/>
+                    <Matrix tx="322.3" ty="-56.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -819,9 +819,9 @@
             </DOMFrame>
             <DOMFrame index="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="491.85" centerPoint3DY="-56.35">
+                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="337.65" centerPoint3DY="-56.35">
                   <matrix>
-                    <Matrix tx="491.85" ty="-56.35"/>
+                    <Matrix tx="337.65" ty="-56.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -834,9 +834,9 @@
             </DOMFrame>
             <DOMFrame index="25" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="386.95" centerPoint3DY="-56.35">
+                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="232.75" centerPoint3DY="-56.35">
                   <matrix>
-                    <Matrix tx="386.95" ty="-56.35"/>
+                    <Matrix tx="232.75" ty="-56.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -846,9 +846,9 @@
             </DOMFrame>
             <DOMFrame index="27" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="418.45" centerPoint3DY="-56.35">
+                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="264.25" centerPoint3DY="-56.35">
                   <matrix>
-                    <Matrix tx="418.45" ty="-56.35"/>
+                    <Matrix tx="264.25" ty="-56.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -858,9 +858,9 @@
             </DOMFrame>
             <DOMFrame index="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="434.55" centerPoint3DY="-56.35">
+                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="280.35" centerPoint3DY="-56.35">
                   <matrix>
-                    <Matrix tx="434.55" ty="-56.35"/>
+                    <Matrix tx="280.35" ty="-56.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -870,9 +870,9 @@
             </DOMFrame>
             <DOMFrame index="30" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="448.6" centerPoint3DY="-56.35">
+                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="294.4" centerPoint3DY="-56.35">
                   <matrix>
-                    <Matrix tx="448.6" ty="-56.35"/>
+                    <Matrix tx="294.4" ty="-56.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -882,9 +882,9 @@
             </DOMFrame>
             <DOMFrame index="32" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="476.5" centerPoint3DY="-56.35">
+                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="322.3" centerPoint3DY="-56.35">
                   <matrix>
-                    <Matrix tx="476.5" ty="-56.35"/>
+                    <Matrix tx="322.3" ty="-56.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -894,9 +894,9 @@
             </DOMFrame>
             <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" centerPoint3DX="491.85" centerPoint3DY="-56.35">
+                <DOMSymbolInstance libraryItemName="弹头1" name="弹头1" selected="true" centerPoint3DX="337.65" centerPoint3DY="-56.35">
                   <matrix>
-                    <Matrix tx="491.85" ty="-56.35"/>
+                    <Matrix tx="337.65" ty="-56.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -922,9 +922,9 @@
             </DOMFrame>
             <DOMFrame index="4" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="支架" centerPoint3DX="305.15" centerPoint3DY="6.1">
+                <DOMSymbolInstance libraryItemName="支架" centerPoint3DX="150.95" centerPoint3DY="6.1">
                   <matrix>
-                    <Matrix a="-0.113555908203125" b="0.9935302734375" c="-0.9935302734375" d="-0.113555908203125" tx="305.25" ty="7.15"/>
+                    <Matrix a="-0.113555908203125" b="0.9935302734375" c="-0.9935302734375" d="-0.113555908203125" tx="151.05" ty="7.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-6.25" y="-48.95"/>
@@ -934,9 +934,9 @@
             </DOMFrame>
             <DOMFrame index="7" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="支架" centerPoint3DX="305.15" centerPoint3DY="6.1">
+                <DOMSymbolInstance libraryItemName="支架" centerPoint3DX="150.95" centerPoint3DY="6.1">
                   <matrix>
-                    <Matrix a="-0.113555908203125" b="0.9935302734375" c="-0.9935302734375" d="-0.113555908203125" tx="305.25" ty="7.15"/>
+                    <Matrix a="-0.113555908203125" b="0.9935302734375" c="-0.9935302734375" d="-0.113555908203125" tx="151.05" ty="7.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-6.25" y="-48.95"/>
@@ -946,9 +946,9 @@
             </DOMFrame>
             <DOMFrame index="11" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="支架" centerPoint3DX="355.75" centerPoint3DY="54">
+                <DOMSymbolInstance libraryItemName="支架" centerPoint3DX="201.55" centerPoint3DY="54">
                   <matrix>
-                    <Matrix tx="356.6" ty="53.95"/>
+                    <Matrix tx="202.4" ty="53.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-6.25" y="-48.95"/>
@@ -958,9 +958,9 @@
             </DOMFrame>
             <DOMFrame index="19" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="支架" centerPoint3DX="355.75" centerPoint3DY="54">
+                <DOMSymbolInstance libraryItemName="支架" centerPoint3DX="201.55" centerPoint3DY="54">
                   <matrix>
-                    <Matrix tx="356.6" ty="53.95"/>
+                    <Matrix tx="202.4" ty="53.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-6.25" y="-48.95"/>
@@ -986,9 +986,9 @@
             </DOMFrame>
             <DOMFrame index="4" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="伸缩支架" centerPoint3DX="298.3" centerPoint3DY="9.45">
+                <DOMSymbolInstance libraryItemName="伸缩支架" centerPoint3DX="144.1" centerPoint3DY="9.45">
                   <matrix>
-                    <Matrix a="-0.113555908203125" b="0.9935302734375" c="-0.9935302734375" d="-0.113555908203125" tx="298.15" ty="8.7"/>
+                    <Matrix a="-0.113555908203125" b="0.9935302734375" c="-0.9935302734375" d="-0.113555908203125" tx="143.95" ty="8.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -998,9 +998,9 @@
             </DOMFrame>
             <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="伸缩支架" centerPoint3DX="298.3" centerPoint3DY="9.45">
+                <DOMSymbolInstance libraryItemName="伸缩支架" centerPoint3DX="144.1" centerPoint3DY="9.45">
                   <matrix>
-                    <Matrix a="-0.113555908203125" b="0.9935302734375" c="-0.9935302734375" d="-0.113555908203125" tx="298.15" ty="8.7"/>
+                    <Matrix a="-0.113555908203125" b="0.9935302734375" c="-0.9935302734375" d="-0.113555908203125" tx="143.95" ty="8.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1010,9 +1010,9 @@
             </DOMFrame>
             <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="伸缩支架" centerPoint3DX="336.5" centerPoint3DY="57.95">
+                <DOMSymbolInstance libraryItemName="伸缩支架" centerPoint3DX="182.3" centerPoint3DY="57.95">
                   <matrix>
-                    <Matrix a="0.911972045898438" b="0.407241821289063" c="-0.407241821289063" d="0.911972045898438" tx="335.75" ty="57.85"/>
+                    <Matrix a="0.911972045898438" b="0.407241821289063" c="-0.407241821289063" d="0.911972045898438" tx="181.55" ty="57.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1022,9 +1022,9 @@
             </DOMFrame>
             <DOMFrame index="11" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="伸缩支架" centerPoint3DX="362.2" centerPoint3DY="89.85">
+                <DOMSymbolInstance libraryItemName="伸缩支架" centerPoint3DX="208" centerPoint3DY="89.85">
                   <matrix>
-                    <Matrix tx="362.2" ty="89.85"/>
+                    <Matrix tx="208" ty="89.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1034,13 +1034,116 @@
             </DOMFrame>
             <DOMFrame index="19" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="伸缩支架" centerPoint3DX="362.2" centerPoint3DY="89.85">
+                <DOMSymbolInstance libraryItemName="伸缩支架" centerPoint3DX="208" centerPoint3DY="89.85">
                   <matrix>
-                    <Matrix tx="362.2" ty="89.85"/>
+                    <Matrix tx="208" ty="89.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="激光" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/xm556oc激光模组" name="激光模组" centerPoint3DX="499.25" centerPoint3DY="-103.1">
+                  <matrix>
+                    <Matrix a="0.0301055908203125" tx="210" ty="-105.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="3.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/xm556oc激光模组" name="激光模组" centerPoint3DX="500.35" centerPoint3DY="-102.7">
+                  <matrix>
+                    <Matrix tx="211.6" ty="-104.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.5" y="3.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/xm556oc激光模组" name="激光模组" centerPoint3DX="500.35" centerPoint3DY="-102.7">
+                  <matrix>
+                    <Matrix tx="211.6" ty="-104.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.5" y="3.15"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.99" tintColor="#00FF00"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/xm556oc激光模组" name="激光模组" selected="true" centerPoint3DX="500.35" centerPoint3DY="-102.7">
+                  <matrix>
+                    <Matrix tx="211.6" ty="-104.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.5" y="3.15"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="1" tintColor="#FF0000"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/xm556oc激光模组" name="激光模组" selected="true" centerPoint3DX="500.35" centerPoint3DY="-102.7">
+                  <matrix>
+                    <Matrix tx="211.6" ty="-104.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.5" y="3.15"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="1" tintColor="#FF0000"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/xm556oc激光模组" name="激光模组" centerPoint3DX="500.35" centerPoint3DY="-102.7">
+                  <matrix>
+                    <Matrix tx="211.6" ty="-104.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.5" y="3.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/XM556/xm556oc激光模组" name="激光模组" centerPoint3DX="500.35" centerPoint3DY="-102.7">
+                  <matrix>
+                    <Matrix tx="211.6" ty="-104.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.5" y="3.15"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.99" tintColor="#00FF00"/>
+                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
