@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-特殊组/火力支援-炸弹" itemID="669d345c-00001748" linkageExportForAS="true" linkageIdentifier="火力支援-炸弹" lastModified="1729338582">
   <timeline>
-    <DOMTimeline name="火力支援-炸弹" currentFrame="15">
+    <DOMTimeline name="火力支援-炸弹" currentFrame="57">
       <layers>
-        <DOMLayer name="Labels Layer" color="#F9F958" locked="true">
+        <DOMLayer name="Labels Layer" color="#F9F958" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements/>
@@ -242,7 +242,7 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-190.55">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" centerPoint3DX="13.5" centerPoint3DY="-190.55">
                   <matrix>
                     <Matrix a="0.999984741210938" d="0.999984741210938" ty="-276.85"/>
                   </matrix>
@@ -287,7 +287,7 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-149.3">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" centerPoint3DX="13.5" centerPoint3DY="-149.3">
                   <matrix>
                     <Matrix a="0.999984741210938" d="0.999984741210938" ty="-235.6"/>
                   </matrix>
@@ -302,7 +302,7 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-135.6">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" centerPoint3DX="13.5" centerPoint3DY="-135.6">
                   <matrix>
                     <Matrix a="0.999984741210938" d="0.999984741210938" ty="-221.9"/>
                   </matrix>
@@ -362,7 +362,7 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" selected="true" centerPoint3DX="13.5" centerPoint3DY="-80.65">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 714" centerPoint3DX="13.5" centerPoint3DY="-80.65">
                   <matrix>
                     <Matrix a="0.999984741210938" d="0.999984741210938" ty="-166.95"/>
                   </matrix>
@@ -530,7 +530,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" locked="true" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>

@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效-击中效果组/屎花" itemID="66bc6ab8-000003d0" linkageExportForAS="true" linkageIdentifier="屎花" lastModified="1723624891">
   <timeline>
-    <DOMTimeline name="屎花" currentFrame="1">
+    <DOMTimeline name="屎花" currentFrame="4">
       <layers>
         <DOMLayer name="Labels Layer" color="#70E0D7">
           <frames>
@@ -102,7 +102,7 @@ gotoAndPlay("a" + random(4));
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#CA83EF">
+        <DOMLayer name="Layer 3" color="#CA83EF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -127,14 +127,14 @@ gotoAndPlay("a" + random(4));
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#EF706D" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#EF706D">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="3" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 299" selected="true" centerPoint3DX="1.3" centerPoint3DY="-1.05">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 299" centerPoint3DX="1.3" centerPoint3DY="-1.05">
                   <matrix>
                     <Matrix a="1.5" d="1.50119018554688" tx="-1.1" ty="-3.15"/>
                   </matrix>

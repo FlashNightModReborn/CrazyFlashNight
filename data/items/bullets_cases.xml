@@ -100,7 +100,7 @@
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
         </attribute>
-    </bullet>    
+    </bullet>
     <bullet>
         <name>反坦克导弹</name>
         <movement>
@@ -237,7 +237,7 @@
         <attribute>
             <hitMark>弹坑</hitMark>
         </attribute>
-    </bullet>    
+    </bullet>
     <bullet>
         <name>山猫反器材普通子弹</name>
         <shell>
@@ -285,9 +285,15 @@
         <movement>
             <func>accelerated</func>
         </movement>
-    </bullet>    
+    </bullet>
     <bullet>
         <name>串联破甲火箭弹</name>
+        <movement>
+            <func>accelerated</func>
+        </movement>
+    </bullet>
+    <bullet>
+        <name>核战斗部火箭弹</name>
         <movement>
             <func>accelerated</func>
         </movement>
