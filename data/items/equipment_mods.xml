@@ -436,10 +436,13 @@ skill - 赋予技能
             <override>
                 <damagetype>破击</damagetype>
                 <magictype>生化</magictype>
-
             </override>
+            <percentage>
+                <power>-3</power>
+                <punch>-3</punch>
+            </percentage>
         </stats>
-        <description>生化改造材料，将武器伤害转化为生化破击类型。</description>
+        <description>生化改造材料，将武器伤害转化为生化破击类型,略微降低威力和空手加成。</description>
         <tag>表面涂层</tag>
     </mod>
     <mod>
