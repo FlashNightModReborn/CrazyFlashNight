@@ -42,6 +42,8 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
         // 迭代配件列表
         for (var i:Number = 0; i < value.mods.length; i++) {
             var modName:String = value.mods[i];
+            if (!modName) continue; // 跳过空配件名
+
             var modInfo:Object = EquipmentUtil.modDict[modName];
 
             // 构建配件显示文本
@@ -50,6 +52,27 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
             // 检查是否有 tagValue
             if (modInfo && modInfo.tagValue) {
                 result.push(" <font color='" + TooltipConstants.COL_INFO + "'>[", modInfo.tagValue, "]</font>");
+            }
+
+            // 显示配件提供的百分比增幅（汇总显示）
+            if (modInfo && modInfo.stats && modInfo.stats.percentage) {
+                var enhancements:Array = [];
+                var percentage:Object = modInfo.stats.percentage;
+
+                // 收集所有百分比属性
+                for (var prop:String in percentage) {
+                    var percentValue:Number = Number(percentage[prop]);
+                    if (!isNaN(percentValue) && percentValue != 0) {
+                        var sign:String = percentValue > 0 ? "+" : "";
+                        var percent:Number = Math.round(percentValue * 100);
+                        enhancements.push(sign + percent + "%");
+                    }
+                }
+
+                // 如果有增幅，显示在配件名后
+                if (enhancements.length > 0) {
+                    result.push(" <font color='" + TooltipConstants.COL_ENHANCE + "'>(", enhancements.join(", "), ")</font>");
+                }
             }
 
             // 检查是否有消音属性，添加消音效果简短描述

@@ -237,7 +237,14 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     }
     result.push("$", item.price, "<BR>");
     if (upgradeLevel > 1 && (item.type == ItemUseTypes.TYPE_WEAPON || item.type == ItemUseTypes.TYPE_ARMOR)) {
-      result.push("<FONT COLOR='" + TooltipConstants.COL_HL + "'>强化等级：", upgradeLevel, "</FONT><BR>");
+      // 获取强化等级对应的倍率并计算增幅百分比
+      var levelMultiplier:Number = EquipmentUtil.levelStatList[upgradeLevel];
+      if (levelMultiplier && !isNaN(levelMultiplier)) {
+        var enhancement:Number = Math.round((levelMultiplier - 1) * 100);
+        result.push("<FONT COLOR='" + TooltipConstants.COL_HL + "'>强化等级：", upgradeLevel, " (+", enhancement, "%)</FONT><BR>");
+      } else {
+        result.push("<FONT COLOR='" + TooltipConstants.COL_HL + "'>强化等级：", upgradeLevel, "</FONT><BR>");
+      }
     } else {
       // 兼容多种形态：value 为数字 或 对象里带各种数量字段
       var quantity:Number = 0;

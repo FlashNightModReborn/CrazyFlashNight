@@ -10,7 +10,8 @@
   public static var COL_BREAK_LIGHT:String = "#66bcf5";
   public static var COL_BREAK_MAIN:String = "#CC6600";
   public static var COL_INFO:String = "#FFCC00";
-  
+  public static var COL_ENHANCE:String = "#88FF88";  // 增幅显示颜色（淡绿色）
+
   public static var SUF_PERCENT:String = "%";
   public static var SUF_HP:String = "HP";
   public static var SUF_MP:String = "MP";
