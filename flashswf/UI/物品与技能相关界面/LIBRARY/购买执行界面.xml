@@ -153,7 +153,12 @@ function 计算售卖总价(数量)
 	this.数量 = 数量;
 
 	// 使用统一的售卖价格计算工具函数
-	var priceInfo = _root.物品UI函数.计算售卖总价(this.sellItem, 数量);
+	// 对于材料栏（isDict=true），sellItem是数字，需要构造临时对象
+	var itemObj = this.sellItem;
+	if(typeof this.sellItem === "number"){
+		itemObj = {name: this.物品名, value: this.sellItem};
+	}
+	var priceInfo = _root.物品UI函数.计算售卖总价(itemObj, 数量);
 	this.总价 = priceInfo.总价;
 
 	var text1 = "<FONT COLOR=\'#33FF00\'>卖出</FONT> " + this.displayname;
