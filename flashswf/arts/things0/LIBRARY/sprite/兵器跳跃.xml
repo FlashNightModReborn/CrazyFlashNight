@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跳跃" itemID="690cd8ce-0000117e" lastModified="1762600607" lastUniqueIdentifier="678">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跳跃" itemID="690cd8ce-0000117e" lastModified="1762950979" lastUniqueIdentifier="678">
   <timeline>
-    <DOMTimeline name="兵器跳跃" currentFrame="111" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;-150&lt;/guideline&gt;&lt;guideline direction="h"&gt;-164&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="兵器跳跃" currentFrame="70" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;-150&lt;/guideline&gt;&lt;guideline direction="h"&gt;-164&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#6DA6D6">
           <frames>
@@ -36,7 +36,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="变招" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -259,23 +259,21 @@ onClipEvent (enterFrame) {
                     <Point x="-73.6" y="-71.35"/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[
-onClipEvent (enterFrame) {
+                    <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
 		// 双击方向键后触发
-		if(_parent._parent.方向 == "右")
+		if (_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.启用)
 		{
-			if (_parent._parent.doubleTapRunDirection == 1) //双击右键
+			if(_parent._parent.方向 == "右")
 			{
-				_parent.gotoAndPlay("飞燕");
+				if (_parent._parent.doubleTapRunDirection == 1) //双击右键
+				{_parent.gotoAndPlay("飞燕");}
 			}
-		}
-		else if(_parent._parent.方向 == "左")
-		{
-			if (_parent._parent.doubleTapRunDirection == -1) //双击左键
+			else if(_parent._parent.方向 == "左")
 			{
-				_parent.gotoAndPlay("飞燕");
+				if (_parent._parent.doubleTapRunDirection == -1) //双击左键
+				{_parent.gotoAndPlay("飞燕");}
 			}
 		}
 		// 按下攻击键J后触发
@@ -313,18 +311,17 @@ onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
 		// 双击方向键后触发
-		if(_parent._parent.方向 == "右")
+		if (_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.启用)
 		{
-			if (_parent._parent.doubleTapRunDirection == 1) //双击右键
+			if(_parent._parent.方向 == "右")
 			{
-				_parent.gotoAndPlay("飞燕");
+				if (_parent._parent.doubleTapRunDirection == 1) //双击右键
+				{_parent.gotoAndPlay("飞燕");}
 			}
-		}
-		else if(_parent._parent.方向 == "左")
-		{
-			if (_parent._parent.doubleTapRunDirection == -1) //双击左键
+			else if(_parent._parent.方向 == "左")
 			{
-				_parent.gotoAndPlay("飞燕");
+				if (_parent._parent.doubleTapRunDirection == -1) //双击左键
+				{_parent.gotoAndPlay("飞燕");}
 			}
 		}
 		// 按下攻击键J后触发
@@ -369,18 +366,17 @@ onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
 		// 双击方向键后触发
-		if(_parent._parent.方向 == "右")
+		if (_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.启用)
 		{
-			if (_parent._parent.doubleTapRunDirection == 1) //双击右键
+			if(_parent._parent.方向 == "右")
 			{
-				_parent.gotoAndPlay("飞燕");
+				if (_parent._parent.doubleTapRunDirection == 1) //双击右键
+				{_parent.gotoAndPlay("飞燕");}
 			}
-		}
-		else if(_parent._parent.方向 == "左")
-		{
-			if (_parent._parent.doubleTapRunDirection == -1) //双击左键
+			else if(_parent._parent.方向 == "左")
 			{
-				_parent.gotoAndPlay("飞燕");
+				if (_parent._parent.doubleTapRunDirection == -1) //双击左键
+				{_parent.gotoAndPlay("飞燕");}
 			}
 		}
 		// 按下攻击键J后触发
@@ -421,18 +417,17 @@ onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
 		// 双击方向键后触发
-		if(_parent._parent.方向 == "右")
+		if (_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.启用)
 		{
-			if (_parent._parent.doubleTapRunDirection == 1) //双击右键
+			if(_parent._parent.方向 == "右")
 			{
-				_parent.gotoAndPlay("飞燕");
+				if (_parent._parent.doubleTapRunDirection == 1) //双击右键
+				{_parent.gotoAndPlay("飞燕");}
 			}
-		}
-		else if(_parent._parent.方向 == "左")
-		{
-			if (_parent._parent.doubleTapRunDirection == -1) //双击左键
+			else if(_parent._parent.方向 == "左")
 			{
-				_parent.gotoAndPlay("飞燕");
+				if (_parent._parent.doubleTapRunDirection == -1) //双击左键
+				{_parent.gotoAndPlay("飞燕");}
 			}
 		}
 		// 按下攻击键J后触发
@@ -460,7 +455,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="68" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -473,18 +468,17 @@ onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
 		// 双击方向键后触发
-		if(_parent._parent.方向 == "右")
+		if (_parent._parent.被动技能.刀剑空中连招 && _parent._parent.被动技能.刀剑空中连招.启用)
 		{
-			if (_parent._parent.doubleTapRunDirection == 1) //双击右键
+			if(_parent._parent.方向 == "右")
 			{
-				_parent.gotoAndPlay("飞燕");
+				if (_parent._parent.doubleTapRunDirection == 1) //双击右键
+				{_parent.gotoAndPlay("飞燕");}
 			}
-		}
-		else if(_parent._parent.方向 == "左")
-		{
-			if (_parent._parent.doubleTapRunDirection == -1) //双击左键
+			else if(_parent._parent.方向 == "左")
 			{
-				_parent.gotoAndPlay("飞燕");
+				if (_parent._parent.doubleTapRunDirection == -1) //双击左键
+				{_parent.gotoAndPlay("飞燕");}
 			}
 		}
 		// 按下攻击键J后触发
@@ -824,7 +818,7 @@ _parent.gotoAndPlay("跳跃");
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击判定" color="#A0BEB5" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="攻击判定" color="#A0BEB5" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
