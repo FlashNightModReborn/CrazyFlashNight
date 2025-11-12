@@ -159,7 +159,7 @@ _root.主动战技函数.长枪.混凝土切割机超载打击 = {初始化: fun
     var duration:Number = skill.duration || 5;
 
     var upgradeLevel:Number = 自机.长枪.value.level;
-    
+
     duration += upgradeLevel;
     var overRideCountMax:Number = duration * 30;
     自机.混凝土切割机超载打击持续时间 = overRideCountMax;
@@ -272,10 +272,10 @@ _root.主动战技函数.长枪.投影召唤 = {
         }};
 
 _root.主动战技函数.长枪.铁枪之锋 = {初始化: function(自机) {
-            自机.铁枪之锋许可 = false;
-            var upgradeLevel:Number = 自机.长枪.value.level;
-            自机.铁枪之锋倍率 = 1 + upgradeLevel * 0.1;
-        },
+    自机.铁枪之锋许可 = false;
+    var upgradeLevel:Number = 自机.长枪.value.level;
+    自机.铁枪之锋倍率 = 1 + upgradeLevel * 0.1;
+},
 
         释放许可判定: function(自机) {
             if (自机.倒地)
@@ -406,8 +406,35 @@ _root.主动战技函数.长枪.突击者之眼 = {初始化: function(自机) {
 
     var upgradeLevel:Number = 自机.长枪.value.level;
 
-    var k:Number = 22 / 1029; // ≈ 0.02138
-    var level:Number = upgradeLevel; // 1–13
+    // ========== 冷却时间缩减公式 ==========
+    // 数学模型: factor = 1 / (1 + k·level³)
+    //
+    // 公式特性:
+    //   - 类型: 递减型有理函数 (三次方分母)
+    //   - 值域: (0, 1], 永远不会达到0或负数
+    //   - 单调性: 严格递减, 强化等级越高冷却越短
+    //   - 边际收益: Lv3-4达到峰值 (~430ms/级), 后期递减但总收益持续增长
+    //
+    // 常数设计:
+    //   k = 22/1029 = 22/(3×7³) ≈ 0.02138
+    //   - 分母1029使用7³对应公式中的level³
+    //   - 精确调校使Lv13达到97.9%缩减率 (2000ms→42ms)
+    //
+    // 典型收益 (基础冷却2000ms):
+    //   Lv1:  1958ms ( 2.1%缩减) - 初步强化
+    //   Lv3:  1268ms (36.6%缩减) - 边际收益峰值区间
+    //   Lv5:   545ms (72.8%缩减) - 主流玩家目标
+    //   Lv10:   89ms (95.5%缩减) - 高端配置
+    //   Lv13:   42ms (97.9%缩减) - 极限强化 (47.9倍缩减!)
+    //
+    // 设计意图:
+    //   前期: 小投入大回报 (鼓励尝试强化)
+    //   中期: 持续递增收益 (保持强化动力)
+    //   后期: 边际递减但总收益巨大 (避免数值失衡)
+    // =====================================
+
+    var k:Number = 22 / 1029; // ≈ 0.02138, 精确调校常数
+    var level:Number = upgradeLevel; // 武器强化等级 (1-13)
 
     var factor:Number = 1 / (1 + k * Math.pow(level, 3));
     自机.主动战技.长枪.冷却时间 *= factor;
@@ -475,7 +502,7 @@ _root.主动战技函数.长枪.突击者之怒 = {初始化: function(自机) {
             prop.sound = 自机.突击者之怒音效;
         } else {
             prop.霰弹值 = 自机.chargeComplete ? 6 : 3;
-            
+
         }
 
         // _root.发布消息(自机.突击者之怒原伤害, prop.子弹威力, prop.霰弹值)
