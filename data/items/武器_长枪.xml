@@ -6112,6 +6112,17 @@
     <description>统合军制式四型反应式突击榴弹发射器，代号 Молот。
       该武器平台专为应对超重型装甲单位及永固工事而设计，是动力装甲小队的标准攻坚火力。
       其核心为一套140mm可重复装填发射系统，采用复合串联战斗部，具备毫不妥协的毁灭能力。</description>
+    <skill>
+      <skillname>调用射击发射其他弹药</skillname>
+      <description>发射核弹</description>
+      <cd>10000</cd>
+      <mp>100</mp>
+      <bullet>核战斗部火箭弹</bullet>
+      <sound>re_GL_m202.wav</sound>
+      <clipname>战术核弹手雷</clipname>
+      <power>100000</power>
+      <split>1</split>
+    </skill>
     <data>
       <level>60</level>
       <weight>48</weight>
@@ -6122,7 +6133,7 @@
       <interval>800</interval>
       <singleshoot>true</singleshoot>
       <velocity>40</velocity>
-      <bullet>核战斗部火箭弹</bullet>
+      <bullet>串联破甲火箭弹</bullet>
       <sound>re_GL_m202.wav</sound>
       <muzzle>发射器枪火</muzzle>
       <bullethit>火花</bullethit>

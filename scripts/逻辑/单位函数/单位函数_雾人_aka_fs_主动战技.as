@@ -3,6 +3,8 @@ import org.flashNight.sara.util.*;
 import org.flashNight.neur.ScheduleTimer.*;
 import org.flashNight.arki.component.Effect.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.arki.item.ItemUtil.*;
+import org.flashNight.arki.unit.Action.Shoot.*;
 
 _root.主动战技函数 = {空手: {}, 兵器: {}, 长枪: {}};
 
@@ -88,7 +90,7 @@ _root.主动战技函数.长枪.发射榴弹 = {初始化: function(自机) {
             //检测物品栏弹药
             if (自机.当前弹夹副武器已发射数 > 0) {
                 return true;
-            } else if (org.flashNight.arki.item.ItemUtil.singleSubmit(自机.副武器弹药类型, 1)) {
+            } else if (ItemUtil.singleSubmit(自机.副武器弹药类型, 1)) {
                 // _root.发布消息(自机.副武器弹药类型 + "耗尽！");
                 return true;
             }
@@ -124,7 +126,7 @@ _root.主动战技函数.长枪.气锤地雷 = {初始化: null,
                 return false;
             if (!(自机.状态 === "长枪行走" || 自机.状态 === "长枪站立") || 自机.换弹中)
                 return false;
-            return org.flashNight.arki.item.ItemUtil.singleSubmit("能量电池", 1);
+            return ItemUtil.singleSubmit("能量电池", 1);
         },
         释放: function(自机) {
             var 子弹属性 = new Object();
@@ -171,7 +173,7 @@ _root.主动战技函数.长枪.混凝土切割机超载打击 = {初始化: fun
                 return false;
             if (!(自机.状态 === "长枪行走" || 自机.状态 === "长枪站立") || 自机.换弹中)
                 return false;
-            return org.flashNight.arki.item.ItemUtil.singleSubmit("强化石", 1);
+            return ItemUtil.singleSubmit("强化石", 1);
         },
 
         释放: function(自机)
@@ -198,7 +200,7 @@ _root.主动战技函数.长枪.MACSIII超载打击 = {初始化: function(自�
                 return false;
             if (!(自机.状态 === "长枪行走" || 自机.状态 === "长枪站立") || 自机.换弹中)
                 return false;
-            return org.flashNight.arki.item.ItemUtil.singleSubmit("强化石", 1);
+            return ItemUtil.singleSubmit("强化石", 1);
         },
 
         释放: function(自机)
@@ -282,7 +284,7 @@ _root.主动战技函数.长枪.铁枪之锋 = {初始化: function(自机) {
                 return false;
             if (!(自机.状态 === "长枪行走" || 自机.状态 === "长枪站立") || 自机.换弹中)
                 return false;
-            return org.flashNight.arki.item.ItemUtil.singleSubmit("强化石", 1);
+            return ItemUtil.singleSubmit("强化石", 1);
         },
 
         释放: function(自机) {
@@ -397,6 +399,100 @@ _root.主动战技函数.长枪.气锤光炮 = {初始化: function(自机) {
                 _root.玩家信息界面.玩家必要信息界面["子弹数"] = 0;
             }
         }}
+
+_root.主动战技函数.长枪.调用射击发射其他弹药 = {初始化: function(自机) {
+    var skill = 长枪物品信息.skill;
+
+    // 从配置读取战技参数
+    自机.其他弹药类型 = skill.bullet ? skill.bullet : "核战斗部火箭弹";
+    自机.其他霰弹值 = skill.split && skill.split > 0 ? Number(skill.split) : 1;
+    自机.其他音效 = skill.sound ? skill.sound : "re_GL_m202.wav";
+    自机.其他消耗物品 = skill.clipname ? skill.clipname : "战术核弹手雷";
+
+    // 威力支持三种模式:
+    // 1. skill.power > 0: 使用配置的固定威力值
+    // 2. skill.power = 0: 使用武器基础威力 (继承原有伤害)
+    // 3. skill.power < 0: 使用武器基础威力的倍率 (如 -2 表示2倍伤害)
+    自机.其他子弹威力模式 = skill.power !== undefined ? Number(skill.power) : 100000;
+
+    // 订阅"长枪射击"事件,在实际射击时修改子弹属性
+    自机.dispatcher.subscribe("长枪射击", function() {
+        // 检查开关: 只有战技激活时才修改属性
+        if (!自机.其他弹药开启)
+            return;
+
+        var prop:Object = 自机.man.子弹属性;
+
+        // 替换子弹属性为配置的弹药
+        prop.子弹种类 = 自机.其他弹药类型;
+        prop.霰弹值 = 自机.其他霰弹值;
+        prop.sound = 自机.其他音效;
+
+        // 根据威力模式设置子弹威力
+        if (自机.其他子弹威力模式 > 0) {
+            // 模式1: 固定威力值 (应用被动技能增幅)
+            // 使用 ShootInitCore.calculateWeaponPower 确保受到长枪被动技能加成
+            prop.子弹威力 = ShootInitCore.calculateWeaponPower(
+                自机,
+                "长枪",
+                自机.其他子弹威力模式
+            );
+        } else if (自机.其他子弹威力模式 < 0) {
+            // 模式2: 倍率模式 (基于武器原始威力的倍率,已经包含被动增幅)
+            // prop.子弹威力 已经在初始化时通过 calculateWeaponPower 计算过
+            // 这里直接乘以倍率即可
+            prop.子弹威力 *= Math.abs(自机.其他子弹威力模式);
+        }
+
+        // _root.发布消息("调用射击发射其他弹药 - 子弹威力:", prop.子弹威力);
+        // 模式3: 等于0时不修改,继承武器原有威力(已包含被动增幅)
+
+        // 修正弹药消耗计数 (因为攻击本身会扣1发)
+        自机.长枪.value.shot += 自机.其他霰弹值 - 1;
+
+        // 用完后立即关闭,避免影响后续正常射击
+        自机.其他弹药开启 = false;
+    });
+},
+        释放许可判定: function(自机) {
+            // 正在射击时不允许释放
+            if (自机["主手射击中"])
+                return false;
+
+            // 检查弹匣容量是否足够
+            var magazineCapName:String = "长枪弹匣容量";
+            if (自机.长枪.value.shot + 自机.其他霰弹值 > 自机[magazineCapName])
+                return false;
+
+            // 浮空或倒地时不允许释放
+            if (自机.浮空 || 自机.倒地)
+                return false;
+
+            return ItemUtil.singleSubmit(自机.其他消耗物品, 1);
+        },
+        释放: function(自机) {
+            // 1. 取消强制奔跑状态
+            自机.强制奔跑 = false;
+
+            // 2. 强制启用动作A (允许射击)
+            自机.动作A = true;
+
+            // 3. 开启战技开关,触发事件订阅
+            自机.其他弹药开启 = true;
+
+            // 4. 执行攻击 → 触发"长枪射击"事件 → 执行订阅回调修改属性
+            自机.攻击();
+
+            // 5. 恢复原始子弹属性 (防御性编程,确保不影响后续射击)
+            var data:Object = 自机.长枪属性;
+            var prop:Object = 自机.man.子弹属性;
+
+            prop.子弹种类 = data.bullet;
+            prop.霰弹值 = data.split;
+            prop.sound = data.sound;
+            prop.子弹威力 = data.power;  // 恢复原始威力
+        }}
+
 
 _root.主动战技函数.长枪.突击者之眼 = {初始化: function(自机) {
     var skill = 长枪物品信息.skill;
