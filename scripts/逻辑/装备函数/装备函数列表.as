@@ -25,6 +25,8 @@ import org.flashNight.arki.item.*;
 #include "../逻辑/装备函数/炎魔斩new.as"
 #include "../逻辑/装备函数/死者之手.as"
 
+#include "../逻辑/装备函数/双面雷神.as"
+
 #include "../逻辑/装备函数/雷铁斩斧.as"
 #include "../逻辑/装备函数/公社爆燃钻矛.as"
 

@@ -3024,7 +3024,7 @@
       <weight>4</weight>
       <dressup>枪-长枪-双面雷神</dressup>
       <capacity>35</capacity>
-      <split>4</split>
+      <split>1</split>
       <diffusion>10</diffusion>
       <interval>168</interval>
       <singleshoot>true</singleshoot>
@@ -3039,9 +3039,25 @@
       <power>446</power>
       <impact>12</impact>
     </data>
-狙击形态
-      <capacity2>14</capacity2>
-      <声音>apwersound.wav</声音>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>双面雷神初始化</initRoutines>
+          <initParam>
+            <rifleStartFrame>1</rifleStartFrame>
+            <rifleEndFrame>18</rifleEndFrame>
+            <sniperStartFrame>18</sniperStartFrame>
+            <sniperEndFrame>32</sniperEndFrame>
+            <capacity2>14</capacity2>
+            <sound2>apwersound.wav</sound2>
+            <split2>1</split2>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>双面雷神周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item weapontype="近战">
     <name>MACSIII</name>
@@ -6110,14 +6126,14 @@
     <use>长枪</use>
     <price>1136598</price>
     <description>统合军制式四型反应式突击榴弹发射器核控改进型，加装 Ядерный Комплект 核控套件。
-源于企业内战时期的攻坚原型，铁枪会基于原型残骸逆向完成量产化，兼具常规与核打击且具护盾压制能力。
-初衷为突破敌方立场护盾防线，发射的特规串联战斗部经过优化，对当前已知的立场护盾具备额外的摧毁与压制效应。
+      源于企业内战时期的攻坚原型，铁枪会基于原型残骸逆向完成量产化，兼具常规与核打击且具护盾压制能力。
+      初衷为突破敌方立场护盾防线，发射的特规串联战斗部经过优化，对当前已知的立场护盾具备额外的摧毁与压制效应。
 </description>
     <skill>
       <skillname>调用射击发射其他弹药</skillname>
       <description>消耗一枚战术核弹手雷，与火箭弹体组合形成核战斗部火箭弹。
-一级战斗部负责护盾破除与立场干扰，二级战斗部搭载战术核弹头实施主要打击。
-发射需完成双钥解链与核控授权，未授权状态下将以安全限制当量发射。</description>
+        一级战斗部负责护盾破除与立场干扰，二级战斗部搭载战术核弹头实施主要打击。
+        发射需完成双钥解链与核控授权，未授权状态下将以安全限制当量发射。</description>
       <cd>10000</cd>
       <mp>100</mp>
       <bullet>核战斗部火箭弹</bullet>
