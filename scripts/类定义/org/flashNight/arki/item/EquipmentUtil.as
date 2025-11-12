@@ -500,66 +500,77 @@ class org.flashNight.arki.item.EquipmentUtil{
     private static function applyOperatorsInOrder(data:Object, baseMultiplier:Object, modifiers:Object):Void {
         var operators:Object = propertyOperators;
 
-        // 合并基础倍率和配件倍率（保持原有全局语义）
-        var finalMultiplier:Object = ObjectUtil.clone(baseMultiplier);
-
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // 特殊处理：不在 baseMultiplier 中的百分比属性
+        // 数值膨胀抑制方案：增量加法累积
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //
-        // 问题根源：
-        // 在 accumulateModifiers 中，配件的 percentage 通过 operators.add(multiplier, percentageStat, 1)
-        // 累积，initValue=1 导致首次添加时变成 (1 + p)。
-        // 然后在本函数中再次通过 operators.add(finalMultiplier, modsMultiplier, 1) 合并，
-        // 又加了一次 1，最终变成 (1 + 1 + p) = (2 + p)。
+        // 核心思想：
+        // 强化等级和配件的百分比加成应该以"增量形式"累加，而非乘法叠加，
+        // 以保持线性增长，有效抑制数值膨胀。
         //
-        // 对于在 baseMultiplier 中的属性（power, defence, damage 等），因为有基础倍率参与，
-        // 这个"多加一次 1"恰好被抵消，计算结果正确。
+        // 公式：
+        //   最终倍率 = 1 + (强化倍率 - 1) + 配件百分比总和
+        //            = 1 + 强化增量 + 配件增量
         //
-        // 但对于不在 baseMultiplier 中的属性（capacity, velocity, diffusion, weight），
-        // 这个额外的 +1 会导致：
-        //   - capacity +20%  → 实际变成 120% 增幅
-        //   - velocity +10%  → 实际变成 110% 增幅
-        //   - diffusion -20% → 实际变成 80% 增幅（本该减少，结果还在增加）
-        //   - weight -20%    → 实际变成 80% 增幅（本该减重，结果增重）
+        // 示例（基础威力100）：
+        //   强化 Lv13（倍率3.04，增量2.04）
+        //   配件总计 +60%（三个+20%配件）
         //
-        // 解决方案：
-        // 将这些属性从合并流程中移除，单独以直接乘法应用，避免二次累加 initValue。
+        //   计算：100 × (1 + 2.04 + 0.60) = 100 × 3.64 = 364
+        //
+        // 对比其他方案：
+        //   乘法叠加：100 × 3.04 × 1.60 = 486（膨胀过快）
+        //   旧版bug： 100 × (3.04 + 1.60) = 464（错误计算）
+        //
+        // 这种方案的优势：
+        //   1. 线性增长，数值可控
+        //   2. 强化与配件平等，符合直觉
+        //   3. 配件之间仍然是加法累积（符合XML文档设计意图）
+        //   4. 有效抑制多配件叠加时的指数膨胀
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-        var modsMultiplier:Object = modifiers.multiplier ? ObjectUtil.clone(modifiers.multiplier) : null;
-        var specialFactors:Object = {}; // 存储需要特殊处理的属性倍率
+        // 构建最终倍率：将强化倍率和配件倍率以"增量形式"合并
+        var finalMultiplier:Object = {};
 
-        // 需要特殊处理的属性列表（不在 baseMultiplier 中，但被配件 percentage 影响）
-        var specialProps:Array = ["capacity", "velocity", "diffusion", "weight"];
+        // 将 baseMultiplier 的倍率转换为增量（减去1）
+        for (var key:String in baseMultiplier) {
+            var baseValue:Number = Number(baseMultiplier[key]);
+            if (!isNaN(baseValue)) {
+                finalMultiplier[key] = baseValue - 1; // 转换为增量
+            }
+        }
 
-        if (modsMultiplier) {
-            for (var i:Number = 0; i < specialProps.length; i++) {
-                var propName:String = specialProps[i];
-                if (!isNaN(modsMultiplier[propName])) {
-                    specialFactors[propName] = Number(modsMultiplier[propName]);
-                    delete modsMultiplier[propName]; // 从合并倍率中移除，稍后单独应用
+        // 将配件的百分比增量累加（modifiers.multiplier 中已经是 1+p 形式）
+        if (modifiers.multiplier) {
+            for (var modKey:String in modifiers.multiplier) {
+                var modValue:Number = Number(modifiers.multiplier[modKey]);
+                if (!isNaN(modValue)) {
+                    var increment:Number = modValue - 1; // 提取增量部分
+                    if (!isNaN(finalMultiplier[modKey])) {
+                        finalMultiplier[modKey] += increment; // 累加增量
+                    } else {
+                        finalMultiplier[modKey] = increment; // 首次添加
+                    }
                 }
             }
         }
 
-        // 其余倍率按旧逻辑合并（加法合并，适用于有 baseMultiplier 的属性）
-        if (modsMultiplier) operators.add(finalMultiplier, modsMultiplier, 1);
+        // 将增量还原为倍率（加回1）
+        for (var finalKey:String in finalMultiplier) {
+            finalMultiplier[finalKey] = 1 + finalMultiplier[finalKey];
+        }
 
         // 保存基础属性副本（用于cap计算）
         var baseData:Object = ObjectUtil.clone(data);
 
         // 按顺序应用运算符
+        // 1. 应用合并后的最终倍率
         operators.multiply(data, finalMultiplier);
 
-        // 单独应用特殊属性的百分比倍率（直接乘法，不经过加法合并）
-        for (var key:String in specialFactors) {
-            var factorObj:Object = {};
-            factorObj[key] = specialFactors[key];
-            operators.multiply(data, factorObj);
-        }
-
+        // 2. 应用固定值加成
         operators.add(data, modifiers.adder, 0);
+
+        // 3. 应用覆盖值
         operators.override(data, ObjectUtil.clone(modifiers.overrider));
 
         // Debug: 追踪merge执行
