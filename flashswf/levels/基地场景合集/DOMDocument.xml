@@ -61,9 +61,9 @@
           <DOMFolderItem name="UI重构/文天彩蛋UI所用素材" itemID="660ce453-00000ed0"/>
           <DOMFolderItem name="弹药系列" itemID="689c4dc2-00003eaf"/>
           <DOMFolderItem name="弹药系列/通用" itemID="689c4dc2-00003eb0"/>
-          <DOMFolderItem name="地图" itemID="668a9fac-00004fc9"/>
+          <DOMFolderItem name="地图" itemID="668a9fac-00004fc9" isExpanded="true"/>
           <DOMFolderItem name="防撞车" itemID="66fa5c8b-000008d1"/>
-          <DOMFolderItem name="房间摆件" itemID="66328e0c-00001565" isExpanded="true"/>
+          <DOMFolderItem name="房间摆件" itemID="66328e0c-00001565"/>
           <DOMFolderItem name="房间摆件/乐器" itemID="66328ec2-0000158b"/>
           <DOMFolderItem name="房间摆件/乐器/话筒" itemID="66329217-000015cd"/>
           <DOMFolderItem name="房间摆件/乐器/吉他" itemID="66328e9c-0000157c"/>
@@ -955,12 +955,12 @@
           <Include href="地图/车库.xml" itemID="668aa123-00005253" lastModified="1756746074"/>
           <Include href="地图/基地1层.xml" itemID="668a9fdf-00005040" lastModified="1761757880"/>
           <Include href="地图/基地地下1层.xml" itemID="668aa054-00005128" lastModified="1759510515"/>
-          <Include href="地图/基地门口.xml" itemID="668aa11b-00005252" lastModified="1749711814"/>
+          <Include href="地图/基地门口.xml" itemID="668aa11b-00005252" lastModified="1762997875"/>
           <Include href="地图/健身房.xml" itemID="668aa068-0000512a" lastModified="1749711627"/>
           <Include href="地图/溶洞.xml" itemID="668aa0c1-000051a2" lastModified="1749711656"/>
-          <Include href="地图/宿舍房间.xml" itemID="668a9fda-0000503f" lastModified="1759996256"/>
           <Include href="地图/停机坪.xml" itemID="668aa0dc-000051de" lastModified="1756650519"/>
           <Include href="地图/武器库.xml" itemID="668aa006-0000507c" lastModified="1755086586"/>
+          <Include href="地图/宿舍房间.xml" itemID="668a9fda-0000503f" lastModified="1759996256"/>
           <Include href="地图/医务室.xml" itemID="668aa0bc-000051a1" lastModified="1749711735"/>
           <Include href="地图/佣兵酒吧.xml" itemID="668aa09a-00005167" lastModified="1749711706"/>
           <Include href="吊带.xml" itemIcon="1" loadImmediate="false" itemID="68ffa64c-000001d0" lastModified="1761585017"/>
@@ -1367,6 +1367,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2930515" publishTime="1762997958"/>
+          <PublishItem publishSize="2930512" publishTime="1762997590"/>
           <PublishItem publishSize="3270092" publishTime="1761758498"/>
           <PublishItem publishSize="3270104" publishTime="1761758437"/>
           <PublishItem publishSize="3270140" publishTime="1761758351"/>
@@ -1385,7 +1387,5 @@
           <PublishItem publishSize="3220881" publishTime="1756643554"/>
           <PublishItem publishSize="3213049" publishTime="1756641936"/>
           <PublishItem publishSize="3213045" publishTime="1756641482"/>
-          <PublishItem publishSize="3213041" publishTime="1756640816"/>
-          <PublishItem publishSize="3316382" publishTime="1755086895"/>
      </publishHistory>
 </DOMDocument>

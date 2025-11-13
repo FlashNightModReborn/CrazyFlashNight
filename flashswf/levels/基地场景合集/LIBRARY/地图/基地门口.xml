@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地门口" itemID="668aa11b-00005252" linkageExportForAS="true" linkageIdentifier="基地场景-基地门口" lastModified="1749711814" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地门口" itemID="668aa11b-00005252" linkageExportForAS="true" linkageIdentifier="基地场景-基地门口" lastModified="1762997875" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="基地门口">
       <layers>
@@ -39,16 +39,16 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#2187E5" locked="true">
+        <DOMLayer name="Layer 4" color="#2187E5" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/场景门" name="门2" centerPoint3DX="922.4" centerPoint3DY="480.05">
                   <matrix>
-                    <Matrix a="3.7288818359375" d="8.0970458984375" tx="911.9" ty="460.1"/>
+                    <Matrix a="18.6799163818359" d="8.0970458984375" tx="1068.9" ty="460.1"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="-10.5"/>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(enterFrame){
@@ -64,7 +64,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#BB42D2" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#BB42D2">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -89,7 +89,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#D8D744" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Layer 9" color="#D8D744" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
