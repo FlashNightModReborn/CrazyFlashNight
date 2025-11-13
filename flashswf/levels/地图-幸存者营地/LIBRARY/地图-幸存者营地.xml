@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-幸存者营地" itemID="65c7a0f5-0000109e" linkageExportForAS="true" linkageIdentifier="地图-幸存者营地" lastModified="1761326319" lastUniqueIdentifier="32">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-幸存者营地" itemID="65c7a0f5-0000109e" linkageExportForAS="true" linkageIdentifier="地图-幸存者营地" lastModified="1763049418" lastUniqueIdentifier="32">
   <timeline>
     <DOMTimeline name="地图-幸存者营地">
       <layers>
@@ -198,11 +198,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="门1" color="#BA50B8" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="门1" color="#BA50B8" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/场景门" name="门1" selected="true" centerPoint3DX="2814.75" centerPoint3DY="585">
+                <DOMSymbolInstance libraryItemName="sprite/场景门" name="门1" centerPoint3DX="2814.75" centerPoint3DY="585">
                   <matrix>
                     <Matrix a="4.11039733886719" d="18.7664031982422" tx="2804.25" ty="565.05"/>
                   </matrix>
@@ -425,11 +425,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#A65995" locked="true" autoNamed="false">
+        <DOMLayer name="背景" color="#A65995" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新地图素材/幸存者营地背景图" name="背景" centerPoint3DX="2421.1" centerPoint3DY="693.25">
+                <DOMSymbolInstance libraryItemName="新地图素材/幸存者营地背景图" name="背景" selected="true" centerPoint3DX="2421.1" centerPoint3DY="693.25">
                   <matrix>
                     <Matrix tx="1732.05" ty="230.5"/>
                   </matrix>

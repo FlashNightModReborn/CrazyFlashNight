@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC-PD421/素材/左手" itemID="6915f69c-00004c10" lastModified="1763047124" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="左手">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC-PD421/素材/先进防护服零件/元件 13" centerPoint3DX="1.05" centerPoint3DY="2.75">
+                  <matrix>
+                    <Matrix a="0.736648559570313" b="-1.45001220703125" c="1.41825866699219" d="0.720077514648438" tx="-28.8" ty="12.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.45" y="15.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC-PD421/素材/先进防护服零件/元件 23" centerPoint3DX="-7.75" centerPoint3DY="6.3">
+                  <matrix>
+                    <Matrix a="-0.00970458984375" b="-0.3697509765625" c="0.369415283203125" d="-0.010345458984375" tx="-33.35" ty="36.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="80.2" y="71.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

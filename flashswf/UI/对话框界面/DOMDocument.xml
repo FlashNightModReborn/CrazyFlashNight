@@ -14,6 +14,15 @@
           <DOMFolderItem name="Itinerant/武器素材" itemID="669a5d20-00000a23"/>
           <DOMFolderItem name="lochan" itemID="66e1bc59-00000cf1"/>
           <DOMFolderItem name="NPC" itemID="68ee9351-000066d6" isExpanded="true"/>
+          <DOMFolderItem name="NPC-PD421" itemID="6915fc23-00004f22"/>
+          <DOMFolderItem name="NPC-PD421/素材" itemID="6915fc23-00004f23"/>
+          <DOMFolderItem name="NPC-PD421/素材/AK74金线" itemID="6915fc23-00004f24"/>
+          <DOMFolderItem name="NPC-PD421/素材/AK74金线/部件1" itemID="6705dd3a-00000215"/>
+          <DOMFolderItem name="NPC-PD421/素材/AK74金线/部件3" itemID="6705dd41-00000217"/>
+          <DOMFolderItem name="NPC-PD421/素材/AK74金线/部件4" itemID="6705de59-000002e6"/>
+          <DOMFolderItem name="NPC-PD421/素材/热能武士刀" itemID="6915fc23-00004f28"/>
+          <DOMFolderItem name="NPC-PD421/素材/热能武士刀/武士刀组成" itemID="6915ef30-00003a0a"/>
+          <DOMFolderItem name="NPC-PD421/素材/先进防护服零件" itemID="6915f6b4-00004c12"/>
           <DOMFolderItem name="NPC-Registrar" itemID="68b445d9-00002e34"/>
           <DOMFolderItem name="NPC-Registrar/Accessories" itemID="6688d96c-00002327"/>
           <DOMFolderItem name="NPC-Registrar/Accessories/Stocks" itemID="5fb81d21-000012df"/>
@@ -253,6 +262,38 @@
           <Include href="lochan/补间 14.xml" itemIcon="1" loadImmediate="false" itemID="66e1b63c-0000065e" lastModified="1726068284"/>
           <Include href="lochan/补间 16.xml" itemIcon="1" loadImmediate="false" itemID="66e1b63c-00000662" lastModified="1726068284"/>
           <Include href="lochan/盘子.xml" loadImmediate="false" itemID="66e1b386-00000068" lastModified="1726067641"/>
+          <Include href="NPC-PD421/素材/AK74金线/AK74金线.xml" loadImmediate="false" itemID="6915ef74-00003a2f" lastModified="1763045248"/>
+          <Include href="NPC-PD421/素材/AK74金线/部件1/元件 4.xml" loadImmediate="false" itemID="670569cc-000001d6" lastModified="1763046780"/>
+          <Include href="NPC-PD421/素材/AK74金线/部件1/元件 6.xml" loadImmediate="false" itemID="67057d1f-000001be" lastModified="1728413160"/>
+          <Include href="NPC-PD421/素材/AK74金线/部件1/元件 7.xml" loadImmediate="false" itemID="67057d2c-000001c2" lastModified="1728413774"/>
+          <Include href="NPC-PD421/素材/AK74金线/部件1/元件 9.xml" loadImmediate="false" itemID="67057dce-000001db" lastModified="1728413134"/>
+          <Include href="NPC-PD421/素材/AK74金线/部件3/Symbol 3746.xml" loadImmediate="false" itemID="668e7c1e-00000f3c" lastModified="1730992862"/>
+          <Include href="NPC-PD421/素材/AK74金线/部件3/Symbol 3752.xml" loadImmediate="false" itemID="668e7c1e-00000f3f" lastModified="1730992837"/>
+          <Include href="NPC-PD421/素材/AK74金线/部件4/Symbol 3741.xml" loadImmediate="false" itemID="668e7c1e-00000f38" lastModified="1730992850"/>
+          <Include href="NPC-PD421/素材/AK74金线/部件4/Symbol 3750.xml" loadImmediate="false" itemID="65f68a66-0000102c" lastModified="1730992794"/>
+          <Include href="NPC-PD421/素材/AK74金线/部件4/Symbol 4028.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00001124" lastModified="1710653981"/>
+          <Include href="NPC-PD421/素材/盗贼纹身装身体右下臂.xml" itemIcon="1" loadImmediate="false" itemID="661b8f0d-0000168f" lastModified="1713083590"/>
+          <Include href="NPC-PD421/素材/盗贼纹身装身体左下臂.xml" itemIcon="1" loadImmediate="false" itemID="661b8f05-0000168e" lastModified="1713082850"/>
+          <Include href="NPC-PD421/素材/男变装-盗贼纹身装身体右下臂.xml" loadImmediate="false" itemID="661b8ef3-0000168d" lastModified="1763044765"/>
+          <Include href="NPC-PD421/素材/男变装-盗贼纹身装身体左下臂.xml" loadImmediate="false" itemID="661b8ef0-0000168c" lastModified="1763044764"/>
+          <Include href="NPC-PD421/素材/男变装-二阶战纹上臂.xml" loadImmediate="false" itemID="661b9480-000016bd" lastModified="1763044833"/>
+          <Include href="NPC-PD421/素材/男变装-二阶战纹身体.xml" loadImmediate="false" itemID="661b943b-000016b4" lastModified="1763044811"/>
+          <Include href="NPC-PD421/素材/男变装-废城军装下装右大腿.xml" loadImmediate="false" itemID="683c35c6-00001e44" lastModified="1749173491"/>
+          <Include href="NPC-PD421/素材/男变装-废城军装下装左大腿.xml" loadImmediate="false" itemID="683c373f-000021ce" lastModified="1749173491"/>
+          <Include href="NPC-PD421/素材/男变装-罪袋头套.xml" loadImmediate="false" itemID="66ab74fe-000009e2" lastModified="1763044782"/>
+          <Include href="NPC-PD421/素材/屁股.xml" loadImmediate="false" itemID="6915f971-00004d25" lastModified="1763047793"/>
+          <Include href="NPC-PD421/素材/热能武士刀/热能武士刀.xml" loadImmediate="false" itemID="65b5d9ca-00000361" lastModified="1706808534"/>
+          <Include href="NPC-PD421/素材/热能武士刀/武士刀组成/刀.xml" loadImmediate="false" itemID="65b50acc-000001d6" lastModified="1711875418"/>
+          <Include href="NPC-PD421/素材/热能武士刀/武士刀组成/刀柄.xml" itemIcon="1" loadImmediate="false" itemID="65b50adf-000001dc" lastModified="1706363615"/>
+          <Include href="NPC-PD421/素材/热能武士刀/武士刀组成/刀柄光.xml" loadImmediate="false" itemID="65b5070b-000001a9" lastModified="1706362635"/>
+          <Include href="NPC-PD421/素材/热能武士刀/武士刀组成/刀上的光.xml" loadImmediate="false" itemID="65b50d41-000001ee" lastModified="1706364225"/>
+          <Include href="NPC-PD421/素材/先进防护服零件/元件 13.xml" loadImmediate="false" itemID="68542e58-000002df" lastModified="1752332949"/>
+          <Include href="NPC-PD421/素材/先进防护服零件/元件 20.xml" loadImmediate="false" itemID="68542e58-000002e1" lastModified="1752332920"/>
+          <Include href="NPC-PD421/素材/先进防护服零件/元件 21.xml" loadImmediate="false" itemID="68542e58-000002e0" lastModified="1752332905"/>
+          <Include href="NPC-PD421/素材/先进防护服零件/元件 23.xml" loadImmediate="false" itemID="6856b4cc-000003c9" lastModified="1750512844"/>
+          <Include href="NPC-PD421/素材/先进防护服零件/元件 35.xml" loadImmediate="false" itemID="6719d2ce-00000581" lastModified="1750346533"/>
+          <Include href="NPC-PD421/素材/右手.xml" loadImmediate="false" itemID="6915f69e-00004c11" lastModified="1763047119"/>
+          <Include href="NPC-PD421/素材/左手.xml" loadImmediate="false" itemID="6915f69c-00004c10" lastModified="1763047124"/>
           <Include href="NPC-Registrar/Accessories/Stocks/Mossberg Tactical Stock/Mossberg Tactical Stock.xml" itemIcon="1" loadImmediate="false" itemID="5d7bea12-00000ac1" lastModified="1568401938"/>
           <Include href="NPC-Registrar/Accessories/Stocks/Mossberg Tactical Stock/Mossberg Tactical Stock mainbody.xml" itemIcon="1" loadImmediate="false" itemID="5d7bea1d-00000ac2" lastModified="1568401949"/>
           <Include href="NPC-Registrar/Accessories/Stocks/Mossberg Tactical Stock/Mossberg Tactical Stock selector.xml" itemIcon="1" loadImmediate="false" itemID="5d7bea24-00000ac3" lastModified="1620265465"/>
@@ -285,11 +326,6 @@
           <Include href="NPC-劳埃德/素材/防具-防护手套/先进防护服手-右手.xml" loadImmediate="false" itemID="68727a1c-00000648" lastModified="1752338319"/>
           <Include href="NPC-劳埃德/素材/防具-防护手套/先进防护服手-左手.xml" loadImmediate="false" itemID="68727a19-00000647" lastModified="1752337739"/>
           <Include href="NPC-劳埃德/素材/防具-防护手套/组件/右手.xml" loadImmediate="false" itemID="6856b694-000003d9" lastModified="1750513300"/>
-          <Include href="NPC-劳埃德/素材/防具-防护手套/组件/元件 13.xml" loadImmediate="false" itemID="68542e58-000002df" lastModified="1752332949"/>
-          <Include href="NPC-劳埃德/素材/防具-防护手套/组件/元件 20.xml" loadImmediate="false" itemID="68542e58-000002e1" lastModified="1752332920"/>
-          <Include href="NPC-劳埃德/素材/防具-防护手套/组件/元件 21.xml" loadImmediate="false" itemID="68542e58-000002e0" lastModified="1752332905"/>
-          <Include href="NPC-劳埃德/素材/防具-防护手套/组件/元件 23.xml" loadImmediate="false" itemID="6856b4cc-000003c9" lastModified="1750512844"/>
-          <Include href="NPC-劳埃德/素材/防具-防护手套/组件/元件 35.xml" loadImmediate="false" itemID="6719d2ce-00000581" lastModified="1750346533"/>
           <Include href="NPC-劳埃德/素材/防具-防护手套/组件/左手.xml" loadImmediate="false" itemID="6856b6a2-000003e2" lastModified="1752332918"/>
           <Include href="NPC-劳埃德/素材/防具-兽王衣装/男变装-兽王战甲身体.xml" loadImmediate="false" itemID="668d443f-00001781" lastModified="1762531882"/>
           <Include href="NPC-劳埃德/素材/防具-兽王衣装/男变装-兽王战甲右下臂.xml" loadImmediate="false" itemID="668d442c-00001778" lastModified="1762531878"/>
@@ -1223,7 +1259,7 @@
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
           <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1762093394"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1763041105"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1763048764"/>
           <Include href="发型/Symbol 799.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000814" lastModified="1710653981"/>
           <Include href="歌留多/歌留多胯.xml" loadImmediate="false" itemID="67096725-00000045" lastModified="1728669954"/>
           <Include href="歌留多/歌留多身体.xml" loadImmediate="false" itemID="67095275-0000000f" lastModified="1728665563"/>
@@ -1305,8 +1341,6 @@
           <Include href="男变装-废城军装手套右手.xml" loadImmediate="false" itemID="683c364d-00001e48" lastModified="1749173491"/>
           <Include href="男变装-废城军装手套左手.xml" loadImmediate="false" itemID="683c3653-00001e49" lastModified="1749173491"/>
           <Include href="男变装-废城军装下装小腿.xml" loadImmediate="false" itemID="683c35d1-00001e47" lastModified="1749173491"/>
-          <Include href="男变装-废城军装下装右大腿.xml" loadImmediate="false" itemID="683c35c6-00001e44" lastModified="1749173491"/>
-          <Include href="男变装-废城军装下装左大腿.xml" loadImmediate="false" itemID="683c373f-000021ce" lastModified="1749173491"/>
           <Include href="男变装-基本脸型.xml" loadImmediate="false" itemID="668be716-0000065a" lastModified="1726470590"/>
           <Include href="头改.xml" loadImmediate="false" itemID="66f59217-0000567c" lastModified="1727369773"/>
           <Include href="拖拽动画.xml" loadImmediate="false" itemID="67aca330-0000212d" lastModified="1739367829"/>

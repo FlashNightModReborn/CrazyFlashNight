@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC-劳埃德/素材/防具-防护手套/组件/元件 20" itemID="68542e58-000002e1" lastModified="1752332920">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC-PD421/素材/先进防护服零件/元件 20" itemID="68542e58-000002e1" lastModified="1752332920">
   <timeline>
     <DOMTimeline name="元件 20">
       <layers>
@@ -91,21 +91,21 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!1363 117S6|1617 0!1617 0|1822 358!1822 358|2125 428!2125 428|2125 786!2125 786[2027 897 1850 928"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!1850 928S6|1935 1068!1935 1068|2258 1138!2258 1138|2258 1496!2258 1496|2360 1538!2360 1538|2210 1578!2210 1578|1731 1754"/>
-                    <Edge fillStyle1="4" strokeStyle="1" edges="!1731 1754S6|682 1882"/>
-                    <Edge fillStyle1="6" strokeStyle="1" edges="!682 1882S6|180 1818!180 1818|0 1768!0 1768|141 1696!141 1696|141 1339!141 1339|464 1191!464 1191|546 1037"/>
-                    <Edge fillStyle1="5" strokeStyle="1" edges="!546 1037S6|136 986!136 986|136 629!136 629|439 481!439 481|644 71!644 71|897 123"/>
-                    <Edge fillStyle1="3" strokeStyle="1" edges="!897 123S6|1339 123!1339 123|1363 117"/>
                     <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!1850 928S7|1718 710!1718 710|1513 799"/>
                     <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="!1513 799S7|1731 1754"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!1731 1754S5|2210 1578!2210 1578|2360 1538!2360 1538|2258 1496!2258 1496|2258 1138!2258 1138|1935 1068!1935 1068|1850 928"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!1363 117S6|1617 0!1617 0|1822 358!1822 358|2125 428!2125 428|2125 786!2125 786[2027 897 1850 928"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!897 123S6|1339 123!1339 123|1363 117"/>
                     <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="!893 822S7|951 833!951 833|1422 833!1422 833|1448 827"/>
                     <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="!1448 827S7|1363 117"/>
                     <Edge fillStyle0="4" fillStyle1="2" strokeStyle="1" edges="!1513 799S7|1448 827"/>
                     <Edge fillStyle0="3" fillStyle1="5" strokeStyle="1" edges="!897 123S7|893 822"/>
-                    <Edge fillStyle0="6" fillStyle1="5" strokeStyle="1" edges="!682 781S7|546 1037"/>
-                    <Edge fillStyle0="4" fillStyle1="6" strokeStyle="1" edges="!682 781S7|682 1882"/>
+                    <Edge fillStyle1="5" strokeStyle="1" edges="!546 1037S6|136 986!136 986|136 629!136 629|439 481!439 481|644 71!644 71|897 123"/>
+                    <Edge fillStyle1="6" strokeStyle="1" edges="!682 1882S6|180 1818!180 1818|0 1768!0 1768|141 1696!141 1696|141 1339!141 1339|464 1191!464 1191|546 1037"/>
                     <Edge fillStyle0="4" fillStyle1="5" strokeStyle="1" edges="!893 822S7|682 781"/>
+                    <Edge fillStyle0="4" fillStyle1="6" strokeStyle="1" edges="!682 781S7|682 1882"/>
+                    <Edge fillStyle0="4" strokeStyle="1" edges="!682 1882S5|1731 1754"/>
+                    <Edge fillStyle0="6" fillStyle1="5" strokeStyle="1" edges="!682 781S7|546 1037"/>
                   </edges>
                 </DOMShape>
               </elements>
