@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器走路" itemID="690ce360-00000724" lastModified="1762614557" lastUniqueIdentifier="18">
   <timeline>
-    <DOMTimeline name="兵器走路" currentFrame="70">
+    <DOMTimeline name="兵器走路">
       <layers>
         <DOMLayer name="图层 3" color="#FF800A" locked="true">
           <frames>
@@ -18,7 +18,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="代码" color="#9933CC" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="21" keyMode="9728">
               <Actionscript>
@@ -624,7 +624,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
             <DOMFrame index="33" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" selected="true" centerPoint3DX="238.75" centerPoint3DY="-260.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="238.75" centerPoint3DY="-260.7">
                   <matrix>
                     <Matrix a="-0.416061401367188" b="0.896697998046875" c="-0.896682739257813" d="-0.416061401367188" tx="240.9" ty="-58.8"/>
                   </matrix>
@@ -6482,7 +6482,7 @@ if(_parent.兵器动作类型=="短兵"){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 22" color="#C4EA94" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Layer 22" color="#C4EA94" locked="true">
           <frames>
             <DOMFrame index="0" duration="71" keyMode="9728">
               <elements>

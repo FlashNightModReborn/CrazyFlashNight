@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跳跃" itemID="690cd8ce-0000117e" lastModified="1762954904" lastUniqueIdentifier="678">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跳跃" itemID="690cd8ce-0000117e" lastModified="1763054212" lastUniqueIdentifier="678">
   <timeline>
-    <DOMTimeline name="兵器跳跃" currentFrame="92" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;-150&lt;/guideline&gt;&lt;guideline direction="h"&gt;-164&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="兵器跳跃" currentFrame="55" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;-150&lt;/guideline&gt;&lt;guideline direction="h"&gt;-164&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#6DA6D6">
           <frames>
@@ -36,7 +36,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="变招" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -118,7 +118,7 @@ onClipEvent (load) {
             </DOMFrame>
             <DOMFrame index="3" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -553,7 +553,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="100" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="331.95">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="331.95">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="328.4"/>
                   </matrix>
@@ -605,7 +605,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码" color="#2F84FE" autoNamed="false">
+        <DOMLayer name="代码" color="#2F84FE" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -818,7 +818,7 @@ _parent.gotoAndPlay("跳跃");
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击判定" color="#A0BEB5" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="攻击判定" color="#A0BEB5" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -3630,7 +3630,7 @@ onClipEvent(load){
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-228.5" centerPoint3DY="20.6">
                   <matrix>
-                    <Matrix a="45.2836151123047" d="26.6558380126953" tx="-30.9" ty="-222.3"/>
+                    <Matrix a="45.2836151123047" d="26.6558227539063" tx="-30.9" ty="-222.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point y="-12.5"/>
@@ -3793,7 +3793,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="104" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-83.55" centerPoint3DY="334.35">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-83.55" centerPoint3DY="334.35">
                   <matrix>
                     <Matrix a="50.4000244140625" d="27.2775268554688" tx="129.9" ty="-68.5"/>
                   </matrix>
@@ -4286,7 +4286,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="116" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-83.55" centerPoint3DY="334.35">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-83.55" centerPoint3DY="334.35">
                   <matrix>
                     <Matrix a="50.4000244140625" d="12.1893920898438" tx="129.9" ty="114.35"/>
                   </matrix>
@@ -5493,7 +5493,7 @@ onClipEvent(load){
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 1156" centerPoint3DX="375" centerPoint3DY="219">
                   <matrix>
-                    <Matrix a="1.50544738769531" d="0.935073852539063" tx="142.05" ty="272.9"/>
+                    <Matrix a="1.50543212890625" d="0.935073852539063" tx="142.05" ty="272.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="0.05" y="0.05"/>
@@ -5509,7 +5509,7 @@ onClipEvent(load){
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 1157" centerPoint3DX="388.2" centerPoint3DY="108.8">
                   <matrix>
-                    <Matrix a="1.50544738769531" b="-0.271148681640625" d="1.45156860351563" tx="142.05" ty="252.55"/>
+                    <Matrix a="1.50543212890625" b="-0.271148681640625" d="1.45156860351563" tx="142.05" ty="252.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="0.05" y="0.05"/>
@@ -5523,9 +5523,9 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="106" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 1158" selected="true" centerPoint3DX="373.8" centerPoint3DY="103.15">
+                <DOMSymbolInstance libraryItemName="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 1158" centerPoint3DX="373.8" centerPoint3DY="103.15">
                   <matrix>
-                    <Matrix a="1.50544738769531" b="-0.271148681640625" d="1.45156860351563" tx="142.05" ty="252.55"/>
+                    <Matrix a="1.50543212890625" b="-0.271148681640625" d="1.45156860351563" tx="142.05" ty="252.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="0.05" y="0.05"/>
@@ -5539,9 +5539,9 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="107" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 865" selected="true" centerPoint3DX="351.2" centerPoint3DY="98.25">
+                <DOMSymbolInstance libraryItemName="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 865" centerPoint3DX="351.2" centerPoint3DY="98.25">
                   <matrix>
-                    <Matrix a="1.50544738769531" b="-0.271148681640625" d="1.45156860351563" tx="142.05" ty="252.55"/>
+                    <Matrix a="1.50543212890625" b="-0.271148681640625" d="1.45156860351563" tx="142.05" ty="252.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="0.05" y="0.05"/>
@@ -5557,7 +5557,7 @@ onClipEvent(load){
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 868" selected="true" centerPoint3DX="337.3" centerPoint3DY="88.3">
                   <matrix>
-                    <Matrix a="1.50544738769531" b="-0.271148681640625" d="1.45156860351563" tx="142.05" ty="252.55"/>
+                    <Matrix a="1.50543212890625" b="-0.271148681640625" d="1.45156860351563" tx="142.05" ty="252.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="0.05" y="0.05"/>
@@ -5571,9 +5571,9 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="109" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 869" selected="true" centerPoint3DX="325" centerPoint3DY="96.65">
+                <DOMSymbolInstance libraryItemName="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 869" centerPoint3DX="325" centerPoint3DY="96.65">
                   <matrix>
-                    <Matrix a="1.50544738769531" b="-0.271148681640625" d="1.45156860351563" tx="142.05" ty="252.55"/>
+                    <Matrix a="1.50543212890625" b="-0.271148681640625" d="1.45156860351563" tx="142.05" ty="252.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="0.05" y="0.05"/>
@@ -15730,7 +15730,7 @@ onClipEvent(load){
                     <Matrix a="-0.389801025390625" b="0.795822143554688" c="-0.795822143554688" d="-0.389801025390625" tx="161.85" ty="-363"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="2.8" y="92.15"/>
+                    <Point x="2.8" y="92.2"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="34.3" centerPoint3DY="-72.25">
