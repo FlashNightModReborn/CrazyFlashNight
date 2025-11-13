@@ -4772,7 +4772,7 @@ Library of Ruina, Project Moon.</description>
     <type>武器</type>
     <use>刀</use>
     <actiontype>长棍</actiontype>
-    <price>1200000</price>
+    <price>1350000</price>
     <skill>
       <skillname>狼跳</skillname>
       <description>手持该武器时可以使用狼跳。</description>
@@ -4782,13 +4782,13 @@ Library of Ruina, Project Moon.</description>
     <description>尽管是仿品，但用料厚实，实战威力颇高——如果你拿得动的话。
 &lt;font color="#FF0000"&gt;“那块铁，挽着些儿就死，磕着些儿就亡，挨挨儿皮破，擦擦儿筋伤！”&lt;/font&gt;</description>
     <data>
-      <level>50</level>
+      <level>60</level>
       <weight>67.5</weight>
       <dressup>刀-如意金箍棒</dressup>
       <power>1100</power>
-      <hp>100</hp>
-      <mp>100</mp>
-      <defence>50</defence>
+      <hp>200</hp>
+      <mp>200</mp>
+      <defence>200</defence>
       <accuracy>10</accuracy>
       <evasion>10</evasion>
       <lazymiss>10</lazymiss>
@@ -4830,6 +4830,7 @@ Library of Ruina, Project Moon.</description>
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
+      <criticalhit>25</criticalhit>
     </data>
   </item>
   <item>
