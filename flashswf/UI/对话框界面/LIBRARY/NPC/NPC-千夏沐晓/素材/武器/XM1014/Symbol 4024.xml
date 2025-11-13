@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-千夏沐晓/素材/武器/XM1014/Symbol 4024" itemID="668e7c1e-00000ffe" lastModified="1762853702">
+  <timeline>
+    <DOMTimeline name="Symbol 4024">
+      <layers>
+        <DOMLayer name="Layer 1" color="#B9DB9B" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.141006469726563" d="0.123062133789063" tx="-62.15" ty="9.9"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry color="#FFFFCC" alpha="0.380392156862745" ratio="0.223529411764706"/>
+                        <GradientEntry color="#FFFFCC" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-1276 178|604 -320!604 -320[1475 219 604 744!604 744|-1276 229!-1276 229|-1276 178"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

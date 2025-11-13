@@ -55,6 +55,18 @@
           <DOMFolderItem name="NPC/NPC-冯佑权/组件/衣袍" itemID="67da6760-00003011"/>
           <DOMFolderItem name="NPC/NPC-工匠Vanshuther" itemID="68f27e82-000039f7"/>
           <DOMFolderItem name="NPC/NPC-工匠Vanshuther/素材" itemID="68f27e82-000039f8"/>
+          <DOMFolderItem name="NPC/NPC-千夏沐晓" itemID="6915ca27-00001028"/>
+          <DOMFolderItem name="NPC/NPC-千夏沐晓/素材" itemID="6915ca27-00001029"/>
+          <DOMFolderItem name="NPC/NPC-千夏沐晓/素材/散件" itemID="691574cf-000002ff"/>
+          <DOMFolderItem name="NPC/NPC-千夏沐晓/素材/武器" itemID="6915713f-000002f5"/>
+          <DOMFolderItem name="NPC/NPC-千夏沐晓/素材/武器/XM1014" itemID="69157437-000002fa"/>
+          <DOMFolderItem name="NPC/NPC-千夏沐晓/素材/武器/沙鹰战术" itemID="6912eb90-00001ab6"/>
+          <DOMFolderItem name="NPC/NPC-千夏沐晓/素材/武器/沙鹰战术/其他" itemID="6912eb90-00001abe"/>
+          <DOMFolderItem name="NPC/NPC-千夏沐晓/素材/武器/沙鹰战术/升级版沙鹰素材" itemID="6912eb90-00001ab9"/>
+          <DOMFolderItem name="NPC/NPC-千夏沐晓/素材/武器/沙鹰战术/手枪" itemID="6912eb90-00001ab7"/>
+          <DOMFolderItem name="NPC/NPC-千夏沐晓/素材/武器/阎魔刀" itemID="6915712c-000002ea"/>
+          <DOMFolderItem name="NPC/NPC-清水结衣" itemID="6915c968-00001010" isExpanded="true"/>
+          <DOMFolderItem name="NPC/NPC-清水结衣/素材" itemID="6915c968-00001011" isExpanded="true"/>
           <DOMFolderItem name="NPC/NPC-体育老师" itemID="68ee9351-000066d7"/>
           <DOMFolderItem name="NPC/NPC-体育老师/杂项" itemID="67d993db-000003db"/>
           <DOMFolderItem name="NPC/NPC-体育老师/组件" itemID="67d87d4c-00000600"/>
@@ -470,6 +482,58 @@
           <Include href="NPC/NPC-工匠Vanshuther/素材/五官.xml" loadImmediate="false" itemID="68f26bd6-00002f73" lastModified="1760725631"/>
           <Include href="NPC/NPC-工匠Vanshuther/素材/下臂右.xml" loadImmediate="false" itemID="68f270b4-000033ab" lastModified="1760719028"/>
           <Include href="NPC/NPC-工匠Vanshuther/素材/下臂左.xml" loadImmediate="false" itemID="68f270bb-000033ac" lastModified="1760719035"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/大腿.xml" itemIcon="1" loadImmediate="false" itemID="6593cfd4-00000317" lastModified="1763029902"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/大腿1.xml" itemIcon="1" loadImmediate="false" itemID="69157550-00000307" lastModified="1763013968"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/大腿2.xml" itemIcon="1" loadImmediate="false" itemID="69157553-00000308" lastModified="1763013971"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/裙子.xml" itemIcon="1" loadImmediate="false" itemID="6915750e-00000303" lastModified="1763029734"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/散件/发梢.xml" loadImmediate="false" itemID="57a20558-000000e1" lastModified="1761241461"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/散件/发梢2.xml" loadImmediate="false" itemID="57a2b707-00000029" lastModified="1761241190"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/散件/发梢3.xml" loadImmediate="false" itemID="57a2bdad-0000002b" lastModified="1762719777"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/散件/发梢4.xml" loadImmediate="false" itemID="57a2bf76-0000002d" lastModified="1761241388"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/散件/防弹衣.xml" itemIcon="1" loadImmediate="false" itemID="65941827-000001c1" lastModified="1704347090"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/散件/后发.xml" loadImmediate="false" itemID="6915b7eb-0000040e" lastModified="1763031019"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/散件/帽子.xml" loadImmediate="false" itemID="57b71c04-00003623" lastModified="1761292293"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/散件/身体.xml" itemIcon="1" loadImmediate="false" itemID="6593cf9d-00000310" lastModified="1762854114"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/散件/腰带.xml" itemIcon="1" loadImmediate="false" itemID="6594182f-000001c5" lastModified="1704204501"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/上臂.xml" itemIcon="1" loadImmediate="false" itemID="69157526-00000305" lastModified="1763029634"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/上臂2.xml" itemIcon="1" loadImmediate="false" itemID="6915b2e6-0000032b" lastModified="1763029734"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/身体.xml" itemIcon="1" loadImmediate="false" itemID="69157516-00000304" lastModified="1763013910"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/手外.xml" itemIcon="1" loadImmediate="false" itemID="6915756a-00000309" lastModified="1763029607"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/头.xml" itemIcon="1" loadImmediate="false" itemID="6915b2ad-00000327" lastModified="1763029677"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/围巾.xml" loadImmediate="false" itemID="691570dc-000002d9" lastModified="1763012828"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/武器/XM1014/Symbol 13.xml" loadImmediate="false" itemID="668e7c1e-000005bf" lastModified="1720533000"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/武器/XM1014/Symbol 4024.xml" loadImmediate="false" itemID="668e7c1e-00000ffe" lastModified="1762853702"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/武器/XM1014/Symbol 4025.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000fff" lastModified="1720533000"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/武器/XM1014/Symbol 4026.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001000" lastModified="1720533000"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/武器/XM1014/Symbol 4027.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001001" lastModified="1720533000"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/武器/XM1014/Symbol 4028.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001002" lastModified="1720533000"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/武器/沙鹰战术/其他/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005be" lastModified="1720533000"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/武器/沙鹰战术/其他/Symbol 13.xml" loadImmediate="false" itemID="6914cecc-00000454" lastModified="1762971340"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/武器/沙鹰战术/升级版沙鹰素材/沙鹰1.xml" itemIcon="1" loadImmediate="false" itemID="68f6e559-000001e6" lastModified="1762850831"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/武器/沙鹰战术/升级版沙鹰素材/沙鹰2.xml" itemIcon="1" loadImmediate="false" itemID="68f6e55d-000001e7" lastModified="1762851608"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/武器/沙鹰战术/升级版沙鹰素材/沙鹰3.xml" itemIcon="1" loadImmediate="false" itemID="68f6e57a-000001e8" lastModified="1762851777"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/武器/沙鹰战术/升级版沙鹰素材/文字.xml" itemIcon="1" loadImmediate="false" itemID="68f6e57d-000001e9" lastModified="1761011069"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/武器/沙鹰战术/手枪/元件 1.xml" itemIcon="1" loadImmediate="false" itemID="69060319-0000083f" lastModified="1762851845"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/武器/阎魔刀/刀刃.xml" loadImmediate="false" itemID="6915bfb7-0000065f" lastModified="1702204197"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/武器/阎魔刀/阎魔刀刀柄.xml" loadImmediate="false" itemID="6915bfb7-00000660" lastModified="1702203385"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/武器/阎魔刀/阎魔刀刀口.xml" loadImmediate="false" itemID="6915bfb7-00000661" lastModified="1702203837"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/武器/阎魔刀/阎魔刀决定版.xml" loadImmediate="false" itemID="691570bb-0000027e" lastModified="1763012894"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/下臂.xml" itemIcon="1" loadImmediate="false" itemID="6915752e-00000306" lastModified="1763029599"/>
+          <Include href="NPC/NPC-千夏沐晓/素材/霰弹枪&amp;武士刀.xml" itemIcon="1" loadImmediate="false" itemID="69157573-0000030a" lastModified="1763014003"/>
+          <Include href="NPC/NPC-清水结衣/素材/表情-开心.xml" loadImmediate="false" itemID="6915d75f-00001647" lastModified="1763040324"/>
+          <Include href="NPC/NPC-清水结衣/素材/表情-难过.xml" loadImmediate="false" itemID="6915d959-00001653" lastModified="1763040258"/>
+          <Include href="NPC/NPC-清水结衣/素材/后发.xml" loadImmediate="false" itemID="6914b844-0000035f" lastModified="1762965572"/>
+          <Include href="NPC/NPC-清水结衣/素材/领子.xml" loadImmediate="false" itemID="6914ccdc-0000039a" lastModified="1762970844"/>
+          <Include href="NPC/NPC-清水结衣/素材/前发&amp;头.xml" loadImmediate="false" itemID="6915c483-00000975" lastModified="1763040086"/>
+          <Include href="NPC/NPC-清水结衣/素材/裙子.xml" loadImmediate="false" itemID="6914ccf9-000003a1" lastModified="1762970873"/>
+          <Include href="NPC/NPC-清水结衣/素材/上身.xml" loadImmediate="false" itemID="6915c52c-00000a0f" lastModified="1763034412"/>
+          <Include href="NPC/NPC-清水结衣/素材/手内.xml" loadImmediate="false" itemID="6914cd39-000003ad" lastModified="1762970937"/>
+          <Include href="NPC/NPC-清水结衣/素材/手外.xml" loadImmediate="false" itemID="6914cd87-000003b9" lastModified="1762971015"/>
+          <Include href="NPC/NPC-清水结衣/素材/五官-完整.xml" loadImmediate="false" itemID="6915d74f-00001645" lastModified="1763039055"/>
+          <Include href="NPC/NPC-清水结衣/素材/右上臂.xml" loadImmediate="false" itemID="6914cd6d-000003b1" lastModified="1762970989"/>
+          <Include href="NPC/NPC-清水结衣/素材/右下臂.xml" loadImmediate="false" itemID="6914cd76-000003b5" lastModified="1762970998"/>
+          <Include href="NPC/NPC-清水结衣/素材/左上臂.xml" loadImmediate="false" itemID="6914cd24-000003a5" lastModified="1762970916"/>
+          <Include href="NPC/NPC-清水结衣/素材/左下臂.xml" loadImmediate="false" itemID="6914cd30-000003a9" lastModified="1762970928"/>
           <Include href="NPC/NPC-体育老师/黑衣散发男.xml" loadImmediate="false" itemID="67d87d45-000005e2" lastModified="1760463020"/>
           <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1_133 复制.xml" loadImmediate="false" itemID="68ee84c8-000062d0" lastModified="1760462024"/>
           <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_3_66 复制.xml" loadImmediate="false" itemID="68ee84c8-000062ce" lastModified="1760462024"/>
@@ -1159,7 +1223,7 @@
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
           <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1762093394"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1762834984"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1763041105"/>
           <Include href="发型/Symbol 799.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000814" lastModified="1710653981"/>
           <Include href="歌留多/歌留多胯.xml" loadImmediate="false" itemID="67096725-00000045" lastModified="1728669954"/>
           <Include href="歌留多/歌留多身体.xml" loadImmediate="false" itemID="67095275-0000000f" lastModified="1728665563"/>
@@ -1635,6 +1699,11 @@
                          <GradientEntry color="#663300" ratio="0"/>
                          <GradientEntry color="#3F1F00" ratio="1"/>
                     </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#2C353F" ratio="0"/>
+                         <GradientEntry color="#000066" ratio="0.968627450980392"/>
+                         <GradientEntry color="#0066CC" ratio="1"/>
+                    </LinearGradientSwatchItem>
                </swatches>
           </swatchList>
      </extendedSwatchLists>
@@ -1643,6 +1712,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1215524" publishTime="1763040385"/>
+          <PublishItem publishSize="1210899" publishTime="1763038828"/>
+          <PublishItem publishSize="1205598" publishTime="1763037537"/>
           <PublishItem publishSize="1083222" publishTime="1762834623"/>
           <PublishItem publishSize="1037760" publishTime="1762790685"/>
           <PublishItem publishSize="1037757" publishTime="1762790442"/>
@@ -1660,8 +1732,5 @@
           <PublishItem publishSize="708051" publishTime="1760466391"/>
           <PublishItem publishSize="708016" publishTime="1760466035"/>
           <PublishItem publishSize="686160" publishTime="1760360378"/>
-          <PublishItem publishSize="686097" publishTime="1760359752"/>
-          <PublishItem publishSize="686090" publishTime="1757944892"/>
-          <PublishItem publishSize="685102" publishTime="1756645812"/>
      </publishHistory>
 </DOMDocument>

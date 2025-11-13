@@ -1,0 +1,96 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-千夏沐晓/素材/霰弹枪&amp;武士刀" itemID="69157573-0000030a" symbolType="graphic" lastModified="1763014003" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="霰弹枪&amp;武士刀">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-千夏沐晓/素材/武器/XM1014/Symbol 4024" blendMode="add" centerPoint3DX="-156.85" centerPoint3DY="244.5">
+                  <matrix>
+                    <Matrix a="-0.459564208984375" b="0.3743896484375" c="0.371597290039063" d="0.496612548828125" tx="-86" ty="77.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_parent._parent._parent._parent._parent.攻击模式 == "长枪")
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <BlurFilter blurX="28" blurY="28"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-千夏沐晓/素材/武器/XM1014/Symbol 4025" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.352554321289063" b="-0.239791870117188" c="0.235519409179688" d="0.378982543945313" tx="32.8" ty="-4.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-千夏沐晓/素材/武器/XM1014/Symbol 4026" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.352554321289063" b="-0.239791870117188" c="0.235519409179688" d="0.378982543945313" tx="-2.05" ty="-7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-千夏沐晓/素材/武器/XM1014/Symbol 4027" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.352554321289063" b="-0.239791870117188" c="0.235519409179688" d="0.378982543945313" tx="16" ty="26.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-千夏沐晓/素材/武器/XM1014/Symbol 4028" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.352554321289063" b="-0.239791870117188" c="0.235519409179688" d="0.378982543945313" tx="-16.9" ty="51.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-千夏沐晓/素材/武器/XM1014/Symbol 13" name="枪口位置" centerPoint3DX="-97.4" centerPoint3DY="67.1">
+                  <matrix>
+                    <Matrix a="-0.619491577148438" b="0.421371459960938" c="0.41387939453125" d="0.665924072265625" tx="-94.9" ty="60.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 5" color="#4FFFFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-千夏沐晓/素材/武器/阎魔刀/阎魔刀决定版" centerPoint3DX="112.4" centerPoint3DY="20.4">
+                  <matrix>
+                    <Matrix a="0.241912841796875" b="-0.036041259765625" c="0.0341796875" d="0.229415893554688" tx="70.6" ty="-11.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="149.15" y="161.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
