@@ -468,7 +468,33 @@ _root.主动战技函数.长枪.调用射击发射其他弹药 = {初始化: fun
             if (自机.浮空 || 自机.倒地)
                 return false;
 
-            return ItemUtil.singleSubmit(自机.其他消耗物品, 1);
+            // 优先尝试从背包/药剂栏扣除消耗品
+            if (ItemUtil.singleSubmit(自机.其他消耗物品, 1)) {
+                return true;
+            }
+
+            // Fallback: 检查手雷装备栏是否有对应消耗品
+            // 这样可以让装备在手雷栏的战术核弹也能用于战技
+            if (_root.控制目标 === 自机._name) {
+                var 装备栏 = _root.物品栏.装备栏;
+                var grenadeItem = 装备栏.getItem("手雷");
+
+                if (grenadeItem && grenadeItem.name == 自机.其他消耗物品) {
+                    // 如果是可堆叠消耗品(有数量),就减1
+                    if (!isNaN(grenadeItem.value) && grenadeItem.value > 1) {
+                        grenadeItem.value -= 1;
+                        return true;
+                    }
+                    // 如果只有1个或是装备类型,直接移除并刷新装扮
+                    else {
+                        装备栏.remove("手雷");
+                        _root.刷新人物装扮(自机._name);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         },
         释放: function(自机) {
             // 1. 取消强制奔跑状态
