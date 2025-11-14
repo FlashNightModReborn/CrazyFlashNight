@@ -1,7 +1,7 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#999999" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" nextSceneIdentifier="2" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="3.位图相关" itemID="6690e84b-000017e9"/>
-          <DOMFolderItem name="材料相关" itemID="6690f5aa-00003203"/>
+          <DOMFolderItem name="材料相关" itemID="6690f5aa-00003203" isExpanded="true"/>
           <DOMFolderItem name="材料相关/材料元件" itemID="66e97f71-00001436"/>
           <DOMFolderItem name="技能相关" itemID="67bdcc9b-00000d7f"/>
           <DOMFolderItem name="技能相关/图标素材" itemID="669b8912-000011e2" isExpanded="true"/>
@@ -256,6 +256,7 @@
           <Include href="材料相关/图标-硫酸盐.xml" itemID="66ea5c5b-00000cf6" lastModified="1726635104"/>
           <Include href="材料相关/图标-螺丝套件.xml" itemID="66adc06b-000018d4" lastModified="1756948495"/>
           <Include href="材料相关/图标-铝粉.xml" itemID="66e9819a-00001456" lastModified="1726579530"/>
+          <Include href="材料相关/图标-脉冲式惯性阻尼器.xml" itemID="69176d7a-000019c7" lastModified="1763143207"/>
           <Include href="材料相关/图标-秘钥A.xml" itemID="66adbade-00001816" lastModified="1722661598"/>
           <Include href="材料相关/图标-秘钥B.xml" itemID="66adbadb-00001815" lastModified="1722661595"/>
           <Include href="材料相关/图标-秘钥C.xml" itemID="66adbad7-00001814" lastModified="1722661591"/>
@@ -572,7 +573,7 @@
           <Include href="食材相关/猪肉.xml" itemIcon="1" loadImmediate="false" itemID="67bdc63d-000000de" lastModified="1740490301"/>
           <Include href="食材相关/竹笋.xml" loadImmediate="false" itemID="6814918b-0000039e" lastModified="1746178443"/>
           <Include href="食材相关/柱侯酱.xml" loadImmediate="false" itemID="6814612e-000005fb" lastModified="1746166062"/>
-          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1763135026"/>
+          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1763143233"/>
           <Include href="图标-方舟碎片.xml" itemID="66adbe1b-0000187e" lastModified="1760513120"/>
           <Include href="图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="666e7c83-00000d39" lastModified="1718516867"/>
           <Include href="未命名文件夹 1/Symbol 34.xml" itemIcon="1" loadImmediate="false" itemID="664c57d7-0000029e" lastModified="1740222009"/>
