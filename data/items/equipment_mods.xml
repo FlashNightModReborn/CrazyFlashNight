@@ -263,29 +263,46 @@ skill - 赋予技能
   为装备添加主动或被动技能
   包含：skillname（技能名）、cd（冷却）、mp（消耗）等
 
-7. useSwitch - 按装备用法追加效果（条件分支机制）
+7. useSwitch - 按装备类型追加效果（条件分支机制）
   作用：让配件对不同类型的装备产生不同的效果
 
   基本结构：
-  stats节点下可包含useSwitch
-  useSwitch内包含一个或多个use分支
-  每个use分支有name属性指定装备类型
-  use分支内可使用所有运算符（percentage、multiplier、flat等）
+  <stats>
+      <percentage>...</percentage>   [基础效果：对所有装备生效]
+
+      <useSwitch>                    [条件效果：满足条件时追加]
+          <use name="装备类型1">
+              <multiplier>...</multiplier>
+              <percentage>...</percentage>
+          </use>
+          <use name="装备类型2,装备类型3">
+              <flat>...</flat>
+          </use>
+      </useSwitch>
+  </stats>
 
   语义说明：
-  - 顶层stats：对所有装备统一生效
-  - useSwitch内的分支：当装备的use匹配时，追加执行（而非替换）
+  - 顶层stats：对所有装备统一生效的基础效果
+  - useSwitch内的分支：当装备类型匹配时，追加执行（而非替换）
+  - 分支内可使用所有运算符（percentage、multiplier、flat、override、merge、cap）
 
   匹配规则：
-  - name属性支持多个use，用逗号分隔（如 "发射器,榴弹发射器"）
-  - 装备的use也可能是多值（如 "步枪,发射器"）
-  - 只要两者有交集（任意一个key相同），分支就会生效
-  - 同一配件的多个分支可以同时生效（按XML顺序累加）
+  - 分支的name与装备的use或weapontype字段进行匹配
+  - name支持多个类型，用逗号分隔（如 "发射器,榴弹发射器"）
+  - 装备的use/weapontype也可能是多值（如 use="步枪,发射器"）
+  - 只要分支name与装备use/weapontype有任一相同，分支就会生效
+  - 多个分支可以同时生效（按XML顺序累加效果）
 
-  示例用法：
-  非栓式机构对所有武器 -35% 威力（独立乘区）
-  但对发射器类武器额外再 -10% 威力
-  最终发射器装备此配件时威力为：base × 0.65 × 0.9
+  实际示例：
+  非栓式机构对所有武器 -35% 威力（percentage）
+  但对发射器类武器额外再 -10% 威力（multiplier）
+  最终发射器装备此配件时威力计算：
+    base × (1 + 强化倍率 - 0.35) × 0.9
+
+  适用场景：
+  - 让配件对特定武器类型有额外加成或惩罚
+  - 实现"专精"型配件（对某类武器效果更好）
+  - 平衡不同武器类型的配件效果
 
 
 ═══════════════════════════════════════════════════════════════════════════════
@@ -942,9 +959,7 @@ skill - 赋予技能
             <cap>
                 <capacity>3</capacity>
             </cap>
-            <!-- 新增：按 use 附加效果 -->
             <useSwitch>
-                <!-- 对发射器额外的威力惩罚 -->
                 <use name="发射器">
                     <multiplier>
                         <power>-10</power>
