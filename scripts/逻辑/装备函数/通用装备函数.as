@@ -325,7 +325,7 @@ _root.装备生命周期函数.通用刀光周期 = function(reflector, paramObj
    _root.装备生命周期函数.移除异常周期函数(reflector);
    var 自机 = reflector.自机;
 
-   if(_root.兵器使用检测(自机))
+   if(reflector.forceDraw || _root.兵器使用检测(自机))
    {
       BladeMotionTrailsRenderer.processBladeTrail(自机, 自机.刀_引用, reflector.basicStyle)
    }
