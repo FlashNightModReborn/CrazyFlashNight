@@ -5,6 +5,7 @@ import org.flashNight.gesh.tooltip.ItemUseTypes;
 import org.flashNight.gesh.tooltip.TooltipDataSelector;
 import org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer;
 import org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder;
+import org.flashNight.gesh.tooltip.builder.SlayEffectBuilder;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.component.Damage.*;
 import org.flashNight.gesh.object.ObjectUtil;
@@ -422,7 +423,13 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       var sortedList = getSortedAttrList(flat);
       for(var i = 0; i < sortedList.length; i++){
         var key = sortedList[i];
+        // 跳过 slay，使用专门的 SlayEffectBuilder 显示
+        if(key == "slay") continue;
         TooltipFormatter.statLine(result, "add", key, flat[key], null);
+      }
+      // 使用 SlayEffectBuilder 处理斩杀线属性
+      if(flat.slay){
+        SlayEffectBuilder.buildFlat(result, flat.slay);
       }
     }
     if(override){
