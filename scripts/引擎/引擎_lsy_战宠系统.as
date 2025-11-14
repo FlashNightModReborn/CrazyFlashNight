@@ -45,26 +45,47 @@ _root.战宠UI函数.计算战宠最大出战数 = function(){
 	return Math.min(Math.ceil(_root.等级 / 5), 5);
 }
 
+_root.战宠UI函数.统计当前出战数 = function(){
+	var count = 0;
+	for (var i = 0; i < _root.宠物信息.length; i++){
+		if (_root.宠物信息[i] && _root.宠物信息[i][4] == 1){
+			count++;
+		}
+	}
+	return count;
+}
+
 _root.战宠UI函数.出战按钮函数 = function(是否出战:Boolean){
 	if(_root.当前为战斗地图) return;
 	var success = false;
 	var 当前宠物信息 = _root.宠物信息[_parent.宠物信息数组号];
 	_root.最大宠物出战数 = _root.战宠UI函数.计算战宠最大出战数();
 	if (当前宠物信息[4] == 0){
-		if (_root.宠物mc库.length >= _root.最大宠物出战数){
+		// 使用标记计数而非MC库长度判断出战数
+		var 当前出战数 = _root.战宠UI函数.统计当前出战数();
+		if (当前出战数 >= _root.最大宠物出战数){
 			显示文字 = _root.获得翻译("出战数达到上限");
 			return;
 		}else if(当前宠物信息[2] <= 0){
 			_root.发布消息(_root.获得翻译("宠物体力不足，无法出战！"));
 			return;
 		}else{
-			当前宠物信息[4] = 1;
+			// 先尝试创建宠物，成功后再设置出战状态
 			var hero:MovieClip = TargetCacheManager.findHero();
+			当前宠物信息[4] = 1;
 			success = _root.战宠UI函数.设置宠物出战(_parent.宠物信息数组号,true, hero._x, hero._y);
+			// 如果创建失败，回滚状态
+			if(!success){
+				当前宠物信息[4] = 0;
+			}
 		}
 	}else if (当前宠物信息[4] == 1){
 		当前宠物信息[4] = 0;
 		success = _root.战宠UI函数.设置宠物出战(_parent.宠物信息数组号,false);
+		// 如果取消出战失败，回滚状态
+		if(!success){
+			当前宠物信息[4] = 1;
+		}
 	}
 	//现在改为加载宠物完成后刷新图标
 	if(success) _parent._parent.排列宠物图标();
@@ -146,11 +167,15 @@ _root.宠物减体力 = function(){
 }
 
 _root.删除场景宠物 = function(){
-	var _loc1_ = 0;
-	while (_loc1_ < 宠物mc库.length){
-		宠物mc库[_loc1_].removeMovieClip();
-		_loc1_ += 1;
+	// 清理所有宠物MC实例
+	for (var i = 0; i < _root.宠物mc库.length; i++){
+		if (_root.宠物mc库[i]){
+			_root.宠物mc库[i].removeMovieClip();
+		}
 	}
+	// 清空数组，确保计数归零
+	_root.宠物mc库 = [];
+	_root.出战宠物id库 = [];
 }
 
 _root.读取本地存盘战宠 = function(){
