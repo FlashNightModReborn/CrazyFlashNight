@@ -386,11 +386,36 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     var override = stats.override;
     var merge = stats.merge;  // 新增：读取merge数据
     var cap = stats.cap;
+    var multiplier = stats.multiplier;  // 新增：读取multiplier数据
     if(percentage){
       var sortedList = getSortedAttrList(percentage);
       for(var i = 0; i < sortedList.length; i++){
         var key = sortedList[i];
         TooltipFormatter.statLine(result, "multiply", key, percentage[key], null);
+      }
+    }
+    if(multiplier){
+      var sortedList = getSortedAttrList(multiplier);
+      for(var i = 0; i < sortedList.length; i++){
+        var key = sortedList[i];
+        var mValue = multiplier[key];
+        var label = TooltipConstants.PROPERTY_DICT[key];
+        if(!label) label = key;
+
+        var displayText:String;
+        if(mValue < 0) {
+          // 负数：显示为倍率（如 ×0.65）
+          var multiplierValue = 1 + mValue;  // 1 + (-0.35) = 0.65
+          var displayValue = Math.round(multiplierValue * 100) / 100;  // 保留2位小数
+          displayText = "×" + displayValue;
+        } else {
+          // 正数：显示为百分比（如 ×+15%）
+          var percentDisplay = Math.round(mValue * 100);
+          displayText = "×+" + percentDisplay + "%";
+        }
+
+        // 使用特殊颜色和符号标识独立乘区
+        result.push("<FONT COLOR='#FF6600'>", label, " ", displayText, "</FONT> <FONT COLOR='#FF9944'>[独立乘区]</FONT><BR>");
       }
     }
     if(flat){

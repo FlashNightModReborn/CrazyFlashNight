@@ -221,6 +221,16 @@ class org.flashNight.arki.item.EquipmentUtil{
                     mod._percentageNormalized = true; // 标记已归一化，防止重复处理
                 }
             }
+            // 调整multiplier区的值为小数（独立乘区百分比）
+            if(!mod._multiplierNormalized){
+                var multiplier:Object = mod.stats ? mod.stats.multiplier : null;
+                if(multiplier){
+                    for(var key:String in multiplier){
+                        multiplier[key] *= 0.01;
+                    }
+                    mod._multiplierNormalized = true; // 标记已归一化，防止重复处理
+                }
+            }
 
             list.push(name);
             dict[name] = mod;
@@ -453,6 +463,7 @@ class org.flashNight.arki.item.EquipmentUtil{
         var overrider:Object = {};
         var merger:Object = {};
         var capper:Object = {};
+        var multiplierZone:Object = {};  // 新增：独立乘区累积器
         var skill:Object = null;
 
         var operators:Object = propertyOperators;
@@ -466,10 +477,14 @@ class org.flashNight.arki.item.EquipmentUtil{
             var flatStat:Object = modInfo.stats.flat;
             var mergeStat:Object = modInfo.stats.merge;
             var capStat:Object = modInfo.stats.cap;
+            var multiplierStat:Object = modInfo.stats.multiplier;  // 新增：读取multiplier数据
 
             // 仅在DEBUG模式下执行，避免生产环境的字符串拼接开销
             if(mergeStat && DEBUG_MODE) {
                 debugLog("发现插件 '" + mods[i] + "' 含有merge数据: " + ObjectUtil.toString(mergeStat));
+            }
+            if(multiplierStat && DEBUG_MODE) {
+                debugLog("发现插件 '" + mods[i] + "' 含有multiplier数据: " + ObjectUtil.toString(multiplierStat));
             }
 
             // 应用对应的加成
@@ -478,6 +493,25 @@ class org.flashNight.arki.item.EquipmentUtil{
             if(overrideStat) operators.override(overrider, overrideStat);
             if(mergeStat) operators.merge(merger, mergeStat);
             if(capStat) operators.add(capper, capStat, 0);
+
+            // 新增：独立乘区的乘法累积
+            if(multiplierStat) {
+                for(var key:String in multiplierStat) {
+                    var p:Number = multiplierStat[key];  // 已归一化为小数
+                    if(isNaN(p)) continue;
+
+                    var factor:Number = 1 + p;  // 转换为倍率（支持负数削弱）
+
+                    // 安全保护：防止倍率过低
+                    if(factor < 0.01) factor = 0.01;
+
+                    if(!multiplierZone[key]) {
+                        multiplierZone[key] = factor;
+                    } else {
+                        multiplierZone[key] *= factor;  // 连乘
+                    }
+                }
+            }
 
             // 查找战技
             if(!skill && modInfo.skill) skill = modInfo.skill;
@@ -489,6 +523,7 @@ class org.flashNight.arki.item.EquipmentUtil{
             overrider: overrider,
             merger: merger,
             capper: capper,
+            multiplierZone: multiplierZone,  // 新增：返回独立乘区数据
             skill: skill
         };
     }
@@ -564,13 +599,22 @@ class org.flashNight.arki.item.EquipmentUtil{
         var baseData:Object = ObjectUtil.clone(data);
 
         // 按顺序应用运算符
-        // 1. 应用合并后的最终倍率
+        // 1. 应用合并后的最终倍率（percentage + 强化等级的加法合并乘区）
         operators.multiply(data, finalMultiplier);
 
-        // 2. 应用固定值加成
+        // 2. 应用独立乘区（multiplier的乘法增幅）
+        if(modifiers.multiplierZone) {
+            // Debug: 追踪multiplier执行
+            if(DEBUG_MODE) {
+                debugLog("Applying multiplier operator (独立乘区): " + ObjectUtil.toString(modifiers.multiplierZone));
+            }
+            operators.multiply(data, modifiers.multiplierZone);
+        }
+
+        // 3. 应用固定值加成
         operators.add(data, modifiers.adder, 0);
 
-        // 3. 应用覆盖值
+        // 4. 应用覆盖值
         operators.override(data, ObjectUtil.clone(modifiers.overrider));
 
         // Debug: 追踪merge执行
@@ -581,6 +625,7 @@ class org.flashNight.arki.item.EquipmentUtil{
             }
         }
 
+        // 5. 应用深度合并
         operators.merge(data, modifiers.merger);
 
         // Debug: 追踪merge结果
@@ -590,6 +635,7 @@ class org.flashNight.arki.item.EquipmentUtil{
             }
         }
 
+        // 6. 应用上限限制
         operators.applyCap(data, modifiers.capper, baseData);
     }
 
@@ -600,11 +646,12 @@ class org.flashNight.arki.item.EquipmentUtil{
     *
     * 运算顺序：
     * 1. 进阶覆盖（tier override）
-    * 2. 百分比加成（percentage multiply）
-    * 3. 固定值加成（flat add）
-    * 4. 覆盖值（override）
-    * 5. 深度合并（merge）
-    * 6. 上限过滤（cap）
+    * 2. 百分比加成（percentage multiply - 加法合并乘区）
+    * 3. 独立乘区（multiplier multiply - 乘法增幅）
+    * 4. 固定值加成（flat add）
+    * 5. 覆盖值（override）
+    * 6. 深度合并（merge）
+    * 7. 上限过滤（cap）
     *
     * @param item 装备物品对象，包含value属性（level, tier, mods等）
     * @param itemData 原始物品数据，会被直接修改

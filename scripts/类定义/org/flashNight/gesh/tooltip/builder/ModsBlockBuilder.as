@@ -54,7 +54,7 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
                 result.push(" <font color='" + TooltipConstants.COL_INFO + "'>[", modInfo.tagValue, "]</font>");
             }
 
-            // 显示配件提供的百分比增幅（汇总显示）
+            // 显示配件提供的百分比增幅（汇总显示 - percentage用圆括号）
             if (modInfo && modInfo.stats && modInfo.stats.percentage) {
                 var enhancements:Array = [];
                 var percentage:Object = modInfo.stats.percentage;
@@ -69,9 +69,39 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
                     }
                 }
 
-                // 如果有增幅，显示在配件名后
+                // 如果有增幅，显示在配件名后（圆括号表示加法合并乘区）
                 if (enhancements.length > 0) {
                     result.push(" <font color='" + TooltipConstants.COL_ENHANCE + "'>(", enhancements.join(", "), ")</font>");
+                }
+            }
+
+            // 显示配件提供的独立乘区增幅（multiplier用花括号 + 不同颜色）
+            if (modInfo && modInfo.stats && modInfo.stats.multiplier) {
+                var multiplierEnhancements:Array = [];
+                var multiplier:Object = modInfo.stats.multiplier;
+
+                // 收集所有multiplier属性
+                for (var mprop:String in multiplier) {
+                    var mValue:Number = Number(multiplier[mprop]);
+                    if (!isNaN(mValue) && mValue != 0) {
+                        var mtext:String;
+                        if (mValue < 0) {
+                            // 负数：显示为倍率（如 ×0.65）
+                            var multiplierValue:Number = 1 + mValue;  // 1 + (-0.35) = 0.65
+                            var displayValue:Number = Math.round(multiplierValue * 100) / 100;  // 保留2位小数
+                            mtext = "×" + displayValue;
+                        } else {
+                            // 正数：显示为百分比（如 ×+15%）
+                            var mpercent:Number = Math.round(mValue * 100);
+                            mtext = "×+" + mpercent + "%";
+                        }
+                        multiplierEnhancements.push(mtext);
+                    }
+                }
+
+                // 如果有增幅，显示在配件名后（花括号表示独立乘区）
+                if (multiplierEnhancements.length > 0) {
+                    result.push(" <font color='#FF6600'>{", multiplierEnhancements.join(", "), "}</font>");
                 }
             }
 
