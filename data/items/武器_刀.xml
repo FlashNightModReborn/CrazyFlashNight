@@ -3575,6 +3575,35 @@ Rnfmabj, Children of the City.</description>
       <damagetype>魔法</damagetype>
       <magictype>冷</magictype>
     </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>初期特效初始化</initRoutines>
+          <initParam>
+            <probability>7</probability>
+            <position>3</position>
+            <xOffset>0</xOffset>
+            <yOffset>0</yOffset>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>初期特效周期</cycleRoutines>
+        </cycle>
+        <bullet>
+          <bullet_0>
+            <sound />
+            <split>1</split>
+            <power>400</power>
+            <diffusion>0</diffusion>
+            <bullet>冰水晶</bullet>
+            <velocity>0</velocity>
+            <bullethit />
+            <range>200</range>
+            <impact>1</impact>
+          </bullet_0>
+        </bullet>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <name>烈焰斩</name>
