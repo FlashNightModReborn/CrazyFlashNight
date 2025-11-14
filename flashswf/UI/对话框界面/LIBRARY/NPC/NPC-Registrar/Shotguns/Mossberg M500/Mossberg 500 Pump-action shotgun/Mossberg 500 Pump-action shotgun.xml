@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun/Mossberg 500 Pump-action shotgun" itemID="5d68601c-000007bc" symbolType="graphic" lastModified="1576363199" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="Mossberg 500 Pump-action shotgun">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun/Mossberg 500 Bolt" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="20.1" ty="3.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.2" y="1.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun/Mossberg 500 Body" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix ty="2.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.35" y="10.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun/Mossberg 500 Rear iron sight" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="15.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5" y="1.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun/Mossberg 500 Front iron sight" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="82.1" ty="0.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.55" y="1.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-Registrar/Shotguns/Mossberg M500/Mossberg 500 Pump-action shotgun/Mossberg 500 Handguard" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="43.7" ty="5.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.35" y="2.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

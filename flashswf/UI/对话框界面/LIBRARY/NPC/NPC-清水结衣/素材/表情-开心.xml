@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-清水结衣/素材/表情-开心" itemID="6915d75f-00001647" lastModified="1763040324">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-清水结衣/素材/表情-开心" itemID="6915d75f-00001647" lastModified="1763121368">
   <timeline>
     <DOMTimeline name="表情-开心">
       <layers>
-        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+        <DOMLayer name="图层_1" color="#00FFFF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -38,9 +38,9 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle0="2" strokeStyle="1" edges="!3132 127[2195 -68 2080 149"/>
-                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="2" edges="!2080 149[2376 13 3132 127"/>
                     <Edge fillStyle0="1" edges="!2080 149[2484 75 3132 127"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="2" edges="!3132 127[2376 13 2080 149"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!3132 127[2195 -68 2080 149"/>
                     <Edge cubics="!2080 149(;2277,59 2628,51 3132,127q2080 149Q2376 13q3132 127);"/>
                     <Edge cubics="!3132 127(;2508,-2 2156,4 2080,149q3132 127Q2195 -68q2080 149);"/>
                     <Edge cubics="!2080 149(;2349,100 2699,92 3132,127q2080 149Q2484 75q3132 127);"/>
@@ -78,9 +78,9 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="2" edges="!917 171[808 97 609 73!609 73[596 71 583 70!583 70[396 50 136 73"/>
-                    <Edge fillStyle0="1" edges="!136 73[391 82 586 106!586 106[599 108 612 110!612 110[794 132 917 171"/>
                     <Edge fillStyle1="2" strokeStyle="1" edges="!136 73[402 30 580 35!580 35[593 35 606 36!606 36[871 47 917 171"/>
+                    <Edge fillStyle1="1" edges="!917 171[794 132 612 110!612 110[599 108 586 106!586 106[391 82 136 73"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="2" edges="!917 171[808 97 609 73!609 73[596 71 583 70!583 70[396 50 136 73"/>
                     <Edge cubics="!917 171(;846,122 746,90 609,73q917 171Q808 97q609 73);"/>
                     <Edge cubics="!606 36(;785,45 888,90 917,171q606 36Q871 47q917 171);"/>
                     <Edge cubics="!917 171(;836,146 736,125 612,110q917 171Q794 132q612 110);"/>
@@ -96,7 +96,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="口鼻" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="口鼻" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -134,49 +134,6 @@
                   <edges>
                     <Edge strokeStyle="1" edges="!1358 1314|1267 1295"/>
                     <Edge strokeStyle="2" edges="!1376 776|1267 1198"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="红晕" color="#FF800A" locked="true" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMShape isDrawingObject="true">
-                  <matrix>
-                    <Matrix a="1.6737060546875" b="0.118865966796875" c="-0.1162109375" d="0.995880126953125" tx="63.4" ty="-141.35"/>
-                  </matrix>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="0.0279541015625" d="0.0279541015625" tx="50.55" ty="190.15"/>
-                        </matrix>
-                        <GradientEntry color="#FF9999" alpha="0.298039215686275" ratio="0"/>
-                        <GradientEntry color="#FFA5A5" alpha="0.00784313725490196" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle1="1" edges="!693 3485[825 3353 1011 3353!1011 3353[1197 3353 1329 3485!1329 3485[1461 3617 1461 3803!1461 3803[1461 3989 1329 4121!1329 4121[1197 4253 1011 4253!1011 4253[825 4253 693 4121!693 4121[561 3989 561 3803!561 3803[561 3617 693 3485"/>
-                  </edges>
-                </DOMShape>
-                <DOMShape isDrawingObject="true">
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="0.0442352294921875" b="0.0030975341796875" c="-0.0030670166015625" d="0.0259857177734375" tx="31.95" ty="53.6"/>
-                        </matrix>
-                        <GradientEntry color="#FF9999" alpha="0.298039215686275" ratio="0"/>
-                        <GradientEntry color="#FFA5A5" alpha="0.00784313725490196" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle1="1" edges="!688 654[983 675 1178 812!1178 812[1372 950 1352 1123!1352 1123[1332 1295 1108 1403!1108 1403[885 1512 590 1491!590 1491[296 1471 101 1333!101 1333[-93 1195 -73 1023!-73 1023[-53 850 171 742!171 742[394 634 688 654"/>
                   </edges>
                 </DOMShape>
               </elements>
