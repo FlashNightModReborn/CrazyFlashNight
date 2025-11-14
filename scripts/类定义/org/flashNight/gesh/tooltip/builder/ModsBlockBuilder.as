@@ -13,6 +13,7 @@
  */
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.EquipmentUtil;
+import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.gesh.tooltip.TooltipFormatter;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder;
@@ -110,6 +111,126 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
                 var silenceDesc:String = SilenceEffectBuilder.getShortDescription(modInfo.override.silence);
                 if (silenceDesc != "") {
                     result.push(" <font color='" + TooltipConstants.COL_SILENCE + "'>[", silenceDesc, "]</font>");
+                }
+            }
+
+            // 显示useSwitch条件效果提示（仅显示匹配当前装备的条件）
+            if (modInfo && modInfo.stats && modInfo.stats.useSwitch && modInfo.stats.useSwitch.useCases) {
+                // 构建当前装备的类型列表
+                var currentItemTypes:Array = [];
+                if (item.use) {
+                    var useList:Array = item.use.split(",");
+                    for (var ui:Number = 0; ui < useList.length; ui++) {
+                        var trimmedUse:String = useList[ui];
+                        // 简单的trim实现
+                        while (trimmedUse.charAt(0) == " ") trimmedUse = trimmedUse.substring(1);
+                        while (trimmedUse.charAt(trimmedUse.length - 1) == " ") trimmedUse = trimmedUse.substring(0, trimmedUse.length - 1);
+                        if (trimmedUse.length > 0) currentItemTypes.push(trimmedUse);
+                    }
+                }
+                if (item.weapontype) {
+                    var wtList:Array = item.weapontype.split(",");
+                    for (var wi:Number = 0; wi < wtList.length; wi++) {
+                        var trimmedWT:String = wtList[wi];
+                        while (trimmedWT.charAt(0) == " ") trimmedWT = trimmedWT.substring(1);
+                        while (trimmedWT.charAt(trimmedWT.length - 1) == " ") trimmedWT = trimmedWT.substring(0, trimmedWT.length - 1);
+                        if (trimmedWT.length > 0) {
+                            // 避免重复
+                            var found:Boolean = false;
+                            for (var ci:Number = 0; ci < currentItemTypes.length; ci++) {
+                                if (currentItemTypes[ci] == trimmedWT) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found) currentItemTypes.push(trimmedWT);
+                        }
+                    }
+                }
+
+                var useCases:Array = modInfo.stats.useSwitch.useCases;
+                var useSwitchHints:Array = [];
+
+                for (var ucIdx:Number = 0; ucIdx < useCases.length; ucIdx++) {
+                    var useCase:Object = useCases[ucIdx];
+                    if (!useCase.name) continue;
+
+                    // 检查该分支是否匹配当前装备
+                    var branchTypes:Array = useCase.name.split(",");
+                    var matched:Boolean = false;
+                    for (var bi:Number = 0; bi < branchTypes.length && !matched; bi++) {
+                        var trimmedBranch:String = branchTypes[bi];
+                        while (trimmedBranch.charAt(0) == " ") trimmedBranch = trimmedBranch.substring(1);
+                        while (trimmedBranch.charAt(trimmedBranch.length - 1) == " ") trimmedBranch = trimmedBranch.substring(0, trimmedBranch.length - 1);
+
+                        for (var ti:Number = 0; ti < currentItemTypes.length && !matched; ti++) {
+                            if (currentItemTypes[ti] == trimmedBranch) {
+                                matched = true;
+                            }
+                        }
+                    }
+
+                    // 只显示匹配的分支效果
+                    if (!matched) continue;
+
+                    // 收集此分支的主要效果
+                    var effects:Array = [];
+
+                    // 检查multiplier效果
+                    if (useCase.multiplier) {
+                        for (var mKey:String in useCase.multiplier) {
+                            // 跳过内部字段
+                            if (ObjectUtil.isInternalKey(mKey)) continue;
+
+                            var mVal:Number = Number(useCase.multiplier[mKey]);
+                            if (!isNaN(mVal) && mVal != 0) {
+                                var displayText:String;
+                                if (mVal < 0) {
+                                    // 负数：显示为倍率
+                                    var multValue:Number = 1 + mVal;
+                                    var dispValue:Number = Math.round(multValue * 100) / 100;
+                                    displayText = "[独立乘区]×" + dispValue;
+                                } else {
+                                    // 正数：显示为百分比
+                                    var mPercent:Number = Math.round(mVal * 100);
+                                    displayText = "[独立乘区]×+" + mPercent + "%";
+                                }
+                                effects.push(displayText);
+                                break; // 只显示第一个效果，避免信息过多
+                            }
+                        }
+                    }
+
+                    // 检查percentage效果（如果没有multiplier效果）
+                    if (effects.length == 0 && useCase.percentage) {
+                        for (var pKey:String in useCase.percentage) {
+                            // 跳过内部字段
+                            if (ObjectUtil.isInternalKey(pKey)) continue;
+
+                            var pVal:Number = Number(useCase.percentage[pKey]);
+                            if (!isNaN(pVal) && pVal != 0) {
+                                var pPercent:Number = Math.round(pVal * 100);
+                                var sign:String = pPercent > 0 ? "+" : "";
+                                effects.push(pKey + sign + pPercent + "%");
+                                break; // 只显示第一个效果
+                            }
+                        }
+                    }
+
+                    if (effects.length > 0) {
+                        // 简化use名称显示
+                        var useName:String = useCase.name;
+                        if (useName.indexOf(",") != -1) {
+                            // 如果有多个use，只显示第一个加"等"
+                            var firstUse:String = useName.substring(0, useName.indexOf(","));
+                            useName = firstUse + "等";
+                        }
+                        useSwitchHints.push("对" + useName + ":" + effects.join(","));
+                    }
+                }
+
+                if (useSwitchHints.length > 0) {
+                    result.push(" <font color='#FFCC66'>[", useSwitchHints.join("; "), "]</font>");
                 }
             }
 

@@ -1,4 +1,5 @@
 ﻿import org.flashNight.gesh.object.ObjectUtil;
+import org.flashNight.gesh.string.*;
 import org.flashNight.arki.item.*;
 // import org.flashNight.arki.item.itemCollection.*;
 
@@ -232,6 +233,44 @@ class org.flashNight.arki.item.EquipmentUtil{
                 }
             }
 
+            // 处理useSwitch中的百分比归一化
+            if(!mod._useSwitchNormalized && mod.stats && mod.stats.useSwitch){
+                var useSwitch:Object = mod.stats.useSwitch;
+
+                // 将useSwitch.use统一转换为数组
+                var useCases:Array;
+                if(useSwitch.use instanceof Array){
+                    useCases = useSwitch.use;
+                }else if(useSwitch.use){
+                    useCases = [useSwitch.use];
+                }else{
+                    useCases = [];
+                }
+
+                // 对每个use分支进行归一化
+                for(var ucIndex:Number = 0; ucIndex < useCases.length; ucIndex++){
+                    var useCase:Object = useCases[ucIndex];
+
+                    // 归一化percentage字段
+                    if(useCase.percentage){
+                        for(var pKey:String in useCase.percentage){
+                            useCase.percentage[pKey] *= 0.01;
+                        }
+                    }
+
+                    // 归一化multiplier字段
+                    if(useCase.multiplier){
+                        for(var mKey:String in useCase.multiplier){
+                            useCase.multiplier[mKey] *= 0.01;
+                        }
+                    }
+                }
+
+                // 保存处理后的数组形式
+                useSwitch.useCases = useCases;
+                mod._useSwitchNormalized = true;
+            }
+
             list.push(name);
             dict[name] = mod;
         }
@@ -455,9 +494,12 @@ class org.flashNight.arki.item.EquipmentUtil{
 
     /**
     * 累积配件的各种修改器
+    * @param mods 配件名称数组
+    * @param itemUse 装备的use属性（可能是逗号分隔的字符串）
+    * @param itemWeaponType 装备的weapontype属性（武器子类）
     * @private
     */
-    private static function accumulateModifiers(mods:Array):Object {
+    private static function accumulateModifiers(mods:Array, itemUse:String, itemWeaponType:String):Object {
         var adder:Object = {};
         var multiplier:Object = {};
         var overrider:Object = {};
@@ -468,24 +510,51 @@ class org.flashNight.arki.item.EquipmentUtil{
 
         var operators:Object = propertyOperators;
 
-        for(var i:Number = 0; i < mods.length; i++){
-            var modInfo:Object = modDict[mods[i]];
-            if(!modInfo) continue;
+        // 解析装备的use和weapontype列表（合并到一个列表中）
+        var itemUseList:Array = [];
 
-            var overrideStat:Object = modInfo.stats.override;
-            var percentageStat:Object = modInfo.stats.percentage;
-            var flatStat:Object = modInfo.stats.flat;
-            var mergeStat:Object = modInfo.stats.merge;
-            var capStat:Object = modInfo.stats.cap;
-            var multiplierStat:Object = modInfo.stats.multiplier;  // 新增：读取multiplier数据
+        // 添加use
+        if(itemUse) {
+            var tempUseList:Array = itemUse.split(",");
+            for(var ui:Number = 0; ui < tempUseList.length; ui++) {
+                var trimmedUse:String = StringUtils.trim(tempUseList[ui]);
+                if(trimmedUse.length > 0) {
+                    itemUseList.push(trimmedUse);
+                }
+            }
+        }
 
-            // 仅在DEBUG模式下执行，避免生产环境的字符串拼接开销
-            if(mergeStat && DEBUG_MODE) {
-                debugLog("发现插件 '" + mods[i] + "' 含有merge数据: " + ObjectUtil.toString(mergeStat));
+        // 添加weapontype（武器子类也参与匹配）
+        if(itemWeaponType) {
+            var tempWeaponList:Array = itemWeaponType.split(",");
+            for(var wi:Number = 0; wi < tempWeaponList.length; wi++) {
+                var trimmedWeapon:String = StringUtils.trim(tempWeaponList[wi]);
+                if(trimmedWeapon.length > 0) {
+                    // 避免重复添加
+                    var found:Boolean = false;
+                    for(var ci:Number = 0; ci < itemUseList.length; ci++) {
+                        if(itemUseList[ci] == trimmedWeapon) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if(!found) {
+                        itemUseList.push(trimmedWeapon);
+                    }
+                }
             }
-            if(multiplierStat && DEBUG_MODE) {
-                debugLog("发现插件 '" + mods[i] + "' 含有multiplier数据: " + ObjectUtil.toString(multiplierStat));
-            }
+        }
+
+        // 内部helper函数：应用一个stats块
+        var applyStats:Function = function(stats:Object):Void {
+            if(!stats) return;
+
+            var overrideStat:Object = stats.override;
+            var percentageStat:Object = stats.percentage;
+            var flatStat:Object = stats.flat;
+            var mergeStat:Object = stats.merge;
+            var capStat:Object = stats.cap;
+            var multiplierStat:Object = stats.multiplier;
 
             // 应用对应的加成
             if(flatStat) operators.add(adder, flatStat, 0);
@@ -494,7 +563,7 @@ class org.flashNight.arki.item.EquipmentUtil{
             if(mergeStat) operators.merge(merger, mergeStat);
             if(capStat) operators.add(capper, capStat, 0);
 
-            // 新增：独立乘区的乘法累积
+            // 独立乘区的乘法累积
             if(multiplierStat) {
                 for(var key:String in multiplierStat) {
                     var p:Number = multiplierStat[key];  // 已归一化为小数
@@ -512,9 +581,97 @@ class org.flashNight.arki.item.EquipmentUtil{
                     }
                 }
             }
+        };
+
+        for(var i:Number = 0; i < mods.length; i++){
+            var modInfo:Object = modDict[mods[i]];
+            if(!modInfo) continue;
+
+            // 仅在DEBUG模式下执行，避免生产环境的字符串拼接开销
+            if(modInfo.stats.merge && DEBUG_MODE) {
+                debugLog("发现插件 '" + mods[i] + "' 含有merge数据: " + ObjectUtil.toString(modInfo.stats.merge));
+            }
+            if(modInfo.stats.multiplier && DEBUG_MODE) {
+                debugLog("发现插件 '" + mods[i] + "' 含有multiplier数据: " + ObjectUtil.toString(modInfo.stats.multiplier));
+            }
+
+            // 应用顶层stats
+            applyStats(modInfo.stats);
+
+            // 处理useSwitch条件分支
+            if(modInfo.stats && modInfo.stats.useSwitch && modInfo.stats.useSwitch.useCases) {
+                if(DEBUG_MODE) {
+                    debugLog("检查插件 '" + mods[i] + "' 的useSwitch");
+                    debugLog("  装备use='" + itemUse + "'，weapontype='" + itemWeaponType + "'");
+                    debugLog("  合并后的itemUseList=" + itemUseList.join(",") + " (长度=" + itemUseList.length + ")");
+                }
+
+                if(itemUseList.length > 0) {
+                    var useCases:Array = modInfo.stats.useSwitch.useCases;
+
+                    if(DEBUG_MODE) {
+                        debugLog("  找到 " + useCases.length + " 个useSwitch分支");
+                    }
+
+                    for(var ucIdx:Number = 0; ucIdx < useCases.length; ucIdx++) {
+                        var useCase:Object = useCases[ucIdx];
+                        if(!useCase.name) continue;
+
+                        // 解析分支的use列表
+                        var branchUseList:Array = [];
+                        var tempBranchList:Array = useCase.name.split(",");
+                        for(var bi:Number = 0; bi < tempBranchList.length; bi++) {
+                            var trimmedBranch:String = StringUtils.trim(tempBranchList[bi]);
+                            if(trimmedBranch.length > 0) {
+                                branchUseList.push(trimmedBranch);
+                            }
+                        }
+
+                        if(DEBUG_MODE) {
+                            debugLog("  分支 " + ucIdx + " name='" + useCase.name + "'，branchUseList=" + branchUseList.join(","));
+                        }
+
+                        // 检查是否有交集（匹配）
+                        var matched:Boolean = false;
+                        for(var a:Number = 0; a < itemUseList.length && !matched; a++) {
+                            for(var b:Number = 0; b < branchUseList.length && !matched; b++) {
+                                if(DEBUG_MODE) {
+                                    debugLog("    比较: '" + itemUseList[a] + "' vs '" + branchUseList[b] + "'");
+                                }
+                                if(itemUseList[a] == branchUseList[b]) {
+                                    matched = true;
+                                }
+                            }
+                        }
+
+                        // 如果匹配，应用该分支的stats
+                        if(matched) {
+                            if(DEBUG_MODE) {
+                                debugLog("  ✓ 分支匹配！应用useSwitch效果");
+                                if(useCase.multiplier) {
+                                    debugLog("    multiplier效果: " + ObjectUtil.toString(useCase.multiplier));
+                                }
+                            }
+                            applyStats(useCase);
+                        } else {
+                            if(DEBUG_MODE) {
+                                debugLog("  ✗ 分支不匹配");
+                            }
+                        }
+                    }
+                } else {
+                    if(DEBUG_MODE) {
+                        debugLog("  装备没有use属性，跳过useSwitch");
+                    }
+                }
+            }
 
             // 查找战技
             if(!skill && modInfo.skill) skill = modInfo.skill;
+        }
+
+        if(DEBUG_MODE && multiplierZone.power) {
+            debugLog("最终累积的独立乘区power倍率: " + multiplierZone.power);
         }
 
         return {
@@ -670,8 +827,10 @@ class org.flashNight.arki.item.EquipmentUtil{
         // Step 2: 构建基础强化倍率
         var baseMultiplier:Object = buildBaseMultiplier(level);
 
-        // Step 3: 累积配件修改器
-        var modifiers:Object = accumulateModifiers(value.mods);
+        // Step 3: 累积配件修改器（传入装备的use和weapontype信息）
+        var itemUse:String = itemData.use || "";
+        var itemWeaponType:String = itemData.weapontype || "";
+        var modifiers:Object = accumulateModifiers(value.mods, itemUse, itemWeaponType);
 
         // Step 4: 按顺序应用所有运算符
         applyOperatorsInOrder(data, baseMultiplier, modifiers);
