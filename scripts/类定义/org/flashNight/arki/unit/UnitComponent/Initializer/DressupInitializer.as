@@ -533,6 +533,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         // 装载生命周期函数
         updateLifeCycles(target);
 
-        if(target._name === _root.控制目标) _root.玩家信息界面.刷新攻击模式();
+        if(target._name === _root.控制目标) _root.玩家信息界面.刷新攻击模式(target.攻击模式);
     }
 }
