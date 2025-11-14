@@ -70,19 +70,18 @@ _root.战宠UI函数.出战按钮函数 = function(是否出战:Boolean){
 			_root.发布消息(_root.获得翻译("宠物体力不足，无法出战！"));
 			return;
 		}else{
-			// 先尝试创建宠物，成功后再设置出战状态
+			// 设置出战状态并尝试创建宠物，失败则回滚
 			var hero:MovieClip = TargetCacheManager.findHero();
 			当前宠物信息[4] = 1;
 			success = _root.战宠UI函数.设置宠物出战(_parent.宠物信息数组号,true, hero._x, hero._y);
-			// 如果创建失败，回滚状态
 			if(!success){
 				当前宠物信息[4] = 0;
 			}
 		}
 	}else if (当前宠物信息[4] == 1){
+		// 取消出战状态并移除宠物，失败则回滚
 		当前宠物信息[4] = 0;
 		success = _root.战宠UI函数.设置宠物出战(_parent.宠物信息数组号,false);
-		// 如果取消出战失败，回滚状态
 		if(!success){
 			当前宠物信息[4] = 1;
 		}
