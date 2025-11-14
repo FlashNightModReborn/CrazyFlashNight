@@ -897,13 +897,13 @@ skill - 赋予技能
             <override>
                 <sound>null</sound>
                 <muzzle>null</muzzle>
-                <silence>90%</silence>
+                <silence>300</silence>
             </override>
             <flat>
                 <slay>8</slay>
             </flat>
         </stats>
-        <description>消除枪械的射击声音和枪火，并为子弹附加斩杀效果。</description>
+        <description>一定距离内消除枪械的射击声音和枪火，并为子弹附加斩杀效果。</description>
     </mod>
     <mod>
         <name>镭射瞄准具</name>
