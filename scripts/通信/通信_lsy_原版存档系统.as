@@ -82,7 +82,16 @@ _root.存档系统.mydata数据组包 = function(){
     var 任务储存数据 = _root.主线任务进度;
     // var 仓库储存数据 = _root.仓库栏;
     var 健身储存数据 = [_root.全局健身HP加成, _root.全局健身MP加成, _root.全局健身空攻加成, _root.全局健身防御加成, _root.全局健身内力加成];
-    var 其他存储数据 = {设置:_root.存档系统.存储设置()};
+
+    // 确保击杀统计已初始化
+    if (_root.killStats == null) {
+        _root.killStats = { total:0, byType:{} };
+    }
+
+    var 其他存储数据 = {
+        设置:_root.存档系统.存储设置(),
+        击杀统计:_root.killStats
+    };
 
      // 获取当前时间并格式化为字符串
     var now:Date = new Date();
@@ -327,6 +336,15 @@ _root.读取存盘 = function(){
         if(_root.mydata.others.设置){
             _root.存档系统.读取设置(_root.mydata.others.设置);
         }
+        // 读取击杀统计
+        if(_root.mydata.others.击杀统计){
+            _root.killStats = _root.mydata.others.击杀统计;
+        } else {
+            _root.killStats = { total:0, byType:{} };
+        }
+    } else {
+        // 兼容旧存档
+        _root.killStats = { total:0, byType:{} };
     }
     _root.主线任务进度 = Math.floor(Number(任务储存数据));
     _root.LoadPCTasks();
@@ -387,6 +405,8 @@ _root.新建角色 = function(){
     _root.全局健身防御加成 = 0;
     // 基建
     _root.基建系统.infrastructure = {};
+    // 初始化击杀统计
+    _root.killStats = { total:0, byType:{} };
     //
     _root.soundEffectManager.stopBGM();
     // _root.淡出动画.淡出跳转帧("教学关卡");
@@ -421,6 +441,8 @@ _root.删除存盘 = function(){
     _root.收集品栏 = _root.存档系统.初始化收集品栏();
     _root.同伴数据 = [];
     _root.同伴数 = 0;
+    // 清理击杀统计
+    _root.killStats = { total:0, byType:{} };
 }
 
 _root.存盘名 = "test";

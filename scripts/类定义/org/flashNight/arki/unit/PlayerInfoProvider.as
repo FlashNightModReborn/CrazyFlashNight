@@ -492,21 +492,25 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
     // ========================================
 
     /**
-     * 获得身高
+     * 获得身高体重（合并显示）
      * @param unit 目标单位
-     * @return String 身高字符串（如 "175cm"）
+     * @return String 身高体重字符串（如 "175cm/70kg"）
      */
-    public static function getHeight(unit:MovieClip):String {
-        return _root.身高 + "cm";
+    public static function getHeightAndWeight(unit:MovieClip):String {
+        return _root.身高 + "cm/" + unit.体重 + "kg";
     }
 
     /**
-     * 获得体重
-     * @param unit 目标单位
-     * @return String 体重字符串（如 "70kg"）
+     * 获得杀敌数
+     * @param unit 目标单位（暂未使用，为未来扩展预留）
+     * @return String 总杀敌数字符串
      */
-    public static function getWeight(unit:MovieClip):String {
-        return unit.体重 + "kg";
+    public static function getKillCount(unit:MovieClip):String {
+        // 从全局击杀统计获取总数
+        if (_root.killStats && _root.killStats.total != undefined) {
+            return String(_root.killStats.total);
+        }
+        return "0";
     }
 
     /**
@@ -567,8 +571,8 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
         var heroUnit:MovieClip = TargetCacheManager.findHero();
 
         // ========== 基础信息 ==========
-        target.身高 = getHeight(heroUnit);
-        target.体重 = getWeight(heroUnit);
+        target.身高体重 = getHeightAndWeight(heroUnit);
+        target.杀敌数 = getKillCount(heroUnit);
         target.称号 = getTitle(heroUnit);
         target.经验值 = getExperience();
 

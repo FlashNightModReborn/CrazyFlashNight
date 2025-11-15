@@ -128,4 +128,35 @@ class org.flashNight.arki.unit.UnitUtil {
         // 这样处理是因为中立单位死亡后也应该计算经验值
         return true;
     }
+
+    /**
+     * 获取单位的类型标识键（用于统计、图鉴等系统）
+     * 按优先级尝试不同字段，确保获得有意义的标识
+     * @param unit 目标单位对象
+     * @return String 单位类型标识，永不返回null
+     */
+    public static function getUnitTypeKey(unit:MovieClip):String {
+        if (!unit) {
+            return "未知单位";
+        }
+
+        // 优先级1：兵种字段（最准确的类型标识）
+        if (unit.兵种 != undefined && unit.兵种 != "") {
+            return String(unit.兵种);
+        }
+
+        // 优先级2：兵种名（WaveSpawner/StageInfo中使用）
+        if (unit.兵种名 != undefined && unit.兵种名 != "") {
+            return String(unit.兵种名);
+        }
+
+        // 优先级3：名字字段（备用标识）
+        if (unit.名字 != undefined && unit.名字 != "") {
+            return String(unit.名字);
+        }
+
+        // 优先级4：实例名（最后的退化方案）
+        // 注意：实例名可能包含数字后缀如"僵尸123"
+        return String(unit._name);
+    }
 }
