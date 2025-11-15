@@ -611,6 +611,33 @@ skill - 赋予技能
         <tag>枪管</tag>
     </mod>
     <mod>
+        <name>霰弹枪口收束器</name>
+        <use>长枪,手枪</use>
+        <weapontype>霰弹枪</weapontype>
+        <tag>枪口</tag>
+        <stats>
+            <percentage>
+                <diffusion>-50</diffusion>
+                <velocity>15</velocity>
+            </percentage>
+        </stats>
+        <description>动态收束装置，大幅降低霰弹扩散并提升弹速。</description>
+    </mod>
+    <mod>
+        <name>脉冲式惯性阻尼器</name>
+        <use>长枪,手枪</use>
+        <tag>枪口</tag>
+        <stats>
+            <override>
+                <sound>null</sound>
+                <muzzle>null</muzzle>
+                <silence>90%</silence>
+                <slay>5</slay>
+            </override>
+        </stats>
+        <description>消除枪口火光与射击声，大幅降低被敌人察觉的风险。附加收割残血敌人的能力。</description>
+    </mod>
+    <mod>
         <name>复合式军用塑料</name>
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
         <stats>
@@ -901,7 +928,7 @@ skill - 赋予技能
                 <slay>8</slay>
             </override>
         </stats>
-        <description>一定距离内消除枪械的射击声音和枪火，并为子弹附加斩杀效果。</description>
+        <description>消除枪口火光与射击声，远距离狙击不惊动目标。强化收割残血敌人的能力。</description>
     </mod>
     <mod>
         <name>镭射瞄准具</name>
@@ -967,19 +994,6 @@ skill - 赋予技能
         </stats>
         <description>跨平台循环转换模块，提升弹容但降低单发威力。对发射器类武器威力惩罚更为严重。对点射武器增益作用于射击轮数，适合狙击武器与发射器。</description>
         <tag>枪机</tag>
-    </mod>
-    <mod>
-        <name>霰弹枪口收束器</name>
-        <use>长枪,手枪</use>
-        <weapontype>霰弹枪</weapontype>
-        <tag>枪口</tag>
-        <stats>
-            <percentage>
-                <diffusion>-50</diffusion>
-                <velocity>15</velocity>
-            </percentage>
-        </stats>
-        <description>动态收束装置，大幅降低霰弹扩散并提升弹速。</description>
     </mod>
     <mod>
         <name>纳米执行单元</name>
