@@ -56,7 +56,7 @@ class org.flashNight.arki.component.Damage.ExecuteDamageHandle extends BaseDamag
 
     /**
      * 处理斩杀伤害。
-     * - 如果目标的当前血量低于斩杀阈值（目标满血值 * 斩杀比例 / 100），则将其血量降为 0，并增加相应的损伤值。
+     * - 如果目标扣血后的剩余血量低于斩杀阈值（目标满血值 * 斩杀比例 / 100），则将其血量降为 0，并增加相应的损伤值。
      * - 根据子弹的敌我属性值设置不同的斩杀效果颜色。
      *
      * @param bullet  子弹对象
@@ -69,10 +69,16 @@ class org.flashNight.arki.component.Damage.ExecuteDamageHandle extends BaseDamag
         // 计算斩杀阈值
         var executeThreshold:Number = target.hp满血值 * bullet.斩杀 / 100;
 
-        // 如果目标的当前血量低于斩杀阈值，则执行斩杀
-        if (target.hp < executeThreshold) {
-            target.损伤值 += target.hp; // 增加损伤值
-            target.hp = 0;              // 将目标血量降为 0
+        // 计算扣血后的剩余血量
+        var remainingHp:Number = target.hp - target.损伤值;
+
+        // 如果扣血后的剩余血量低于斩杀阈值，则执行斩杀
+        if (remainingHp < executeThreshold) {
+            // 如果剩余血量大于0，则将其也计入损伤值；否则保持当前损伤值不变
+            if (remainingHp > 0) {
+                target.损伤值 += remainingHp;
+            }
+            target.hp = 0; // 将目标血量降为 0（防止护盾等机制干扰）
 
             // 根据子弹的敌我属性值设置斩杀效果颜色
             var executeColor:String = bullet.是否为敌人 ? '#660033' : '#4A0099';
