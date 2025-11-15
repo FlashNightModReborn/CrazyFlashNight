@@ -1,4 +1,4 @@
-﻿
+﻿import org.flashNight.arki.unit.*;
 _root.长枪配置 = function(目标, 长枪名, 强化等级){
 	var 人物 = _root.gameworld[目标];
 	人物.长枪 = 长枪名;
@@ -42,7 +42,7 @@ _root.刀配置 = function(目标, 刀名, 强化等级){
 };
 
 _root.军牌配置 = function(目标, 军牌名){
-	var 称号文本 = _root.获得翻译("菜鸟");
+	var 称号文本 = HeroUtil.getTranslatedHeroTitle();
 	var 人物 = _root.gameworld[目标];
 	if (军牌名 != ""){
 		称号文本 = _root.根据物品名查找属性(军牌名, 14)[0];

@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.component.StatHandler.DodgeHandler;
+import org.flashNight.arki.unit.HeroUtil;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
     
@@ -98,7 +99,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         var target:MovieClip = __target;
 
         // 军牌
-        var 称号文本 = target.颈部装备数据.data.title ? target.颈部装备数据.data.title : "菜鸟";
+        var 称号文本 = target.颈部装备数据.data.title ? target.颈部装备数据.data.title : HeroUtil.getHeroTitle();
         target.称号 = 称号文本;
         if (target._name == _root.控制目标) {
             _root.玩家称号 = target.称号;
