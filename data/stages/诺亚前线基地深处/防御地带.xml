@@ -732,6 +732,12 @@
                 <Text>我们走。</Text>
             </Dialogue>
         </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>钩子</Parameter>
+            <Message>重要单位死亡！</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -786,8 +792,9 @@
                         <Type>兵种360</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
-                        <Level>40</Level>
+                        <Level>50</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <InstanceName>钩子</InstanceName>
                         <Parameters>
                             <魔法抗性>
                                 <电子体>0</电子体>
