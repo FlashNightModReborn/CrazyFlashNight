@@ -440,7 +440,13 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         if(key == "damagetype" || key == "magictype") continue;
         // 跳过 silence，使用专门的 SilenceEffectBuilder 显示
         if(key == "silence") continue;
+        // 跳过 slay，使用专门的 SlayEffectBuilder 显示
+        if(key == "slay") continue;
         TooltipFormatter.statLine(result, "override", key, override[key], null);
+      }
+      // 使用 SlayEffectBuilder 处理斩杀线属性
+      if(override.slay){
+        SlayEffectBuilder.buildOverride(result, override.slay);
       }
     }
     if(merge){

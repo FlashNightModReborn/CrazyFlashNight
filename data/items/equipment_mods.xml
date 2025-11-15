@@ -898,10 +898,8 @@ skill - 赋予技能
                 <sound>null</sound>
                 <muzzle>null</muzzle>
                 <silence>300</silence>
-            </override>
-            <flat>
                 <slay>8</slay>
-            </flat>
+            </override>
         </stats>
         <description>一定距离内消除枪械的射击声音和枪火，并为子弹附加斩杀效果。</description>
     </mod>

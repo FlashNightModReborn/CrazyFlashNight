@@ -48,6 +48,31 @@ class org.flashNight.gesh.tooltip.builder.SlayEffectBuilder {
     }
 
     /**
+     * 构建斩杀线显示（用于配件的 override 属性）
+     *
+     * 显示格式：斩杀线 -> 8%血量
+     *
+     * @param result:Array 输出缓冲区（就地修改）
+     * @param slayValue:Number 斩杀线数值
+     * @return Void（直接修改 result）
+     */
+    public static function buildOverride(result:Array, slayValue:Number):Void {
+        if (slayValue == null || slayValue == undefined) {
+            return;
+        }
+
+        var n:Number = Number(slayValue);
+        if (isNaN(n)) {
+            return;
+        }
+
+        var label:String = TooltipConstants.PROPERTY_DICT["slay"];
+        if (!label) label = "斩杀线";
+
+        result.push(label, " -> ", n, TooltipConstants.SUF_BLOOD, "<BR>");
+    }
+
+    /**
      * 获取斩杀效果的简短描述（用于配件列表等简略显示场景）
      *
      * @param slayValue:Number 斩杀值
