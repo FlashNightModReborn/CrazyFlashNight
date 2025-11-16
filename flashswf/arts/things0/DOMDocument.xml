@@ -623,9 +623,6 @@
           <Include href="sprite/Symbol 119.xml" loadImmediate="false" itemID="6577b699-000009a4" lastModified="1715956977"/>
           <Include href="sprite/Symbol 120.xml" loadImmediate="false" itemID="6577b699-000009a5" lastModified="1757947362"/>
           <Include href="sprite/Symbol 121.xml" loadImmediate="false" itemID="6577b699-000009a6" lastModified="1722447121"/>
-          <Include href="sprite/Symbol 124.xml" loadImmediate="false" itemID="6577b699-000009a8" lastModified="1750536735"/>
-          <Include href="sprite/Symbol 129.xml" loadImmediate="false" itemID="6577b699-000009ad" lastModified="1760619231"/>
-          <Include href="sprite/Symbol 130.xml" loadImmediate="false" itemID="6577b699-000009ae" lastModified="1750535869"/>
           <Include href="sprite/Symbol 131.xml" loadImmediate="false" itemID="6577b699-000009af" lastModified="1725366840"/>
           <Include href="sprite/Symbol 134.xml" loadImmediate="false" itemID="6577b699-000009b1" lastModified="1702343951"/>
           <Include href="sprite/Symbol 135.xml" loadImmediate="false" itemID="6577b699-000009b2" lastModified="1736866247"/>
@@ -1015,10 +1012,10 @@
           <Include href="sprite/Symbol 2019.xml" loadImmediate="false" itemID="6577efbc-0000080c" lastModified="1706255914"/>
           <Include href="sprite/被击飞击倒.xml" loadImmediate="false" itemID="690f5883-00001c3b" lastModified="1763281875"/>
           <Include href="sprite/兵器待机.xml" loadImmediate="false" itemID="690df7b1-00000ba7" lastModified="1762600515"/>
-          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1763302694"/>
-          <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1763281948"/>
-          <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1763302015"/>
-          <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1763302681"/>
+          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1763303073"/>
+          <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1763303899"/>
+          <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1763304103"/>
+          <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1763303303"/>
           <Include href="sprite/兵器跳跃旧动作备份.xml" loadImmediate="false" itemID="690cd8d3-0000117f" lastModified="1762449619"/>
           <Include href="sprite/兵器走路.xml" loadImmediate="false" itemID="690ce360-00000724" lastModified="1763283029"/>
           <Include href="sprite/兵器走路旧版备份.xml" loadImmediate="false" itemID="690ce373-00000766" lastModified="1762513186"/>
@@ -1035,6 +1032,9 @@
           <Include href="sprite/觉醒霸体特效.xml" itemID="668be723-0000065d" lastModified="1756118920"/>
           <Include href="sprite/觉醒霸体特效原先.xml" itemID="66c19f0e-000017fb" lastModified="1723965222"/>
           <Include href="sprite/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1757948662"/>
+          <Include href="sprite/空手攻击.xml" loadImmediate="false" itemID="6919dfac-00001066" lastModified="1763303468"/>
+          <Include href="sprite/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1763304299"/>
+          <Include href="sprite/空手跳.xml" loadImmediate="false" itemID="6919df9d-00001065" lastModified="1763303729"/>
           <Include href="sprite/落地特效-闪光.xml" loadImmediate="false" itemID="663ba576-00000122" lastModified="1715185258"/>
           <Include href="sprite/木偶-主角-男.xml" itemID="668be718-0000065b" lastModified="1720445240"/>
           <Include href="sprite/男变装-基本脸型.xml" itemID="668be716-0000065a" lastModified="1729259751"/>
@@ -1456,7 +1456,7 @@
                                                   <Point x="-97.6" y="37.8"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 129" centerPoint3DX="-34.55" centerPoint3DY="174.9">
+                                        <DOMSymbolInstance libraryItemName="sprite/空手攻击" centerPoint3DX="-34.55" centerPoint3DY="174.9">
                                              <matrix>
                                                   <Matrix tx="-99.05" ty="138.2"/>
                                              </matrix>
@@ -1516,7 +1516,7 @@
                                                   <Point x="-38.35" y="-99.45"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 124" centerPoint3DX="65.65" centerPoint3DY="185.65">
+                                        <DOMSymbolInstance libraryItemName="sprite/空手跳" centerPoint3DX="65.65" centerPoint3DY="185.65">
                                              <matrix>
                                                   <Matrix tx="75.65" ty="192.15"/>
                                              </matrix>
@@ -1914,6 +1914,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3518179" publishTime="1763303825"/>
+          <PublishItem publishSize="3515222" publishTime="1763302717"/>
           <PublishItem publishSize="3515144" publishTime="1763302225"/>
           <PublishItem publishSize="3515107" publishTime="1763301827"/>
           <PublishItem publishSize="3515015" publishTime="1763300658"/>
@@ -1932,7 +1934,5 @@
           <PublishItem publishSize="3516893" publishTime="1763294163"/>
           <PublishItem publishSize="3516894" publishTime="1763294120"/>
           <PublishItem publishSize="3516889" publishTime="1763294005"/>
-          <PublishItem publishSize="3516849" publishTime="1763293938"/>
-          <PublishItem publishSize="3516841" publishTime="1763293894"/>
      </publishHistory>
 </DOMDocument>
