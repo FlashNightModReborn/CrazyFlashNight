@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- 主角称号配置文件（A兵团佣兵等级·杀敌数版本） -->
+<hero_config>
+    <!-- 默认称号：与 0 击杀档保持一致 -->
+    <default_title>菜鸟</default_title>
+
+    <!-- 称号晋升表 -->
+    <!-- 按杀敌数从高到低排序，游戏逻辑会自动找到第一个满足条件的称号 -->
+    <title_ranks>
+        <rank kills="10000" title="审判日行刑官"/>
+        <rank kills="5000" title="禁区噩梦"/>
+        <rank kills="3000" title="死亡元老"/>
+        <rank kills="2000" title="佣兵传奇"/>
+        <rank kills="1000" title="兵团利刃"/>
+        <rank kills="500" title="战线王牌"/>
+        <rank kills="300" title="精英骨干"/>
+        <rank kills="150" title="正式佣兵"/>
+        <rank kills="50" title="见习队员"/>
+        <rank kills="10" title="拾荒者"/>
+        <rank kills="0" title="菜鸟"/>
+    </title_ranks>
+</hero_config>

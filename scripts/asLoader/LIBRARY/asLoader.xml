@@ -418,7 +418,20 @@ enemyPropertiesLoader.loadEnemyProperties(
             </DOMFrame>
             <DOMFrame index="64" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.MaterialDictionaryLoader;
+                <script><![CDATA[import org.flashNight.arki.unit.HeroUtil;
+
+// 加载主角称号配置
+HeroUtil.loadHeroConfig(
+    function():Void {
+        trace("主程序：主角称号配置加载成功！");
+        _root.发布消息("主角称号配置加载完毕");
+    },
+    function():Void {
+        trace("主程序：主角称号配置加载失败，使用默认配置！");
+    }
+);
+
+import org.flashNight.gesh.xml.LoadXml.MaterialDictionaryLoader;
 
 var 材料大全loader:MaterialDictionaryLoader = MaterialDictionaryLoader.getInstance();
 
