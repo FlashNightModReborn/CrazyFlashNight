@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/被击飞击倒" itemID="690f5883-00001c3b" lastModified="1762614535" lastUniqueIdentifier="28">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/被击飞击倒" itemID="690f5883-00001c3b" lastModified="1763281875" lastUniqueIdentifier="28">
   <timeline>
-    <DOMTimeline name="被击飞击倒" currentFrame="132">
+    <DOMTimeline name="被击飞击倒" currentFrame="133">
       <layers>
         <DOMLayer name="Labels Layer" color="#6ED760">
           <frames>
@@ -48,7 +48,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码" color="#E86469" autoNamed="false">
+        <DOMLayer name="代码" color="#E86469" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -246,7 +246,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>

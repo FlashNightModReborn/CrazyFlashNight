@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跳跃" itemID="690cd8ce-0000117e" lastModified="1763054212" lastUniqueIdentifier="678">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跳跃" itemID="690cd8ce-0000117e" lastModified="1763283639" lastUniqueIdentifier="678">
   <timeline>
-    <DOMTimeline name="兵器跳跃" currentFrame="55" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;-150&lt;/guideline&gt;&lt;guideline direction="h"&gt;-164&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="兵器跳跃" currentFrame="114" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;-150&lt;/guideline&gt;&lt;guideline direction="h"&gt;-164&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#6DA6D6">
           <frames>
@@ -199,7 +199,7 @@ onClipEvent (load) {
             </DOMFrame>
             <DOMFrame index="11" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -605,7 +605,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码" color="#2F84FE" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="代码" color="#2F84FE" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -818,7 +818,7 @@ _parent.gotoAndPlay("跳跃");
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击判定" color="#A0BEB5" autoNamed="false">
+        <DOMLayer name="攻击判定" color="#A0BEB5" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -4122,7 +4122,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="113" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-83.55" centerPoint3DY="334.35">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-83.55" centerPoint3DY="334.35">
                   <matrix>
                     <Matrix a="50.4000244140625" d="12.1893920898438" tx="129.9" ty="114.35"/>
                   </matrix>
@@ -5112,7 +5112,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刚体标签" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="刚体标签" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="76" keyMode="9728">
               <elements/>
@@ -5131,7 +5131,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器使用检测" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="兵器使用检测" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="122" keyMode="9728">
               <elements>
@@ -5181,7 +5181,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小臂" color="#E86C8A" autoNamed="false">
+        <DOMLayer name="右小臂" color="#E86C8A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
@@ -5585,7 +5585,22 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="110" duration="12" keyMode="9728">
+            <DOMFrame index="110" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="113" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/无敌标签" name="无敌标签" selected="true" centerPoint3DX="-150" centerPoint3DY="210.8">
+                  <matrix>
+                    <Matrix tx="-150" ty="200"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="116" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -5895,7 +5910,10 @@ onClipEvent(load){
             <DOMFrame index="54" duration="44" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="98" duration="15" keyMode="9728">
+            <DOMFrame index="98" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="110" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="113" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
