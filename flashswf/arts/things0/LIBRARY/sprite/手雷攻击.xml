@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/手雷攻击" itemID="66a5d6cd-00000693" lastModified="1763294601" lastUniqueIdentifier="333">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/手雷攻击" itemID="66a5d6cd-00000693" lastModified="1763295023" lastUniqueIdentifier="333">
   <timeline>
     <DOMTimeline name="手雷攻击" currentFrame="2">
       <layers>
@@ -128,8 +128,8 @@ else
 {
 	子弹敌我属性 = true;
 }
-var myPoint = {x:this.枪._x, y:this.枪._y};
-this.枪.localToGlobal(myPoint);
+var myPoint = {x:this.枪.枪.装扮.枪口位置._x, y:this.枪.枪.装扮.枪口位置._y};
+this.枪.枪.装扮.枪口位置.localToGlobal(myPoint);
 _root.gameworld.globalToLocal(myPoint);
 shootX = myPoint.x;
 shootY = myPoint.y;
@@ -265,8 +265,8 @@ else
 {
 	子弹敌我属性 = true;
 }
-var myPoint = {x:this.枪._x, y:this.枪._y};
-this.枪.localToGlobal(myPoint);
+var myPoint = {x:this.枪.枪.装扮.枪口位置._x, y:this.枪.枪.装扮.枪口位置._y};
+this.枪.枪.装扮.枪口位置.localToGlobal(myPoint);
 _root.gameworld.globalToLocal(myPoint);
 shootX = myPoint.x;
 shootY = myPoint.y;
@@ -402,8 +402,8 @@ else
 {
 	子弹敌我属性 = true;
 }
-var myPoint = {x:this.枪._x, y:this.枪._y};
-this.枪.localToGlobal(myPoint);
+var myPoint = {x:this.枪.枪.装扮.枪口位置._x, y:this.枪.枪.装扮.枪口位置._y};
+this.枪.枪.装扮.枪口位置.localToGlobal(myPoint);
 _root.gameworld.globalToLocal(myPoint);
 shootX = myPoint.x;
 shootY = myPoint.y;
@@ -536,8 +536,8 @@ else
 {
 	子弹敌我属性 = true;
 }
-var myPoint = {x:this.枪._x, y:this.枪._y};
-this.枪.localToGlobal(myPoint);
+var myPoint = {x:this.枪.枪.装扮.枪口位置._x, y:this.枪.枪.装扮.枪口位置._y};
+this.枪.枪.装扮.枪口位置.localToGlobal(myPoint);
 _root.gameworld.globalToLocal(myPoint);
 shootX = myPoint.x;
 shootY = myPoint.y;
