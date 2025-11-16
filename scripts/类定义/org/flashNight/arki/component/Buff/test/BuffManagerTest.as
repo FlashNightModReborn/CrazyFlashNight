@@ -837,8 +837,8 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
             var manager:BuffManager = new BuffManager(mockTarget, callbacks);
             
             // 添加多个buff到同一属性
-            var buff1:PodBuff = new PodBuff("testStat", BuffCalculationType.ADD, 100);
-            var buff2:PodBuff = new PodBuff("testStat", BuffCalculationType.MULTIPLY, 1.5);
+            var buff1 = new PodBuff("testStat", BuffCalculationType.ADD, 100);
+            var buff2 = new PodBuff("testStat", BuffCalculationType.MULTIPLY, 1.5);
             
             manager.addBuff(buff1, null);
             manager.addBuff(buff2, null);
@@ -1750,8 +1750,8 @@ private static function testSameIdReplacement_NoGhost():Void {
             onBuffRemoved: function(id:String, b:Object):Void { removed.push(id); },
             onPropertyChanged: function(prop:String, v:Number):Void {}
         });
-        var A1:Object = _mkDuckPod("A", "atk");
-        var A2:Object = _mkDuckPod("A", "atk");
+        var A1 = _mkDuckPod("A", "atk");
+        var A2 = _mkDuckPod("A", "atk");
         mgr.addBuff(A1, "A");
         mgr.addBuff(A2, "A"); // 替换
         mgr.update(1);
@@ -1776,9 +1776,9 @@ private static function testInjectedPods_EmitOnAdded():Void {
             onBuffRemoved: function(id:String, b:Object):Void { removed.push(id); },
             onPropertyChanged: function(prop:String, v:Number):Void {}
         });
-        var P1:Object = _mkDuckPod("P1", "atk");
-        var P2:Object = _mkDuckPod("P2", "atk");
-        var M:Object  = _mkDuckMetaInjectOnce("M", [P1, P2]);
+        var P1 = _mkDuckPod("P1", "atk");
+        var P2 = _mkDuckPod("P2", "atk");
+        var M = _mkDuckMetaInjectOnce("M", [P1, P2]);
         mgr.addBuff(M, "M");
         mgr.update(1); // 触发注入
         if (added.length < 3) { // M + P1 + P2
@@ -1801,9 +1801,9 @@ private static function testRemoveInjectedPod_SyncWithMeta():Void {
             onBuffRemoved: function(id:String, b:Object):Void { removed.push(id); },
             onPropertyChanged: function(prop:String, v:Number):Void {}
         });
-        var P1:Object = _mkDuckPod("P1", "atk");
-        var P2:Object = _mkDuckPod("P2", "atk");
-        var M:Object  = _mkDuckMetaInjectOnce("M", [P1, P2]);
+        var P1 = _mkDuckPod("P1", "atk");
+        var P2 = _mkDuckPod("P2", "atk");
+        var M = _mkDuckMetaInjectOnce("M", [P1, P2]);
         mgr.addBuff(M, "M");
         mgr.update(1); // 注入
         var injMap:Object = mgr["_injectedPodBuffs"];
@@ -1829,7 +1829,7 @@ private static function testClearAllBuffs_RemovesIndependentPodsWithCallback():V
     try {
         var added:Array = [];
         var removed:Array = [];
-        var mgr:BuffManager = new BuffManager({}, {
+        var mgr = new BuffManager({}, {
             onBuffAdded: function(id:String, b:Object):Void { added.push(id); },
             onBuffRemoved: function(id:String, b:Object):Void { removed.push(id); },
             onPropertyChanged: function(prop:String, v:Number):Void {}
@@ -1854,7 +1854,7 @@ private static function testRemoveBuff_DedupOnce():Void {
     try {
         var added:Array = [];
         var removed:Array = [];
-        var mgr:BuffManager = new BuffManager({}, {
+        var mgr = new BuffManager({}, {
             onBuffAdded: function(id:String, b:Object):Void { added.push(id); },
             onBuffRemoved: function(id:String, b:Object):Void { removed.push(id); },
             onPropertyChanged: function(prop:String, v:Number):Void {}

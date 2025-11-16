@@ -3,23 +3,26 @@ import org.flashNight.arki.component.Buff.*;
 import org.flashNight.arki.component.Buff.component.*;
 
 class org.flashNight.arki.component.Buff.BuffManager {
-    
+
+    // 调试开关 (设为 false 可关闭所有调试输出)
+    private static var DEBUG:Boolean = false;
+
     // 核心数据结构
     private var _target:Object;                    // 宿主对象（Unit）
     private var _buffs:Array;                      // 所有Buff列表（包含 MetaBuff 和独立 PodBuff）
     private var _idMap:Object;                     // { id:String -> IBuff }
     private var _propertyContainers:Object;        // 属性容器映射 {propName: PropertyContainer}
     private var _pendingRemovals:Array;            // 待移除的Buff ID列表
-    
+
     // MetaBuff 注入管理
     private var _metaBuffInjections:Object;        // { metaBuffId -> [injectedPodBuffIds] }
     private var _injectedPodBuffs:Object;          // { podBuffId -> parentMetaBuffId }
-    
+
     // 性能优化
-    private var _updateCounter:Number = 0;         
-    private var _isDirty:Boolean = false;          
+    private var _updateCounter:Number = 0;
+    private var _isDirty:Boolean = false;
     private var _dirtyProps:Object = {};           // 增量脏集 {propName:true}
-    
+
     // 事件回调
     private var _onBuffAdded:Function;
     private var _onBuffRemoved:Function;
@@ -331,10 +334,12 @@ class org.flashNight.arki.component.Buff.BuffManager {
                     
                     // 处理状态变化
                     if (stateInfo && stateInfo.stateChanged) {
-                        trace("[BuffManager] Meta stateChanged: id=" + buff.getId() +
-                              ", needsInject=" + stateInfo.needsInject +
-                              ", needsEject=" + stateInfo.needsEject +
-                              ", currentState=" + (typeof buff["getCurrentState"] == "function" ? buff["getCurrentState"]() : "N/A"));
+                        if (DEBUG) {
+                            trace("[BuffManager] Meta stateChanged: id=" + buff.getId() +
+                                  ", needsInject=" + stateInfo.needsInject +
+                                  ", needsEject=" + stateInfo.needsEject +
+                                  ", currentState=" + (typeof buff["getCurrentState"] == "function" ? buff["getCurrentState"]() : "N/A"));
+                        }
                         if (stateInfo.needsInject) {
                             this._injectMetaBuffPods(buff);
                         } else if (stateInfo.needsEject) {
@@ -394,7 +399,9 @@ class org.flashNight.arki.component.Buff.BuffManager {
         // 记录该 MetaBuff 注入的所有 PodBuff
         this._metaBuffInjections[metaId] = injectedIds;
 
-        trace("[BuffManager] Injected Meta=" + metaId + " pods=" + injectedIds.join(",") + " count=" + injectedIds.length);
+        if (DEBUG) {
+            trace("[BuffManager] Injected Meta=" + metaId + " pods=" + injectedIds.join(",") + " count=" + injectedIds.length);
+        }
 
         this._markDirty();
     }
@@ -408,14 +415,18 @@ class org.flashNight.arki.component.Buff.BuffManager {
         var metaId:String = metaBuff["getId"]();
         var injectedIds:Array = this._metaBuffInjections[metaId];
 
-        trace("[BuffManager] Ejecting Meta=" + metaId + " injectedIds=" + (injectedIds ? injectedIds.join(",") : "null") + " count=" + (injectedIds ? injectedIds.length : 0));
+        if (DEBUG) {
+            trace("[BuffManager] Ejecting Meta=" + metaId + " injectedIds=" + (injectedIds ? injectedIds.join(",") : "null") + " count=" + (injectedIds ? injectedIds.length : 0));
+        }
 
         if (injectedIds) {
             // 从后往前遍历，避免 splice 导致跳过元素
             // (_removePodBuff 内部会从 injectedIds 中 splice 删除对应元素)
             for (var i:Number = injectedIds.length - 1; i >= 0; i--) {
                 var podId:String = injectedIds[i];
-                trace("[BuffManager]   Removing injected Pod: " + podId);
+                if (DEBUG) {
+                    trace("[BuffManager]   Removing injected Pod: " + podId);
+                }
                 this._removePodBuff(podId);
             }
 
@@ -571,9 +582,11 @@ class org.flashNight.arki.component.Buff.BuffManager {
      * 仅重分配给定脏属性集合下的容器：先清空这些容器，再把活跃 Pod 归位到对应容器，并仅对这些容器重算
      */
     private function _redistributeDirtyProps(dirty:Object):Void {
-        var dirtyPropsStr:String = "";
-        for (var dpk:String in dirty) dirtyPropsStr += dpk + ",";
-        trace("[BuffManager] _redistributeDirtyProps for: " + dirtyPropsStr);
+        if (DEBUG) {
+            var dirtyPropsStr:String = "";
+            for (var dpk:String in dirty) dirtyPropsStr += dpk + ",";
+            trace("[BuffManager] _redistributeDirtyProps for: " + dirtyPropsStr);
+        }
 
         // 1) 清该集合内容器
         for (var prop:String in dirty) {
