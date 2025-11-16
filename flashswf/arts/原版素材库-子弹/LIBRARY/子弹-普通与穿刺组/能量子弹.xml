@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/能量子弹" itemID="669d33e2-0000172c" linkageExportForAS="true" linkageIdentifier="能量子弹" lastModified="1759830788">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/能量子弹" itemID="669d33e2-0000172c" linkageExportForAS="true" linkageIdentifier="能量子弹" lastModified="1763287800">
   <timeline>
-    <DOMTimeline name="能量子弹">
+    <DOMTimeline name="能量子弹" currentFrame="1">
       <layers>
         <DOMLayer name="Labels Layer" color="#A569B1">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#8738F9">
+        <DOMLayer name="Script Layer" color="#8738F9" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -31,11 +31,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#A2FE2B" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#A2FE2B">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="7.5" centerPoint3DY="7.5">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="7.5" centerPoint3DY="7.5">
                   <matrix>
                     <Matrix a="0.399993896484375" d="0.399993896484375" tx="-5" ty="-5"/>
                   </matrix>

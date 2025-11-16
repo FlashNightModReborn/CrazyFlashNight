@@ -2044,7 +2044,7 @@
     <icon>M4A1改</icon>
     <type>武器</type>
     <use>长枪</use>
-    <price>190000</price>
+    <price>128000</price>
     <description>M16是尤金·
       M·斯通纳于1964年研发，由柯尔特制造公司所生产。作为1967年以来A国陆军使用的步兵轻兵器主力，亦被至少15个北约国家所采用，更是同口径枪械中产量最多的一个型号。
       便是如今的21世纪，也仍能在战争中见到它的身影；虽然加装了瞄准镜与下挂式榴弹发射器，但不知为何，这管榴弹发射器的内部在此前一直都是空的。</description>
@@ -2058,22 +2058,23 @@
     </skill>
     <data>
       <level>22</level>
-      <weight>5</weight>
+      <weight>4</weight>
       <modslot>0</modslot>
       <dressup>枪-长枪-M4A1改</dressup>
       <capacity>40</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
-      <interval>150</interval>
+      <interval>120</interval>
       <velocity>35</velocity>
-      <bullet>穿刺子弹</bullet>
+      <bullet>次级穿刺子弹</bullet>
+      <bulletrename>常规穿甲弹</bulletrename>
       <sound>re_Rifle_m16_tac.wav</sound>
       <muzzle>突击步枪枪火</muzzle>
       <bullethit>火花</bullethit>
       <clipname>突击步枪通用弹药</clipname>
-      <bulletsize>20</bulletsize>
-      <power>130</power>
-      <impact>45</impact>
+      <bulletsize>30</bulletsize>
+      <power>150</power>
+      <impact>40</impact>
     </data>
   </item>
   <item weapontype="发射器">

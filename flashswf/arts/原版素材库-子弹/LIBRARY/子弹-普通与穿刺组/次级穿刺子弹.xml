@@ -1,0 +1,151 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-普通与穿刺组/次级穿刺子弹" itemID="69199f26-00000478" linkageExportForAS="true" linkageIdentifier="次级穿刺子弹" lastModified="1763288533">
+  <timeline>
+    <DOMTimeline name="次级穿刺子弹">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#12A9DB" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="7" name="爆炸" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" name="消失?" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#8FA3C6" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+if (!this.击中时触发函数)
+{
+	this.击中时触发函数 = function()
+	{
+		if(击中地图){
+			this.击中时触发函数 = false;
+			this.removeMovieClip();
+		}
+		if (!this.已爆炸)
+		{
+			this.已爆炸 = true;
+			gotoAndPlay("爆炸");
+		}else{
+			this.击中时触发函数 = false;
+		}
+	};
+}
+this.已爆炸 = false;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+play();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#74CB8B" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="4.5" centerPoint3DY="6.5">
+                  <matrix>
+                    <Matrix a="2.57278442382813" d="0.479995727539063" tx="-8" ty="-6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="4.5" centerPoint3DY="6.5">
+                  <matrix>
+                    <Matrix a="2.57278442382813" d="0.479995727539063" tx="-8" ty="-6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="4.5" centerPoint3DY="6.5">
+                  <matrix>
+                    <Matrix a="2.57278442382813" d="0.479995727539063" tx="-8" ty="-6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="4.5" centerPoint3DY="6.5">
+                  <matrix>
+                    <Matrix a="2.57278442382813" d="0.479995727539063" tx="-8" ty="-6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#C2F890" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 722" centerPoint3DX="40.85" centerPoint3DY="0.55">
+                  <matrix>
+                    <Matrix a="0.85394287109375" d="-0.881729125976563" tx="1.75" ty="-0.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.65" tintColor="#FFFF89"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
