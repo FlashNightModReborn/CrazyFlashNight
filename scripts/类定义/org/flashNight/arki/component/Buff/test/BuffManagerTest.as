@@ -1698,6 +1698,15 @@ private static function _mkDuckPod(id:String, prop:String):Object {
     o.getTargetProperty = function():String { return this._prop; };
     o.isActive = function():Boolean { return this._active; };
     o.destroy = function():Void { this._active = false; };
+
+    // IBuff 接口必需方法
+    o.applyEffect = function(calculator:IBuffCalculator, context:BuffContext):Void {
+        // Phase 8 测试只关心生命周期，不关心数值计算
+    };
+    o.getType = function():String {
+        return "DuckPod";
+    };
+
     return o;
 }
 private static function _mkDuckMetaInjectOnce(id:String, pods:Array):Object {
@@ -1715,6 +1724,18 @@ private static function _mkDuckMetaInjectOnce(id:String, pods:Array):Object {
     o.clearInjectedBuffIds = function():Void {};
     o.recordInjectedBuffId = function(pid:String):Void {};
     o.removeInjectedBuffId = function(pid:String):Void {};
+
+    // IBuff 接口必需方法
+    o.applyEffect = function(calculator:IBuffCalculator, context:BuffContext):Void {
+        // MetaBuff 不参与数值计算
+    };
+    o.getType = function():String {
+        return "DuckMeta";
+    };
+    o.destroy = function():Void {
+        this._fired = false;
+    };
+
     return o;
 }
 
@@ -1731,8 +1752,8 @@ private static function testSameIdReplacement_NoGhost():Void {
         });
         var A1:Object = _mkDuckPod("A", "atk");
         var A2:Object = _mkDuckPod("A", "atk");
-        mgr.addBuff(IBuff(A1), "A");
-        mgr.addBuff(IBuff(A2), "A"); // 替换
+        mgr.addBuff(A1, "A");
+        mgr.addBuff(A2, "A"); // 替换
         mgr.update(1);
         var livePods:Number = _countLivePods(mgr);
         if (!(removed.length == 1 && livePods == 1)) {
@@ -1758,7 +1779,7 @@ private static function testInjectedPods_EmitOnAdded():Void {
         var P1:Object = _mkDuckPod("P1", "atk");
         var P2:Object = _mkDuckPod("P2", "atk");
         var M:Object  = _mkDuckMetaInjectOnce("M", [P1, P2]);
-        mgr.addBuff(IBuff(M), "M");
+        mgr.addBuff(M, "M");
         mgr.update(1); // 触发注入
         if (added.length < 3) { // M + P1 + P2
             throw new Error("Expected at least 3 onBuffAdded events, got " + added.length);
@@ -1783,7 +1804,7 @@ private static function testRemoveInjectedPod_SyncWithMeta():Void {
         var P1:Object = _mkDuckPod("P1", "atk");
         var P2:Object = _mkDuckPod("P2", "atk");
         var M:Object  = _mkDuckMetaInjectOnce("M", [P1, P2]);
-        mgr.addBuff(IBuff(M), "M");
+        mgr.addBuff(M, "M");
         mgr.update(1); // 注入
         var injMap:Object = mgr["_injectedPodBuffs"];
         var before:Number = _countKeys(injMap);
@@ -1813,8 +1834,8 @@ private static function testClearAllBuffs_RemovesIndependentPodsWithCallback():V
             onBuffRemoved: function(id:String, b:Object):Void { removed.push(id); },
             onPropertyChanged: function(prop:String, v:Number):Void {}
         });
-        mgr.addBuff(IBuff(_mkDuckPod("X1", "hp")), "X1");
-        mgr.addBuff(IBuff(_mkDuckPod("X2", "mp")), "X2");
+        mgr.addBuff(_mkDuckPod("X1", "hp"), "X1");
+        mgr.addBuff(_mkDuckPod("X2", "mp"), "X2");
         mgr.update(1);
         mgr.clearAllBuffs();
         var livePods:Number = _countLivePods(mgr);
@@ -1838,7 +1859,7 @@ private static function testRemoveBuff_DedupOnce():Void {
             onBuffRemoved: function(id:String, b:Object):Void { removed.push(id); },
             onPropertyChanged: function(prop:String, v:Number):Void {}
         });
-        mgr.addBuff(IBuff(_mkDuckPod("DUP", "atk")), "DUP");
+        mgr.addBuff(_mkDuckPod("DUP", "atk"), "DUP");
         mgr.update(1);
         mgr.removeBuff("DUP");
         mgr.removeBuff("DUP"); // 重复
