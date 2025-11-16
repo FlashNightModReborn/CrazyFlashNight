@@ -4122,7 +4122,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="113" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-83.55" centerPoint3DY="334.35">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-83.55" centerPoint3DY="334.35">
                   <matrix>
                     <Matrix a="50.4000244140625" d="12.1893920898438" tx="129.9" ty="114.35"/>
                   </matrix>
@@ -4504,10 +4504,10 @@ onClipEvent(load){
                   <edges>
                     <Edge fillStyle0="2" edges="!3682 857[#463.85 #24C.9 -3669 -2154!-3669 -2154|-7298 4364!-7298 4364[-1386 5050 2924 4279!2924 4279[11730 2711 8798 -2785!8798 -2785[6533 -7025 335 -7089!335 -7089[6996 -6159 6592 -1336!6592 -1336[6450 349 5154 756!5154 756|5154 1610
 !5154 1610|3888 1610!3888 1610|3888 1402"/>
-                    <Edge fillStyle0="2" fillStyle1="1" edges="
-!3888 1402|3888 875!3888 875[#ECA.DD #364.26 3682 857"/>
-                    <Edge fillStyle1="1" edges="
-!3682 857|3682 721!3682 721[#1107.9D #2FE.F1 4855 611!4855 611|4855 1402!4855 1402|3888 1402"/>
+                    <Edge fillStyle0="1" edges="
+!3888 1402|4855 1402!4855 1402|4855 611!4855 611[#1107.9D #2FE.F1 3682 721!3682 721|3682 857"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!3682 857[#ECA.DD #364.26 3888 875!3888 875|3888 1402"/>
                   </edges>
                 </DOMShape>
               </elements>

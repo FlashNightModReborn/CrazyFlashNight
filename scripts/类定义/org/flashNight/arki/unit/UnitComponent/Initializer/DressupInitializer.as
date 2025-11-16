@@ -469,6 +469,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.长枪动作类型 = target.长枪数据.actiontype;
         target.手枪动作类型 = target.手枪数据.actiontype;
         target.手枪2动作类型 = target.手枪2数据.actiontype;
+        target.手雷动作类型 = target.手雷数据.actiontype;
         // target.手雷动作类型 （未启用）
     }
 

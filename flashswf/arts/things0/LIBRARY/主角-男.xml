@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1763282106" lastUniqueIdentifier="280">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1763292928" lastUniqueIdentifier="282">
   <timeline>
-    <DOMTimeline name="主角-男" currentFrame="606">
+    <DOMTimeline name="主角-男" currentFrame="2">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4">
           <frames>
@@ -1860,9 +1860,9 @@ onClipEvent(load){
 */
 onClipEvent(load){
 	未切换按键 = true;
-	if (!_parent.手雷动作类型)
+	if (!_parent.手雷抛出模式)
 	{
-		_parent.手雷动作类型 = "高抛";
+		_parent.手雷抛出模式 = "高抛";
 	}
 }
 onClipEvent (enterFrame) {
@@ -1872,20 +1872,19 @@ onClipEvent (enterFrame) {
 		{
 			if (未切换按键)
 			{
-				if (_parent.手雷动作类型 == "高抛")
+				if (_parent.手雷抛出模式 == "高抛")
 				{
-					_parent.手雷动作类型 = "低抛";
+					_parent.手雷抛出模式 = "低抛";
 				}
-				else if (_parent.手雷动作类型 == "低抛")
+				else if (_parent.手雷抛出模式 == "低抛")
 				{
-					_parent.手雷动作类型 = "高抛";
+					_parent.手雷抛出模式 = "高抛";
 				}
 				else
 				{
-					_parent.手雷动作类型 = "低抛";
+					_parent.手雷抛出模式 = "低抛";
 				}
-				_root.发布消息("手雷动作类型切换为"+_parent.手雷动作类型);
-				this.gotoAndPlay(_parent.手雷动作类型);
+				_root.发布消息("手雷抛出模式切换为"+_parent.手雷抛出模式);
 			}
 			未切换按键 = false;
 		}
@@ -1912,9 +1911,9 @@ onClipEvent (enterFrame) {
                     <script><![CDATA[
 onClipEvent(load){
 	未切换按键 = true;
-	if (!_parent.手雷动作类型)
+	if (!_parent.手雷抛出模式)
 	{
-		_parent.手雷动作类型 = "高抛";
+		_parent.手雷抛出模式 = "高抛";
 	}
 }
 onClipEvent (enterFrame) {
@@ -1924,20 +1923,19 @@ onClipEvent (enterFrame) {
 		{
 			if (未切换按键)
 			{
-				if (_parent.手雷动作类型 == "高抛")
+				if (_parent.手雷抛出模式 == "高抛")
 				{
-					_parent.手雷动作类型 = "低抛";
+					_parent.手雷抛出模式 = "低抛";
 				}
-				else if (_parent.手雷动作类型 == "低抛")
+				else if (_parent.手雷抛出模式 == "低抛")
 				{
-					_parent.手雷动作类型 = "高抛";
+					_parent.手雷抛出模式 = "高抛";
 				}
 				else
 				{
-					_parent.手雷动作类型 = "低抛";
+					_parent.手雷抛出模式 = "低抛";
 				}
-				_root.发布消息("手雷动作类型切换为"+_parent.手雷动作类型);
-				this.gotoAndPlay(_parent.手雷动作类型);
+				_root.发布消息("手雷抛出模式切换为"+_parent.手雷抛出模式);
 			}
 			未切换按键 = false;
 		}
@@ -1964,9 +1962,9 @@ onClipEvent (enterFrame) {
                     <script><![CDATA[
 onClipEvent(load){
 	未切换按键 = true;
-	if (!_parent.手雷动作类型)
+	if (!_parent.手雷抛出模式)
 	{
-		_parent.手雷动作类型 = "高抛";
+		_parent.手雷抛出模式 = "高抛";
 	}
 }
 onClipEvent (enterFrame) {
@@ -1976,20 +1974,19 @@ onClipEvent (enterFrame) {
 		{
 			if (未切换按键)
 			{
-				if (_parent.手雷动作类型 == "高抛")
+				if (_parent.手雷抛出模式 == "高抛")
 				{
-					_parent.手雷动作类型 = "低抛";
+					_parent.手雷抛出模式 = "低抛";
 				}
-				else if (_parent.手雷动作类型 == "低抛")
+				else if (_parent.手雷抛出模式 == "低抛")
 				{
-					_parent.手雷动作类型 = "高抛";
+					_parent.手雷抛出模式 = "高抛";
 				}
 				else
 				{
-					_parent.手雷动作类型 = "低抛";
+					_parent.手雷抛出模式 = "低抛";
 				}
-				_root.发布消息("手雷动作类型切换为"+_parent.手雷动作类型);
-				this.gotoAndPlay(_parent.手雷动作类型);
+				_root.发布消息("手雷抛出模式切换为"+_parent.手雷抛出模式);
 			}
 			未切换按键 = false;
 		}
@@ -2005,7 +2002,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="437" duration="40" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/手雷攻击" name="man" centerPoint3DX="173" centerPoint3DY="243.85">
+                <DOMSymbolInstance libraryItemName="sprite/手雷攻击" name="man" selected="true" centerPoint3DX="173" centerPoint3DY="243.85">
                   <matrix>
                     <Matrix a="0.276992797851563" d="0.276992797851563" tx="3.5" ty="-62.3"/>
                   </matrix>
@@ -2024,9 +2021,9 @@ onClipEvent (enterFrame) {
 	_parent.左行 = 0;
 	//_parent.上行 = 0;
 	//_parent.下行 = 0;
-	if (!_parent.手雷动作类型)
+	if (!_parent.手雷抛出模式)
 	{
-		_parent.手雷动作类型 = "高抛";
+		_parent.手雷抛出模式 = "高抛";
 	}
 	未切换按键 = true;
 	if (_parent.是否允许发送联机数据 == true)
@@ -2050,20 +2047,22 @@ onClipEvent (enterFrame) {
 		{
 			if (未切换按键)
 			{
-				if (_parent.手雷动作类型 == "高抛")
+				if (_parent.手雷抛出模式 == "高抛")
 				{
-					_parent.手雷动作类型 = "低抛";
+					_parent.手雷抛出模式 = "低抛";
 				}
-				else if (_parent.手雷动作类型 == "低抛")
+				else if (_parent.手雷抛出模式 == "低抛")
 				{
-					_parent.手雷动作类型 = "高抛";
+					_parent.手雷抛出模式 = "高抛";
 				}
 				else
 				{
-					_parent.手雷动作类型 = "低抛";
+					_parent.手雷抛出模式 = "低抛";
 				}
-				_root.发布消息("手雷动作类型切换为" + _parent.手雷动作类型);
-				this.gotoAndPlay(_parent.手雷动作类型);
+				_root.发布消息("手雷抛出模式切换为" + _parent.手雷抛出模式);
+				_parent.手雷动作类型 = _parent.手雷动作类型? _parent.手雷动作类型 :"";
+				跳转帧 = _parent.手雷动作类型 + _parent.手雷抛出模式;
+				this.gotoAndPlay(跳转帧);
 			}
 			未切换按键 = false;
 		}
