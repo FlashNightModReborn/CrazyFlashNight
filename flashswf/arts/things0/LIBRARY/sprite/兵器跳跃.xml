@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跳跃" itemID="690cd8ce-0000117e" lastModified="1763283639" lastUniqueIdentifier="678">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跳跃" itemID="690cd8ce-0000117e" lastModified="1763302681" lastUniqueIdentifier="678">
   <timeline>
-    <DOMTimeline name="兵器跳跃" currentFrame="114" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;-150&lt;/guideline&gt;&lt;guideline direction="h"&gt;-164&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="兵器跳跃" currentFrame="110" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;-150&lt;/guideline&gt;&lt;guideline direction="h"&gt;-164&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#6DA6D6">
           <frames>
@@ -813,6 +813,98 @@ _parent.gotoAndPlay("跳跃");
 //坠地中 = false;
 //_parent.动画完毕();
 //stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="音效" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("soundjump.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("普通刀用力横斩.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("普通刀用力横斩.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" duration="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound210.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" duration="13" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound210.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="54" duration="22" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("sound210.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="76" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="80" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//_root.播放音效("青年稚气-打斗8_01.wav");
+_parent.攻击呐喊();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="82" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("重劈");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="86" duration="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("兽王崩拳.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="101" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.攻击呐喊();
+//_root.播放音效("青年稚气-打斗8_01.wav");
+_root.播放音效("重劈.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="104" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("兽王崩拳.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="110" duration="12" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(自机.性别 == "女")
+{
+}
+else
+{
+	_root.播放音效("青年冷峻-打斗11_01.wav");
+}
+_root.播放音效("黑闪.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -4504,10 +4596,10 @@ onClipEvent(load){
                   <edges>
                     <Edge fillStyle0="2" edges="!3682 857[#463.85 #24C.9 -3669 -2154!-3669 -2154|-7298 4364!-7298 4364[-1386 5050 2924 4279!2924 4279[11730 2711 8798 -2785!8798 -2785[6533 -7025 335 -7089!335 -7089[6996 -6159 6592 -1336!6592 -1336[6450 349 5154 756!5154 756|5154 1610
 !5154 1610|3888 1610!3888 1610|3888 1402"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!3888 1402|3888 875!3888 875[#ECA.DD #364.26 3682 857"/>
                     <Edge fillStyle0="1" edges="
 !3888 1402|4855 1402!4855 1402|4855 611!4855 611[#1107.9D #2FE.F1 3682 721!3682 721|3682 857"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="
-!3682 857[#ECA.DD #364.26 3888 875!3888 875|3888 1402"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -5181,7 +5273,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小臂" color="#E86C8A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="右小臂" color="#E86C8A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
@@ -22850,64 +22942,6 @@ onClipEvent (enterFrame) {
                   </filters>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="1" duration="5" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[_root.播放音效("soundjump.wav");]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="6" duration="9" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[_root.播放音效("普通刀用力横斩.wav");]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="15" duration="11" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[_root.播放音效("普通刀用力横斩.wav");]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="26" duration="15" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[_root.播放音效("sound210.wav");]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="41" duration="13" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[_root.播放音效("sound210.wav");]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="54" duration="22" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[_root.播放音效("sound210.wav");]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="76" duration="25" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[_root.播放音效("sound210.wav");]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="101" duration="9" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[_root.播放音效("普通刀用力横斩.wav");]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="110" duration="12" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
