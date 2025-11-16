@@ -1,0 +1,34 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-和平/素材/男变装-特战队员身体" itemID="673eff01-000001e1" lastModified="1763183682">
+  <timeline>
+    <DOMTimeline name="男变装-特战队员身体">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_4" color="#FF4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-和平/素材/部件/元件 17" centerPoint3DX="1.9" centerPoint3DY="2">
+                  <matrix>
+                    <Matrix a="4.80126953125" c="-0.096771240234375" d="4.4599609375" tx="-72.85" ty="-110.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="25.2"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="0.1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

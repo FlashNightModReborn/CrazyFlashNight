@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-歌留多/歌留多头整体" itemID="6709745f-0000005d" lastModified="1728672864">
+  <timeline>
+    <DOMTimeline name="歌留多头整体">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-歌留多/歌留多头">
+                  <transformationPoint>
+                    <Point x="126.8" y="106.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-歌留多/歌留多五官">
+                  <matrix>
+                    <Matrix tx="55.6" ty="94.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="52.7" y="38.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

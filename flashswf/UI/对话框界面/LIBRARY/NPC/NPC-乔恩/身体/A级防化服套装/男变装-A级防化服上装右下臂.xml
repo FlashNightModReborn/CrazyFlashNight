@@ -1,0 +1,27 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-乔恩/身体/A级防化服套装/男变装-A级防化服上装右下臂" itemID="673f3555-000008c9" lastModified="1763278122" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="男变装-A级防化服上装右下臂">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-乔恩/身体/素材/玩家用右下臂" selected="true" centerPoint3DX="-5.85" centerPoint3DY="-6.1">
+                  <matrix>
+                    <Matrix a="1.1163330078125" b="-0.092315673828125" c="0.0824127197265625" d="0.996597290039063" tx="-41.4" ty="-65.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.55" y="63.1"/>
+                  </transformationPoint>
+                  <color>
+                    <Color blueMultiplier="0.30078125" greenMultiplier="0.30078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

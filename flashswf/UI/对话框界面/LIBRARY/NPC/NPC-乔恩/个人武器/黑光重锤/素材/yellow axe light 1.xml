@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-乔恩/个人武器/黑光重锤/素材/yellow axe light 1" itemID="567e987a-00000011" sourceFlashFilepath="../../../../asset-library/角色储备/乔恩&amp;和平&amp;云吞魔芋.fla" sourceLibraryItemHRef="NPC/NPC-乔恩/个人武器/黑光重锤/素材/yellow axe light 1" sourceLastModified="1451137316" lastModified="1451137316" sourceItemID="567e987a-00000011">
+  <timeline>
+    <DOMTimeline name="yellow axe light 1">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#FFFFFF"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!52 -34|-57 -26!-57 -26|40 14!40 14|52 -34"/>
+                        <Edge cubics="!-57 -26(-57,-26;-57,-26 40,14 40,14q-57 -26 40 14);"/>
+                        <Edge cubics="!40 14(40,14;40,14 52,-34 52,-34q40 14 52 -34)52,-34;"/>
+                        <Edge cubics="!52 -34(;52,-34 -57,-26 -57,-26q52 -34 -57 -26);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
