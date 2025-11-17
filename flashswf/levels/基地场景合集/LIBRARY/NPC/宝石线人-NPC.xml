@@ -57,7 +57,7 @@ Z轴坐标 = this._y;
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/透明控件" name="area" selected="true" centerPoint3DX="-4" centerPoint3DY="-116">
+                <DOMSymbolInstance libraryItemName="sprite/透明控件" name="area" centerPoint3DX="-4" centerPoint3DY="-116">
                   <matrix>
                     <Matrix a="1.47552490234375" d="5.6412353515625" tx="-16.5" ty="-128.5"/>
                   </matrix>
@@ -89,7 +89,7 @@ Z轴坐标 = this._y;
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 2712" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 2712" symbolType="button">
                   <matrix>
                     <Matrix a="3.5955810546875" d="5.72062683105469" tx="0.85" ty="-59.6"/>
                   </matrix>

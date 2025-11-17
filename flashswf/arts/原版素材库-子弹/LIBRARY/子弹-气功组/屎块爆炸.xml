@@ -1,12 +1,31 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/屎块爆炸" itemID="66bb409c-00001c97" linkageExportForAS="true" linkageIdentifier="屎块爆炸" lastModified="1759818997" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/屎块爆炸" itemID="66bb409c-00001c97" linkageExportForAS="true" linkageIdentifier="屎块爆炸" lastModified="1763380743" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="屎块爆炸" currentFrame="5">
+    <DOMTimeline name="屎块爆炸">
       <layers>
-        <DOMLayer name="Script Layer" color="#CA8E4F" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#CA8E4F" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[var 获取发射对象 = _root.gameworld[this.发射者名];
+
+if(发射者名 == undefined)
+{
+   发射者名 = _root.控制目标;
+}
+if(内力投射 == undefined)
+{
+   内力投射 = _root.gameworld[this.发射者名].内力;
+}
+if(力量投射 == undefined)
+{
+   力量投射 = _root.gameworld[this.发射者名].空手攻击力;
+}
+/*
+_root.发布消息("读到空手攻击力: " + 力量投射);
+_root.发布消息("读到内力: " + 内力投射);
+*/
+this.子弹威力 = 100 + 内力投射 + 力量投射;
+
 if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技能.轰炸专家.启用)
 {
    this.子弹威力 *= 1 + 获取发射对象.被动技能.轰炸专家.等级 * 0.03;
@@ -17,19 +36,20 @@ if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技�
             </DOMFrame>
             <DOMFrame index="5" duration="7" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[
-if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技能.轰炸专家.启用)
+                <script><![CDATA[if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技能.轰炸专家.启用)
 {
    this.子弹威力 *= 1 + 获取发射对象.被动技能.轰炸专家.等级 * 0.03;
 }
+
 this.伤害类型 = "魔法";
-this.魔法伤害属性 = "毒";]]></script>
+this.魔法伤害属性 = "毒";
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="12" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[stop();
+                <script><![CDATA[_root.add2map(this,2);
 this.removeMovieClip();
 ]]></script>
               </Actionscript>
@@ -37,31 +57,40 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#88F25D" outline="true" useOutlineView="true">
+        <DOMLayer name="area" color="#88F25D" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
+            <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" keyMode="9728">
+            <DOMFrame index="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="无AS链接/气功弹（和爆炸）素材/Symbol 13" name="area" centerPoint3DX="-42" centerPoint3DY="-42">
                   <matrix>
-                    <Matrix a="4.3599853515625" d="4.35992431640625" tx="-54.5" ty="-54.5"/>
+                    <Matrix a="4.3599853515625" d="3.61003112792969" tx="-54.5" ty="-45.15"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="12.5" y="12.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="3" duration="3" keyMode="9728">
-              <elements/>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/气功弹（和爆炸）素材/Symbol 13" name="area" centerPoint3DX="-34.55" centerPoint3DY="-52.8">
+                  <matrix>
+                    <Matrix a="4.56474304199219" d="3.34967041015625" tx="-55.15" ty="-45.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.25" y="10.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
             <DOMFrame index="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/气功弹（和爆炸）素材/Symbol 13" name="area" selected="true" centerPoint3DX="-69.4" centerPoint3DY="-46.25">
+                <DOMSymbolInstance libraryItemName="无AS链接/气功弹（和爆炸）素材/Symbol 13" name="area" centerPoint3DX="-34.55" centerPoint3DY="-43.65">
                   <matrix>
-                    <Matrix a="7.19989013671875" d="4.7999267578125" tx="-90" ty="-60"/>
+                    <Matrix a="4.56474304199219" d="5.28955078125" tx="-55.15" ty="-57.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -74,32 +103,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#5976C3">
-          <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/气功弹（和爆炸）素材/Symbol 654" centerPoint3DX="66.85" centerPoint3DY="57.45">
-                  <matrix>
-                    <Matrix a="0.132537841796875" d="0.132537841796875" tx="-10.2" ty="-8.75"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <GlowFilter blurX="8" blurY="8" color="#000000"/>
-                  </filters>
-                  <color>
-                    <Color tintMultiplier="1" tintColor="#2E1505"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="2" duration="11" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 4" color="#F5D8AB">
+        <DOMLayer name="Layer 4" color="#F5D8AB" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -115,6 +119,20 @@ this.removeMovieClip();
                   </filters>
                   <color>
                     <Color tintMultiplier="1" tintColor="#663300"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="无AS链接/气功弹（和爆炸）素材/Symbol 654" centerPoint3DX="66.85" centerPoint3DY="57.45">
+                  <matrix>
+                    <Matrix a="0.132537841796875" d="0.132537841796875" tx="-10.2" ty="-8.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8" color="#000000"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="1" tintColor="#2E1505"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -216,6 +234,33 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="12" keyMode="9728">
               <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#5976C3">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/永久屎迹" blendMode="overlay" centerPoint3DX="7.1" centerPoint3DY="-0.25">
+                  <matrix>
+                    <Matrix a="0.69189453125" b="0.719696044921875" c="-0.719696044921875" d="0.69189453125" tx="2.05" ty="-5.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+_rotation = random(360);
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter brightness="-40" contrast="-65" saturation="20" hue="-70"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>

@@ -37,7 +37,7 @@
           <DOMFolderItem name="子弹-持续组" itemID="669d3984-0000179c"/>
           <DOMFolderItem name="子弹-持续组/血滴落" itemID="68fe33eb-000016bc" isExpanded="true"/>
           <DOMFolderItem name="子弹-近战子弹专享座位" itemID="669d3aec-000017c1"/>
-          <DOMFolderItem name="子弹-炮弹与爆炸组" itemID="669d34e9-0000177b" isExpanded="true"/>
+          <DOMFolderItem name="子弹-炮弹与爆炸组" itemID="669d34e9-0000177b"/>
           <DOMFolderItem name="子弹-普通与穿刺组" itemID="669d349c-00001757" isExpanded="true"/>
           <DOMFolderItem name="子弹-普通与穿刺组/暗器" itemID="68e4ed93-000020b3" isExpanded="true"/>
           <DOMFolderItem name="子弹-气功组" itemID="669d3a53-000017b3" isExpanded="true"/>
@@ -264,7 +264,7 @@
           <Include href="手雷/手雷-寒铁镖.xml" itemID="68e4e8f9-0000208f" lastModified="1759833284"/>
           <Include href="手雷/手雷-鎏金雀翎.xml" itemID="68e4f4f3-000020df" lastModified="1759835422"/>
           <Include href="手雷/手雷-十字螺旋手里剑.xml" itemID="68e4e6a8-0000206d" lastModified="1759992276"/>
-          <Include href="手雷/手雷-翼炎钉针.xml" itemID="68e4ad63-00001c90" lastModified="1759826494"/>
+          <Include href="手雷/手雷-翼炎钉针.xml" itemID="68e4ad63-00001c90" lastModified="1763377855"/>
           <Include href="手雷/素材/Symbol 24.xml" itemIcon="1" loadImmediate="false" itemID="6896ec18-00003d66" lastModified="1701508661"/>
           <Include href="手雷/素材/Symbol 25.xml" loadImmediate="false" itemID="6896ec18-00003d65" lastModified="1701508661"/>
           <Include href="手雷/素材/地瓜手雷素材.xml" loadImmediate="false" itemID="6724f246-00008154" lastModified="1730474566"/>
@@ -638,12 +638,12 @@
           <Include href="子弹-炮弹与爆炸组/重型火箭弹.xml" itemID="68d3b57d-00001bdf" lastModified="1758792063"/>
           <Include href="子弹-普通与穿刺组/暗器/寒铁镖.xml" itemID="68e4ed8a-000020af" lastModified="1759835429"/>
           <Include href="子弹-普通与穿刺组/暗器/寒铁镖中转.xml" itemID="68e4ec85-000020a1" lastModified="1759988707"/>
-          <Include href="子弹-普通与穿刺组/暗器/鎏金雀翎.xml" itemID="68e4f3f4-000020d3" lastModified="1759835434"/>
-          <Include href="子弹-普通与穿刺组/暗器/鎏金雀翎中转.xml" itemID="68e4f2e0-000020c3" lastModified="1759992294"/>
+          <Include href="子弹-普通与穿刺组/暗器/鎏金雀翎.xml" itemID="68e4f3f4-000020d3" lastModified="1763379250"/>
+          <Include href="子弹-普通与穿刺组/暗器/鎏金雀翎中转.xml" itemID="68e4f2e0-000020c3" lastModified="1763378475"/>
           <Include href="子弹-普通与穿刺组/暗器/十字螺旋手里剑.xml" itemID="68e4e321-00002057" lastModified="1759831814"/>
           <Include href="子弹-普通与穿刺组/暗器/十字螺旋手里剑中转.xml" itemID="68e4e5f8-00002063" lastModified="1759992282"/>
-          <Include href="子弹-普通与穿刺组/暗器/翼炎钉针.xml" itemID="68e4a962-00001c68" lastModified="1759833258"/>
-          <Include href="子弹-普通与穿刺组/暗器/翼炎钉针中转.xml" itemID="68e4c9f9-00001ffc" lastModified="1759833265"/>
+          <Include href="子弹-普通与穿刺组/暗器/翼炎钉针.xml" itemID="68e4a962-00001c68" lastModified="1763379118"/>
+          <Include href="子弹-普通与穿刺组/暗器/翼炎钉针中转.xml" itemID="68e4c9f9-00001ffc" lastModified="1763379095"/>
           <Include href="子弹-普通与穿刺组/巴雷特子弹.xml" itemID="669d3447-00001743" lastModified="1760515516"/>
           <Include href="子弹-普通与穿刺组/穿刺子弹.xml" itemID="669d3454-00001746" lastModified="1763286901"/>
           <Include href="子弹-普通与穿刺组/次级穿刺子弹.xml" itemID="69199f26-00000478" lastModified="1763288533"/>
@@ -661,10 +661,11 @@
           <Include href="子弹-普通与穿刺组/铁枪磁轨弹动画.xml" itemIcon="1" loadImmediate="false" itemID="6879b5cc-00001095" lastModified="1752807115"/>
           <Include href="子弹-普通与穿刺组/无壳穿刺子弹.xml" itemID="687775d5-00002db3" lastModified="1759823934"/>
           <Include href="子弹-气功组/剑气波.xml" itemID="690e085d-000010d3" lastModified="1762611132"/>
-          <Include href="子弹-气功组/气功弹.xml" itemID="668b9d18-000001e7" lastModified="1759817747"/>
-          <Include href="子弹-气功组/气功弹爆炸.xml" itemID="668b9d1d-000001e8" lastModified="1762527398"/>
-          <Include href="子弹-气功组/屎块爆炸.xml" itemID="66bb409c-00001c97" lastModified="1759818997"/>
+          <Include href="子弹-气功组/气功弹.xml" itemID="668b9d18-000001e7" lastModified="1763375949"/>
+          <Include href="子弹-气功组/气功弹爆炸.xml" itemID="668b9d1d-000001e8" lastModified="1763379254"/>
+          <Include href="子弹-气功组/屎块爆炸.xml" itemID="66bb409c-00001c97" lastModified="1763380743"/>
           <Include href="子弹-气功组/天冲命中.xml" itemID="669d34d3-00001773" lastModified="1762527497"/>
+          <Include href="子弹-气功组/永久屎迹.xml" loadImmediate="false" itemID="691afda8-0000126b" lastModified="1763376582"/>
           <Include href="子弹-气功组/月牙天冲.xml" itemID="669d34cf-00001772" lastModified="1762610926"/>
           <Include href="子弹-特殊组/火力支援-炸弹.xml" itemID="669d345c-00001748" lastModified="1729338582"/>
           <Include href="子弹-特殊组/火力支援开始.xml" itemID="669d3458-00001747" lastModified="1722660646"/>
@@ -1030,6 +1031,17 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4086400" publishTime="1763380750"/>
+          <PublishItem publishSize="4087173" publishTime="1763380442"/>
+          <PublishItem publishSize="4087116" publishTime="1763380259"/>
+          <PublishItem publishSize="4086969" publishTime="1763380244"/>
+          <PublishItem publishSize="4087254" publishTime="1763380148"/>
+          <PublishItem publishSize="4086958" publishTime="1763379935"/>
+          <PublishItem publishSize="4086954" publishTime="1763379557"/>
+          <PublishItem publishSize="4086968" publishTime="1763379298"/>
+          <PublishItem publishSize="4087157" publishTime="1763378815"/>
+          <PublishItem publishSize="4087157" publishTime="1763377036"/>
+          <PublishItem publishSize="4087136" publishTime="1763377017"/>
           <PublishItem publishSize="4085953" publishTime="1763288291"/>
           <PublishItem publishSize="4085841" publishTime="1763287830"/>
           <PublishItem publishSize="4085839" publishTime="1763287813"/>
@@ -1039,16 +1051,5 @@
           <PublishItem publishSize="4086757" publishTime="1762853441"/>
           <PublishItem publishSize="4084704" publishTime="1762851012"/>
           <PublishItem publishSize="4085596" publishTime="1762850129"/>
-          <PublishItem publishSize="3924053" publishTime="1761458029"/>
-          <PublishItem publishSize="4096224" publishTime="1760841021"/>
-          <PublishItem publishSize="4096273" publishTime="1760840813"/>
-          <PublishItem publishSize="4096297" publishTime="1760840745"/>
-          <PublishItem publishSize="4096242" publishTime="1760840669"/>
-          <PublishItem publishSize="4096249" publishTime="1760840602"/>
-          <PublishItem publishSize="4096264" publishTime="1760840550"/>
-          <PublishItem publishSize="4096208" publishTime="1760840346"/>
-          <PublishItem publishSize="4096289" publishTime="1760839801"/>
-          <PublishItem publishSize="4097538" publishTime="1759988788"/>
-          <PublishItem publishSize="4097539" publishTime="1759988739"/>
      </publishHistory>
 </DOMDocument>
