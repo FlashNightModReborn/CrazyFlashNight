@@ -2669,7 +2669,6 @@
     <icon>逸龙剑·抉择</icon>
     <type>武器</type>
     <use>刀</use>
-    <actiontype>刀剑</actiontype>
     <price>187000</price>
     <skill>
       <skillname>追踪五连</skillname>
@@ -2677,13 +2676,36 @@
       <cd>8000</cd>
       <mp>30</mp>
     </skill>
-    <description>剑刃长且宽，剑身布满暗金纹路。撩刺劈砍，手感极佳。
-联合大学的高级订制武器，双方的工业合作产物，锋芒如新淬。</description>
+    <description>据说，这把巨剑是历史最强剑士之一索德罗斯的佩剑。</description>
     <data>
       <level>30</level>
-      <weight>3</weight>
+      <weight>12</weight>
       <dressup>刀-逸龙剑·抉择</dressup>
-      <power>405</power>
+      <power>410</power>
+      <criticalhit>10</criticalhit>
+    </data>
+  </item>
+  <item>
+    <name>风魔</name>
+    <displayname>风魔</displayname>
+    <icon>风魔</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>刀剑</actiontype>
+    <price>300000</price>
+    <skill>
+      <skillname>辉光剑气</skillname>
+      <description>手持该武器可以使用辉光剑气。</description>
+      <cd>8000</cd>
+      <mp>30</mp>
+    </skill>
+    <description>联合大学的高级订制武器之一，锋芒似新淬。
+整体以暗黑色不明金属为基底，搭配深紫与幽蓝的晶体及刃面。每当刃锋挥出，龙卷风便应声席卷，将敌人卷入混沌，在狂乱的撕扯中终结战局。</description>
+    <data>
+      <level>33</level>
+      <weight>3</weight>
+      <dressup>刀-风魔</dressup>
+      <power>420</power>
       <criticalhit>10</criticalhit>
     </data>
   </item>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/07.青绿色系/墨绿轨迹/MovieClip/墨绿轨迹" itemID="66687070-0000209a" linkageExportForAS="true" linkageIdentifier="墨绿轨迹" lastModified="1762657088">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/07.青绿色系/墨绿轨迹/MovieClip/墨绿轨迹" itemID="66687070-0000209a" linkageExportForAS="true" linkageIdentifier="墨绿轨迹" lastModified="1763376721">
   <timeline>
     <DOMTimeline name="墨绿轨迹">
       <layers>
@@ -42,7 +42,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#FFFF00">
+        <DOMLayer name="Layer 6" color="#FFFF00" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="3" motionTweenScale="false" keyMode="8192">
               <elements/>
@@ -73,7 +73,7 @@
             </DOMFrame>
             <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/墨绿轨迹/Graphic/shape 604" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/墨绿轨迹/Graphic/shape 604" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.47476196289063" b="1.53392028808594" c="-1.53392028808594" d="1.47476196289063" tx="384.65" ty="-11.85"/>
                   </matrix>
@@ -150,7 +150,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#FFFF00" current="true" isSelected="true">
+        <DOMLayer name="Layer 2" color="#FFFF00">
           <frames>
             <DOMFrame index="0" duration="3" motionTweenScale="false" keyMode="8192">
               <elements/>
