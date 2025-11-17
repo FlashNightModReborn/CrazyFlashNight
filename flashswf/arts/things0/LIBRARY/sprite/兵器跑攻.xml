@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跑攻" itemID="690cd8bb-0000117d" lastModified="1763304103" lastUniqueIdentifier="22">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跑攻" itemID="690cd8bb-0000117d" lastModified="1763370747" lastUniqueIdentifier="22">
   <timeline>
-    <DOMTimeline name="兵器跑攻" currentFrame="35">
+    <DOMTimeline name="兵器跑攻" currentFrame="44">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#73C76A" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#73C76A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -278,7 +278,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#9933CC" autoNamed="false">
+        <DOMLayer name="攻击as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -299,7 +299,9 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
 	子弹参数.水平击退速度 = 水平击退速度;
 
 	_parent.刀口位置生成子弹(子弹参数);
-}]]></script>
+}
+_parent.UpdateSmallState("兵器跑攻一段前");
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -319,7 +321,9 @@ Z轴攻击范围 = 30;
 Z轴攻击范围 = 30;
 击倒率 = 10;
 水平击退速度 = 10;
-兵器冲击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
+兵器冲击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);
+
+_parent.UpdateSmallState("兵器跑攻一段中");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -350,7 +354,9 @@ Z轴攻击范围 = 30;
 Z轴攻击范围 = 30;
 击倒率 = 10;
 水平击退速度 = 10;
-兵器冲击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
+兵器冲击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);
+
+_parent.UpdateSmallState("兵器跑攻二段前");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -393,7 +399,7 @@ Z轴攻击范围 = 30;
 水平击退速度 = 10;
 兵器冲击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);
 
-_parent.UpdateSmallState("跑攻三段中");]]></script>
+_parent.UpdateSmallState("兵器跑攻三段前");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -413,7 +419,8 @@ Z轴攻击范围 = 30;
 if(_parent.特效刀口){
 	_parent.特效刀口.特效刀口触发("兵器冲击");
 }
-]]></script>
+
+_parent.UpdateSmallState("兵器跑攻三段中");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -444,7 +451,10 @@ Z轴攻击范围 = 30;
 Z轴攻击范围 = 30;
 击倒率 = 10;
 水平击退速度 = 10;
-兵器冲击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
+兵器冲击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);
+
+
+_parent.UpdateSmallState("兵器跑攻三段后");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -1049,8 +1059,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-1293 -4087[4831 -4437 9831 -3153!9831 -3153[14832 -1873 15782 292!15782 292[16733 2452 13077 4231!13077 4231[9417 6006 3456 6207!3456 6207[-2506 6408 -6897 4561!-6897 4561[-11290 2712 -13010 1265!-13010 1265[-14728 -183 -11073 -1961
-!-11073 -1961[-7416 -3736 -1293 -4087"/>
+!13077 4231[9417 6006 3456 6207!3456 6207[-2506 6408 -6897 4561!-6897 4561[-11290 2712 -13010 1265!-13010 1265[-14728 -183 -11073 -1961!-11073 -1961[-7416 -3736 -1293 -4087!-1293 -4087[4831 -4437 9831 -3153!9831 -3153[14832 -1873 15782
+ 292!15782 292[16733 2452 13077 4231"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1071,8 +1081,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!13559 4354[9753 6200 3387 6563!3387 6563[-2977 6928 -7646 5104!-7646 5104[-12314 3278 -13236 968!-13236 968[-14160 -1341 -10955 -2636!-10955 -2636[-7752 -3930 -1385 -4296!-1385 -4296[4984 -4659 10183 -3324!10183 -3324[15384 -1993 16372
- 259!16372 259[17361 2505 13559 4354"/>
+!-1385 -4296[4984 -4659 10183 -3324!10183 -3324[15384 -1993 16372 259!16372 259[17361 2505 13559 4354!13559 4354[9753 6200 3387 6563!3387 6563[-2977 6928 -7646 5104!-7646 5104[-12314 3278 -13236 968!-13236 968[-14160 -1341 -10955 -2636
+!-10955 -2636[-7752 -3930 -1385 -4296"/>
                   </edges>
                 </DOMShape>
               </elements>

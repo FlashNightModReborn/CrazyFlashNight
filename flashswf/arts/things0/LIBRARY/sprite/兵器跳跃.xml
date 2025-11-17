@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跳跃" itemID="690cd8ce-0000117e" lastModified="1763303303" lastUniqueIdentifier="678">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跳跃" itemID="690cd8ce-0000117e" lastModified="1763370295" lastUniqueIdentifier="678">
   <timeline>
-    <DOMTimeline name="兵器跳跃" currentFrame="86" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;-150&lt;/guideline&gt;&lt;guideline direction="h"&gt;-164&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="兵器跳跃" currentFrame="116" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;-150&lt;/guideline&gt;&lt;guideline direction="h"&gt;-164&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#6DA6D6">
           <frames>
@@ -605,7 +605,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码" color="#2F84FE" autoNamed="false">
+        <DOMLayer name="代码" color="#2F84FE" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -616,9 +616,23 @@ onClipEvent (enterFrame) {
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="6" duration="8" keyMode="9728">
+            <DOMFrame index="6" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[play();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+_parent.UpdateSmallState("上挑前");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+_parent.UpdateSmallState("上挑中");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -629,9 +643,16 @@ onClipEvent (enterFrame) {
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="15" duration="8" keyMode="9728">
+            <DOMFrame index="15" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[play();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+_parent.UpdateSmallState("兵器空中攻击一段中");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -641,9 +662,16 @@ onClipEvent (enterFrame) {
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="26" duration="14" keyMode="9728">
+            <DOMFrame index="26" duration="4" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[play();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+_parent.UpdateSmallState("兵器空中攻击二段中");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -653,9 +681,15 @@ onClipEvent (enterFrame) {
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="41" duration="11" keyMode="9728">
+            <DOMFrame index="41" duration="3" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[play();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="44" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.UpdateSmallState("兵器空中攻击三段中");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -665,9 +699,15 @@ onClipEvent (enterFrame) {
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="54" duration="16" keyMode="9728">
+            <DOMFrame index="54" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[play();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="55" duration="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.UpdateSmallState("兵器空中攻击四段前");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -794,14 +834,30 @@ _parent.动画完毕();
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="110" duration="11" keyMode="9728">
+            <DOMFrame index="110" duration="3" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[//_parent.垂直速度 = _parent.起跳速度 * 0.1;
 跳跃移动倍率 = 4;
 //滞空时间 = 0;
 //坠地中 = true;
 _parent.刚体 = true;
-play();]]></script>
+play();
+
+_parent.UpdateSmallState("飞燕前");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="113" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+_parent.UpdateSmallState("飞燕中");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="116" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+_parent.UpdateSmallState("飞燕后");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -818,7 +874,7 @@ _parent.gotoAndPlay("跳跃");
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="音效" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="音效" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -877,7 +933,8 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="86" duration="15" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("兽王崩拳.wav");]]></script>
+                <script><![CDATA[_root.播放音效("兽王崩拳.wav");
+_parent.UpdateSmallState("崩山击落地");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -891,7 +948,8 @@ _root.播放音效("重劈.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="104" duration="6" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("兽王崩拳.wav");]]></script>
+                <script><![CDATA[_root.播放音效("兽王崩拳.wav");
+_parent.UpdateSmallState("断头台落地");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -5682,7 +5740,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="113" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/无敌标签" name="无敌标签" selected="true" centerPoint3DX="-150" centerPoint3DY="210.8">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/无敌标签" name="无敌标签" centerPoint3DX="-150" centerPoint3DY="210.8">
                   <matrix>
                     <Matrix tx="-150" ty="200"/>
                   </matrix>
