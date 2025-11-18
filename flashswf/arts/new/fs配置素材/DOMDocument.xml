@@ -7,7 +7,7 @@
           <DOMFolderItem name="P50" itemID="689057d2-0000a3f3"/>
           <DOMFolderItem name="sprite" itemID="667d1fff-00000d61"/>
           <DOMFolderItem name="电感切割刃" itemID="655c5883-00000334"/>
-          <DOMFolderItem name="公社打桩矛" itemID="68e1124a-00003912"/>
+          <DOMFolderItem name="公社打桩矛" itemID="68e1124a-00003912" isExpanded="true"/>
           <DOMFolderItem name="光玉的剑相关" itemID="68668bb8-000033c6"/>
           <DOMFolderItem name="吉他喷火" itemID="65546112-000049ff"/>
           <DOMFolderItem name="吉他喷火/未命名文件夹 1" itemID="65546b1d-00004a12"/>
@@ -47,7 +47,7 @@
           <DOMFolderItem name="长枪/NEGEV" itemID="686a7a3e-0000131c"/>
           <DOMFolderItem name="长枪/PF98A" itemID="68d38e78-0000168e" isExpanded="true"/>
           <DOMFolderItem name="长枪/PKP" itemID="686b8a7f-000003a1"/>
-          <DOMFolderItem name="长枪/RPG7V2" itemID="68d4b946-0000085f"/>
+          <DOMFolderItem name="长枪/RPG7V2" itemID="68d4b946-0000085f" isExpanded="true"/>
           <DOMFolderItem name="长枪/wa90" itemID="6559d3b1-000002db"/>
           <DOMFolderItem name="长枪/wa90/Graphic" itemID="5e86cc75-00001260"/>
           <DOMFolderItem name="长枪/XM25" itemID="6874cd16-000007b9"/>
@@ -139,15 +139,13 @@
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="ashcore/ashcore.xml" itemID="688340fd-00000819" lastModified="1753436006"/>
           <Include href="ashcore/图标-ashcore.xml" itemID="68835078-00000a95" lastModified="1753436313"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1763437733"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1763438963"/>
           <Include href="NLAW筒子.xml" itemIcon="1" loadImmediate="false" itemID="68d8f28b-00000aab" lastModified="1759048620"/>
           <Include href="P50/Kel-Tec-P50.xml" itemID="688f2946-000075a6" lastModified="1759804159"/>
           <Include href="P50/图标-Kel-Tec-P50.xml" itemID="688f460b-0000768a" lastModified="1759804179"/>
           <Include href="q.xml" loadImmediate="false" itemID="6898491a-00000406" lastModified="1754812780"/>
-          <Include href="RPG28发射器.xml" itemIcon="1" loadImmediate="false" itemID="68d50204-00000d2a" lastModified="1758790191"/>
           <Include href="sprite/Symbol 35.xml" itemID="6577b699-00000971" lastModified="1718635260"/>
           <Include href="sprite/Symbol 36.xml" loadImmediate="false" itemID="6577b699-00000972" lastModified="1719476235"/>
-          <Include href="爆燃钻矛金属件.xml" itemIcon="1" loadImmediate="false" itemID="68e59bf7-00006feb" lastModified="1759878135"/>
           <Include href="补间 11.xml" itemIcon="1" loadImmediate="false" itemID="688b0839-00000754" lastModified="1753942073"/>
           <Include href="补间 12.xml" itemIcon="1" loadImmediate="false" itemID="688b0839-00000756" lastModified="1753942073"/>
           <Include href="补间 13.xml" itemIcon="1" loadImmediate="false" itemID="688b39ff-000007ea" lastModified="1753954815"/>
@@ -176,9 +174,10 @@
           <Include href="电感切割刃/中间刀.xml" loadImmediate="false" itemID="655c4fdd-0000063b" lastModified="1700548573"/>
           <Include href="电容器舱.xml" loadImmediate="false" itemID="68a0d830-00001f8c" lastModified="1755396083"/>
           <Include href="反坦克导弹图像.xml" itemIcon="1" loadImmediate="false" itemID="68d8f8ee-00000eb8" lastModified="1759049966"/>
-          <Include href="公社爆燃钻矛图像.xml" itemIcon="1" loadImmediate="false" itemID="68e4cdc4-000044d0" lastModified="1759878071"/>
+          <Include href="公社打桩矛/爆燃钻矛金属件.xml" itemIcon="1" loadImmediate="false" itemID="68e59bf7-00006feb" lastModified="1759878135"/>
           <Include href="公社打桩矛/刀-公社爆燃钻矛.xml" itemID="68e4cbcb-000044c3" lastModified="1759878774"/>
           <Include href="公社打桩矛/刀-公社打桩矛.xml" itemID="68e111a0-00003904" lastModified="1759803830"/>
+          <Include href="公社打桩矛/公社爆燃钻矛图像.xml" itemIcon="1" loadImmediate="false" itemID="68e4cdc4-000044d0" lastModified="1759878071"/>
           <Include href="公社打桩矛/公社打桩矛图像.xml" itemIcon="1" loadImmediate="false" itemID="68e11197-00003903" lastModified="1759824843"/>
           <Include href="公社打桩矛/图标-公社爆燃钻矛.xml" itemID="68e4d0a9-000044e8" lastModified="1759826566"/>
           <Include href="公社打桩矛/图标-公社打桩矛.xml" itemID="68e125a4-00003940" lastModified="1759585823"/>
@@ -295,12 +294,6 @@
           <Include href="龙破军霜/刀-龙破军霜.xml" itemID="65f704da-0000226e" lastModified="1721580528"/>
           <Include href="龙破军霜/龙破军霜.xml" itemIcon="1" loadImmediate="false" itemID="65f704e6-00002270" lastModified="1710690852"/>
           <Include href="龙破军霜/图标-龙破军霜.xml" itemID="65f704b4-00002269" lastModified="1710687412"/>
-          <Include href="能量舱.xml" loadImmediate="false" itemID="68a0c541-0000144b" lastModified="1755397777"/>
-          <Include href="喷口.xml" loadImmediate="false" itemID="68a07545-0000290b" lastModified="1755367746"/>
-          <Include href="枪口.xml" loadImmediate="false" itemID="68a0c5fd-00001454" lastModified="1755388623"/>
-          <Include href="枪口基座.xml" loadImmediate="false" itemID="68a0d254-00001f61" lastModified="1755370147"/>
-          <Include href="全息投影仪.xml" loadImmediate="false" itemID="688cd676-00001058" lastModified="1754060997"/>
-          <Include href="伸缩支架.xml" loadImmediate="false" itemID="69119c56-00002ea7" lastModified="1762761814"/>
           <Include href="生存战素材/Symbol 9.xml" itemIcon="1" loadImmediate="false" itemID="65c24a9a-00000cc3" lastModified="1699960314"/>
           <Include href="特效素材/打击伤害数字.xml" itemID="656983a5-000002a1" lastModified="1706446521"/>
           <Include href="特效与子弹/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="65e08f36-00001ff1" lastModified="1702237154"/>
@@ -476,6 +469,7 @@
           <Include href="长枪/PF98A/PF98A后筒发射药.xml" loadImmediate="false" itemID="68d38e84-00001690" lastModified="1758695044"/>
           <Include href="长枪/PF98A/PF98A筒子.xml" loadImmediate="false" itemID="68d38e7e-0000168f" lastModified="1758695038"/>
           <Include href="长枪/PF98A/RPG28.xml" itemID="68d500c8-00000d19" lastModified="1758792335"/>
+          <Include href="长枪/PF98A/RPG28发射器.xml" itemIcon="1" loadImmediate="false" itemID="68d50204-00000d2a" lastModified="1758790191"/>
           <Include href="长枪/PF98A/RShG4.xml" itemID="68d65626-0000106d" lastModified="1758879975"/>
           <Include href="长枪/PF98A/RShG4Я.xml" itemID="6911637d-00002e6a" lastModified="1762844239"/>
           <Include href="长枪/PF98A/弹头1.xml" loadImmediate="false" itemID="691196a3-00002e7e" lastModified="1762760359"/>
@@ -555,7 +549,7 @@
           <Include href="长枪/XM556/线圈中级.xml" loadImmediate="false" itemID="686f1f34-0000053c" lastModified="1752130775"/>
           <Include href="长枪/ZB-26/ZB-26.xml" itemID="68725316-0000359d" lastModified="1752334536"/>
           <Include href="长枪/ZB-26/图标-ZB-26.xml" itemID="68727da4-000003bb" lastModified="1752333778"/>
-          <Include href="长枪/火药燃气液压打桩机/MAACSIV机体.xml" loadImmediate="false" itemID="691ae194-00002a51" lastModified="1763369855"/>
+          <Include href="长枪/火药燃气液压打桩机/MAACSIV机体.xml" loadImmediate="false" itemID="691ae194-00002a51" lastModified="1763447289"/>
           <Include href="长枪/火药燃气液压打桩机/MACSIII.xml" itemID="6884cbed-0000480a" lastModified="1763368704"/>
           <Include href="长枪/火药燃气液压打桩机/MACSIII活性锯片.xml" loadImmediate="false" itemID="68863881-000003ec" lastModified="1763372984"/>
           <Include href="长枪/火药燃气液压打桩机/MACSIII火焰1.xml" itemIcon="1" loadImmediate="false" itemID="68865cb2-00006fb4" lastModified="1753636018"/>
@@ -584,6 +578,12 @@
           <Include href="长枪/火药燃气液压打桩机/火药燃气打桩机动画.xml" loadImmediate="false" itemID="65519ab4-00001fd0" lastModified="1752227727"/>
           <Include href="长枪/火药燃气液压打桩机/机体.xml" itemIcon="1" loadImmediate="false" itemID="651d640c-00002ff5" lastModified="1699836975"/>
           <Include href="长枪/火药燃气液压打桩机/僵尸割草机.xml" itemID="6881e42a-00000543" lastModified="1753710935"/>
+          <Include href="长枪/火药燃气液压打桩机/能量舱.xml" loadImmediate="false" itemID="68a0c541-0000144b" lastModified="1755397777"/>
+          <Include href="长枪/火药燃气液压打桩机/喷口.xml" loadImmediate="false" itemID="68a07545-0000290b" lastModified="1755367746"/>
+          <Include href="长枪/火药燃气液压打桩机/枪口.xml" loadImmediate="false" itemID="68a0c5fd-00001454" lastModified="1755388623"/>
+          <Include href="长枪/火药燃气液压打桩机/枪口基座.xml" loadImmediate="false" itemID="68a0d254-00001f61" lastModified="1755370147"/>
+          <Include href="长枪/火药燃气液压打桩机/全息投影仪.xml" loadImmediate="false" itemID="688cd676-00001058" lastModified="1754060997"/>
+          <Include href="长枪/火药燃气液压打桩机/伸缩支架.xml" loadImmediate="false" itemID="69119c56-00002ea7" lastModified="1762761814"/>
           <Include href="长枪/火药燃气液压打桩机/图标-MACSIII.xml" itemID="6884cbfc-0000480b" lastModified="1753533436"/>
           <Include href="长枪/火药燃气液压打桩机/图标-MACSIV.xml" itemID="691beaa3-000004a9" lastModified="1763437243"/>
           <Include href="长枪/火药燃气液压打桩机/图标-等离子切割机.xml" itemID="68a1f3e9-00009a88" lastModified="1755444271"/>
@@ -597,6 +597,7 @@
           <Include href="长枪/火药燃气液压打桩机/未命名文件夹 1/shape 9 (Up Over Down Hit).xml" itemIcon="1" loadImmediate="false" itemID="65545fb1-000049aa" lastModified="1443854724"/>
           <Include href="长枪/火药燃气液压打桩机/未命名文件夹 1/sprite 10.xml" loadImmediate="false" itemID="65545fb1-000049a9" lastModified="1443854724"/>
           <Include href="长枪/火药燃气液压打桩机/压力表.xml" itemIcon="1" loadImmediate="false" itemID="651d5a3d-00002f9c" lastModified="1696422461"/>
+          <Include href="长枪/火药燃气液压打桩机/转轴.xml" loadImmediate="false" itemID="68a0be7b-000012e0" lastModified="1755365233"/>
           <Include href="长枪/火药燃气液压打桩机/装填杆.xml" itemIcon="1" loadImmediate="false" itemID="651d59f3-00002f98" lastModified="1696422388"/>
           <Include href="长枪/铁枪/补间 3.xml" itemIcon="1" loadImmediate="false" itemID="657ba813-000004c4" lastModified="1702602771"/>
           <Include href="长枪/铁枪/补间 4.xml" itemIcon="1" loadImmediate="false" itemID="657ba813-000004c6" lastModified="1702602771"/>
@@ -675,7 +676,6 @@
           <Include href="主唱光剑/主唱光刃下撩斩.xml" itemID="657a7215-0000474f" lastModified="1702536831"/>
           <Include href="主唱光剑/主唱光刃下轮斩.xml" itemID="657a696f-000046fb" lastModified="1702536407"/>
           <Include href="主唱光剑/主唱光刃下圈斩.xml" itemID="657a779e-00004770" lastModified="1702537012"/>
-          <Include href="转轴.xml" loadImmediate="false" itemID="68a0be7b-000012e0" lastModified="1755365233"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;-246&lt;/guideline&gt;&lt;/guidelines&gt;'>
@@ -1479,6 +1479,8 @@
                     <SolidSwatchItem color="#00B5D4" hue="126" saturation="239" brightness="100"/>
                     <SolidSwatchItem color="#22FCF6" hue="119" saturation="233" brightness="135"/>
                     <SolidSwatchItem color="#2D7688" hue="128" saturation="121" brightness="85"/>
+                    <SolidSwatchItem color="#759AAC" hue="133" saturation="60" brightness="136"/>
+                    <SolidSwatchItem color="#4E6673" hue="134" saturation="46" brightness="91"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1561,6 +1563,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2672478" publishTime="1763447299"/>
           <PublishItem publishSize="2604539" publishTime="1762843804"/>
           <PublishItem publishSize="2604450" publishTime="1762843097"/>
           <PublishItem publishSize="2604451" publishTime="1762843025"/>
@@ -1580,6 +1583,5 @@
           <PublishItem publishSize="2507751" publishTime="1759826333"/>
           <PublishItem publishSize="2476975" publishTime="1759804046"/>
           <PublishItem publishSize="2476976" publishTime="1759803974"/>
-          <PublishItem publishSize="2476796" publishTime="1759585581"/>
      </publishHistory>
 </DOMDocument>
