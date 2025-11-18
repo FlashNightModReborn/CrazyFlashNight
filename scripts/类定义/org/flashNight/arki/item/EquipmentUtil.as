@@ -458,11 +458,12 @@ class org.flashNight.arki.item.EquipmentUtil{
         // 覆盖 data 内的属性
         propertyOperators.override(itemData.data, tierData);
 
-        // 覆盖顶层属性（icon, displayname, description, skill）
+        // 覆盖顶层属性（icon, displayname, description, skill, lifecycle）
         if(tierData.icon !== undefined) itemData.icon = tierData.icon;
         if(tierData.displayname !== undefined) itemData.displayname = tierData.displayname;
         if(tierData.description !== undefined) itemData.description = tierData.description;
         if(tierData.skill !== undefined) itemData.skill = ObjectUtil.clone(tierData.skill);
+        if(tierData.lifecycle !== undefined) itemData.lifecycle = ObjectUtil.clone(tierData.lifecycle);
 
         // 清空已使用的进阶数据（无条件置空，保持原始行为）
         itemData[tierKey] = null;

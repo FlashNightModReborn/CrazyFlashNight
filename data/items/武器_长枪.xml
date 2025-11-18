@@ -3096,6 +3096,54 @@
       <damagetype>魔法</damagetype>
       <magictype>热</magictype>
     </data>
+    <data_ice>
+      <level>39</level>
+      <dressup>枪-长枪-MACSIV</dressup>
+      <icon>MACSIV</icon>
+      <power>140</power>
+      <magictype>冷</magictype>
+      <hp>444</hp>
+      <defence>333</defence>
+      <lifecycle>
+        <attr_0>
+          <init>
+            <initRoutines>MACSIII初始化</initRoutines>
+            <initParam>
+              <executeLevel>3</executeLevel>
+              <lifeStealLevel>6</lifeStealLevel>
+              <selfDamageMultiplierTier1>3</selfDamageMultiplierTier1>
+              <selfDamageMultiplierTier2>4</selfDamageMultiplierTier2>
+              <selfDamageMultiplierTier3>5</selfDamageMultiplierTier3>
+              <selfDamageMultiplierTier4>6</selfDamageMultiplierTier4>
+              <tierThreshold1>2</tierThreshold1>
+              <tierThreshold2>5</tierThreshold2>
+              <tierThreshold3>10</tierThreshold3>
+              <emergencyShutdownLevel>8</emergencyShutdownLevel>
+              <emergencyShutdownHpThreshold>0.1</emergencyShutdownHpThreshold>
+              <executeValueSingle>8</executeValueSingle>
+              <executeValueCombo>10</executeValueCombo>
+              <lifeStealValueSingle>10</lifeStealValueSingle>
+              <lifeStealValueCombo>18</lifeStealValueCombo>
+              <normalLoopFrames>4</normalLoopFrames>
+              <overloadOffset>4</overloadOffset>
+              <toOverloadStartFrame>9</toOverloadStartFrame>
+              <toOverloadTotalFrames>4</toOverloadTotalFrames>
+              <toNormalStartFrame>13</toNormalStartFrame>
+              <toNormalTotalFrames>4</toNormalTotalFrames>
+              <animBudgetIncrease>10.0</animBudgetIncrease>
+              <animBudgetMax>60.0</animBudgetMax>
+              <emergencyShutdownMessage>⚠ 纳米机器人紧急停机！</emergencyShutdownMessage>
+              <emergencyShutdownColor>#FF6600</emergencyShutdownColor>
+              <idleDamageReductionLevel>13</idleDamageReductionLevel>
+              <idleDamageReductionRatio>0.5</idleDamageReductionRatio>
+            </initParam>
+          </init>
+          <cycle>
+            <cycleRoutines>MACSIII周期</cycleRoutines>
+          </cycle>
+        </attr_0>
+      </lifecycle>
+    </data_ice>
     <skill>
       <skillname>MACSIII超载打击</skillname>
       <description>消耗一枚强化石强制执行被锁定的高级协议，发动一次毁灭性挥砍。
