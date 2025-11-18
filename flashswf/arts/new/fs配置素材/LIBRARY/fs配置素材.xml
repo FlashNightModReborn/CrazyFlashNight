@@ -1,10 +1,10 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1762825832" lastUniqueIdentifier="259">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1763437733" lastUniqueIdentifier="264">
   <timeline>
-    <DOMTimeline name="fs配置素材" currentFrame="12" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="17" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
         <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
-        <DOMLayer name="图层 3" color="#4FFFFF" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="56" keyMode="9728">
               <elements/>
@@ -34,7 +34,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="文件夹 3" color="#808080" layerType="folder"/>
-        <DOMLayer name="图层 4" color="#4F80FF">
+        <DOMLayer name="图层 4" color="#4F80FF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -441,9 +441,9 @@
                     <Point x="65.65" y="44.55"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIII" centerPoint3DX="-633.25" centerPoint3DY="-52.35">
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIII" centerPoint3DX="-656.85" centerPoint3DY="-80.35">
                   <matrix>
-                    <Matrix tx="-714.05" ty="-118.35"/>
+                    <Matrix tx="-737.65" ty="-146.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="81.05" y="66"/>
@@ -489,9 +489,9 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/图标-MACSIII" centerPoint3DX="-463.2" centerPoint3DY="-114.05">
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/图标-MACSIII" centerPoint3DX="-457.75" centerPoint3DY="57.55">
                   <matrix>
-                    <Matrix tx="-463.2" ty="-114.05"/>
+                    <Matrix tx="-457.75" ty="57.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -519,6 +519,22 @@
                   </matrix>
                   <transformationPoint>
                     <Point x="-1.85" y="0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV" centerPoint3DX="-645.1" centerPoint3DY="76.25">
+                  <matrix>
+                    <Matrix tx="-727" ty="68.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="81.95" y="7.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/图标-MACSIV" centerPoint3DX="-458.2" centerPoint3DY="87.85">
+                  <matrix>
+                    <Matrix tx="-458.2" ty="87.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -605,7 +621,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="长枪/PF98A/RShG4Я" selected="true" centerPoint3DX="-312.65" centerPoint3DY="424.5">
+                <DOMSymbolInstance libraryItemName="长枪/PF98A/RShG4Я" centerPoint3DX="-312.65" centerPoint3DY="424.5">
                   <matrix>
                     <Matrix tx="-311.4" ty="440.95"/>
                   </matrix>

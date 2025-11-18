@@ -17,7 +17,8 @@
     // === 计算分段自伤系数 ===
     // 强化度 1-2: 系数3
     // 强化度 3-5: 系数4
-    // 强化度 6-13: 系数5
+    // 强化度 6-10: 系数5
+    // 强化度 11+: 系数6
     var damageMultiplier:Number;
     if (upgradeLevel <= 2) {
         damageMultiplier = 3;
@@ -30,6 +31,9 @@
     }
 
     ref.selfDamagePerFrame = upgradeLevel * damageMultiplier;
+
+    // 强化度8及以上解锁紧急停机功能
+    ref.hasEmergencyShutdown = (upgradeLevel >= 8);
 
     var execBonus:Number = (upgradeLevel >= executeLevel) ? 10 : 0;
     var lifeBonus:Number = (upgradeLevel >= lifeStealLevel) ? 18 : 0;
@@ -128,16 +132,13 @@ _root.装备生命周期函数.MACSIII周期 = function(ref:Object, param:Object
         target.hp -= selfDamage;
         BloodBarEffectHandler.updateStatus(target);
 
-        /*
-           // 紧急保护：血量低于10%自动终止超载
-           if (target.hp < target.hp满血值 * 0.1) {
-           target.MACSIII超载打击许可 = false;
-           target.MACSIII超载打击剩余时间 = 0;
-           target.man.初始化长枪射击函数(); // 紧急停机时刷新射击函数
-           _root.发布消息("<font color='#FF6600'>⚠ 纳米机器人紧急停机！</font>");
-           }
-
-         */
+        // 紧急停机：强化度8及以上解锁，血量低于10%自动终止超载
+        if (ref.hasEmergencyShutdown && target.hp < target.hp满血值 * 0.1) {
+            target.MACSIII超载打击许可 = false;
+            target.MACSIII超载打击剩余时间 = 0;
+            target.man.初始化长枪射击函数(); // 紧急停机时刷新射击函数
+            _root.发布消息("<font color='#FF6600'>⚠ 纳米机器人紧急停机！</font>");
+        }
 
         // 死亡检测
         if (target.hp <= 0) {

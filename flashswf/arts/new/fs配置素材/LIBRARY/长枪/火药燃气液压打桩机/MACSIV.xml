@@ -1,0 +1,1796 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/火药燃气液压打桩机/MACSIV" itemID="691adce2-00002a35" linkageExportForAS="true" linkageIdentifier="枪-长枪-MACSIV" lastModified="1763436846" lastUniqueIdentifier="54">
+  <timeline>
+    <DOMTimeline name="MACSIV">
+      <layers>
+        <DOMLayer name="图层 7" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="8" name="标准状态" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="8" name="标准过载" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 5" color="#4FFFFF">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="8" name="过载形态" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="4" name="过载标准" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" selected="true" centerPoint3DX="116.6" centerPoint3DY="12.65">
+                  <matrix>
+                    <Matrix a="5.4981689453125" d="3.50199890136719" tx="104.05" ty="0.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/sprite 10" name="枪口位置" centerPoint3DX="34.5" centerPoint3DY="-41.2">
+                  <matrix>
+                    <Matrix a="10.7218627929688" d="7.84112548828125" tx="21.95" ty="-53.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 6" color="#808080">
+          <frames>
+            <DOMFrame index="0" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MAACSIV机体" centerPoint3DX="24.85" centerPoint3DY="4.55">
+                  <matrix>
+                    <Matrix tx="24.85" ty="4.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 8" color="#FF4F4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV拉杆" selected="true" centerPoint3DX="113.4" centerPoint3DY="-25.15">
+                  <matrix>
+                    <Matrix tx="113.4" ty="-25.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV拉杆" centerPoint3DX="117.85" centerPoint3DY="-16.7">
+                  <matrix>
+                    <Matrix a="0.833892822265625" b="0.551925659179688" c="-0.551925659179688" d="0.833892822265625" tx="117.65" ty="-16.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV拉杆" centerPoint3DX="113.4" centerPoint3DY="-25.15">
+                  <matrix>
+                    <Matrix tx="113.4" ty="-25.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 9" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV激活锯盘" centerPoint3DX="162.8" centerPoint3DY="45.05">
+                  <matrix>
+                    <Matrix tx="162.8" ty="45.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV激活锯盘" centerPoint3DX="162.8" centerPoint3DY="45.05">
+                  <matrix>
+                    <Matrix tx="162.8" ty="45.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.25"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV激活锯盘" centerPoint3DX="162.8" centerPoint3DY="45.05">
+                  <matrix>
+                    <Matrix tx="162.8" ty="45.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV激活锯盘" centerPoint3DX="162.8" centerPoint3DY="45.05">
+                  <matrix>
+                    <Matrix tx="162.8" ty="45.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV激活锯盘" centerPoint3DX="162.8" centerPoint3DY="45.05">
+                  <matrix>
+                    <Matrix tx="162.8" ty="45.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="0.25"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.19921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 10" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯盘" centerPoint3DX="162.8" centerPoint3DY="45.05">
+                  <matrix>
+                    <Matrix tx="162.8" ty="45.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="链锯" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="100.35" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" centerPoint3DX="144.65" centerPoint3DY="6">
+                  <matrix>
+                    <Matrix tx="126.35" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="154.35" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.928680419921875" b="0.370880126953125" c="-0.370880126953125" d="0.928680419921875" tx="184.95" ty="-8.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.480575561523438" b="0.876937866210938" c="-0.876937866210938" d="-0.480575561523438" tx="231.8" ty="68"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="202.6" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="176.6" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="148.6" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="122.6" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.413970947265625" b="0.910247802734375" c="-0.910247802734375" d="0.413970947265625" tx="229.75" ty="31.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.710983276367188" b="0.703201293945313" c="-0.703201293945313" d="0.710983276367188" tx="211.65" ty="4.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="76.35" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="103.35" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="129.35" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="157.35" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.911819458007813" b="0.410568237304688" c="-0.410568237304688" d="0.911819458007813" tx="191.3" ty="-6.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.604095458984375" b="0.796890258789063" c="-0.796890258789063" d="-0.604095458984375" tx="228" ty="74.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="196.35" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="170.35" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="142.35" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="116.35" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.069122314453125" b="0.997543334960938" c="-0.997543334960938" d="0.069122314453125" tx="235.3" ty="41.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.585769653320313" b="0.810470581054688" c="-0.810470581054688" d="0.585769653320313" tx="221.3" ty="9.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="15.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="110.7" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="135.65" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9984130859375" b="0.056304931640625" c="-0.056304931640625" d="0.9984130859375" tx="163.25" ty="-9.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.870346069335938" b="0.492462158203125" c="-0.492462158203125" d="0.870346069335938" tx="196.55" ty="-6.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.715286254882813" b="0.698806762695313" c="-0.698806762695313" d="-0.715286254882813" tx="224.65" ty="78.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="189.2" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="162.65" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="136.3" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="109.15" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.05279541015625" b="0.998565673828125" c="-0.998565673828125" d="-0.05279541015625" tx="238.25" ty="47.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.63055419921875" b="0.776123046875" c="-0.776123046875" d="0.63055419921875" tx="221" ty="12.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="88.2" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="117.2" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="142.15" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.994094848632813" b="0.108535766601563" c="-0.108535766601563" d="0.994094848632813" tx="172.35" ty="-7.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.826904296875" b="0.562362670898438" c="-0.562362670898438" d="0.826904296875" tx="206.05" ty="0.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.7" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.877792358398438" b="0.478988647460938" c="-0.478988647460938" d="-0.877792358398438" tx="215.8" ty="86.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="182.55" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="156.5" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="129.2" ty="96.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.821731567382813" b="-0.569869995117188" c="0.569869995117188" d="-0.821731567382813" tx="89.8" ty="98.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.228805541992188" b="0.973419189453125" c="-0.973419189453125" d="-0.228805541992188" tx="235.25" ty="56.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.471389770507813" b="0.881912231445313" c="-0.881912231445313" d="0.471389770507813" tx="227.9" ty="24.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.95" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="94.7" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="100.35" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="126.35" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="1" loop="loop">
+                  <matrix>
+                    <Matrix tx="154.35" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="0.928680419921875" b="0.370880126953125" c="-0.370880126953125" d="0.928680419921875" tx="184.95" ty="-8.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.480575561523438" b="0.876937866210938" c="-0.876937866210938" d="-0.480575561523438" tx="231.8" ty="68"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="1" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="202.6" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="176.6" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="148.6" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="122.6" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="4" loop="loop">
+                  <matrix>
+                    <Matrix a="0.413970947265625" b="0.910247802734375" c="-0.910247802734375" d="0.413970947265625" tx="229.75" ty="31.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.710983276367188" b="0.703201293945313" c="-0.703201293945313" d="0.710983276367188" tx="211.65" ty="4.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="76.35" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="103.35" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="129.35" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="1" loop="loop">
+                  <matrix>
+                    <Matrix tx="157.35" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="0.911819458007813" b="0.410568237304688" c="-0.410568237304688" d="0.911819458007813" tx="191.3" ty="-6.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.604095458984375" b="0.796890258789063" c="-0.796890258789063" d="-0.604095458984375" tx="228" ty="74.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="196.35" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="170.35" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="142.35" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="116.35" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="1" loop="loop">
+                  <matrix>
+                    <Matrix a="0.069122314453125" b="0.997543334960938" c="-0.997543334960938" d="0.069122314453125" tx="235.3" ty="41.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.585769653320313" b="0.810470581054688" c="-0.810470581054688" d="0.585769653320313" tx="221.3" ty="9.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="15.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="110.7" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="135.65" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="1" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9984130859375" b="0.056304931640625" c="-0.056304931640625" d="0.9984130859375" tx="163.25" ty="-9.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="0.870346069335938" b="0.492462158203125" c="-0.492462158203125" d="0.870346069335938" tx="196.55" ty="-6.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.715286254882813" b="0.698806762695313" c="-0.698806762695313" d="-0.715286254882813" tx="224.65" ty="78.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="189.2" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="162.65" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="136.3" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="109.15" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="1" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.05279541015625" b="0.998565673828125" c="-0.998565673828125" d="-0.05279541015625" tx="238.25" ty="47.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.63055419921875" b="0.776123046875" c="-0.776123046875" d="0.63055419921875" tx="221" ty="12.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="88.2" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="117.2" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="1" loop="loop">
+                  <matrix>
+                    <Matrix tx="142.15" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="0.994094848632813" b="0.108535766601563" c="-0.108535766601563" d="0.994094848632813" tx="172.35" ty="-7.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.826904296875" b="0.562362670898438" c="-0.562362670898438" d="0.826904296875" tx="206.05" ty="0.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.7" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.877792358398438" b="0.478988647460938" c="-0.478988647460938" d="-0.877792358398438" tx="215.8" ty="86.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="182.55" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="156.5" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="129.2" ty="96.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.821731567382813" b="-0.569869995117188" c="0.569869995117188" d="-0.821731567382813" tx="89.8" ty="98.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="1" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.228805541992188" b="0.973419189453125" c="-0.973419189453125" d="-0.228805541992188" tx="235.25" ty="56.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.471389770507813" b="0.881912231445313" c="-0.881912231445313" d="0.471389770507813" tx="227.9" ty="24.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.95" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="94.7" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="100.35" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="126.35" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="154.35" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.928680419921875" b="0.370880126953125" c="-0.370880126953125" d="0.928680419921875" tx="184.95" ty="-8.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.480575561523438" b="0.876937866210938" c="-0.876937866210938" d="-0.480575561523438" tx="231.8" ty="68"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="202.6" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="176.6" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="148.6" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="122.6" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.413970947265625" b="0.910247802734375" c="-0.910247802734375" d="0.413970947265625" tx="229.75" ty="31.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.710983276367188" b="0.703201293945313" c="-0.703201293945313" d="0.710983276367188" tx="211.65" ty="4.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="76.45" ty="-2.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="103.45" ty="-2.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="129.45" ty="-2.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="157.45" ty="-2.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.911819458007813" b="0.410568237304688" c="-0.410568237304688" d="0.911819458007813" tx="187.6" ty="-1.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.604095458984375" b="0.796890258789063" c="-0.796890258789063" d="-0.604095458984375" tx="220.9" ty="65.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="196.35" ty="89.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="170.35" ty="89.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="142.35" ty="89.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="116.35" ty="89.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.069122314453125" b="0.997543334960938" c="-0.997543334960938" d="0.069122314453125" tx="230.5" ty="40.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.585769653320313" b="0.810470581054688" c="-0.810470581054688" d="0.585769653320313" tx="212.8" ty="13"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="15.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="110.7" ty="4.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="135.65" ty="0.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="1" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9984130859375" b="0.056304931640625" c="-0.056304931640625" d="0.9984130859375" tx="163.25" ty="-3.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="0.870346069335938" b="0.492462158203125" c="-0.492462158203125" d="0.870346069335938" tx="195.05" ty="3.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.715286254882813" b="0.698806762695313" c="-0.698806762695313" d="-0.715286254882813" tx="224.6" ty="66.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="189.15" ty="85.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="162.6" ty="85.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="136.25" ty="85.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="109.1" ty="85.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="1" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.05279541015625" b="0.998565673828125" c="-0.998565673828125" d="-0.05279541015625" tx="230.6" ty="42.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.63055419921875" b="0.776123046875" c="-0.776123046875" d="0.63055419921875" tx="214.05" ty="17.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="88.2" ty="-1.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="117.2" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="1" loop="loop">
+                  <matrix>
+                    <Matrix tx="142.15" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="0.994094848632813" b="0.108535766601563" c="-0.108535766601563" d="0.994094848632813" tx="172.35" ty="-7.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.826904296875" b="0.562362670898438" c="-0.562362670898438" d="0.826904296875" tx="206.05" ty="0.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.7" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.877792358398438" b="0.478988647460938" c="-0.478988647460938" d="-0.877792358398438" tx="215.8" ty="86.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="182.55" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="156.5" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="129.2" ty="96.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.821731567382813" b="-0.569869995117188" c="0.569869995117188" d="-0.821731567382813" tx="89.8" ty="98.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="1" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.228805541992188" b="0.973419189453125" c="-0.973419189453125" d="-0.228805541992188" tx="235.25" ty="56.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.471389770507813" b="0.881912231445313" c="-0.881912231445313" d="0.471389770507813" tx="227.9" ty="24.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.95" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="94.7" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="100.35" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="126.35" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="1" loop="loop">
+                  <matrix>
+                    <Matrix tx="154.35" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="0.928680419921875" b="0.370880126953125" c="-0.370880126953125" d="0.928680419921875" tx="184.95" ty="-8.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.480575561523438" b="0.876937866210938" c="-0.876937866210938" d="-0.480575561523438" tx="231.8" ty="68"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="1" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="202.6" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="176.6" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="148.6" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="122.6" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="4" loop="loop">
+                  <matrix>
+                    <Matrix a="0.413970947265625" b="0.910247802734375" c="-0.910247802734375" d="0.413970947265625" tx="229.75" ty="31.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.710983276367188" b="0.703201293945313" c="-0.703201293945313" d="0.710983276367188" tx="211.65" ty="4.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="73.7" ty="0.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="100.7" ty="0.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="126.7" ty="0.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="1" loop="loop">
+                  <matrix>
+                    <Matrix tx="154.7" ty="0.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="0.911819458007813" b="0.410568237304688" c="-0.410568237304688" d="0.911819458007813" tx="188.65" ty="3.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.604095458984375" b="0.796890258789063" c="-0.796890258789063" d="-0.604095458984375" tx="222.55" ty="69.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="197.3" ty="84.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="171.3" ty="84.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="2" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="143.3" ty="84.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="117.3" ty="84.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="1" loop="loop">
+                  <matrix>
+                    <Matrix a="0.069122314453125" b="0.997543334960938" c="-0.997543334960938" d="0.069122314453125" tx="230.25" ty="42.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV活性锯片" symbolType="graphic" firstFrame="3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.585769653320313" b="0.810470581054688" c="-0.810470581054688" d="0.585769653320313" tx="218.65" ty="19.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="15.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="110.6" ty="-4.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="135.55" ty="-4.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9984130859375" b="0.056304931640625" c="-0.056304931640625" d="0.9984130859375" tx="163.15" ty="-4.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.870346069335938" b="0.492462158203125" c="-0.492462158203125" d="0.870346069335938" tx="194.9" ty="-1.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.715286254882813" b="0.698806762695313" c="-0.698806762695313" d="-0.715286254882813" tx="221.35" ty="75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="189.2" ty="92.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="162.65" ty="92.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="136.3" ty="92.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="109.15" ty="92.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.05279541015625" b="0.998565673828125" c="-0.998565673828125" d="-0.05279541015625" tx="230.4" ty="42.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.63055419921875" b="0.776123046875" c="-0.776123046875" d="0.63055419921875" tx="219.35" ty="17.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="88.1" ty="-4.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="117.2" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="142.15" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.994094848632813" b="0.108535766601563" c="-0.108535766601563" d="0.994094848632813" tx="172.35" ty="-7.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.826904296875" b="0.562362670898438" c="-0.562362670898438" d="0.826904296875" tx="206.05" ty="0.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.7" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.877792358398438" b="0.478988647460938" c="-0.478988647460938" d="-0.877792358398438" tx="215.8" ty="86.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="182.55" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="156.5" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="129.2" ty="96.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.821731567382813" b="-0.569869995117188" c="0.569869995117188" d="-0.821731567382813" tx="89.8" ty="98.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.228805541992188" b="0.973419189453125" c="-0.973419189453125" d="-0.228805541992188" tx="235.25" ty="56.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="15.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.471389770507813" b="0.881912231445313" c="-0.881912231445313" d="0.471389770507813" tx="227.9" ty="24.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.95" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV锯片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="94.7" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="15.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
