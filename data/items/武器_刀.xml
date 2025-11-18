@@ -2686,6 +2686,29 @@
     </data>
   </item>
   <item>
+    <name>魔刀千刃</name>
+    <displayname>魔刀千刃</displayname>
+    <icon>魔刀千刃</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>刀剑</actiontype>
+    <price>300000</price>
+    <skill>
+      <skillname>辉光剑气</skillname>
+      <description>手持该武器可以使用辉光剑气。</description>
+      <cd>8000</cd>
+      <mp>30</mp>
+    </skill>
+    <description>567！</description>
+    <data>
+      <level>33</level>
+      <weight>3</weight>
+      <dressup>刀-魔刀千刃</dressup>
+      <power>420</power>
+      <criticalhit>10</criticalhit>
+    </data>
+  </item>
+  <item>
     <name>风魔</name>
     <displayname>风魔</displayname>
     <icon>风魔</icon>
