@@ -238,28 +238,4 @@ equipconfig_loader.loadEquipmentConfig(
     }
 );
 
-
-[BaseXMLLoader] [INFO] 初始化 BaseXMLLoader，相对路径: 'data/equipment/equipment_config.xml'
-[PathManager] [DEBUG] 正常模式：当前 URL: file:///D|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/scripts/asLoader.swf
-[PathManager] [INFO] 检测到 Steam 环境，设置为 Steam 模式。
-[PathManager] [INFO] 匹配基础路径 'resources/'，基础路径设置为: file:///D|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/
-[PathManager] [INFO] 基础路径设置为 Steam 环境路径: file:///D|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/
-[BaseXMLLoader] [DEBUG] PathManager 初始化完成
-[BaseXMLLoader] [DEBUG] 资源环境有效，BasePath: 'file:///D|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/'
-[PathManager] [DEBUG] 路径解析: 'data/equipment/equipment_config.xml' -> 'file:///D|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/data/equipment/equipment_config.xml'
-[BaseXMLLoader] [INFO] 路径解析成功: 'data/equipment/equipment_config.xml' -> 'file:///D|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/data/equipment/equipment_config.xml'
-[BaseXMLLoader] [INFO] 开始加载 XML 文件: 'file:///D|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/data/equipment/equipment_config.xml'
-[BaseXMLLoader] [DEBUG] 当前时间: Tue Nov 18 21:08:06 GMT+0800 2025
-[BaseXMLLoader] [INFO] XML 文件加载成功！文件: 'file:///D|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/data/equipment/equipment_config.xml'，耗时: 73ms
-[BaseXMLLoader] [DEBUG] 解析后的数据类型: object
-[BaseXMLLoader] [DEBUG] 调用 onLoadHandler 回调
-EquipmentConfigLoader: 文件加载成功！
-EquipmentConfigLoader: 成功解析 levelStatList，共 14 个等级
-EquipmentConfigLoader: 成功解析 decimalPropDict，共 3 个属性
-EquipmentConfigLoader: 成功解析 TierMapping，共 5 个进阶等级
-EquipmentConfigLoader: 成功解析 DefaultTierData，共 3 个默认进阶
-主程序：装备配置数据加载成功！
-配置数据: {"decimalPropDict": {"rout": 1, "vampirism": 1, "weight": 1}, "defaultTierDataDict": {"三阶": {"damage": 35, "defence": 180, "hp": 80, "level": 25, "mp": 80}, "二阶": {"damage": 15, "defence": 80, "hp": 50, "level": 12, "mp": 50}, "四阶": {"damage": 60, "defence": 255, "hp": 100, "level": 35, "mp": 100}}, "levelStatList": [1, 1, 1.06, 1.14, 1.24, 1.36, 1.5, 1.66, 1.84, 2.04, 2.26, 2.5, 2.76, 3.04], "tierNameToKeyDict": {"三阶": "data_3", "二阶": "data_2", "四阶": "data_4", "墨冰": "data_ice", "狱火": "data_fire"}, "tierToMaterialDict": {"data_2": "二阶复合防御组件", "data_3": "三阶复合防御组件", "data_4": "四阶复合防御组件", "data_fire": "狱火战术涂料", "data_ice": "墨冰战术涂料"}}
-
-
 */
