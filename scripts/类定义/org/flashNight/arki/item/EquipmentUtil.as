@@ -24,6 +24,7 @@ class org.flashNight.arki.item.EquipmentUtil{
 
     // 强化比例数值表
     // 原公式为 delta = 1 + 0.01 * (level - 1) * (level + 4)
+    // 现在从XML配置文件加载，如果加载失败则使用以下默认值
     public static var levelStatList:Array = [
         1,
         1,    // Lv1
@@ -121,6 +122,29 @@ class org.flashNight.arki.item.EquipmentUtil{
     public static var modList:Array;
     public static var modUseLists:Object;
 
+
+    /**
+    * 加载装备配置数据（levelStatList等）
+    *
+    * @param configData 配置数据对象，包含：
+    *   - levelStatList: 强化等级倍率数组
+    *
+    * 注意：此方法是幂等的，可以安全地多次调用
+    */
+    public static function loadEquipmentConfig(configData:Object):Void{
+        if(configData == null) {
+            debugLog("loadEquipmentConfig: 配置数据为空！");
+            return;
+        }
+
+        // 加载 levelStatList
+        if(configData.levelStatList != null && configData.levelStatList instanceof Array) {
+            levelStatList = configData.levelStatList;
+            debugLog("成功从XML加载 levelStatList，共 " + levelStatList.length + " 个等级");
+        } else {
+            debugLog("警告：levelStatList 数据格式错误或不存在，使用默认值");
+        }
+    }
 
     /**
     * 初始化字典并加载配件数据

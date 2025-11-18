@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <!-- 装备强化配置 -->
+    <EquipmentConfig>
+        <!-- 强化等级对应的倍率表 -->
+        <!-- 原公式: delta = 1 + 0.01 * (level - 1) * (level + 4) -->
+        <LevelStatList>
+            <Level index="0">1</Level>     <!-- 占位 -->
+            <Level index="1">1</Level>     <!-- Lv1 基础 -->
+            <Level index="2">1.06</Level>  <!-- Lv2 -->
+            <Level index="3">1.14</Level>  <!-- Lv3 -->
+            <Level index="4">1.24</Level>  <!-- Lv4 -->
+            <Level index="5">1.36</Level>  <!-- Lv5 -->
+            <Level index="6">1.5</Level>   <!-- Lv6 -->
+            <Level index="7">1.66</Level>  <!-- Lv7 -->
+            <Level index="8">1.84</Level>  <!-- Lv8 -->
+            <Level index="9">2.04</Level>  <!-- Lv9 -->
+            <Level index="10">2.26</Level> <!-- Lv10 -->
+            <Level index="11">2.5</Level>  <!-- Lv11 -->
+            <Level index="12">2.76</Level> <!-- Lv12 -->
+            <Level index="13">3.04</Level> <!-- Lv13 -->
+        </LevelStatList>
+    </EquipmentConfig>
+</root>
