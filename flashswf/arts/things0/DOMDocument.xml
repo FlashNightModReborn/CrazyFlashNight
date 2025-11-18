@@ -152,6 +152,7 @@
           <DOMSoundItem name="sound/兽王爪击4.wav" itemID="666d7c53-00000662" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/things0/LIBRARY/sound/兽王爪击4.wav" sourceLastImported="1736862776" externalFileCRC32="2649636885" externalFileSize="20756" href="sound/兽王爪击4.wav" soundDataHRef="M 121 1718451433.dat" format="44kHz 16bit Mono" sampleCount="10356" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/兽王爪击5.wav" itemID="666d7c53-00000666" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/things0/LIBRARY/sound/兽王爪击5.wav" sourceLastImported="1736862776" externalFileCRC32="2974026957" externalFileSize="11392" href="sound/兽王爪击5.wav" soundDataHRef="M 122 1718451433.dat" format="44kHz 16bit Mono" sampleCount="5674" exportFormat="5" exportBits="17"/>
           <DOMBitmapItem name="位图 1" itemID="691b5515-00000877" sourceExternalFilepath="位图 1.png" sourceLastImported="1763398756" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 1.png" bitmapDataHRef="M 101 1763399143.dat" frameRight="13400" frameBottom="7300"/>
+          <DOMBitmapItem name="位图 2" itemID="691caa5c-0000092f" sourceExternalFilepath="位图 2.png" sourceLastImported="1763486083" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 2.png" bitmapDataHRef="M 103 1763486352.dat" frameRight="5860" frameBottom="9460"/>
           <DOMSoundItem name="sound/猩红凶斩.wav" itemID="669b8bee-00000707" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/things0/LIBRARY/sound/猩红凶斩.wav" sourceLastImported="1736862777" externalFileCRC32="449263898" externalFileSize="295944" href="sound/猩红凶斩.wav" soundDataHRef="M 130 1721469934.dat" format="44kHz 16bit Stereo" sampleCount="73975" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/猩红凶斩蓄力.wav" itemID="669b8bee-0000070b" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/things0/LIBRARY/sound/猩红凶斩蓄力.wav" sourceLastImported="1736862777" externalFileCRC32="3881485061" externalFileSize="378796" href="sound/猩红凶斩蓄力.wav" soundDataHRef="M 131 1721469934.dat" format="44kHz 16bit Stereo" sampleCount="94688" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/旋风腿.wav" itemID="67764735-000020b1" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/旋风腿.wav" sourceLastImported="1736862777" externalFileCRC32="1896122393" externalFileSize="37124" href="sound/旋风腿.wav" soundDataHRef="M 98 1718449581.dat" format="44kHz 16bit Mono" sampleCount="18540" exportFormat="5" exportBits="17"/>
@@ -1011,7 +1012,7 @@
           <Include href="sprite/Symbol 2019.xml" loadImmediate="false" itemID="6577efbc-0000080c" lastModified="1706255914"/>
           <Include href="sprite/被击飞击倒.xml" loadImmediate="false" itemID="690f5883-00001c3b" lastModified="1763281875"/>
           <Include href="sprite/兵器待机.xml" loadImmediate="false" itemID="690df7b1-00000ba7" lastModified="1762600515"/>
-          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1763400017"/>
+          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1763484817"/>
           <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1763399817"/>
           <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1763399475"/>
           <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1763399520"/>
@@ -1027,13 +1028,13 @@
           <Include href="sprite/攻击模式切换.xml" loadImmediate="false" itemID="691b470f-00002ecf" lastModified="1763396571"/>
           <Include href="sprite/黑红色爆炸.xml" itemID="668be72d-0000065f" lastModified="1721756218"/>
           <Include href="sprite/红色刀光.xml" loadImmediate="false" itemID="65b795a7-00000ba0" lastModified="1706530238"/>
-          <Include href="sprite/技能.xml" loadImmediate="false" itemID="691ae81e-00000771" lastModified="1763399278"/>
+          <Include href="sprite/技能.xml" loadImmediate="false" itemID="691ae81e-00000771" lastModified="1763486319"/>
           <Include href="sprite/近战子弹 副本.xml" loadImmediate="false" itemID="660a212e-00000b09" lastModified="1711945124"/>
           <Include href="sprite/近战子弹 已obj化.xml" loadImmediate="false" itemID="68ac3fb5-00000753" lastModified="1756118967"/>
           <Include href="sprite/觉醒霸体特效.xml" itemID="668be723-0000065d" lastModified="1756118920"/>
           <Include href="sprite/觉醒霸体特效原先.xml" itemID="66c19f0e-000017fb" lastModified="1723965222"/>
           <Include href="sprite/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1757948662"/>
-          <Include href="sprite/空手攻击.xml" loadImmediate="false" itemID="6919dfac-00001066" lastModified="1763400044"/>
+          <Include href="sprite/空手攻击.xml" loadImmediate="false" itemID="6919dfac-00001066" lastModified="1763486651"/>
           <Include href="sprite/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1763304299"/>
           <Include href="sprite/空手跳.xml" loadImmediate="false" itemID="6919df9d-00001065" lastModified="1763303729"/>
           <Include href="sprite/落地特效-闪光.xml" loadImmediate="false" itemID="663ba576-00000122" lastModified="1715185258"/>
@@ -1110,6 +1111,7 @@
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13 副本.xml" itemIcon="1" loadImmediate="false" itemID="660a212e-00000b0b" lastModified="1706271675"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="6570b322-000003e3" lastModified="1706271749"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14 副本.xml" loadImmediate="false" itemID="660a212e-00000b0a" lastModified="1706271749"/>
+          <Include href="后撤步幻影.xml" loadImmediate="false" itemID="691ca992-00000923" lastModified="1763486098"/>
           <Include href="后空翻腿特效.xml" loadImmediate="false" itemID="67497edf-00000dfb" lastModified="1732870570"/>
           <Include href="火舞旋风刀光1.xml" loadImmediate="false" itemID="673b0fa9-000003f2" lastModified="1731923881"/>
           <Include href="火舞旋风刀光2.xml" loadImmediate="false" itemID="673b0fb5-000003f6" lastModified="1731923893"/>
@@ -1916,6 +1918,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3587953" publishTime="1763486521"/>
           <PublishItem publishSize="3580647" publishTime="1763399788"/>
           <PublishItem publishSize="3521578" publishTime="1763396492"/>
           <PublishItem publishSize="3521571" publishTime="1763396405"/>
@@ -1935,6 +1938,5 @@
           <PublishItem publishSize="3516352" publishTime="1763295801"/>
           <PublishItem publishSize="3516364" publishTime="1763295696"/>
           <PublishItem publishSize="3516344" publishTime="1763295540"/>
-          <PublishItem publishSize="3516311" publishTime="1763295394"/>
      </publishHistory>
 </DOMDocument>
