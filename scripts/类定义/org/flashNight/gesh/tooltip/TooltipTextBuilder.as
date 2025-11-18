@@ -552,8 +552,15 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
             var sortedList = getSortedAttrList(useCase.flat);
             for(var i = 0; i < sortedList.length; i++){
               var key = sortedList[i];
+              // 跳过 slay，使用专门的 SlayEffectBuilder 显示
+              if(key == "slay") continue;
               result.push("  ");  // 缩进
               TooltipFormatter.statLine(result, "add", key, useCase.flat[key], null);
+            }
+            // 使用 SlayEffectBuilder 处理斩杀线属性
+            if(useCase.flat.slay){
+              result.push("  ");  // 缩进
+              SlayEffectBuilder.buildFlat(result, useCase.flat.slay);
             }
           }
 
@@ -562,9 +569,24 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
             var sortedList = getSortedAttrList(useCase.override);
             for(var i = 0; i < sortedList.length; i++){
               var key = sortedList[i];
-              if(key == "damagetype" || key == "magictype" || key == "silence") continue;
+              if(key == "damagetype" || key == "magictype" || key == "silence" || key == "slay") continue;
               result.push("  ");  // 缩进
               TooltipFormatter.statLine(result, "override", key, useCase.override[key], null);
+            }
+            // 使用 SlayEffectBuilder 处理斩杀线属性
+            if(useCase.override.slay){
+              result.push("  ");  // 缩进
+              SlayEffectBuilder.buildOverride(result, useCase.override.slay);
+            }
+            // 使用 SilenceEffectBuilder 处理消音效果
+            if(useCase.override.silence){
+              result.push("  ");  // 缩进
+              SilenceEffectBuilder.build(result, null, null, useCase.override, null);
+            }
+            // 显示伤害类型和破击类型（组合显示 damagetype 和 magictype）
+            if(useCase.override.damagetype){
+              result.push("  ");  // 缩进
+              quickBuildDamageType(result, useCase.override);
             }
           }
 

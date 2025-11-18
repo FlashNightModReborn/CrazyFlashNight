@@ -812,27 +812,25 @@ skill - 赋予技能
         <use>上装装备,下装装备,手部装备,刀</use>
         <stats>
             <useSwitch>
-                <use name="上装装备,下装装备">
-                    <flat>
-                        <punch>15</punch>
-                        <weight>-1</weight>
-                    </flat>
-                </use>
-                <use name="手部装备">
-                    <flat>
-                        <punch>15</punch>
-                    </flat>
+                <use name="手部装备,刀">
                     <override>
                         <slay>8</slay>
                     </override>
+                </use>
+                <use name="上装装备,下装装备,手部装备">
+                    <flat>
+                        <punch>15</punch>
+                    </flat>
+                </use>
+                <use name="上装装备,下装装备">
+                    <flat>
+                        <weight>-1</weight>
+                    </flat>
                 </use>
                 <use name="刀">
                     <percentage>
                         <power>3</power>
                     </percentage>
-                    <override>
-                        <slay>8</slay>
-                    </override>
                 </use>
             </useSwitch>
         </stats>
