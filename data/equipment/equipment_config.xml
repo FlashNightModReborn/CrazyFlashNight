@@ -20,5 +20,48 @@
             <Level index="12">2.76</Level> <!-- Lv12 -->
             <Level index="13">3.04</Level> <!-- Lv13 -->
         </LevelStatList>
+
+        <!-- 需要保留小数的属性列表 -->
+        <DecimalProperties>
+            <Property name="weight" precision="1"/>
+            <Property name="rout" precision="1"/>
+            <Property name="vampirism" precision="1"/>
+        </DecimalProperties>
+
+        <!-- 进阶系统配置 -->
+        <TierSystem>
+            <!-- 进阶等级映射 -->
+            <TierMapping name="二阶" key="data_2" material="二阶复合防御组件"/>
+            <TierMapping name="三阶" key="data_3" material="三阶复合防御组件"/>
+            <TierMapping name="四阶" key="data_4" material="四阶复合防御组件"/>
+            <TierMapping name="墨冰" key="data_ice" material="墨冰战术涂料"/>
+            <TierMapping name="狱火" key="data_fire" material="狱火战术涂料"/>
+            <TierMapping name="冷凝" key="data_ice_gold_stolen" material="铁枪冷凝核心"/>
+
+            <!-- 默认进阶数据 -->
+            <DefaultTierData>
+                <Tier name="二阶">
+                    <level>12</level>
+                    <defence>80</defence>
+                    <hp>50</hp>
+                    <mp>50</mp>
+                    <damage>15</damage>
+                </Tier>
+                <Tier name="三阶">
+                    <level>25</level>
+                    <defence>180</defence>
+                    <hp>80</hp>
+                    <mp>80</mp>
+                    <damage>35</damage>
+                </Tier>
+                <Tier name="四阶">
+                    <level>35</level>
+                    <defence>255</defence>
+                    <hp>100</hp>
+                    <mp>100</mp>
+                    <damage>60</damage>
+                </Tier>
+            </DefaultTierData>
+        </TierSystem>
     </EquipmentConfig>
 </root>

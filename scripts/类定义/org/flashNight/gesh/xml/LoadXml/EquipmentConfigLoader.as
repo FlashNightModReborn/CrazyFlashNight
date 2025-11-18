@@ -68,9 +68,9 @@ class org.flashNight.gesh.xml.LoadXml.EquipmentConfigLoader extends BaseXMLLoade
     }
 
     /**
-     * 解析装备配置数据，将 LevelStatList 转换为数组。
+     * 解析装备配置数据，将各种配置转换为相应的数据结构。
      * @param data 原始XML解析后的数据对象。
-     * @return Object 包含 levelStatList 数组的对象。
+     * @return Object 包含所有配置数据的对象。
      */
     private function parseEquipmentConfig(data:Object):Object {
         var result:Object = {};
@@ -82,7 +82,7 @@ class org.flashNight.gesh.xml.LoadXml.EquipmentConfigLoader extends BaseXMLLoade
 
         var config:Object = data.EquipmentConfig;
 
-        // 解析 LevelStatList
+        // 1. 解析 LevelStatList
         if (config.LevelStatList != null && config.LevelStatList.Level != null) {
             var levelNodes:Object = config.LevelStatList.Level;
             var levelArray:Array = [];
@@ -93,7 +93,6 @@ class org.flashNight.gesh.xml.LoadXml.EquipmentConfigLoader extends BaseXMLLoade
             }
 
             // XMLParser 对于带属性但内容是纯数字的节点，会直接返回数字值
-            // 因此 levelNode 直接就是数值，我们使用数组索引作为等级索引
             for (var i:Number = 0; i < levelNodes.length; i++) {
                 var value:Number = Number(levelNodes[i]);
                 if (!isNaN(value)) {
@@ -103,8 +102,85 @@ class org.flashNight.gesh.xml.LoadXml.EquipmentConfigLoader extends BaseXMLLoade
 
             result.levelStatList = levelArray;
             trace("EquipmentConfigLoader: 成功解析 levelStatList，共 " + levelArray.length + " 个等级");
-        } else {
-            trace("EquipmentConfigLoader: LevelStatList 节点不存在或为空！");
+        }
+
+        // 2. 解析 DecimalProperties
+        if (config.DecimalProperties != null && config.DecimalProperties.Property != null) {
+            var propNodes:Object = config.DecimalProperties.Property;
+            var decimalDict:Object = {};
+
+            if (!(propNodes instanceof Array)) {
+                propNodes = [propNodes];
+            }
+
+            for (var i:Number = 0; i < propNodes.length; i++) {
+                var propNode:Object = propNodes[i];
+                if (propNode.name && propNode.precision) {
+                    decimalDict[propNode.name] = Number(propNode.precision);
+                }
+            }
+
+            result.decimalPropDict = decimalDict;
+            var decimalCount:Number = 0;
+            for (var k:String in decimalDict) decimalCount++;
+            trace("EquipmentConfigLoader: 成功解析 decimalPropDict，共 " + decimalCount + " 个属性");
+        }
+
+        // 3. 解析 TierSystem
+        if (config.TierSystem != null) {
+            var tierSystem:Object = config.TierSystem;
+
+            // 3.1 解析 TierMapping
+            if (tierSystem.TierMapping != null) {
+                var tierMappings:Object = tierSystem.TierMapping;
+                var tierNameToKey:Object = {};
+                var tierToMaterial:Object = {};
+
+                if (!(tierMappings instanceof Array)) {
+                    tierMappings = [tierMappings];
+                }
+
+                for (var i:Number = 0; i < tierMappings.length; i++) {
+                    var mapping:Object = tierMappings[i];
+                    if (mapping.name && mapping.key && mapping.material) {
+                        tierNameToKey[mapping.name] = mapping.key;
+                        tierToMaterial[mapping.key] = mapping.material;
+                    }
+                }
+
+                result.tierNameToKeyDict = tierNameToKey;
+                result.tierToMaterialDict = tierToMaterial;
+                trace("EquipmentConfigLoader: 成功解析 TierMapping，共 " + tierMappings.length + " 个进阶等级");
+            }
+
+            // 3.2 解析 DefaultTierData
+            if (tierSystem.DefaultTierData != null && tierSystem.DefaultTierData.Tier != null) {
+                var tierNodes:Object = tierSystem.DefaultTierData.Tier;
+                var defaultTierData:Object = {};
+
+                if (!(tierNodes instanceof Array)) {
+                    tierNodes = [tierNodes];
+                }
+
+                for (var i:Number = 0; i < tierNodes.length; i++) {
+                    var tierNode:Object = tierNodes[i];
+                    if (tierNode.name) {
+                        // 提取除 name 之外的所有属性
+                        var tierData:Object = {};
+                        for (var key:String in tierNode) {
+                            if (key != "name") {
+                                tierData[key] = tierNode[key];
+                            }
+                        }
+                        defaultTierData[tierNode.name] = tierData;
+                    }
+                }
+
+                result.defaultTierDataDict = defaultTierData;
+                var tierCount:Number = 0;
+                for (var k:String in defaultTierData) tierCount++;
+                trace("EquipmentConfigLoader: 成功解析 DefaultTierData，共 " + tierCount + " 个默认进阶");
+            }
         }
 
         return result;
@@ -161,5 +237,29 @@ equipconfig_loader.loadEquipmentConfig(
         trace("主程序：装备配置数据加载失败！");
     }
 );
+
+
+[BaseXMLLoader] [INFO] 初始化 BaseXMLLoader，相对路径: 'data/equipment/equipment_config.xml'
+[PathManager] [DEBUG] 正常模式：当前 URL: file:///D|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/scripts/asLoader.swf
+[PathManager] [INFO] 检测到 Steam 环境，设置为 Steam 模式。
+[PathManager] [INFO] 匹配基础路径 'resources/'，基础路径设置为: file:///D|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/
+[PathManager] [INFO] 基础路径设置为 Steam 环境路径: file:///D|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/
+[BaseXMLLoader] [DEBUG] PathManager 初始化完成
+[BaseXMLLoader] [DEBUG] 资源环境有效，BasePath: 'file:///D|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/'
+[PathManager] [DEBUG] 路径解析: 'data/equipment/equipment_config.xml' -> 'file:///D|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/data/equipment/equipment_config.xml'
+[BaseXMLLoader] [INFO] 路径解析成功: 'data/equipment/equipment_config.xml' -> 'file:///D|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/data/equipment/equipment_config.xml'
+[BaseXMLLoader] [INFO] 开始加载 XML 文件: 'file:///D|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/data/equipment/equipment_config.xml'
+[BaseXMLLoader] [DEBUG] 当前时间: Tue Nov 18 21:08:06 GMT+0800 2025
+[BaseXMLLoader] [INFO] XML 文件加载成功！文件: 'file:///D|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/data/equipment/equipment_config.xml'，耗时: 73ms
+[BaseXMLLoader] [DEBUG] 解析后的数据类型: object
+[BaseXMLLoader] [DEBUG] 调用 onLoadHandler 回调
+EquipmentConfigLoader: 文件加载成功！
+EquipmentConfigLoader: 成功解析 levelStatList，共 14 个等级
+EquipmentConfigLoader: 成功解析 decimalPropDict，共 3 个属性
+EquipmentConfigLoader: 成功解析 TierMapping，共 5 个进阶等级
+EquipmentConfigLoader: 成功解析 DefaultTierData，共 3 个默认进阶
+主程序：装备配置数据加载成功！
+配置数据: {"decimalPropDict": {"rout": 1, "vampirism": 1, "weight": 1}, "defaultTierDataDict": {"三阶": {"damage": 35, "defence": 180, "hp": 80, "level": 25, "mp": 80}, "二阶": {"damage": 15, "defence": 80, "hp": 50, "level": 12, "mp": 50}, "四阶": {"damage": 60, "defence": 255, "hp": 100, "level": 35, "mp": 100}}, "levelStatList": [1, 1, 1.06, 1.14, 1.24, 1.36, 1.5, 1.66, 1.84, 2.04, 2.26, 2.5, 2.76, 3.04], "tierNameToKeyDict": {"三阶": "data_3", "二阶": "data_2", "四阶": "data_4", "墨冰": "data_ice", "狱火": "data_fire"}, "tierToMaterialDict": {"data_2": "二阶复合防御组件", "data_3": "三阶复合防御组件", "data_4": "四阶复合防御组件", "data_fire": "狱火战术涂料", "data_ice": "墨冰战术涂料"}}
+
 
 */

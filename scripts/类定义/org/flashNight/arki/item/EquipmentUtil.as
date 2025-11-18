@@ -51,6 +51,7 @@ class org.flashNight.arki.item.EquipmentUtil{
     }
 
     // 数值计算中需要保留小数点的属性字典，目前逻辑为在字典中的属性保留1位小数，否则去尾取整
+    // 现在从XML配置文件加载，如果加载失败则使用以下默认值
     public static var decimalPropDict:Object = {
         weight: 1,
         rout: 1,
@@ -58,6 +59,7 @@ class org.flashNight.arki.item.EquipmentUtil{
     }
 
     // 进阶名称->进阶数据键字典
+    // 现在从XML配置文件加载，如果加载失败则使用以下默认值
     public static var tierNameToKeyDict:Object = {
         二阶: "data_2",
         三阶: "data_3",
@@ -69,6 +71,7 @@ class org.flashNight.arki.item.EquipmentUtil{
     public static var tierKeyToNameDict:Object;
 
     // 进阶数据键->进阶材料字典
+    // 现在从XML配置文件加载，如果加载失败则使用以下默认值
     public static var tierToMaterialDict:Object = {
         data_2: "二阶复合防御组件",
         data_3: "三阶复合防御组件",
@@ -84,8 +87,11 @@ class org.flashNight.arki.item.EquipmentUtil{
     // 进阶材料->进阶名称反向字典
     public static var tierMaterialToNameDict:Object;
 
+    // tierDataList 现在通过 tierToMaterialDict 动态构建，不再硬编码
     public static var tierDataList:Array = ["data_2", "data_3", "data_4", "data_ice", "data_fire"];
-    
+
+    // 默认进阶数据
+    // 现在从XML配置文件加载，如果加载失败则使用以下默认值
     public static var defaultTierDataDict:Object = {
         二阶: {
             level: 12,
@@ -124,10 +130,14 @@ class org.flashNight.arki.item.EquipmentUtil{
 
 
     /**
-    * 加载装备配置数据（levelStatList等）
+    * 加载装备配置数据
     *
     * @param configData 配置数据对象，包含：
     *   - levelStatList: 强化等级倍率数组
+    *   - decimalPropDict: 小数精度配置
+    *   - tierNameToKeyDict: 进阶名称到键的映射
+    *   - tierToMaterialDict: 进阶键到材料的映射
+    *   - defaultTierDataDict: 默认进阶数据
     *
     * 注意：此方法是幂等的，可以安全地多次调用
     */
@@ -137,13 +147,105 @@ class org.flashNight.arki.item.EquipmentUtil{
             return;
         }
 
-        // 加载 levelStatList
+        // 1. 加载 levelStatList
         if(configData.levelStatList != null && configData.levelStatList instanceof Array) {
             levelStatList = configData.levelStatList;
             debugLog("成功从XML加载 levelStatList，共 " + levelStatList.length + " 个等级");
         } else {
             debugLog("警告：levelStatList 数据格式错误或不存在，使用默认值");
         }
+
+        // 2. 加载 decimalPropDict
+        if(configData.decimalPropDict != null) {
+            decimalPropDict = configData.decimalPropDict;
+            var decimalCount:Number = 0;
+            for(var k:String in decimalPropDict) decimalCount++;
+            debugLog("成功从XML加载 decimalPropDict，共 " + decimalCount + " 个属性");
+        } else {
+            debugLog("警告：decimalPropDict 数据不存在，使用默认值");
+        }
+
+        // 3. 加载 tierNameToKeyDict
+        if(configData.tierNameToKeyDict != null) {
+            tierNameToKeyDict = configData.tierNameToKeyDict;
+            var tierNameCount:Number = 0;
+            for(var k:String in tierNameToKeyDict) tierNameCount++;
+            debugLog("成功从XML加载 tierNameToKeyDict，共 " + tierNameCount + " 个进阶");
+        } else {
+            debugLog("警告：tierNameToKeyDict 数据不存在，使用默认值");
+        }
+
+        // 4. 加载 tierToMaterialDict
+        if(configData.tierToMaterialDict != null) {
+            tierToMaterialDict = configData.tierToMaterialDict;
+            var tierMatCount:Number = 0;
+            for(var k:String in tierToMaterialDict) tierMatCount++;
+            debugLog("成功从XML加载 tierToMaterialDict，共 " + tierMatCount + " 个材料映射");
+        } else {
+            debugLog("警告：tierToMaterialDict 数据不存在，使用默认值");
+        }
+
+        // 5. 加载 defaultTierDataDict
+        if(configData.defaultTierDataDict != null) {
+            defaultTierDataDict = configData.defaultTierDataDict;
+            var defaultTierCount:Number = 0;
+            for(var k:String in defaultTierDataDict) defaultTierCount++;
+            debugLog("成功从XML加载 defaultTierDataDict，共 " + defaultTierCount + " 个默认进阶");
+        } else {
+            debugLog("警告：defaultTierDataDict 数据不存在，使用默认值");
+        }
+
+        // 6. 动态构建 tierDataList（基于 tierToMaterialDict）
+        tierDataList = [];
+        for(var tierKey:String in tierToMaterialDict) {
+            tierDataList.push(tierKey);
+        }
+        debugLog("动态构建 tierDataList，共 " + tierDataList.length + " 个进阶键");
+
+        // 7. 构建反向映射字典（保持原有逻辑）
+        buildReverseDictionaries();
+    }
+
+    /**
+    * 构建反向映射字典
+    * @private
+    */
+    private static function buildReverseDictionaries():Void {
+        // tierKeyToNameDict: 进阶键 -> 进阶名称
+        tierKeyToNameDict = {};
+        for(var tierName:String in tierNameToKeyDict) {
+            var tierKey:String = tierNameToKeyDict[tierName];
+            tierKeyToNameDict[tierKey] = tierName;
+        }
+
+        // materialToTierDict: 进阶材料 -> 进阶键
+        materialToTierDict = {};
+        for(var tierKey:String in tierToMaterialDict) {
+            var material:String = tierToMaterialDict[tierKey];
+            materialToTierDict[material] = tierKey;
+        }
+
+        // tierNameToMaterialDict: 进阶名称 -> 进阶材料
+        tierNameToMaterialDict = {};
+        for(var tierName:String in tierNameToKeyDict) {
+            var tierKey:String = tierNameToKeyDict[tierName];
+            var material:String = tierToMaterialDict[tierKey];
+            if(material) {
+                tierNameToMaterialDict[tierName] = material;
+            }
+        }
+
+        // tierMaterialToNameDict: 进阶材料 -> 进阶名称
+        tierMaterialToNameDict = {};
+        for(var material:String in materialToTierDict) {
+            var tierKey:String = materialToTierDict[material];
+            var tierName:String = tierKeyToNameDict[tierKey];
+            if(tierName) {
+                tierMaterialToNameDict[material] = tierName;
+            }
+        }
+
+        debugLog("反向映射字典构建完成");
     }
 
     /**
@@ -161,20 +263,10 @@ class org.flashNight.arki.item.EquipmentUtil{
     * 注意：此方法现在是幂等的，可以安全地多次调用
     */
     public static function loadModData(modData:Array):Void{
-        // 初始化字典
-        tierKeyToNameDict = {};
-        tierNameToMaterialDict = {};
-        tierMaterialToNameDict = {};
-        for(var tierName:String in tierNameToKeyDict){
-            var tierKey:String = tierNameToKeyDict[tierName];
-            var mat:String = tierToMaterialDict[tierKey];
-            tierKeyToNameDict[tierKey] = tierName;
-            tierNameToMaterialDict[tierName] = mat;
-            tierMaterialToNameDict[mat] = tierName;
-        }
-        materialToTierDict = {};
-        for(var tierKey:String in tierToMaterialDict){
-            materialToTierDict[tierToMaterialDict[tierKey]] = tierKey;
+        // 构建反向映射字典（如果 loadEquipmentConfig 还未调用，则在这里初始化）
+        // 这样可以保持向后兼容，即使没有加载 XML 配置也能正常工作
+        if(tierKeyToNameDict == null || materialToTierDict == null) {
+            buildReverseDictionaries();
         }
 
         if(modData.length <= 0) return;

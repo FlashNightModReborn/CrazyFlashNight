@@ -3096,9 +3096,10 @@
       <damagetype>魔法</damagetype>
       <magictype>热</magictype>
     </data>
-    <data_ice>
+    <data_ice_gold_stolen>
       <level>39</level>
       <dressup>枪-长枪-MACSIV</dressup>
+      <displayname>MACSIV</displayname>
       <icon>MACSIV</icon>
       <power>140</power>
       <magictype>冷</magictype>
@@ -3165,7 +3166,7 @@
           </cycle>
         </attr_0>
       </lifecycle>
-    </data_ice>
+    </data_ice_gold_stolen>
     <skill>
       <skillname>MACSIII超载打击</skillname>
       <description>消耗一枚强化石强制执行被锁定的高级协议，发动一次毁灭性挥砍。
