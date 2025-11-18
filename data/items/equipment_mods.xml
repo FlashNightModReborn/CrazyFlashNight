@@ -809,14 +809,34 @@ skill - 赋予技能
 
     <mod>
         <name>动力液压杆</name>
-        <use>上装装备,下装装备,手部装备</use>
+        <use>上装装备,下装装备,手部装备,刀</use>
         <stats>
-            <flat>
-                <punch>15</punch>
-                <weight>-1</weight>
-            </flat>
+            <useSwitch>
+                <use name="上装装备,下装装备">
+                    <flat>
+                        <punch>15</punch>
+                        <weight>-1</weight>
+                    </flat>
+                </use>
+                <use name="手部装备">
+                    <flat>
+                        <punch>15</punch>
+                    </flat>
+                    <override>
+                        <slay>8</slay>
+                    </override>
+                </use>
+                <use name="刀">
+                    <percentage>
+                        <power>3</power>
+                    </percentage>
+                    <override>
+                        <slay>8</slay>
+                    </override>
+                </use>
+            </useSwitch>
         </stats>
-        <description>超规格线性作动单元，大幅增加近战冲击力并减轻重量。</description>
+        <description>超规格线性作动单元，大幅增加近战冲击力。对上装和下装减轻重量，对手部装备和刀类武器提供收割能力，对刀类武器额外提升威力。</description>
         <tag>动力接口</tag>
     </mod>
     <mod>
