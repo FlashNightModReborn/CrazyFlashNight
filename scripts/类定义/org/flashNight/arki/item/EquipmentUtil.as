@@ -328,6 +328,36 @@ class org.flashNight.arki.item.EquipmentUtil{
             if(mod.tag){
                 mod.tagValue = mod.tag; // 存储tag值
             }
+
+            // 解析 provideTags 标签（提供的结构标签）
+            if(mod.provideTags){
+                var provideArr:Array = mod.provideTags.split(",");
+                if(provideArr.length > 0){
+                    var provideDict:Object = {};
+                    for(var provideIndex:Number = 0; provideIndex < provideArr.length; provideIndex++){
+                        var trimmedTag:String = StringUtils.trim(provideArr[provideIndex]);
+                        if(trimmedTag.length > 0){
+                            provideDict[trimmedTag] = true;
+                        }
+                    }
+                    mod.provideTagDict = provideDict;
+                }
+            }
+
+            // 解析 requireTags 标签（安装前置要求）
+            if(mod.requireTags){
+                var requireArr:Array = mod.requireTags.split(",");
+                if(requireArr.length > 0){
+                    var requireDict:Object = {};
+                    for(var requireIndex:Number = 0; requireIndex < requireArr.length; requireIndex++){
+                        var trimmedReq:String = StringUtils.trim(requireArr[requireIndex]);
+                        if(trimmedReq.length > 0){
+                            requireDict[trimmedReq] = true;
+                        }
+                    }
+                    mod.requireTagDict = requireDict;
+                }
+            }
             // 调整百分比区的值为小数（防止重复处理）
             if(!mod._percentageNormalized){
                 var percentage:Object = mod.stats ? mod.stats.percentage : null;
@@ -429,6 +459,73 @@ class org.flashNight.arki.item.EquipmentUtil{
     }
 
     /**
+    * 构建tag上下文，用于检查插件依赖关系
+    * @param item 装备物品对象
+    * @param itemData 原始物品数据（可选，不传则自动获取）
+    * @return 包含presentTags（当前拥有的结构标签）和slotOccupied（已占用的插槽标签）的对象
+    * @private
+    */
+    private static function buildTagContext(item:BaseItem, itemData:Object):Object {
+        var context:Object = {
+            presentTags: {},    // 当前装备具备的结构tag
+            slotOccupied: {}    // 哪些slotTag已被占用
+        };
+
+        // 如果没有传入itemData，则获取原始数据
+        if(!itemData){
+            itemData = ItemUtil.getRawItemData(item.name);
+        }
+
+        // 1. 装备固有结构tag（未来扩展：当装备XML支持inherentTags时）
+        if(itemData.inherentTags){
+            var inherentArr:Array = itemData.inherentTags.split(",");
+            for(var ih:Number = 0; ih < inherentArr.length; ih++){
+                var inherentTag:String = StringUtils.trim(inherentArr[ih]);
+                if(inherentTag.length > 0){
+                    context.presentTags[inherentTag] = true;
+                }
+            }
+        }
+
+        // 2. 遍历已安装的插件
+        var mods:Array = item.value.mods;
+        if(!mods) mods = [];
+
+        for(var i:Number = 0; i < mods.length; i++){
+            var modData:Object = modDict[mods[i]];
+            if(!modData) continue;
+
+            // slotTag占位（传统tag功能）
+            if(modData.tagValue){
+                context.slotOccupied[modData.tagValue] = mods[i];
+                // 同时也认为提供该结构（可选：也可以不这样做）
+                // context.presentTags[modData.tagValue] = true;
+            }
+
+            // provideTags结构提供
+            if(modData.provideTagDict){
+                for(var t:String in modData.provideTagDict){
+                    context.presentTags[t] = true;
+
+                    if(DEBUG_MODE){
+                        debugLog("插件 '" + mods[i] + "' 提供tag: " + t);
+                    }
+                }
+            }
+        }
+
+        if(DEBUG_MODE){
+            var presentList:Array = [];
+            for(var pt:String in context.presentTags){
+                presentList.push(pt);
+            }
+            debugLog("当前装备的presentTags: [" + presentList.join(", ") + "]");
+        }
+
+        return context;
+    }
+
+    /**
     * 查找进阶插件是否能合法装备
     *
     * @param item 装备物品对象
@@ -457,6 +554,9 @@ class org.flashNight.arki.item.EquipmentUtil{
         var list:Array = [];
         var mods:Array = item.value.mods;
 
+        // 构建tag上下文
+        var tagContext:Object = buildTagContext(item, rawItemData);
+
         // 收集所有已授予的武器类型（包括武器自身类型和配件授予的类型）
         var grantedTypes:Object = {};
 
@@ -481,8 +581,26 @@ class org.flashNight.arki.item.EquipmentUtil{
         for(var i:Number = 0; i < useList.length; i++){
             var modName:String = useList[i];
             var modData:Object = modDict[modName];
-            var weapontypeDict:Object = modData.weapontypeDict;
 
+            // 检查tag依赖
+            if(modData.requireTagDict){
+                var tagsSatisfied:Boolean = true;
+                for(var reqTag:String in modData.requireTagDict){
+                    if(!tagContext.presentTags[reqTag]){
+                        tagsSatisfied = false;
+                        if(DEBUG_MODE){
+                            debugLog("插件 '" + modName + "' 需要tag '" + reqTag + "' 但当前装备没有");
+                        }
+                        break;
+                    }
+                }
+                if(!tagsSatisfied){
+                    continue; // 跳过这个插件
+                }
+            }
+
+            // 检查武器类型限制
+            var weapontypeDict:Object = modData.weapontypeDict;
             if(!weapontypeDict){
                 // 没有武器类型限制，直接允许
                 list.push(modName);
@@ -510,7 +628,7 @@ class org.flashNight.arki.item.EquipmentUtil{
     * @param itemData 原始物品数据
     * @param matName 配件名称
     * @return 状态码：1=可装备，0=配件不存在，-1=槽位已满，-2=已装备，
-    *         -4=战技冲突，-8=tag冲突
+    *         -4=战技冲突，-8=tag冲突，-16=缺少前置tag
     */
     public static function isModMaterialAvailable(item:BaseItem, itemData:Object, matName:String):Number{
         var mods:Array = item.value.mods;
@@ -525,6 +643,20 @@ class org.flashNight.arki.item.EquipmentUtil{
         for(var i:Number = 0; i < len; i++){
             if(mods[i] === matName) return -2; // 已装备同名配件
         }
+
+        // 检查tag依赖
+        if(modData.requireTagDict){
+            var tagContext:Object = buildTagContext(item, itemData);
+            for(var reqTag:String in modData.requireTagDict){
+                if(!tagContext.presentTags[reqTag]){
+                    if(DEBUG_MODE){
+                        debugLog("插件 '" + matName + "' 需要tag '" + reqTag + "' 但当前装备没有");
+                    }
+                    return -16; // 缺少前置tag
+                }
+            }
+        }
+
         // 检查tag互斥：同tag的插件不能同时装备
         if(modData.tagValue){
             for(var j:Number = 0; j < len; j++){
@@ -549,6 +681,97 @@ class org.flashNight.arki.item.EquipmentUtil{
         modAvailabilityResults[-2] = "已装备";
         modAvailabilityResults[-4] = "配件无法覆盖装备原本的主动战技";
         modAvailabilityResults[-8] = "同位置插件已装备"; // tag冲突：一个装备不能同时装多个相同tag的插件
+        modAvailabilityResults[-16] = "缺少前置结构支持"; // 新增：tag依赖不满足
+        modAvailabilityResults[-32] = "有其他插件依赖此插件"; // 新增：不能移除被依赖的插件
+    }
+
+    /**
+    * 获取插件依赖不满足的详细信息
+    * @param modName 插件名称
+    * @param item 装备物品对象
+    * @return 缺少的tag列表
+    */
+    public static function getMissingTags(modName:String, item:BaseItem):Array {
+        var modData:Object = modDict[modName];
+        if(!modData || !modData.requireTagDict) return [];
+
+        var tagContext:Object = buildTagContext(item, null);
+        var missingTags:Array = [];
+
+        for(var reqTag:String in modData.requireTagDict){
+            if(!tagContext.presentTags[reqTag]){
+                missingTags.push(reqTag);
+            }
+        }
+
+        return missingTags;
+    }
+
+    /**
+    * 获取依赖于指定插件提供的tag的所有已安装插件
+    * @param item 装备物品对象
+    * @param modNameToRemove 要移除的插件名称
+    * @return 依赖该插件的其他插件列表
+    */
+    public static function getDependentMods(item:BaseItem, modNameToRemove:String):Array {
+        var dependentMods:Array = [];
+        var modToRemove:Object = modDict[modNameToRemove];
+
+        // 如果要移除的插件不提供任何tag，则没有依赖问题
+        if(!modToRemove || !modToRemove.provideTagDict) return dependentMods;
+
+        // 构建移除该插件后的tag上下文
+        var tempMods:Array = [];
+        var mods:Array = item.value.mods || [];
+        for(var i:Number = 0; i < mods.length; i++){
+            if(mods[i] !== modNameToRemove){
+                tempMods.push(mods[i]);
+            }
+        }
+
+        // 创建临时item来计算移除后的tag上下文
+        var tempItem:Object = {
+            name: item.name,
+            value: { mods: tempMods }
+        };
+        var contextAfterRemoval:Object = buildTagContext(BaseItem(tempItem), null);
+
+        // 检查每个已安装的插件是否还满足依赖
+        for(var j:Number = 0; j < mods.length; j++){
+            if(mods[j] === modNameToRemove) continue;
+
+            var installedMod:Object = modDict[mods[j]];
+            if(!installedMod || !installedMod.requireTagDict) continue;
+
+            // 检查该插件的依赖是否还能满足
+            for(var reqTag:String in installedMod.requireTagDict){
+                // 如果移除后缺少必需的tag，且这个tag原本是由要移除的插件提供的
+                if(!contextAfterRemoval.presentTags[reqTag] && modToRemove.provideTagDict[reqTag]){
+                    dependentMods.push(mods[j]);
+                    break;
+                }
+            }
+        }
+
+        if(DEBUG_MODE && dependentMods.length > 0){
+            debugLog("移除 '" + modNameToRemove + "' 将影响以下插件: " + dependentMods.join(", "));
+        }
+
+        return dependentMods;
+    }
+
+    /**
+    * 检查是否可以安全移除插件（不破坏依赖关系）
+    * @param item 装备物品对象
+    * @param modNameToRemove 要移除的插件名称
+    * @return 状态码：1=可以移除，-32=有其他插件依赖此插件
+    */
+    public static function canRemoveMod(item:BaseItem, modNameToRemove:String):Number {
+        var dependentMods:Array = getDependentMods(item, modNameToRemove);
+        if(dependentMods.length > 0){
+            return -32; // 有其他插件依赖此插件
+        }
+        return 1; // 可以安全移除
     }
 
     public static var modAvailabilityResults:Object;

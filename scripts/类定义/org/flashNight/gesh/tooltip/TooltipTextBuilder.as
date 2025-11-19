@@ -382,6 +382,30 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       result.push("适用武器子类：" + modData.weapontype + "<BR>");
     }
 
+    // 显示提供的结构标签
+    if(modData.provideTagDict){
+      var provideTags = [];
+      for(var pTag in modData.provideTagDict){
+        if (ObjectUtil.isInternalKey(pTag)) continue;
+        provideTags.push(pTag);
+      }
+      if(provideTags.length > 0){
+        result.push("<font color='" + TooltipConstants.COL_ENHANCE + "'>提供结构：</font>" + provideTags.join(", ") + "<BR>");
+      }
+    }
+
+    // 显示前置需求标签
+    if(modData.requireTagDict){
+      var requireTags = [];
+      for(var rTag in modData.requireTagDict){
+        if (ObjectUtil.isInternalKey(rTag)) continue;
+        requireTags.push(rTag);
+      }
+      if(requireTags.length > 0){
+        result.push("<font color='" + TooltipConstants.COL_ROUT + "'>前置需求：</font>" + requireTags.join(", ") + "<BR>");
+      }
+    }
+
     var stats = modData.stats;
 
     // 使用 UseSwitchStatsBuilder.buildStatBlock 统一处理顶层 stats 的所有属性

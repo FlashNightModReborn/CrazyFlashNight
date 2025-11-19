@@ -1437,20 +1437,47 @@ _root.物品UI函数.执行卸下配件 = function(matName:String){
 		}
 	}
 	if(mods.length > 0 && index < mods.length){
-		// 从配置中读取卸载行为
-		var modData = EquipmentUtil.modDict[matName];
-		if(modData && modData.detachPolicy === "cascade"){
-			// 级联卸载：卸下所有配件
-			var arr = [];
-			for(var i=0; i< mods.length; i++){
-				arr.push({name:mods[i],value:1});
+		// 检查是否有其他插件依赖此插件
+		var dependentMods = EquipmentUtil.getDependentMods(item, matName);
+		if(dependentMods.length > 0){
+			// 有依赖关系，需要级联卸载所有依赖的插件
+			_root.发布消息("以下插件依赖此插件，将一起卸载：" + dependentMods.join(", "));
+
+			// 收集所有需要卸载的插件（包括被依赖的和要移除的）
+			var toRemove = {};
+			toRemove[matName] = true;
+			for(var d=0; d < dependentMods.length; d++){
+				toRemove[dependentMods[d]] = true;
 			}
-			ItemUtil.acquire(arr);
-			item.value.mods = [];
+
+			// 返还所有要卸载的插件
+			var returnItems = [];
+			var newMods = [];
+			for(var i=0; i < mods.length; i++){
+				if(toRemove[mods[i]]){
+					returnItems.push({name:mods[i], value:1});
+				}else{
+					newMods.push(mods[i]);
+				}
+			}
+			ItemUtil.acquire(returnItems);
+			item.value.mods = newMods;
 		}else{
-			// 单个卸载：只卸下当前配件
-			ItemUtil.singleAcquire(matName, 1);
-			mods.splice(index, 1);
+			// 从配置中读取卸载行为
+			var modData = EquipmentUtil.modDict[matName];
+			if(modData && modData.detachPolicy === "cascade"){
+				// 级联卸载：卸下所有配件
+				var arr = [];
+				for(var i=0; i< mods.length; i++){
+					arr.push({name:mods[i],value:1});
+				}
+				ItemUtil.acquire(arr);
+				item.value.mods = [];
+			}else{
+				// 单个卸载：只卸下当前配件
+				ItemUtil.singleAcquire(matName, 1);
+				mods.splice(index, 1);
+			}
 		}
 
 		// 刷新可安装的配件
