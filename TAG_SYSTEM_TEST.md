@@ -129,212 +129,67 @@
 ## 测试结果
 待游戏内验证...
 
+## inherentTags/blockedTags 实现（2025年11月19日）
 
+### 已实现功能
 
+1. **XML配置支持**
+   - M4A1战术版 添加了 `<inherentTags>枪口,弹匣,下导轨,瞄具</inherentTags>`
+   - M4A1战术版 添加了 `<blockedTags>核心模块,导轨基座</blockedTags>`
 
+2. **EquipmentUtil 逻辑更新**
+   - `buildTagContext` 已支持读取 inherentTags 作为装备固有的结构标签
+   - `isModMaterialAvailable` 添加了 blockedTags 检查（错误码 -64）
+   - `getAvailableModMaterials` 会自动过滤被禁止的插件类型
 
+3. **Tooltip 显示增强**
+   - `TooltipTextBuilder.buildEquipmentTagInfo` 新函数显示装备标签信息
+   - `TooltipComposer.generateIntroPanelContent` 调用新函数显示标签
 
+### 测试用例：M4A1战术版
 
+#### 场景A：装备固有结构测试
+**预期行为**：
+1. 装备 M4A1战术版
+2. 查看装备 Tooltip，应显示：
+   - 固有结构：枪口, 弹匣, 下导轨, 瞄具
+   - 禁止挂点：核心模块, 导轨基座
+3. 任何需要"枪口"、"弹匣"、"下导轨"或"瞄具"标签的插件都可以直接安装
 
-## 后续计划
+#### 场景B：blockedTags 限制测试
+**预期行为**：
+1. 装备 M4A1战术版
+2. 尝试安装 tag="核心模块" 的插件（如"纳米执行单元"）
+   - 应该被阻止，错误提示："该装备禁止安装此挂点类型的插件"
+3. 尝试安装 tag="导轨基座" 的插件（如"战术导轨"）
+   - 应该被阻止，错误提示："该装备禁止安装此挂点类型的插件"
 
-下面是一份可以直接放进 TAG_SYSTEM_TEST.md 或单独新建文档的《inherentTags / blockedTags 设计与实施计划》。
+#### 场景C：依赖链与固有结构结合
+**测试步骤**：
+1. 找一个 requireTags="枪口" 的插件
+2. 装备 M4A1战术版（自带枪口标签）
+3. 该插件应该可以直接安装，无需先装其他提供"枪口"的插件
 
-inherentTags / blockedTags 设计与实施计划
-1. 设计目标与语义约定
-在现有 provideTags / requireTags 基础上，引入两类“装备自己的 tag”：
+### 代码改动总结
 
-inherentTags（装备固有结构标签）
+1. **data/items/武器_长枪.xml:3895-3898**
+   - 为 M4A1战术版 添加了 inherentTags 和 blockedTags
 
-表示装备本身就具备的结构能力（比如“导轨”“电力接口”“枪口螺纹”）。
-只用于提供结构支持，参与 requireTags 判定。
-不代表已经占用某个插件挂点（是否占位由 <tag> + blockedTags 控制）。
-blockedTags（装备禁止挂载的挂点标签）
+2. **EquipmentUtil.as:672-692**
+   - 添加 blockedTags 检查逻辑
+   - 新增错误码 -64
 
-表示此装备不允许安装某类挂点插件（如“枪口接口已经封死，不允许再装‘枪口’类插件”）。
-不影响结构本身是否存在；即装备仍可以通过 inherentTags 提供依赖支持，但阻止某些插件挂上来。
-整体设计满足需求：
+3. **EquipmentUtil.as:602-622**
+   - getAvailableModMaterials 中添加 blockedTags 过滤
 
-某些插件必须先有其它结构（requireTags）。
-某些装备天生提供结构（inherentTags）。
-某些装备虽提供结构，但不允许挂某类插件（blockedTags），仍然可以满足其它插件的 requireTags。
-2. 数据设计
-2.1 装备 XML 扩展
-在武器、防具等装备条目中增加两个可选字段（放在 <data> 旁边，与现有结构保持一致）：
+4. **TooltipTextBuilder.as:428-467**
+   - 新增 buildEquipmentTagInfo 函数
 
-<item>
-    <name>MACSIV-长枪示例</name>
-    <type>武器</type>
-    <use>长枪</use>
+5. **TooltipComposer.as:117-120**
+   - 在装备 tooltip 中调用标签信息显示
 
-    <data>
-        ...
-    </data>
+### 注意事项
 
-    <!-- 装备固有结构标签：参与 provideTags / requireTags 判定 -->
-    <inherentTags>导轨,电力接口</inherentTags>
-
-    <!-- 装备禁止挂载的插件挂点标签：与 mod.tagValue 同一域 -->
-    <blockedTags>枪口,枪托接口</blockedTags>
-</item>
-约定：
-
-多值用中文逗号或英文逗号分隔（推荐统一使用英文逗号，解析更简单）。
-字面值与插件 <tag> / <provideTags> / <requireTags> 使用同一个语义空间（例如“导轨”“电力”“枪口接口”等）。
-2.2 运行时数据结构
-在解析 XML → itemData 时：
-
-itemData.inherentTags:String（原始字符串，可选）
-itemData.inherentTagDict:Object（形如 { "导轨": true, "电力接口": true }，可选）
-itemData.blockedTags:String（原始字符串，可选）
-itemData.blockedTagDict:Object（形如 { "枪口": true, "枪托接口": true }，可选）
-插件侧已有：
-
-mod.tagValue：挂点标签（slotTag）
-mod.provideTagDict：提供结构标签集合
-mod.requireTagDict：需求结构标签集合
-3. 核心逻辑改动点（EquipmentUtil）
-3.1 补全 buildTagContext 对 inherentTags 的支持
-当前版本 buildTagContext(item, itemData) 已经预留了：
-
-读取 itemData.inherentTags，拆分并放入 context.presentTags。
-从已安装插件的 provideTagDict 填充 presentTags。
-从已安装插件的 tagValue 填充 slotOccupied。
-计划：
-
-确保数据加载层已经把 XML 中的 <inherentTags> 填入 itemData.inherentTags。
-使用已有实现逻辑即可，无需额外改动（注释“未来扩展”正式启用）：
-itemData.inherentTags → presentTags[...] = true
-插件 provideTagDict → presentTags[...] = true
-暂时不把 tagValue 自动写入 presentTags，保持“slotTag ≠ 结构标签”的清晰分工（要参与依赖系统必须显式写 <provideTags> 或 <inherentTags>）。
-3.2 blockedTags 行为定义与实现
-目标语义：
-
-blockedTags 仅限制“装不装得上某类插件”，不影响结构是否存在。
-典型场景：
-装备 inherentTags 包含“导轨”，但 blockedTags 包含“导轨”：
-requireTags="导轨" 的插件：依赖满足（结构存在）；
-tag="导轨" 的插件：因为 blocked，被禁止安装。
-这样就实现了“提供结构支持却不允许挂某些插件”的设计。
-实现计划（在 EquipmentUtil.isModMaterialAvailable 中补充）：
-
-在现有容量/重复/技能/tag 冲突检查之后，增加 blockedTags 检查：
-
-// 在 tag 冲突检查前或后均可，推荐放在 tag 冲突后，逻辑更清晰
-if(itemData.blockedTagDict && modData.tagValue){
-    if(itemData.blockedTagDict[modData.tagValue]){
-        // 新错误码，例如 -64：装备禁止该挂点类插件
-        return -64;
-    }
-}
-在 initializeModAvailabilityResults() 中新增映射：
-
-modAvailabilityResults[-64] = "该装备禁止安装此挂点类型的插件";
-buildTagContext 不需要关心 blockedTags，只负责“现有结构”和“占用挂点”，避免职责混乱。
-
-3.3 getAvailableModMaterials 中的提前过滤
-目前 getAvailableModMaterials 的流程是：
-
-根据 rawItemData.use 拿到候选插件列表。
-用 buildTagContext 得到 presentTags。
-按 mod.requireTagDict + weapontypeDict 过滤可用插件。
-计划增加 blockedTags 过滤：
-
-在检查 requireTagDict 之后，检查：
-
-if(itemData.blockedTagDict && modData.tagValue){
-    if(itemData.blockedTagDict[modData.tagValue]){
-        continue; // UI 列表中不展示这类插件
-    }
-}
-这样 UI 中“可用插件列表”会自动隐藏被装备封锁挂点的插件，减少玩家困惑。
-
-3.4 依赖系统与拆卸逻辑（与现有实现的关系）
-getDependentMods(item, modNameToRemove) / canRemoveMod(item, modNameToRemove)：
-这些函数只关注 provideTagDict / requireTagDict 与 presentTags 的关系。
-inherentTags 应该始终参与 presentTags 计算（即拆卸插件不会影响装备固有结构）。
-blockedTags 不参与依赖判定，只限制“能不能装上某插件”。
-计划：
-
-不需要对依赖计算作结构性修改，只需确保 buildTagContext 的 inherentTags 分支已经工作。
-确认 getDependentMods 使用的 buildTagContext 逻辑在“有 inherentTags 时”表现正确（插件依赖的标签如果由装备固有提供，就不会因为拆下某个插件而失效）。
-4. UI 与 Tooltip 改动
-4.1 装备 Tooltip 展示 inherentTags / blockedTags
-在 TooltipTextBuilder 中为装备增加一小段展示：
-
-推荐位置：
-在 buildEquipmentStats 或它返回的结果后 append。
-或新增一个 buildEquipmentTagInfo(baseItem, item)，由 TooltipComposer.generateIntroPanelContent 调用。
-展示示例：
-
-<font color='#66ddff'>固有结构：</font>导轨, 电力接口<BR>
-<font color='#ff6666'>禁止挂点：</font>枪口, 枪托接口<BR>
-实现要点：
-
-从 item.inherentTags / item.blockedTags（或解析好的 dict）读取字段。
-为空时不输出，保证对旧装备完全无影响。
-4.2 插件 Tooltip 保持现有增强
-当前版本 buildModStat 已经展示：
-
-挂载位置：mod.tagValue
-适用武器子类：mod.weapontype
-提供结构：mod.provideTagDict
-前置需求：mod.requireTagDict
-对于 blockedTags，不需要在插件 Tooltip 上额外展示；那是装备的属性，由装备 Tooltip 负责。
-
-4.3 UI 错误提示与交互
-在 _root.物品UI函数.执行卸下配件 中已经使用 getDependentMods 做级联卸载提示。
-
-对于 blockedTags：
-
-安装时，如果返回码为 -64，UI 已可通过 modAvailabilityResults[-64] 显示明确的中文错误。
-不需要额外 UI 逻辑，只要在原有“安装失败提示”中走通新错误码即可。
-5. 向下兼容与性能
-向下兼容
-不填 inherentTags / blockedTags 时：
-buildTagContext 中的分支不会触发。
-isModMaterialAvailable / getAvailableModMaterials 中的 blocked 检查短路。
-整个系统行为与当前版本完全一致。
-性能
-buildTagContext 已经在 getAvailableModMaterials 中按调用一次复用。
-inherentTags / blockedTags 解析只在加载 XML 时发生一次，对运行时性能影响可忽略。
-6. 测试计划（v2：装备自带 tag）
-在 TAG_SYSTEM_TEST.md 现有用例基础上新增一节：
-
-场景 A：装备提供结构 + 允许挂载插件
-
-装备：inherentTags=导轨，blockedTags 为空。
-插件 A：requireTags=导轨，tag=瞄具。
-预期：
-未安装任何 provideTags 插件时，A 已可安装。
-Tooltip 显示“固有结构：导轨”。
-场景 B：装备提供结构 + 禁止挂载该类挂点
-
-装备：inherentTags=导轨，blockedTags=导轨。
-插件 A：requireTags=导轨，tag=导轨附件。
-插件 B：requireTags=导轨，tag=瞄具。
-预期：
-getAvailableModMaterials：
-A 不出现在列表（被 blocked）。
-B 出现在列表（blocked 只看 tagValue，与 requireTags 无关）。
-手动尝试安装 A：
-isModMaterialAvailable 返回 -64。
-UI 显示“该装备禁止安装此挂点类型的插件”。
-场景 C：依赖链 + 装备固有结构不受拆卸影响
-
-装备：inherentTags=电力。
-插件 X：provideTags=高级电力。
-插件 Y：requireTags=电力。
-插件 Z：requireTags=高级电力。
-步骤：
-安装 Y：应成功（依赖电力，由装备提供）。
-安装 X，再安装 Z：应成功。
-尝试拆下 X：
-只会影响 Z 的依赖；Y 仍然依赖装备固有电力，应保持有效。
-getDependentMods 只返回 Z，不应该返回 Y。
-工具与调试
-
-利用 EquipmentUtil.DEBUG_MODE = true + 作弊码（如 getallmods 或新增调试指令）：
-打印每次构建的 presentTags。
-打印 blocked 命中日志（tagValue 与 blockedTags 匹配时的 debug 信息）。
-这份计划可以作为你实现 inherentTags / blockedTags 的蓝本：先从 XML 与解析层入手，再补上 EquipmentUtil 的逻辑分支，最后加上 Tooltip 展示和 TAG_SYSTEM_TEST 中的新测试条目。需要的话，我可以在下一步帮你把某个具体武器 + 一组插件的 XML 草案和对应的测试步骤写成完整示例。
+1. **inherentTags 已经生效**：buildTagContext 中的代码已存在，只是之前没有装备使用
+2. **blockedTags 是新增功能**：完全新实现的限制机制
+3. **向下兼容**：没有这些标签的装备行为不变

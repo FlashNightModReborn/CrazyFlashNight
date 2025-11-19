@@ -110,10 +110,15 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
    */
   public static function generateIntroPanelContent(baseItem:BaseItem, item:Object):String {
     var buffer:Array = [];
-    
+
     append(buffer, TooltipTextBuilder.buildIntroHeader(baseItem, item));
     append(buffer, TooltipTextBuilder.buildStats(baseItem, item));
-    
+
+    // 如果是装备，显示固有标签和禁止标签信息
+    if(item.type === "武器" || item.type === "防具"){
+      append(buffer, TooltipTextBuilder.buildEquipmentTagInfo(item));
+    }
+
     return buffer.join("");
   }
 

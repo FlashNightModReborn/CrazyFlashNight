@@ -3892,6 +3892,10 @@
     <price>62000</price>
     <description>M4A1突击步枪战术版根据M4A1改装获得，加装了瞄准镜和侧导轨，激光指示器与下挂式榴弹发射器。
       便是如今的21世纪，也仍能在战争中见到它的身影；虽然早就加装了榴弹发射器，但不知为何，这管榴弹发射器的内部在此前一直都是空的。</description>
+    <!-- 装备固有结构标签：参与 provideTags / requireTags 判定 -->
+    <inherentTags>电力,NOHA</inherentTags>
+    <!-- 装备禁止挂载的插件挂点标签：与 mod.tagValue 同一域 -->
+    <blockedTags>核心模块,导轨基座,枪口,弹匣,下导轨,瞄具</blockedTags>
     <skill>
       <skillname>发射榴弹</skillname>
       <description>持枪瞄准时可以发射榴弹，每弹夹消耗1发榴弹弹药，可射击三发，换弹后可再次发射。</description>
@@ -3903,7 +3907,7 @@
     <data>
       <level>35</level>
       <weight>6</weight>
-      <modslot>0</modslot>
+      <modslot>1</modslot>
       <dressup>枪-长枪-M4A1战术版</dressup>
       <capacity>50</capacity>
       <split>1</split>

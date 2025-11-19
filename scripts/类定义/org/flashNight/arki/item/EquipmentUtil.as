@@ -599,6 +599,28 @@ class org.flashNight.arki.item.EquipmentUtil{
                 }
             }
 
+            // 检查 blockedTags：如果装备禁止特定挂点类型，则过滤掉
+            if(rawItemData.blockedTags && modData.tagValue){
+                // 首次访问时解析 blockedTags
+                if(!rawItemData.blockedTagDict){
+                    var blockedArr:Array = rawItemData.blockedTags.split(",");
+                    rawItemData.blockedTagDict = {};
+                    for(var bi:Number = 0; bi < blockedArr.length; bi++){
+                        var blockedTag:String = StringUtils.trim(blockedArr[bi]);
+                        if(blockedTag.length > 0){
+                            rawItemData.blockedTagDict[blockedTag] = true;
+                        }
+                    }
+                }
+                // 如果插件的 tagValue 在禁止列表中，跳过
+                if(rawItemData.blockedTagDict[modData.tagValue]){
+                    if(DEBUG_MODE){
+                        debugLog("插件 '" + modName + "' 的挂点类型 '" + modData.tagValue + "' 被装备禁止，从可用列表中过滤");
+                    }
+                    continue; // 跳过这个插件
+                }
+            }
+
             // 检查武器类型限制
             var weapontypeDict:Object = modData.weapontypeDict;
             if(!weapontypeDict){
@@ -668,6 +690,29 @@ class org.flashNight.arki.item.EquipmentUtil{
                 }
             }
         }
+
+        // 检查 blockedTags：装备禁止安装特定挂点类型的插件
+        if(itemData.blockedTags && modData.tagValue){
+            // 首先解析 blockedTags（如果还没有解析成 dict）
+            if(!itemData.blockedTagDict){
+                var blockedArr:Array = itemData.blockedTags.split(",");
+                itemData.blockedTagDict = {};
+                for(var bi:Number = 0; bi < blockedArr.length; bi++){
+                    var blockedTag:String = StringUtils.trim(blockedArr[bi]);
+                    if(blockedTag.length > 0){
+                        itemData.blockedTagDict[blockedTag] = true;
+                    }
+                }
+            }
+            // 检查插件的 tagValue 是否在禁止列表中
+            if(itemData.blockedTagDict[modData.tagValue]){
+                if(DEBUG_MODE){
+                    debugLog("装备 '" + item.name + "' 禁止安装挂点类型 '" + modData.tagValue + "' 的插件");
+                }
+                return -64; // 装备禁止该挂点类插件
+            }
+        }
+
         //
         if(itemData.skill && modData.skill) return -4; // 已有战技
         return 1; // 允许装备
@@ -683,6 +728,7 @@ class org.flashNight.arki.item.EquipmentUtil{
         modAvailabilityResults[-8] = "同位置插件已装备"; // tag冲突：一个装备不能同时装多个相同tag的插件
         modAvailabilityResults[-16] = "缺少前置结构支持"; // 新增：tag依赖不满足
         modAvailabilityResults[-32] = "有其他插件依赖此插件"; // 新增：不能移除被依赖的插件
+        modAvailabilityResults[-64] = "该装备禁止安装此挂点类型的插件"; // 新增：blockedTags限制
     }
 
     /**

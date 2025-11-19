@@ -10,7 +10,7 @@ import org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.component.Damage.*;
 import org.flashNight.gesh.object.ObjectUtil;
-
+import org.flashNight.gesh.string.StringUtils;
 import org.flashNight.naki.Sort.InsertionSort;
 
 /**
@@ -422,6 +422,47 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     if(typeof modData.description === "string"){
       result.push(modData.description.split("\r\n").join(TooltipFormatter.br()), TooltipFormatter.br());
     }
+    return result;
+  }
+
+  /**
+   * 构建装备的固有标签和禁止标签信息
+   * @param item 物品原始数据对象
+   * @return 标签信息的 HTML 数组
+   */
+  public static function buildEquipmentTagInfo(item:Object):Array {
+    var result:Array = [];
+
+    // 显示固有结构标签 (inherentTags)
+    if(item.inherentTags){
+      var inherentArr:Array = item.inherentTags.split(",");
+      var inherentTags:Array = [];
+      for(var i:Number = 0; i < inherentArr.length; i++){
+        var tag:String = StringUtils.trim(inherentArr[i]);
+        if(tag.length > 0){
+          inherentTags.push(tag);
+        }
+      }
+      if(inherentTags.length > 0){
+        result.push("<font color='" + TooltipConstants.COL_ENHANCE + "'>固有结构：</font>" + inherentTags.join(", ") + "<BR>");
+      }
+    }
+
+    // 显示禁止挂载标签 (blockedTags)
+    if(item.blockedTags){
+      var blockedArr:Array = item.blockedTags.split(",");
+      var blockedTags:Array = [];
+      for(var j:Number = 0; j < blockedArr.length; j++){
+        var blocked:String = StringUtils.trim(blockedArr[j]);
+        if(blocked.length > 0){
+          blockedTags.push(blocked);
+        }
+      }
+      if(blockedTags.length > 0){
+        result.push("<font color='" + TooltipConstants.COL_ROUT + "'>禁止挂点：</font>" + blockedTags.join(", ") + "<BR>");
+      }
+    }
+
     return result;
   }
 
