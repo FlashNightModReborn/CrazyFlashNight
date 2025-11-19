@@ -6,6 +6,7 @@ import org.flashNight.gesh.tooltip.TooltipDataSelector;
 import org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer;
 import org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder;
 import org.flashNight.gesh.tooltip.builder.SlayEffectBuilder;
+import org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.component.Damage.*;
 import org.flashNight.gesh.object.ObjectUtil;
@@ -500,115 +501,8 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     // 显示伤害类型和破击类型（与 buildEquipmentStats 保持一致）
     if(override) quickBuildDamageType(result, override);
 
-    // 显示useSwitch条件效果（详细版）
-    if(stats && stats.useSwitch && stats.useSwitch.useCases){
-      var useCases = stats.useSwitch.useCases;
-      if(useCases.length > 0){
-        result.push("<font color='" + TooltipConstants.COL_HL + "'>【按装备类型追加效果】</font><BR>");
-
-        for(var ucIdx = 0; ucIdx < useCases.length; ucIdx++){
-          var useCase = useCases[ucIdx];
-          if(!useCase.name) continue;
-
-          result.push("<font color='" + TooltipConstants.COL_INFO + "'>对 " + useCase.name + "：</font><BR>");
-
-          // 显示percentage加成
-          if(useCase.percentage){
-            var sortedList = getSortedAttrList(useCase.percentage);
-            for(var i = 0; i < sortedList.length; i++){
-              var key = sortedList[i];
-              result.push("  ");  // 缩进
-              TooltipFormatter.statLine(result, "multiply", key, useCase.percentage[key], null);
-            }
-          }
-
-          // 显示multiplier独立乘区
-          if(useCase.multiplier){
-            var sortedList = getSortedAttrList(useCase.multiplier);
-            for(var i = 0; i < sortedList.length; i++){
-              var key = sortedList[i];
-              var mValue = useCase.multiplier[key];
-              var label = TooltipConstants.PROPERTY_DICT[key];
-              if(!label) label = key;
-
-              var displayText:String;
-              if(mValue < 0) {
-                // 负数：显示为倍率
-                var multiplierValue = 1 + mValue;
-                var displayValue = Math.round(multiplierValue * 100) / 100;
-                displayText = "×" + displayValue;
-              } else {
-                // 正数：显示为百分比
-                var percentDisplay = Math.round(mValue * 100);
-                displayText = "×+" + percentDisplay + "%";
-              }
-
-              result.push("  <FONT COLOR='#FF6600'>", label, " ", displayText, "</FONT> <FONT COLOR='#FF9944'>[独立乘区]</FONT><BR>");
-            }
-          }
-
-          // 显示flat加成
-          if(useCase.flat){
-            var sortedList = getSortedAttrList(useCase.flat);
-            for(var i = 0; i < sortedList.length; i++){
-              var key = sortedList[i];
-              // 跳过 slay，使用专门的 SlayEffectBuilder 显示
-              if(key == "slay") continue;
-              result.push("  ");  // 缩进
-              TooltipFormatter.statLine(result, "add", key, useCase.flat[key], null);
-            }
-            // 使用 SlayEffectBuilder 处理斩杀线属性
-            if(useCase.flat.slay){
-              result.push("  ");  // 缩进
-              SlayEffectBuilder.buildFlat(result, useCase.flat.slay);
-            }
-          }
-
-          // 显示override覆盖
-          if(useCase.override){
-            var sortedList = getSortedAttrList(useCase.override);
-            for(var i = 0; i < sortedList.length; i++){
-              var key = sortedList[i];
-              if(key == "damagetype" || key == "magictype" || key == "silence" || key == "slay") continue;
-              result.push("  ");  // 缩进
-              TooltipFormatter.statLine(result, "override", key, useCase.override[key], null);
-            }
-            // 使用 SlayEffectBuilder 处理斩杀线属性
-            if(useCase.override.slay){
-              result.push("  ");  // 缩进
-              SlayEffectBuilder.buildOverride(result, useCase.override.slay);
-            }
-            // 使用 SilenceEffectBuilder 处理消音效果
-            if(useCase.override.silence){
-              result.push("  ");  // 缩进
-              SilenceEffectBuilder.build(result, null, null, useCase.override, null);
-            }
-            // 显示伤害类型和破击类型（组合显示 damagetype 和 magictype）
-            if(useCase.override.damagetype){
-              result.push("  ");  // 缩进
-              quickBuildDamageType(result, useCase.override);
-            }
-          }
-
-          // 显示cap上限
-          if(useCase.cap){
-            var sortedList = getSortedAttrList(useCase.cap);
-            for(var i = 0; i < sortedList.length; i++){
-              var key = sortedList[i];
-              var capValue = useCase.cap[key];
-              var label = TooltipConstants.PROPERTY_DICT[key];
-              if(!label) label = key;
-
-              if(capValue > 0){
-                result.push("  <FONT COLOR='" + TooltipConstants.COL_INFO + "'>", label, " 增益上限: +", capValue, "</FONT><BR>");
-              }else if(capValue < 0){
-                result.push("  <FONT COLOR='" + TooltipConstants.COL_INFO + "'>", label, " 减益下限: ", capValue, "</FONT><BR>");
-              }
-            }
-          }
-        }
-      }
-    }
+    // 使用 UseSwitchStatsBuilder 显示 useSwitch 条件效果（详细版）
+    UseSwitchStatsBuilder.buildDetailed(result, stats);
 
     if(modData.skill){
       result = result.concat(buildSkillInfo(modData.skill));
