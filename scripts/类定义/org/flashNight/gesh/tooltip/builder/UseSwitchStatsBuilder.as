@@ -54,11 +54,11 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
      * 构建统一的属性块（可被顶层 stats 和 useCase 共用）
      *
      * @param result:Array 输出缓冲区（就地修改）
-     * @param statsObj:Object 包含 percentage/multiplier/flat/override/cap 的对象
+     * @param statsObj:Object 包含 percentage/multiplier/flat/override/merge/cap 的对象
      * @param indent:String 缩进字符串（如 "  " 或 ""）
      * @return Void（直接修改 result）
      */
-    private static function buildStatBlock(result:Array, statsObj:Object, indent:String):Void {
+    public static function buildStatBlock(result:Array, statsObj:Object, indent:String):Void {
         // 显示 percentage 加成
         if (statsObj.percentage) {
             var sortedList = TooltipTextBuilder.getSortedAttrList(statsObj.percentage);
@@ -127,17 +127,17 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
                 result.push(indent);
                 SlayEffectBuilder.buildOverride(result, statsObj.override.slay);
             }
+        }
 
-            // 使用 SilenceEffectBuilder 处理消音效果
-            if (statsObj.override.silence) {
+        // 显示 merge 合并
+        if (statsObj.merge) {
+            var sortedList = TooltipTextBuilder.getSortedAttrList(statsObj.merge);
+            for (var i = 0; i < sortedList.length; i++) {
+                var key = sortedList[i];
+                // 跳过嵌套对象，它们需要特殊处理
+                if (key == "magicdefence" || key == "skillmultipliers") continue;
                 result.push(indent);
-                SilenceEffectBuilder.build(result, null, null, statsObj.override, null);
-            }
-
-            // 显示伤害类型和破击类型（组合显示 damagetype 和 magictype）
-            if (statsObj.override.damagetype) {
-                result.push(indent);
-                TooltipTextBuilder.quickBuildDamageType(result, statsObj.override);
+                TooltipFormatter.statLine(result, "merge", key, statsObj.merge[key], null);
             }
         }
 
@@ -156,6 +156,40 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
                     result.push(indent, "<FONT COLOR='" + TooltipConstants.COL_INFO + "'>", label, " 减益下限: ", capValue, "</FONT><BR>");
                 }
             }
+        }
+
+        // 处理 override 中的特殊对象（criticalhit/magicdefence/skillmultipliers/silence）
+        if (statsObj.override) {
+            if (statsObj.override.criticalhit) {
+                result.push(indent, TooltipTextBuilder.quickBuildCriticalHit(statsObj.override.criticalhit));
+            }
+            if (statsObj.override.magicdefence) {
+                result.push(indent, TooltipTextBuilder.quickBuildMagicDefence(statsObj.override.magicdefence, "覆盖"));
+            }
+            if (statsObj.override.skillmultipliers) {
+                result.push(indent, TooltipTextBuilder.quickBuildSkillMultipliers(statsObj.override.skillmultipliers, "覆盖"));
+            }
+            // 使用 SilenceEffectBuilder 处理消音效果
+            if (statsObj.override.silence) {
+                result.push(indent);
+                SilenceEffectBuilder.build(result, null, null, statsObj.override, null);
+            }
+        }
+
+        // 处理 merge 中的特殊对象（magicdefence/skillmultipliers）
+        if (statsObj.merge) {
+            if (statsObj.merge.magicdefence) {
+                result.push(indent, TooltipTextBuilder.quickBuildMagicDefence(statsObj.merge.magicdefence, "合并"));
+            }
+            if (statsObj.merge.skillmultipliers) {
+                result.push(indent, TooltipTextBuilder.quickBuildSkillMultipliers(statsObj.merge.skillmultipliers, "合并"));
+            }
+        }
+
+        // 显示伤害类型和破击类型（组合显示 damagetype 和 magictype）
+        if (statsObj.override && statsObj.override.damagetype) {
+            result.push(indent);
+            TooltipTextBuilder.quickBuildDamageType(result, statsObj.override);
         }
     }
 }
