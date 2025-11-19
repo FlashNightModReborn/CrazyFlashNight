@@ -437,8 +437,9 @@ Tag 依赖系统允许插件之间建立前置要求关系，实现更复杂的�
         <name>战术导轨</name>
         <use>长枪</use>
         <grantsWeapontype>突击步枪</grantsWeapontype>
+        <provideTags>导轨平台,下导轨挂点,侧导轨挂点,瞄具挂点</provideTags>
         <detachPolicy>cascade</detachPolicy>
-        <description>使子类不为[突击步枪]的枪械可以安装对应子类的配件。</description>
+        <description>模块化接口系统，提供战术配件安装平台。允许安装下挂武器、侧导轨配件和高级瞄具。使子类不为[突击步枪]的枪械可以安装对应子类的配件。</description>
         <tag>导轨基座</tag>
     </mod>
     <mod>
@@ -449,7 +450,8 @@ Tag 依赖系统允许插件之间建立前置要求关系，实现更复杂的�
                 <power>8</power>
             </flat>
         </stats>
-        <description>标准化紧固件，增强枪械结构稳定性。</description>
+        <provideTags>结构稳定</provideTags>
+        <description>标准化紧固件组，提供结构稳定性并增强枪械威力。</description>
         <tag>外部紧固</tag>
     </mod>
     <mod>
@@ -527,7 +529,7 @@ Tag 依赖系统允许插件之间建立前置要求关系，实现更复杂的�
         <name>可充锂电池</name>
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备,刀,手枪,长枪</use>
         <provideTags>电力</provideTags>
-        <description>提供电力支持，为其他电子设备供能。</description>
+        <description>基础电源模块，为电子设备提供稳定供能。末世中少量幸存的锂电池，极其珍贵。</description>
         <tag>核心模块</tag>
     </mod>
     <mod>
@@ -541,8 +543,9 @@ Tag 依赖系统允许插件之间建立前置要求关系，实现更复杂的�
                 <weight>2</weight>
             </flat>
         </stats>
+        <provideTags>扩展模组槽</provideTags>
         <detachPolicy>cascade</detachPolicy>
-        <description>将装备的配件槽拓展至3个。</description>
+        <description>模块化装备扩展系统，将装备的配件槽拓展至3个。</description>
         <tag>肩挂系统</tag>
     </mod>
     <mod>
@@ -816,8 +819,9 @@ Tag 依赖系统允许插件之间建立前置要求关系，实现更复杂的�
                 <weight>2</weight>
             </flat>
         </stats>
+        <provideTags>扩展模组槽,强化框架</provideTags>
         <detachPolicy>cascade</detachPolicy>
-        <description>高强度内核加固条，将武器配件槽扩展至3个。</description>
+        <description>高强度内核加固条，提供结构支撑并将武器配件槽扩展至3个。</description>
         <tag>柄芯</tag>
     </mod>
     <mod>
@@ -964,8 +968,9 @@ Tag 依赖系统允许插件之间建立前置要求关系，实现更复杂的�
             </flat>
         </stats>
         <grantsWeapontype>突击步枪</grantsWeapontype>
+        <provideTags>导轨平台,下导轨挂点,侧导轨挂点,瞄具挂点,扩展模组槽</provideTags>
         <detachPolicy>cascade</detachPolicy>
-        <description>使子类不为[突击步枪]的枪械可以安装对应子类的配件，并将枪械的配件槽拓展至3个。</description>
+        <description>高级模块化导轨系统，提供全面的战术配件平台并将配件槽扩展至3个。支持所有类型的战术配件。使子类不为[突击步枪]的枪械可以安装对应子类的配件。</description>
         <tag>导轨基座</tag>
     </mod>
     <mod>
@@ -999,13 +1004,14 @@ Tag 依赖系统允许插件之间建立前置要求关系，实现更复杂的�
     <mod>
         <name>镭射瞄准具</name>
         <use>长枪,手枪</use>
+        <requireTags>侧导轨挂点</requireTags>
         <stats>
             <flat>
                 <accuracy>35</accuracy>
                 <bulletsize>10</bulletsize>
             </flat>
         </stats>
-        <description>军规激光器，提供精确瞄准辅助，提升精准度与弹药尺寸。</description>
+        <description>军规激光瞄准器，提供精确瞄准辅助。需要侧导轨支持，提升精准度与弹药尺寸。</description>
         <tag>侧导轨</tag>
     </mod>
     <mod>
@@ -1026,13 +1032,14 @@ Tag 依赖系统允许插件之间建立前置要求关系，实现更复杂的�
         <name>战术握把</name>
         <use>长枪</use>
         <weapontype>突击步枪,战斗步枪,冲锋枪,压制冲锋枪</weapontype>
+        <requireTags>下导轨挂点</requireTags>
         <stats>
             <percentage>
                 <diffusion>-20</diffusion>
                 <power>13</power>
             </percentage>
         </stats>
-        <description>人机工学握把，降低扩散并提升威力，适用于步枪和冲锋枪。</description>
+        <description>人机工学握把，降低扩散并提升威力。需要导轨系统支持，适用于步枪和冲锋枪。</description>
         <tag>下导轨</tag>
     </mod>
     <mod>
@@ -1074,7 +1081,7 @@ Tag 依赖系统允许插件之间建立前置要求关系，实现更复杂的�
             </percentage>
         </stats>
         <provideTags>电力</provideTags>
-        <description>可编程分子机器集群，全面提升装备伤害输出能力，可为其他电子设备供能。</description>
+        <description>可编程分子机器集群，全面提升装备伤害输出能力。内置高能量密度电源，可为其他电子设备供能。</description>
         <tag>核心模块</tag>
     </mod>
 
@@ -1083,6 +1090,7 @@ Tag 依赖系统允许插件之间建立前置要求关系，实现更复杂的�
         <name>下挂霰弹枪</name>
         <use>长枪</use>
         <weapontype>突击步枪</weapontype>
+        <requireTags>下导轨挂点</requireTags>
         <stats>
             <flat>
                 <weight>1</weight>
@@ -1104,13 +1112,14 @@ Tag 依赖系统允许插件之间建立前置要求关系，实现更复杂的�
             <range>50</range>
             <impact>8</impact>
         </skill>
-        <description>短管泵动霰弹，提供近距离火力支援。</description>
+        <description>短管泵动霰弹模块，提供近距离火力支援。需要导轨系统支持。</description>
         <tag>下导轨</tag>
     </mod>
     <mod>
         <name>M203榴弹发射器</name>
         <use>长枪</use>
         <weapontype>突击步枪</weapontype>
+        <requireTags>下导轨挂点</requireTags>
         <stats>
             <flat>
                 <weight>2</weight>
@@ -1131,13 +1140,14 @@ Tag 依赖系统允许插件之间建立前置要求关系，实现更复杂的�
             <velocity>20</velocity>
             <impact>10</impact>
         </skill>
-        <description>下挂榴弹模块，提供爆炸性火力支援。</description>
+        <description>下挂榴弹发射模块，提供爆炸性火力支援。需要导轨系统支持。</description>
         <tag>下导轨</tag>
     </mod>
     <mod>
         <name>下挂微型导弹发射器</name>
         <use>长枪</use>
         <weapontype>突击步枪</weapontype>
+        <requireTags>下导轨挂点</requireTags>
         <stats>
             <flat>
                 <weight>3</weight>
@@ -1159,13 +1169,14 @@ Tag 依赖系统允许插件之间建立前置要求关系，实现更复杂的�
             <range>50</range>
             <impact>8</impact>
         </skill>
-        <description>四联腔导弹系统，提供高精度范围打击能力。</description>
+        <description>四联腔微型导弹系统，提供高精度范围打击能力。需要导轨系统支持。</description>
         <tag>下导轨</tag>
     </mod>
     <mod>
         <name>下挂铁血肩炮</name>
         <use>长枪</use>
         <weapontype>突击步枪</weapontype>
+        <requireTags>下导轨挂点,电力</requireTags>
         <stats>
             <flat>
                 <weight>3</weight>
@@ -1188,7 +1199,7 @@ Tag 依赖系统允许插件之间建立前置要求关系，实现更复杂的�
             <range>50</range>
             <impact>1</impact>
         </skill>
-        <description>等离子投射装置，发射追踪电浆弹，提高装备等级需求。</description>
+        <description>等离子投射装置，发射追踪电浆弹。需要导轨系统和电力支持，提高装备等级需求。</description>
         <tag>下导轨</tag>
     </mod>
     <mod>
