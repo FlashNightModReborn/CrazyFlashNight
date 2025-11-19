@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/06.青蓝色系/星辰梦击/星辰梦击" itemID="6554c23b-00002fa2" linkageExportForAS="true" linkageIdentifier="星辰梦击" lastModified="1700053852" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/06.青蓝色系/星辰梦击/星辰梦击" itemID="6554c23b-00002fa2" linkageExportForAS="true" linkageIdentifier="星辰梦击" lastModified="1763555132" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="星辰梦击" currentFrame="11">
+    <DOMTimeline name="星辰梦击">
       <layers>
         <DOMLayer name="代码&amp;判定" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
@@ -13,7 +13,7 @@
 this._rotation = 0;]]></script>
               </Actionscript>
               <elements>
-                <DOMSymbolInstance libraryItemName="area40X40" name="area" selected="true" centerPoint3DX="0.35" centerPoint3DY="-1.6">
+                <DOMSymbolInstance libraryItemName="area40X40" name="area" centerPoint3DX="0.35" centerPoint3DY="-1.6">
                   <matrix>
                     <Matrix tx="-19.65" ty="-21.6"/>
                   </matrix>

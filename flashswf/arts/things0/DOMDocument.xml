@@ -12,6 +12,9 @@
           <DOMFolderItem name="sound" itemID="65a6bb4b-0000137a"/>
           <DOMFolderItem name="sprite" itemID="66530518-00000d78" isExpanded="true"/>
           <DOMFolderItem name="爆炸" itemID="67f13734-00000871"/>
+          <DOMFolderItem name="波动拳发射" itemID="691dcf05-000067b4"/>
+          <DOMFolderItem name="波动拳发射/组件" itemID="691dcedc-000067ae"/>
+          <DOMFolderItem name="波动拳蓄力球" itemID="691dc8ef-0000665c"/>
           <DOMFolderItem name="各种图素材等" itemID="65e07117-00000783"/>
           <DOMFolderItem name="怪物通用模板" itemID="65b3a368-0000064f"/>
           <DOMFolderItem name="怪物通用模板/新近战子弹定位元件" itemID="65b3a368-00000650" isExpanded="true"/>
@@ -1012,7 +1015,7 @@
           <Include href="sprite/Symbol 2019.xml" loadImmediate="false" itemID="6577efbc-0000080c" lastModified="1706255914"/>
           <Include href="sprite/被击飞击倒.xml" loadImmediate="false" itemID="690f5883-00001c3b" lastModified="1763281875"/>
           <Include href="sprite/兵器待机.xml" loadImmediate="false" itemID="690df7b1-00000ba7" lastModified="1762600515"/>
-          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1763534379"/>
+          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1763558353"/>
           <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1763399817"/>
           <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1763534403"/>
           <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1763399520"/>
@@ -1028,15 +1031,15 @@
           <Include href="sprite/攻击模式切换.xml" loadImmediate="false" itemID="691b470f-00002ecf" lastModified="1763396571"/>
           <Include href="sprite/黑红色爆炸.xml" itemID="668be72d-0000065f" lastModified="1721756218"/>
           <Include href="sprite/红色刀光.xml" loadImmediate="false" itemID="65b795a7-00000ba0" lastModified="1706530238"/>
-          <Include href="sprite/技能.xml" loadImmediate="false" itemID="691ae81e-00000771" lastModified="1763486319"/>
+          <Include href="sprite/技能.xml" loadImmediate="false" itemID="691ae81e-00000771" lastModified="1763562707"/>
           <Include href="sprite/近战子弹 副本.xml" loadImmediate="false" itemID="660a212e-00000b09" lastModified="1711945124"/>
           <Include href="sprite/近战子弹 已obj化.xml" loadImmediate="false" itemID="68ac3fb5-00000753" lastModified="1756118967"/>
           <Include href="sprite/觉醒霸体特效.xml" itemID="668be723-0000065d" lastModified="1756118920"/>
           <Include href="sprite/觉醒霸体特效原先.xml" itemID="66c19f0e-000017fb" lastModified="1723965222"/>
           <Include href="sprite/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1757948662"/>
-          <Include href="sprite/空手攻击.xml" loadImmediate="false" itemID="6919dfac-00001066" lastModified="1763488206"/>
-          <Include href="sprite/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1763487656"/>
-          <Include href="sprite/空手跳.xml" loadImmediate="false" itemID="6919df9d-00001065" lastModified="1763303729"/>
+          <Include href="sprite/空手攻击.xml" loadImmediate="false" itemID="6919dfac-00001066" lastModified="1763562746"/>
+          <Include href="sprite/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1763557574"/>
+          <Include href="sprite/空手跳.xml" loadImmediate="false" itemID="6919df9d-00001065" lastModified="1763557407"/>
           <Include href="sprite/落地特效-闪光.xml" loadImmediate="false" itemID="663ba576-00000122" lastModified="1715185258"/>
           <Include href="sprite/木偶-主角-男.xml" itemID="668be718-0000065b" lastModified="1720445240"/>
           <Include href="sprite/男变装-基本脸型.xml" itemID="668be716-0000065a" lastModified="1729259751"/>
@@ -1098,6 +1101,39 @@
           <Include href="sprite/震地屏障.xml" loadImmediate="false" itemID="69172b69-0000083e" lastModified="1763126132"/>
           <Include href="sprite/主角-女（弃用）.xml" loadImmediate="false" itemID="67c8031d-00000716" lastModified="1757947252"/>
           <Include href="sprite/主角模板npc.xml" itemID="686f3f88-000007c6" lastModified="1756118902"/>
+          <Include href="波动拳发射/波动拳发射.xml" loadImmediate="false" itemID="691dcee7-000067b1" lastModified="1763562224"/>
+          <Include href="波动拳发射/组件/shape 7 副本 28.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba2-00001dbd" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/shape 9 副本 27.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba2-00001db3" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/shape 17 副本 28.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba1-00001da3" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/shape 19 副本 24.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba1-00001d99" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/shape 27 副本 25.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba1-00001d9b" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/shape 29 副本 22.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba1-00001d93" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/shape 37 副本 15.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba1-00001d9d" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/shape 39 副本 17.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba1-00001d95" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/shape 47 副本 14.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba1-00001d9f" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/shape 49 副本 14.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba1-00001d97" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/shape 55 副本 13.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba2-00001da5" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/shape 57 副本 16.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba1-00001da1" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/shape 59 副本 15.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba2-00001de6" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/shape 61 副本 11.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba2-00001dfc" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/sprite 8 副本 23.xml" loadImmediate="false" itemID="55af0ba2-00001dbc" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/sprite 10 副本 21.xml" loadImmediate="false" itemID="55af0ba2-00001db2" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/sprite 18 副本 22.xml" loadImmediate="false" itemID="55af0ba1-00001da2" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/sprite 20 副本 19.xml" loadImmediate="false" itemID="55af0ba1-00001d98" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/sprite 28 副本 18.xml" loadImmediate="false" itemID="55af0ba1-00001d9a" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/sprite 30 副本 19.xml" loadImmediate="false" itemID="55af0ba1-00001d92" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/sprite 38 副本 15.xml" loadImmediate="false" itemID="55af0ba1-00001d9c" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/sprite 40 副本 15.xml" loadImmediate="false" itemID="55af0ba1-00001d94" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/sprite 48 副本 10.xml" loadImmediate="false" itemID="55af0ba1-00001d9e" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/sprite 50 副本 10.xml" loadImmediate="false" itemID="55af0ba1-00001d96" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/sprite 56 副本 11.xml" loadImmediate="false" itemID="55af0ba2-00001da4" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/sprite 58 副本 12.xml" loadImmediate="false" itemID="55af0ba1-00001da0" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/sprite 60 副本 10.xml" loadImmediate="false" itemID="55af0ba2-00001de5" lastModified="1418787089"/>
+          <Include href="波动拳发射/组件/sprite 62 副本 9.xml" loadImmediate="false" itemID="55af0ba2-00001dfb" lastModified="1418787089"/>
+          <Include href="波动拳蓄力球/波动拳蓄力1.xml" loadImmediate="false" itemID="691dc8c6-00006655" lastModified="1763559622"/>
+          <Include href="波动拳蓄力球/波动拳蓄力2.xml" itemIcon="1" loadImmediate="false" itemID="691dc8c8-00006656" lastModified="1763559624"/>
+          <Include href="波动拳蓄力球/波动拳蓄力3.xml" itemIcon="1" loadImmediate="false" itemID="691dc8cd-00006657" lastModified="1763559629"/>
+          <Include href="波动拳蓄力球/波动拳蓄力球.xml" loadImmediate="false" itemID="691dc8bb-00006654" lastModified="1763559611"/>
           <Include href="不知道怎么说的特效.xml" itemIcon="1" loadImmediate="false" itemID="6910ab04-0000131f" lastModified="1763126002"/>
           <Include href="残影1.xml" loadImmediate="false" itemID="674008f5-0000089b" lastModified="1732286029"/>
           <Include href="残影2.xml" loadImmediate="false" itemID="674008ff-0000089d" lastModified="1732286250"/>
@@ -1918,6 +1954,10 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3604877" publishTime="1763562129"/>
+          <PublishItem publishSize="3604876" publishTime="1763561891"/>
+          <PublishItem publishSize="3604808" publishTime="1763561657"/>
+          <PublishItem publishSize="3604562" publishTime="1763561432"/>
           <PublishItem publishSize="3588961" publishTime="1763488001"/>
           <PublishItem publishSize="3587952" publishTime="1763486864"/>
           <PublishItem publishSize="3587946" publishTime="1763486668"/>
@@ -1934,9 +1974,5 @@
           <PublishItem publishSize="3515144" publishTime="1763302225"/>
           <PublishItem publishSize="3515107" publishTime="1763301827"/>
           <PublishItem publishSize="3515015" publishTime="1763300658"/>
-          <PublishItem publishSize="3514980" publishTime="1763300278"/>
-          <PublishItem publishSize="3514738" publishTime="1763298237"/>
-          <PublishItem publishSize="3516362" publishTime="1763295988"/>
-          <PublishItem publishSize="3516352" publishTime="1763295822"/>
      </publishHistory>
 </DOMDocument>

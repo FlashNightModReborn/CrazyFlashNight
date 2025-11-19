@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/超气功波/超气功波-最里层/xxc 7" itemID="5b11ffc2-000017a6" symbolType="graphic" lastModified="1527906242">
+  <timeline>
+    <DOMTimeline name="xxc 7">
+      <layers>
+        <DOMLayer name="Layer_1" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.284194946289063" d="0.381393432617188" tx="223.05" ty="124"/>
+                        </matrix>
+                        <GradientEntry color="#6600CC" alpha="0" ratio="0.501960784313725"/>
+                        <GradientEntry color="#A50000" alpha="0.2" ratio="0.764705882352941"/>
+                        <GradientEntry color="#FFCCFF" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!2894 66|2894 4743!2894 4743[2626 4808 2332 4808!2332 4808[1366 4808 683 4103!683 4103[0 3399 0 2404!0 2404[0 1408 683 704!683 704[1366 0 2332 0!2332 0[2626 0 2894 66"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

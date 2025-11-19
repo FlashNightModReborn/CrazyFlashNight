@@ -1,0 +1,319 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/波动拳爆炸" itemID="691db9f0-000064b0" linkageExportForAS="true" linkageIdentifier="波动拳爆炸" lastModified="1763563117" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="波动拳爆炸" currentFrame="4">
+      <layers>
+        <DOMLayer name="Script Layer" color="#CA8E4F">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (this.爆炸冲伤 === true)
+{
+	this.伤害类型 = "魔法";
+	this.魔法伤害属性 = "冲";
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/超气功波/波动拳爆炸/Symbol 485" centerPoint3DX="2.1" centerPoint3DY="39.5">
+                  <matrix>
+                    <Matrix a="0.188339233398438" b="0.411453247070313" c="0.126190185546875" d="-0.0103302001953125" tx="-27.35" ty="-24.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#FFFFFF"/>
+                    <BlurFilter blurX="10" blurY="40"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.75"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/气功弹（和爆炸）素材/Symbol 13" name="area" centerPoint3DX="-42" centerPoint3DY="-42">
+                  <matrix>
+                    <Matrix a="4.3599853515625" d="4.35992431640625" tx="-54.5" ty="-54.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/气功弹（和爆炸）素材/Symbol 13" name="area" centerPoint3DX="-69.4" centerPoint3DY="-46.25">
+                  <matrix>
+                    <Matrix a="7.19989013671875" d="4.7999267578125" tx="-90" ty="-60"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/超气功波/波动拳爆炸/Symbol 483" blendMode="add" centerPoint3DX="57.95" centerPoint3DY="11.5">
+                  <matrix>
+                    <Matrix a="0.032989501953125" b="0.2652587890625" c="-0.265243530273438" d="0.032989501953125" tx="21.9" ty="-24.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/超气功波/波动拳爆炸/Symbol 481" blendMode="add" centerPoint3DX="76.15" centerPoint3DY="38.35">
+                  <matrix>
+                    <Matrix a="0.0184783935546875" b="0.148544311523438" c="-0.148544311523438" d="0.0184783935546875" tx="19.95" ty="-18.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="9" blurY="9" color="#6699FF" strength="3"/>
+                    <BlurFilter blurX="0" blurY="2"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/超气功波/波动拳爆炸/Symbol 479" blendMode="add" centerPoint3DX="-27.45" centerPoint3DY="-23.35">
+                  <matrix>
+                    <Matrix a="1.32723999023438" d="1.28770446777344" tx="-38.4" ty="-34.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.171875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/超气功波/波动拳爆炸/Symbol 479" blendMode="add" centerPoint3DX="-32.65" centerPoint3DY="-28.45">
+                  <matrix>
+                    <Matrix a="1.52919006347656" d="1.48362731933594" tx="-43.6" ty="-39.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.140625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/超气功波/波动拳爆炸/Symbol 479" blendMode="add" centerPoint3DX="-37.8" centerPoint3DY="-33.55">
+                  <matrix>
+                    <Matrix a="1.73115539550781" d="1.67959594726563" tx="-48.8" ty="-44.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.1015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/超气功波/波动拳爆炸/Symbol 479" blendMode="add" centerPoint3DX="-43.05" centerPoint3DY="-38.55">
+                  <matrix>
+                    <Matrix a="1.93316650390625" d="1.87553405761719" tx="-53.95" ty="-49.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.0703125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/超气功波/波动拳爆炸/Symbol 479" blendMode="add" centerPoint3DX="-50.8" centerPoint3DY="-46">
+                  <matrix>
+                    <Matrix a="2.31977844238281" d="2.25064086914063" tx="-63.9" ty="-59.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.01953125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 5" color="#4FFFFF">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/超气功波/波动拳爆炸/Symbol 479" blendMode="add" centerPoint3DX="-49.7" centerPoint3DY="-53.85">
+                  <matrix>
+                    <Matrix a="2.48115539550781" d="2.48115539550781" tx="-60.65" ty="-64.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.328125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/超气功波/波动拳爆炸/Symbol 479" blendMode="add" centerPoint3DX="-50.45" centerPoint3DY="-53.9">
+                  <matrix>
+                    <Matrix a="2.455810546875" d="2.455810546875" tx="-61.4" ty="-64.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 7" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/超气功波/波动拳爆炸/Symbol 475" blendMode="add" centerPoint3DX="98.1" centerPoint3DY="45.1">
+                  <matrix>
+                    <Matrix a="0.137603759765625" b="0.099822998046875" c="-0.0998077392578125" d="0.137603759765625" tx="-8.95" ty="-61.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#0033CC" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/超气功波/波动拳爆炸/Symbol 489" blendMode="add" centerPoint3DX="110.15" centerPoint3DY="60.55">
+                  <matrix>
+                    <Matrix a="0.137603759765625" b="0.099822998046875" c="-0.0998077392578125" d="0.137603759765625" tx="-0.8" ty="-53.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#0033CC" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/超气功波/波动拳爆炸/Symbol 493" blendMode="add" centerPoint3DX="105.35" centerPoint3DY="50.3">
+                  <matrix>
+                    <Matrix a="0.137603759765625" b="0.099822998046875" c="-0.0998077392578125" d="0.137603759765625" tx="-0.7" ty="-57.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#0033CC" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/超气功波/波动拳爆炸/Symbol 499" blendMode="add" centerPoint3DX="99.55" centerPoint3DY="46.4">
+                  <matrix>
+                    <Matrix a="0.137603759765625" b="0.099822998046875" c="-0.0998077392578125" d="0.137603759765625" tx="-5.05" ty="-60.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#0033CC" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子弹-气功组/超气功波/波动拳爆炸/Symbol 503" blendMode="add" centerPoint3DX="103.2" centerPoint3DY="49.05">
+                  <matrix>
+                    <Matrix a="0.137603759765625" b="0.099822998046875" c="-0.0998077392578125" d="0.137603759765625" tx="-6.75" ty="-65.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" color="#0033CC" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

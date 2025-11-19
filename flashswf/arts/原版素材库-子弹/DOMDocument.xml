@@ -38,9 +38,14 @@
           <DOMFolderItem name="子弹-持续组/血滴落" itemID="68fe33eb-000016bc" isExpanded="true"/>
           <DOMFolderItem name="子弹-近战子弹专享座位" itemID="669d3aec-000017c1"/>
           <DOMFolderItem name="子弹-炮弹与爆炸组" itemID="669d34e9-0000177b"/>
-          <DOMFolderItem name="子弹-普通与穿刺组" itemID="669d349c-00001757" isExpanded="true"/>
+          <DOMFolderItem name="子弹-普通与穿刺组" itemID="669d349c-00001757"/>
           <DOMFolderItem name="子弹-普通与穿刺组/暗器" itemID="68e4ed93-000020b3" isExpanded="true"/>
           <DOMFolderItem name="子弹-气功组" itemID="669d3a53-000017b3" isExpanded="true"/>
+          <DOMFolderItem name="子弹-气功组/超气功波" itemID="691db5f5-00005943"/>
+          <DOMFolderItem name="子弹-气功组/超气功波/波动拳爆炸" itemID="691dba56-000064d0"/>
+          <DOMFolderItem name="子弹-气功组/超气功波/超气功波-内层" itemID="691db50f-0000568f"/>
+          <DOMFolderItem name="子弹-气功组/超气功波/超气功波-最里层" itemID="691db512-00005690"/>
+          <DOMFolderItem name="子弹-气功组/超气功波/集气过程" itemID="691db1dd-000050e0"/>
           <DOMFolderItem name="子弹-特殊组" itemID="669d3a9d-000017bc"/>
           <DOMFolderItem name="自瞄准星特效" itemID="67139c16-00000684"/>
      </folders>
@@ -660,6 +665,70 @@
           <Include href="子弹-普通与穿刺组/铁枪磁轨弹.xml" itemID="68786a09-00004fe9" lastModified="1752807102"/>
           <Include href="子弹-普通与穿刺组/铁枪磁轨弹动画.xml" itemIcon="1" loadImmediate="false" itemID="6879b5cc-00001095" lastModified="1752807115"/>
           <Include href="子弹-普通与穿刺组/无壳穿刺子弹.xml" itemID="687775d5-00002db3" lastModified="1759823934"/>
+          <Include href="子弹-气功组/波动拳.xml" itemID="691db673-00005be5" lastModified="1763563047"/>
+          <Include href="子弹-气功组/波动拳爆炸.xml" itemID="691db9f0-000064b0" lastModified="1763563117"/>
+          <Include href="子弹-气功组/超气功波/波动拳爆炸/Symbol 475.xml" loadImmediate="false" itemID="653dcca3-00001086" lastModified="1698427020"/>
+          <Include href="子弹-气功组/超气功波/波动拳爆炸/Symbol 477.xml" loadImmediate="false" itemID="653dcca3-00001087" lastModified="1698427020"/>
+          <Include href="子弹-气功组/超气功波/波动拳爆炸/Symbol 479.xml" loadImmediate="false" itemID="653dcca3-00001088" lastModified="1698427020"/>
+          <Include href="子弹-气功组/超气功波/波动拳爆炸/Symbol 481.xml" loadImmediate="false" itemID="653dcca3-00001089" lastModified="1698427020"/>
+          <Include href="子弹-气功组/超气功波/波动拳爆炸/Symbol 483.xml" loadImmediate="false" itemID="653dcca3-0000108a" lastModified="1698427020"/>
+          <Include href="子弹-气功组/超气功波/波动拳爆炸/Symbol 485.xml" loadImmediate="false" itemID="653dcca3-0000108b" lastModified="1698427020"/>
+          <Include href="子弹-气功组/超气功波/波动拳爆炸/Symbol 489.xml" loadImmediate="false" itemID="653dcca3-0000108d" lastModified="1698427020"/>
+          <Include href="子弹-气功组/超气功波/波动拳爆炸/Symbol 493.xml" loadImmediate="false" itemID="653dcca3-0000108f" lastModified="1698427020"/>
+          <Include href="子弹-气功组/超气功波/波动拳爆炸/Symbol 499.xml" loadImmediate="false" itemID="653dcca3-00001092" lastModified="1698427020"/>
+          <Include href="子弹-气功组/超气功波/波动拳爆炸/Symbol 503.xml" loadImmediate="false" itemID="653dcca3-00001094" lastModified="1698427020"/>
+          <Include href="子弹-气功组/超气功波/超气功波.xml" loadImmediate="false" itemID="691db4ff-0000568d" lastModified="1763554559"/>
+          <Include href="子弹-气功组/超气功波/超气功波-内层/xxc 6.xml" loadImmediate="false" itemID="5b11ffc2-000017a5" lastModified="1527906242"/>
+          <Include href="子弹-气功组/超气功波/超气功波-内层/xxc 12.xml" loadImmediate="false" itemID="5b11ffc2-000017ab" lastModified="1527906242"/>
+          <Include href="子弹-气功组/超气功波/超气功波-内层/xxc 14.xml" loadImmediate="false" itemID="5b11ffc2-000017ad" lastModified="1527906242"/>
+          <Include href="子弹-气功组/超气功波/超气功波-内层/xxc 20.xml" loadImmediate="false" itemID="5b11ffc2-000017b3" lastModified="1527906242"/>
+          <Include href="子弹-气功组/超气功波/超气功波-内层/xxc 22.xml" loadImmediate="false" itemID="5b11ffc2-000017b5" lastModified="1527906242"/>
+          <Include href="子弹-气功组/超气功波/超气功波-内层/xxc 26.xml" loadImmediate="false" itemID="5b11ffc2-000017b9" lastModified="1527906242"/>
+          <Include href="子弹-气功组/超气功波/超气功波-内层/xxc 28.xml" loadImmediate="false" itemID="5b11ffc2-000017bb" lastModified="1527906242"/>
+          <Include href="子弹-气功组/超气功波/超气功波-最里层/xxc 7.xml" itemIcon="1" loadImmediate="false" itemID="5b11ffc2-000017a6" lastModified="1527906242"/>
+          <Include href="子弹-气功组/超气功波/超气功波-最里层/xxc 13.xml" itemIcon="1" loadImmediate="false" itemID="5b11ffc2-000017ac" lastModified="1527906242"/>
+          <Include href="子弹-气功组/超气功波/超气功波-最里层/xxc 15.xml" itemIcon="1" loadImmediate="false" itemID="5b11ffc2-000017ae" lastModified="1527906242"/>
+          <Include href="子弹-气功组/超气功波/超气功波-最里层/xxc 21.xml" itemIcon="1" loadImmediate="false" itemID="5b11ffc2-000017b4" lastModified="1527906242"/>
+          <Include href="子弹-气功组/超气功波/超气功波-最里层/xxc 23.xml" itemIcon="1" loadImmediate="false" itemID="5b11ffc2-000017b6" lastModified="1527906242"/>
+          <Include href="子弹-气功组/超气功波/超气功波-最里层/xxc 27.xml" itemIcon="1" loadImmediate="false" itemID="5b11ffc2-000017ba" lastModified="1527906242"/>
+          <Include href="子弹-气功组/超气功波/超气功波-最里层/xxc 29.xml" itemIcon="1" loadImmediate="false" itemID="5b11ffc2-000017bc" lastModified="1527906242"/>
+          <Include href="子弹-气功组/超气功波/集气过程/shape 1 副本 22.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005ff0" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/shape 3 副本 19.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fe2" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/shape 5 副本 19.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fd6" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/shape 7 副本 17.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005ff2" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/shape 9 副本 17.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fe4" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/shape 11 副本 20.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fd8" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/shape 13 副本 19.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005ff4" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/shape 15 副本 16.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fe6" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/shape 17 副本 17.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fda" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/shape 19 副本 15.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005ff6" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/shape 21 副本 14.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fe8" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/shape 23 副本 20.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fdc" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/shape 25 副本 18.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005ff8" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/shape 27 副本 19.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fea" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/shape 29 副本 15.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fde" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/shape 31 副本 15.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fee" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/shape 33 副本 16.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fe0" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/shape 35 副本 16.xml" itemIcon="1" loadImmediate="false" itemID="55af09cf-00005fd4" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/sprite 2 副本 16.xml" loadImmediate="false" itemID="55af09cf-00005fef" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/sprite 4 副本 14.xml" loadImmediate="false" itemID="55af09cf-00005fe1" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/sprite 6 副本 16.xml" loadImmediate="false" itemID="55af09cf-00005fd5" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/sprite 8 副本 15.xml" loadImmediate="false" itemID="55af09cf-00005ff1" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/sprite 10 副本 14.xml" loadImmediate="false" itemID="55af09cf-00005fe3" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/sprite 12 副本 17.xml" loadImmediate="false" itemID="55af09cf-00005fd7" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/sprite 14 副本 19.xml" loadImmediate="false" itemID="55af09cf-00005ff3" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/sprite 16 副本 15.xml" loadImmediate="false" itemID="55af09cf-00005fe5" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/sprite 18 副本 15.xml" loadImmediate="false" itemID="55af09cf-00005fd9" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/sprite 20 副本 14.xml" loadImmediate="false" itemID="55af09cf-00005ff5" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/sprite 22 副本 13.xml" loadImmediate="false" itemID="55af09cf-00005fe7" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/sprite 24 副本 18.xml" loadImmediate="false" itemID="55af09cf-00005fdb" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/sprite 26 副本 15.xml" loadImmediate="false" itemID="55af09cf-00005ff7" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/sprite 28 副本 15.xml" loadImmediate="false" itemID="55af09cf-00005fe9" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/sprite 30 副本 13.xml" loadImmediate="false" itemID="55af09cf-00005fdd" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/sprite 32 副本 12.xml" loadImmediate="false" itemID="55af09cf-00005fed" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/sprite 34 副本 16.xml" loadImmediate="false" itemID="55af09cf-00005fdf" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/sprite 36 副本 13.xml" loadImmediate="false" itemID="55af09cf-00005fd3" lastModified="1418797813"/>
+          <Include href="子弹-气功组/超气功波/集气过程/集气过程.xml" loadImmediate="false" itemID="691db1d7-000050df" lastModified="1763553804"/>
           <Include href="子弹-气功组/剑气波.xml" itemID="690e085d-000010d3" lastModified="1762611132"/>
           <Include href="子弹-气功组/气功弹.xml" itemID="668b9d18-000001e7" lastModified="1763375949"/>
           <Include href="子弹-气功组/气功弹爆炸.xml" itemID="668b9d1d-000001e8" lastModified="1763379254"/>
@@ -672,13 +741,13 @@
           <Include href="自瞄准星特效/火力支援新瞄准镜.xml" loadImmediate="false" itemID="671399a0-00002828" lastModified="1729337760"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="场景 1" currentFrame="6">
+          <DOMTimeline name="场景 1" currentFrame="53">
                <layers>
                     <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
                          <frames>
                               <DOMFrame index="0" duration="54" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="原版素材库-子弹" selected="true" centerPoint3DX="66.7" centerPoint3DY="8.8">
+                                        <DOMSymbolInstance libraryItemName="原版素材库-子弹" centerPoint3DX="66.7" centerPoint3DY="8.8">
                                              <transformationPoint>
                                                   <Point/>
                                              </transformationPoint>
@@ -1031,6 +1100,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4112491" publishTime="1763562061"/>
+          <PublishItem publishSize="4112809" publishTime="1763561722"/>
           <PublishItem publishSize="4086400" publishTime="1763380750"/>
           <PublishItem publishSize="4087173" publishTime="1763380442"/>
           <PublishItem publishSize="4087116" publishTime="1763380259"/>
@@ -1049,7 +1120,5 @@
           <PublishItem publishSize="4085831" publishTime="1763287225"/>
           <PublishItem publishSize="4085835" publishTime="1763287000"/>
           <PublishItem publishSize="4086757" publishTime="1762853441"/>
-          <PublishItem publishSize="4084704" publishTime="1762851012"/>
-          <PublishItem publishSize="4085596" publishTime="1762850129"/>
      </publishHistory>
 </DOMDocument>

@@ -102,7 +102,7 @@
           <DOMFolderItem name="1.特效文件夹/05.粉紫色系/紫雷星陨" itemID="653d5d08-00000904"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系" itemID="6553a7c8-00002f40" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系/黑龙攻势" itemID="6546fa70-00000af9"/>
-          <DOMFolderItem name="1.特效文件夹/06.青蓝色系/蓝芒强击" itemID="653de89e-000011fe"/>
+          <DOMFolderItem name="1.特效文件夹/06.青蓝色系/蓝芒强击" itemID="653de89e-000011fe" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系/蓝芒散" itemID="653d11fc-00000503"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系/蓝芒散/未命名文件夹 1" itemID="656c80cf-000007f8"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系/蓝芒一字闪" itemID="653cdb83-000003cf"/>
@@ -112,7 +112,7 @@
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系/蓝碎晶" itemID="653e441b-00001e5f"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系/浪升" itemID="653dee71-000015b4"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系/雷电电" itemID="6554c5ba-00002fd7"/>
-          <DOMFolderItem name="1.特效文件夹/06.青蓝色系/龙卷风" itemID="691b1ea2-00002dc8" isExpanded="true"/>
+          <DOMFolderItem name="1.特效文件夹/06.青蓝色系/龙卷风" itemID="691b1ea2-00002dc8"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系/深蓝裂地波" itemID="653e6d7f-00001f04"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系/星辰梦击" itemID="6554c247-00002fa3"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系/月华下斩" itemID="6553a93b-00002f63"/>
@@ -482,6 +482,7 @@
           <Include href="1.特效文件夹/01.白净色系/一瞬千击/未命名文件夹 1/Symbol 5168.xml" loadImmediate="false" itemID="65536bc5-00002926" lastModified="1698481640"/>
           <Include href="1.特效文件夹/01.白净色系/一瞬千击/未命名文件夹 1/Symbol 5170.xml" loadImmediate="false" itemID="65536bc5-00002927" lastModified="1698481640"/>
           <Include href="1.特效文件夹/01.白净色系/一瞬千击/一瞬千击.xml" itemID="65539f8d-00002e43" lastModified="1725374388"/>
+          <Include href="1.特效文件夹/01.白净色系/圆状气爆/拳打特效.xml" itemID="691dc424-000065ca" lastModified="1763558520"/>
           <Include href="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 13.xml" loadImmediate="false" itemID="65536bc5-00002913" lastModified="1698481640"/>
           <Include href="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5029.xml" loadImmediate="false" itemID="65536bc5-00002989" lastModified="1698481640"/>
           <Include href="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5030.xml" itemIcon="1" loadImmediate="false" itemID="65536bc5-0000298a" lastModified="1698481640"/>
@@ -498,7 +499,7 @@
           <Include href="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5047.xml" loadImmediate="false" itemID="65536bc5-00002995" lastModified="1698481640"/>
           <Include href="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5049.xml" loadImmediate="false" itemID="65536bc5-00002996" lastModified="1698481640"/>
           <Include href="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5051.xml" loadImmediate="false" itemID="65536bc5-00002997" lastModified="1698481640"/>
-          <Include href="1.特效文件夹/01.白净色系/圆状气爆/圆状气爆.xml" itemID="65536c67-000029e4" lastModified="1763386000"/>
+          <Include href="1.特效文件夹/01.白净色系/圆状气爆/圆状气爆.xml" itemID="65536c67-000029e4" lastModified="1763558514"/>
           <Include href="1.特效文件夹/02.黄金色系/大大火花/大大火花.xml" itemID="65539c44-00002d43" lastModified="1762656043"/>
           <Include href="1.特效文件夹/02.黄金色系/大大火花/未命名文件夹 1/Symbol 5015.xml" itemIcon="1" loadImmediate="false" itemID="65536bc5-0000297c" lastModified="1698481640"/>
           <Include href="1.特效文件夹/02.黄金色系/大大火花/未命名文件夹 1/Symbol 5016.xml" loadImmediate="false" itemID="65536bc5-0000297d" lastModified="1698481640"/>
@@ -1349,7 +1350,8 @@
           <Include href="1.特效文件夹/06.青蓝色系/蓝芒强击/Symbol 501.xml" loadImmediate="false" itemID="653dcca3-00001093" lastModified="1698427020"/>
           <Include href="1.特效文件夹/06.青蓝色系/蓝芒强击/Symbol 503.xml" loadImmediate="false" itemID="653dcca3-00001094" lastModified="1698427020"/>
           <Include href="1.特效文件夹/06.青蓝色系/蓝芒强击/Symbol 505.xml" loadImmediate="false" itemID="653dcca3-00001095" lastModified="1698427020"/>
-          <Include href="1.特效文件夹/06.青蓝色系/蓝芒强击/蓝芒强击.xml" itemID="653de983-00001202" lastModified="1762656848"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝芒强击/波动拳爆炸.xml" loadImmediate="false" itemID="691db786-00006444" lastModified="1763558403"/>
+          <Include href="1.特效文件夹/06.青蓝色系/蓝芒强击/蓝芒强击.xml" itemID="653de983-00001202" lastModified="1763558415"/>
           <Include href="1.特效文件夹/06.青蓝色系/蓝芒散/蓝芒散.xml" itemID="653d1221-00000505" lastModified="1760876206"/>
           <Include href="1.特效文件夹/06.青蓝色系/蓝芒散/未命名文件夹 1/Symbol 2.xml" loadImmediate="false" itemID="653cd862-00000224" lastModified="1690082192"/>
           <Include href="1.特效文件夹/06.青蓝色系/蓝芒散/未命名文件夹 1/Symbol 4.xml" loadImmediate="false" itemID="653cd862-00000225" lastModified="1690082192"/>
@@ -1504,7 +1506,7 @@
           <Include href="1.特效文件夹/06.青蓝色系/星辰梦击/Symbol 57.xml" loadImmediate="false" itemID="654ba156-00002651" lastModified="1696643875"/>
           <Include href="1.特效文件夹/06.青蓝色系/星辰梦击/Symbol 59.xml" loadImmediate="false" itemID="654ba156-00002652" lastModified="1696643875"/>
           <Include href="1.特效文件夹/06.青蓝色系/星辰梦击/Symbol 61.xml" loadImmediate="false" itemID="654ba156-00002653" lastModified="1696643875"/>
-          <Include href="1.特效文件夹/06.青蓝色系/星辰梦击/星辰梦击.xml" itemID="6554c23b-00002fa2" lastModified="1700053852"/>
+          <Include href="1.特效文件夹/06.青蓝色系/星辰梦击/星辰梦击.xml" itemID="6554c23b-00002fa2" lastModified="1763555132"/>
           <Include href="1.特效文件夹/06.青蓝色系/月华下斩/未命名文件夹 1/Symbol 89.xml" loadImmediate="false" itemID="654b83b3-0000225f" lastModified="1699444639"/>
           <Include href="1.特效文件夹/06.青蓝色系/月华下斩/未命名文件夹 1/Symbol 91.xml" loadImmediate="false" itemID="654b83b3-00002260" lastModified="1699444639"/>
           <Include href="1.特效文件夹/06.青蓝色系/月华下斩/未命名文件夹 1/Symbol 93.xml" loadImmediate="false" itemID="654b83b3-00002261" lastModified="1699444639"/>
