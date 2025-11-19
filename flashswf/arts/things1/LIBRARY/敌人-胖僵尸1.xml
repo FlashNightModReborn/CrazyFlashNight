@@ -1,58 +1,34 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-胖僵尸1" itemID="67bc37eb-00000616" linkageExportForAS="true" linkageIdentifier="敌人-胖僵尸1" lastModified="1747127488">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-胖僵尸1" itemID="67bc37eb-00000616" linkageExportForAS="true" linkageIdentifier="敌人-胖僵尸1" lastModified="1763512930">
   <timeline>
-    <DOMTimeline name="敌人-胖僵尸1" currentFrame="91">
+    <DOMTimeline name="敌人-胖僵尸1" currentFrame="101">
       <layers>
         <DOMLayer name="Labels Layer" color="#FCCDF2">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" name="空手站立" labelType="name" keyMode="9728">
+            <DOMFrame index="1" duration="8" name="空手站立" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" duration="7" keyMode="9728">
+            <DOMFrame index="9" duration="10" name="空手行走" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" name="空手行走" labelType="name" keyMode="9728">
+            <DOMFrame index="19" duration="10" name="空手跑" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="10" duration="9" keyMode="9728">
+            <DOMFrame index="29" duration="12" name="空手跳" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="19" name="空手跑" labelType="name" keyMode="9728">
+            <DOMFrame index="41" duration="10" name="空手攻击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="20" duration="9" keyMode="9728">
+            <DOMFrame index="51" duration="10" name="拾取" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="29" name="空手跳" labelType="name" keyMode="9728">
+            <DOMFrame index="61" duration="10" name="躲闪" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="30" duration="11" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="41" name="空手攻击" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="42" duration="9" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="51" name="拾取" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="52" duration="9" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="61" name="躲闪" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="62" duration="9" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="71" name="被击" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="72" duration="7" keyMode="9728">
+            <DOMFrame index="71" duration="8" name="被击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="79" duration="9" name="击倒" labelType="name" keyMode="9728">
@@ -61,19 +37,13 @@
             <DOMFrame index="88" duration="7" name="倒地" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="95" name="被投" labelType="name" keyMode="9728">
+            <DOMFrame index="95" duration="9" name="被投" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="96" duration="8" keyMode="9728">
+            <DOMFrame index="104" duration="16" name="血腥死" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="104" name="血腥死" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="105" duration="15" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="120" name="消失" labelType="name" keyMode="9728">
+            <DOMFrame index="120" duration="7" name="消失" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -97,7 +67,7 @@
             <DOMFrame index="2" duration="118" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="120" keyMode="9728">
+            <DOMFrame index="120" duration="7" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[hp = 0;
 ]]></script>
@@ -394,7 +364,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="95" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1330" name="man" centerPoint3DX="53.4" centerPoint3DY="72.25">
+                <DOMSymbolInstance libraryItemName="Symbol 1330" name="man" selected="true" centerPoint3DX="53.4" centerPoint3DY="72.25">
                   <matrix>
                     <Matrix d="1.00039672851563"/>
                   </matrix>

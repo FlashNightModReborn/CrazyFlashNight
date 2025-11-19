@@ -1,21 +1,18 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 1330" itemID="6577f78a-000011f7" lastModified="1701306521">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 1330" itemID="6577f78a-000011f7" lastModified="1763511853">
   <timeline>
-    <DOMTimeline name="Symbol 1330">
+    <DOMTimeline name="Symbol 1330" currentFrame="36">
       <layers>
-        <DOMLayer name="Labels Layer" color="#DA977D" current="true" isSelected="true">
+        <DOMLayer name="Labels Layer" color="#DA977D">
           <frames>
-            <DOMFrame index="0" name="a0" labelType="name" keyMode="9728">
+            <DOMFrame index="0" duration="22" name="a0" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="21" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="22" name="a1" labelType="name" keyMode="9728">
+            <DOMFrame index="22" duration="18" name="a1" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#57EA61">
+        <DOMLayer name="Script Layer" color="#57EA61" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
@@ -30,7 +27,7 @@
             <DOMFrame index="15" duration="21" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
+            <DOMFrame index="36" duration="4" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.动画完毕();
 ]]></script>
