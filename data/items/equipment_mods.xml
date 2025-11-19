@@ -828,9 +828,9 @@ skill - 赋予技能
                     </flat>
                 </use>
                 <use name="刀">
-                    <percentage>
-                        <power>3</power>
-                    </percentage>
+                    <flat>
+                        <power>15</power>
+                    </flat>
                 </use>
             </useSwitch>
         </stats>
