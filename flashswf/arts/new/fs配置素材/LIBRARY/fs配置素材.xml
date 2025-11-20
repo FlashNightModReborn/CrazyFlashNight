@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1763438963" lastUniqueIdentifier="264">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fs配置素材" itemID="65517658-000006e6" linkageExportForAS="true" linkageIdentifier="fs配置素材" lastModified="1763622730" lastUniqueIdentifier="266">
   <timeline>
-    <DOMTimeline name="fs配置素材" currentFrame="17" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="fs配置素材" currentFrame="31" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;287&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="文件夹 1" color="#9933CC" layerType="folder"/>
         <DOMLayer name="文件夹 2" color="#FF800A" layerType="folder"/>
@@ -521,7 +521,7 @@
                     <Point x="-1.85" y="0.55"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV" selected="true" centerPoint3DX="-645.1" centerPoint3DY="76.25">
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/MACSIV" centerPoint3DX="-645.1" centerPoint3DY="76.25">
                   <matrix>
                     <Matrix tx="-727" ty="68.45"/>
                   </matrix>
@@ -647,6 +647,22 @@
                   </matrix>
                   <transformationPoint>
                     <Point x="-20.2" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/刀-破隐贝斯" selected="true" centerPoint3DX="842.9" centerPoint3DY="-750.05">
+                  <matrix>
+                    <Matrix tx="851.1" ty="-911.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-8.2" y="160.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/图标-破隐贝斯" centerPoint3DX="1098.95" centerPoint3DY="-547.45">
+                  <matrix>
+                    <Matrix tx="1098.95" ty="-547.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.15" y="-6.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

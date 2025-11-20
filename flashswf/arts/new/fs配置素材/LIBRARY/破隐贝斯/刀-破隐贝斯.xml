@@ -1,0 +1,79 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="破隐贝斯/刀-破隐贝斯" itemID="691ebb6d-00001a13" linkageExportForAS="true" linkageIdentifier="刀-破隐贝斯" lastModified="1763631807" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="刀-破隐贝斯">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置1" centerPoint3DX="3.15" centerPoint3DY="310.2">
+                  <matrix>
+                    <Matrix a="5.24874877929688" d="5.78860473632813" tx="-97.05" ty="189.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.55" y="40.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置2" centerPoint3DX="0.8" centerPoint3DY="303.7">
+                  <matrix>
+                    <Matrix a="1.65628051757813" b="-3.0517578125e-005" c="7.62939453125e-005" d="7.00514221191406" tx="-33.4" ty="134.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.35" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0.area" name="刀口位置3" centerPoint3DX="0.5" centerPoint3DY="36.2">
+                  <matrix>
+                    <Matrix a="2.3516845703125" b="-0.0135345458984375" c="0.0447235107421875" d="7.78337097167969" tx="-45.1" ty="-85.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.25" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/贝斯基底" centerPoint3DX="4.55" centerPoint3DY="166.35">
+                  <matrix>
+                    <Matrix tx="-71.35" ty="-88.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="75.9" y="254.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/零碎部件">
+                  <matrix>
+                    <Matrix tx="-53.8" ty="207.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.15" y="82.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="破隐贝斯/琴弦" centerPoint3DX="3.95" centerPoint3DY="156.05">
+                  <matrix>
+                    <Matrix tx="-9.6" ty="-70.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.55" y="226.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
