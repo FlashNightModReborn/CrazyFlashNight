@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="将军 披风/Symbol 913" itemID="6577faef-000015e7" lastModified="1719556794">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="将军 披风/Symbol 913" itemID="691eb5c0-00000d68" lastModified="1763620442">
   <timeline>
-    <DOMTimeline name="Symbol 913" currentFrame="63">
+    <DOMTimeline name="Symbol 913">
       <layers>
         <DOMLayer name="Script Layer" color="#78DC68">
           <frames>
@@ -103,11 +103,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#CDA013">
+        <DOMLayer name="Layer 8" color="#CDA013" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="将军 披风/Symbol 887" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="将军 披风/Symbol 887" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.338150024414063" d="0.338150024414063" tx="12.45" ty="-58.75"/>
                   </matrix>
@@ -593,7 +593,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 39" color="#597DE5" current="true" isSelected="true">
+        <DOMLayer name="Layer 39" color="#597DE5">
           <frames>
             <DOMFrame index="0" duration="52" keyMode="9728">
               <elements/>
