@@ -106,7 +106,7 @@
 ## ⚠️ 注意事项
 
 ### 1. 配件必须存在
-配件必须在 `data/items/equipment_mods.xml` 的配件列表中定义，否则无法加载。
+配件必须在 `data/items/equipment_mods/` 目录下的配件列表中定义，否则无法加载。
 
 ### 2. 配件类型匹配
 配件的 `<use>` 标签必须包含该装备类型：
@@ -170,7 +170,8 @@
 ## 📚 相关文件
 
 - **佣兵数据配置：** `data/merc/mercenaries.json`
-- **配件定义文件：** `data/items/equipment_mods.xml`
+- **配件定义目录：** `data/items/equipment_mods/`
+- **配件配置说明：** `data/items/equipment_mods/README.md`
 - **佣兵系统代码：** `scripts/逻辑系统分区/佣兵系统_兼容.as`
 - **装备解析代码：** `scripts/类定义/org/flashNight/arki/item/BaseItem.as`
 
@@ -181,4 +182,4 @@
 1. 编辑 JSON 文件时注意保持正确的 JSON 语法（引号、逗号、括号等）
 2. 可以使用在线 JSON 验证器检查文件格式是否正确
 3. 配件名称必须精确匹配 XML 文件中的定义（区分大小写）
-4. 如需查看所有可用配件，请参阅 `equipment_mods.xml` 文件
+4. 如需查看所有可用配件及配置语法，请参阅 `data/items/equipment_mods/README.md`

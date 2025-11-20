@@ -593,7 +593,7 @@ equipconfig_loader.loadEquipmentConfig(
 );
 
 // 插件数据
-var moddata_loader = org.flashNight.gesh.xml.LoadXml.EquipModDataLoader.getInstance();
+var moddata_loader = org.flashNight.gesh.xml.LoadXml.EquipModListLoader.getInstance();
 
 moddata_loader.loadModData(
     function(data:Object):Void {
