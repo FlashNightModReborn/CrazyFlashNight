@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <!-- 高等材料 - 通用配件 -->
+
+    <mod>
+        <name>动力液压杆</name>
+        <use>上装装备,下装装备,手部装备,刀</use>
+        <stats>
+            <useSwitch>
+                <use name="手部装备,刀">
+                    <override>
+                        <slay>8</slay>
+                    </override>
+                </use>
+                <use name="上装装备,下装装备,手部装备">
+                    <flat>
+                        <punch>15</punch>
+                    </flat>
+                </use>
+                <use name="上装装备,下装装备">
+                    <flat>
+                        <weight>-1</weight>
+                    </flat>
+                </use>
+                <use name="刀">
+                    <flat>
+                        <power>15</power>
+                    </flat>
+                </use>
+            </useSwitch>
+        </stats>
+        <description>超规格线性作动单元,大幅增加近战冲击力。对上装和下装减轻重量,对手部装备和刀类武器提供收割能力,对刀类武器额外提升威力。</description>
+        <tag>动力接口</tag>
+    </mod>
+
+    <mod>
+        <name>电脑芯片</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备,刀,手枪,长枪</use>
+        <stats>
+            <flat>
+                <level>-3</level>
+            </flat>
+        </stats>
+        <requireTags>电力</requireTags>
+        <description>现场可编程系统模块,降低装备等级限制。需要电力支持才能运行。</description>
+        <tag>等级校正</tag>
+    </mod>
+
+    <mod>
+        <name>纳米执行单元</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备,刀,手枪,长枪</use>
+        <stats>
+            <percentage>
+                <damage>8</damage>
+                <punch>8</punch>
+                <knifepower>8</knifepower>
+                <gunpower>8</gunpower>
+                <power>8</power>
+            </percentage>
+        </stats>
+        <provideTags>电力</provideTags>
+        <description>可编程分子机器集群,全面提升装备伤害输出能力。内置高能量密度电源,可为其他电子设备供能。</description>
+        <tag>核心模块</tag>
+    </mod>
+</root>

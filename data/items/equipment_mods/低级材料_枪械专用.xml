@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <!-- 低级材料 - 枪械专用配件 -->
+
+    <mod>
+        <name>弹簧</name>
+        <use>长枪,手枪</use>
+        <stats>
+            <percentage>
+                <power>5</power>
+            </percentage>
+        </stats>
+        <description>机械结构核心部件,提升枪械威力。</description>
+        <tag>枪机</tag>
+    </mod>
+
+    <mod>
+        <name>战术导轨</name>
+        <use>长枪</use>
+        <grantsWeapontype>突击步枪</grantsWeapontype>
+        <provideTags>导轨平台,下导轨挂点,侧导轨挂点,瞄具挂点</provideTags>
+        <detachPolicy>cascade</detachPolicy>
+        <description>模块化接口系统,提供战术配件安装平台。允许安装下挂武器、侧导轨配件和高级瞄具。使子类不为[突击步枪]的枪械可以安装对应子类的配件。</description>
+        <tag>导轨基座</tag>
+    </mod>
+
+    <mod>
+        <name>螺丝套件</name>
+        <use>长枪,手枪</use>
+        <stats>
+            <flat>
+                <power>8</power>
+            </flat>
+        </stats>
+        <provideTags>结构稳定</provideTags>
+        <description>标准化紧固件组,提供结构稳定性并增强枪械威力。</description>
+        <tag>外部紧固</tag>
+    </mod>
+</root>

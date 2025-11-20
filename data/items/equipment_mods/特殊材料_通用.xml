@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <!-- 特殊材料 - 通用配件 -->
+
+    <mod>
+        <name>毒素样本</name>
+        <use>刀,手枪,长枪,手部装备</use>
+        <stats>
+            <override>
+                <damagetype>破击</damagetype>
+                <magictype>毒</magictype>
+            </override>
+        </stats>
+        <description>生物毒素,为武器额外附着少量毒属性附加伤害。</description>
+        <tag>表面涂层</tag>
+    </mod>
+
+    <mod>
+        <name>成长的勋章</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备,刀,手枪,长枪</use>
+        <stats>
+            <flat>
+                <level>-10</level>
+            </flat>
+        </stats>
+        <description>强者的证明,降低装备等级限制。</description>
+        <tag>等级校正</tag>
+    </mod>
+</root>

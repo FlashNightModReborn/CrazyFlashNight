@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <!-- 低级材料 - 通用配件 -->
+
+    <mod>
+        <name>增效剂</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备,刀,手枪,长枪</use>
+        <stats>
+            <percentage>
+                <defence>2</defence>
+                <damage>2</damage>
+                <punch>2</punch>
+                <power>2</power>
+            </percentage>
+        </stats>
+        <description>表面强化药剂,全面提升装备性能。</description>
+        <tag>表面涂层</tag>
+    </mod>
+</root>

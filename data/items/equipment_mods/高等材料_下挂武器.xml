@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <!-- 高等材料 - 下挂武器系统 -->
+
+    <mod>
+        <name>下挂微型导弹发射器</name>
+        <use>长枪</use>
+        <weapontype>突击步枪</weapontype>
+        <requireTags>下导轨挂点</requireTags>
+        <stats>
+            <flat>
+                <weight>3</weight>
+            </flat>
+        </stats>
+        <skill>
+            <skillname>发射榴弹</skillname>
+            <description>持枪瞄准时使用微型能量导弹发射系统,可装填4发,换弹后重新装填,消耗能量电池。</description>
+            <cd>1000</cd>
+            <mp>0</mp>
+            <power>3000</power>
+            <bulletsize>4</bulletsize>
+            <clipname>能量电池</clipname>
+            <bullet>横向拖尾追踪联弹-普通无壳子弹</bullet>
+            <sound>m4a1_unsil-2.wav</sound>
+            <split>4</split>
+            <diffusion>15</diffusion>
+            <velocity>25</velocity>
+            <range>50</range>
+            <impact>8</impact>
+        </skill>
+        <description>四联腔微型导弹系统,提供高精度范围打击能力。需要导轨系统支持。</description>
+        <tag>下导轨</tag>
+    </mod>
+</root>

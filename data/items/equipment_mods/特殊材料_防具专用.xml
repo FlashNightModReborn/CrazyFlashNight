@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <!-- 特殊材料 - 防具专用配件 -->
+
+    <mod>
+        <name>月之碎片</name>
+        <use>上装装备</use>
+        <stats>
+            <override>
+                <force>10</force>
+            </override>
+        </stats>
+        <description>蕴含的月光精华融合进丹田周围的装备区域,可提升内力,会覆盖掉原有装备的内力加成。</description>
+        <tag>内力槽</tag>
+    </mod>
+
+    <mod>
+        <name>能量干扰盾</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <merge>
+                <magicdefence>
+                    <基础>10</基础>
+                    <波>10</波>
+                    <电>10</电>
+                    <冷>5</冷>
+                    <热>5</热>
+                </magicdefence>
+            </merge>
+        </stats>
+        <description>通过高能核心获得长效能量干扰作用的部件,特殊环境下为装备提供供能,可持续使用。提供多种属性防护。</description>
+        <tag>表面涂层</tag>
+    </mod>
+
+    <mod>
+        <name>月之精华</name>
+        <use>上装装备</use>
+        <stats>
+            <override>
+                <force>35</force>
+            </override>
+        </stats>
+        <description>蕴含的大量月光精华融合进丹田周围的装备区域,可提升内力,会覆盖掉原有装备的内力加成。</description>
+        <tag>内力槽</tag>
+    </mod>
+</root>

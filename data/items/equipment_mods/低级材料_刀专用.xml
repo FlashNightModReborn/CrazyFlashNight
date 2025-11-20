@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <!-- 低级材料 - 刀专用配件 -->
+
+    <mod>
+        <name>骨芯颅印</name>
+        <use>刀</use>
+        <stats>
+            <flat>
+                <weight>0.5</weight>
+                <evasion>15</evasion>
+            </flat>
+        </stats>
+        <skill>
+            <skillname>滑步</skillname>
+            <description>经过骨誓铭牌改装的武器可以使用滑步。</description>
+            <cd>3000</cd>
+            <mp>5</mp>
+        </skill>
+        <description>嵌入战术芯片的骷髅头挂饰,提供闪避数据支持并赋予滑步技能。</description>
+        <tag>柄尾</tag>
+    </mod>
+
+    <mod>
+        <name>辅助握持板</name>
+        <use>刀</use>
+        <stats>
+            <override>
+                <actiontype>狂野</actiontype>
+            </override>
+            <percentage>
+                <power>3</power>
+            </percentage>
+        </stats>
+        <description>玻纤增强聚合物板体,引导狂野攻击风格,提升近战威力。</description>
+        <tag>柄侧板</tag>
+    </mod>
+
+    <mod>
+        <name>绳扣穿孔片</name>
+        <use>刀</use>
+        <stats>
+            <override>
+                <skillmultipliers>
+                    <瞬步斩>2.5</瞬步斩>
+                </skillmultipliers>
+            </override>
+            <flat>
+                <weight>0.3</weight>
+            </flat>
+        </stats>
+        <description>低碳钢片冲压成形的简易固定组件,优化防脱手功能,为瞬步斩赋予150%的锋利度加成。</description>
+        <tag>柄侧板</tag>
+    </mod>
+
+    <mod>
+        <name>手柄皮</name>
+        <use>刀</use>
+        <skill>
+            <skillname>凶斩</skillname>
+            <description>经过手柄皮改装的武器可以使用凶斩。</description>
+            <cd>8000</cd>
+            <mp>40</mp>
+        </skill>
+        <description>防滑握柄覆盖物,提供稳固握持,赋予凶斩技能。</description>
+        <tag>握柄包覆</tag>
+    </mod>
+</root>

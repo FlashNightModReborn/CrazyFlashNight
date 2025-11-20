@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <!-- 中等材料 - 防具专用配件 -->
+
+    <mod>
+        <name>战术背带</name>
+        <use>上装装备</use>
+        <stats>
+            <override>
+                <modslot>3</modslot>
+            </override>
+            <flat>
+                <weight>2</weight>
+            </flat>
+        </stats>
+        <provideTags>扩展模组槽</provideTags>
+        <detachPolicy>cascade</detachPolicy>
+        <description>模块化装备扩展系统,将装备的配件槽拓展至3个。</description>
+        <tag>肩挂系统</tag>
+    </mod>
+
+    <mod>
+        <name>防沙皮革</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <flat>
+                <hp>5</hp>
+                <weight>0.2</weight>
+            </flat>
+            <percentage>
+                <defence>9</defence>
+            </percentage>
+        </stats>
+        <description>复合防护材料,增加生命值与防御力。</description>
+        <tag>内衬层</tag>
+    </mod>
+
+    <mod>
+        <name>不锈钢材</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <flat>
+                <defence>40</defence>
+                <weight>4</weight>
+            </flat>
+        </stats>
+        <description>高强度钢铁材料,显著提升防御力,但会大幅增加重量。</description>
+        <tag>外覆加固</tag>
+    </mod>
+
+    <mod>
+        <name>高耐力橡胶</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <merge>
+                <magicdefence>
+                    <冷>5</冷>
+                    <热>5</热>
+                    <电>10</电>
+                </magicdefence>
+            </merge>
+            <flat>
+                <toughness>10</toughness>
+            </flat>
+        </stats>
+        <description>弹性体聚合物,提供冷热电抗性与韧性。</description>
+        <tag>缓冲层</tag>
+    </mod>
+
+    <mod>
+        <name>复合式军用塑料</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <merge>
+                <magicdefence>
+                    <蚀>10</蚀>
+                    <毒>5</毒>
+                    <波>5</波>
+                </magicdefence>
+            </merge>
+            <percentage>
+                <weight>-20</weight>
+            </percentage>
+        </stats>
+        <description>轻质复合材料,提供毒素与腐蚀抗性并减轻装备重量。</description>
+        <tag>外覆基层</tag>
+    </mod>
+
+    <mod>
+        <name>强力胶</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <merge>
+                <magicdefence>
+                    <冲>10</冲>
+                </magicdefence>
+            </merge>
+            <percentage>
+                <punch>6</punch>
+            </percentage>
+        </stats>
+        <description>高分子粘结剂,提供冲击抗性与韧性。</description>
+        <tag>缓冲层</tag>
+    </mod>
+
+    <mod>
+        <name>高级木料</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <merge>
+                <magicdefence>
+                    <热>-8</热>
+                </magicdefence>
+            </merge>
+            <flat>
+                <hp>10</hp>
+                <mp>10</mp>
+                <defence>30</defence>
+                <weight>2</weight>
+            </flat>
+        </stats>
+        <description>复合木质材料,增加生命、精力与防御,但降低热抗。</description>
+        <tag>外覆加固</tag>
+    </mod>
+</root>

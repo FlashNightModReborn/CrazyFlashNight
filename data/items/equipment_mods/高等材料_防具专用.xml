@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <!-- 高等材料 - 防具专用配件 -->
+
+    <mod>
+        <name>碳纤维布料</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <percentage>
+                <defence>15</defence>
+                <hp>15</hp>
+                <mp>15</mp>
+            </percentage>
+        </stats>
+        <description>高模量工程基材,全面提升装备的生命、精力与防御。</description>
+        <tag>外覆基层</tag>
+    </mod>
+
+    <mod>
+        <name>传感器</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <flat>
+                <evasion>35</evasion>
+            </flat>
+        </stats>
+        <requireTags>电力</requireTags>
+        <description>多模敏感阵列,提供战术数据支持,大幅提升闪避能力。需要电力支持才能运行。</description>
+        <tag>电子模块</tag>
+    </mod>
+</root>

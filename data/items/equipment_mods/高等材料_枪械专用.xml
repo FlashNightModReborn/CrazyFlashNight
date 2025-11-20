@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <!-- 高等材料 - 枪械专用配件 -->
+
+    <mod>
+        <name>水冷机构</name>
+        <use>长枪,手枪</use>
+        <weapontype>机枪,压制机枪,近战,压制近战</weapontype>
+        <stats>
+            <percentage>
+
+                <power>25</power>
+            </percentage>
+            <flat>
+                <weight>3</weight>
+            </flat>
+        </stats>
+        <description>模块化温控系统,专为机枪与近战机械设计,显著提升威力。</description>
+        <tag>枪管外设</tag>
+    </mod>
+
+    <mod>
+        <name>传动装置</name>
+        <use>长枪,手枪</use>
+        <weapontype>近战,压制近战</weapontype>
+        <stats>
+            <percentage>
+                <power>10</power>
+            </percentage>
+            <flat>
+                <weight>1</weight>
+                <power>15</power>
+            </flat>
+        </stats>
+        <description>机械能接口模块,智能功率分配,专为近战机械设计,显著提升威力。</description>
+        <tag>动力接口</tag>
+    </mod>
+
+    <mod>
+        <name>战术鱼骨零件</name>
+        <use>长枪</use>
+        <stats>
+            <override>
+                <modslot>3</modslot>
+            </override>
+            <flat>
+                <weight>1</weight>
+            </flat>
+        </stats>
+        <grantsWeapontype>突击步枪</grantsWeapontype>
+        <provideTags>导轨平台,下导轨挂点,侧导轨挂点,瞄具挂点,扩展模组槽</provideTags>
+        <detachPolicy>cascade</detachPolicy>
+        <description>高级模块化导轨系统,提供全面的战术配件平台并将配件槽扩展至3个。支持所有类型的战术配件。使子类不为[突击步枪]的枪械可以安装对应子类的配件。</description>
+        <tag>导轨基座</tag>
+    </mod>
+
+    <mod>
+        <name>突击型光学瞄具</name>
+        <use>长枪,手枪</use>
+        <stats>
+            <override>
+                <criticalhit>满血暴击</criticalhit>
+            </override>
+            <flat>
+                <accuracy>30</accuracy>
+            </flat>
+        </stats>
+        <description>AI辅助瞄具,对满血敌人造成暴击伤害,并提高精准度。</description>
+        <tag>瞄具</tag>
+    </mod>
+
+    <mod>
+        <name>KM型消声器</name>
+        <use>长枪,手枪</use>
+        <tag>枪口</tag>
+        <stats>
+            <override>
+                <sound>null</sound>
+                <muzzle>null</muzzle>
+                <silence>300</silence>
+                <slay>8</slay>
+            </override>
+        </stats>
+        <description>消除枪口火光与射击声,远距离狙击不惊动目标。强化收割残血敌人的能力。</description>
+    </mod>
+
+    <mod>
+        <name>镭射瞄准具</name>
+        <use>长枪,手枪</use>
+        <requireTags>侧导轨挂点</requireTags>
+        <stats>
+            <flat>
+                <accuracy>35</accuracy>
+                <bulletsize>10</bulletsize>
+            </flat>
+        </stats>
+        <description>军规激光瞄准器,提供精确瞄准辅助。需要侧导轨支持,提升精准度与弹药尺寸。</description>
+        <tag>侧导轨</tag>
+    </mod>
+
+    <mod>
+        <name>加长弹匣</name>
+        <use>长枪,手枪</use>
+        <stats>
+            <percentage>
+                <capacity>20</capacity>
+            </percentage>
+            <cap>
+                <capacity>50</capacity>
+            </cap>
+        </stats>
+        <description>扩容供弹系统,增加弹匣容量。</description>
+        <tag>弹匣</tag>
+    </mod>
+
+    <mod>
+        <name>战术握把</name>
+        <use>长枪</use>
+        <weapontype>突击步枪,战斗步枪,冲锋枪,压制冲锋枪</weapontype>
+        <requireTags>下导轨挂点</requireTags>
+        <stats>
+            <percentage>
+                <diffusion>-20</diffusion>
+                <power>13</power>
+            </percentage>
+        </stats>
+        <description>人机工学握把,降低扩散并提升威力。需要导轨系统支持,适用于步枪和冲锋枪。</description>
+        <tag>下导轨</tag>
+    </mod>
+
+    <mod>
+        <name>非栓式机构</name>
+        <use>长枪,手枪</use>
+        <stats>
+            <flat>
+                <capacity>1</capacity>
+                <weight>2</weight>
+            </flat>
+            <percentage>
+                <capacity>10</capacity>
+                <power>-35</power>
+            </percentage>
+            <cap>
+                <capacity>3</capacity>
+            </cap>
+            <useSwitch>
+                <use name="发射器">
+                    <multiplier>
+                        <power>-10</power>
+                    </multiplier>
+                </use>
+            </useSwitch>
+        </stats>
+        <description>跨平台循环转换模块,提升弹容但降低单发威力。对发射器类武器威力惩罚更为严重。对点射武器增益作用于射击轮数,适合狙击武器与发射器。</description>
+        <tag>枪机</tag>
+    </mod>
+</root>

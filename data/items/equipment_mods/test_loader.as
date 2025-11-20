@@ -16,17 +16,29 @@ modListLoader.loadModData(
     function(data:Object):Void {
         trace("✓ 测试成功：装备配件数据加载成功！");
         trace("✓ 配件总数 = " + data.mod.length);
+        trace("✓ 预期总数 = 70 个配件");
 
-        // 打印前3个配件的名称
+        if (data.mod.length == 70) {
+            trace("✓ 配件数量验证通过！");
+        } else {
+            trace("✗ 警告：配件数量不符！实际 " + data.mod.length + " 个，预期 70 个");
+        }
+
+        // 打印前5个和后5个配件的名称
         if (data.mod && data.mod.length > 0) {
-            trace("✓ 前3个配件：");
-            for (var i:Number = 0; i < Math.min(3, data.mod.length); i++) {
+            trace("✓ 前5个配件：");
+            for (var i:Number = 0; i < Math.min(5, data.mod.length); i++) {
                 trace("  - " + data.mod[i].name);
+            }
+            trace("✓ 后5个配件：");
+            var startIdx:Number = Math.max(0, data.mod.length - 5);
+            for (var j:Number = startIdx; j < data.mod.length; j++) {
+                trace("  - " + data.mod[j].name);
             }
         }
 
         trace("======================================");
-        trace("EquipModListLoader 测试完成！");
+        trace("EquipModListLoader 拆分测试完成！");
         trace("======================================");
 
         // 传递给 EquipmentUtil 进行初始化

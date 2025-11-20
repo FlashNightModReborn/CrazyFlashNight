@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <!-- 高等材料 - 刀专用配件 -->
+
+    <mod>
+        <name>骨约晨星</name>
+        <use>刀</use>
+        <stats>
+            <flat>
+                <weight>2.5</weight>
+                <evasion>15</evasion>
+                <accuracy>15</accuracy>
+            </flat>
+            <percentage>
+                <power>15</power>
+            </percentage>
+        </stats>
+        <description>多股编缆与陀螺仪阵列,全面提升威力、命中与闪避能力。</description>
+        <tag>柄尾</tag>
+    </mod>
+
+    <mod>
+        <name>环格护手</name>
+        <use>刀</use>
+        <skill>
+            <skillname>追踪五连</skillname>
+            <description>手持该武器可以使用追踪五连刺,对中距离内的敌人进行追踪攻击,优先锁定最近敌人。战技启动时,按奔跑键取消追踪,按互动键优先追踪血量最高敌人。</description>
+            <cd>8000</cd>
+            <mp>30</mp>
+        </skill>
+        <description>千年古法锻玄铁为环,融合光纤数据系统,赋予追踪五连刺技能。</description>
+        <tag>刀身</tag>
+    </mod>
+
+    <mod>
+        <name>矩锁多点挂槽板</name>
+        <use>刀</use>
+        <stats>
+            <override>
+                <skillmultipliers>
+                    <拔刀术>3.5</拔刀术>
+                    <瞬步斩>3.5</瞬步斩>
+                </skillmultipliers>
+            </override>
+            <flat>
+                <weight>1.5</weight>
+            </flat>
+        </stats>
+        <description>战术快速锁紧平台,六点矩阵分力结构,为拔刀术和瞬步斩赋予250%的锋利度加成。</description>
+        <tag>柄侧板</tag>
+    </mod>
+
+    <mod>
+        <name>赤旌熔脊柄</name>
+        <use>刀</use>
+        <stats>
+            <override>
+                <damagetype>破击</damagetype>
+                <magictype>热</magictype>
+            </override>
+        </stats>
+        <description>超高温核心柄部组件,附加热属性伤害,有效穿透硬目标。</description>
+        <tag>握柄核心</tag>
+    </mod>
+
+    <mod>
+        <name>震动吸收器</name>
+        <use>刀</use>
+        <stats>
+            <flat>
+                <weight>2.5</weight>
+            </flat>
+        </stats>
+        <skill>
+            <skillname>破坏殆尽</skillname>
+            <description>经过震动吸收器改装的武器可以使用破坏殆尽。</description>
+            <cd>8000</cd>
+            <mp>50</mp>
+        </skill>
+        <description>多级磁流变阻尼复合筒,吸收高频振动,赋予破坏殆尽技能。</description>
+        <tag>柄芯</tag>
+    </mod>
+</root>

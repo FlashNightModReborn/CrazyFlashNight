@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <!-- 低级材料 - 防具专用配件 -->
+
+    <mod>
+        <name>军用帆布</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <flat>
+                <defence>8</defence>
+            </flat>
+        </stats>
+        <description>耐用的防护布料,增加装备防御力。</description>
+        <tag>外覆基层</tag>
+    </mod>
+
+    <mod>
+        <name>上色涂料</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <merge>
+                <magicdefence>
+                    <热>5</热>
+                    <蚀>5</蚀>
+                    <毒>5</毒>
+                </magicdefence>
+            </merge>
+        </stats>
+        <description>功能性涂层,提供多种属性防护。</description>
+        <tag>表面涂层</tag>
+    </mod>
+
+    <mod>
+        <name>可塑式钢板</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <flat>
+                <defence>20</defence>
+                <weight>2</weight>
+            </flat>
+        </stats>
+        <description>高性能预制标准件,提升一定防御力,但会增加重量。</description>
+        <tag>外覆加固</tag>
+    </mod>
+</root>

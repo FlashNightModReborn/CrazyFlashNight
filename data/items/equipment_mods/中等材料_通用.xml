@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <!-- 中等材料 - 通用配件 -->
+
+    <mod>
+        <name>可充锂电池</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备,刀,手枪,长枪</use>
+        <provideTags>电力</provideTags>
+        <description>基础电源模块,为电子设备提供稳定供能。末世中少量幸存的锂电池,极其珍贵。</description>
+        <tag>核心模块</tag>
+    </mod>
+
+    <mod>
+        <name>生物催化剂</name>
+        <use>刀,手枪,长枪,手部装备</use>
+        <stats>
+            <override>
+                <damagetype>破击</damagetype>
+                <magictype>生化</magictype>
+            </override>
+            <percentage>
+                <power>-3</power>
+                <punch>-3</punch>
+            </percentage>
+        </stats>
+        <description>生化改造材料,将武器伤害转化为生化破击类型,略微降低威力和空手加成。</description>
+        <tag>表面涂层</tag>
+    </mod>
+
+    <mod>
+        <name>高强度合金</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备,刀</use>
+        <stats>
+            <percentage>
+                <power>3</power>
+                <defence>6</defence>
+            </percentage>
+        </stats>
+        <description>多相强化材料,提升装备攻防性能。</description>
+        <tag>材料升级</tag>
+    </mod>
+</root>
