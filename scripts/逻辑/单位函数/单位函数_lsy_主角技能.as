@@ -821,3 +821,39 @@ _root.技能函数.大型武器攻击搓招 = function() {
         }
     }
 };
+_root.技能函数.空手攻击搓招 = function() {
+	var 自机 = _parent;
+	// 双击方向键后触发
+	if(自机.方向 == "右")
+	{
+		if(自机.被动技能.拳脚攻击 && 自机.被动技能.拳脚攻击.启用)
+		{
+			if (自机.doubleTapRunDirection == 1) //双击右键
+			{gotoAndPlay("诛杀步");}
+			if (Key.isDown(_root.奔跑键) && 自机.左行)//双击左键
+			{gotoAndPlay("后撤步");}
+				
+			if(自机.被动技能.拳脚攻击.等级 >= 5)
+			{
+				if(自机.下行 && 自机.右行 && 自机.动作A)//下右J
+				{gotoAndPlay("波动拳");}
+			}
+		}
+	}
+	else if(自机.方向 == "左")
+	{
+		if(自机.被动技能.拳脚攻击 && 自机.被动技能.拳脚攻击.启用)
+		{
+			if (自机.doubleTapRunDirection == -1)//双击左键
+			{_parent.gotoAndPlay("诛杀步");}
+			if (Key.isDown(_root.奔跑键) && 自机.右行)//双击右键
+			{gotoAndPlay("后撤步");}
+				
+			if(自机.被动技能.拳脚攻击.等级 >= 5)
+			{
+				if(自机.下行 && 自机.左行 && 自机.动作A)//下左J
+				{gotoAndPlay("波动拳");}
+			}
+		}
+	}
+};
