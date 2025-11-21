@@ -1721,7 +1721,7 @@ P90是全名FN Project 1990的简写，意即FN 1990年计划。</description>
     <type>武器</type>
     <use>手枪</use>
     <price>100000</price>
-    <description>经过改装的史密斯韦森M686左轮手枪，由美国枪械公司史密斯韦森于1980年研发，1981年批量生产。
+    <description>经过穿刺性能改装的史密斯韦森M686左轮手枪，由美国枪械公司史密斯韦森于1980年研发，1981年批量生产。
 史密斯韦森是A国最大的手枪制造商，由A国人贺拉斯·史密斯与丹尼尔·韦森于1852年建立。总部位于马萨诸塞州春田。他们以制造左轮手枪闻名于世，曾在第二次世界大战中生产了110万支手枪以供应盟军需求。</description>
     <data>
       <level>22</level>
@@ -1894,7 +1894,7 @@ P90是全名FN Project 1990的简写，意即FN 1990年计划。</description>
     <icon>FKBRNO</icon>
     <type>武器</type>
     <use>手枪</use>
-    <price>65000</price>
+    <price>97000</price>
     <description>由Z国FK BRNO公司设计的大威力手枪，多用于狩猎用途。</description>
     <data>
       <level>25</level>
@@ -1903,16 +1903,17 @@ P90是全名FN Project 1990的简写，意即FN 1990年计划。</description>
       <capacity>15</capacity>
       <split>1</split>
       <diffusion>2</diffusion>
-      <interval>200</interval>
+      <interval>300</interval>
       <singleshoot>true</singleshoot>
-      <velocity>36</velocity>
-      <bullet>加强普通子弹</bullet>
+      <velocity>39</velocity>
+      <bullet>次级穿刺子弹</bullet>
+      <bulletrename>常规穿甲弹</bulletrename>
       <sound>re_pistol_DEagle.wav</sound>
       <muzzle>马格南手枪枪火</muzzle>
       <bullethit>火花</bullethit>
       <clipname>马格南手枪弹药</clipname>
       <bulletsize>30</bulletsize>
-      <power>840</power>
+      <power>700</power>
       <impact>10</impact>
       <slay>6</slay>
     </data>
@@ -2386,10 +2387,10 @@ MP7冲锋枪，由DEU国的黑克勒-科赫设计，由DEU国的黑克勒-科赫
     <type>武器</type>
     <use>手枪</use>
     <price>150000</price>
-    <description>经过改装的柯尔特巨蟒左轮手枪，由A国的柯特制造公司所研制。
+    <description>经过穿刺性能改装的柯尔特巨蟒左轮手枪，由A国的柯特制造公司所研制。
 曾有某位知名枪械历史学家如此形容它：「世界上最佳的左轮手枪」。</description>
     <data>
-      <level>33</level>
+      <level>31</level>
       <weight>2.5</weight>
       <dressup>枪-手枪-COLT PYTHON</dressup>
       <capacity>6</capacity>
@@ -2886,16 +2887,16 @@ A批滚出去，这是泰坦陨落的转换者！——From the 3102</descriptio
     <type>武器</type>
     <use>手枪</use>
     <price>180000</price>
-    <description>经过改装的沙漠之鹰。
+    <description>经过穿刺性能改装的沙漠之鹰。
 虽然火力和制止力强大、精度高及射程较其他手枪更远；不过也因价格比一般手枪昂贵，并且射击时所产生的巨大噪音与枪焰会对射手造成较大的心理压力及令其暴露位置，还对射击姿势要求较高等因素导致大部份军队及执法机关都认为沙漠之鹰不是实用的武器而拒绝采用。总之，这把枪只为经验丰富的射击达人又或是枪械大师量身订制。</description>
     <data>
-      <level>45</level>
+      <level>39</level>
       <weight>3</weight>
       <dressup>枪-手枪-Desert Eagle改装版</dressup>
       <capacity>8</capacity>
       <split>1</split>
       <diffusion>3</diffusion>
-      <interval>200</interval>
+      <interval>250</interval>
       <singleshoot>true</singleshoot>
       <velocity>36</velocity>
       <bullet>穿刺子弹</bullet>
@@ -2904,7 +2905,7 @@ A批滚出去，这是泰坦陨落的转换者！——From the 3102</descriptio
       <bullethit>火花</bullethit>
       <clipname>马格南手枪弹药</clipname>
       <bulletsize>30</bulletsize>
-      <power>1300</power>
+      <power>1350</power>
       <impact>10</impact>
       <slay>8</slay>
     </data>
