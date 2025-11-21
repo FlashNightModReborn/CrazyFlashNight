@@ -757,7 +757,7 @@
     <icon>SteyrScout</icon>
     <type>武器</type>
     <use>长枪</use>
-    <price>50000</price>
+    <price>70000</price>
     <description>Au国Steyr社设计制造的通用猎枪，基于A国某退役军官的"向导步枪"概念研发，于上世纪97年正式发售。
       该枪枪身大量采用聚合物材料，将携带重量成功压至3KG以下，同时集成了聚合物制的两脚架。预想中这支步枪是用于民间狩猎和自卫用途，作为一种“通用步枪”使用，然而在市场上却并没有取得应有的成果。
       由于早年C国枪械媒体误传，该枪往往被误认为是一种侦察兵使用的枪械。
@@ -769,16 +769,16 @@
       <capacity>5</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
-      <interval>600</interval>
+      <interval>800</interval>
       <velocity>50</velocity>
-      <bullet>精制普通子弹</bullet>
-      <bulletrename>精制子弹</bulletrename>
+      <bullet>次级穿刺子弹</bullet>
+      <bulletrename>常规穿甲弹</bulletrename>
       <sound>scout_fire-1.wav</sound>
       <muzzle>战斗步枪枪火</muzzle>
       <bullethit>火花</bullethit>
       <clipname>狙击步枪通用弹药</clipname>
       <bulletsize>50</bulletsize>
-      <power>1400</power>
+      <power>1300</power>
       <impact>10</impact>
       <accuracy>20</accuracy>
       <criticalhit>满血暴击</criticalhit>
@@ -1006,7 +1006,7 @@
     <icon>MK17</icon>
     <type>武器</type>
     <use>长枪</use>
-    <price>42000</price>
+    <price>87000</price>
     <description>
       Mk17是FN公司在SCAR项目中所设计的SCAR-H型号的定型编号。自2003年开始招标以来，SCAR项目便受到了广泛的关注，一来它关系到A国特种部队将要换装的主武器，二来它要求武器具有高度的模块化程度以实现在不同口径和同一枪族的不同型号之间的快速转换。而FN公司的产品在中标后其中的Mk17型广受好评，装备了SCAR的部队也更加偏爱Mk17。</description>
     <data>
@@ -1016,15 +1016,16 @@
       <capacity>45</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
-      <interval>110</interval>
+      <interval>135</interval>
       <velocity>35</velocity>
-      <bullet>加强普通子弹</bullet>
+      <bullet>次级穿刺子弹</bullet>
+      <bulletrename>常规穿甲弹</bulletrename>
       <sound>re_Rifle_ak200.wav</sound>
       <muzzle>突击步枪枪火</muzzle>
       <bullethit>火花</bullethit>
       <clipname>突击步枪通用弹药</clipname>
       <bulletsize>25</bulletsize>
-      <power>115</power>
+      <power>110</power>
       <impact>50</impact>
     </data>
   </item>
@@ -1263,7 +1264,7 @@
     <icon>G3SG1</icon>
     <type>武器</type>
     <use>长枪</use>
-    <price>94000</price>
+    <price>137000</price>
     <description>G3/SG1狙击步枪是G3的一种变型枪，结构与G3A3基本相同。它是在标准型G3步枪的验收过程中，将那些平均弹着点完全符合规定要求、而散布又最小的枪挑选出来，配上两脚架、枪托贴腮板和望远瞄准镜，再略加改装而成的。所以G3/SG1只是一支用突击步枪拼凑出来的狙击枪。SG是“Schützen
       Gewehr”精确步枪的意思。
       “在某些电子游戏里用这个会成为众矢之的。”</description>
@@ -1274,16 +1275,16 @@
       <capacity>20</capacity>
       <split>1</split>
       <diffusion>6</diffusion>
-      <interval>250</interval>
+      <interval>280</interval>
       <velocity>50</velocity>
-      <bullet>精制普通子弹</bullet>
-      <bulletrename>精制子弹</bulletrename>
+      <bullet>次级穿刺子弹</bullet>
+      <bulletrename>常规穿甲弹</bulletrename>
       <sound>g3sg.wav</sound>
       <muzzle>战斗步枪枪火</muzzle>
       <bullethit>火花</bullethit>
       <clipname>狙击步枪通用弹药</clipname>
       <bulletsize>50</bulletsize>
-      <power>650</power>
+      <power>500</power>
       <impact>15</impact>
       <criticalhit>满血暴击</criticalhit>
     </data>
@@ -1532,7 +1533,7 @@
     <icon>SteyrScout10</icon>
     <type>武器</type>
     <use>长枪</use>
-    <price>112000</price>
+    <price>172000</price>
     <description>SteyrScout的改装版本，安装了10发弹匣用的弹匣井从而提升了载弹量。
       这一样式的SteyrScout也在某部有名的竞技类FPS游戏系列中出现过。
       “跳狙飞人”</description>
@@ -1543,7 +1544,7 @@
       <capacity>10</capacity>
       <split>1</split>
       <diffusion>4</diffusion>
-      <interval>600</interval>
+      <interval>800</interval>
       <velocity>50</velocity>
       <bullet>精制普通子弹</bullet>
       <bulletrename>精制子弹</bulletrename>
@@ -1552,7 +1553,7 @@
       <bullethit>火花</bullethit>
       <clipname>狙击步枪通用弹药</clipname>
       <bulletsize>50</bulletsize>
-      <power>1700</power>
+      <power>1500</power>
       <impact>10</impact>
       <accuracy>20</accuracy>
       <criticalhit>满血暴击</criticalhit>
