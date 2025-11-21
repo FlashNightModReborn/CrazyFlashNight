@@ -1,6 +1,8 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#666666" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" guidesLocked="true" rulerVisible="true" timelineLabelWidth="216" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="1.特效文件夹" itemID="67cddd8a-000023e2"/>
+          <DOMFolderItem name="1.特效文件夹/03.赤橙色系" itemID="69208f63-000026d6"/>
+          <DOMFolderItem name="1.特效文件夹/03.赤橙色系/ROUND WAVE" itemID="69208f63-000026d7"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系" itemID="67cddd8a-000023e3" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系/雷电电" itemID="67cddd8a-000023e4" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞" itemID="6910abc1-00001d0e"/>
@@ -10,7 +12,7 @@
           <DOMFolderItem name="MovieClip" itemID="68404178-00000b93"/>
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
           <DOMFolderItem name="sound" itemID="65a6bb4b-0000137a"/>
-          <DOMFolderItem name="sprite" itemID="66530518-00000d78" isExpanded="true"/>
+          <DOMFolderItem name="sprite" itemID="66530518-00000d78"/>
           <DOMFolderItem name="爆炸" itemID="67f13734-00000871"/>
           <DOMFolderItem name="波动拳发射" itemID="691dcf05-000067b4"/>
           <DOMFolderItem name="波动拳发射/组件" itemID="691dcedc-000067ae"/>
@@ -50,12 +52,13 @@
           <DOMFolderItem name="无AS链接/气功弹（和爆炸）素材" itemID="673f5879-00000b0f" isExpanded="true"/>
           <DOMFolderItem name="新霸体特效" itemID="66c19db5-000017a9"/>
           <DOMFolderItem name="新地震素材" itemID="6910ba6c-0000095f"/>
+          <DOMFolderItem name="扬起灰尘" itemID="69209982-00002d82"/>
           <DOMFolderItem name="移动射击动画层" itemID="66577cc3-00002e4e"/>
           <DOMFolderItem name="余烬小队" itemID="663cf35d-000026f7"/>
           <DOMFolderItem name="余烬小队/余烬剑痴" itemID="663cf35d-000026f8" isExpanded="true"/>
           <DOMFolderItem name="战斗" itemID="67f1379f-0000087c"/>
           <DOMFolderItem name="重复项目文件夹" itemID="66b9eabe-00000ca4"/>
-          <DOMFolderItem name="主角动画层" itemID="66577cd4-00002e52" isExpanded="true"/>
+          <DOMFolderItem name="主角动画层" itemID="66577cd4-00002e52"/>
           <DOMFolderItem name="主角肢体素材" itemID="68c8295d-0000091e"/>
      </folders>
      <fonts>
@@ -166,6 +169,7 @@
           <DOMSoundItem name="sound/重武器.wav" itemID="67f13a3f-000008b7" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/things0/LIBRARY/sound/重武器.wav" sourceLastImported="1736862781" externalFileCRC32="2943343212" externalFileSize="27420" href="sound/重武器.wav" soundDataHRef="M 112 1706686860.dat" format="44kHz 16bit Mono" sampleCount="13688" exportFormat="5" exportBits="17"/>
      </media>
      <symbols>
+          <Include href="1.特效文件夹/03.赤橙色系/ROUND WAVE/ROUND WAVE素材.xml" itemIcon="1" loadImmediate="false" itemID="69100b04-00001352" lastModified="1763741611"/>
           <Include href="1.特效文件夹/06.青蓝色系/雷电电/Symbol 22.xml" loadImmediate="false" itemID="654ba156-00002640" lastModified="1696643875"/>
           <Include href="1.特效文件夹/06.青蓝色系/雷电电/Symbol 24.xml" loadImmediate="false" itemID="654ba156-00002641" lastModified="1696643875"/>
           <Include href="1.特效文件夹/06.青蓝色系/雷电电/Symbol 26.xml" loadImmediate="false" itemID="654ba156-00002642" lastModified="1696643875"/>
@@ -1015,9 +1019,9 @@
           <Include href="sprite/Symbol 2019.xml" loadImmediate="false" itemID="6577efbc-0000080c" lastModified="1706255914"/>
           <Include href="sprite/被击飞击倒.xml" loadImmediate="false" itemID="690f5883-00001c3b" lastModified="1763281875"/>
           <Include href="sprite/兵器待机.xml" loadImmediate="false" itemID="690df7b1-00000ba7" lastModified="1762600515"/>
-          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1763725255"/>
+          <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1763739612"/>
           <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1763399817"/>
-          <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1763534403"/>
+          <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1763738805"/>
           <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1763399520"/>
           <Include href="sprite/兵器跳跃旧动作备份.xml" loadImmediate="false" itemID="690cd8d3-0000117f" lastModified="1762449619"/>
           <Include href="sprite/兵器走路.xml" loadImmediate="false" itemID="690ce360-00000724" lastModified="1763283029"/>
@@ -1031,15 +1035,15 @@
           <Include href="sprite/攻击模式切换.xml" loadImmediate="false" itemID="691b470f-00002ecf" lastModified="1763396571"/>
           <Include href="sprite/黑红色爆炸.xml" itemID="668be72d-0000065f" lastModified="1721756218"/>
           <Include href="sprite/红色刀光.xml" loadImmediate="false" itemID="65b795a7-00000ba0" lastModified="1706530238"/>
-          <Include href="sprite/技能.xml" loadImmediate="false" itemID="691ae81e-00000771" lastModified="1763562707"/>
+          <Include href="sprite/技能.xml" loadImmediate="false" itemID="691ae81e-00000771" lastModified="1763732124"/>
           <Include href="sprite/近战子弹 副本.xml" loadImmediate="false" itemID="660a212e-00000b09" lastModified="1711945124"/>
           <Include href="sprite/近战子弹 已obj化.xml" loadImmediate="false" itemID="68ac3fb5-00000753" lastModified="1756118967"/>
           <Include href="sprite/觉醒霸体特效.xml" itemID="668be723-0000065d" lastModified="1756118920"/>
           <Include href="sprite/觉醒霸体特效原先.xml" itemID="66c19f0e-000017fb" lastModified="1723965222"/>
           <Include href="sprite/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1757948662"/>
-          <Include href="sprite/空手攻击.xml" loadImmediate="false" itemID="6919dfac-00001066" lastModified="1763726956"/>
+          <Include href="sprite/空手攻击.xml" loadImmediate="false" itemID="6919dfac-00001066" lastModified="1763744566"/>
           <Include href="sprite/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1763651510"/>
-          <Include href="sprite/空手跳.xml" loadImmediate="false" itemID="6919df9d-00001065" lastModified="1763557407"/>
+          <Include href="sprite/空手跳.xml" loadImmediate="false" itemID="6919df9d-00001065" lastModified="1763743687"/>
           <Include href="sprite/落地特效-闪光.xml" loadImmediate="false" itemID="663ba576-00000122" lastModified="1715185258"/>
           <Include href="sprite/木偶-主角-男.xml" itemID="668be718-0000065b" lastModified="1720445240"/>
           <Include href="sprite/男变装-基本脸型.xml" itemID="668be716-0000065a" lastModified="1729259751"/>
@@ -1319,6 +1323,16 @@
           <Include href="新地震素材/Symbol 530.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000ab4" lastModified="1702343951"/>
           <Include href="新地震素材/Symbol 531.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000ab5" lastModified="1702343951"/>
           <Include href="旋转刀光.xml" loadImmediate="false" itemID="66f7942f-0000082b" lastModified="1727501359"/>
+          <Include href="扬起灰尘/shape 157 副本 5.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba2-00001e2d" lastModified="1418787089"/>
+          <Include href="扬起灰尘/shape 158 副本 5.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba2-00001e2e" lastModified="1418787089"/>
+          <Include href="扬起灰尘/shape 159 副本 4.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba2-00001e2f" lastModified="1418787089"/>
+          <Include href="扬起灰尘/shape 160 副本 5.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba2-00001e30" lastModified="1418787089"/>
+          <Include href="扬起灰尘/shape 161 副本 5.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba2-00001e31" lastModified="1418787089"/>
+          <Include href="扬起灰尘/shape 162 副本 2.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba2-00001e32" lastModified="1418787089"/>
+          <Include href="扬起灰尘/shape 163 副本 4.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba2-00001e33" lastModified="1418787089"/>
+          <Include href="扬起灰尘/shape 164 副本 4.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba2-00001e34" lastModified="1418787089"/>
+          <Include href="扬起灰尘/shape 165 副本 4.xml" itemIcon="1" loadImmediate="false" itemID="55af0ba2-00001e35" lastModified="1418787089"/>
+          <Include href="扬起灰尘/扬起灰尘.xml" loadImmediate="false" itemID="69209969-00002d7e" lastModified="1763744348"/>
           <Include href="移动射击动画层/手枪-双枪行走右腿.xml" loadImmediate="false" itemID="6657690d-0000124f" lastModified="1717004571"/>
           <Include href="移动射击动画层/手枪-双枪站立右腿.xml" loadImmediate="false" itemID="665768dc-00000e20" lastModified="1725361523"/>
           <Include href="移动射击动画层/手枪2-双枪行走左腿.xml" loadImmediate="false" itemID="66576a8c-00002e1b" lastModified="1717004945"/>
@@ -1954,6 +1968,12 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3638376" publishTime="1763744502"/>
+          <PublishItem publishSize="3632121" publishTime="1763743784"/>
+          <PublishItem publishSize="3632121" publishTime="1763743732"/>
+          <PublishItem publishSize="3632120" publishTime="1763743195"/>
+          <PublishItem publishSize="3632168" publishTime="1763742966"/>
+          <PublishItem publishSize="3602853" publishTime="1763727201"/>
           <PublishItem publishSize="3604012" publishTime="1763726276"/>
           <PublishItem publishSize="3605382" publishTime="1763725273"/>
           <PublishItem publishSize="3605376" publishTime="1763725051"/>
@@ -1968,11 +1988,5 @@
           <PublishItem publishSize="3604562" publishTime="1763561432"/>
           <PublishItem publishSize="3588961" publishTime="1763488001"/>
           <PublishItem publishSize="3587952" publishTime="1763486864"/>
-          <PublishItem publishSize="3587946" publishTime="1763486668"/>
-          <PublishItem publishSize="3587953" publishTime="1763486521"/>
-          <PublishItem publishSize="3580647" publishTime="1763399788"/>
-          <PublishItem publishSize="3521578" publishTime="1763396492"/>
-          <PublishItem publishSize="3521571" publishTime="1763396405"/>
-          <PublishItem publishSize="3521574" publishTime="1763396136"/>
      </publishHistory>
 </DOMDocument>
