@@ -345,4 +345,37 @@
         <Name>发型-男式-淡金卷</Name>
         <Price>0</Price>
   </Hair>
+    <Hair id="69">
+        <Identifier>发型-男式-藏蓝偏分</Identifier>
+        <Name>发型-男式-藏蓝偏分</Name>
+        <Price>0</Price>
+  </Hair>
+    <Hair id="70">
+        <Identifier>发型-男式-狂野紫红</Identifier>
+        <Name>发型-男式-狂野紫红</Name>
+        <Price>0</Price>
+  </Hair>
+    <Hair id="71">
+        <Identifier>发型-男式-青绿渐变</Identifier>
+        <Name>发型-男式-青绿渐变</Name>
+        <Price>0</Price>
+  </Hair>
+    <Hair id="72">
+        <Identifier>发型-男式-阴阳两隔</Identifier>
+        <Name>发型-男式-阴阳两隔</Name>
+        <Price>0</Price>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>挂载后发初始化</initRoutines>
+          <initParam>
+            <behindhair>后发-男式-阴阳两隔</behindhair>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>挂载后发周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
+  </Hair>
 </HairStyle>

@@ -1,61 +1,37 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角动画层/双枪攻击" itemID="66577cf3-00002e53" lastModified="1720908276" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角动画层/双枪攻击" itemID="66577cf3-00002e53" lastModified="1763782045" lastUniqueIdentifier="6">
   <timeline>
-    <DOMTimeline name="双枪攻击" currentFrame="83">
+    <DOMTimeline name="双枪攻击">
       <layers>
         <DOMLayer name="Labels Layer" color="#24AAF0">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" name="射击" labelType="name" keyMode="9728">
+            <DOMFrame index="2" duration="7" name="射击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="3" duration="6" keyMode="9728">
+            <DOMFrame index="9" duration="8" name="上射击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" name="上射击" labelType="name" keyMode="9728">
+            <DOMFrame index="17" duration="8" name="下射击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="10" duration="7" keyMode="9728">
+            <DOMFrame index="25" duration="7" name="射击2" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="17" name="下射击" labelType="name" keyMode="9728">
+            <DOMFrame index="32" duration="8" name="上射击2" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="18" duration="7" keyMode="9728">
+            <DOMFrame index="40" duration="8" name="下射击2" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="25" name="射击2" labelType="name" keyMode="9728">
+            <DOMFrame index="48" duration="6" name="结束" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="26" duration="6" keyMode="9728">
+            <DOMFrame index="54" duration="6" name="空枪" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="32" name="上射击2" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="33" duration="7" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="40" name="下射击2" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="41" duration="7" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="48" name="结束" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="49" duration="5" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="54" name="空枪" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="55" duration="5" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="60" name="换弹夹" labelType="name" keyMode="9728">
+            <DOMFrame index="60" duration="7" name="换弹夹" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
