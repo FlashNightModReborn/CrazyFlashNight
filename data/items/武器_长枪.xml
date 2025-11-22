@@ -35,6 +35,33 @@
     </data>
   </item>
   <item weapontype="突击步枪">
+    <name>DD MK18 Mod1</name>
+    <displayname>DD MK18 Mod1</displayname>
+    <icon>DD MK18 Mod1</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>100000</price>
+    <description>C国制造。</description>
+    <data>
+      <level>30</level>
+      <weight>3</weight>
+      <dressup>枪-长枪-DD MK18 Mod1</dressup>
+      <capacity>50</capacity>
+      <split>1</split>
+      <diffusion>5</diffusion>
+      <interval>90</interval>
+      <velocity>35</velocity>
+      <bullet>加强普通子弹</bullet>
+      <sound>re_Rifle_m16_tac.wav</sound>
+      <muzzle>突击步枪枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>突击步枪通用弹药</clipname>
+      <bulletsize>25</bulletsize>
+      <power>260</power>
+      <impact>35</impact>
+    </data>
+  </item>
+  <item weapontype="突击步枪">
     <name>DD MK18战术版</name>
     <displayname>DD MK18战术版</displayname>
     <icon>DD MK18战术版</icon>
