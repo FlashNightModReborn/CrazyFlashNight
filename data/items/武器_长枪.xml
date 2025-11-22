@@ -1992,6 +1992,50 @@
       <damagetype>破击</damagetype>
       <magictype>装甲</magictype>
     </data>
+    <data_fire_gold_stolen>
+      <level>29</level>
+      <weight>29</weight>
+      <dressup>枪-长枪-热临界破障机</dressup>
+      <displayname>热临界破障机</displayname>
+      <icon>热临界破障机</icon>
+      <power>508</power>
+      <hp>300</hp>
+      <defence>150</defence>
+      <description>公社与多方技术合作的产物，常作为关键据点的防御兵器，兼具反步兵和破障能力。
+        基于建筑施工设备框架，整合铁枪会先进动力传动技术，植入了强化供能单元与热交换模块。
+        切割轮盘注入了抗磁性配体半金属，机体覆盖多层装甲板，可有效抵御高强度冲击。
+        本质上仍是民用工具的战地改造版本，极限环境下可靠性无法与制式军用武器相比。
+      </description>
+      <skill>
+        <skillname>混凝土切割机超载打击</skillname>
+        <description>启动超载模式，将设备调谐至临界共振点，诱发切割轮盘进入剧烈共振状态。
+          切割轮盘内的抗磁性配体半金属进入临界共振状态，通过轮盘传导，形成足以瓦解物质的穿透冲击波。
+          超载运行导致结构应力剧增，每次激活均需消耗一单位强化石，以抵消共振造成的结构劣化。
+          提升武器强化等级可延长超载模式持续时间，基础时间5S，每一级强化度额外提供1S持续时间。
+        </description>
+        <cd>30000</cd>
+        <duration>5</duration>
+        <mp>100</mp>
+      </skill>
+      <lifecycle>
+        <attr_0>
+          <init>
+            <initRoutines>混凝土切割机初始化</initRoutines>
+            <initParam>
+              <maxSpinCount>50</maxSpinCount>
+              <spinUpAmount>15</spinUpAmount>
+              <spinSpeedFactor>0.2</spinSpeedFactor>
+              <spinDownRate>0.5</spinDownRate>
+              <damagetype>魔法</damagetype>
+              <magictype>热</magictype>
+            </initParam>
+          </init>
+          <cycle>
+            <cycleRoutines>混凝土切割机周期</cycleRoutines>
+          </cycle>
+        </attr_0>
+      </lifecycle>
+    </data_fire_gold_stolen>
     <skill>
       <skillname>混凝土切割机超载打击</skillname>
       <description>启动超载模式，将设备调谐至临界共振点，诱发切割轮盘进入剧烈共振状态。
@@ -2012,6 +2056,8 @@
             <spinUpAmount>15</spinUpAmount>
             <spinSpeedFactor>0.2</spinSpeedFactor>
             <spinDownRate>0.5</spinDownRate>
+            <damagetype>魔法</damagetype>
+            <magictype>冲</magictype>
           </initParam>
         </init>
         <cycle>
@@ -3175,12 +3221,12 @@
       <defence>333</defence>
       <clipname>能量电池</clipname>
       <description>M.A.C.S. IV – Modular Argent Cryogenic Saw.
-      基于 MACSIII 的冷凝型改进批次，由铁枪会根据从军阀雪山战区截获的实战数据定向研发。
-      在原有的 Argent 纳米机器人集群基础上整合 LQ-N₂ 冷却腔与简化配体半金属组件，抑制过载代谢在可控区间。
-      锯片通过超低温传导实现瞬时深冷，引发目标结构性脆化，并以高频振动抵消极端温差带来的热应力。
-      为对抗超低温导致的金属脆裂与腐蚀，机体框架再次加固，纳米循环系统也被重构以适应冷凝核心的运转需求。
-      产线依旧缺少完整设计所需的抗磁性配体半金属，需要用户自行获取并补充指定材料配额，以解锁高级协议。
-      协议包括对重伤目标的处决功能及汲取生物组织进行超额修复的能力，并新增用于缓解自伤的冷凝节流协议。</description>
+        基于 MACSIII 的冷凝型改进批次，由铁枪会根据从军阀雪山战区截获的实战数据定向研发。
+        在原有的 Argent 纳米机器人集群基础上整合 LQ-N₂ 冷却腔与简化配体半金属组件，抑制过载代谢在可控区间。
+        锯片通过超低温传导实现瞬时深冷，引发目标结构性脆化，并以高频振动抵消极端温差带来的热应力。
+        为对抗超低温导致的金属脆裂与腐蚀，机体框架再次加固，纳米循环系统也被重构以适应冷凝核心的运转需求。
+        产线依旧缺少完整设计所需的抗磁性配体半金属，需要用户自行获取并补充指定材料配额，以解锁高级协议。
+        协议包括对重伤目标的处决功能及汲取生物组织进行超额修复的能力，并新增用于缓解自伤的冷凝节流协议。</description>
       <skill>
         <skillname>MACSIII超载打击</skillname>
         <description>消耗一枚强化石强制执行被锁定的高级协议，发动一次毁灭性挥砍。

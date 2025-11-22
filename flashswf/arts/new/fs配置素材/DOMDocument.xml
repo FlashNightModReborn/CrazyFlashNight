@@ -598,10 +598,10 @@
           <Include href="长枪/火药燃气液压打桩机/枪口.xml" loadImmediate="false" itemID="68a0c5fd-00001454" lastModified="1755388623"/>
           <Include href="长枪/火药燃气液压打桩机/枪口基座.xml" loadImmediate="false" itemID="68a0d254-00001f61" lastModified="1755370147"/>
           <Include href="长枪/火药燃气液压打桩机/全息投影仪.xml" loadImmediate="false" itemID="688cd676-00001058" lastModified="1754060997"/>
-          <Include href="长枪/火药燃气液压打桩机/热临界破障机.xml" itemID="6921486f-00000493" lastModified="1763795629"/>
+          <Include href="长枪/火药燃气液压打桩机/热临界破障机.xml" itemID="6921486f-00000493" lastModified="1763808992"/>
           <Include href="长枪/火药燃气液压打桩机/热临界破障锯盘.xml" loadImmediate="false" itemID="69215889-00000eec" lastModified="1763793220"/>
-          <Include href="长枪/火药燃气液压打桩机/热临界破障锯片.xml" loadImmediate="false" itemID="692149b4-000004ae" lastModified="1763794360"/>
-          <Include href="长枪/火药燃气液压打桩机/热临界破障锯片强化激活.xml" loadImmediate="false" itemID="69214efd-00000e82" lastModified="1763793042"/>
+          <Include href="长枪/火药燃气液压打桩机/热临界破障锯片.xml" loadImmediate="false" itemID="692149b4-000004ae" lastModified="1763808988"/>
+          <Include href="长枪/火药燃气液压打桩机/热临界破障锯片强化激活.xml" loadImmediate="false" itemID="69214efd-00000e82" lastModified="1763808604"/>
           <Include href="长枪/火药燃气液压打桩机/伸缩支架.xml" loadImmediate="false" itemID="69119c56-00002ea7" lastModified="1762761814"/>
           <Include href="长枪/火药燃气液压打桩机/图标-MACSIII.xml" itemID="6884cbfc-0000480b" lastModified="1753533436"/>
           <Include href="长枪/火药燃气液压打桩机/图标-MACSIV.xml" itemID="691beaa3-000004a9" lastModified="1763437243"/>
@@ -1501,6 +1501,9 @@
                     <SolidSwatchItem color="#2D7688" hue="128" saturation="121" brightness="85"/>
                     <SolidSwatchItem color="#759AAC" hue="133" saturation="60" brightness="136"/>
                     <SolidSwatchItem color="#4E6673" hue="134" saturation="46" brightness="91"/>
+                    <SolidSwatchItem color="#783C2E" hue="8" saturation="108" brightness="78"/>
+                    <SolidSwatchItem color="#FD7E0B" hue="19" saturation="236" brightness="124"/>
+                    <SolidSwatchItem color="#FE9C0A" hue="24" saturation="238" brightness="124"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1583,6 +1586,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2784371" publishTime="1763809132"/>
+          <PublishItem publishSize="2736426" publishTime="1763795720"/>
           <PublishItem publishSize="2736366" publishTime="1763794936"/>
           <PublishItem publishSize="2679532" publishTime="1763620367"/>
           <PublishItem publishSize="2679521" publishTime="1763620213"/>
@@ -1601,7 +1606,5 @@
           <PublishItem publishSize="2507726" publishTime="1759838298"/>
           <PublishItem publishSize="2507691" publishTime="1759826673"/>
           <PublishItem publishSize="2507691" publishTime="1759826575"/>
-          <PublishItem publishSize="2507682" publishTime="1759826482"/>
-          <PublishItem publishSize="2507681" publishTime="1759826391"/>
      </publishHistory>
 </DOMDocument>

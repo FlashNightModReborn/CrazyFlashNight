@@ -1,16 +1,28 @@
 ﻿_root.装备生命周期函数.混凝土切割机初始化 = function(ref:Object, param:Object) {
     var target:MovieClip = ref.自机;
 
+    // --- 从武器数据读取伤害类型配置 ---
+    var weaponData:Object = target.长枪数据;
+    var skillData:Object = weaponData.skill;
+
+    // 基础伤害类型（从 <data> 读取，用于常规模式）
+    ref.基础伤害类型 = weaponData.data.damagetype || "破击";
+    ref.基础魔法属性 = weaponData.data.magictype || "装甲";
+
+    // 超载伤害类型（从 <skill> 读取，用于超载模式）
+    ref.超载伤害类型 = param.damagetype || "魔法";
+    ref.超载魔法属性 = param.magictype || "冲";
+
     // --- 性能参数常量化 ---
-    ref.maxSpinCount = param.maxSpinCount || 29;            // 最大连射计数 
-    ref.spinUpAmount = param.spinUpAmount || 5;             // 每次射击增加的连射计数 
+    ref.maxSpinCount = param.maxSpinCount || 29;            // 最大连射计数
+    ref.spinUpAmount = param.spinUpAmount || 5;             // 每次射击增加的连射计数
     ref.spinSpeedFactor = param.spinSpeedFactor || 0.1;     // 连射计数转换为转速的系数
     ref.spinDownRate = param.spinDownRate || 0.33;          // 连射计数的自然衰减率
 
     // --- 状态变量 ---
     ref.gunFrame = 1;              // 当前动画帧 (浮点数)
     ref.fireCount = 0;             // 当前连射计数
-    ref.isFiring = false;          // 是否正在射击 
+    ref.isFiring = false;          // 是否正在射击
 
     // 订阅射击事件
     target.dispatcher.subscribe("长枪射击", function() {
@@ -19,12 +31,14 @@
         var gun:MovieClip = target.长枪_引用;
         var prop:Object = target.man.子弹属性;
         var area:MovieClip = gun.枪口位置;
-        
+
         var flag:Boolean = target.混凝土切割机超载打击许可;
         spark._visible = true;
         prop.区域定位area = area;
-        prop.伤害类型 = flag ? "魔法" : "破击";
-        prop.魔法伤害属性 = flag ? "冲" : "装甲";
+
+        // 使用配置的伤害类型（而非硬编码）
+        prop.伤害类型 = flag ? ref.超载伤害类型 : ref.基础伤害类型;
+        prop.魔法伤害属性 = flag ? ref.超载魔法属性 : ref.基础魔法属性;
     });
 };
 

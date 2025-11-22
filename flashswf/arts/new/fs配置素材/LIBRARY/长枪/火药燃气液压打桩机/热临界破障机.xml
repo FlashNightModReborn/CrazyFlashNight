@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/火药燃气液压打桩机/热临界破障机" itemID="6921486f-00000493" linkageExportForAS="true" linkageIdentifier="枪-长枪-热临界破障机" lastModified="1763795629" lastUniqueIdentifier="29">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/火药燃气液压打桩机/热临界破障机" itemID="6921486f-00000493" linkageExportForAS="true" linkageIdentifier="枪-长枪-热临界破障机" lastModified="1763808992" lastUniqueIdentifier="29">
   <timeline>
-    <DOMTimeline name="热临界破障机" currentFrame="4" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;125&lt;/guideline&gt;&lt;guideline direction="h"&gt;52&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="热临界破障机" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;125&lt;/guideline&gt;&lt;guideline direction="h"&gt;52&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层 2" color="#9933CC" locked="true" outline="true" useOutlineView="true">
           <frames>
@@ -11845,16 +11845,28 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="锯片" color="#FF800A" autoNamed="false">
+        <DOMLayer name="锯片" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/热临界破障锯片" name="锯片" centerPoint3DX="125.35" centerPoint3DY="51.95">
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/热临界破障锯片" name="锯片" selected="true" centerPoint3DX="125.35" centerPoint3DY="51.95">
                   <matrix>
                     <Matrix tx="52.1" ty="-19.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="73.25" y="71.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/火药燃气液压打桩机/热临界破障锯片" name="锯片" centerPoint3DX="125.4" centerPoint3DY="51.95">
+                  <matrix>
+                    <Matrix a="0.668746948242188" b="0.740447998046875" c="-0.740447998046875" d="0.668746948242188" tx="129.3" ty="-50.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="73.25" y="71.4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -11961,7 +11973,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="火花" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="火花" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements>
