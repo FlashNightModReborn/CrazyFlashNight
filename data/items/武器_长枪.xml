@@ -35,6 +35,87 @@
     </data>
   </item>
   <item weapontype="突击步枪">
+    <name>Noveske N4 突击步枪</name>
+    <displayname>Noveske N4 突击步枪</displayname>
+    <icon>Noveske N4 突击步枪</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>400000</price>
+    <description>Noveske公司研制的第四代基于AR-15平台的杰出之作，推出后逐步成为特种部队最爱的主战武器，其核心优势在于模块化设计、多口径兼容性及战术可靠性，提升特种作战场景中的隐蔽杀伤能力的同时又保留了AR-15平台配件通用性优势。‌</description>
+    <data>
+      <level>36</level>
+      <weight>2</weight>
+      <dressup>枪-长枪-‌Noveske N4 突击步枪</dressup>
+      <capacity>40</capacity>
+      <split>1</split>
+      <diffusion>5</diffusion>
+      <interval>90</interval>
+      <velocity>35</velocity>
+      <bullet>穿刺子弹</bullet>
+      <sound>re_Rifle_m16_tac.wav</sound>
+      <muzzle>突击步枪枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>突击步枪通用弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>360</power>
+      <impact>50</impact>
+    </data>
+  </item>
+  <item weapontype="突击步枪">
+    <name>XM7 NGSW R</name>
+    <displayname>XM7 NGSW R</displayname>
+    <icon>XM7 NGSW R</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>500000</price>
+    <description>NGSW计划的划时代成果，以6.8mm颠覆性口径重塑杀伤法则。碳纤维复合材料机身将重量压缩至4千克级，却承载着600米精准射程的致命威慑。模块化设计让它在突击步枪/精准射手步枪形态间自由切换，堪称单兵武器系统的终极进化。</description>
+    <data>
+      <level>40</level>
+      <weight>6</weight>
+      <dressup>枪-长枪-XM7 NGSW R</dressup>
+      <capacity>40</capacity>
+      <split>1</split>
+      <diffusion>5</diffusion>
+      <interval>90</interval>
+      <velocity>35</velocity>
+      <bullet>穿刺子弹</bullet>
+      <sound>re_Rifle_m16_tac.wav</sound>
+      <muzzle>突击步枪枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>突击步枪通用弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>450</power>
+      <impact>50</impact>
+    </data>
+  </item>
+  <item weapontype="突击步枪">
+    <name>DD MK18</name>
+    <displayname>DD MK18</displayname>
+    <icon>DD MK18</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>100000</price>
+    <description>知名武器制造商Daniel Defense的杰出之作，轻便灵活的设计在作战中优势明显，成为特种作战的完美利器。 其优异性能，在现代战场上迅速崛起，成为士兵们值得信赖的伙伴。</description>
+    <data>
+      <level>20</level>
+      <weight>2</weight>
+      <dressup>枪-长枪-DD MK18</dressup>
+      <capacity>40</capacity>
+      <split>1</split>
+      <diffusion>5</diffusion>
+      <interval>100</interval>
+      <velocity>35</velocity>
+      <bullet>加强普通子弹</bullet>
+      <sound>re_Rifle_m4.wav</sound>
+      <muzzle>突击步枪枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>突击步枪通用弹药</clipname>
+      <bulletsize>25</bulletsize>
+      <power>230</power>
+      <impact>50</impact>
+    </data>
+  </item>
+  <item weapontype="突击步枪">
     <name>DD MK18 Mod1</name>
     <displayname>DD MK18 Mod1</displayname>
     <icon>DD MK18 Mod1</icon>
