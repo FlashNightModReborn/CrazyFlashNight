@@ -34,6 +34,46 @@
       <accuracy>10000</accuracy>
     </data>
   </item>
+  <item weapontype="突击步枪">
+    <name>DD MK18战术版</name>
+    <displayname>DD MK18战术版</displayname>
+    <icon>DD MK18战术版</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>70000</price>
+    <description>知名武器制造商Daniel Defense基于MK18平台为特种作战深度定制的战术利器,挂载多种战术配件并配备重型榴弹发射器，性能凶悍！</description>
+    <!-- 装备固有结构标签：参与 provideTags / requireTags 判定 -->
+    <inherentTags>电力,NOHA</inherentTags>
+    <!-- 装备禁止挂载的插件挂点标签：与 mod.tagValue 同一域 -->
+    <blockedTags>核心模块,导轨基座,枪口,弹匣,下导轨,瞄具</blockedTags>
+    <skill>
+      <skillname>发射榴弹</skillname>
+      <description>持枪瞄准时可以发射榴弹，每弹夹消耗1发榴弹弹药，可射击三发，换弹后可再次发射。</description>
+      <cd>1000</cd>
+      <mp>0</mp>
+      <power>2000</power>
+      <bulletsize>3</bulletsize>
+    </skill>
+    <data>
+      <level>38</level>
+      <weight>6</weight>
+      <modslot>1</modslot>
+      <dressup>枪-长枪-DD MK18战术版</dressup>
+      <capacity>50</capacity>
+      <split>1</split>
+      <diffusion>4</diffusion>
+      <interval>110</interval>
+      <velocity>35</velocity>
+      <bullet>穿刺子弹</bullet>
+      <sound>re_Rifle_m16_tac.wav</sound>
+      <muzzle>突击步枪枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>突击步枪通用弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>300</power>
+      <impact>50</impact>
+    </data>
+  </item>
   <item weapontype="霰弹枪">
     <name>单管霰弹枪</name>
     <displayname>单管霰弹枪</displayname>
