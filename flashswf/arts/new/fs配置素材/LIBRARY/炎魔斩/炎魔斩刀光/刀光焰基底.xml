@@ -810,22 +810,6 @@
                     <MorphCurves controlPointA="#C.73, #FFFFF7.EF" anchorPointA="#C.63, -8.7265625" controlPointB="#C.8D, #10.87" anchorPointB="#C.7F, #10.8B"/>
                     <MorphCurves controlPointA="#C.5D, #FFFFF7.0B" anchorPointA="#C.57, #FFFFF6.E3" controlPointB="#C.7E, #10.8C" anchorPointB="#C.7C, #10.8C"/>
                   </MorphSegment>
-                  <MorphSegment startPointA="#C.57, #FFFFF6.E3" startPointB="#C.7F, #E.5B" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="7">
-                    <MorphCurves controlPointA="#C.63, -9.4375" anchorPointA="#C.7, -9.4375" controlPointB="#C.7F, #E.5B" anchorPointB="#C.7F, #E.5B"/>
-                    <MorphCurves controlPointA="#C.AB, -9.4375" anchorPointA="#C.D5, -3.03125" controlPointB="#C.7F, #E.51" anchorPointB="#C.7F, #E.47"/>
-                    <MorphCurves controlPointA="#C.FF, #3.62" anchorPointA="#C.FF, #C.72" controlPointB="#C.7F, #E.2E" anchorPointB="12.5, #E.14"/>
-                    <MorphCurves controlPointA="#C.FF, #E.EF" anchorPointA="#C.FC, #11.39" controlPointB="12.5, #E.0B" anchorPointB="12.5, #E.02"/>
-                    <MorphCurves controlPointA="#C.F7, #14.94" anchorPointA="#C.EB, 23.5" controlPointB="#C.8A, #D.FF" anchorPointB="#C.96, #D.F6"/>
-                    <MorphCurves controlPointA="#C.E2, #19.D9" anchorPointA="#C.D5, #1B.EB" controlPointB="#C.9D, #D.F2" anchorPointB="#C.A6, #D.ED"/>
-                    <MorphCurves controlPointA="#C.C4, #1E.73" anchorPointA="#C.B1, #1F.FB" controlPointB="#C.AC, #D.EA" anchorPointB="#C.B3, #D.E6"/>
-                    <MorphCurves controlPointA="#C.94, #22.54" anchorPointA="#C.7, #22.54" controlPointB="#C.B3, #D.EB" anchorPointB="#C.B3, #D.F"/>
-                    <MorphCurves controlPointA="#C.63, #22.54" anchorPointA="#C.57, #22.03" controlPointB="#C.B3, #D.F1" anchorPointB="#C.B3, #D.F2"/>
-                    <MorphCurves controlPointA="#C.82, #20.E4" anchorPointA="#C.A2, #1B.EB" controlPointB="#C.B3, #D.FC" anchorPointB="#C.B3, #E.06"/>
-                    <MorphCurves controlPointA="#C.CC, #15.83" anchorPointA="#C.CC, #C.72" controlPointB="#C.B2, #E.2" anchorPointB="#C.B2, #E.3A"/>
-                    <MorphCurves controlPointA="#C.CC, #A.48" anchorPointA="#C.CA, #8.45" controlPointB="#C.B2, #E.3F" anchorPointB="#C.B2, #E.44"/>
-                    <MorphCurves controlPointA="#C.C2, #1.DA" anchorPointA="#C.A2, -3.03125" controlPointB="#C.A1, #E.4C" anchorPointB="#C.92, #E.53"/>
-                    <MorphCurves controlPointA="#C.82, #FFFFF8.03" anchorPointA="#C.57, #FFFFF6.E3" controlPointB="#C.88, #E.57" anchorPointB="#C.7F, #E.5B"/>
-                  </MorphSegment>
                   <MorphSegment startPointA="#C.57, #FFFFF6.E3" startPointB="#C.7F, #E.7F" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="7">
                     <MorphCurves controlPointA="#C.63, -9.4375" anchorPointA="#C.7, -9.4375" controlPointB="#C.7F, #E.7F" anchorPointB="#C.7F, #E.7F"/>
                     <MorphCurves controlPointA="#C.AB, -9.4375" anchorPointA="#C.D5, -3.03125" controlPointB="#C.85, #E.7C" anchorPointB="#C.8B, #E.79"/>
@@ -841,6 +825,22 @@
                     <MorphCurves controlPointA="#C.BA, #0.B6" anchorPointA="#C.A2, -3.03125" controlPointB="#C.7F, #E.9A" anchorPointB="#C.7F, #E.9"/>
                     <MorphCurves controlPointA="#C.82, #FFFFF8.01" anchorPointA="#C.57, #FFFFF6.E3" controlPointB="#C.7F, #E.89" anchorPointB="#C.7F, #E.81"/>
                     <MorphCurves controlPointA="#C.57, #FFFFF6.E3" anchorPointA="#C.57, #FFFFF6.E3" controlPointB="#C.7F, #E.81" anchorPointB="#C.7F, #E.7F" isLine="true"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="#C.57, #FFFFF6.E3" startPointB="#C.7F, #E.5B" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="7">
+                    <MorphCurves controlPointA="#C.63, -9.4375" anchorPointA="#C.7, -9.4375" controlPointB="#C.7F, #E.5B" anchorPointB="#C.7F, #E.5B"/>
+                    <MorphCurves controlPointA="#C.AB, -9.4375" anchorPointA="#C.D5, -3.03125" controlPointB="#C.7F, #E.51" anchorPointB="#C.7F, #E.47"/>
+                    <MorphCurves controlPointA="#C.FF, #3.62" anchorPointA="#C.FF, #C.72" controlPointB="#C.7F, #E.2E" anchorPointB="12.5, #E.14"/>
+                    <MorphCurves controlPointA="#C.FF, #E.EF" anchorPointA="#C.FC, #11.39" controlPointB="12.5, #E.0B" anchorPointB="12.5, #E.02"/>
+                    <MorphCurves controlPointA="#C.F7, #14.94" anchorPointA="#C.EB, 23.5" controlPointB="#C.8A, #D.FF" anchorPointB="#C.96, #D.F6"/>
+                    <MorphCurves controlPointA="#C.E2, #19.D9" anchorPointA="#C.D5, #1B.EB" controlPointB="#C.9D, #D.F2" anchorPointB="#C.A6, #D.ED"/>
+                    <MorphCurves controlPointA="#C.C4, #1E.73" anchorPointA="#C.B1, #1F.FB" controlPointB="#C.AC, #D.EA" anchorPointB="#C.B3, #D.E6"/>
+                    <MorphCurves controlPointA="#C.94, #22.54" anchorPointA="#C.7, #22.54" controlPointB="#C.B3, #D.EB" anchorPointB="#C.B3, #D.F"/>
+                    <MorphCurves controlPointA="#C.63, #22.54" anchorPointA="#C.57, #22.03" controlPointB="#C.B3, #D.F1" anchorPointB="#C.B3, #D.F2"/>
+                    <MorphCurves controlPointA="#C.82, #20.E4" anchorPointA="#C.A2, #1B.EB" controlPointB="#C.B3, #D.FC" anchorPointB="#C.B3, #E.06"/>
+                    <MorphCurves controlPointA="#C.CC, #15.83" anchorPointA="#C.CC, #C.72" controlPointB="#C.B2, #E.2" anchorPointB="#C.B2, #E.3A"/>
+                    <MorphCurves controlPointA="#C.CC, #A.48" anchorPointA="#C.CA, #8.45" controlPointB="#C.B2, #E.3F" anchorPointB="#C.B2, #E.44"/>
+                    <MorphCurves controlPointA="#C.C2, #1.DA" anchorPointA="#C.A2, -3.03125" controlPointB="#C.A1, #E.4C" anchorPointB="#C.92, #E.53"/>
+                    <MorphCurves controlPointA="#C.82, #FFFFF8.03" anchorPointA="#C.57, #FFFFF6.E3" controlPointB="#C.88, #E.57" anchorPointB="#C.7F, #E.5B"/>
                   </MorphSegment>
                   <MorphSegment startPointA="#C.57, #FFFFF6.E3" startPointB="12.5, #D.3F" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="7">
                     <MorphCurves controlPointA="#C.63, -9.4375" anchorPointA="#C.7, -9.4375" controlPointB="#C.81, #D.3F" anchorPointB="#C.82, #D.3F"/>
@@ -1413,20 +1413,23 @@
                     <MorphCurves controlPointA="#C.7E, #10.8C" anchorPointA="#C.7D, #10.8C" controlPointB="#B.B6, #A.BF" anchorPointB="#B.B6, #A.BD"/>
                     <MorphCurves controlPointA="#C.7D, #10.8C" anchorPointA="#C.7C, #10.8C" controlPointB="#B.B6, #A.BD" anchorPointB="#B.B6, #A.BD" isLine="true"/>
                   </MorphSegment>
-                  <MorphSegment startPointA="#C.7F, #E.5B" startPointB="#B.B6, #C.21" strokeIndex1="0" strokeIndex2="0" fillIndex1="19" fillIndex2="13">
-                    <MorphCurves controlPointA="#C.7F, #E.2F" anchorPointA="12.5, #E.02" controlPointB="#B.B7, #C.23" anchorPointB="#B.B8, #C.26"/>
-                    <MorphCurves controlPointA="#C.A1, #D.EF" anchorPointA="#C.B3, #D.E6" controlPointB="#B.C5, #C.5A" anchorPointB="#B.C5, #C.76"/>
-                    <MorphCurves controlPointA="#C.B2, #E.15" anchorPointA="#C.B2, #E.44" controlPointB="#B.BD, #C.8D" anchorPointB="#B.B6, #C.A4"/>
-                    <MorphCurves controlPointA="#C.96, #E.51" anchorPointA="#C.7F, #E.5B" controlPointB="#B.B6, #C.64" anchorPointB="#B.B6, #C.21"/>
+                  <MorphSegment startPointA="#C.7F, #E.7F" startPointB="#B.B6, #C.21" strokeIndex1="0" strokeIndex2="0" fillIndex1="19" fillIndex2="13">
+                    <MorphCurves controlPointA="12.5, #E.7E" anchorPointA="#C.81, #E.7D" controlPointB="#B.B7, #C.23" anchorPointB="#B.B8, #C.26"/>
+                    <MorphCurves controlPointA="#C.A3, #E.6D" anchorPointA="#C.B2, #E.66" controlPointB="#B.C5, #C.56" anchorPointB="#B.C5, #C.6E"/>
+                    <MorphCurves controlPointA="#C.B2, #E.81" anchorPointA="#C.B1, #E.94" controlPointB="#B.BD, #C.8D" anchorPointB="#B.B6, #C.A4"/>
+                    <MorphCurves controlPointA="#C.98, #E.A4" anchorPointA="#C.7F, #E.A4" controlPointB="#B.B6, #C.6F" anchorPointB="#B.B6, #C.5"/>
+                    <MorphCurves controlPointA="#C.7F, #E.93" anchorPointA="#C.7F, #E.81" controlPointB="#B.B6, #C.39" anchorPointB="#B.B6, #C.21"/>
+                    <MorphCurves controlPointA="#C.7F, #E.81" anchorPointA="#C.7F, #E.7F" controlPointB="#B.B6, #C.21" anchorPointB="#B.B6, #C.21" isLine="true"/>
                   </MorphSegment>
-                  <MorphSegment startPointA="#C.7F, #E.7F" startPointB="#B.B6, #C.EB" strokeIndex1="0" strokeIndex2="0" fillIndex1="19" fillIndex2="13">
-                    <MorphCurves controlPointA="#C.7F, #E.7F" anchorPointA="#C.7F, #E.7F" controlPointB="#B.B7, #C.EB" anchorPointB="#B.B8, #C.EB"/>
-                    <MorphCurves controlPointA="#C.9E, #E.7" anchorPointA="#C.B2, #E.66" controlPointB="#B.C5, #D.12" anchorPointB="#B.C5, #D.34"/>
-                    <MorphCurves controlPointA="#C.B2, #E.71" anchorPointA="#C.B2, #E.7C" controlPointB="#B.C5, #D.44" anchorPointB="#B.C5, #D.54"/>
-                    <MorphCurves controlPointA="#C.B2, #E.8B" anchorPointA="#C.B1, #E.9A" controlPointB="#B.BD, #D.6B" anchorPointB="#B.B6, #D.7E"/>
-                    <MorphCurves controlPointA="#C.98, #E.A4" anchorPointA="#C.7F, #E.A4" controlPointB="#B.B6, #D.48" anchorPointB="#B.B6, #D.23"/>
-                    <MorphCurves controlPointA="#C.7F, #E.92" anchorPointA="#C.7F, #E.7F" controlPointB="#B.B6, #D.08" anchorPointB="#B.B6, #C.ED"/>
-                    <MorphCurves controlPointA="#C.7F, #E.7F" anchorPointA="#C.7F, #E.7F" controlPointB="#B.B6, #C.ED" anchorPointB="#B.B6, #C.EB" isLine="true"/>
+                  <MorphSegment startPointA="#C.7F, #E.5B" startPointB="#B.B6, #C.EB" strokeIndex1="0" strokeIndex2="0" fillIndex1="19" fillIndex2="13">
+                    <MorphCurves controlPointA="#C.7F, #E.5A" anchorPointA="#C.7F, #E.59" controlPointB="#B.B7, #C.EB" anchorPointB="#B.B8, #C.EB"/>
+                    <MorphCurves controlPointA="#C.7F, #E.26" anchorPointA="12.5, #E.02" controlPointB="#B.C5, #D.14" anchorPointB="#B.C5, #D.38"/>
+                    <MorphCurves controlPointA="#C.8A, #D.FF" anchorPointA="#C.96, #D.F6" controlPointB="#B.C5, #D.44" anchorPointB="#B.C5, #D.5"/>
+                    <MorphCurves controlPointA="#C.A6, #D.ED" anchorPointA="#C.B3, #D.E6" controlPointB="#B.C, #D.61" anchorPointB="#B.BC, #D.6D"/>
+                    <MorphCurves controlPointA="#C.B3, #D.EF" anchorPointA="#C.B3, #D.F8" controlPointB="#B.B9, #D.76" anchorPointB="#B.B6, #D.7E"/>
+                    <MorphCurves controlPointA="#C.B2, #E.1E" anchorPointA="#C.B2, #E.44" controlPointB="#B.B6, #D.55" anchorPointB="#B.B6, #D.2C"/>
+                    <MorphCurves controlPointA="#C.96, #E.51" anchorPointA="#C.7F, #E.5B" controlPointB="#B.B6, #D.0C" anchorPointB="#B.B6, #C.ED"/>
+                    <MorphCurves controlPointA="#C.7F, #E.5B" anchorPointA="#C.7F, #E.5B" controlPointB="#B.B6, #C.ED" anchorPointB="#B.B6, #C.EB" isLine="true"/>
                   </MorphSegment>
                   <MorphSegment startPointA="12.5, #D.3F" startPointB="#B.BE, #1.1F" strokeIndex1="0" strokeIndex2="0" fillIndex1="19" fillIndex2="17">
                     <MorphCurves controlPointA="#C.8C, #D.3F" anchorPointA="#C.98, #D.3F" controlPointB="#B.C4, #1.11" anchorPointB="#B.CB, #1.01"/>
@@ -1677,21 +1680,21 @@
                   </fills>
                   <edges>
                     <Edge fillStyle0="1" edges="
-!3266 2342[#CC5.0F #9A2.22 3271.5 2597!3271.5 2597|3288.5 2597!3288.5 2597[#CD3.EC #A21.E2 3282 2591!3282 2591[3280 2588 3283 2584!3283 2584[3286 2580 3294 2578!3294 2578[3307 2576 3322 2580!3322 2580[3320 2449 3317 2325!3317 2325[3310
- 2327 3300 2331!3300 2331[3282 2336 3266 2342!3265 2311[3271 2309 3276 2307!3276 2307[3301 2299 3316 2300!3316 2300[#CF1.69 #8A3.E3 3310.5 2127!3310.5 2127|3260 2127!3260 2127[#CBE.DD #8A9.01 3265 2311"/>
+!3265 2311[3271 2309 3276 2307!3276 2307[3301 2299 3316 2300!3316 2300[#CF1.69 #8A3.E3 3310.5 2127!3310.5 2127|3260 2127!3260 2127[#CBE.DD #8A9.01 3265 2311!3300 2331[3282 2336 3266 2342!3266 2342[#CC5.0F #9A2.22 3271.5 2597!3271.5 2597
+|3288.5 2597!3288.5 2597[#CD3.EC #A21.E2 3282 2591!3282 2591[3280 2588 3283 2584!3283 2584[3286 2580 3294 2578!3294 2578[3307 2576 3322 2580!3322 2580[3320 2449 3317 2325!3317 2325[3310 2327 3300 2331"/>
                     <Edge fillStyle0="4" edges="
 !3300 2762[3292 2758 3288 2755!3288 2755|3271 2755!3271 2755[3272 2838 3273 2924!3273 2924[3282 2918 3297 2918!3297 2918[3315 2917 3321 2925!3321 2925[3323 2929 3319 2939!3319 2939[3299 2980 3274 3008!3274 3008[3275 3111 3275 3218!3275
  3218[3282 3222 3290 3228!3290 3228[3307 3240 3326 3253!3326 3253[3325 3003 3322 2773!3322 2773[3311 2768 3300 2762"/>
                     <Edge fillStyle1="4" edges="
-!3275 3334[3275 3299 3275 3264!3275 3264[3296 3279 3326 3297!3326 3297[3326 3315 3326 3333!3326 3333[3320 3333 3314 3333!3314 3333[3291 3334 3279 3333!3279 3333[3279 3334 3275 3334!3275 3359[3280 3359 3291 3357!3291 3357|3322 3357!3322
+!3275 3264[3296 3279 3326 3297!3326 3297[3326 3315 3326 3333!3326 3333[3320 3333 3314 3333!3314 3333[3291 3334 3279 3333!3279 3333[3279 3334 3275 3334!3275 3334[3275 3299 3275 3264!3275 3359[3280 3359 3291 3357!3291 3357|3322 3357!3322
  3357[3324 3357 3326 3357!3326 3357[3326 #D2E.1 3326 3391!3326 3391|3275 3391!3275 3391[3275 #D2F.0B 3275 3359"/>
                     <Edge fillStyle1="8" edges="
-!3250 3652[3222 3665 3199 3675!3199 3675[3199 3631 3200 3586!3200 3586[3210 3583 3222 3574!3222 3574[3233 3567 3251 3558!3251 3558[3250 3605 3250 3652!3249 3748|3199 3748!3199 3748[3199 3730 3199 3711!3199 3711[3225 3698 3250 3686!3250
- 3686[3250 3717 3249 3748!3251 3522[3224 3535 3200 3548!3200 3548[3200 3471 3200 3391!3200 3391|3251 3391!3251 3391[3251 3457 3251 3522"/>
+!3249 3748|3199 3748!3199 3748[3199 3730 3199 3711!3199 3711[3225 3698 3250 3686!3250 3686[3250 3717 3249 3748!3250 3652[3222 3665 3199 3675!3199 3675[3199 3631 3200 3586!3200 3586[3210 3583 3222 3574!3222 3574[3233 3567 3251 3558!3251
+ 3558[3250 3605 3250 3652!3251 3522[3224 3535 3200 3548!3200 3548[3200 3471 3200 3391!3200 3391|3251 3391!3251 3391[3251 3457 3251 3522"/>
                     <Edge fillStyle1="5" edges="
 !3087 152[3113 152 3136 283!3136 283[3124 285 3120 287!3120 287[3106 292 3112 299!3112 299[3118 305 3140 305!3140 305[3149 363 3158 442!3158 442[3155 445 3152 447!3152 447[3135 457 3129 462!3129 462[3121 468 3117 488!3117 488[3116 494
- 3113 501!3113 501[3090 260 3062 185!3062 185[3074 152 3087 152!3124 620[3125 612 3126 604!3126 604[3127 598 3129 593!3129 593[3134 570 3135 568!3135 568|3165 508!3165 508[3169 548 3173 593!3173 593[3175 630 3179 670!3179 670|3128 670
-!3128 670[3126 644 3124 620"/>
+ 3113 501!3113 501[3090 260 3062 185!3062 185[3074 152 3087 152!3126 604[3127 598 3129 593!3129 593[3134 570 3135 568!3135 568|3165 508!3165 508[3169 548 3173 593!3173 593[3175 630 3179 670!3179 670|3128 670!3128 670[3126 644 3124 620
+!3124 620[3125 612 3126 604"/>
                     <Edge fillStyle1="6" edges="
 !3175 860[3179 927 3184 1002!3184 1002[3187 1042 3189 1083!3189 1083[3180 1091 3172 1101!3172 1101[3159 1116 3142 1145!3142 1145[3137 1072 3133 1002!3133 1002[3128 927 3124 860!3124 860|3175 860"/>
                     <Edge fillStyle0="7" edges="
@@ -1705,18 +1708,15 @@
                     <Edge fillStyle1="9" edges="
 !3189 4547[3192 4440 3194 4327!3194 4327|3245 4331!3245 4331[3242 4449 3239 4562!3239 4562[3211 4554 3189 4547"/>
                     <Edge fillStyle1="2" edges="
-!3239 5179|3247 5179!3247 5179[3244 5225 3242 5271!3242 5271[3232 5275 3237 5282!3237 5282[3238 5284 3241 5286!3241 5286[3236 5384 3230 5476!3230 5476[3230 5483 3229 5489!3229 5489[3220 5478 3207 5474!3207 5474[3198 5471 3187 5471!3187
- 5471[3183 5471 3180 5471!3180 5471[3187 5344 3194 5207!3194 5207|3211 5197!3211 5197[3227 5187 3239 5179"/>
+!3211 5197[3227 5187 3239 5179!3239 5179|3247 5179!3247 5179[3244 5225 3242 5271!3242 5271[3232 5275 3237 5282!3237 5282[3238 5284 3241 5286!3241 5286[3236 5384 3230 5476!3230 5476[3230 5483 3229 5489!3229 5489[3220 5478 3207 5474!3207
+ 5474[3198 5471 3187 5471!3187 5471[3183 5471 3180 5471!3180 5471[3187 5344 3194 5207!3194 5207|3211 5197"/>
                     <Edge fillStyle0="2" edges="
 !3178 5500[#C69.4C #1585.2 3176.5 5518!3176.5 5518|3196.5 5518!3196.5 5518|3178 5500"/>
                     <Edge fillStyle0="10" edges="
-!2968 6104[2982 6108 2982 6122!2982 6122[2982 6163 2989 6180!2989 6180[2995 6197 3010 6212!3010 6212[3014 6159 3019 6101!3019 6101|2990 6072!2990 6072|2970 6072!2970 6072[2968 6088 2967 6104!2967 6104|2968 6104"/>
+!2968 6104[2982 6108 2982 6122!2982 6122[2982 6163 2989 6180!2989 6180[2995 6197 3010 6212!3010 6212[3014 6159 3019 6101!3019 6101|2990 6072!2990 6072|2970 6072!2970 6072[2968 6088 2967 6104!2967 6104|2968 6104!2991 6248[2974 6236 2959
+ 6220!2959 6220[2951 6317 2943 6394!2943 6394|2964 6393!2964 6393[2975 6393 2994 6389!2994 6389[3000 6329 3007 6257!3007 6257|2991 6248"/>
                     <Edge fillStyle1="10" edges="
-!2992 6414[2986 6459 2982 6497!2982 6497|2931 6496!2931 6496[2935 6461 2940 6419!2940 6419[2973 6417 2992 6414"/>
-                    <Edge fillStyle0="10" edges="
-!2991 6248[2974 6236 2959 6220!2959 6220[2951 6317 2943 6394!2943 6394|2964 6393!2964 6393[2975 6393 2994 6389!2994 6389[3000 6329 3007 6257!3007 6257|2991 6248"/>
-                    <Edge fillStyle1="10" edges="
-!2922 6691[2909 6691 2897 6658!2897 6658[2913 6616 2927 6519!2927 6519|2978 6520!2978 6520[2952 6691 2922 6691"/>
+!2992 6414[2986 6459 2982 6497!2982 6497|2931 6496!2931 6496[2935 6461 2940 6419!2940 6419[2973 6417 2992 6414!2922 6691[2909 6691 2897 6658!2897 6658[2913 6616 2927 6519!2927 6519|2978 6520!2978 6520[2952 6691 2922 6691"/>
                     <Edge fillStyle1="3" edges="
 !3313 4589[3309 4709 3304 4823!3304 4823[3303 4822 3301 4822!3301 4822[3283 4820 3271 4828!3271 4828[3266 4831 3257 4840!3257 4840[3255 4843 3252 4846!3252 4846[3258 4715 3263 4575!3263 4575[3287 4582 3313 4589!3303 4858[3303 4861 3303
  4864!3303 4864|3295 4864!3295 4864[3299 4861 3303 4858"/>
@@ -2422,12 +2422,7 @@
                     <MorphCurves controlPointA="#B.C2, #9.C2" anchorPointA="#B.C2, #9.6E" controlPointB="#C.6, #6.BD" anchorPointB="#C.57, #6.BE"/>
                     <MorphCurves controlPointA="#B.C2, #9.56" anchorPointA="#B.C2, #9.3E" controlPointB="#C.57, #6.BC" anchorPointB="#C.57, #6.B9"/>
                   </MorphSegment>
-                  <MorphSegment startPointA="#C.01, #12.32" startPointB="#C.82, #5.B6" strokeIndex1="0" strokeIndex2="0" fillIndex1="8" fillIndex2="28">
-                    <MorphCurves controlPointA="#C.03, #12.3" anchorPointA="#C.08, #12.29" controlPointB="#C.9B, #5.B8" anchorPointB="#C.B5, #5.BA"/>
-                    <MorphCurves controlPointA="#C.1, #12.5C" anchorPointA="#C.0F, #12.9A" controlPointB="#C.A9, #5.CC" anchorPointB="#C.97, #5.CC"/>
-                    <MorphCurves controlPointA="#C.01, #12.59" anchorPointA="#C.01, #12.32" controlPointB="#C.83, #5.C1" anchorPointB="#C.82, #5.B6"/>
-                  </MorphSegment>
-                  <MorphSegment startPointA="#C.01, #12.32" startPointB="#C.74, #5.B5" strokeIndex1="0" strokeIndex2="0" fillIndex1="8" fillIndex2="29">
+                  <MorphSegment startPointA="#C.01, #12.32" startPointB="#C.74, #5.B5" strokeIndex1="0" strokeIndex2="0" fillIndex1="8" fillIndex2="28">
                     <MorphCurves controlPointA="#C.03, #12.3" anchorPointA="#C.08, #12.29" controlPointB="#C.7A, #5.B4" anchorPointB="12.5, #5.B3"/>
                     <MorphCurves controlPointA="#C.1, #12.33" anchorPointA="#C.1, #12.4B" controlPointB="#C.A5, #5.AE" anchorPointB="#C.BA, #5.AB"/>
                     <MorphCurves controlPointA="#C.1, #12.66" anchorPointA="#C.0F, 18.5" controlPointB="#C.D2, #5.AC" anchorPointB="#C.EC, #5.AE"/>
@@ -2437,7 +2432,12 @@
                     <MorphCurves controlPointA="#C.01, #12.3C" anchorPointA="#C.01, #12.34" controlPointB="#C.7B, #5.B6" anchorPointB="#C.74, #5.B5"/>
                     <MorphCurves controlPointA="#C.01, #12.34" anchorPointA="#C.01, #12.32" controlPointB="#C.74, #5.B5" anchorPointB="#C.74, #5.B5" isLine="true"/>
                   </MorphSegment>
-                  <MorphSegment startPointA="#C.02, #11.21" startPointB="#C.8F, #6.47" strokeIndex1="0" strokeIndex2="0" fillIndex1="8" fillIndex2="28">
+                  <MorphSegment startPointA="#C.01, #12.32" startPointB="#C.82, #5.B6" strokeIndex1="0" strokeIndex2="0" fillIndex1="8" fillIndex2="29">
+                    <MorphCurves controlPointA="#C.03, #12.3" anchorPointA="#C.08, #12.29" controlPointB="#C.9B, #5.B8" anchorPointB="#C.B5, #5.BA"/>
+                    <MorphCurves controlPointA="#C.1, #12.5C" anchorPointA="#C.0F, #12.9A" controlPointB="#C.A9, #5.CC" anchorPointB="#C.97, #5.CC"/>
+                    <MorphCurves controlPointA="#C.01, #12.59" anchorPointA="#C.01, #12.32" controlPointB="#C.83, #5.C1" anchorPointB="#C.82, #5.B6"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="#C.02, #11.21" startPointB="#C.8F, #6.47" strokeIndex1="0" strokeIndex2="0" fillIndex1="8" fillIndex2="29">
                     <MorphCurves controlPointA="#C.0A, #11.21" anchorPointA="#C.11, #11.21" controlPointB="#C.91, #6.45" anchorPointB="#C.93, #6.43"/>
                     <MorphCurves controlPointA="#C.11, #11.41" anchorPointA="#C.11, #11.64" controlPointB="#C.9D, #6.3B" anchorPointB="#C.A7, #6.33"/>
                     <MorphCurves controlPointA="#C.1, #11.94" anchorPointA="#C.1, #11.9B" controlPointB="#C.B5, #6.28" anchorPointB="#C.B6, #6.27"/>
@@ -2452,7 +2452,7 @@
                     <MorphCurves controlPointA="#C.02, #11.46" anchorPointA="#C.02, #11.25" controlPointB="#C.9, #6.54" anchorPointB="#C.8F, #6.47"/>
                     <MorphCurves controlPointA="#C.02, #11.25" anchorPointA="#C.02, #11.21" controlPointB="#C.8F, #6.47" anchorPointB="#C.8F, #6.47" isLine="true"/>
                   </MorphSegment>
-                  <MorphSegment startPointA="#C.02, #11.21" startPointB="#C.96, #5.77" strokeIndex1="0" strokeIndex2="0" fillIndex1="8" fillIndex2="28">
+                  <MorphSegment startPointA="#C.02, #11.21" startPointB="#C.96, #5.77" strokeIndex1="0" strokeIndex2="0" fillIndex1="8" fillIndex2="29">
                     <MorphCurves controlPointA="#C.0A, #11.21" anchorPointA="#C.11, #11.21" controlPointB="#C.97, #5.76" anchorPointB="#C.98, #5.75" isLine="true"/>
                     <MorphCurves controlPointA="#C.11, #11.41" anchorPointA="#C.11, #11.64" controlPointB="#C.9B, #5.7" anchorPointB="#C.9E, #5.6B"/>
                     <MorphCurves controlPointA="#C.1, #11.94" anchorPointA="#C.1, #11.9B" controlPointB="#C.A3, #5.65" anchorPointB="#C.A4, #5.64"/>
@@ -2653,17 +2653,17 @@
                     <Edge fillStyle0="2" fillStyle1="3" edges="
 !3072 1138S3[3079 1143 3086 1148"/>
                     <Edge fillStyle0="3" edges="
-!3082 1182S1[3088 1184 3094 1189!3094 1189[3096 1175 3098 1157!3098 1157|3098 1155!3098 1155[3092 1152 3086 1148!3044 1159[3058 1166 3072 1175"/>
-                    <Edge fillStyle0="3" fillStyle1="2" edges="
-!3072 1175S3[3077 1177 3082 1182"/>
-                    <Edge fillStyle0="3" edges="
-!3072 1138S1[3057 1129 3044 1122"/>
+!3082 1182S1[3088 1184 3094 1189!3094 1189[3096 1175 3098 1157!3098 1157|3098 1155!3098 1155[3092 1152 3086 1148!3072 1138[3057 1129 3044 1122"/>
                     <Edge fillStyle0="3" fillStyle1="4" edges="
 !3044 1122S3[3036 1118 3029 1113"/>
                     <Edge fillStyle0="3" edges="
 !3029 1113S1[2991 1090 2954 1067!2954 1067[2957 1072 2960 1077!2960 1077[2983 1106 3005 1136!3005 1136[3017 1143 3029 1150"/>
                     <Edge fillStyle0="3" fillStyle1="4" edges="
 !3029 1150S3[3036 1155 3044 1159"/>
+                    <Edge fillStyle0="3" edges="
+!3044 1159S1[3058 1166 3072 1175"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="
+!3072 1175S3[3077 1177 3082 1182"/>
                     <Edge fillStyle0="2" edges="
 !3072 1175S1[3072 1189 3072 1205!3072 1205[3077 1194 3082 1182"/>
                     <Edge fillStyle1="4" edges="
@@ -2671,19 +2671,19 @@
                     <Edge fillStyle0="2" edges="
 !3072 1255S1[3073 1402 3074 1556!3074 1556[3075 1554 3077 1549!3077 1549[3084 1535 3088 1538!3088 1538[3087 1377 3087 1221!3087 1221[3082 1233 3077 1244!3077 1244[3074 1249 3072 1255"/>
                     <Edge fillStyle1="4" edges="
-!3044 1159S2[3046 1297 3047 1457!3047 1457[3048 1480 3048 1503!3048 1503[3040 1526 3034 1545!3034 1545[3033 1501 3033 1457!3033 1457[3031 1292 3029 1150!3049 1595[3046 1609 3044 1625!3044 1625[3040 1652 3035 1701!3035 1701[3035 1650 3034
- 1602!3034 1602[3041 1584 3048 1563!3048 1563[3049 1579 3049 1595"/>
+!3044 1159S2[3046 1297 3047 1457!3047 1457[3048 1480 3048 1503!3048 1503[3040 1526 3034 1545!3034 1545[3033 1501 3033 1457!3033 1457[3031 1292 3029 1150!3044 1625[3040 1652 3035 1701!3035 1701[3035 1650 3034 1602!3034 1602[3041 1584 3048
+ 1563!3048 1563[3049 1579 3049 1595!3049 1595[3046 1609 3044 1625"/>
                     <Edge fillStyle0="5" edges="
-!3008 1641S1[3008 1733 3008 1825!3008 1825[3014 1841 3013 1852!3013 1852[3013 1857 3011 1861!3011 1861[3010 1864 3009 1866!3009 1866[3009 1877 3009 1889!3009 1889[3014 1900 3020 1916!3020 1916[3022 1919 3023 1923!3023 1923[3023 1870 3023
- 1818!3023 1818[3020 1809 3017 1799!3017 1799[3012 1788 3011 1779!3011 1779[3011 1772 3012 1765!3012 1765[3012 1758 3015 1756!3015 1756[3018 1751 3023 1758!3023 1758[3022 1691 3022 1627!3022 1627|3008 1641!3008 1597[3016 1591 3022 1584
-!3022 1584[3022 1570 3022 1556!3022 1556[3022 1554 3021 1552!3021 1552[3015 1531 3012 1517!3012 1517|3008 1517!3008 1517[3008 1556 3008 1597"/>
+!3008 1597S1[3016 1591 3022 1584!3022 1584[3022 1570 3022 1556!3022 1556[3022 1554 3021 1552!3021 1552[3015 1531 3012 1517!3012 1517|3008 1517!3008 1517[3008 1556 3008 1597!3008 1641[3008 1733 3008 1825!3008 1825[3014 1841 3013 1852!3013
+ 1852[3013 1857 3011 1861!3011 1861[3010 1864 3009 1866!3009 1866[3009 1877 3009 1889!3009 1889[3014 1900 3020 1916!3020 1916[3022 1919 3023 1923!3023 1923[3023 1870 3023 1818!3023 1818[3020 1809 3017 1799!3017 1799[3012 1788 3011 1779
+!3011 1779[3011 1772 3012 1765!3012 1765[3012 1758 3015 1756!3015 1756[3018 1751 3023 1758!3023 1758[3022 1691 3022 1627!3022 1627|3008 1641"/>
                     <Edge fillStyle0="6" edges="
 !2972 1758S1[2972 1786 2972 1813!2972 1813[2980 1841 2982 1852!2982 1852|2987 1882!2987 1882[2987 1806 2987 1730!2987 1730[2985 1733 2982 1740!2982 1740[2977 1749 2972 1758!2973 1900[2973 1912 2973 1923!2973 1923|2977 1923!2977 1923[2975
  1914 2974 1907!2974 1907|2973 1900"/>
                     <Edge fillStyle0="5" edges="
 !3009 1944S1[3009 2010 3009 2077!3009 2077[3012 2068 3016 2065!3016 2065[3021 2065 3022 2077!3022 2077|3022 2072!3022 2072[3022 2068 3024 2063!3024 2063|3024 2061!3024 2061[3024 2026 3024 1990!3024 1990|3023 1987!3023 1987[3016 1965 3011
- 1948!3011 1948|3009 1944!3023 2079[3023 2086 3022 2102!3022 2102[3016 2173 3009 2222!3009 2222[3009 2249 3010 2279!3010 2279[3010 2267 3013 2261!3013 2261[3016 2251 3024 2247!3024 2247[3024 2164 3024 2082!3024 2082|3023 2077!3023 2077
-|3022 2077!3022 2077|3023 2079!3010 2366[3010 #9AA.04 3010 2582!3010 2582[3012 2589 3014 2598!3014 2598[3019 2619 3024 2641!3024 2641[3024 2554 3024 2469!3024 2469[3018 2451 3016 2440!3016 2440[3013 2423 3012 2396!3012 2396[#BC2.4 #94C.4
+ 1948!3011 1948|3009 1944!3023 2077|3022 2077!3022 2077|3023 2079!3023 2079[3023 2086 3022 2102!3022 2102[3016 2173 3009 2222!3009 2222[3009 2249 3010 2279!3010 2279[3010 2267 3013 2261!3013 2261[3016 2251 3024 2247!3024 2247[3024 2164
+ 3024 2082!3024 2082|3023 2077!3010 2366[3010 #9AA.04 3010 2582!3010 2582[3012 2589 3014 2598!3014 2598[3019 2619 3024 2641!3024 2641[3024 2554 3024 2469!3024 2469[3018 2451 3016 2440!3016 2440[3013 2423 3012 2396!3012 2396[#BC2.4 #94C.4
  3010 2366"/>
                     <Edge fillStyle1="7" edges="
 !3013 2804S2[3013 2834 3013 2866!3013 2866[3011 2866 3010 2866!3010 2866[3003 2869 3000 2866!3000 2866[3000 2869 2998 2869!2998 2869[2998 2807 2998 2749!2998 2749[3004 2772 3013 2804!2998 2951[2998 2933 2998 2912!2998 2912[3000 2910 3003
@@ -2698,12 +2698,12 @@
                     <Edge fillStyle0="8" fillStyle1="7" edges="
 !2999 2951S3|2998 2951!2998 2986|2999 2986"/>
                     <Edge fillStyle1="7" edges="
-!3013 3190S2[3005 3213 2998 3236!2998 3236[2998 3172 2998 3105!2998 3105[2999 3107 3000 3110!3000 3110[3007 3123 3013 3135!3013 3135[3013 3162 3013 3190!3013 3311[3013 3362 3013 3412!3013 3412[3005 3435 2998 3454!2998 3454[2998 3380 2998
- 3307!2998 3307|3000 3307!3000 3307[3004 3316 3006 3316!3006 3316[3008 3318 3011 3314!3011 3314[3012 3314 3013 3311!3013 3284[3012 3279 3011 3279!3011 3279[3010 3275 3007 3272!3007 3272[3009 3263 3013 3252!3013 3252[3013 3268 3013 3284"/>
+!3013 3190S2[3005 3213 2998 3236!2998 3236[2998 3172 2998 3105!2998 3105[2999 3107 3000 3110!3000 3110[3007 3123 3013 3135!3013 3135[3013 3162 3013 3190!3013 3284[3012 3279 3011 3279!3011 3279[3010 3275 3007 3272!3007 3272[3009 3263 3013
+ 3252!3013 3252[3013 3268 3013 3284!3000 3307[3004 3316 3006 3316!3006 3316[3008 3318 3011 3314!3011 3314[3012 3314 3013 3311!3013 3311[3013 3362 3013 3412!3013 3412[3005 3435 2998 3454!2998 3454[2998 3380 2998 3307!2998 3307|3000 3307"/>
                     <Edge fillStyle1="9" edges="
-!2953 3690S2|2954 3690!2954 3690[2954 3734 2954 3775!2954 3775|2953 3775!2953 3775[2948 3791 2947 3796!2947 3796[2945 3809 2948 3816!2948 3816[2949 3821 2950 3823!2950 3823[2951 3828 2953 3830!2953 3830[2953 3892 2953 3952!2953 3952[2951
- 3952 2949 3954!2949 3954[2947 3959 2945 3963!2945 3963[2943 3972 2944 3986!2944 3986[2945 3998 2944 4002!2944 4002[2943 4007 2939 4014!2939 4014|2938 4016!2938 4016[2939 3846 2939 3672!2939 3672[2946 3683 2953 3690!2945 3481[2949 3468
- 2954 3454!2954 3454[2954 3477 2954 3500!2954 3500[2950 3490 2945 3481"/>
+!2945 3481S2[2949 3468 2954 3454!2954 3454[2954 3477 2954 3500!2954 3500[2950 3490 2945 3481!2953 3690|2954 3690!2954 3690[2954 3734 2954 3775!2954 3775|2953 3775!2953 3775[2948 3791 2947 3796!2947 3796[2945 3809 2948 3816!2948 3816[2949
+ 3821 2950 3823!2950 3823[2951 3828 2953 3830!2953 3830[2953 3892 2953 3952!2953 3952[2951 3952 2949 3954!2949 3954[2947 3959 2945 3963!2945 3963[2943 3972 2944 3986!2944 3986[2945 3998 2944 4002!2944 4002[2943 4007 2939 4014!2939 4014
+|2938 4016!2938 4016[2939 3846 2939 3672!2939 3672[2946 3683 2953 3690"/>
                     <Edge fillStyle1="10" edges="
 !2963 4025S2|2964 4025!2964 4025[2966 4027 2969 4030!2969 4030[2970 4030 2971 4030!2971 4030[2980 4037 2988 4043!2988 4043|2984 4078!2984 4078[2960 4060 2932 4037!2932 4037[2933 4025 2933 4016!2933 4016|2934 4016!2934 4016[2947 4027 2955
  4027!2955 4027[2961 4030 2963 4025"/>
@@ -2723,16 +2723,15 @@
                     <Edge fillStyle0="12" edges="
 !2950 4707S1[2945 4688 2941 4658!2941 4658[2939 4753 2938 4835!2938 4835[2945 4840 2952 4842!2952 4842|2953 4842!2953 4842[2953 4785 2954 4723!2954 4723|2950 4707!2937 4876[2937 4918 2936 4959!2936 4959|2942 4957!2942 4957[2945 4957 2951
  4950!2951 4950[2951 4918 2952 4883!2952 4883[2946 4881 2937 4876"/>
-                    <Edge fillStyle1="12" edges="
-!2946 5175S2[2945 5234 2943 5285!2943 5285[2942 5283 2940 5283!2940 5283|2938 5285!2938 5285[2937 5285 2937 5283!2937 5283[2933 5283 2931 5285!2931 5285[2929 5285 2928 5287!2928 5287[2930 5237 2931 5172!2931 5172|2946 5175"/>
                     <Edge fillStyle1="13" edges="
 !2915 5088S2[2914 5172 2913 5255!2913 5255[2911 5262 2912 5276!2912 5276[2912 5278 2913 5280!2913 5280[2913 5283 2913 5285!2913 5285[2910 5301 2906 5324!2906 5324[2903 5324 2902 5331!2902 5331[2900 5338 2900 5345!2900 5345[2899 5356 2902
  5361!2902 5361[2903 5365 2905 5367!2905 5367[2907 5367 2909 5367!2909 5367[2911 5367 2913 5365!2913 5365[2912 5418 2911 5468!2911 5468|2910 5468!2910 5468|2907 5471!2907 5471[2904 5471 2903 5480!2903 5480[2902 5487 2902 5496!2902 5496
 |2902 5507!2902 5507[2902 5519 2903 5524!2903 5524[2905 5533 2909 5533!2909 5533[2910 5533 2911 5533!2911 5533[2910 5569 2910 5606!2910 5606[2910 5618 2910 5629!2910 5629[2907 5611 2903 5604!2903 5604[2901 5599 2898 5597!2898 5597[2897
  5597 2896 5599!2896 5599[2898 5381 2900 5145!2900 5145|2905 5129!2905 5129[2911 5106 2915 5088"/>
                     <Edge fillStyle1="12" edges="
-!2929 5351S2[2933 5356 2936 5347!2936 5347[2937 5345 2939 5338!2939 5338[2940 5331 2941 5322!2941 5322|2942 5319!2942 5319[2940 5354 2939 5379!2939 5379[2936 5374 2934 5377!2934 5377[2929 5384 2931 5402!2931 5402[2932 5411 2936 5427!2936
- 5427[2933 5466 2930 5466!2930 5466[2926 5466 2923 5411!2923 5411[2925 5386 2926 5349!2926 5349[2927 5351 2929 5351"/>
+!2946 5175S2[2945 5234 2943 5285!2943 5285[2942 5283 2940 5283!2940 5283|2938 5285!2938 5285[2937 5285 2937 5283!2937 5283[2933 5283 2931 5285!2931 5285[2929 5285 2928 5287!2928 5287[2930 5237 2931 5172!2931 5172|2946 5175!2929 5351[2933
+ 5356 2936 5347!2936 5347[2937 5345 2939 5338!2939 5338[2940 5331 2941 5322!2941 5322|2942 5319!2942 5319[2940 5354 2939 5379!2939 5379[2936 5374 2934 5377!2934 5377[2929 5384 2931 5402!2931 5402[2932 5411 2936 5427!2936 5427[2933 5466
+ 2930 5466!2930 5466[2926 5466 2923 5411!2923 5411[2925 5386 2926 5349!2926 5349[2927 5351 2929 5351"/>
                     <Edge cubics="!3073 4736(;3078,4746 3082,4755 3087,4762q3073 4736 3087 4762);"/>
                     <Edge cubics="!3088 1538(;3088,1432 3087,1329 3087,1221q3088 1538 3087 1221);"/>
                     <Edge cubics="!3085 976(;3085,976 3076,976 3076,976q3085 976 3076 976);"/>
@@ -3268,12 +3267,7 @@
                     <MorphCurves controlPointA="#C.57, #6.BC" anchorPointA="#C.57, #6.B9" controlPointB="#B.EB, #11.4F" anchorPointB="#B.EB, #11.48"/>
                     <MorphCurves controlPointA="#C.57, #6.B9" anchorPointA="#C.57, #6.B9" controlPointB="#B.EB, #11.48" anchorPointB="#B.EB, #11.46" isLine="true"/>
                   </MorphSegment>
-                  <MorphSegment startPointA="#C.82, #5.B6" startPointB="#C.09, #11.14" strokeIndex1="0" strokeIndex2="0" fillIndex1="26" fillIndex2="25">
-                    <MorphCurves controlPointA="#C.9B, #5.B8" anchorPointA="#C.B5, #5.BA" controlPointB="#C.0C, #11.1" anchorPointB="#C.0F, #11.0B"/>
-                    <MorphCurves controlPointA="#C.8E, #5.CC" anchorPointA="#C.84, #5.CC" controlPointB="#C.1E, #11.17" anchorPointB="#C.1E, #11.1C"/>
-                    <MorphCurves controlPointA="#C.83, #5.C1" anchorPointA="#C.82, #5.B6" controlPointB="#C.0E, #11.16" anchorPointB="#C.09, #11.14"/>
-                  </MorphSegment>
-                  <MorphSegment startPointA="#C.74, #5.B5" startPointB="#C.09, #11.14" strokeIndex1="0" strokeIndex2="0" fillIndex1="27" fillIndex2="25">
+                  <MorphSegment startPointA="#C.74, #5.B5" startPointB="#C.09, #11.14" strokeIndex1="0" strokeIndex2="0" fillIndex1="26" fillIndex2="25">
                     <MorphCurves controlPointA="#C.8B, #5.B2" anchorPointA="#C.A2, #5.AF" controlPointB="#C.0C, #11.1" anchorPointB="#C.0F, #11.0B"/>
                     <MorphCurves controlPointA="#C.C6, #5.AC" anchorPointA="#C.D4, #5.AD" controlPointB="#C.19, #11.1" anchorPointB="#C.1C, #11.12"/>
                     <MorphCurves controlPointA="#C.E4, #5.B6" anchorPointA="#C.DB, #5.BD" controlPointB="#C.1E, #11.1A" anchorPointB="#C.1E, #11.1C"/>
@@ -3282,7 +3276,12 @@
                     <MorphCurves controlPointA="#C.7C, #5.B6" anchorPointA="#C.76, #5.B5" controlPointB="#C.0A, #11.14" anchorPointB="#C.09, #11.14"/>
                     <MorphCurves controlPointA="#C.76, #5.B5" anchorPointA="#C.74, #5.B5" controlPointB="#C.09, #11.14" anchorPointB="#C.09, #11.14" isLine="true"/>
                   </MorphSegment>
-                  <MorphSegment startPointA="#C.8F, #6.47" startPointB="#C.09, #11.14" strokeIndex1="0" strokeIndex2="0" fillIndex1="26" fillIndex2="25">
+                  <MorphSegment startPointA="#C.82, #5.B6" startPointB="#C.09, #11.14" strokeIndex1="0" strokeIndex2="0" fillIndex1="27" fillIndex2="25">
+                    <MorphCurves controlPointA="#C.9B, #5.B8" anchorPointA="#C.B5, #5.BA" controlPointB="#C.0C, #11.1" anchorPointB="#C.0F, #11.0B"/>
+                    <MorphCurves controlPointA="#C.8E, #5.CC" anchorPointA="#C.84, #5.CC" controlPointB="#C.1E, #11.17" anchorPointB="#C.1E, #11.1C"/>
+                    <MorphCurves controlPointA="#C.83, #5.C1" anchorPointA="#C.82, #5.B6" controlPointB="#C.0E, #11.16" anchorPointB="#C.09, #11.14"/>
+                  </MorphSegment>
+                  <MorphSegment startPointA="#C.8F, #6.47" startPointB="#C.09, #11.14" strokeIndex1="0" strokeIndex2="0" fillIndex1="27" fillIndex2="25">
                     <MorphCurves controlPointA="#C.9D, #6.3C" anchorPointA="#C.AA, #6.31" controlPointB="#C.0C, #11.1" anchorPointB="#C.0F, #11.0B"/>
                     <MorphCurves controlPointA="#C.BF, #6.24" anchorPointA="#C.BF, #6.28" controlPointB="#C.1B, #11.11" anchorPointB="#C.1C, #11.12"/>
                     <MorphCurves controlPointA="#C.C, #6.36" anchorPointA="#C.C1, #6.3C" controlPointB="#C.1E, #11.15" anchorPointB="#C.1E, #11.18"/>
@@ -3290,7 +3289,7 @@
                     <MorphCurves controlPointA="#C.A7, #6.5A" anchorPointA="#C.91, #6.62" controlPointB="#C.13, #11.18" anchorPointB="#C.0E, #11.16"/>
                     <MorphCurves controlPointA="#C.9, #6.54" anchorPointA="#C.8F, #6.47" controlPointB="#C.0B, #11.15" anchorPointB="#C.09, #11.14"/>
                   </MorphSegment>
-                  <MorphSegment startPointA="#C.96, #5.77" startPointB="#C.09, #11.14" strokeIndex1="0" strokeIndex2="0" fillIndex1="26" fillIndex2="25">
+                  <MorphSegment startPointA="#C.96, #5.77" startPointB="#C.09, #11.14" strokeIndex1="0" strokeIndex2="0" fillIndex1="27" fillIndex2="25">
                     <MorphCurves controlPointA="#C.9B, #5.7" anchorPointA="#C.A, #5.69" controlPointB="#C.0C, #11.1" anchorPointB="#C.0F, #11.0B" isLine="true"/>
                     <MorphCurves controlPointA="#C.AB, #5.6" anchorPointA="#C.AC, #5.67" controlPointB="#C.1E, #11.17" anchorPointB="#C.1E, #11.1C"/>
                     <MorphCurves controlPointA="#C.AD, #5.6D" anchorPointA="#C.AE, #5.73" controlPointB="#C.1A, #11.1B" anchorPointB="#C.17, #11.1A"/>
@@ -3552,18 +3551,18 @@
                   </fills>
                   <edges>
                     <Edge fillStyle1="11" edges="
-!3265 1596S2[3266 1606 3267 1616!3267 1616[3239 1626 3217 1634!3217 1634[3216 1620 3215 1607!3215 1607[3235 1591 3254 1575!3254 1575[3258 1571 3263 1568!3263 1568[3264 1582 3265 1596!3253 1466[3254 1474 3255 1482!3255 1482[3241 1484 3223
- 1484!3223 1484|3204 1484!3204 1484[3203 1473 3202 1462"/>
+!3246 1395S2|3222 1399!3222 1399|3242 1368!3242 1368[3244 1381 3246 1395"/>
                     <Edge fillStyle1="12" edges="
 !3202 1462S2[3195 1462 3188 1461!3188 1461[3223 1456 3258 1451!3258 1451[3282 1452 3308 1454!3308 1454[3300 1462 3291 1469!3291 1469[3272 1467 3253 1466"/>
                     <Edge fillStyle1="11" edges="
-!3246 1395S2|3222 1399!3222 1399|3242 1368!3242 1368[3244 1381 3246 1395"/>
+!3253 1466S2[3254 1474 3255 1482!3255 1482[3241 1484 3223 1484!3223 1484|3204 1484!3204 1484[3203 1473 3202 1462!3265 1596[3266 1606 3267 1616!3267 1616[3239 1626 3217 1634!3217 1634[3216 1620 3215 1607!3215 1607[3235 1591 3254 1575!3254
+ 1575[3258 1571 3263 1568!3263 1568[3264 1582 3265 1596"/>
                     <Edge fillStyle1="10" edges="
-!2915 1091S2[2903 1093 2899 1094!2899 1094[2885 1099 2891 1103!2891 1103[2897 1108 2919 1108!2919 1108[2921 1118 2923 1130!2923 1130[2901 1135 2875 1142!2875 1142[2864 1082 2852 1046!2852 1046|2853 1045!2853 1045[2880 1041 2900 1040!2900
- 1040[2908 1060 2915 1091"/>
+!2899 1094S2[2885 1099 2891 1103!2891 1103[2897 1108 2919 1108!2919 1108[2921 1118 2923 1130!2923 1130[2901 1135 2875 1142!2875 1142[2864 1082 2852 1046!2852 1046|2853 1045!2853 1045[2880 1041 2900 1040!2900 1040[2908 1060 2915 1091!2915
+ 1091[2903 1093 2899 1094"/>
                     <Edge fillStyle0="13" edges="
-!3159 1647S1|3159 1653!3159 1653[3168 1652 3177 1651!3177 1651[3177 1645 3177 1639!3177 1639[3175 1638 3173 1637!3173 1637[3166 1642 3159 1647!3179 1727[3179 1721 3179 1714!3179 1714[3169 1718 3159 1721!3159 1721|3159 1726!3159 1726[3169
- 1725 3179 1727"/>
+!3159 1653S1[3168 1652 3177 1651!3177 1651[3177 1645 3177 1639!3177 1639[3175 1638 3173 1637!3173 1637[3166 1642 3159 1647!3159 1647|3159 1653!3179 1714[3169 1718 3159 1721!3159 1721|3159 1726!3159 1726[3169 1725 3179 1727!3179 1727[3179
+ 1721 3179 1714"/>
                     <Edge fillStyle1="11" edges="
 !3223 1702S2[3223 1700 3223 1699!3223 1699[3225 1698 3227 1697!3227 1697[3225 1699 3223 1702"/>
                     <Edge fillStyle0="15" edges="
@@ -3583,15 +3582,15 @@
                     <Edge fillStyle0="2" edges="
 !2911 2387S1|2911 2388!2911 2388|2911.5 2387.5!2911.5 2387.5|2911 2387"/>
                     <Edge fillStyle0="3" edges="
-!3048 2328S1[3051 2325 3059 2324!3059 2324[#BF6.E9 #913.66 3067 2323.5!3067 2323.5|3067 2319!3067 2319[#BEB.C5 #914.9 3036.5 2330!3036.5 2330|3046.5 2330!3046.5 2330[3047 2329 3048 2328!3055 2252.5[#BF5.1E #8CB.DD 3067 2251!3067 2251
-|3067 2244.5!3067 2244.5[#BF5.0E #8C8.98 3055 2252.5"/>
+!3055 2252.5S1[#BF5.1E #8CB.DD 3067 2251!3067 2251|3067 2244.5!3067 2244.5[#BF5.0E #8C8.98 3055 2252.5!3048 2328[3051 2325 3059 2324!3059 2324[#BF6.E9 #913.66 3067 2323.5!3067 2323.5|3067 2319!3067 2319[#BEB.C5 #914.9 3036.5 2330!3036.5
+ 2330|3046.5 2330!3046.5 2330[3047 2329 3048 2328"/>
                     <Edge fillStyle0="16" edges="
 !2907 2503S1[2896 2499 2885 2495!2885 2495[2870 2490 2866 2486!2866 2486[2865 2484 2866 2482!2866 2482|2856 2482!2856 2482[2856 2494 2856 2506!2856 2506[2875 2513 2873 2518!2873 2518[2872 2520 2864 2522!2864 2522[2860 2523 2857 2524!2857
- 2524[2857 2527 2857 2530!2857 2530[2881 2522 2907 2515!2907 2515[2907 2509 2907 2503!2905 2616|2904 2614!2904 2614[2903 2612 2909 2610!2909 2610|2909 2609!2909 2609[2909 2603 2909 2598!2909 2598[2902 2605 2895 2612!2895 2612[2901 2613
- 2905 2616!2905 2616|2906 2617!2906 2617[2908 2620 2904 2627!2904 2627[2884 2658 2859 2679!2859 2679[2859 2691 2860 2704!2860 2704[2863 2699 2871 2696!2871 2696[2882 2692 2910 2690!2910 2690[2909 2654 2909 2618!2909 2618|2907 2616!2907
- 2616|2905 2616!2892 2779[2876 2790 2860 2801!2860 2801[2860 2818 2860 2836!2860 2836[2862 2837 2865 2838!2865 2838[2889 2823 2911 2811!2911 2811[2911 2799 2911 2787!2911 2787[2900 2783 2892 2779"/>
+ 2524[2857 2527 2857 2530!2857 2530[2881 2522 2907 2515!2907 2515[2907 2509 2907 2503!2905 2616|2906 2617!2906 2617[2908 2620 2904 2627!2904 2627[2884 2658 2859 2679!2859 2679[2859 2691 2860 2704!2860 2704[2863 2699 2871 2696!2871 2696
+[2882 2692 2910 2690!2910 2690[2909 2654 2909 2618!2909 2618|2907 2616!2907 2616|2905 2616!2904 2614[2903 2612 2909 2610!2909 2610|2909 2609!2909 2609[2909 2603 2909 2598!2909 2598[2902 2605 2895 2612!2895 2612[2901 2613 2905 2616!2905
+ 2616|2904 2614!2860 2801[2860 2818 2860 2836!2860 2836[2862 2837 2865 2838!2865 2838[2889 2823 2911 2811!2911 2811[2911 2799 2911 2787!2911 2787[2900 2783 2892 2779!2892 2779[2876 2790 2860 2801"/>
                     <Edge fillStyle0="4" edges="
-!2999 2859.5S1|2999 2859!2999 2859[#BB6.3F #B2B.39 2997.5 2859.5!2997.5 2859.5[#BB6.42 #B2B.99 2999 2859.5"/>
+!2999 2859S1[#BB6.3F #B2B.39 2997.5 2859.5!2997.5 2859.5[#BB6.42 #B2B.99 2999 2859.5!2999 2859.5|2999 2859"/>
                     <Edge fillStyle0="17" edges="
 !2946 3110S1[2948 3110 2951 3111!2951 3111|2951 3110!2951 3110[2965 3107 2997 3109!2997 3109[3079 3116 3123 3119!3123 3119|3137 3111!3137 3111[3106 3108 3074 3105!3074 3105[3066 3110 3056 3110!3056 3110[3043 3112 3030 3109!3030 3109[3018
  3107 3020 3102!3020 3102|3021 3101!3021 3101[2998 3099 2974 3097!2974 3097[2965 3100 2955 3104!2955 3104[2948 3107 2942 3109!2942 3109|2942 3110!2942 3110[2944 3110 2945 3110"/>
@@ -3604,30 +3603,30 @@
                     <Edge fillStyle1="18" edges="
 !2945 3162S2[2948 3163 2952 3164!2952 3164[2975 3170 2996 3175!2996 3175[2996 3181 2996 3188!2996 3188[2970 3202 2945 3216!2945 3216[2945 3189 2945 3162"/>
                     <Edge fillStyle1="5" edges="
-!2843 3281S2[2836 3281 2828 3282!2828 3282[2820 3284 2816 3286!2816 3286[2809 3290 2811 3296!2811 3296[2813 3301 2811 3303!2811 3303[2808 3305 2794 3308!2794 3308[#AFD.0F #CD4.CC 2835 3256!2835 3256[#B17.7A #CB1.D2 2843.5 3244!2843.5
- 3244[2843 #CBE.B4 2843 3281"/>
+!2843.5 3244S2[2843 #CBE.B4 2843 3281!2843 3281[2836 3281 2828 3282!2828 3282[2820 3284 2816 3286!2816 3286[2809 3290 2811 3296!2811 3296[2813 3301 2811 3303!2811 3303[2808 3305 2794 3308!2794 3308[#AFD.0F #CD4.CC 2835 3256!2835 3256
+[#B17.7A #CB1.D2 2843.5 3244"/>
                     <Edge fillStyle1="6" edges="
-!2897 3315S2|2898 3315!2898 3315[2903 3315 2907 3315!2907 3315[#B6C.A4 #CF4.C4 2941.5 3318.5!2941.5 3318.5[#B6E.0F #CFF.2 2907.5 3332!2907.5 3332[#B20.D2 #CFE.1C 2784.5 3319.5!2784.5 3319.5[#AE4.05 #CF3.31 2792 3310.5!2792 3310.5[#B09.5D
- 3314 2849 3314!2849 3314[2869 3315 2878 3313!2878 3313[2879 3313 2880 3313!2880 3313[2888 3314 2897 3315"/>
+!2898 3315S2[2903 3315 2907 3315!2907 3315[#B6C.A4 #CF4.C4 2941.5 3318.5!2941.5 3318.5[#B6E.0F #CFF.2 2907.5 3332!2907.5 3332[#B20.D2 #CFE.1C 2784.5 3319.5!2784.5 3319.5[#AE4.05 #CF3.31 2792 3310.5!2792 3310.5[#B09.5D 3314 2849 3314!2849
+ 3314[2869 3315 2878 3313!2878 3313[2879 3313 2880 3313!2880 3313[2888 3314 2897 3315!2897 3315|2898 3315"/>
                     <Edge fillStyle0="5" edges="
 !2799 3208S1[#AEC.74 #C88.51 2793.5 3209!2793.5 3209[#AE9.6D #C8C.33 2793.5 3215.5!2793.5 3215.5|2799 3208"/>
                     <Edge fillStyle0="7" edges="
-!2791.5 3653.5S1[#B02.79 #E3A.8D 2845 3630.5!2845 3630.5[#B1E.01 #E27.B9 2847 3617!2847 3617|2831 3610!2831 3610[2814 3602 2799 3589!2799 3589[#AEA.D8 #E27.14 2791.5 3653.5"/>
+!2799 3589S1[#AEA.D8 #E27.14 2791.5 3653.5!2791.5 3653.5[#B02.79 #E3A.8D 2845 3630.5!2845 3630.5[#B1E.01 #E27.B9 2847 3617!2847 3617|2831 3610!2831 3610[2814 3602 2799 3589"/>
                     <Edge fillStyle1="7" edges="
 !2788.5 3813.5S2[#AD6.5E #EF5.DA 2760.5 3846!2760.5 3846[#ACB.D3 #EF6.C6 2767 3813!2767 3813|2788.5 3813.5"/>
                     <Edge fillStyle1="8" edges="
 !2709 3776S2[2706 3813 2704 3849!2704 3849[2694 3852 2699 3858!2699 3858[2700 3859 2703 3860!2703 3860[2703 3861 2703 3862!2703 3862[2691 3869 2677 3879!2677 3879[2669 3879 2663 3882!2663 3882[2657 3885 2657 3888!2657 3888[2655 3893 2663
  3895!2663 3895[2669 3897 2674 3898!2674 3898[2683 3898 2690 3898!2690 3898[2696 3898 2701 3897!2701 3897[#A8C.28 #F42.B3 2699.5 3916!2699.5 3916[#A7F.68 #F59.E1 2675.5 3943.5!2675.5 3943.5[#A6D.DB #F68.6E 2666 3947!2666 3947[2664 3950
  2664 3954!2664 3954|2664 3956.5!2664 3956.5[#A5D.B4 #F80.3B 2643.5 3980!2643.5 3980[#A59.B3 #F35.B5 2656 3801!2656 3801|2673 3794!2673 3794[2695 3784 2709 3776"/>
-                    <Edge fillStyle0="9" edges="
-!2923 3656S1[#B67.1C 3656 2913 3658!2913 3658[#B60.C4 #E4E.0D 2912.5 3666!2912.5 3666[#B66.8D #E4A.AB 2923 3656"/>
                     <Edge fillStyle1="9" edges="
 !2920 3522S2[#B6F.DB #DC3.F7 2936 3526!2936 3526[#B73.EE #DE7.49 2924 3591!2924 3591[#B68.5B #E08.F7 2916.5 3595!2916.5 3595[#B66.5A #DE7.22 2920 3522"/>
+                    <Edge fillStyle0="9" edges="
+!2923 3656S1[#B67.1C 3656 2913 3658!2913 3658[#B60.C4 #E4E.0D 2912.5 3666!2912.5 3666[#B66.8D #E4A.AB 2923 3656"/>
                     <Edge fillStyle0="15" edges="
 !3147 1994S1[3146 1983 3146 1972!3146 1972[3130 1981 3119 1992"/>
                     <Edge fillStyle0="19" edges="
-!2659 4270S1[2680 4255 2702 4240!2702 4240|2660 4240!2660 4240[2659 4255 2659 4270!2708 4325[2708 4316 2709 4306!2709 4306[2708 4306 2708 4305!2708 4305[2684 4322 2665 4337!2665 4337[2669 4336 2673 4334!2673 4334[2685 4330 2691 4328!2691
- 4328[2700 4326 2708 4325"/>
+!2702 4240S1|2660 4240!2660 4240[2659 4255 2659 4270!2659 4270[2680 4255 2702 4240!2709 4306[2708 4306 2708 4305!2708 4305[2684 4322 2665 4337!2665 4337[2669 4336 2673 4334!2673 4334[2685 4330 2691 4328!2691 4328[2700 4326 2708 4325!2708
+ 4325[2708 4316 2709 4306"/>
                     <Edge fillStyle1="19" edges="
 !2655 4393S2[2655 4376 2656 4359!2656 4359[2662 4358 2680 4355!2680 4355[2691 4353 2707 4349!2707 4349[2706 4372 2706 4394!2706 4394[2688 4395 2671 4397!2671 4397[2662 4395 2655 4393"/>
                     <Edge fillStyle0="12" fillStyle1="11" edges="
@@ -4114,7 +4113,7 @@
                   </fills>
                   <edges>
                     <Edge fillStyle1="8" edges="
-!2891 393[2875 398 2864 404!2864 404[2859 386 2854 371!2854 371|2855 370!2855 370[2882 366 2902 365!2902 365[2906 375 2910 388!2910 388[2901 390 2891 393"/>
+!2864 404[2859 386 2854 371!2854 371|2855 370!2855 370[2882 366 2902 365!2902 365[2906 375 2910 388!2910 388[2901 390 2891 393!2891 393[2875 398 2864 404"/>
                     <Edge fillStyle1="9" edges="
 !2952 932[2954 945 2956 959!2956 959|2944 961!2944 961[2943 955 2942 949!2942 949|2952 932"/>
                     <Edge fillStyle0="10" edges="
@@ -4139,40 +4138,41 @@
 !2897.5 2499.5[#B4B.4 #9C1.46 2885 2495!2885 2495[2870 2490 2866 2486!2866 2486[2865 2484 2866 2482!2866 2482|2856 2482!2856 2482[2856 2494 2856 2506!2856 2506[2875 2513 2873 2518!2873 2518[2872 2520 2864 2522!2864 2522[2860 2523 2857
  2524!2857 2524[2857 2527 2857 2530!2857 2530[#B37.C1 #9DD.15 2887.5 2520.5!2887.5 2520.5[#B4C.5C #9CE.03 2897.5 2499.5"/>
                     <Edge fillStyle0="6" edges="
-!3040.5 3110.5[#BDB.5C #C26.3D 3030 3109!3030 3109[3018 3107 3020 3102!3020 3102|3021 3101!3021 3101[#BC3.A5 #C1C.3 3002 3099.5!3002 3099.5|2996.5 3109!2996.5 3109|2997 3109!2997 3109[#BCC.6B 3111 3040.5 3112.5!3040.5 3112.5[#BE0.A #C27.8F
- 3040.5 3110.5!3137 3111|3136.5 3111!3136.5 3111|3136.5 3111.5!3136.5 3111.5|3137 3111"/>
+!3137 3111|3136.5 3111!3136.5 3111|3136.5 3111.5!3136.5 3111.5|3137 3111!3040.5 3110.5[#BDB.5C #C26.3D 3030 3109!3030 3109[3018 3107 3020 3102!3020 3102|3021 3101!3021 3101[#BC3.A5 #C1C.3 3002 3099.5!3002 3099.5|2996.5 3109!2996.5 3109
+|2997 3109!2997 3109[#BCC.6B 3111 3040.5 3112.5!3040.5 3112.5[#BE0.A #C27.8F 3040.5 3110.5"/>
                     <Edge fillStyle0="12" edges="
 !2755 3108[2755 #C2A.BB 2755 3122!2755 3122|2762 3122!2762 3122|2775 3095!2775 3095[2765 3101 2755 3108"/>
                     <Edge fillStyle0="14" edges="
-!2900 4436S1[2899 4439 2900 4443!2900 4443|2905 4435!2905 4435[2902 4435 2900 4436"/>
+!2900 4443S1|2905 4435!2905 4435[2902 4435 2900 4436!2900 4436[2899 4439 2900 4443"/>
                     <Edge fillStyle0="13" edges="
-!2868 4349S1|2861 4349!2861 4349[2861 4356 2861 4363!2861 4363|2868 4349"/>
+!2861 4349S1[2861 4356 2861 4363!2861 4363|2868 4349!2868 4349|2861 4349"/>
                     <Edge fillStyle0="15" edges="
-!3000 4394S1|3000 4393!3000 4393[2999 4393 2999 4394!2999 4394|3000 4394"/>
+!3000 4393S1[2999 4393 2999 4394!2999 4394|3000 4394!3000 4394|3000 4393"/>
                     <Edge fillStyle0="16" edges="
 !3100 4370S1[3093 4366 3087 4363!3087 4363|3081 4372!3081 4372[3086 4374 3102 4380!3102 4380[3102 4375 3102 4371!3102 4371[3101 4370 3100 4370"/>
                     <Edge fillStyle1="16" edges="
 !3068 4394S2[3086 4398 3102 4402!3102 4402[3102 4408 3102 4415!3102 4415[3076 4429 3051 4443!3051 4443[3051 4432 3051 4422!3051 4422|3068 4394"/>
                     <Edge fillStyle0="7" edges="
-!2708 4305[2684 4322 2665 4337!2665 4337[2669 4336 2673 4334!2673 4334[2685 4330 2691 4328!2691 4328[2700 4326 2708 4325!2708 4325[2708 4316 2709 4306!2709 4306[2708 4306 2708 4305!2660 4240[2659 4255 2659 4270!2659 4270[2680 4255 2702
- 4240!2702 4240|2660 4240"/>
+!2660 4240[2659 4255 2659 4270!2659 4270[2680 4255 2702 4240!2702 4240|2660 4240!2708 4305[2684 4322 2665 4337!2665 4337[2669 4336 2673 4334!2673 4334[2685 4330 2691 4328!2691 4328[2700 4326 2708 4325!2708 4325[2708 4316 2709 4306!2709
+ 4306[2708 4306 2708 4305"/>
                     <Edge fillStyle1="7" edges="
 !2655 4393[2655 4376 2656 4359!2656 4359[2662 4358 2680 4355!2680 4355[2691 4353 2707 4349!2707 4349[2706 4372 2706 4394!2706 4394[2688 4395 2671 4397!2671 4397[2662 4395 2655 4393"/>
                     <Edge fillStyle1="17" edges="
-!3002 4542S2|3004 4542!3004 4542[3009 4542 3013 4542!3013 4542[3031 4544 3048 4546!3048 4546[3032 4554 3014 4559!3014 4559[3007 4558 3000 4558!3000 4558[3001 4549 3002 4542!2898 4538[2910 4539 2921 4540!2921 4540[2918 4544 2916 4549!2916
- 4549[2903 4548 2891 4547!2891 4547[2894 4542 2898 4538"/>
+!3002 4542S2|3004 4542!3004 4542[3009 4542 3013 4542!3013 4542[3031 4544 3048 4546!3048 4546[3032 4554 3014 4559!3014 4559[3007 4558 3000 4558!3000 4558[3001 4549 3002 4542"/>
                     <Edge fillStyle1="14" edges="
 !2922 4513S2[2915 4517 2917 4523!2917 4523[2919 4528 2917 4530!2917 4530[2914 4532 2900 4535!2900 4535[2917 4514 2937 4489!2937 4489[2936 4499 2933 4510!2933 4510[2926 4511 2922 4513"/>
-                    <Edge fillStyle1="19" edges="
-!3026 4749S2[3034 4751 3042 4753!3042 4753[3033 4763 3025 4773!3025 4773[3025 4761 3026 4749"/>
+                    <Edge fillStyle1="17" edges="
+!2891 4547S2[2894 4542 2898 4538!2898 4538[2910 4539 2921 4540!2921 4540[2918 4544 2916 4549!2916 4549[2903 4548 2891 4547"/>
                     <Edge fillStyle0="18" edges="
 !2937 4837S1[2933 4835 2929 4833!2929 4833[2920 4854 2910 4876!2910 4876[2927 4868 2945 4861!2945 4861[2948 4856 2952 4852!2952 4852[2952 4848 2953 4844!2953 4844|2937 4837"/>
+                    <Edge fillStyle1="19" edges="
+!3026 4749S2[3034 4751 3042 4753!3042 4753[3033 4763 3025 4773!3025 4773[3025 4761 3026 4749"/>
                     <Edge fillStyle1="18" edges="
-!2895 5041S2[2880 5057 2867 5073!2867 5073[2870 5058 2873 5040!2873 5040|2895 5041"/>
+!2867 5073S2[2870 5058 2873 5040!2873 5040|2895 5041!2895 5041[2880 5057 2867 5073"/>
                     <Edge fillStyle1="20" edges="
-!2770 5025S2[2765 5033 2761 5042!2761 5042[2762 5035 2762 5028!2762 5028|2770 5025!2807 5124[2806 5134 2806 5143!2806 5143[2793 5157 2782 5171!2782 5171[2776 5171 2772 5174!2772 5174[2770 5177 2770 5181!2770 5181|2770 5182!2770 5182[2760
- 5189 2751 5196!2751 5196[2751 5192 2751 5187!2751 5187[2763 5159 2780 5125!2780 5125[2789 5125 2796 5125!2796 5125[2802 5125 2807 5124!2803.5 5080.5[#AF2.D9 #13DA.6B 2805 5085!2805 5085[2806 5086 2809 5087!2809 5087[2809 5088 2809 5089
-!2809 5089[2802 5093 2794 5099!2794 5099[#AEE.94 #13E1.D8 2803.5 5080.5!2804 5079.5[#AF7.6B #13D0.C4 2811 5066!2811 5066[2810 5071 2810 5076!2810 5076[#AF5.6D #13D5.5F 2804 5079.5"/>
+!2761 5042S2[2762 5035 2762 5028!2762 5028|2770 5025!2770 5025[2765 5033 2761 5042!2804 5079.5[#AF7.6B #13D0.C4 2811 5066!2811 5066[2810 5071 2810 5076!2810 5076[#AF5.6D #13D5.5F 2804 5079.5!2803.5 5080.5[#AF2.D9 #13DA.6B 2805 5085!2805
+ 5085[2806 5086 2809 5087!2809 5087[2809 5088 2809 5089!2809 5089[2802 5093 2794 5099!2794 5099[#AEE.94 #13E1.D8 2803.5 5080.5!2807 5124[2806 5134 2806 5143!2806 5143[2793 5157 2782 5171!2782 5171[2776 5171 2772 5174!2772 5174[2770 5177
+ 2770 5181!2770 5181|2770 5182!2770 5182[2760 5189 2751 5196!2751 5196[2751 5192 2751 5187!2751 5187[2763 5159 2780 5125!2780 5125[2789 5125 2796 5125!2796 5125[2802 5125 2807 5124"/>
                     <Edge cubics="!2847 2024(;2853,2026 2860,2027 2867,2028q2847 2024Q2856 2026q2867 2028);"/>
                     <Edge cubics="!2897 2033(;2897,2033 2917,2030 2917,2030q2897 2033 2917 2030);"/>
                     <Edge cubics="!2917 2030(;2894,2028 2870,2026 2847,2024q2917 2030Q2882 2027q2847 2024);"/>

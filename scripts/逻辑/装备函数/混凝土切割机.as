@@ -19,9 +19,8 @@
         var gun:MovieClip = target.长枪_引用;
         var prop:Object = target.man.子弹属性;
         var area:MovieClip = gun.枪口位置;
-        var spark:MovieClip = gun.火花;
+        
         var flag:Boolean = target.混凝土切割机超载打击许可;
-        spark.play();
         spark._visible = true;
         prop.区域定位area = area;
         prop.伤害类型 = flag ? "魔法" : "破击";
@@ -33,6 +32,7 @@ _root.装备生命周期函数.混凝土切割机周期 = function(ref:Object, p
     _root.装备生命周期函数.移除异常周期函数(ref);
     var target:MovieClip = ref.自机;
     var gun:MovieClip = target.长枪_引用;
+    var spark:MovieClip = gun.火花;
 
     (ref.isFiring && (ref.fireCount = Math.min(ref.fireCount + ref.spinUpAmount, ref.maxSpinCount))) || 
     (ref.fireCount = Math.max(0, ref.fireCount - ref.spinDownRate));
@@ -49,6 +49,7 @@ _root.装备生命周期函数.混凝土切割机周期 = function(ref:Object, p
         }
         
         gun.gotoAndStop(Math.floor(ref.gunFrame));
+        spark.play();
     } else if(gun._currentFrame != 1) {
         // 如果不在射击状态且当前帧不是第一帧，则重置到第一帧
         gun.gotoAndStop(1);
@@ -60,6 +61,7 @@ _root.装备生命周期函数.混凝土切割机周期 = function(ref:Object, p
 
     var flag:Boolean = target.混凝土切割机超载打击许可;
     var clip:MovieClip = gun.锯片.晶片;
+    var bigClip:MovieClip = gun.锯盘;
 
     if(flag) {
         if(--target.混凝土切割机超载打击剩余时间 < 0) {
@@ -71,6 +73,7 @@ _root.装备生命周期函数.混凝土切割机周期 = function(ref:Object, p
 
         var ramp:Number = 0.05;      // 峰值所处的时间占比（越小 = 越快亮）
         var fade:Number;             // 0‑1 的可见度系数
+        var fadeAlpha:Number;
 
         if (prog <= ramp) {
             // --- 快速线性冲峰 ---
@@ -84,8 +87,12 @@ _root.装备生命周期函数.混凝土切割机周期 = function(ref:Object, p
         // fade = fade * 2 - 1;
 
         // 10‑100 Alpha 区间
-        clip._alpha = 10 + 90 * fade;
+        fadeAlpha = 10 + 90 * fade;
+        clip._alpha = fadeAlpha;
+        spark._alpha = fadeAlpha;
     }
 
     clip._visible = flag;
+    bigClip._visible = flag;
+    spark._visible = flag;
 };

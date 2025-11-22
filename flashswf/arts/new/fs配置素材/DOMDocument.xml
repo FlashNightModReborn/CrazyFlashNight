@@ -58,7 +58,7 @@
           <DOMFolderItem name="长枪/XM214" itemID="689a24d4-000032b3"/>
           <DOMFolderItem name="长枪/XM556" itemID="686bba3f-000040b0"/>
           <DOMFolderItem name="长枪/ZB-26" itemID="68728189-000006c7"/>
-          <DOMFolderItem name="长枪/火药燃气液压打桩机" itemID="655175a5-000006e2"/>
+          <DOMFolderItem name="长枪/火药燃气液压打桩机" itemID="655175a5-000006e2" isExpanded="true"/>
           <DOMFolderItem name="长枪/火药燃气液压打桩机/未命名文件夹 1" itemID="6551ede1-000021a3"/>
           <DOMFolderItem name="长枪/火药燃气液压打桩机/未命名文件夹 1/1" itemID="6551ede1-000021a4" isExpanded="true"/>
           <DOMFolderItem name="长枪/铁枪" itemID="68663e85-0000038c"/>
@@ -144,7 +144,7 @@
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="ashcore/ashcore.xml" itemID="688340fd-00000819" lastModified="1753436006"/>
           <Include href="ashcore/图标-ashcore.xml" itemID="68835078-00000a95" lastModified="1753436313"/>
-          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1763622730"/>
+          <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1763794788"/>
           <Include href="P50/Kel-Tec-P50.xml" itemID="688f2946-000075a6" lastModified="1759804159"/>
           <Include href="P50/图标-Kel-Tec-P50.xml" itemID="688f460b-0000768a" lastModified="1759804179"/>
           <Include href="q.xml" loadImmediate="false" itemID="6898491a-00000406" lastModified="1754812780"/>
@@ -587,7 +587,7 @@
           <Include href="长枪/火药燃气液压打桩机/护筒.xml" itemIcon="1" loadImmediate="false" itemID="651d642b-00002ffd" lastModified="1696425004"/>
           <Include href="长枪/火药燃气液压打桩机/混凝土切割机.xml" itemID="6882dbb0-000005e5" lastModified="1753981483"/>
           <Include href="长枪/火药燃气液压打桩机/混凝土切割机电火花.xml" loadImmediate="false" itemID="68832e99-00000802" lastModified="1753623755"/>
-          <Include href="长枪/火药燃气液压打桩机/混凝土切割机锯片.xml" loadImmediate="false" itemID="6882e4ed-000005ff" lastModified="1753523227"/>
+          <Include href="长枪/火药燃气液压打桩机/混凝土切割机锯片.xml" loadImmediate="false" itemID="6882e4ed-000005ff" lastModified="1763794352"/>
           <Include href="长枪/火药燃气液压打桩机/混凝土切割机锯片强化激活.xml" loadImmediate="false" itemID="68848df1-000039ca" lastModified="1753517554"/>
           <Include href="长枪/火药燃气液压打桩机/火药燃气打桩机.xml" itemID="65519486-00001f36" lastModified="1746783541"/>
           <Include href="长枪/火药燃气液压打桩机/火药燃气打桩机动画.xml" loadImmediate="false" itemID="65519ab4-00001fd0" lastModified="1752227727"/>
@@ -598,6 +598,10 @@
           <Include href="长枪/火药燃气液压打桩机/枪口.xml" loadImmediate="false" itemID="68a0c5fd-00001454" lastModified="1755388623"/>
           <Include href="长枪/火药燃气液压打桩机/枪口基座.xml" loadImmediate="false" itemID="68a0d254-00001f61" lastModified="1755370147"/>
           <Include href="长枪/火药燃气液压打桩机/全息投影仪.xml" loadImmediate="false" itemID="688cd676-00001058" lastModified="1754060997"/>
+          <Include href="长枪/火药燃气液压打桩机/热临界破障机.xml" itemID="6921486f-00000493" lastModified="1763795629"/>
+          <Include href="长枪/火药燃气液压打桩机/热临界破障锯盘.xml" loadImmediate="false" itemID="69215889-00000eec" lastModified="1763793220"/>
+          <Include href="长枪/火药燃气液压打桩机/热临界破障锯片.xml" loadImmediate="false" itemID="692149b4-000004ae" lastModified="1763794360"/>
+          <Include href="长枪/火药燃气液压打桩机/热临界破障锯片强化激活.xml" loadImmediate="false" itemID="69214efd-00000e82" lastModified="1763793042"/>
           <Include href="长枪/火药燃气液压打桩机/伸缩支架.xml" loadImmediate="false" itemID="69119c56-00002ea7" lastModified="1762761814"/>
           <Include href="长枪/火药燃气液压打桩机/图标-MACSIII.xml" itemID="6884cbfc-0000480b" lastModified="1753533436"/>
           <Include href="长枪/火药燃气液压打桩机/图标-MACSIV.xml" itemID="691beaa3-000004a9" lastModified="1763437243"/>
@@ -605,6 +609,7 @@
           <Include href="长枪/火药燃气液压打桩机/图标-混凝土切割机.xml" itemID="6883620d-000011a9" lastModified="1753440809"/>
           <Include href="长枪/火药燃气液压打桩机/图标-火药燃气液压打桩机.xml" itemID="6551c58b-00002089" lastModified="1699858364"/>
           <Include href="长枪/火药燃气液压打桩机/图标-僵尸割草机.xml" itemID="688361bb-00000e32" lastModified="1753440758"/>
+          <Include href="长枪/火药燃气液压打桩机/图标-热临界破障机.xml" itemID="69215f47-000014db" lastModified="1763794784"/>
           <Include href="长枪/火药燃气液压打桩机/未命名文件夹 1/1/shape 9 (Up Over Down Hit).xml" itemIcon="1" loadImmediate="false" itemID="6551ede1-000021b8" lastModified="1443854724"/>
           <Include href="长枪/火药燃气液压打桩机/未命名文件夹 1/1/shape 1194.xml" itemIcon="1" loadImmediate="false" itemID="6551ede1-000021bd" lastModified="1443854765"/>
           <Include href="长枪/火药燃气液压打桩机/未命名文件夹 1/1/shape 1196.xml" itemIcon="1" loadImmediate="false" itemID="6551ede1-000021bb" lastModified="1443854765"/>
@@ -1578,6 +1583,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2736366" publishTime="1763794936"/>
           <PublishItem publishSize="2679532" publishTime="1763620367"/>
           <PublishItem publishSize="2679521" publishTime="1763620213"/>
           <PublishItem publishSize="2672478" publishTime="1763447299"/>
@@ -1597,6 +1603,5 @@
           <PublishItem publishSize="2507691" publishTime="1759826575"/>
           <PublishItem publishSize="2507682" publishTime="1759826482"/>
           <PublishItem publishSize="2507681" publishTime="1759826391"/>
-          <PublishItem publishSize="2507751" publishTime="1759826333"/>
      </publishHistory>
 </DOMDocument>
