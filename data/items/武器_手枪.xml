@@ -31,6 +31,35 @@
     </data>
   </item>
   <item weapontype="手枪">
+    <name>Ball Lightning</name>
+    <displayname>Ball Lightning</displayname>
+    <icon>Ball Lightning</icon>
+    <type>武器</type>
+    <use>手枪</use>
+    <price>160000</price>
+    <description>能量电池供电，可定向发射电球的能量武器</description>
+    <data>
+      <level>40</level>
+      <weight>2</weight>
+      <dressup>枪-手枪-Ball Lightning</dressup>
+      <capacity>9</capacity>
+      <split>1</split>
+      <diffusion>2</diffusion>
+      <interval>220</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>10</velocity>
+      <bullet>新电球</bullet>
+      <bulletrename>电球</bulletrename>
+      <sound>m4a1_unsil-2.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>能量电池</clipname>
+      <bulletsize>20</bulletsize>
+      <power>500</power>
+      <impact>2</impact>
+    </data>
+  </item>
+  <item weapontype="手枪">
     <name>鲁格MK3</name>
     <displayname>鲁格MK3</displayname>
     <icon>鲁格MK3</icon>
