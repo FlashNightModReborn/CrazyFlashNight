@@ -45,8 +45,7 @@
           <DOMFolderItem name="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1" itemID="6553944a-00002b83"/>
           <DOMFolderItem name="1.特效文件夹/02.黄金色系/斩打命一" itemID="6553948a-00002bcd"/>
           <DOMFolderItem name="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1" itemID="655391d5-00002a0f"/>
-          <DOMFolderItem name="1.特效文件夹/03.赤橙色系" itemID="65503f83-000059f5"/>
-          <DOMFolderItem name="1.特效文件夹/03.赤橙色系/ROUND WAVE" itemID="69100b5e-0000135d"/>
+          <DOMFolderItem name="1.特效文件夹/03.赤橙色系" itemID="65503f83-000059f5" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/赤橙横斩" itemID="653d64bd-00000da4"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/赤橙雷光" itemID="653dec60-00001585"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/赤橙强击" itemID="653df339-0000162d"/>
@@ -73,6 +72,7 @@
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸/浴火重生/构成" itemID="654fb5a1-000058dd"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸/中火燃" itemID="654fb053-00005892"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/火焰与爆炸/中火燃/Graphic" itemID="5306c977-000000d6"/>
+          <DOMFolderItem name="1.特效文件夹/03.赤橙色系/能量喷泉" itemID="69210c37-00001138" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/强贯通" itemID="65539cc3-00002d66"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/强贯通/未命名文件夹 1" itemID="65539ccc-00002d86"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/强震地(代码空缺)" itemID="65539e08-00002db4"/>
@@ -102,7 +102,7 @@
           <DOMFolderItem name="1.特效文件夹/05.粉紫色系/紫雷星陨" itemID="653d5d08-00000904"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系" itemID="6553a7c8-00002f40" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系/黑龙攻势" itemID="6546fa70-00000af9"/>
-          <DOMFolderItem name="1.特效文件夹/06.青蓝色系/蓝芒强击" itemID="653de89e-000011fe" isExpanded="true"/>
+          <DOMFolderItem name="1.特效文件夹/06.青蓝色系/蓝芒强击" itemID="653de89e-000011fe"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系/蓝芒散" itemID="653d11fc-00000503"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系/蓝芒散/未命名文件夹 1" itemID="656c80cf-000007f8"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系/蓝芒一字闪" itemID="653cdb83-000003cf"/>
@@ -683,8 +683,6 @@
           <Include href="1.特效文件夹/02.黄金色系/斩打命一/斩打命一.xml" itemID="655391dd-00002a11" lastModified="1715776822"/>
           <Include href="1.特效文件夹/02.黄金色系/斩打命中特效.xml" itemID="6644ad2e-00001659" lastModified="1762656004"/>
           <Include href="1.特效文件夹/02.黄金色系/斩打命中特效偏下.xml" itemID="67bb137b-00003b1b" lastModified="1740316696"/>
-          <Include href="1.特效文件夹/03.赤橙色系/ROUND WAVE/ROUND WAVE.xml" itemID="69100b15-00001354" lastModified="1762660283"/>
-          <Include href="1.特效文件夹/03.赤橙色系/ROUND WAVE/ROUND WAVE素材.xml" itemIcon="1" loadImmediate="false" itemID="69100b04-00001352" lastModified="1762659827"/>
           <Include href="1.特效文件夹/03.赤橙色系/赤橙横斩/Symbol 287.xml" loadImmediate="false" itemID="653d644e-00000cb9" lastModified="1698427550"/>
           <Include href="1.特效文件夹/03.赤橙色系/赤橙横斩/Symbol 289.xml" loadImmediate="false" itemID="653d644e-00000cba" lastModified="1698427550"/>
           <Include href="1.特效文件夹/03.赤橙色系/赤橙横斩/Symbol 291.xml" loadImmediate="false" itemID="653d644e-00000cbb" lastModified="1698427550"/>
@@ -1030,6 +1028,8 @@
           <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/中火燃/Graphic/特效6.fla_1_271_2014-02-24 17&amp;#05812&amp;#0580451445.xml" itemIcon="1" loadImmediate="false" itemID="530b0ced-0000221e" lastModified="1393233133"/>
           <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/中火燃/Graphic/特效6.fla_1_272_2014-02-24 17&amp;#05812&amp;#0580491425.xml" itemIcon="1" loadImmediate="false" itemID="530b0ced-0000221f" lastModified="1393233133"/>
           <Include href="1.特效文件夹/03.赤橙色系/火焰与爆炸/中火燃/中火燃.xml" itemID="654fb05d-000058a1" lastModified="1699727854"/>
+          <Include href="1.特效文件夹/03.赤橙色系/能量喷泉/ROUND WAVE素材.xml" itemIcon="1" loadImmediate="false" itemID="69100b04-00001352" lastModified="1762659827"/>
+          <Include href="1.特效文件夹/03.赤橙色系/能量喷泉/能量喷泉.xml" itemID="69210c34-00001137" lastModified="1763774919"/>
           <Include href="1.特效文件夹/03.赤橙色系/强贯通/强贯通.xml" itemID="65539cca-00002d84" lastModified="1762659186"/>
           <Include href="1.特效文件夹/03.赤橙色系/强贯通/未命名文件夹 1/Symbol 13.xml" loadImmediate="false" itemID="65539cc5-00002d83" lastModified="1698481640"/>
           <Include href="1.特效文件夹/03.赤橙色系/强贯通/未命名文件夹 1/Symbol 5054.xml" loadImmediate="false" itemID="65536bc5-00002999" lastModified="1698481640"/>
@@ -2221,6 +2221,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="6760021" publishTime="1763774694"/>
+          <PublishItem publishSize="6760023" publishTime="1763774198"/>
+          <PublishItem publishSize="6760024" publishTime="1763773588"/>
           <PublishItem publishSize="6759064" publishTime="1763387060"/>
           <PublishItem publishSize="6759038" publishTime="1763386577"/>
           <PublishItem publishSize="6759032" publishTime="1763386417"/>
@@ -2238,8 +2241,5 @@
           <PublishItem publishSize="5518541" publishTime="1760876666"/>
           <PublishItem publishSize="5494065" publishTime="1759063834"/>
           <PublishItem publishSize="5491482" publishTime="1758991848"/>
-          <PublishItem publishSize="5491482" publishTime="1758991378"/>
-          <PublishItem publishSize="5491574" publishTime="1758542790"/>
-          <PublishItem publishSize="3676896" publishTime="1758115949"/>
      </publishHistory>
 </DOMDocument>
